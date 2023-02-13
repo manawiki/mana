@@ -9,7 +9,7 @@
       "build:remix": "remix build",
       "build:css": "npm run generate:css -- --minify",
       "build:server": "tsc -p tsconfig.server.json",
-      "dev": "remix build && run-p \"dev:*\"",
+      "dev": "npm run generate:types && npm run generate:css && remix build && run-p \"dev:*\"",
       "dev:css": "npm run generate:css -- --watch",
       "dev:node": "cross-env NODE_ENV=development nodemon --exec 'ts-node --require dotenv/config ./server.ts'  --watch ./server.ts",
       "dev:remix": "remix watch",
