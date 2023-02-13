@@ -2708,10 +2708,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.6.tgz#cee20bd55e68a1720bdab363ecf0c821ded4cd45"
   integrity sha512-50/17A98tWUfQ176raKiOGXuYpLyyVMkxxG6oylzL3BPOlA6ADGdK7EYunSa4I064xerltq9TGXs8HmOk5E+vw==
 
-"@remix-run/dev@^1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.13.0-pre.2.tgz#37a4415aa19689453bc6cc86c058fbc95030fe4b"
-  integrity sha512-U2ealxDPw86rTZ08L2sKVv3AVLZCzDXyUtoGFtybj4kDnR0ZoPk9tYBksfzZWlgxjDPeyV3MhG4GwvTE3pILiQ==
+"@remix-run/dev@^1.11.1":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.12.0.tgz#b2e5791d5a526849c74c5e15ddf1eb8737a70de7"
+  integrity sha512-lBiA2FlDi+DjpOAE/vn93zFTSxudKag/FGpmbV6O+LQItDCpFARfbBMhTck/uKcc95nyhRd1GGhQ4ZDgQnyjaQ==
   dependencies:
     "@babel/core" "^7.18.6"
     "@babel/generator" "^7.18.6"
@@ -2724,7 +2724,7 @@
     "@babel/types" "^7.20.2"
     "@esbuild-plugins/node-modules-polyfill" "^0.1.4"
     "@npmcli/package-json" "^2.0.0"
-    "@remix-run/server-runtime" "1.13.0-pre.2"
+    "@remix-run/server-runtime" "1.12.0"
     "@vanilla-extract/integration" "^6.0.2"
     arg "^5.0.1"
     cacache "^15.0.5"
@@ -2750,7 +2750,6 @@
     ora "^5.4.1"
     postcss "^8.4.19"
     postcss-discard-duplicates "^5.1.0"
-    postcss-load-config "^4.0.1"
     postcss-modules "^6.0.0"
     prettier "2.7.1"
     pretty-ms "^7.0.1"
@@ -2765,10 +2764,10 @@
     ws "^7.4.5"
     xdm "^2.0.0"
 
-"@remix-run/eslint-config@^1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-1.13.0-pre.2.tgz#b65ec7ca5f9d24367cf7836bf7c91b7cc7586aac"
-  integrity sha512-pnW/59C6P9HhvYzT3pxjnCgE8Le44QRTCkaOrAhuGuPnxr7QxvxW8gybjONsjNUD3DmNj1lpfY9BKFlfsfrxNA==
+"@remix-run/eslint-config@^1.11.1":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-1.12.0.tgz#fbba2ec16854bc9620cdc6ad5f4027bff57d426d"
+  integrity sha512-Nla/9+FihLG+ooIITYT6ikFougKHxEYcyYnIdkjAxB+zv90UE4saKkIU15yIxxcmDJIQoD3lanpGHmrx4DaMvg==
   dependencies:
     "@babel/core" "^7.19.1"
     "@babel/eslint-parser" "^7.19.1"
@@ -2787,19 +2786,19 @@
     eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-testing-library "^5.6.4"
 
-"@remix-run/express@^1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-1.13.0-pre.2.tgz#73a43f715caf8fc32e7792215e0adca9960a4d01"
-  integrity sha512-8PcNyP4IFgkoPtdOvpBQOFaahm4wprJwKbeKLcXRhnfsCWMjas5tUsMUAifEvFOBXyeZ5ob0o7wMt9YNOCNkQg==
+"@remix-run/express@^1.11.1":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-1.12.0.tgz#47108505a04a623cef6f3c9ffb302e0d3c141fa0"
+  integrity sha512-GLFCKJnF93KaKb4mMNBlkNHqTmfV/11laPuzDRAKhkcOqDT2XyIXECHHEovzYDX9pQK5WSRTewMsgQqIG6sKrg==
   dependencies:
-    "@remix-run/node" "1.13.0-pre.2"
+    "@remix-run/node" "1.12.0"
 
-"@remix-run/node@1.13.0-pre.2", "@remix-run/node@^1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-1.13.0-pre.2.tgz#7656e38fa27de6083ad9e87efc916c14ae51e809"
-  integrity sha512-cLts4h/lP9mzpW2o5oVpVU3c98Ul58W+LoiZfp/fzkuu4iKqi68La4U17AmgD3SXYPUn6QDx+BMWEpzzuw8V1g==
+"@remix-run/node@1.12.0", "@remix-run/node@^1.11.1":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-1.12.0.tgz#e7317846628c5cc19f26e892d505a0ca0f3ded71"
+  integrity sha512-WiyRTEQKTUTf3Z3ke5DOwx+fjCkeD8ilI9kbRws1bG3xfdugaDrV9ra76DOZcrYlmVwjwtKE3mVDSRFtiYTTMw==
   dependencies:
-    "@remix-run/server-runtime" "1.13.0-pre.2"
+    "@remix-run/server-runtime" "1.12.0"
     "@remix-run/web-fetch" "^4.3.2"
     "@remix-run/web-file" "^3.0.2"
     "@remix-run/web-stream" "^1.0.3"
@@ -2809,26 +2808,26 @@
     source-map-support "^0.5.21"
     stream-slice "^0.1.2"
 
-"@remix-run/react@^1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-1.13.0-pre.2.tgz#5d4271b5342e7cb8418f905e8eccaaf2b0f1043a"
-  integrity sha512-c2g+yDgRWOD5H1DWoYdl9iC+6tmB7ZTgPADAbV1eS/cVgJ8ZL3CwoAme0McCnPOzGGoPrS8kpKX1xiYBglBSVQ==
+"@remix-run/react@^1.11.1":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-1.12.0.tgz#7ad27e7d152b0980ef09ac851f849cc445a9e51f"
+  integrity sha512-BokbMOILGJvUvwOsTXAUrucvfFz/SBKVgSHke2+89DZIU7H2Z1UWe5t8wRTfjQnfnSH2tAXCF0QxmVpo1GQ3dg==
   dependencies:
-    "@remix-run/router" "1.3.2"
-    react-router-dom "6.8.1"
+    "@remix-run/router" "1.3.1"
+    react-router-dom "6.8.0"
     use-sync-external-store "1.2.0"
 
-"@remix-run/router@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.3.2.tgz#58cd2bd25df2acc16c628e1b6f6150ea6c7455bc"
-  integrity sha512-t54ONhl/h75X94SWsHGQ4G/ZrCEguKSRQr7DrjTciJXW0YU1QhlwYeycvK5JgkzlxmvrK7wq1NB/PLtHxoiDcA==
+"@remix-run/router@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.3.1.tgz#3bb0b6ddc0a276e8dc1138d08f63035e4e23e8bf"
+  integrity sha512-+eun1Wtf72RNRSqgU7qM2AMX/oHp+dnx7BHk1qhK5ZHzdHTUU4LA1mGG1vT+jMc8sbhG3orvsfOmryjzx2PzQw==
 
-"@remix-run/server-runtime@1.13.0-pre.2":
-  version "1.13.0-pre.2"
-  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-1.13.0-pre.2.tgz#5a358541eee800c7992949470396bbbf66a767ae"
-  integrity sha512-fbOR8dSNbUqEzSpgCyrXFzZlHVW1MOrw7w7yE1C91hxmWV7y5gWrneGW30beU2MUzaP/Bcd8D3PmG7fBKXdvcA==
+"@remix-run/server-runtime@1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-1.12.0.tgz#a2072c2e88b948b2a657993574cad01d42cf8cd4"
+  integrity sha512-7I0165Ns/ffPfCEfuiqD58lMderTn2s/sew1xJ34ONa21mG/7+5T7diHIgxKST8rS3816JPmlwSqUaHgwbmO6Q==
   dependencies:
-    "@remix-run/router" "1.3.2"
+    "@remix-run/router" "1.3.1"
     "@types/cookie" "^0.4.0"
     "@types/react" "^18.0.15"
     "@web3-storage/multipart-parser" "^1.0.0"
@@ -9981,14 +9980,6 @@ postcss-load-config@^3.1.4:
     lilconfig "^2.0.5"
     yaml "^1.10.2"
 
-postcss-load-config@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/postcss-load-config/-/postcss-load-config-4.0.1.tgz#152383f481c2758274404e4962743191d73875bd"
-  integrity sha512-vEJIc8RdiBRu3oRAI0ymerOn+7rPuMvRXslTvZUKZonDHFIczxztIyJ1urxM1x9JXEikvpWWTUUqal5j/8QgvA==
-  dependencies:
-    lilconfig "^2.0.5"
-    yaml "^2.1.1"
-
 postcss-loader@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/postcss-loader/-/postcss-loader-6.2.1.tgz#0895f7346b1702103d30fdc66e4d494a93c008ef"
@@ -10729,13 +10720,13 @@ react-redux@^7.2.0:
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
-react-router-dom@6.8.1:
-  version "6.8.1"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.8.1.tgz#7e136b67d9866f55999e9a8482c7008e3c575ac9"
-  integrity sha512-67EXNfkQgf34P7+PSb6VlBuaacGhkKn3kpE51+P6zYSG2kiRoumXEL6e27zTa9+PGF2MNXbgIUHTVlleLbIcHQ==
+react-router-dom@6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.8.0.tgz#5e5f4c4b15fdec3965d2ad9d7460d0c61971e744"
+  integrity sha512-hQouduSTywGJndE86CXJ2h7YEy4HYC6C/uh19etM+79FfQ6cFFFHnHyDlzO4Pq0eBUI96E4qVE5yUjA00yJZGQ==
   dependencies:
-    "@remix-run/router" "1.3.2"
-    react-router "6.8.1"
+    "@remix-run/router" "1.3.1"
+    react-router "6.8.0"
 
 react-router-dom@^5.3.4:
   version "5.3.4"
@@ -10770,12 +10761,12 @@ react-router@5.3.4:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router@6.8.1:
-  version "6.8.1"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.8.1.tgz#e362caf93958a747c649be1b47cd505cf28ca63e"
-  integrity sha512-Jgi8BzAJQ8MkPt8ipXnR73rnD7EmZ0HFFb7jdQU24TynGW1Ooqin2KVDN9voSC+7xhqbbCd2cjGUepb6RObnyg==
+react-router@6.8.0:
+  version "6.8.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.8.0.tgz#dd61fd1ec44daa2cceaef8e6baa00f99a01a650f"
+  integrity sha512-760bk7y3QwabduExtudhWbd88IBbuD1YfwzpuDUAlJUJ7laIIcqhMvdhSVh1Fur1PE8cGl84L0dxhR3/gvHF7A==
   dependencies:
-    "@remix-run/router" "1.3.2"
+    "@remix-run/router" "1.3.1"
 
 react-select@^3.2.0:
   version "3.2.0"
@@ -13033,11 +13024,6 @@ yaml@^1.10.0, yaml@^1.10.2, yaml@^1.7.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
-
-yaml@^2.1.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.2.1.tgz#3014bf0482dcd15147aa8e56109ce8632cd60ce4"
-  integrity sha512-e0WHiYql7+9wr4cWMx3TVQrNwejKaEe7/rHNmQmqRjazfOP5W8PB6Jpebb5o6fIapbz9o9+2ipcaTM2ZwDI6lw==
 
 yargs-parser@^20.2.2:
   version "20.2.9"
