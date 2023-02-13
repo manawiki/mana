@@ -5,6 +5,9 @@ import { Users } from "./db/collections/Users";
 import { serverEnv } from "./shared";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const bucketName = serverEnv === "production" ? "mana-prod" : "mana-dev";
 
@@ -22,8 +25,8 @@ const adapter = s3Adapter({
    config: {
       endpoint: "https://s3.us-west-004.backblazeb2.com",
       credentials: {
-         accessKeyId: process.env.BACKBLAZE_KEYID || "",
-         secretAccessKey: process.env.BACKBLAZE_APPLICATION_KEY || "",
+         accessKeyId: process.env.PAYLOAD_PUBLIC_BACKBLAZE_KEYID || "",
+         secretAccessKey: process.env.PAYLOAD_PUBLIC_BACKBLAZE_APPLICATION_KEY || "",
       },
       region: "us-west-004",
    },

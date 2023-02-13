@@ -15,7 +15,8 @@
       "dev:remix": "remix watch",
       "start": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/server.js",
       "typecheck": "tsc -p tsconfig.server.json",
-      "generate:types": "cross-env payload generate:types"
+      "generate:types": "cross-env payload generate:types",
+      "clean": "shx rm -rf node_modules dist build public/build"
    },
    "dependencies": {
       "@aws-sdk/client-s3": "^3.267.0",
@@ -70,6 +71,7 @@
       "nodemon": "^2.0.20",
       "npm-run-all": "^4.1.5",
       "remix-flat-routes": "^0.5.7",
+      "shx": "^0.3.4",
       "tailwindcss": "^3.2.4",
       "ts-node": "^10.9.1",
       "typescript": "^4.8.4"
