@@ -23,9 +23,9 @@
       "@aws-sdk/lib-storage": "^3.267.0",
       "@headlessui/react": "^1.7.7",
       "@payloadcms/plugin-cloud-storage": "^1.0.12",
-      "@remix-run/express": "^1.11.1",
-      "@remix-run/node": "^1.11.1",
-      "@remix-run/react": "^1.11.1",
+      "@remix-run/express": "^1.13.0-pre.2",
+      "@remix-run/node": "^1.13.0-pre.2",
+      "@remix-run/react": "^1.13.0-pre.2",
       "compression": "^1.7.4",
       "cross-env": "^7.0.3",
       "date-fns": "^2.29.3",
@@ -54,8 +54,8 @@
       "zodix": "^0.4.0"
    },
    "devDependencies": {
-      "@remix-run/dev": "^1.11.1",
-      "@remix-run/eslint-config": "^1.11.1",
+      "@remix-run/dev": "^1.13.0-pre.2",
+      "@remix-run/eslint-config": "^1.13.0-pre.2",
       "@tailwindcss/forms": "^0.5.3",
       "@tailwindcss/line-clamp": "^0.4.2",
       "@types/compression": "^1.7.2",
