@@ -1,0 +1,8 @@
+{
+   "new": {
+      "action": "Add",
+      "name": "Collection Name",
+      "namePlaceholder": "Collection name...",
+      "slugPlaceholder": "Collection slug..."
+   }
+}

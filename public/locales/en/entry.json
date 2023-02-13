@@ -1,0 +1,7 @@
+{
+    "new": {
+        "action": "Add",
+        "name": "Entry name",
+        "namePlaceholder": "Entry name..."
+    }
+}

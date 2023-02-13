@@ -1,0 +1,58 @@
+@font-face {
+  font-family: "Qualy";
+  src: url("/fonts/qualy-webfont.woff2") format("woff2"),
+    url("/fonts/qualy-webfont.woff") format("woff"), url("/fonts/Qualy.otf");
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Qualy Override";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Helvetica Neue"), local("BlinkMacSystemFont"), local("Arial"),
+    local("Noto Sans"), local("Segoe UI"), local("Roboto"), local(-apple-system),
+    local(sans-serif), local(ui-sans-serif);
+  ascent-override: 84.57%;
+  descent-override: 27.27%;
+  line-gap-override: 0%;
+  size-adjust: 115.3%;
+}
+@font-face {
+  font-family: "NunitoSans";
+  src: url("/fonts/Nunito_Sans/nunitosans-regular-webfont.woff2")
+      format("woff2"),
+    url("/fonts/Nunito_Sans/nunitosans-regular-webfont.woff") format("woff"),
+    url("/fonts/Nunito_Sans/NunitoSans-Regular.ttf");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NunitoSans";
+  src: url("/fonts/Nunito_Sans/nunitosans-semibold-webfont.woff2")
+      format("woff2"),
+    url("/fonts/Nunito_Sans/nunitosans-semibold-webfont.woff") format("woff"),
+    url("/fonts/Nunito_Sans/NunitoSans-SemiBold.ttf");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NunitoSans";
+  src: url("/fonts/Nunito_Sans/nunitosans-bold-webfont.woff2") format("woff2"),
+    url("/fonts/Nunito_Sans/nunitosans-bold-webfont.woff") format("woff"),
+    url("/fonts/Nunito_Sans/NunitoSans-Bold.ttf");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "NunitoSans Override";
+  font-style: normal;
+  font-weight: 400;
+  src: local("BlinkMacSystemFont"), local("Segoe UI"), local("Helvetica Neue"),
+    local("Arial"), local("Noto Sans"), local(-apple-system), local(sans-serif),
+    local(ui-sans-serif);
+  ascent-override: 102.68%;
+  descent-override: 28.51%;
+  line-gap-override: 0%;
+  size-adjust: 101.57%;
+}

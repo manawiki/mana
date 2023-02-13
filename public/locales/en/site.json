@@ -1,0 +1,10 @@
+{
+    "new": {
+        "action": "Create",
+        "siteName": "Site Name"
+    },
+    "follow": {
+        "actionFollow": "Follow",
+        "actionUnfollow": "Unfollow"
+    }
+}
