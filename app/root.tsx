@@ -3,7 +3,6 @@ import type {
    LinksFunction,
    LoaderArgs,
 } from "@remix-run/node";
-import type { ShouldRevalidateFunction } from "@remix-run/react";
 import {
    Links,
    LiveReload,
@@ -140,14 +139,14 @@ export default function AppWithProviders() {
    );
 }
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-   formMethod,
-   nextParams,
-}) => {
-   //Don't revalidate if we're editing a note
-   if (formMethod === "post" && nextParams.noteId) return false;
-   return true;
-};
+// export const shouldRevalidate: ShouldRevalidateFunction = ({
+//    formMethod,
+//    nextParams,
+// }) => {
+//    //Don't revalidate if we're editing a note
+//    if (formMethod === "post" && nextParams.noteId) return false;
+//    return true;
+// };
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();

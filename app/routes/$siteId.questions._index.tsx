@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { useFetcher } from "@remix-run/react";
 import { useSearchParams } from "@remix-run/react";
 import { useNavigation } from "@remix-run/react";
@@ -156,10 +155,10 @@ export const action = async ({
    return null;
 };
 
-//Don't revalidate when editing notes
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-   //don't revalidate if formAction is a string that has $noteId
-   if (formAction?.includes("$noteId")) return false;
+// //Don't revalidate when editing notes
+// export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
+//    //don't revalidate if formAction is a string that has $noteId
+//    if (formAction?.includes("$noteId")) return false;
 
-   return true;
-};
+//    return true;
+// };

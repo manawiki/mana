@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -111,10 +110,10 @@ export const action = async ({
    return redirect(`/${siteId}/posts/${post.id}/edit/${note.id}`);
 };
 
-//Don't revalidate when editing notes
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-   //don't revalidate if formAction is a string that has $noteId
-   if (formAction?.includes("$noteId")) return false;
+// //Don't revalidate when editing notes
+// export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
+//    //don't revalidate if formAction is a string that has $noteId
+//    if (formAction?.includes("$noteId")) return false;
 
-   return true;
-};
+//    return true;
+// };

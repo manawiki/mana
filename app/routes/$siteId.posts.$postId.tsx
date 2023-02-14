@@ -12,7 +12,6 @@ import {
    useLoaderData,
    useNavigation,
    useFetcher,
-   type ShouldRevalidateFunction,
    useActionData,
 } from "@remix-run/react";
 import { Fragment, Suspense, useEffect, useState } from "react";
@@ -701,11 +700,11 @@ export async function action({
    }
 }
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-   formMethod,
-   nextParams,
-}) => {
-   //Don't revalidate if we're editing a note
-   if (formMethod === "post" && nextParams.noteId) return false;
-   return true;
-};
+// export const shouldRevalidate: ShouldRevalidateFunction = ({
+//    formMethod,
+//    nextParams,
+// }) => {
+//    //Don't revalidate if we're editing a note
+//    if (formMethod === "post" && nextParams.noteId) return false;
+//    return true;
+// };

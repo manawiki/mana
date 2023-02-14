@@ -1,4 +1,3 @@
-import type { ShouldRevalidateFunction } from "@remix-run/react";
 import {
    Form,
    Link,
@@ -375,11 +374,11 @@ export const action: ActionFunction = async ({
    }
 };
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({
-   formMethod,
-   nextParams,
-}) => {
-   //Don't revalidate if we're editing a note
-   if (formMethod === "post" && nextParams.noteId) return false;
-   return true;
-};
+// export const shouldRevalidate: ShouldRevalidateFunction = ({
+//    formMethod,
+//    nextParams,
+// }) => {
+//    //Don't revalidate if we're editing a note
+//    if (formMethod === "post" && nextParams.noteId) return false;
+//    return true;
+// };
