@@ -84,6 +84,7 @@ export interface Notetype {
 export interface Post {
   id: string;
   title: string;
+  publishedAt?: string;
   author: string | User;
   site: string | Site;
   banner?: string | Image;

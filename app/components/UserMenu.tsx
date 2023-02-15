@@ -6,17 +6,17 @@ import { LoggedOut, LoggedIn } from "~/modules/auth";
 export const UserMenu = () => {
    const { t } = useTranslation("auth");
    const location = useLocation();
-
    return (
       <>
          <LoggedIn>
             <div className="laptop:bg-1 flex items-center justify-center laptop:fixed laptop:bottom-0 laptop:w-[84px] laptop:pt-4 laptop:pb-5">
                <Link
                   to="/user"
-                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border bg-white 
-                                        text-blue-500 shadow shadow-zinc-300 transition duration-300 hover:bg-gray-50
-                                        focus:translate-y-0.5 dark:border-zinc-700 dark:bg-zinc-800 dark:shadow-black
-                                        dark:hover:bg-zinc-700 laptop:h-14 laptop:w-14"
+                  className="mx-auto flex h-12 w-12 items-center justify-center 
+                  rounded-full border-2 bg-white 
+                  text-blue-500 shadow-zinc-300 transition duration-300 hover:bg-gray-50 active:translate-y-0.5
+                  dark:border-zinc-700 dark:bg-zinc-800 dark:shadow-black dark:hover:bg-zinc-700
+                  laptop:h-14 laptop:w-14 laptop:shadow"
                   aria-label="User Profile"
                >
                   <User className="h-6 w-6" />

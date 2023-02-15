@@ -154,11 +154,3 @@ export const action = async ({
 
    return null;
 };
-
-// //Don't revalidate when editing notes
-// export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-//    //don't revalidate if formAction is a string that has $noteId
-//    if (formAction?.includes("$noteId")) return false;
-
-//    return true;
-// };

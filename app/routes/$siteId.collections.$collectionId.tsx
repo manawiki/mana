@@ -88,8 +88,8 @@ export const handle = {
          <span>{data.collection.name}</span>
       </NavLink>
    ),
-   // i18n key for this route. This will be used to load the correct translation
    i18n: "entry",
+
 };
 
 export default function CollectionList() {

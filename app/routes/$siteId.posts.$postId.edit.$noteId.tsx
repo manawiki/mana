@@ -84,5 +84,16 @@ export async function action({
       overrideAccess: false,
       user,
    });
+
+   await payload.update({
+      collection: "posts",
+      id: postId,
+      data: {
+         updatedAt: new Date().toISOString(),
+      },
+      overrideAccess: false,
+      user,
+   });
+
    return redirect(`/${siteId}/posts/${postId}`);
 }

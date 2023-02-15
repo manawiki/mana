@@ -1,4 +1,4 @@
-import type { Note } from "@mana/db";
+import type { Note } from "~/payload-types";
 import { Form, useNavigate, useNavigation } from "@remix-run/react";
 import { useRef, Suspense, Fragment, useState, useEffect } from "react";
 import { Modal } from "~/components/Modal";

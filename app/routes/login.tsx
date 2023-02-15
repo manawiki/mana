@@ -10,13 +10,14 @@ import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
 import { assertIsPost, isAdding, isProcessing, safeRedirect } from "~/utils";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
+import { GithubIcon, Loader2 } from "lucide-react";
 import {
    commitSession,
    getSession,
    setErrorMessage,
 } from "~/utils/message.server";
 import { Logo } from "~/components/Logo";
+import { DarkModeToggle } from "~/components/DarkModeToggle";
 
 const LoginFormSchema = z.object({
    email: z
@@ -36,11 +37,10 @@ export async function loader({ context: { user }, request }: LoaderArgs) {
    return json({ title });
 }
 
-//TODO Fix server side translation
 export const meta: V2_MetaFunction = ({ data }) => {
    return [
       {
-         title: "Login - Mana",
+         title: `${data.title} - Mana`,
       },
    ];
 };
@@ -89,21 +89,34 @@ export default function Login() {
    const redirectTo = searchParams.get("redirectTo") ?? undefined;
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
-   const { t } = useTranslation(handle?.i18n);
+   const { t } = useTranslation("auth");
    const adding = isAdding(transition, "login");
 
    return (
       <main>
-         <div className="mt-20 laptop:mx-auto laptop:max-w-[400px]">
-            <Link
-               to="/"
-               className="flex items-center justify-center gap-2 pb-4"
+         <Link
+            to="/"
+            className="absolute top-5 left-5 flex h-9 w-9 items-center gap-1.5"
+         >
+            <div className="h-7 w-7 flex-none">
+               <Logo options="width=70,height=70" />
+            </div>
+            <div className="font-logo text-2xl">mana</div>
+         </Link>
+         <div className="absolute top-5 right-5 flex items-center gap-5">
+            <a
+               target="_blank"
+               href="https://github.com/manawiki/core"
+               rel="noreferrer"
             >
-               <Logo options="width=22,height=22" />
-               <div className="pb-1 font-logo text-4xl">mana</div>
-            </Link>
+               <GithubIcon className="text-1" size={20} />
+            </a>
+            <span className="h-4 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+            <DarkModeToggle />
+         </div>
+         <div className="mt-20 laptop:mx-auto laptop:mt-40 laptop:max-w-[440px]">
             <div className="border-color border-y bg-white p-6 shadow-sm dark:bg-zinc-800 laptop:rounded-lg laptop:border">
-               <div className="border-color relative mb-4 border-b-2 pb-2 text-lg font-bold">
+               <div className="border-color mb-4 border-b-2 pb-4 text-center text-xl font-bold">
                   {t("login.title")}
                </div>
                <Form ref={zo.ref} method="post" className="space-y-6" replace>

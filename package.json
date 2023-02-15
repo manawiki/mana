@@ -19,6 +19,7 @@
       "@aws-sdk/client-s3": "^3.267.0",
       "@aws-sdk/lib-storage": "^3.267.0",
       "@headlessui/react": "^1.7.7",
+      "@heroicons/react": "^2.0.15",
       "@payloadcms/plugin-cloud-storage": "^1.0.12",
       "@remix-run/express": "^1.13.0",
       "@remix-run/node": "^1.13.0",

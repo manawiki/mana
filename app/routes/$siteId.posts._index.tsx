@@ -109,11 +109,3 @@ export const action = async ({
 
    return redirect(`/${siteId}/posts/${post.id}/edit/${note.id}`);
 };
-
-// //Don't revalidate when editing notes
-// export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-//    //don't revalidate if formAction is a string that has $noteId
-//    if (formAction?.includes("$noteId")) return false;
-
-//    return true;
-// };

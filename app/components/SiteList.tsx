@@ -11,11 +11,14 @@ export const SiteList = () => {
    return (
       <>
          <ul
-            className="max-laptop:grid max-laptop:grid-cols-5  max-tablet:grid-cols-4
-                max-tablet:gap-2 max-laptop:gap-3 text-center laptop:mb-4 laptop:space-y-2.5"
+            className="max-laptop:grid max-laptop:grid-cols-5 max-tablet:grid-cols-5
+                max-tablet:gap-2 max-laptop:gap-3 text-center laptop:mb-4 laptop:space-y-4"
          >
             {sites?.map((item) => (
-               <li className="flex items-center justify-center" key={item.id}>
+               <li
+                  className="relative flex items-center justify-center"
+                  key={item.id}
+               >
                   <SiteNavLink site={item} currentSite={site} />
                </li>
             ))}

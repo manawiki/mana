@@ -8,7 +8,8 @@ import { Edit2, Plus } from "lucide-react";
 import { Suspense } from "react";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import { formatDistanceStrict } from "date-fns";
-import { Note } from "~/payload-types";
+
+import type { Note } from "~/payload-types";
 
 export async function loader({
    context: { payload, user },

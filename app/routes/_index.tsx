@@ -49,7 +49,7 @@ export default function HomeRoot() {
          <div className="flex h-screen w-full items-center justify-center">
             <section>
                <Link to="/" className="mb-3 block pb-2 text-center">
-                  <Logo options="width=36,height=36" className="mx-auto" />
+                  <Logo options="width=50,height=50" className="mx-auto" />
                   <div className="pb-1 font-logo text-4xl">mana</div>
                </Link>
                <div className="flex items-center gap-3">

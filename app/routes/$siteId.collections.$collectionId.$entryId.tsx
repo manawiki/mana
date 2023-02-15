@@ -9,8 +9,8 @@ import { Suspense } from "react";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import { formatDistanceStrict } from "date-fns";
 
-import { AdminOrOwner } from "~/modules/auth";
 import type { Note } from "~/payload-types";
+import { AdminOrOwner } from "~/modules/auth";
 
 export async function loader({
    context: { payload, user },

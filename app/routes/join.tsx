@@ -15,7 +15,7 @@ import {
    isProcessing,
 } from "~/utils";
 import { useTranslation } from "react-i18next";
-import { Loader2 } from "lucide-react";
+import { GithubIcon, Loader2 } from "lucide-react";
 import { Logo } from "~/components/Logo";
 import { parseFormSafe } from "zodix";
 import { Err } from "~/components/Forms";
@@ -39,11 +39,10 @@ const JoinFormSchema = z.object({
    username: z.string().min(3, "Username must be at least 3 characters long"),
 });
 
-//TODO Fix server side translation
 export const meta: V2_MetaFunction = ({ data }) => {
    return [
       {
-         title: "Sign up - Mana",
+         title: `${data.title} - Mana`,
       },
    ];
 };
@@ -57,13 +56,27 @@ export default function Signup() {
    const adding = isAdding(transition, "join");
    return (
       <main>
-         <Link to="/" className="absolute top-5 left-5">
-            <div className="font-logo text-3xl">mana</div>
+         <Link
+            to="/"
+            className="absolute top-5 left-5 flex h-9 w-9 items-center gap-1.5"
+         >
+            <div className="h-7 w-7 flex-none">
+               <Logo options="width=70,height=70" />
+            </div>
+            <div className="font-logo text-2xl">mana</div>
          </Link>
-         <div className="absolute top-5 right-5">
+         <div className="absolute top-5 right-5 flex items-center gap-5">
+            <a
+               target="_blank"
+               href="https://github.com/manawiki/core"
+               rel="noreferrer"
+            >
+               <GithubIcon className="text-1" size={20} />
+            </a>
+            <span className="h-4 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
             <DarkModeToggle />
          </div>
-         <div className="mt-32 laptop:mx-auto laptop:max-w-[440px]">
+         <div className="mt-20 laptop:mx-auto laptop:mt-40 laptop:max-w-[440px]">
             <div
                className="border-color border-y bg-white p-6 shadow 
                dark:bg-zinc-800 dark:shadow-black laptop:rounded-lg laptop:border"

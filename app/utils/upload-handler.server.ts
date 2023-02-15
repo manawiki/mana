@@ -1,4 +1,4 @@
-import type { Payload } from "@mana/db";
+import type { Payload } from "payload";
 import { unstable_createFileUploadHandler } from "@remix-run/node";
 import {
    unstable_composeUploadHandlers,
