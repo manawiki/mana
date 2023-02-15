@@ -9,9 +9,9 @@ module.exports = {
     unstable_tailwind: true,
   },
   ignoredRouteFiles: ["**/.*"],
-  // routes: async (defineRoutes) => {
-  //   return flatRoutes(["routes", "_custom-routes"], defineRoutes);
-  // },
+  routes: async (defineRoutes) => {
+    return flatRoutes(["routes", "_custom-routes"], defineRoutes);
+  },
   serverDependenciesToBundle: [
     "nanoid",
     //mdx dependencies
