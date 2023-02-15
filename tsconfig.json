@@ -15,7 +15,7 @@
     "paths": {
       "~/*": ["./app/*"],
       "env/types":["./shared/env.ts"],
-      "payload/generated-types": ["payload-types.ts"]
+      "payload/generated-types": ["./payload-types.ts"]
     },
     "noEmit": true
   }
