@@ -23,7 +23,7 @@ import { Toaster } from "react-hot-toast";
 import type { ToastMessage } from "./utils/message.server";
 import { getThemeSession } from "~/utils/theme.server";
 import { useTranslation } from "react-i18next";
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
