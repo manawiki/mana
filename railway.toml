@@ -1,5 +1,5 @@
 [build]
-buildCommand = "yarn run build"
+buildCommand = "pnpm run build"
 
 [deploy]
-startCommand = "yarn run start"
+startCommand = "pnpm run start"
