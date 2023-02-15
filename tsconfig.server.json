@@ -18,6 +18,6 @@
     "payload.config.ts"
   ],
   "ts-node": {
-    "transpileOnly": true
+    "swc": true
   }
 }
