@@ -1,4 +1,4 @@
-import type { Note } from "~/payload-types";
+import type { Note } from "payload-types";
 
 /**
  * This function gets a notes[] array and return a promise[] with defer data

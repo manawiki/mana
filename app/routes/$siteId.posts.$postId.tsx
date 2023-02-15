@@ -1,4 +1,4 @@
-import type { Note } from "~/payload-types";
+import type { Note } from "payload-types";
 import {
    type ActionArgs,
    type LoaderArgs,

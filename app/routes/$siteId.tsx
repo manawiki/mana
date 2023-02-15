@@ -22,7 +22,7 @@ import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
 import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import type { envType } from "shared";
+import type { envType } from "env/types";
 import {
     CircleStackIcon,
     HomeIcon,

@@ -1,7 +1,7 @@
-import type { Site } from "@mana/db";
+import type { Site } from "payload-types";
 import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
 import { Logo } from "./Logo";
-import type { envType } from "@mana/shared";
+import type { envType } from "env/types";
 import { Image } from "./Image";
 
 export const SiteNavLink = ({

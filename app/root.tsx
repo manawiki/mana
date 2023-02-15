@@ -28,7 +28,7 @@ import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
 import { Suspense, useEffect } from "react";
-import type { envType } from "../shared";
+import type { envType } from "env/types";
 import { toast } from "./components/Toaster";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {

@@ -1,5 +1,5 @@
 import type { Access, Where, FieldAccess } from "payload/types";
-import type { User } from "../../app/payload-types";
+import type { User } from "../../payload-types";
 
 export const authenticatedAndAdmin: Access = ({ req: { user } }) =>
   user && user?.roles?.includes("admin");

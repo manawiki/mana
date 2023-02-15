@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 import { isAdminFieldLevel, isAdminorUser, isLoggedIn } from "../access";
-import type { User } from "../../app/payload-types";
+import type { User } from "../../payload-types";
 
 export const questionslug = "questions";
 export const Questions: CollectionConfig = {

@@ -4,7 +4,7 @@ import {
   isAdminFieldLevel,
   isAdminOrSelf,
 } from "../access";
-import { serverEnv, domainCookie } from "../../shared/env";
+import { serverEnv, domainCookie } from "../../shared";
 
 export const usersSlug = "users";
 export const Users: CollectionConfig = {

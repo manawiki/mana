@@ -1,4 +1,4 @@
-import type { Note } from "~/payload-types";
+import type { Note } from "payload-types";
 import { Await } from "@remix-run/react";
 import type { MDXComponents } from "mdx/types";
 import { MDXRemote } from "next-mdx-remote";

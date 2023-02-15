@@ -1,6 +1,6 @@
 import type { Session } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
-import { domainCookie } from "../../shared";
+import { domainCookie } from "shared";
 export type ToastMessage = { message: string; type: "success" | "error" };
 
 const sessionSecret = process.env.PAYLOADCMS_SECRET ?? "DEFAULT_SECRET";

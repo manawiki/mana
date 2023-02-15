@@ -5,7 +5,7 @@ import {
   isAdminorUserorPublished,
   isLoggedIn,
 } from "../access";
-import type { User } from "../../app/payload-types";
+import type { User } from "../../payload-types";
 
 export const notesSlug = "notes";
 export const Notes: CollectionConfig = {

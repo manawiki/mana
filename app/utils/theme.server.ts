@@ -2,7 +2,7 @@ import { createCookieSessionStorage } from "@remix-run/node";
 
 import { isTheme } from "./theme-provider";
 import type { Theme } from "./theme-provider";
-import { domainCookie } from "../../shared";
+import { domainCookie } from "shared";
 
 const sessionSecret = process.env.PAYLOADCMS_SECRET ?? "DEFAULT_SECRET";
 

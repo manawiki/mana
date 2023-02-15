@@ -1,4 +1,4 @@
-import type { Note } from "~/payload-types";
+import type { Note } from "payload-types";
 import NoteText from "./NoteText";
 import NoteTierList from "./TierList";
 
