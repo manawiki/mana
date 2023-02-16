@@ -241,8 +241,8 @@ export default function Post() {
             </div>
          </Modal>
          <div
-            className="border-color bg-1 max-laptop:w-full max-laptop:border-y fixed top-20 z-30 flex 
-            h-14 items-center justify-between border-b px-3 laptop:sticky laptop:top-0"
+            className="border-color bg-1 fixed top-20 z-30 flex h-14 items-center 
+            justify-between border-b px-3 max-laptop:w-full max-laptop:border-y laptop:sticky laptop:top-0"
          >
             <AdminOrOwner>
                {post.isPublished ? (
@@ -440,8 +440,8 @@ export function PostEdit() {
 
    return (
       <div
-         className="post-content max-laptop:pt-24 max-laptop:pb-20 relative mx-auto 
-      min-h-screen max-w-[728px] px-3 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+         className="post-content relative mx-auto min-h-screen max-w-[728px] 
+      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
       >
          <div className="relative mb-3 flex items-center gap-3">
             <input
@@ -626,8 +626,8 @@ export function PostView() {
 
    return (
       <div
-         className="post-content max-laptop:pt-24 max-laptop:pb-20 relative mx-auto 
-      min-h-screen max-w-[728px] px-3 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+         className="post-content relative mx-auto min-h-screen max-w-[728px] 
+      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
       >
          <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
             {post?.title}
@@ -667,11 +667,12 @@ export function PostView() {
          </div>
          {post.banner ? (
             <div className="aspect-[1.91/1] overflow-hidden rounded-lg">
-               <img
+               <Image
                   alt={post.title}
+                  options="fit=crop,height=440,gravity=auto"
                   className="h-full w-full object-cover"
                   //@ts-ignore
-                  src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
+                  url={post?.banner?.url}
                />
             </div>
          ) : null}
