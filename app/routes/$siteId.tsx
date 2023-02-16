@@ -119,22 +119,22 @@ export default function SiteIndex() {
             <section>
                <div
                   className="border-color max-laptop:bg-1 bg-1 fixed bottom-0 mx-auto w-full
-                        px-5 max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-0 laptop:h-full laptop:w-[86px] 
-                        laptop:space-y-4 laptop:overflow-y-auto laptop:border-r
-                        laptop:py-5 desktop:w-[210px] desktop:space-y-3"
+                        px-4 max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-0 laptop:h-full laptop:w-[86px] laptop:space-y-4 
+                        laptop:overflow-y-auto laptop:border-r laptop:py-5
+                        desktop:w-[210px] desktop:space-y-3 desktop:px-5"
                >
                   <NavLink
                      end
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-blue-50 font-bold text-zinc-600 dark:!from-blue-900/40 dark:!to-slate-800 dark:!text-white"
+                              ? "!from-white !to-blue-50 font-bold text-zinc-600 dark:!from-blue-900/40 dark:!to-blue-900/30 dark:!text-white"
                               : ""
                         } flex items-center 
                                 justify-center gap-3 rounded-full border border-blue-100
                                 bg-gradient-to-b from-white to-blue-50/50 font-semibold shadow shadow-zinc-100
                                 active:shadow-none dark:border-blue-900/50 dark:from-blue-900/30
-                                dark:to-zinc-800 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
+                                dark:to-blue-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
                                 max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
                                 laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
                      }
@@ -157,13 +157,13 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-emerald-50 font-bold text-zinc-600 dark:!from-emerald-900/40 dark:!to-slate-800 dark:!text-white"
+                              ? "!from-white !to-emerald-50 font-bold text-zinc-600 dark:!from-emerald-900/40 dark:!to-emerald-900/30 dark:!text-white"
                               : ""
                         } flex items-center 
-                                   justify-center gap-3 rounded-full border border-emerald-100
+                                   justify-center gap-3 rounded-full border border-emerald-200/50
                                    bg-gradient-to-b from-white to-emerald-50/50 font-semibold shadow shadow-zinc-100
                                    active:shadow-none dark:border-emerald-900/50 dark:from-emerald-900/30
-                                   dark:to-zinc-800 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
+                                   dark:to-emerald-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
                                    max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
                                    laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
                      }
@@ -186,13 +186,13 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-yellow-50 font-bold text-zinc-600 dark:!from-yellow-900/40 dark:!to-slate-800 dark:!text-white"
+                              ? "!from-white !to-yellow-50 font-bold text-zinc-600 dark:!from-yellow-900/40 dark:!to-yellow-900/30 dark:!text-white"
                               : ""
                         } flex items-center 
-                                justify-center gap-3 rounded-full border border-yellow-100
+                                justify-center gap-3 rounded-full border border-yellow-200/60
                                 bg-gradient-to-b from-white to-yellow-50/50 font-semibold shadow shadow-zinc-100
                                 active:shadow-none dark:border-yellow-900/40 dark:from-yellow-900/30
-                                dark:to-zinc-800 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
+                                dark:to-yellow-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
                                 max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
                                 laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
                      }
@@ -215,13 +215,13 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-violet-50 font-bold text-zinc-600 dark:!from-violet-900/40 dark:!to-slate-800 dark:!text-white"
+                              ? "!from-white !to-violet-50 font-bold text-zinc-600 dark:!from-violet-900/40 dark:!to-violet-900/30 dark:!text-white"
                               : ""
                         } flex items-center 
                              justify-center gap-3 rounded-full border border-violet-100
                              bg-gradient-to-b from-white to-violet-50/50 font-semibold shadow shadow-zinc-100
                              active:shadow-none dark:border-violet-900/50 dark:from-violet-900/30
-                             dark:to-zinc-800 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
+                             dark:to-violet-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
                              max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
                              laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
                      }

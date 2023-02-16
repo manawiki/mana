@@ -18,5 +18,9 @@
       "payload/generated-types": ["./payload-types.ts"]
     },
     "noEmit": true
+  },
+  "ts-node": {
+    "swc": true,
+    "transpileOnly": true
   }
 }
