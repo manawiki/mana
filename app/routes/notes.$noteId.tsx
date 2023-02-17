@@ -11,7 +11,7 @@ import * as runtime from "react/jsx-dev-runtime";
 import { MDXProvider, useMDXComponents  } from "@mdx-js/react";
 import type { CompileOptions} from "@mdx-js/mdx";
 import { compile, evaluateSync, runSync } from "@mdx-js/mdx";
-import { sanitize} from "isomorphic-dompurify";
+import DOMPurify from "isomorphic-dompurify";
 
 // import { lazily } from "react-lazily";
 // import { loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
@@ -96,8 +96,8 @@ export default function EditNote() {
          <div className="mdx-content" ref={viewRef}>
             <MDXProvider components={{ Test: () => <div>Test</div> }}>
                {/* <NoteView source={note?.source} /> */}
-               {/* <NoteLive mdx={mdx} /> */}
-               <NoteStatic html={note?.html} />
+               <NoteLive mdx={mdx} />
+               {/* <NoteStatic html={note?.html} /> */}
             </MDXProvider>
          </div>
       </div>
@@ -173,7 +173,7 @@ export async function action({
    //Purify html
    let html = undefined;
    try {
-      html = sanitize(html, {
+      if(innerHTML) html = DOMPurify.sanitize(innerHTML, {
         //add iframe exception
         //T-1600 double check for potential XSS vectors
         ADD_TAGS: ["iframe"],
