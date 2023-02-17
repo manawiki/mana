@@ -24,6 +24,7 @@ specifiers:
   '@types/nodemailer-sendgrid': ^1.0.0
   '@types/react': ^18.0.25
   '@types/react-dom': ^18.0.8
+  axios: ^1.3.3
   compression: ^1.7.4
   copyfiles: ^2.4.1
   cross-env: ^7.0.3
@@ -48,6 +49,7 @@ specifiers:
   payload: ^1.6.7
   prettier: ^2.8.4
   prettier-plugin-tailwindcss: ^0.2.3
+  qs: ^6.11.0
   react: ^18.2.0
   react-dom: ^18.2.0
   react-error-boundary: ^3.1.4
@@ -78,6 +80,7 @@ dependencies:
   '@remix-run/node': 1.13.0
   '@remix-run/react': 1.13.0_biqbaboplfbrettd7655fr4n2y
   '@remix-run/server-runtime': 1.13.0
+  axios: 1.3.3
   compression: 1.7.4
   cross-env: 7.0.3
   date-fns: 2.29.3
@@ -95,6 +98,7 @@ dependencies:
   next-mdx-remote: 4.3.0_biqbaboplfbrettd7655fr4n2y
   nodemailer-sendgrid: 1.0.3
   payload: 1.6.10_typescript@4.9.5
+  qs: 6.11.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-error-boundary: 3.1.4_react@18.2.0
@@ -4596,6 +4600,16 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
+  /axios/1.3.3:
+    resolution: {integrity: sha512-eYq77dYIFS77AQlhzEL937yUBSepBfPIe8FcgEDN35vMNZKMrs81pgnyrQpwfy4NF4b4XWX1Zgx7yX+25w8QJA==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /axobject-query/3.1.1:
     resolution: {integrity: sha512-goKlv8DZrK9hUh975fnHzhNIO4jUnFCfv/dszV5VwUGDFjI6vQ2VwoyjYjYNEbBE8AH87TduWP5uyDR1D+Iteg==}
     dependencies:
@@ -6927,6 +6941,16 @@ packages:
     resolution: {integrity: sha512-v2NTsZe2FF59Y+sDykKY+XjqZ0cPfhq/hikWVL88BqLivnNiEffAsac6rP6H45ff9wG9LL5ToiDqrLEP9GX9mw==}
     dependencies:
       tabbable: 5.3.3
+    dev: false
+
+  /follow-redirects/1.15.2:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
     dev: false
 
   /for-each/0.3.3:
@@ -11123,7 +11147,6 @@ packages:
 
   /proxy-from-env/1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
-    dev: true
 
   /psl/1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}

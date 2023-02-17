@@ -2,10 +2,10 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { defer } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useFetcher, useLoaderData } from "@remix-run/react";
+import { Await, Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
-import { useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useRef, useState } from "react";
 
 import * as runtime from "react/jsx-dev-runtime";
 import { MDXProvider, useMDXComponents  } from "@mdx-js/react";
@@ -13,8 +13,9 @@ import type { CompileOptions} from "@mdx-js/mdx";
 import { compile, evaluateSync, runSync } from "@mdx-js/mdx";
 import DOMPurify from "isomorphic-dompurify";
 
-// import { lazily } from "react-lazily";
-// import { loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
+import { lazily } from "react-lazily";
+import { Header, loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
+import {  deferComponents } from "~/modules/note/components/NoteViewer";
 // const { Header } = lazily(
 //    () => import("~/routes/toweroffantasy.c.simulacra.$entryId")
 // );
@@ -45,26 +46,16 @@ export async function loader({
    });
 
 
-   // // How we can convert keys into defered data promises
-   // const data = Object.fromEntries(
-   //    note?.data?.map((key, int) => [
-   //       key?.endpoints,
-   //       entryLoader({ params: { entryId: (int + 1).toString() } }),
-   //    ])
-   // );
-
-   //    const keys = ["meryl", "nemesis", "echo", "bai ling"];
-
-   //    const data = {
-   //       meryl: entryLoader({ params: { entryId: "1" } }),
-   //       nemesis: entryLoader({ params: { entryId: "2" } }),
-   //       echo: entryLoader({ params: { entryId: "3" } }),
-   //       "bai ling": entryLoader({ params: { entryId: "4" } }),
-   //    };
+      const data = {
+         meryl: entryLoader({ params: { entryId: "1" } }),
+         nemesis: entryLoader({ params: { entryId: "2" } }),
+         echo: entryLoader({ params: { entryId: "3" } }),
+         "bai ling": entryLoader({ params: { entryId: "4" } }),
+      };
 
    return defer({
-      note
-      //  ...data
+      note,
+       ...data
    });
 }
 
@@ -72,7 +63,7 @@ export async function loader({
 export default function EditNote() {
    const {
       note,
-      // ...data
+      ...data
    } = useLoaderData<typeof loader>();
 
    const [mdx, setMDX] = useState(note?.mdx ?? "");
@@ -81,9 +72,10 @@ export default function EditNote() {
 
 
 
+
    return (
       <div className="grid grid-cols-2 space-x-2">
-         <Form method="post">
+         <fetcher.Form method="post">
             <input type="submit" className="bg-blue-500" />
             <textarea
                defaultValue={note?.mdx}
@@ -92,12 +84,14 @@ export default function EditNote() {
                onChange={(e) => {setMDX(e.target.value); fetcher.submit({mdx: e.target.value}, {method: "post"}); }}
             />
             <input hidden name="innerHTML" value={viewRef?.current?.innerHTML} />
-         </Form>
+         </fetcher.Form>
          <div className="mdx-content" ref={viewRef}>
-            <MDXProvider components={{ Test: () => <div>Test</div> }}>
+            <MDXProvider components={deferComponents({components: {Header}, scope: data})}>
+               
                {/* <NoteView source={note?.source} /> */}
                <NoteLive mdx={mdx} />
                {/* <NoteStatic html={note?.html} /> */}
+               
             </MDXProvider>
          </div>
       </div>

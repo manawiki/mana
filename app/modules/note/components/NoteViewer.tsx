@@ -33,7 +33,7 @@ export function NoteViewer({
 }
 
 //This allows components to accept deferred data
-function deferComponents({
+export function deferComponents({
    components,
    scope,
 }: {
