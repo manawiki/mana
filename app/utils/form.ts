@@ -8,6 +8,10 @@ export function isAdding(item: any, type: string) {
    return item.state === "submitting" && item.formData.get("intent") === type;
 }
 
+export function isLoading(item: any) {
+   return item.state === "loading";
+}
+
 export interface FormResponse {
    success?: string;
    error?: string;
