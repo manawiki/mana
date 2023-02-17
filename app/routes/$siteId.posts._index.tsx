@@ -9,14 +9,26 @@ import {
 } from "@remix-run/react";
 import { zx } from "zodix";
 import { z } from "zod";
-import { ChevronRight, Loader2, Plus, SearchIcon } from "lucide-react";
+import {
+   ChevronDownIcon,
+   ChevronLeftIcon,
+   ChevronRight,
+   ChevronRightIcon,
+   ChevronsUpDown,
+   FileIcon,
+   LayoutTemplateIcon,
+   Loader2,
+   SearchIcon,
+   XIcon,
+} from "lucide-react";
 import { format, formatDistanceStrict } from "date-fns";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
-import { PencilIcon, PencilSquareIcon } from "@heroicons/react/24/solid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment, useRef } from "react";
 import { useDebouncedValue } from "~/hooks";
 import { isLoading } from "~/utils";
+import { AdminOrOwner } from "~/modules/auth";
+import { Listbox, Menu, Transition } from "@headlessui/react";
 
 export async function loader({
    context: { payload, user },
@@ -26,19 +38,30 @@ export async function loader({
    const { siteId } = zx.parseParams(params, {
       siteId: z.string().length(10),
    });
-   const posts = await payload.find({
+
+   const { q, status, page } = zx.parseQuery(request, {
+      q: z.string().optional(),
+      status: z.union([z.literal("draft"), z.literal("published")]).optional(),
+      page: z.coerce.number().optional(),
+   });
+
+   //TODO Should limit this to only logged in users who are admin users of the site
+   const myPosts = await payload.find({
       collection: "posts",
       user,
+      page: page ?? 1,
       where: {
+         isPublished:
+            status === "draft"
+               ? { equals: false }
+               : status === "published"
+               ? { equals: true }
+               : {},
          site: {
             equals: siteId,
          },
       },
       sort: "-updatedAt",
-   });
-
-   const { q } = zx.parseQuery(request, {
-      q: z.string().optional(),
    });
 
    const publishedPosts = await payload.find({
@@ -56,7 +79,7 @@ export async function loader({
       },
       sort: "-publishedAt",
    });
-   return json({ q, posts, publishedPosts });
+   return json({ q, myPosts, publishedPosts });
 }
 
 export const FeedItem = ({ post }: { post: Post }) => {
@@ -122,114 +145,370 @@ export const FeedItem = ({ post }: { post: Post }) => {
 };
 
 export default function PostsIndex() {
-   const { posts, publishedPosts, q } = useLoaderData<typeof loader>();
+   const { myPosts, publishedPosts, q } = useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const transition = useTransition();
    const isSearching = isLoading(transition);
    const [searchParams, setSearchParams] = useSearchParams({});
+   const [selectedStatus, setSelectedStatus] = useState("All");
+   const [searchToggle, setSearchToggle] = useState(false);
 
    useEffect(() => {
       if (debouncedValue) {
-         return setSearchParams({ q: debouncedValue });
+         setSearchParams((searchParams) => {
+            searchParams.set("q", debouncedValue);
+            return searchParams;
+         });
       } else {
-         return setSearchParams({});
+         setSearchParams((searchParams) => {
+            searchParams.delete("q");
+            return searchParams;
+         });
       }
    }, [debouncedValue]);
-   console.log(searchParams.get("q"));
 
    return (
       <div className="mx-auto max-w-[728px] px-3 py-10 tablet:px-0 laptop:px-3 desktop:px-0">
-         <h1 className="border-color mb-7 flex items-center gap-3 border-b-2 pb-4 text-3xl font-bold">
-            <PencilSquareIcon className="h-7 w-7 text-emerald-500" />
-            Posts
-         </h1>
-         <h2 className="text-1 pb-3 text-sm font-bold uppercase">
-            Create a new post
-         </h2>
-         <section className="pb-9">
-            <div
-               className="border-color flex items-center justify-between rounded-lg border
-            bg-emerald-50/30 py-4 pl-5 pr-3 dark:bg-emerald-900/10"
-            >
-               <div className="flex items-center gap-4">
-                  <div className="text-sm font-bold">Blank post</div>
-                  <span className="h-1.5 w-1.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
-                  <span className="text-t text-xs">Start from scratch...</span>
-               </div>
-               <Form method="post" className="flex items-center">
-                  <button
-                     name="intent"
-                     className="flex h-10 items-center gap-2 rounded-full bg-emerald-500 px-4 text-white"
-                     value="createPost"
-                     type="submit"
-                  >
-                     <PencilIcon className="h-3.5 w-3.5 text-white" />
-                     <span className="text-sm font-bold">New Post</span>
-                  </button>
-               </Form>
-            </div>
-         </section>
-         <div className="flex items-center justify-between pb-3">
-            <h2 className="text-1 text-sm font-bold uppercase">My Posts</h2>
-            <div className="text-1 flex items-center gap-3 text-xs uppercase">
-               <span>Drafts</span>
-               <span>Published</span>
-               <span className="font-bold underline decoration-emerald-500 underline-offset-2 dark:text-white">
-                  All
-               </span>
-            </div>
-         </div>
-         <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
-            {posts?.docs.length === 0 ? (
-               <div className="py-3 text-sm ">No posts...</div>
-            ) : (
-               posts.docs.map((posts) => (
-                  <Link
-                     prefetch="intent"
-                     to={posts.id}
-                     key={posts.id}
-                     className="group flex items-center justify-between gap-2 py-3"
-                  >
-                     <div className="flex flex-none items-center gap-3">
-                        {posts.isPublished ? (
-                           <span className="h-2 w-2 rounded-full bg-green-500" />
-                        ) : (
-                           <span className="h-2 w-2 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                        )}
-                        <span className="truncate group-hover:underline">
-                           {posts.title}
-                        </span>
+         <div className="border-color relative mb-16 border-b-2 pb-2">
+            <h1 className="text-3xl font-bold">Posts</h1>
+            <Menu as="div" className="relative">
+               <Menu.Button
+                  className="absolute right-0 -top-5 rounded-full border-8
+                border-zinc-100  dark:border-zinc-700"
+               >
+                  {({ open }) => (
+                     <div
+                        className=" flex h-10 items-center 
+                              gap-2 rounded-full bg-emerald-500 pr-4 pl-5 text-white"
+                     >
+                        <span className="text-sm font-bold">New Post</span>
+                        <ChevronDownIcon
+                           size={18}
+                           className={`${
+                              open ? "rotate-180" : ""
+                           } transform transition  duration-300 ease-in-out`}
+                        />
                      </div>
-                     {posts.updatedAt && (
-                        <time
-                           className="text-1 flex items-center gap-1.5 text-sm"
-                           dateTime={posts?.updatedAt}
-                        >
-                           {format(new Date(posts?.updatedAt), "MMM dd")}
-                        </time>
-                     )}
-                  </Link>
-               ))
-            )}
-         </section>
-         <h2 className="text-1 pb-3 pt-12 text-sm font-bold uppercase">
-            Latest
-         </h2>
-         <div className="border-color flex items-center gap-2 border-t">
-            {isSearching ? (
-               <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
-            ) : (
-               <SearchIcon className="text-emerald-500" />
-            )}
-            <input
-               type="search"
-               placeholder="Search or create a post..."
-               className="h-14 w-full !border-0 bg-transparent focus:!outline-none"
-               value={query}
-               onChange={(e) => setQuery(e.target.value)}
-            />
+                  )}
+               </Menu.Button>
+               <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+               >
+                  <Menu.Items
+                     className="absolute right-0 z-10 mt-10 w-full min-w-[100px]
+                                 max-w-[220px] origin-top-right transform transition-all"
+                  >
+                     <div
+                        className="border-color rounded-lg border bg-white p-1.5
+                        shadow-lg dark:bg-zinc-800 dark:shadow-black/50"
+                     >
+                        <Menu.Item>
+                           <Form method="post">
+                              <button
+                                 className="text-1 flex w-full items-center gap-3 rounded-lg
+                                 p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                 name="intent"
+                                 value="createPost"
+                                 type="submit"
+                              >
+                                 <FileIcon
+                                    size="18"
+                                    className="text-emerald-500"
+                                 />
+                                 <span>Blank Post</span>
+                              </button>
+                           </Form>
+                        </Menu.Item>
+                        <Menu.Item>
+                           <Form method="post">
+                              <button
+                                 className="text-1 flex w-full items-center gap-3 rounded-lg
+                                 p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                 name="intent"
+                                 value="createPost"
+                                 type="submit"
+                              >
+                                 <LayoutTemplateIcon
+                                    size="18"
+                                    className="text-emerald-500"
+                                 />
+                                 <span>Template</span>
+                              </button>
+                           </Form>
+                        </Menu.Item>
+                     </div>
+                  </Menu.Items>
+               </Transition>
+            </Menu>
+            <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
+               <li>Changelog</li>
+               <span className="rounded-ful h-1 w-1 bg-zinc-300 dark:bg-zinc-600" />
+               <li>Docs</li>
+            </ul>
          </div>
+         <AdminOrOwner>
+            <section className="pb-6">
+               <div className="flex items-center justify-between pb-3">
+                  <h2 className="text-1 text-sm font-bold uppercase">
+                     Recent Posts
+                  </h2>
+                  <Listbox value={selectedStatus} onChange={setSelectedStatus}>
+                     <div className="relative">
+                        <Listbox.Button className="text-1 flex items-center gap-2 text-sm font-semibold hover:underline">
+                           {selectedStatus}
+                           <ChevronsUpDown
+                              className="text-emerald-500"
+                              size={16}
+                           />
+                        </Listbox.Button>
+                        <Transition
+                           enter="transition duration-100 ease-out"
+                           enterFrom="transform scale-95 opacity-0"
+                           enterTo="transform scale-100 opacity-100"
+                           leave="transition duration-75 ease-out"
+                           leaveFrom="transform scale-100 opacity-100"
+                           leaveTo="transform scale-95 opacity-0"
+                        >
+                           <Listbox.Options
+                              className="border-color text-1 absolute right-0 mt-2 w-[120px]
+                           rounded-lg border bg-white p-1.5 shadow-lg dark:bg-zinc-800 dark:shadow-black/50"
+                           >
+                              <Listbox.Option key="draft" value="Drafts">
+                                 {({ selected }) => (
+                                    <>
+                                       <button
+                                          className="text-1 relative flex w-full items-center gap-3 rounded-md
+                                              px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          onClick={() =>
+                                             setSearchParams((searchParams) => {
+                                                searchParams.set(
+                                                   "status",
+                                                   "draft"
+                                                );
+                                                return searchParams;
+                                             })
+                                          }
+                                       >
+                                          {selected ? (
+                                             <span
+                                                className="absolute right-2 h-1.5 w-1.5 rounded-full
+                                                 bg-emerald-500"
+                                             />
+                                          ) : null}
+                                          Draft
+                                       </button>
+                                    </>
+                                 )}
+                              </Listbox.Option>
+                              <Listbox.Option key="published" value="Published">
+                                 {({ selected }) => (
+                                    <>
+                                       <button
+                                          className="text-1 relative flex w-full items-center gap-3 rounded-md
+                                           px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          onClick={() =>
+                                             setSearchParams((searchParams) => {
+                                                searchParams.set(
+                                                   "status",
+                                                   "published"
+                                                );
+                                                return searchParams;
+                                             })
+                                          }
+                                       >
+                                          {selected ? (
+                                             <span
+                                                className="absolute right-2 h-1.5 w-1.5 rounded-full
+                                                 bg-emerald-500"
+                                             />
+                                          ) : null}
+                                          Published
+                                       </button>
+                                    </>
+                                 )}
+                              </Listbox.Option>
+                              <Listbox.Option key="all" value="All">
+                                 {({ selected }) => (
+                                    <>
+                                       <button
+                                          className="text-1 relative flex w-full items-center gap-3 rounded-md
+                                           px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          onClick={() =>
+                                             setSearchParams((searchParams) => {
+                                                searchParams.delete("status");
+                                                return searchParams;
+                                             })
+                                          }
+                                       >
+                                          {selected ? (
+                                             <span
+                                                className="absolute right-2 h-1.5 w-1.5 rounded-full
+                                                 bg-emerald-500"
+                                             />
+                                          ) : null}
+                                          All
+                                       </button>
+                                    </>
+                                 )}
+                              </Listbox.Option>
+                           </Listbox.Options>
+                        </Transition>
+                     </div>
+                  </Listbox>
+               </div>
+               <section
+                  className="border-color divide-y overflow-hidden rounded-md border 
+               border-y bg-neutral-100 dark:divide-zinc-700 dark:bg-neutral-800"
+               >
+                  {myPosts?.docs.length === 0 ? (
+                     <div className="p-3 text-sm ">No posts...</div>
+                  ) : (
+                     myPosts.docs.map((post) => (
+                        <Link
+                           prefetch="intent"
+                           to={post.id}
+                           key={post.id}
+                           className="group flex items-center justify-between gap-2 py-3 pl-3"
+                        >
+                           <span className="truncate text-sm font-semibold group-hover:underline">
+                              {post.title}
+                           </span>
+                           {post.updatedAt && (
+                              <div className="flex flex-none items-center gap-4">
+                                 <time
+                                    className="text-1 flex items-center gap-1.5 text-sm"
+                                    dateTime={post?.updatedAt}
+                                 >
+                                    {format(
+                                       new Date(post?.updatedAt),
+                                       "MMM dd"
+                                    )}
+                                 </time>
+                                 {post.isPublished ? (
+                                    <span className="-mr-1.5 h-3 w-3 rounded-full bg-green-300 dark:bg-green-400" />
+                                 ) : (
+                                    <span className="-mr-1.5 h-3 w-3 rounded-full bg-zinc-300 dark:bg-zinc-500" />
+                                 )}
+                              </div>
+                           )}
+                        </Link>
+                     ))
+                  )}
+               </section>
+               <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+                  <div>
+                     Showing{" "}
+                     <span className="font-bold">{myPosts.pagingCounter}</span>{" "}
+                     to{" "}
+                     <span className="font-bold">
+                        {myPosts.docs.length + myPosts.pagingCounter - 1}
+                     </span>{" "}
+                     of <span className="font-bold">{myPosts.totalDocs}</span>{" "}
+                     results
+                  </div>
+                  <div className="flex items-center gap-3 text-xs">
+                     {myPosts.hasPrevPage ? (
+                        <button
+                           className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                           onClick={() =>
+                              setSearchParams((searchParams) => {
+                                 searchParams.set(
+                                    "page",
+                                    myPosts.prevPage as any
+                                 );
+                                 return searchParams;
+                              })
+                           }
+                        >
+                           <ChevronLeftIcon
+                              size={18}
+                              className="text-emerald-500"
+                           />
+                           Prev
+                        </button>
+                     ) : null}
+                     {myPosts.hasNextPage && myPosts.hasPrevPage && (
+                        <span className="rounded-ful h-1 w-1 bg-zinc-300 dark:bg-zinc-600" />
+                     )}
+                     {myPosts.hasNextPage ? (
+                        <button
+                           className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                           onClick={() =>
+                              setSearchParams((searchParams) => {
+                                 searchParams.set(
+                                    "page",
+                                    myPosts.nextPage as any
+                                 );
+                                 return searchParams;
+                              })
+                           }
+                        >
+                           Next
+                           <ChevronRightIcon
+                              size={18}
+                              className="text-emerald-500"
+                           />
+                        </button>
+                     ) : null}
+                  </div>
+               </div>
+            </section>
+         </AdminOrOwner>
+         <div className="relative flex h-12 items-center justify-between">
+            {searchToggle ? (
+               <>
+                  <div className="relative flex w-full items-center gap-2">
+                     <span className="absolute left-0">
+                        {isSearching ? (
+                           <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
+                        ) : (
+                           <SearchIcon size={20} className="text-emerald-500" />
+                        )}
+                     </span>
+                     <input
+                        type="text"
+                        autoFocus
+                        placeholder="Search or create a post..."
+                        className="w-full !border-0 bg-transparent pl-10 focus:ring-0"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                     />
+                  </div>
+                  <button
+                     className="absolute right-0 top-3.5"
+                     onClick={() => {
+                        setSearchParams((searchParams) => {
+                           searchParams.delete("q");
+                           return searchParams;
+                        });
+                        setQuery("");
+                        setSearchToggle(false);
+                     }}
+                  >
+                     <XIcon size={22} className="text-red-500" />
+                  </button>
+               </>
+            ) : (
+               <>
+                  <h2 className="text-1 text-sm font-bold uppercase">Latest</h2>
+                  <button
+                     onClick={() => {
+                        setSearchToggle(true);
+                     }}
+                  >
+                     <SearchIcon size={22} className="text-emerald-500" />
+                  </button>
+               </>
+            )}
+         </div>
+
          <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
             {publishedPosts?.docs.length === 0 ? (
                <div className="flex items-center justify-between py-5 text-sm">

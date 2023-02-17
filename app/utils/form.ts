@@ -9,7 +9,7 @@ export function isAdding(item: any, type: string) {
 }
 
 export function isLoading(item: any) {
-   return item.type === "normalRedirect";
+   return item.state === "loading";
 }
 
 export interface FormResponse {
