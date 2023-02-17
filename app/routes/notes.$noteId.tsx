@@ -14,11 +14,20 @@ import { compile, evaluateSync, runSync } from "@mdx-js/mdx";
 import DOMPurify from "isomorphic-dompurify";
 
 import { lazily } from "react-lazily";
-import { Header, loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
+import {  loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
 import {  deferComponents } from "~/modules/note/components/NoteViewer";
-// const { Header } = lazily(
-//    () => import("~/routes/toweroffantasy.c.simulacra.$entryId")
-// );
+
+import { loader as weaponLoader } from "~/routes/toweroffantasy.c.weapons.$entryId";
+
+
+const { Header } = lazily(
+   () => import("~/routes/toweroffantasy.c.simulacra.$entryId")
+);
+
+
+const { Stats } = lazily(
+   () => import("~/routes/toweroffantasy.c.weapons.$entryId")
+);
 
 const mdxOptions = {
    outputFormat: "function-body",
@@ -51,6 +60,7 @@ export async function loader({
          nemesis: entryLoader({ params: { entryId: "2" } }),
          echo: entryLoader({ params: { entryId: "3" } }),
          "bai ling": entryLoader({ params: { entryId: "4" } }),
+         "absolute zero": weaponLoader({ params: { entryId: "13" } }),
       };
 
    return defer({
@@ -86,10 +96,10 @@ export default function EditNote() {
             <input hidden name="innerHTML" value={viewRef?.current?.innerHTML} />
          </fetcher.Form>
          <div className="mdx-content" ref={viewRef}>
-            <MDXProvider components={deferComponents({components: {Header}, scope: data})}>
-               
-               {/* <NoteView source={note?.source} /> */}
-               <NoteLive mdx={mdx} />
+            <MDXProvider components={deferComponents({components: {Header, Stats}, scope: data})}>
+
+               <NoteView source={note?.source} />
+               {/* <NoteLive mdx={mdx} /> */}
                {/* <NoteStatic html={note?.html} /> */}
                
             </MDXProvider>
