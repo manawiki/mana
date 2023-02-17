@@ -5,6 +5,8 @@ specifiers:
   '@aws-sdk/lib-storage': ^3.267.0
   '@headlessui/react': ^1.7.7
   '@heroicons/react': ^2.0.15
+  '@mdx-js/mdx': ^2.3.0
+  '@mdx-js/react': ^2.3.0
   '@payloadcms/plugin-cloud-storage': ^1.0.12
   '@remix-run/dev': ^1.13.0
   '@remix-run/eslint-config': ^1.13.0
@@ -42,6 +44,7 @@ specifiers:
   nodemon: ^2.0.20
   npm-run-all: ^4.1.5
   payload: ^1.6.7
+  prettier: ^2.8.4
   prettier-plugin-tailwindcss: ^0.2.3
   react: ^18.2.0
   react-dom: ^18.2.0
@@ -66,6 +69,8 @@ dependencies:
   '@aws-sdk/lib-storage': 3.271.0_@aws-sdk+client-s3@3.271.0
   '@headlessui/react': 1.7.11_biqbaboplfbrettd7655fr4n2y
   '@heroicons/react': 2.0.15_react@18.2.0
+  '@mdx-js/mdx': 2.3.0
+  '@mdx-js/react': 2.3.0_react@18.2.0
   '@payloadcms/plugin-cloud-storage': 1.0.14_5l7a5vfiwrduawrrvjsp5wgf3y
   '@remix-run/express': 1.13.0_express@4.18.2
   '@remix-run/node': 1.13.0
@@ -117,7 +122,8 @@ devDependencies:
   eslint: 8.34.0
   nodemon: 2.0.20
   npm-run-all: 4.1.5
-  prettier-plugin-tailwindcss: 0.2.3
+  prettier: 2.8.4
+  prettier-plugin-tailwindcss: 0.2.3_prettier@2.8.4
   remix-flat-routes: 0.5.7
   shx: 0.3.4
   tailwindcss: 3.2.6_ts-node@10.9.1
@@ -3678,13 +3684,13 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.21.1
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
     dev: false
 
   /@types/eslint/8.21.1:
     resolution: {integrity: sha512-rc9K8ZpVjNcLs8Fp0dkozd5Pt2Apk1glO4Vgz8ix1u6yFByxfqo5Yavpy65o+93TAe24jr7v+eSBtFLvOQtCRQ==}
     dependencies:
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
       '@types/json-schema': 7.0.11
     dev: false
 
@@ -10781,7 +10787,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-tailwindcss/0.2.3:
+  /prettier-plugin-tailwindcss/0.2.3_prettier@2.8.4:
     resolution: {integrity: sha512-s2N5Dh7Ao5KTV1mao5ZBnn8EKtUcDPJEkGViZIjI0Ij9TTI5zgTz4IHOxW33jOdjHKa8CSjM88scelUiC5TNRQ==}
     engines: {node: '>=12.17.0'}
     peerDependencies:
@@ -10832,6 +10838,8 @@ packages:
         optional: true
       prettier-plugin-twig-melody:
         optional: true
+    dependencies:
+      prettier: 2.8.4
     dev: true
 
   /prettier/2.7.1:
@@ -10844,7 +10852,6 @@ packages:
     resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: false
 
   /pretty-error/4.0.0:
     resolution: {integrity: sha512-AoJ5YMAcXKYxKhuJGdcvse+Voc6v1RgnsR3nWcYU7q4t6z0Q6T86sv5Zq8VIRbOWWFpvdGE83LtdSMNd+6Y0xw==}
