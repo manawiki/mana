@@ -2,16 +2,15 @@ import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { defer } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import * as runtime from "react/jsx-dev-runtime";
 import { MDXProvider, useMDXComponents  } from "@mdx-js/react";
 import type { CompileOptions} from "@mdx-js/mdx";
 import { compile, evaluateSync, runSync } from "@mdx-js/mdx";
-import type { MDXComponents } from "mdx/types";
 
 // import { lazily } from "react-lazily";
 // import { loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
@@ -44,7 +43,6 @@ export async function loader({
       user,
    });
 
-   const source = String(await compile(note?.mdx, mdxOptions));
 
    // // How we can convert keys into defered data promises
    // const data = Object.fromEntries(
@@ -64,8 +62,7 @@ export async function loader({
    //    };
 
    return defer({
-      note,
-      source,
+      note
       //  ...data
    });
 }
@@ -74,11 +71,14 @@ export async function loader({
 export default function EditNote() {
    const {
       note,
-      source,
       // ...data
    } = useLoaderData<typeof loader>();
 
    const [mdx, setMDX] = useState(note?.mdx ?? "");
+   const fetcher = useFetcher();
+   const viewRef = useRef<HTMLDivElement>(null);
+
+
 
    return (
       <div className="grid grid-cols-2 space-x-2">
@@ -88,25 +88,25 @@ export default function EditNote() {
                defaultValue={note?.mdx}
                name="mdx"
                className="w-full h-full"
-               onChange={(e) => setMDX(e.target.value)}
+               onChange={(e) => {setMDX(e.target.value); fetcher.submit({mdx: e.target.value}, {method: "post"}); }}
             />
+            <input hidden name="html" value={viewRef?.current?.innerHTML} />
          </Form>
+         <div className="mdx-content" ref={viewRef}>
             <MDXProvider components={{ Test: () => <div>Test</div> }}>
-         <div>
-               {/* <NoteView source={source} /> */}
-               <NoteLive mdx={mdx} />
-         </div>
+               {/* <NoteView source={note?.source} /> */}
+               {/* <NoteLive mdx={mdx} /> */}
+               {/* <NoteHTML html={note?.html} /> */}
             </MDXProvider>
+         </div>
       </div>
    );
 }
 
 function NoteView({
-   source,
-   components,
+   source
 }: {
    source: string;
-   components?: MDXComponents;
 }) {
    const { default: Content } = useMemo(
       () => runSync(source, {...runtime, useMDXComponents}),
@@ -120,10 +120,8 @@ function NoteView({
 
 function NoteLive({
    mdx,
-   components,
 }: {
    mdx: string;
-   components?: MDXComponents;
 }) {
    const { default: Content } = useMemo(
       () => evaluateSync(mdx, { ...mdxOptions, useMDXComponents, ...runtime }),
@@ -132,9 +130,16 @@ function NoteLive({
 
    return (
       <div className="mdx-content">
-         <Content components={components} />
+         <Content  />
       </div>
    );
+}
+
+function NoteHTML({html}: {html?: string}) {
+
+   return (
+      html ? <div dangerouslySetInnerHTML={{__html: html}} /> : null
+   )
 }
 
 export async function action({
@@ -145,20 +150,34 @@ export async function action({
    const { noteId } = zx.parseParams(params, {
       noteId: z.string(),
    });
-   const { mdx, autosave } = await zx.parseForm(request, {
+   const { mdx, autosave, html } = await zx.parseForm(request, {
       mdx: z.string(),
       autosave: z.string().optional(),
+      html: z.string().optional(),
    });
 
    if (!user) {
       return redirect("/home");
    }
 
+   let source = undefined;
+
+   try {
+    source = String(await compile(mdx, mdxOptions));
+   }
+   catch (error) {
+      console.log(error);
+   }
+
+   console.log(html)
+
    const note = await payload.update({
       collection: "notes",
       id: noteId,
       data: {
          mdx,
+         source,
+         html,
       },
       overrideAccess: false,
       user,
