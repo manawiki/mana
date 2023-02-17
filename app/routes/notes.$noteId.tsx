@@ -11,6 +11,7 @@ import * as runtime from "react/jsx-dev-runtime";
 import { MDXProvider, useMDXComponents  } from "@mdx-js/react";
 import type { CompileOptions} from "@mdx-js/mdx";
 import { compile, evaluateSync, runSync } from "@mdx-js/mdx";
+import { sanitize} from "isomorphic-dompurify";
 
 // import { lazily } from "react-lazily";
 // import { loader as entryLoader } from "~/routes/toweroffantasy.c.simulacra.$entryId";
@@ -90,13 +91,13 @@ export default function EditNote() {
                className="w-full h-full"
                onChange={(e) => {setMDX(e.target.value); fetcher.submit({mdx: e.target.value}, {method: "post"}); }}
             />
-            <input hidden name="html" value={viewRef?.current?.innerHTML} />
+            <input hidden name="innerHTML" value={viewRef?.current?.innerHTML} />
          </Form>
          <div className="mdx-content" ref={viewRef}>
             <MDXProvider components={{ Test: () => <div>Test</div> }}>
                {/* <NoteView source={note?.source} /> */}
                {/* <NoteLive mdx={mdx} /> */}
-               {/* <NoteHTML html={note?.html} /> */}
+               <NoteStatic html={note?.html} />
             </MDXProvider>
          </div>
       </div>
@@ -135,7 +136,7 @@ function NoteLive({
    );
 }
 
-function NoteHTML({html}: {html?: string}) {
+function NoteStatic({html}: {html?: string}) {
 
    return (
       html ? <div dangerouslySetInnerHTML={{__html: html}} /> : null
@@ -150,18 +151,18 @@ export async function action({
    const { noteId } = zx.parseParams(params, {
       noteId: z.string(),
    });
-   const { mdx, autosave, html } = await zx.parseForm(request, {
+   const { mdx, autosave, innerHTML } = await zx.parseForm(request, {
       mdx: z.string(),
       autosave: z.string().optional(),
-      html: z.string().optional(),
+      innerHTML: z.string().optional(),
    });
 
    if (!user) {
       return redirect("/home");
    }
 
+   //Generate source from mdx
    let source = undefined;
-
    try {
     source = String(await compile(mdx, mdxOptions));
    }
@@ -169,7 +170,18 @@ export async function action({
       console.log(error);
    }
 
-   console.log(html)
+   //Purify html
+   let html = undefined;
+   try {
+      html = sanitize(html, {
+        //add iframe exception
+        //T-1600 double check for potential XSS vectors
+        ADD_TAGS: ["iframe"],
+        ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"],
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
    const note = await payload.update({
       collection: "notes",

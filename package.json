@@ -36,6 +36,7 @@
       "i18next-fs-backend": "^2.1.1",
       "i18next-http-backend": "^2.1.1",
       "isbot": "^3.6.5",
+      "isomorphic-dompurify": "^1.0.0",
       "lucide-react": "^0.105.0",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
