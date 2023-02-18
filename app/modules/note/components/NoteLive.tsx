@@ -3,7 +3,7 @@ import { evaluate } from "@mdx-js/mdx";
 import { evaluateSync } from "@mdx-js/mdx";
 import { useMDXComponents } from "@mdx-js/react";
 import type { MDXModule } from "mdx/types";
-import { Suspense, useDeferredValue, useEffect, useState } from "react";
+import { memo, Suspense, useDeferredValue, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import * as runtime from "react/jsx-dev-runtime";
 import { useDebouncedValue } from "~/hooks";
@@ -19,7 +19,7 @@ const mdxOptions = {
 
 // Client-side render MDX input using async evaluation
 // todo perf comparison with sync
-export function NoteLive({
+export function NoteLiveAsync({
    mdx, //mdx should be debounced
    className = "mdx-content",
 }: {
@@ -52,6 +52,8 @@ export function NoteLive({
       </div>
    );
 }
+
+export const NoteLive = memo(NoteLiveAsync);
 
 //Clientside render MDX input using sync evaluation
 export function NoteLiveSync({
