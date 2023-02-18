@@ -88,7 +88,7 @@ export default function EditNote() {
                className="w-full h-full"
                onChange={(e) => {
                   setMDX(e.target.value);
-                  // fetcher.submit({ mdx: e.target.value }, { method: "post" });
+                  fetcher.submit({ mdx: e.target.value }, { method: "post" });
                }}
             />
             {/* <input
