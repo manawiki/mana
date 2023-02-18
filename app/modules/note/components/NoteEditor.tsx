@@ -1,6 +1,14 @@
 import type { Note } from "payload-types";
-import { Form, useNavigate, useNavigation } from "@remix-run/react";
-import { useRef, Suspense, Fragment, useState, useEffect } from "react";
+import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import {
+   useRef,
+   Suspense,
+   Fragment,
+   useState,
+   useEffect,
+   useMemo,
+   useDeferredValue,
+} from "react";
 import { Modal } from "~/components/Modal";
 import { NoteViewer } from "./NoteViewer";
 import useWindowDimensions from "~/hooks/use-window-dimensions";
@@ -9,6 +17,10 @@ import { NoteSelector } from "../gui/NoteSelector";
 import type { MDXComponents } from "mdx/types";
 import { Loader2, Save, X } from "lucide-react";
 import { isAdding } from "~/utils";
+import React from "react";
+import { deferComponents } from "../utils";
+import { MDXProvider } from "@mdx-js/react";
+import { NoteLive } from "./NoteLive";
 
 export type NoteEditorType = {
    note: Note;
@@ -16,24 +28,53 @@ export type NoteEditorType = {
    scope?: Record<string, any>;
 };
 
-//Renders a Note Editor as responsive modal
+//Main logic of Note Editor Modal
 export default function NoteEditor({
    note,
    components,
    scope,
 }: NoteEditorType) {
+   //decide which layout to render
    const { width } = useWindowDimensions();
    const transition = useNavigation();
    const adding = isAdding(transition, "saveNote");
    const ref = useRef() as React.MutableRefObject<HTMLButtonElement>;
-
-   //decide which layout to render
    const NoteLayout = width && width > 1024 ? NoteSideLayout : NoteTabLayout;
    const [isOpen, setIsOpen] = useState(true);
+
+   //mdx hooks
+   const submit = useSubmit();
+   const memoComponents = useMemo(
+      () =>
+         deferComponents({
+            components,
+            scope,
+         }),
+      [components, scope]
+   );
+
+   //We want to defer the mdx value so that Live preview doesn't block rendering
+   const [mdx, setMDX] = useState(note?.mdx ?? "");
+   const debouncedMDX = useDeferredValue(mdx);
+
+   //This is the function that is called when the user types in the textarea
+   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const mdx = event.target.value;
+
+      //todo we should debounce this in some way
+      setMDX(mdx);
+      submit(
+         { mdx, autosave: "yes" },
+         { method: "post", replace: true, preventScrollReset: true }
+      );
+   };
+
    return (
       <Modal
+         //Render the editor in a modal
          show={isOpen}
          onClose={() => {
+            //Submit the form when the modal is closed
             ref.current.click();
             setIsOpen(false);
          }}
@@ -75,44 +116,39 @@ export default function NoteEditor({
                </div>
             </div>
             <Form id="note-editor" key={note.id} method="post">
-               <NoteLayout note={note}>
-                  <Suspense fallback={<div>Loading...</div>}>
-                     {note?.source && (
-                        <NoteViewer
-                           note={note}
-                           components={components}
-                           scope={scope}
-                        />
-                     )}
-                  </Suspense>
+               <NoteLayout
+               //Layout should have two childs, first one is the ui editor and second one is the live preview
+               >
+                  <NoteSelector note={note} onChange={onChange} />
+                  <MDXProvider
+                     //Renders a Live preview panel
+                     components={memoComponents}
+                  >
+                     <Suspense fallback={<div>Loading...</div>}>
+                        <NoteLive mdx={debouncedMDX} />
+                     </Suspense>
+                  </MDXProvider>
                </NoteLayout>
             </Form>
          </section>
       </Modal>
    );
 }
-export function NoteSideLayout({
-   note,
-   children,
-}: React.PropsWithChildren<{ note: Note }>) {
+export function NoteSideLayout({ children }: React.PropsWithChildren) {
    return (
       <div
          className="bg-1 min-[1520px]:w-[1520px] relative grid min-h-[calc(100vh-200px)] 
          w-[calc(100vw-18px)] min-w-full grid-cols-2 gap-6 rounded-lg
          p-5 shadow-lg dark:shadow-black/50"
       >
-         <div className="min-w-full max-w-[728px]">
-            <NoteSelector note={note} />
-         </div>
-         <div className="min-w-full max-w-[728px]">{children}</div>
+         {React.Children.map(children, (child) => (
+            <div className="min-w-full max-w-[728px]">{child}</div>
+         ))}
       </div>
    );
 }
 
-export function NoteTabLayout({
-   note,
-   children,
-}: React.PropsWithChildren<{ note: Note }>) {
+export function NoteTabLayout({ children }: React.PropsWithChildren) {
    return (
       <div className="bg-1 min-h-screen min-w-[100vw]">
          <Tab.Group>
@@ -151,10 +187,9 @@ export function NoteTabLayout({
                </Tab>
             </Tab.List>
             <Tab.Panels>
-               <Tab.Panel className="p-4">
-                  <NoteSelector note={note} />
-               </Tab.Panel>
-               <Tab.Panel className="p-4">{children}</Tab.Panel>
+               {React.Children.map(children, (child) => (
+                  <Tab.Panel className="p-4">{child}</Tab.Panel>
+               ))}
             </Tab.Panels>
          </Tab.Group>
       </div>

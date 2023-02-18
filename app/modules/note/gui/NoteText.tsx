@@ -1,14 +1,11 @@
-import { useFetcher } from "@remix-run/react";
-
-//This renders an autosave textarea
-export default function NoteText({ defaultValue }: { defaultValue: string }) {
-   const fetcher = useFetcher();
-
-   const autoSave = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const mdx = event.target.value;
-      fetcher.submit({ mdx, autosave: "yes" }, { method: "post" });
-   };
-
+//This renders an basic textarea editor
+export default function NoteText({
+   defaultValue,
+   onChange,
+}: {
+   defaultValue: string;
+   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}) {
    return (
       <div>
          <textarea
@@ -17,7 +14,7 @@ export default function NoteText({ defaultValue }: { defaultValue: string }) {
             defaultValue={defaultValue}
             required
             placeholder="Start typing..."
-            onChange={autoSave}
+            onChange={onChange}
             //todo fix cursor position on autofocus
             autoFocus
          />
