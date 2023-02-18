@@ -1,6 +1,8 @@
 import { Await } from "@remix-run/react";
 import type { MDXComponents } from "mdx/types";
 import { Suspense } from "react";
+import * as jsxDevRuntime from "react/jsx-dev-runtime";
+import * as jsxRuntime from "react/jsx-runtime";
 
 //This allows components to accept deferred data
 export function deferComponents({
@@ -48,3 +50,21 @@ export const ErrorFallback = ({
       </button>
    </div>
 );
+
+//return jsx runtime based on environment
+export function runtime() {
+   if (
+      typeof process !== "undefined" &&
+      process.env.NODE_ENV === "development"
+   ) {
+      return jsxDevRuntime;
+   } else {
+      return jsxRuntime;
+   }
+}
+
+//if (process.env.NODE_ENV === 'development') {
+//    module.exports.jsxRuntime = require('react/jsx-dev-runtime')
+// } else {
+//   module.exports.jsxRuntime = require('react/jsx-runtime')
+// }
