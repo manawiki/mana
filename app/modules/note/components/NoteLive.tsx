@@ -4,15 +4,14 @@ import { useMDXComponents } from "@mdx-js/react";
 import type { MDXModule } from "mdx/types";
 import { memo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { jsxRuntime } from "next-mdx-remote/dist/jsx-runtime.cjs";
-import { ErrorFallback } from "../utils";
+import { ErrorFallback, runtime } from "../utils";
 
 const mdxOptions = {
    //    outputFormat: "function-body",
    useDynamicImport: true,
    // development: true,
    useMDXComponents,
-   ...jsxRuntime,
+   ...runtime(),
 } as EvaluateOptions;
 
 // Client-side render MDX input using async evaluation
