@@ -1,17 +1,11 @@
-import { useFetcher } from "@remix-run/react";
-
+// THis renders a tier list editor
 export default function NoteTierList({
    defaultValue,
+   onChange,
 }: {
    defaultValue: string;
+   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
-   const fetcher = useFetcher();
-
-   const autoSave = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const mdx = event.target.value;
-      fetcher.submit({ mdx, autosave: "yes" }, { method: "post" });
-   };
-
    return (
       <div>
          <textarea
@@ -19,7 +13,7 @@ export default function NoteTierList({
             className="min-h-screen w-full border-0 bg-transparent p-0"
             defaultValue={defaultValue}
             required
-            onChange={autoSave}
+            onChange={onChange}
             //todo fix cursor position on autofocus
             autoFocus
          />

@@ -7,17 +7,17 @@
     "jsx": "react-jsx",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "ES2019",
     "strict": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"],
-      "env/types":["./shared/env.ts"],
+      "env/types": ["./shared/env.ts"],
       "payload/generated-types": ["./payload-types.ts"]
     },
-    "noEmit": true
+    "noEmit": true,
+    "target": "ES2019"
   },
   "ts-node": {
     "swc": true,
