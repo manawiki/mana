@@ -8,14 +8,6 @@ export default function NoteText({
    defaultValue: string;
    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) {
-   const fetcher = useFetcher();
-
-   const autoSave = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const mdx = event.target.value;
-      onChange(event);
-      fetcher.submit({ mdx, autosave: "yes" }, { method: "post" });
-   };
-
    return (
       <div>
          <textarea
@@ -24,7 +16,7 @@ export default function NoteText({
             defaultValue={defaultValue}
             required
             placeholder="Start typing..."
-            onChange={autoSave}
+            onChange={onChange}
             //todo fix cursor position on autofocus
             autoFocus
          />

@@ -1,5 +1,5 @@
 import type { Note } from "payload-types";
-import { Form, useNavigate, useNavigation } from "@remix-run/react";
+import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
 import {
    useRef,
    Suspense,
@@ -44,6 +44,7 @@ export default function NoteEditor({
    const [isOpen, setIsOpen] = useState(true);
 
    //mdx hooks
+   const submit = useSubmit();
    const memoComponents = useMemo(
       () =>
          deferComponents({
@@ -54,8 +55,16 @@ export default function NoteEditor({
    );
    const [mdx, setMDX] = useState(note?.mdx ?? "");
    const debouncedMDX = useDeferredValue(mdx);
-   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-      setMDX(e.target.value);
+   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const mdx = event.target.value;
+
+      //todo we should debounce this in some way
+      setMDX(mdx);
+      submit(
+         { mdx, autosave: "yes" },
+         { method: "post", replace: true, preventScrollReset: true }
+      );
+   };
 
    return (
       <Modal
