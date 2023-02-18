@@ -4,7 +4,7 @@ import { useMDXComponents } from "@mdx-js/react";
 import type { MDXModule } from "mdx/types";
 import { memo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import * as runtime from "react/jsx-dev-runtime";
+import { jsxRuntime } from "../jsx-runtime.cjs";
 import { ErrorFallback } from "../utils";
 
 const mdxOptions = {
@@ -12,7 +12,7 @@ const mdxOptions = {
    useDynamicImport: true,
    // development: true,
    useMDXComponents,
-   ...runtime,
+   ...jsxRuntime,
 } as EvaluateOptions;
 
 // Client-side render MDX input using async evaluation
@@ -29,6 +29,8 @@ export function NoteLiveAsync({
    //We'll use deferred values to prevent the MDX from rendering until the user has stopped typing
    // const deferredModule = useDeferredValue(module);
    // const debouncedMDX = useDebouncedValue(mdx, 500);
+
+   console.dir(mdxOptions, { depth: null });
 
    useEffect(() => {
       (async () => {
