@@ -10,7 +10,7 @@ import { ErrorFallback } from "../utils";
 const mdxOptions = {
    //    outputFormat: "function-body",
    useDynamicImport: true,
-   development: true,
+   // development: true,
    useMDXComponents,
    ...runtime,
 } as EvaluateOptions;
