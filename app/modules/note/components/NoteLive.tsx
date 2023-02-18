@@ -1,12 +1,11 @@
 import type { EvaluateOptions } from "@mdx-js/mdx";
 import { evaluate } from "@mdx-js/mdx";
-import { evaluateSync } from "@mdx-js/mdx";
 import { useMDXComponents } from "@mdx-js/react";
 import type { MDXModule } from "mdx/types";
 import { memo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import * as runtime from "react/jsx-dev-runtime";
-import { ErrorFallback } from "./ErrorFallback";
+import { ErrorFallback } from "../utils";
 
 const mdxOptions = {
    //    outputFormat: "function-body",
@@ -57,30 +56,30 @@ export const NoteLive = memo(NoteLiveAsync);
 
 //Clientside render MDX input using sync evaluation
 //note: this is not recommended for production use
-export function NoteLiveSync({
-   mdx,
-   className = "mdx-content",
-}: {
-   mdx: string;
-   className?: string;
-}) {
-   const [module, setModule] = useState<MDXModule | null>(null);
+// export function NoteLiveSync({
+//    mdx,
+//    className = "mdx-content",
+// }: {
+//    mdx: string;
+//    className?: string;
+// }) {
+//    const [module, setModule] = useState<MDXModule | null>(null);
 
-   useEffect(() => {
-      try {
-         const mdxModule = evaluateSync(mdx, mdxOptions);
-         console.log(mdxModule);
-         if (mdxModule) setModule(mdxModule);
-      } catch (e) {
-         console.error(e);
-      }
-   }, [mdx]);
+//    useEffect(() => {
+//       try {
+//          const mdxModule = evaluateSync(mdx, mdxOptions);
+//          console.log(mdxModule);
+//          if (mdxModule) setModule(mdxModule);
+//       } catch (e) {
+//          console.error(e);
+//       }
+//    }, [mdx]);
 
-   return (
-      <div className={className}>
-         <ErrorBoundary FallbackComponent={ErrorFallback}>
-            {module && <module.default />}
-         </ErrorBoundary>
-      </div>
-   );
-}
+//    return (
+//       <div className={className}>
+//          <ErrorBoundary FallbackComponent={ErrorFallback}>
+//             {module && <module.default />}
+//          </ErrorBoundary>
+//       </div>
+//    );
+// }
