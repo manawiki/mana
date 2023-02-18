@@ -1,4 +1,4 @@
-import { jsxRuntime } from "../jsx-runtime.cjs";
+import { jsxRuntime } from "next-mdx-remote/dist/jsx-runtime.cjs";
 import { useMDXComponents } from "@mdx-js/react";
 import { runSync } from "@mdx-js/mdx";
 import { useMemo } from "react";

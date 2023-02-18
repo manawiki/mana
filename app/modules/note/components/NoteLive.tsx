@@ -4,7 +4,7 @@ import { useMDXComponents } from "@mdx-js/react";
 import type { MDXModule } from "mdx/types";
 import { memo, useEffect, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { jsxRuntime } from "../jsx-runtime.cjs";
+import { jsxRuntime } from "next-mdx-remote/dist/jsx-runtime.cjs";
 import { ErrorFallback } from "../utils";
 
 const mdxOptions = {
@@ -30,7 +30,7 @@ export function NoteLiveAsync({
    // const deferredModule = useDeferredValue(module);
    // const debouncedMDX = useDebouncedValue(mdx, 500);
 
-   console.dir(mdxOptions, { depth: null });
+   // console.dir(mdxOptions, { depth: null });
 
    useEffect(() => {
       (async () => {
