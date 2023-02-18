@@ -30,7 +30,7 @@ export function NoteLive({
 
    //We'll use deferred values to prevent the MDX from rendering until the user has stopped typing
    const deferredModule = useDeferredValue(module);
-   const debouncedMDX = useDebouncedValue(mdx, 100);
+   const debouncedMDX = useDebouncedValue(mdx, 50);
 
    useEffect(() => {
       (async () => {
