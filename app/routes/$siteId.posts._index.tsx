@@ -249,7 +249,7 @@ export default function PostsIndex() {
             </Menu>
             <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
                <li>Changelog</li>
-               <span className="rounded-ful h-1 w-1 bg-zinc-300 dark:bg-zinc-600" />
+               <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
             </ul>
          </div>
@@ -260,7 +260,7 @@ export default function PostsIndex() {
                      Recent Posts
                   </h2>
                   <Listbox value={selectedStatus} onChange={setSelectedStatus}>
-                     <div className="relative">
+                     <div className="relative z-10">
                         <Listbox.Button className="text-1 flex items-center gap-2 text-sm font-semibold hover:underline">
                            {selectedStatus}
                            <ChevronsUpDown
@@ -402,63 +402,68 @@ export default function PostsIndex() {
                      ))
                   )}
                </section>
-               <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-                  <div>
-                     Showing{" "}
-                     <span className="font-bold">{myPosts.pagingCounter}</span>{" "}
-                     to{" "}
-                     <span className="font-bold">
-                        {myPosts.docs.length + myPosts.pagingCounter - 1}
-                     </span>{" "}
-                     of <span className="font-bold">{myPosts.totalDocs}</span>{" "}
-                     results
+               {myPosts?.docs.length > 9 && (
+                  <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+                     <div>
+                        Showing{" "}
+                        <span className="font-bold">
+                           {myPosts.pagingCounter}
+                        </span>{" "}
+                        to{" "}
+                        <span className="font-bold">
+                           {myPosts.docs.length + myPosts.pagingCounter - 1}
+                        </span>{" "}
+                        of{" "}
+                        <span className="font-bold">{myPosts.totalDocs}</span>{" "}
+                        results
+                     </div>
+                     <div className="flex items-center gap-3 text-xs">
+                        {myPosts.hasPrevPage ? (
+                           <button
+                              className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                              onClick={() =>
+                                 setSearchParams((searchParams) => {
+                                    searchParams.set(
+                                       "page",
+                                       myPosts.prevPage as any
+                                    );
+                                    return searchParams;
+                                 })
+                              }
+                           >
+                              <ChevronLeftIcon
+                                 size={18}
+                                 className="text-emerald-500"
+                              />
+                              Prev
+                           </button>
+                        ) : null}
+                        {myPosts.hasNextPage && myPosts.hasPrevPage && (
+                           <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                        )}
+                        {myPosts.hasNextPage ? (
+                           <button
+                              className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                              onClick={() =>
+                                 setSearchParams((searchParams) => {
+                                    searchParams.set(
+                                       "page",
+                                       myPosts.nextPage as any
+                                    );
+                                    return searchParams;
+                                 })
+                              }
+                           >
+                              Next
+                              <ChevronRightIcon
+                                 size={18}
+                                 className="text-emerald-500"
+                              />
+                           </button>
+                        ) : null}
+                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-xs">
-                     {myPosts.hasPrevPage ? (
-                        <button
-                           className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                           onClick={() =>
-                              setSearchParams((searchParams) => {
-                                 searchParams.set(
-                                    "page",
-                                    myPosts.prevPage as any
-                                 );
-                                 return searchParams;
-                              })
-                           }
-                        >
-                           <ChevronLeftIcon
-                              size={18}
-                              className="text-emerald-500"
-                           />
-                           Prev
-                        </button>
-                     ) : null}
-                     {myPosts.hasNextPage && myPosts.hasPrevPage && (
-                        <span className="rounded-ful h-1 w-1 bg-zinc-300 dark:bg-zinc-600" />
-                     )}
-                     {myPosts.hasNextPage ? (
-                        <button
-                           className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                           onClick={() =>
-                              setSearchParams((searchParams) => {
-                                 searchParams.set(
-                                    "page",
-                                    myPosts.nextPage as any
-                                 );
-                                 return searchParams;
-                              })
-                           }
-                        >
-                           Next
-                           <ChevronRightIcon
-                              size={18}
-                              className="text-emerald-500"
-                           />
-                        </button>
-                     ) : null}
-                  </div>
-               </div>
+               )}
             </section>
          </AdminOrOwner>
          <div className="relative flex h-12 items-center justify-between">
@@ -508,36 +513,44 @@ export default function PostsIndex() {
                </>
             )}
          </div>
-
          <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
             {publishedPosts?.docs.length === 0 ? (
                <div className="flex items-center justify-between py-5 text-sm">
                   <div className="flex items-center gap-1">
-                     <span className="text-1">
-                        No results... Create new post with title
-                     </span>
-                     <span className="font-bold">
-                        "{searchParams.get("q")}"
-                     </span>
+                     {searchParams.get("q") ? (
+                        <>
+                           <span className="text-1">
+                              No results... Create new post with title
+                           </span>
+                           <span className="font-bold">
+                              "{searchParams.get("q")}"
+                           </span>
+                           <Form method="post" className="flex items-center">
+                              <button
+                                 name="intent"
+                                 className="group flex items-center gap-1"
+                                 value="createWithTitle"
+                                 type="submit"
+                              >
+                                 <input
+                                    type="hidden"
+                                    value={searchParams.get("q") ?? ""}
+                                    name="title"
+                                 />
+                                 <span className="font-bold text-emerald-500 underline-offset-2 group-hover:underline">
+                                    New Post
+                                 </span>
+                                 <ChevronRight
+                                    className="text-zinc-400"
+                                    size={18}
+                                 />
+                              </button>
+                           </Form>
+                        </>
+                     ) : (
+                        <>No posts...</>
+                     )}
                   </div>
-                  <Form method="post" className="flex items-center">
-                     <button
-                        name="intent"
-                        className="group flex items-center gap-1"
-                        value="createWithTitle"
-                        type="submit"
-                     >
-                        <input
-                           type="hidden"
-                           value={searchParams.get("q") ?? ""}
-                           name="title"
-                        />
-                        <span className="font-bold text-emerald-500 underline-offset-2 group-hover:underline">
-                           New Post
-                        </span>
-                        <ChevronRight className="text-zinc-400" size={18} />
-                     </button>
-                  </Form>
                </div>
             ) : (
                publishedPosts.docs.map((post) => (

@@ -1,10 +1,9 @@
 import {
-   Form,
    Link,
    NavLink,
    Outlet,
+   useFetcher,
    useLoaderData,
-   useNavigation,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
@@ -23,6 +22,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import type { envType } from "env/types";
+import { Image } from "~/components/Image";
 import {
    CircleStackIcon,
    HomeIcon,
@@ -95,9 +95,13 @@ export const handle = {
 
 export default function SiteIndex() {
    const { site } = useLoaderData<typeof loader>();
-   const transition = useNavigation();
-   const adding = isAdding(transition, "followSite");
+   const fetcher = useFetcher();
+   const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation("site");
+   const defaultStyle = `desktop:bg-1 max-laptop:bg-2 
+   flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
+   max-desktop:h-12 max-desktop:w-12
+   max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-2.5 desktop:justify-start`;
 
    return (
       <>
@@ -107,10 +111,10 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_210px_1fr_334px]"
          >
             <section
-               className="border-color laptop:bg-1 relative z-40  
-                    max-laptop:fixed max-laptop:top-0 max-laptop:h-20
-                    max-laptop:w-full max-laptop:bg-gradient-to-b max-laptop:from-zinc-100 max-laptop:to-zinc-50 max-laptop:py-4
-                    max-laptop:dark:from-zinc-900 max-laptop:dark:to-zinc-800 laptop:border-r"
+               className="laptop:bg-1 relative z-40  border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-800
+                    dark:shadow-black/60 max-laptop:fixed max-laptop:top-0 max-laptop:h-20  max-laptop:w-full
+                    max-laptop:bg-gradient-to-b max-laptop:from-zinc-100 max-laptop:to-zinc-50 max-laptop:py-4 max-laptop:dark:from-zinc-900
+                    max-laptop:dark:to-zinc-800 laptop:shadow-lg laptop:shadow-zinc-100"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                   <SiteSwitcher />
@@ -118,25 +122,25 @@ export default function SiteIndex() {
             </section>
             <section>
                <div
-                  className="border-color max-laptop:bg-1 bg-1 fixed bottom-0 mx-auto w-full
-                        px-4 max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-0 laptop:h-full laptop:w-[86px] laptop:space-y-4 
-                        laptop:overflow-y-auto laptop:border-r laptop:py-5
-                        desktop:w-[210px] desktop:space-y-3 desktop:px-5"
+                  className="max-laptop:bg-1 bg-1 border-color border-1 fixed bottom-0
+                        mx-auto w-full border-r px-4 
+                        max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
+                        laptop:top-0 laptop:h-full laptop:w-[86px]
+                        laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
                >
                   <NavLink
                      end
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-blue-50 font-bold text-zinc-600 dark:!from-blue-900/40 dark:!to-blue-900/30 dark:!text-white"
-                              : ""
-                        } flex items-center 
-                                justify-center gap-3 rounded-full border border-blue-100
-                                bg-gradient-to-b from-white to-blue-50/50 font-semibold shadow shadow-zinc-100
-                                active:shadow-none dark:border-blue-900/50 dark:from-blue-900/30
-                                dark:to-blue-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
-                                max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
-                                laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
+                              ? `border border-blue-200/50 bg-gradient-to-b 
+                           from-white to-blue-50/50 
+                           text-zinc-600 shadow shadow-zinc-100
+                           active:shadow-none dark:border-blue-900/50 dark:from-blue-900/30
+                           dark:to-blue-900/20 dark:!text-white 
+                            dark:shadow-black/30`
+                              : "text-1 border-color border laptop:!border-transparent"
+                        } ${defaultStyle}`
                      }
                      to={`/${site.id}`}
                   >
@@ -157,15 +161,14 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-emerald-50 font-bold text-zinc-600 dark:!from-emerald-900/40 dark:!to-emerald-900/30 dark:!text-white"
-                              : ""
-                        } flex items-center 
-                                   justify-center gap-3 rounded-full border border-emerald-200/50
-                                   bg-gradient-to-b from-white to-emerald-50/50 font-semibold shadow shadow-zinc-100
-                                   active:shadow-none dark:border-emerald-900/50 dark:from-emerald-900/30
-                                   dark:to-emerald-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
-                                   max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
-                                   laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
+                              ? `border border-emerald-200/50 bg-gradient-to-b 
+                              from-white to-emerald-50/50
+                              text-zinc-600 shadow shadow-zinc-100
+                              active:shadow-none dark:border-emerald-900/50 dark:from-emerald-900/30
+                              dark:to-emerald-900/20 dark:!text-white 
+                               dark:shadow-black/30 `
+                              : "text-1 border-color border laptop:!border-transparent"
+                        } ${defaultStyle}`
                      }
                      to={`/${site.id}/posts`}
                   >
@@ -186,15 +189,14 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-yellow-50 font-bold text-zinc-600 dark:!from-yellow-900/40 dark:!to-yellow-900/30 dark:!text-white"
-                              : ""
-                        } flex items-center 
-                                justify-center gap-3 rounded-full border border-yellow-200/60
-                                bg-gradient-to-b from-white to-yellow-50/50 font-semibold shadow shadow-zinc-100
-                                active:shadow-none dark:border-yellow-900/40 dark:from-yellow-900/30
-                                dark:to-yellow-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
-                                max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
-                                laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
+                              ? `border border-yellow-200/50 bg-gradient-to-b 
+                           from-white to-yellow-50/50
+                            text-zinc-600 shadow shadow-zinc-100
+                           active:shadow-none dark:border-yellow-900/50 dark:from-yellow-900/30
+                           dark:to-yellow-900/20 dark:!text-white 
+                            dark:shadow-black/30`
+                              : "text-1 border-color border laptop:!border-transparent"
+                        } ${defaultStyle}`
                      }
                      to={`/${site.id}/collections`}
                   >
@@ -215,15 +217,14 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? "!from-white !to-violet-50 font-bold text-zinc-600 dark:!from-violet-900/40 dark:!to-violet-900/30 dark:!text-white"
-                              : ""
-                        } flex items-center 
-                             justify-center gap-3 rounded-full border border-violet-100
-                             bg-gradient-to-b from-white to-violet-50/50 font-semibold shadow shadow-zinc-100
-                             active:shadow-none dark:border-violet-900/50 dark:from-violet-900/30
-                             dark:to-violet-900/20 dark:shadow-black/30 max-desktop:mx-auto max-desktop:h-12 max-desktop:w-12
-                             max-desktop:bg-white dark:max-desktop:bg-zinc-900 max-laptop:-mt-6
-                             laptop:rounded-xl laptop:px-3.5 laptop:py-3 desktop:justify-start`
+                              ? `border border-violet-200/50 bg-gradient-to-b 
+                        from-white to-violet-50/50
+                        text-zinc-600 shadow shadow-zinc-100
+                        active:shadow-none dark:border-violet-900/50 dark:from-violet-900/30
+                        dark:to-violet-900/20 dark:!text-white 
+                         dark:shadow-black/30`
+                              : "text-1 border-color border laptop:!border-transparent"
+                        } ${defaultStyle}`
                      }
                      to={`/${site.id}/questions`}
                   >
@@ -246,7 +247,7 @@ export default function SiteIndex() {
                <Outlet />
             </section>
             <section
-               className="border-color bg-2 relative max-laptop:mx-auto max-laptop:max-w-[728px] 
+               className="bg-1 laptop:bg-2 border-color relative max-laptop:mx-auto max-laptop:max-w-[728px] 
                     max-laptop:pb-20 tablet:border-x laptop:border-r-0 laptop:border-l"
             >
                <div className="bg-1 flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
@@ -254,30 +255,39 @@ export default function SiteIndex() {
                      {({ open }) => (
                         <>
                            <Popover.Button
-                              className="border-color bg-1 flex h-14 w-full items-center 
-                                        justify-between gap-3 border-b px-3 duration-150 hover:bg-zinc-50/50 focus:outline-none
-                                        dark:hover:bg-zinc-800"
+                              className="bg-1 flex h-14 w-full items-center 
+                              justify-between gap-3  px-3 duration-150 
+                              focus:outline-none
+                              "
                            >
                               <div className="flex items-center gap-3">
                                  <div className="h-8 w-8 overflow-hidden rounded-full bg-zinc-200">
-                                    <img
+                                    <Image
+                                       //@ts-expect-error
+                                       url={site.icon?.url}
+                                       options="fit=crop,width=60,height=60,gravity=auto"
                                        alt="Site Logo"
-                                       //@ts-ignore
-                                       src={`https://mana.wiki/cdn-cgi/image/fit=crop,width=60,height=60,gravity=auto/${site.icon?.url}`}
                                     />
                                  </div>
                                  <div className="font-bold">{site.name}</div>
                               </div>
-                              <div className="pt-0.5">
+                              <div
+                                 className="bg-2 border-color flex h-8 w-8 items-center 
+                              justify-center rounded-full border"
+                              >
                                  {open ? (
                                     <X
+                                       size={18}
                                        className={`${
                                           open && "text-red-500"
                                        } transition duration-150 ease-in-out`}
                                     />
                                  ) : (
                                     <>
-                                       <ChevronDown className="transition duration-150 ease-in-out" />
+                                       <ChevronDown
+                                          size={18}
+                                          className="transition duration-150 ease-in-out"
+                                       />
                                     </>
                                  )}
                               </div>
@@ -291,19 +301,19 @@ export default function SiteIndex() {
                               leaveFrom="opacity-100 translate-y-0"
                               leaveTo="opacity-0 translate-y-1"
                            >
-                              <Popover.Panel className="absolute right-0 z-10 mt-1 w-full">
-                                 <div className="bg-2 mx-3 rounded-lg dark:shadow-black">
+                              <Popover.Panel className="absolute right-0 z-10 w-full">
+                                 <div className="bg-2 dark:shadow-black">
                                     <FollowingSite>
                                        <Popover.Button as="div">
-                                          <Form method="post">
+                                          <fetcher.Form method="post">
                                              <button
                                                 name="intent"
                                                 value="unfollow"
-                                                className="block w-full py-3 px-4 text-left text-sm font-bold"
+                                                className="block w-full p-4 text-left text-sm font-bold"
                                              >
                                                 {t("follow.actionUnfollow")}
                                              </button>
-                                          </Form>
+                                          </fetcher.Form>
                                        </Popover.Button>
                                     </FollowingSite>
                                  </div>
@@ -313,39 +323,85 @@ export default function SiteIndex() {
                      )}
                   </Popover>
                   {site.banner && (
-                     <div className="border-color flex h-40 items-center justify-center overflow-hidden border-b dark:bg-zinc-800">
-                        <img
+                     <div
+                        className="border-color flex h-44 items-center justify-center 
+                     overflow-hidden border-b dark:bg-zinc-800"
+                     >
+                        <Image
+                           //@ts-expect-error
+                           url={site.banner?.url}
+                           options="fit=cover,height=300,gravity=auto"
+                           className="w-full object-cover"
                            alt="Site Banner"
-                           //@ts-ignore
-                           src={`https://mana.wiki/cdn-cgi/image/fit=crop,width=334,gravity=auto/${site?.banner?.url}`}
                         />
                      </div>
                   )}
                   <NotFollowingSite>
-                     <Form method="post" className="p-4">
-                        <button
-                           name="intent"
-                           value="followSite"
-                           className="block h-10 w-full rounded-lg border border-blue-300 bg-blue-100 text-sm
-                                font-bold text-blue-500 hover:bg-blue-200 focus:bg-blue-100 dark:border-blue-700 
-                                dark:bg-blue-900 dark:text-white dark:hover:bg-blue-800 dark:focus:bg-blue-900"
-                        >
-                           {adding ? (
-                              <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-400" />
-                           ) : (
-                              t("follow.actionFollow")
-                           )}
-                        </button>
-                     </Form>
+                     <div
+                        className={`${
+                           site.banner ? "-mt-6" : "mt-1"
+                        } flex items-center`}
+                     >
+                        <div
+                           className={`${
+                              site.banner
+                                 ? "border-zinc-200 dark:border-zinc-500"
+                                 : "border-zinc-100 dark:border-zinc-800"
+                           } w-3 border-t-2`}
+                        />
+                        <fetcher.Form className="flex-grow" method="post">
+                           <button
+                              name="intent"
+                              value="followSite"
+                              className="border-color flex h-11 w-full items-center justify-center rounded-full
+                              border-2 border-blue-100 bg-blue-50 text-sm font-bold text-blue-500 hover:bg-blue-100 
+                              dark:border-blue-900/50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+                           >
+                              {adding ? (
+                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-400" />
+                              ) : (
+                                 t("follow.actionFollow")
+                              )}
+                           </button>
+                        </fetcher.Form>
+                        <div
+                           className={`${
+                              site.banner
+                                 ? "border-zinc-200 dark:border-zinc-500"
+                                 : "border-zinc-100 dark:border-zinc-800"
+                           } w-3 border-t-2`}
+                        />
+                     </div>
                   </NotFollowingSite>
                   <LoggedOut>
-                     <Link
-                        to={`/login?redirectTo=/${site.id}`}
-                        className="m-4 flex h-10 items-center justify-center rounded-lg border border-blue-200
-                         bg-blue-100 text-sm font-bold text-blue-500 dark:border-blue-700 dark:bg-blue-900 dark:text-white"
+                     <div
+                        className={`${
+                           site.banner ? "-mt-6" : "mt-1"
+                        } flex items-center`}
                      >
-                        Login to follow
-                     </Link>
+                        <div
+                           className={`${
+                              site.banner
+                                 ? "border-zinc-200 dark:border-zinc-500"
+                                 : "border-zinc-100 dark:border-zinc-800"
+                           } w-3 border-t-2`}
+                        />
+                        <Link
+                           to={`/login?redirectTo=/${site.id}`}
+                           className="border-color flex h-11 w-full items-center justify-center rounded-full
+                        border-2 border-blue-100 bg-blue-50 text-sm font-bold text-blue-500 hover:bg-blue-100 
+                        dark:border-blue-900/50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+                        >
+                           Follow
+                        </Link>
+                        <div
+                           className={`${
+                              site.banner
+                                 ? "border-zinc-200 dark:border-zinc-500"
+                                 : "border-zinc-100 dark:border-zinc-800"
+                           } w-3 border-t-2`}
+                        />
+                     </div>
                   </LoggedOut>
                   <div className="flex-grow py-4"></div>
                   <div className="flex items-center justify-center pt-4">

@@ -3,7 +3,7 @@ import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LoggedOut, LoggedIn } from "~/modules/auth";
 
-export const UserMenu = () => {
+export const MobileUserMenu = () => {
    const { t } = useTranslation("auth");
    const location = useLocation();
    return (
@@ -24,18 +24,18 @@ export const UserMenu = () => {
             </div>
          </LoggedIn>
          <LoggedOut>
-            <div className="w-full max-w-[728px] laptop:absolute laptop:bottom-0 laptop:p-3">
-               <div className="max-laptop:flex max-laptop:gap-4 max-laptop:justify-end max-laptop:items-center w-full laptop:space-y-3">
+            <div className="w-full max-w-[728px] laptop:hidden">
+               <div className="w-full max-laptop:flex max-laptop:items-center max-laptop:justify-end max-laptop:gap-4 laptop:space-y-3">
                   <Link
-                     className="max-laptop:px-3 flex h-11 items-center justify-center rounded bg-blue-500 text-center 
-                            text-sm font-bold text-white laptop:h-10 laptop:text-xs"
+                     className="flex h-11 items-center justify-center rounded bg-blue-500 text-center text-sm 
+                            font-bold text-white max-laptop:px-3 laptop:h-10 laptop:text-xs"
                      to="/join"
                   >
                      {t("login.signUp")}
                   </Link>
                   <Link
-                     className="max-laptop:px-3 flex h-11 items-center justify-center rounded bg-zinc-500 text-center 
-                            text-sm font-bold text-white laptop:h-10 laptop:text-xs"
+                     className="flex h-11 items-center justify-center rounded bg-zinc-500 text-center text-sm 
+                            font-bold text-white max-laptop:px-3 laptop:h-10 laptop:text-xs"
                      to={`/login?redirectTo=${location.pathname}`}
                   >
                      {t("login.action")}
