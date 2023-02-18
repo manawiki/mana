@@ -30,6 +30,9 @@ html.dark {
    .label-default {
       @apply text-xs font-bold uppercase;
    }
+   .border-1 {
+      @apply border-zinc-100 dark:border-zinc-700/60;
+   }
    .bg-1 {
       @apply bg-white dark:bg-zinc-900;
    }
