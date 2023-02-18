@@ -5,7 +5,7 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
-import { useMemo, useRef, useState } from "react";
+import { Suspense, useDeferredValue, useMemo, useRef, useState } from "react";
 
 import * as runtime from "react/jsx-dev-runtime";
 import { MDXProvider, useMDXComponents } from "@mdx-js/react";
@@ -20,6 +20,7 @@ import { NoteLive } from "~/modules/note/components/NoteLive";
 import { NoteView, NoteStatic } from "~/modules/note/components/NoteView";
 
 import { loader as weaponLoader } from "~/routes/toweroffantasy.c.weapons.$entryId";
+import { useDebouncedValue } from "~/hooks";
 
 const { Header } = lazily(
    () => import("~/routes/toweroffantasy.c.simulacra.$entryId")
@@ -73,6 +74,7 @@ export default function EditNote() {
    const { note, ...data } = useLoaderData<typeof loader>();
 
    const [mdx, setMDX] = useState(note?.mdx ?? "");
+   const debouncedMDX = useDeferredValue(mdx);
    const fetcher = useFetcher();
    const viewRef = useRef<HTMLDivElement>(null);
 
@@ -103,8 +105,9 @@ export default function EditNote() {
                })}
             >
                {/* <NoteView source={note?.source} /> */}
-               <NoteLive mdx={mdx} />
-
+               <Suspense>
+                  <NoteLive mdx={debouncedMDX} />
+               </Suspense>
                {/* <NoteStatic html={note?.html} /> */}
             </MDXProvider>
          </div>

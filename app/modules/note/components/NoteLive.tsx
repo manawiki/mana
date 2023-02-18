@@ -20,7 +20,7 @@ const mdxOptions = {
 // Client-side render MDX input using async evaluation
 // todo perf comparison with sync
 export function NoteLive({
-   mdx,
+   mdx, //mdx should be debounced
    className = "mdx-content",
 }: {
    mdx: string;
@@ -29,28 +29,26 @@ export function NoteLive({
    const [module, setModule] = useState<MDXModule | null>(null);
 
    //We'll use deferred values to prevent the MDX from rendering until the user has stopped typing
-   const deferredModule = useDeferredValue(module);
-   const debouncedMDX = useDebouncedValue(mdx, 50);
+   // const deferredModule = useDeferredValue(module);
+   // const debouncedMDX = useDebouncedValue(mdx, 500);
 
    useEffect(() => {
       (async () => {
          try {
-            const mdxModule = await evaluate(debouncedMDX, mdxOptions);
+            const mdxModule = await evaluate(mdx, mdxOptions);
             console.log(mdxModule);
             if (mdxModule) setModule(mdxModule);
          } catch (e) {
             console.error(e);
          }
       })();
-   }, [debouncedMDX]);
+   }, [mdx]);
 
    return (
       <div className={className}>
-         <Suspense fallback={<h2>Loading...</h2>}>
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-               {deferredModule && <deferredModule.default />}
-            </ErrorBoundary>
-         </Suspense>
+         <ErrorBoundary FallbackComponent={ErrorFallback}>
+            {module && <module.default />}
+         </ErrorBoundary>
       </div>
    );
 }
