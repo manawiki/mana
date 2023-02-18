@@ -34,7 +34,7 @@ export function NoteLiveAsync({
       (async () => {
          try {
             const mdxModule = await evaluate(mdx, mdxOptions);
-            console.log(mdxModule);
+            // console.log(mdxModule);
             if (mdxModule) setModule(mdxModule);
          } catch (e) {
             console.error(e);
@@ -54,7 +54,8 @@ export function NoteLiveAsync({
 //We memoize the async component to prevent it from re-rendering when the parent component re-renders
 export const NoteLive = memo(NoteLiveAsync);
 
-//Clientside render MDX input using sync evaluation
+//Clientside render MDX input using sync evaluationklo\
+
 //note: this is not recommended for production use
 // export function NoteLiveSync({
 //    mdx,
