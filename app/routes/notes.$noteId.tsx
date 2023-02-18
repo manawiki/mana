@@ -104,11 +104,11 @@ export default function EditNote() {
                   scope: data,
                })}
             >
-               {/* <NoteView source={note?.source} /> */}
-               <Suspense>
+               <Suspense fallback={<div>Loading...</div>}>
+                  {/* <NoteView source={note?.source} /> */}
                   <NoteLive mdx={debouncedMDX} />
+                  {/* <NoteStatic html={note?.html} /> */}
                </Suspense>
-               {/* <NoteStatic html={note?.html} /> */}
             </MDXProvider>
          </div>
       </div>
