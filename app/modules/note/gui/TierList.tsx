@@ -1,3 +1,4 @@
+// THis renders a tier list editor
 export default function NoteTierList({
    defaultValue,
    onChange,

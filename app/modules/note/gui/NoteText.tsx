@@ -1,6 +1,4 @@
-import { useFetcher } from "@remix-run/react";
-
-//This renders an autosave textarea
+//This renders an basic textarea editor
 export default function NoteText({
    defaultValue,
    onChange,

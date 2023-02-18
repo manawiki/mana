@@ -28,18 +28,17 @@ export type NoteEditorType = {
    scope?: Record<string, any>;
 };
 
-//Renders a Note Editor as responsive modal
+//Main logic of Note Editor Modal
 export default function NoteEditor({
    note,
    components,
    scope,
 }: NoteEditorType) {
+   //decide which layout to render
    const { width } = useWindowDimensions();
    const transition = useNavigation();
    const adding = isAdding(transition, "saveNote");
    const ref = useRef() as React.MutableRefObject<HTMLButtonElement>;
-
-   //decide which layout to render
    const NoteLayout = width && width > 1024 ? NoteSideLayout : NoteTabLayout;
    const [isOpen, setIsOpen] = useState(true);
 
@@ -53,8 +52,12 @@ export default function NoteEditor({
          }),
       [components, scope]
    );
+
+   //We want to defer the mdx value so that Live preview doesn't block rendering
    const [mdx, setMDX] = useState(note?.mdx ?? "");
    const debouncedMDX = useDeferredValue(mdx);
+
+   //This is the function that is called when the user types in the textarea
    const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const mdx = event.target.value;
 
@@ -68,8 +71,10 @@ export default function NoteEditor({
 
    return (
       <Modal
+         //Render the editor in a modal
          show={isOpen}
          onClose={() => {
+            //Submit the form when the modal is closed
             ref.current.click();
             setIsOpen(false);
          }}
