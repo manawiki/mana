@@ -1,4 +1,4 @@
-import * as runtime from "react/jsx-dev-runtime";
+import { jsxRuntime } from "../jsx-runtime.cjs";
 import { useMDXComponents } from "@mdx-js/react";
 import { runSync } from "@mdx-js/mdx";
 import { useMemo } from "react";
@@ -23,7 +23,7 @@ export function NoteViewer({
 //todo perf comparison with async
 export function NoteView({ note, className = "mdx-content" }: NoteViewerProps) {
    const { default: Content } = useMemo(
-      () => runSync(note.source as string, { ...runtime, useMDXComponents }),
+      () => runSync(note.source as string, { ...jsxRuntime, useMDXComponents }),
       [note.source]
    );
 
