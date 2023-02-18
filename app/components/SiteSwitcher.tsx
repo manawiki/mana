@@ -5,7 +5,7 @@ import { NewSiteModal } from "~/routes/action.new-site-modal";
 import { Transition, Menu } from "@headlessui/react";
 import { Fragment } from "react";
 import { SiteList } from "./SiteList";
-import { UserMenu } from "./UserMenu";
+import { MobileUserMenu } from "./MobileUserMenu";
 import { HomeLink, SiteNavLink } from "~/components/SiteNavLink";
 import { Squares2X2Icon } from "@heroicons/react/24/outline";
 
@@ -15,7 +15,7 @@ export const SiteSwitcher = () => {
       (useRouteLoaderData("routes/$siteId") as { site: Site }) ?? {};
    const sites = user?.sites as Site[];
    return (
-      <menu className="max-laptop:flex max-laptop:px-3 max-laptop:gap-3 w-full justify-between">
+      <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3 max-laptop:px-3">
          <LoggedIn>
             <>
                <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5">
@@ -24,7 +24,7 @@ export const SiteSwitcher = () => {
                      <>
                         <NotFollowingSite>
                            <div className="max-laptop:hidden">
-                              <div className="max-laptop:hidden mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                               <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
@@ -33,7 +33,7 @@ export const SiteSwitcher = () => {
                         </NotFollowingSite>
                         {site && (
                            <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5 laptop:hidden">
-                              <div className="max-laptop:hidden mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                               <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
@@ -44,9 +44,9 @@ export const SiteSwitcher = () => {
                   ) : (
                      sites?.length === 0 && (
                         <>
-                           <div className="max-laptop:hidden mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+                           <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                            <NewSiteModal />
-                           <UserMenu />
+                           <MobileUserMenu />
                         </>
                      )
                   )}
@@ -84,33 +84,33 @@ export const SiteSwitcher = () => {
                            </Menu.Items>
                         </Transition>
                      </Menu>
-                     <div className="max-laptop:hidden mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+                     <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                      <div className="max-laptop:hidden">
                         <SiteList />
                         <NewSiteModal />
                      </div>
-                     <UserMenu />
+                     <MobileUserMenu />
                   </div>
                )}
             </>
          </LoggedIn>
          <LoggedOut>
-            <div className="max-laptop:flex max-laptop:w-full max-laptop:justify-between max-laptop:items-center max-laptop:gap-3.5">
+            <div className="max-laptop:flex max-laptop:w-full max-laptop:items-center max-laptop:justify-between max-laptop:gap-3.5">
                <div className="max-laptop:flex  max-laptop:items-center max-laptop:gap-3.5">
                   <HomeLink site={site} />
                   {site && (
                      <>
                         <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
-                        <div className="max-laptop:hidden mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+                        <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                         <div className="relative flex items-center justify-center">
                            <SiteNavLink site={site} currentSite={site} />
                         </div>
                      </>
                   )}
                </div>
-               <div className="max-laptop:hidden mx-auto mt-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800"></div>
+               <div className="mx-auto mt-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
                <NewSiteModal />
-               <UserMenu />
+               <MobileUserMenu />
             </div>
          </LoggedOut>
       </menu>

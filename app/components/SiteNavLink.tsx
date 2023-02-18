@@ -68,6 +68,11 @@ export const SiteNavLink = ({
 
 export const HomeLink = ({ site }: { site: Site }) => {
    const { env } = useRouteLoaderData("root") as { env: envType };
+   const style = `flex h-12 w-12 items-center justify-center rounded-full border-2
+   transition duration-300 font-logo bg-2
+   active:translate-y-0.5 dark:border-zinc-700 dark:shadow-black
+ dark:hover:bg-zinc-800 dark:focus:bg-zinc-600 laptop:h-14 laptop:w-14`;
+
    const domain =
       env == "dev-server"
          ? "https://manatee.wiki/home"
@@ -83,15 +88,10 @@ export const HomeLink = ({ site }: { site: Site }) => {
             href={domain}
             className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
          >
-            <div
-               className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-blue-200
-             bg-gradient-to-b from-blue-100 to-white shadow-zinc-200 transition duration-300 
-             active:translate-y-0.5 dark:border-zinc-700 dark:from-indigo-900 dark:to-zinc-800 dark:shadow-black
-           dark:hover:bg-zinc-800 dark:focus:bg-zinc-600 laptop:h-14 laptop:w-14 laptop:shadow-lg"
-            >
+            <div className={style}>
                <Logo
-                  width={38}
-                  height={38}
+                  width={34}
+                  height={34}
                   options="width=50,height=50"
                   className="max-laptop:h-7 max-laptop:w-7"
                />
@@ -103,15 +103,10 @@ export const HomeLink = ({ site }: { site: Site }) => {
          to="/home"
          className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
       >
-         <div
-            className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-blue-200
-             bg-gradient-to-b from-blue-50 to-white shadow-zinc-100 transition duration-300
-             active:translate-y-0.5 dark:border-zinc-700 dark:from-indigo-900 dark:to-zinc-800 dark:shadow-black/50
-           dark:hover:bg-zinc-800 dark:focus:bg-zinc-600 laptop:h-14 laptop:w-14 laptop:shadow-lg"
-         >
+         <div className={style}>
             <Logo
-               width={38}
-               height={38}
+               width={34}
+               height={34}
                options="width=50,height=50"
                className="max-laptop:h-7 max-laptop:w-7"
             />
