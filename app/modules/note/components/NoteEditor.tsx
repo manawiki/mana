@@ -59,8 +59,8 @@ export default function NoteEditor({
 
    //This is the function that is called when the user types in the textarea
    const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const mdx = event.target.value;
-
+      //If not submitting by form, get the value from the event
+      const mdx = event?.target?.value ?? event;
       //todo we should debounce this in some way
       setMDX(mdx);
       submit(
