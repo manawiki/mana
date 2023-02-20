@@ -21,6 +21,11 @@ const OnChangeMD = ({ onChange }: OnChangeHTMLProps): null => {
    return null;
 };
 
+function SaveButton() {
+   const { getMarkdown } = useHelpers();
+   return <input type="hidden" name="mdx" value={getMarkdown()}></input>;
+}
+
 //This renders an basic textarea editor
 export default function NoteText({
    defaultValue,
@@ -36,6 +41,7 @@ export default function NoteText({
             placeholder="Enter text..."
          >
             <OnChangeMD onChange={onChange} />
+            <SaveButton />
          </MarkdownEditorCustom>
       </div>
    );
