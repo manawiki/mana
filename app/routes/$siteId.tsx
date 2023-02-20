@@ -97,7 +97,7 @@ export default function SiteIndex() {
    const { site } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
-   const { t } = useTranslation("site");
+   const { t } = useTranslation(["site", "auth"]);
    const defaultStyle = `desktop:bg-1 max-laptop:bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
    max-desktop:h-12 max-desktop:w-12
@@ -257,7 +257,7 @@ export default function SiteIndex() {
                            <Popover.Button
                               className="bg-1 flex h-14 w-full items-center 
                               justify-between gap-3  px-3 duration-150 
-                              focus:outline-none
+                              focus:outline-none border-b border-color
                               "
                            >
                               <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ export default function SiteIndex() {
                   {site.banner && (
                      <div
                         className="border-color flex h-44 items-center justify-center 
-                     overflow-hidden border-b dark:bg-zinc-800"
+                     overflow-hidden border-b-2 dark:bg-zinc-800"
                      >
                         <Image
                            //@ts-expect-error
@@ -337,77 +337,66 @@ export default function SiteIndex() {
                      </div>
                   )}
                   <NotFollowingSite>
-                     <div
-                        className={`${
-                           site.banner ? "-mt-6" : "mt-1"
-                        } flex items-center`}
-                     >
-                        <div
-                           className={`${
-                              site.banner
-                                 ? "border-zinc-200 dark:border-zinc-500"
-                                 : "border-zinc-100 dark:border-zinc-800"
-                           } w-3 border-t-2`}
-                        />
-                        <fetcher.Form className="flex-grow" method="post">
+                     <div className="flex w-full p-3 border-b border-color items-center">
+                        <fetcher.Form className="w-full" method="post">
                            <button
                               name="intent"
                               value="followSite"
-                              className="border-color flex h-11 w-full items-center justify-center rounded-full
-                              border-2 border-blue-100 bg-blue-50 text-sm font-bold text-blue-500 hover:bg-blue-100 
-                              dark:border-blue-900/50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+                              className="flex h-10 w-full items-center justify-center rounded-full
+                        bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
                            >
                               {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-400" />
+                                 <Loader2 className="mx-auto h-5 w-5 animate-spin" />
                               ) : (
                                  t("follow.actionFollow")
                               )}
                            </button>
                         </fetcher.Form>
-                        <div
-                           className={`${
-                              site.banner
-                                 ? "border-zinc-200 dark:border-zinc-500"
-                                 : "border-zinc-100 dark:border-zinc-800"
-                           } w-3 border-t-2`}
-                        />
                      </div>
                   </NotFollowingSite>
                   <LoggedOut>
-                     <div
-                        className={`${
-                           site.banner ? "-mt-6" : "mt-1"
-                        } flex items-center`}
-                     >
-                        <div
-                           className={`${
-                              site.banner
-                                 ? "border-zinc-200 dark:border-zinc-500"
-                                 : "border-zinc-100 dark:border-zinc-800"
-                           } w-3 border-t-2`}
-                        />
+                     <div className="flex w-full p-3 border-b border-color items-center">
                         <Link
                            to={`/login?redirectTo=/${site.id}`}
-                           className="border-color flex h-11 w-full items-center justify-center rounded-full
-                        border-2 border-blue-100 bg-blue-50 text-sm font-bold text-blue-500 hover:bg-blue-100 
-                        dark:border-blue-900/50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+                           className="flex h-10 w-full items-center justify-center rounded-full
+                        bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
                         >
                            Follow
                         </Link>
-                        <div
-                           className={`${
-                              site.banner
-                                 ? "border-zinc-200 dark:border-zinc-500"
-                                 : "border-zinc-100 dark:border-zinc-800"
-                           } w-3 border-t-2`}
-                        />
                      </div>
                   </LoggedOut>
                   <div className="flex-grow py-4"></div>
-                  <div className="flex items-center justify-center pt-4">
-                     <div className="h-[250px] w-[300px] rounded-lg" />
+
+                  <LoggedOut>
+                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-t border-color">
+                        <Link
+                           to="/join"
+                           className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
+                           text-indigo-600 transition duration-300 ease-out rounded-full group"
+                        >
+                           <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span
+                              className="absolute bottom-0 right-0 block w-64 h-64 mb-32 mr-4 transition duration-500 origin-bottom-left 
+                           transform rotate-45 translate-x-24 bg-teal-500 rounded-full opacity-30 group-hover:rotate-90 ease"
+                           ></span>
+                           <span className="relative text-white font-bold text-sm">
+                              {t("login.signUp", { ns: "auth" })}
+                           </span>
+                        </Link>
+                        <Link
+                           className="flex h-10 items-center justify-center hover:border hover:border-color
+                            rounded-full bg-zinc-100 shadow dark:bg-zinc-800 text-center 
+                            text-sm font-bold"
+                           to={`/login?redirectTo=${location.pathname}`}
+                        >
+                           {t("login.action", { ns: "auth" })}
+                        </Link>
+                     </div>
+                  </LoggedOut>
+                  <div className="flex items-center justify-center py-4 border-t border-color">
+                     <div className="h-[250px] w-[300px] rounded-lg bg-2" />
                   </div>
-                  <div className="items-center justify-between p-3 pr-5 laptop:flex">
+                  <div className="items-center justify-between p-3 pr-5 laptop:flex border-t border-color">
                      <div className="flex-none max-laptop:flex max-laptop:justify-center">
                         <DarkModeToggle />
                      </div>
