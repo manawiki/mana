@@ -14,7 +14,7 @@ import {
    useFetcher,
    useActionData,
 } from "@remix-run/react";
-import { Fragment, Suspense, useEffect, useState } from "react";
+import { Fragment, Suspense, lazy, useEffect, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
@@ -52,6 +52,7 @@ import { Err } from "~/components/Forms";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Image } from "~/components/Image";
 import { EyeIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { NoteText } from "~/modules/note/gui/NoteText";
 
 type Mode = "edit" | "preview";
 
@@ -438,6 +439,20 @@ export function PostEdit() {
       }
    }, [debouncedValue]);
 
+   const onChangeInline = (event: string, noteId: Note["id"]) => {
+      //todo we should debounce this in some way
+      const mdx = event;
+      fetcher.submit(
+         { mdx, autosave: "yes" },
+         {
+            method: "post",
+            replace: true,
+            preventScrollReset: true,
+            action: `/edit/${noteId}`,
+         }
+      );
+   };
+
    return (
       <div
          className="post-content relative mx-auto min-h-screen max-w-[728px] 
@@ -590,25 +605,38 @@ export function PostEdit() {
          <Suspense fallback={<div>Loading...</div>}>
             {notes.map((note) => (
                <div key={note.id} className="group">
-                  <Link
-                     to={`edit/${note.id}`}
-                     prefetch="intent"
-                     className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
+                  {/* @ts-expect-error */}
+                  {note.ui.id == "textarea" ? (
+                     <>
+                        <NoteText
+                           defaultValue={note.mdx}
+                           /* @ts-expect-error */
+                           onChange={(e) => onChangeInline(e, note.id)}
+                        />
+                     </>
+                  ) : (
+                     <>
+                        <Link
+                           to={`edit/${note.id}`}
+                           prefetch="intent"
+                           className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
                      text-xs font-bold text-white group-hover:inline-block"
-                  >
-                     Edit
-                  </Link>
-                  <NoteViewer
-                     className="post-content outline-1 outline-offset-8 outline-zinc-300 group-hover:cursor-pointer 
+                        >
+                           Edit
+                        </Link>
+                        <NoteViewer
+                           className="post-content outline-1 outline-offset-8 outline-zinc-300 group-hover:cursor-pointer 
                      group-hover:rounded-sm group-hover:outline-dotted dark:outline-zinc-600"
-                     note={note}
-                     //insert custom components here
-                     components={
-                        {
-                           // h2: (props) => <h2 className="text-2xl" {...props} />,
-                        }
-                     }
-                  />
+                           note={note}
+                           //insert custom components here
+                           components={
+                              {
+                                 // h2: (props) => <h2 className="text-2xl" {...props} />,
+                              }
+                           }
+                        />
+                     </>
+                  )}
                </div>
             ))}
          </Suspense>

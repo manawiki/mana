@@ -4,6 +4,7 @@ import {
    Outlet,
    useFetcher,
    useLoaderData,
+   useLocation,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
@@ -98,6 +99,7 @@ export default function SiteIndex() {
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
+   const location = useLocation();
    const defaultStyle = `desktop:bg-1 max-laptop:bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
    max-desktop:h-12 max-desktop:w-12

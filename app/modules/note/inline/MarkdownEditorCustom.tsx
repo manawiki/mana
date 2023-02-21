@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import jsx from "refractor/lang/jsx.js";
 import typescript from "refractor/lang/typescript.js";
 import { ExtensionPriority } from "remirror";
-import { AllStyledComponent } from "@remirror/styles/emotion";
 import {
    BlockquoteExtension,
    BoldExtension,
@@ -24,10 +23,19 @@ import {
 } from "remirror/extensions";
 import {
    EditorComponent,
-   MarkdownToolbar,
    Remirror,
+   Toolbar,
    useRemirror,
-   ThemeProvider,
+   CommandButtonGroup,
+   HeadingLevelButtonGroup,
+   HistoryButtonGroup,
+   ToggleBlockquoteButton,
+   ToggleBoldButton,
+   ToggleCodeBlockButton,
+   ToggleCodeButton,
+   ToggleItalicButton,
+   ToggleStrikeButton,
+   VerticalDivider,
 } from "@remirror/react";
 
 import type { CreateEditorStateProps } from "remirror";
@@ -89,14 +97,28 @@ export const MarkdownEditorCustom: FC<
    });
 
    return (
-      <AllStyledComponent>
-         <ThemeProvider>
-            <Remirror manager={manager} autoFocus {...rest}>
-               <MarkdownToolbar />
-               <EditorComponent />
-               {children}
-            </Remirror>
-         </ThemeProvider>
-      </AllStyledComponent>
+      <div className="remirror-theme">
+         <Remirror manager={manager} autoFocus {...rest}>
+            <Toolbar>
+               <CommandButtonGroup>
+                  <ToggleBoldButton />
+                  <ToggleItalicButton />
+                  <ToggleStrikeButton />
+                  <ToggleCodeButton />
+               </CommandButtonGroup>
+               <VerticalDivider />
+               <HeadingLevelButtonGroup showAll />
+               <VerticalDivider />
+               <CommandButtonGroup>
+                  <ToggleBlockquoteButton />
+                  <ToggleCodeBlockButton />
+               </CommandButtonGroup>
+               <VerticalDivider />
+               <HistoryButtonGroup />
+            </Toolbar>
+            <EditorComponent />
+            {children}
+         </Remirror>
+      </div>
    );
 };

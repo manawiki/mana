@@ -1,5 +1,5 @@
 import { useDocChanged, useHelpers } from "@remirror/react";
-import { MarkdownEditorCustom } from "./MarkdownEditorCustom";
+import { MarkdownEditorCustom } from "../inline/MarkdownEditorCustom";
 import { useCallback } from "react";
 
 interface OnChangeHTMLProps {
@@ -27,22 +27,20 @@ function SaveButton() {
 }
 
 //This renders an basic textarea editor
-export default function NoteText({
+export const NoteText = ({
    defaultValue,
    onChange,
 }: {
    defaultValue: string;
    onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void;
-}) {
+}) => {
    return (
-      <div>
-         <MarkdownEditorCustom
-            initialContent={defaultValue}
-            placeholder="Enter text..."
-         >
-            <OnChangeMD onChange={onChange} />
-            <SaveButton />
-         </MarkdownEditorCustom>
-      </div>
+      <MarkdownEditorCustom
+         initialContent={defaultValue}
+         placeholder="Enter text..."
+      >
+         <OnChangeMD onChange={onChange} />
+         <SaveButton />
+      </MarkdownEditorCustom>
    );
-}
+};

@@ -1,21 +1,19 @@
 import type { Note } from "payload-types";
-import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { Form, useNavigation, useSubmit } from "@remix-run/react";
 import {
    useRef,
    Suspense,
    Fragment,
    useState,
-   useEffect,
    useMemo,
    useDeferredValue,
 } from "react";
 import { Modal } from "~/components/Modal";
-import { NoteViewer } from "./NoteViewer";
 import useWindowDimensions from "~/hooks/use-window-dimensions";
 import { Tab } from "@headlessui/react";
 import { NoteSelector } from "../gui/NoteSelector";
 import type { MDXComponents } from "mdx/types";
-import { Loader2, Save, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { isAdding } from "~/utils";
 import React from "react";
 import { deferComponents } from "../utils";
