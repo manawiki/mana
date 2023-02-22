@@ -24,22 +24,26 @@ import {
 import {
    EditorComponent,
    Remirror,
-   Toolbar,
    useRemirror,
-   CommandButtonGroup,
-   HeadingLevelButtonGroup,
-   HistoryButtonGroup,
-   ToggleBlockquoteButton,
-   ToggleBoldButton,
-   ToggleCodeBlockButton,
-   ToggleCodeButton,
-   ToggleItalicButton,
-   ToggleStrikeButton,
-   VerticalDivider,
+   useChainedCommands,
+   FloatingToolbar,
+   useActive,
 } from "@remirror/react";
 
 import type { CreateEditorStateProps } from "remirror";
 import type { RemirrorProps } from "@remirror/react";
+import {
+   Bold,
+   Code,
+   CurlyBraces,
+   Heading2,
+   Heading3,
+   Italic,
+   List,
+   ListOrdered,
+   Quote,
+   Strikethrough,
+} from "lucide-react";
 
 interface ReactEditorProps
    extends Pick<CreateEditorStateProps, "stringHandler">,
@@ -54,6 +58,163 @@ export default { title: "Editors / Markdown" };
 
 export interface MarkdownEditorProps
    extends Partial<Omit<ReactEditorProps, "stringHandler">> {}
+
+export const Menu = () => {
+   // Using command chaining
+   const chain = useChainedCommands();
+
+   const active = useActive();
+   const defaultStyle = `dark:bg-neutral-800 dark:border-neutral-700 border h-8 w-8 shadow-sm 
+                         rounded-lg bg-white flex items-center justify-center dark:shadow-black/30`;
+   const groupDefaultStyle = `dark:bg-neutral-800 h-8 w-8 shadow-sm 
+                              bg-white flex items-center justify-center dark:shadow-black/30`;
+   const activeStyle = `dark:bg-zinc-800 text-emerald-500 bg-zinc-50`;
+   const groupParentStyle = `divide-x dark:divide-zinc-700 overflow-hidden
+   rounded-md border border-color flex items-center shadow-sm dark:shadow-black/30`;
+
+   return (
+      <div className="flex items-center gap-3">
+         <div className={`${groupParentStyle}`}>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleBold()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.bold() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Bold size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleItalic()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.italic() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Italic size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleStrike()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.strike() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Strikethrough size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleBlockquote()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.blockquote() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Quote size={16} />
+            </button>
+         </div>
+         <div className={`${groupParentStyle}`}>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleBulletList()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.bulletList() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <List size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleOrderedList()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.orderedList() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <ListOrdered size={18} />
+            </button>
+         </div>
+         <div className={`${groupParentStyle}`}>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleHeading({ level: 2 })
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.heading({ level: 2 }) ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Heading2 size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleHeading({ level: 3 })
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.heading({ level: 3 }) ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Heading3 size={18} />
+            </button>
+         </div>
+         <div className={`${groupParentStyle}`}>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleCode()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.code() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <Code size={18} />
+            </button>
+            <button
+               onClick={() => {
+                  chain // Begin a chain
+                     .toggleCodeBlock()
+                     .focus()
+                     .run(); // A chain must always be terminated with `.run()`
+               }}
+               className={`${
+                  active.codeBlock() ? `${activeStyle}` : ""
+               } ${groupDefaultStyle}`}
+            >
+               <CurlyBraces size={16} />
+            </button>
+         </div>
+      </div>
+   );
+};
 
 /**
  * The editor which is used to create the annotation. Supports formatting.
@@ -99,24 +260,11 @@ export const MarkdownEditorCustom: FC<
    return (
       <div className="remirror-theme">
          <Remirror manager={manager} autoFocus {...rest}>
-            <Toolbar>
-               <CommandButtonGroup>
-                  <ToggleBoldButton />
-                  <ToggleItalicButton />
-                  <ToggleStrikeButton />
-                  <ToggleCodeButton />
-               </CommandButtonGroup>
-               <VerticalDivider />
-               <HeadingLevelButtonGroup showAll />
-               <VerticalDivider />
-               <CommandButtonGroup>
-                  <ToggleBlockquoteButton />
-                  <ToggleCodeBlockButton />
-               </CommandButtonGroup>
-               <VerticalDivider />
-               <HistoryButtonGroup />
-            </Toolbar>
+            <Menu />
             <EditorComponent />
+            {/* <FloatingToolbar>
+               <Menu />
+            </FloatingToolbar> */}
             {children}
          </Remirror>
       </div>

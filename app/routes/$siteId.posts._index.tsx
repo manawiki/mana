@@ -202,7 +202,7 @@ export default function PostsIndex() {
                   leaveTo="transform opacity-0 scale-95"
                >
                   <Menu.Items
-                     className="absolute right-0 z-10 mt-10 w-full min-w-[100px]
+                     className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
                                  max-w-[220px] origin-top-right transform transition-all"
                   >
                      <div

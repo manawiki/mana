@@ -44,25 +44,40 @@ html.dark {
    }
 }
 
+/* Default Editor Styles */
+.post-content ul {
+   @apply mb-5 list-disc space-y-1.5 pl-7;
+}
+.post-content ol {
+   @apply mb-5 list-decimal space-y-1.5 pl-7;
+}
+.post-content blockquote {
+   @apply border-l-2 pl-3 text-1 my-4 border-color italic;
+}
 .post-content p {
-   @apply mb-3;
+   @apply !mb-3;
 }
-
-/* MarkdownEditorCustom Styles */
-.MuiBox-root,
-.css-19j3oe6-MuiStack-root {
-   @apply !bg-transparent;
+.post-content {
+   @apply break-words;
 }
-.MuiDivider-vertical.MuiDivider-flexItem {
-   @apply !border-color;
+.post-content h2 {
+   @apply dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light;
+}
+.post-content h3 {
+   @apply dark:text-dark font-bold text-xl pb-2 pt-4 text-light;
+}
+.post-content a {
+   @apply text-blue-500;
+}
+.remirror-list-item-marker-container {
+   @apply -left-6;
+}
+.remirror-collapsible-list-item-button {
+   @apply dark:bg-dark bg-light w-1.5 h-1.5;
+}
+.remirror-editor-wrapper {
+   @apply !pt-3.5;
 }
 .remirror-editor {
    @apply !rounded-none !p-0 font-body !shadow-none focus:!shadow-none;
-}
-.Mui-selected.MuiToggleButton-sizeSmall.MuiToggleButton-primary {
-   @apply !bg-zinc-100 dark:!bg-zinc-700;
-}
-.MuiIconButton-root,
-.MuiToggleButton-primary {
-   @apply !border-zinc-200 !bg-zinc-50 dark:!border-zinc-700 dark:!bg-zinc-800 dark:!text-white;
 }

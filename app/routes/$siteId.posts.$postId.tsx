@@ -10,20 +10,24 @@ import {
    Link,
    Outlet,
    useLoaderData,
-   useNavigation,
    useFetcher,
    useActionData,
+   useNavigation,
 } from "@remix-run/react";
-import { Fragment, Suspense, lazy, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
+   ArrowLeft,
    CopyIcon,
+   Expand,
    EyeOff,
    ImageMinus,
+   InfoIcon,
    Loader2,
    MoreVertical,
+   Pencil,
    Plus,
    Trash2,
    Upload,
@@ -51,7 +55,7 @@ import { toast } from "~/components/Toaster";
 import { Err } from "~/components/Forms";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Image } from "~/components/Image";
-import { EyeIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { EyeIcon } from "@heroicons/react/20/solid";
 import { NoteText } from "~/modules/note/gui/NoteText";
 
 type Mode = "edit" | "preview";
@@ -242,44 +246,42 @@ export default function Post() {
             </div>
          </Modal>
          <div
-            className="border-color bg-1 fixed top-20 z-30 flex h-14 items-center 
-            justify-between border-b px-3 max-laptop:w-full max-laptop:border-y laptop:sticky laptop:top-0"
+            className="bg-2 fixed top-20 z-30 flex h-14 items-center border-color
+            px-3 max-laptop:w-full justify-between max-laptop:border-t laptop:sticky laptop:top-0"
          >
+            <div className="flex items-center gap-4">
+               <Link className="pl-2" to={"/"}>
+                  <ArrowLeft size={28} />
+               </Link>
+               <AdminOrOwner>
+                  <span className="h-6 rounded-full w-0.5 dark:bg-zinc-600 bg-zinc-300" />
+                  <div className="flex cursor-pointer items-center gap-2.5">
+                     <span
+                        onClick={() => setMode("edit")}
+                        className={`${
+                           mode == "edit"
+                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
+                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
+                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        `}
+                     >
+                        Edit
+                     </span>
+                     <span
+                        onClick={() => setMode("preview")}
+                        className={`${
+                           mode == "preview"
+                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
+                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
+                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        `}
+                     >
+                        Preview
+                     </span>
+                  </div>
+               </AdminOrOwner>
+            </div>
             <AdminOrOwner>
-               {post.isPublished ? (
-                  <span
-                     className="flex h-7 items-center justify-center rounded-md border border-green-200
-                  bg-green-50 px-2 text-xs font-semibold text-green-500 dark:border-green-800 dark:bg-green-900"
-                  >
-                     Published
-                  </span>
-               ) : (
-                  <span className="rounded bg-zinc-500 py-1 px-2 text-xs font-semibold text-white">
-                     Draft
-                  </span>
-               )}
-               <div className="flex cursor-pointer items-center gap-2">
-                  <span
-                     onClick={() => setMode("edit")}
-                     className={`${
-                        mode == "edit" &&
-                        "bg-blue-500 text-white hover:!bg-blue-500"
-                     } rounded-full py-1 px-3 text-sm font-semibold transition 
-                        hover:bg-zinc-100 dark:hover:bg-zinc-800`}
-                  >
-                     Edit
-                  </span>
-                  <span
-                     onClick={() => setMode("preview")}
-                     className={`${
-                        mode == "preview" &&
-                        "bg-blue-500 text-white hover:!bg-blue-500"
-                     } rounded-full py-1 px-3 text-sm font-semibold transition 
-                        hover:bg-zinc-100 dark:hover:bg-zinc-800`}
-                  >
-                     Preview
-                  </span>
-               </div>
                <div className="flex items-center gap-3">
                   <Menu as="div" className="relative">
                      <Menu.Button
@@ -397,25 +399,20 @@ export default function Post() {
 
 export function PostEdit() {
    const data = useLoaderData<typeof loader>();
-
-   const { post } = data;
-
-   //This is necessary to determine whether the user should see the draft notes or not.
-   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
-
    const formResponse = useActionData<FormResponse>();
    const zo = useZorm("newPost", PostSchema, {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
-   const transition = useNavigation();
-   const disabled = isProcessing(transition.state);
    const fetcher = useFetcher();
    const isTitleAdding = isAdding(fetcher, "updateTitle");
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
    const isBannerAdding = isAdding(fetcher, "updateBanner");
-   const isMount = useIsMount();
+   const noteFetcher = useFetcher();
+   const isNoteAdding = isProcessing(noteFetcher.state);
+   const transition = useNavigation();
 
+   //Server response toast
    useEffect(() => {
       if (fetcher.type === "done") {
          if (fetcher.data?.success) {
@@ -427,8 +424,10 @@ export function PostEdit() {
       }
    }, [fetcher.type]);
 
+   //Update title logic
    const [titleValue, setTitleValue] = useState("");
    const debouncedValue = useDebouncedValue(titleValue, 500);
+   const isMount = useIsMount();
 
    useEffect(() => {
       if (!isMount) {
@@ -439,180 +438,347 @@ export function PostEdit() {
       }
    }, [debouncedValue]);
 
-   const onChangeInline = (event: string, noteId: Note["id"]) => {
-      //todo we should debounce this in some way
-      const mdx = event;
-      fetcher.submit(
-         { mdx, autosave: "yes" },
-         {
-            method: "post",
-            replace: true,
-            preventScrollReset: true,
-            action: `/edit/${noteId}`,
-         }
-      );
-   };
+   const { post } = data;
+
+   //This is necessary to determine whether the user should see the draft notes or not.
+   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
+
+   // Create new array with show property to control active editable note
+   const noteList = notes.map((item) => ({
+      ...item,
+      show: false,
+   }));
+
+   const [isEditable, setIsEditable] = useState(noteList);
+
+   //On active note change, update the show property of the note, set all other notes to false
+   function updateActiveNote(id: Note["id"], reset: Boolean = false) {
+      const updateNotes = (id: string) => {
+         return noteList.map((note) => {
+            if (reset == true)
+               return {
+                  ...note,
+                  show: false,
+               };
+            if (note.id === id) {
+               return {
+                  ...note,
+                  show: true,
+               };
+            } else {
+               return {
+                  ...note,
+                  show: false,
+               };
+            }
+         });
+      };
+      return setIsEditable(updateNotes(id));
+   }
+
+   //Determine whether the note is active or not
+   const isActiveNote = (noteId: Note["id"]) =>
+      isEditable.find(({ id }) => id === noteId)?.show;
+
+   //Debounce and save inline input
+   const [inlineValue, setInlineValue] = useState({ mdx: "", id: "" });
+   const debouncedInlineSaveValue = useDebouncedValue(inlineValue, 500);
+
+   useEffect(() => {
+      if (!isMount) {
+         const { id, mdx } = inlineValue;
+         noteFetcher.submit(
+            { mdx, autosave: "yes", intent: "updateNote" },
+            {
+               method: "post",
+               action: `/edit/${id}`,
+            }
+         );
+      }
+   }, [debouncedInlineSaveValue]);
+
+   // After note is updated with new data, update the editble list, then set the active note again
+   useEffect(() => {
+      if (noteFetcher.type === "done") {
+         const { note } = noteFetcher.data;
+         setIsEditable(noteList);
+         updateActiveNote(note.id);
+      }
+   }, [noteFetcher.type]);
+
+   useEffect(() => {
+      if (transition.state === "idle") {
+         setIsEditable(noteList);
+      }
+   }, [transition]);
 
    return (
-      <div
-         className="post-content relative mx-auto min-h-screen max-w-[728px] 
-      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+      <main
+         className="post-content relative min-h-screen  
+         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
-         <div className="relative mb-3 flex items-center gap-3">
-            <input
-               className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-mono text-3xl font-semibold !ring-zinc-200
-               !ring-offset-4 !ring-offset-white hover:bg-white hover:ring-2 focus:bg-white focus:ring-2 dark:!ring-zinc-600
-               dark:!ring-offset-zinc-700 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
-               name={zo.fields.title()}
-               type="text"
-               defaultValue={post.title}
-               onChange={(event) => setTitleValue(event.target.value)}
-               disabled={disabled}
-               placeholder="Add a title..."
-            />
-            {isTitleAdding ? (
-               <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-blue-500" />
-            ) : null}
-            {zo.errors.title((err) => (
-               <Err>{err.message}</Err>
-            ))}
-         </div>
-         <div className="flex items-center gap-3 pb-5">
-            <time
-               className="text-1 flex items-center gap-1.5 text-sm"
-               dateTime={post?.updatedAt}
-            >
-               <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-               {formatDistanceStrict(
-                  new Date(post?.updatedAt as string),
-                  new Date(),
-                  {
-                     addSuffix: true,
-                  }
-               )}
-            </time>
-            {post?.publishedAt && (
-               <>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                  <time
-                     className="text-1 flex items-center gap-1.5 text-sm"
-                     dateTime={post?.publishedAt}
-                  >
-                     <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                     {formatDistanceStrict(
-                        new Date(post?.publishedAt as string),
-                        new Date(),
-                        {
-                           addSuffix: true,
-                        }
-                     )}
-                  </time>
-               </>
-            )}
-         </div>
-         {post.banner ? (
-            <div className="relative">
-               <div className="aspect-[1.91/1] overflow-hidden rounded">
-                  <img
-                     alt="Post Banner"
-                     className="h-full w-full object-cover"
-                     //@ts-ignore
-                     src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
-                  />
-               </div>
-               <button
-                  className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
-                  justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
-                  onClick={() =>
-                     fetcher.submit(
-                        { intent: "deleteBanner" },
-                        { method: "delete" }
-                     )
-                  }
-               >
-                  {isBannerDeleting ? (
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
-                  ) : (
-                     <ImageMinus
-                        className="text-red-500 dark:text-red-300"
-                        size={20}
-                     />
-                  )}
-               </button>
+         <section className="max-w-[728px] mx-auto max-desktop:px-3">
+            <div className="relative mb-3 flex items-center gap-3">
+               <input
+                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-mono text-2xl 
+                  laptop:text-3xl font-semibold !ring-zinc-200
+                  !ring-offset-4 !ring-offset-white hover:bg-white hover:ring-2 focus:bg-white 
+                  focus:ring-2 dark:!ring-zinc-600
+                dark:!ring-offset-zinc-700 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
+                  name={zo.fields.title()}
+                  type="text"
+                  defaultValue={post.title}
+                  onChange={(event) => setTitleValue(event.target.value)}
+                  placeholder="Add a title..."
+               />
+               {isTitleAdding ? (
+                  <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-blue-500" />
+               ) : null}
+               {zo.errors.title((err) => (
+                  <Err>{err.message}</Err>
+               ))}
             </div>
-         ) : (
-            <fetcher.Form
-               method="patch"
-               encType="multipart/form-data"
-               replace
-               onChange={(event) => {
-                  fetcher.submit(event.currentTarget, { method: "patch" });
-               }}
-            >
-               <label className="cursor-pointer">
-                  <div
-                     className="bg-1 border-color flex aspect-[1.91/1] 
-                   items-center justify-center overflow-hidden rounded border-2 border-dashed hover:border-4"
-                  >
-                     <div className="text-1 space-y-2">
-                        {isBannerAdding ? (
-                           <Loader2
-                              size={36}
-                              className="mx-auto animate-spin"
-                           />
-                        ) : (
-                           <Upload className="mx-auto" size={36} />
-                        )}
 
-                        <div className="text-center font-bold">
-                           Click to upload banner
-                        </div>
-                        <div className="text-center text-sm">
-                           JPEG, PNG, JPG or WEBP (MAX. 5MB)
+            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
+               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
+                  {/* @ts-expect-error */}
+                  {post?.author?.avatar ? (
+                     <Image /* @ts-expect-error */
+                        url={post.author.avatar.url}
+                        options="fit=crop,width=60,height=60 ,gravity=auto"
+                        className="h-full w-full object-cover"
+                        /* @ts-expect-error */
+                        alt={post?.author?.username}
+                     />
+                  ) : null}
+               </div>
+               <div className="space-y-0.5">
+                  {/* @ts-expect-error */}
+                  <div className="font-bold">{post?.author?.username}</div>
+                  <div className="flex items-center gap-3">
+                     <time
+                        className="text-1 flex items-center gap-1.5 text-sm"
+                        dateTime={post?.updatedAt}
+                     >
+                        {formatDistanceStrict(
+                           new Date(post?.updatedAt as string),
+                           new Date(),
+                           {
+                              addSuffix: true,
+                           }
+                        )}
+                        {/* <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" /> */}
+                     </time>
+                     {post?.publishedAt && (
+                        <>
+                           <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
+                           <time
+                              className="text-1 flex items-center gap-1.5 text-sm"
+                              dateTime={post?.publishedAt}
+                           >
+                              <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
+                              {formatDistanceStrict(
+                                 new Date(post?.publishedAt as string),
+                                 new Date(),
+                                 {
+                                    addSuffix: true,
+                                 }
+                              )}
+                           </time>
+                        </>
+                     )}
+                  </div>
+               </div>
+            </div>
+         </section>
+         <section className="max-w-[800px] mx-auto">
+            {post.banner ? (
+               <div className="relative mb-5">
+                  <div
+                     className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
+                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                        items-center justify-center overflow-hidden tablet:rounded-md
+                        shadow-sm"
+                  >
+                     <img
+                        alt="Post Banner"
+                        className="h-full w-full object-cover"
+                        //@ts-ignore
+                        src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
+                     />
+                  </div>
+                  <button
+                     className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
+                  justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
+                     onClick={() =>
+                        fetcher.submit(
+                           { intent: "deleteBanner" },
+                           { method: "delete" }
+                        )
+                     }
+                  >
+                     {isBannerDeleting ? (
+                        <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                     ) : (
+                        <ImageMinus
+                           className="text-red-500 dark:text-red-300"
+                           size={20}
+                        />
+                     )}
+                  </button>
+               </div>
+            ) : (
+               <fetcher.Form
+                  className="mb-5"
+                  method="patch"
+                  encType="multipart/form-data"
+                  replace
+                  onChange={(event) => {
+                     fetcher.submit(event.currentTarget, { method: "patch" });
+                  }}
+               >
+                  <label className="cursor-pointer">
+                     <div
+                        className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
+                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                        items-center justify-center overflow-hidden tablet:rounded-md
+                        shadow-sm border-y tablet:border hover:border-dashed hover:border-4"
+                     >
+                        <div className="text-1 space-y-2">
+                           {isBannerAdding ? (
+                              <Loader2
+                                 size={36}
+                                 className="mx-auto animate-spin"
+                              />
+                           ) : (
+                              <Upload className="mx-auto" size={36} />
+                           )}
+
+                           <div className="text-center font-bold">
+                              Click to upload banner
+                           </div>
+                           <div className="text-center text-sm">
+                              JPEG, PNG, JPG or WEBP (MAX. 5MB)
+                           </div>
                         </div>
                      </div>
-                  </div>
-                  <input
-                     // @ts-ignore
-                     name={zo.fields.banner()}
-                     type="file"
-                     className="hidden"
-                  />
-                  {zo.errors.banner((err) => (
-                     <Err>{err.message}</Err>
-                  ))}
-               </label>
-               <input type="hidden" name="intent" value="updateBanner" />
-            </fetcher.Form>
-         )}
-
-         <div className="mt-4 mb-5 flex items-center gap-3 rounded-md">
-            <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-               {/* @ts-expect-error */}
-               {post?.author?.avatar ? (
-                  <Image /* @ts-expect-error */
-                     url={post.author.avatar.url}
-                     options="fit=crop,width=44,height=44,gravity=auto"
-                     className="h-full w-full object-cover"
-                     /* @ts-expect-error */
-                     alt={post?.author?.username}
-                  />
-               ) : null}
-            </div>
-            {/* @ts-expect-error */}
-            <div className="font-semibold">{post?.author?.username}</div>
-         </div>
+                     <input
+                        // @ts-ignore
+                        name={zo.fields.banner()}
+                        type="file"
+                        className="hidden"
+                     />
+                     {zo.errors.banner((err) => (
+                        <Err>{err.message}</Err>
+                     ))}
+                  </label>
+                  <input type="hidden" name="intent" value="updateBanner" />
+               </fetcher.Form>
+            )}
+         </section>
          <Suspense fallback={<div>Loading...</div>}>
-            {notes.map((note) => (
+            {isEditable.map((note) => (
                <div key={note.id} className="group">
                   {/* @ts-expect-error */}
-                  {note.ui.id == "textarea" ? (
+                  {note?.ui?.id == "textarea" ? (
                      <>
-                        <NoteText
-                           defaultValue={note.mdx}
-                           /* @ts-expect-error */
-                           onChange={(e) => onChangeInline(e, note.id)}
-                        />
+                        {isActiveNote(note.id) == true ? (
+                           <div
+                              className="px-3 desktop:px-0 border-y
+                              mt-5 mb-6 pt-4 border-color relative"
+                           >
+                              <section className="max-w-[728px] relative mx-auto -mt-8">
+                                 <div className="absolute -top-0.5 -left-11">
+                                    <Link
+                                       className="w-9 h-9 rounded-full flex
+                                       items-center justify-center transition !text-zinc-300
+                                        active:translate-y-0.5 dark:!text-zinc-600
+                                    "
+                                       to={"/help"}
+                                    >
+                                       <InfoIcon
+                                          className="bg-white rounded-full dark:bg-zinc-800"
+                                          size={24}
+                                       />
+                                    </Link>
+                                 </div>
+                                 <NoteText
+                                    defaultValue={note.mdx}
+                                    onChange={(e) =>
+                                       //@ts-ignore
+                                       setInlineValue({ mdx: e, id: note.id })
+                                    }
+                                 />
+                              </section>
+                              <button
+                                 disabled={isNoteAdding}
+                                 onClick={() => {
+                                    updateActiveNote(note.id, true);
+                                 }}
+                              >
+                                 <div className="absolute -top-5 right-5 ">
+                                    <div className="flex items-center gap-3">
+                                       <Link
+                                          className="w-9 h-9 rounded-full flex !text-emerald-500
+                                       items-center justify-center bg-2 border-2 border-color transition
+                                       duration-300 hover:bg-gray-100 active:translate-y-0.5
+                                       dark:border-zinc-600 dark:hover:bg-zinc-700"
+                                          to={`edit/${note.id}`}
+                                       >
+                                          <Expand size={16} />
+                                       </Link>
+                                       {isNoteAdding ? (
+                                          <div
+                                             className="h-9 w-9 border-2 border-color rounded-full 
+                                          flex items-center justify-center bg-2"
+                                          >
+                                             <Loader2
+                                                size={16}
+                                                className="mx-auto animate-spin"
+                                             />
+                                          </div>
+                                       ) : (
+                                          <div
+                                             className="flex text-xs h-10 w-16 items-center border-4 border-emerald-200
+                                             dark:border-emerald-700 shadow-sm dark:shadow-black
+                                            bg-emerald-500 justify-center rounded-full text-white font-bold"
+                                          >
+                                             Done
+                                          </div>
+                                       )}
+                                    </div>
+                                 </div>
+                              </button>
+                           </div>
+                        ) : (
+                           <>
+                              <button
+                                 disabled={isNoteAdding}
+                                 className="relative block text-left w-full"
+                                 onClick={() => updateActiveNote(note.id)}
+                              >
+                                 <div className="group-hover:cursor-pointer relative">
+                                    <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
+                                       <div
+                                          className="w-full h-[calc(100%+18px)] absolute
+                                            group-hover:visible 
+                                          left-0 -top-2 border-dashed border-y-2 border-color invisible"
+                                       />
+                                       <span
+                                          className="invisible cursor-pointer absolute top-1 right-3 
+                                          text-sm text-1 group-hover:visible"
+                                       >
+                                          <Pencil size={18} />
+                                       </span>
+                                       <NoteViewer
+                                          className="post-content relative z-10"
+                                          note={note}
+                                       />
+                                    </section>
+                                 </div>
+                              </button>
+                           </>
+                        )}
                      </>
                   ) : (
                      <>
@@ -640,7 +806,7 @@ export function PostEdit() {
                </div>
             ))}
          </Suspense>
-      </div>
+      </main>
    );
 }
 
@@ -653,88 +819,101 @@ export function PostView() {
    const notes = (data.notes.length ? data.notes : post.notes) as Note[];
 
    return (
-      <div
-         className="post-content relative mx-auto min-h-screen max-w-[728px] 
-      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+      <main
+         className="post-content relative min-h-screen  
+      max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
-         <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
-            {post?.title}
-         </h1>
-         <div className="flex items-center gap-3 pb-5">
-            <time
-               className="text-1 flex items-center gap-1.5 text-sm"
-               dateTime={post?.updatedAt}
-            >
-               <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-               {formatDistanceStrict(
-                  new Date(post?.updatedAt as string),
-                  new Date(),
-                  {
-                     addSuffix: true,
-                  }
-               )}
-            </time>
-            {post?.publishedAt && (
-               <>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                  <time
-                     className="text-1 flex items-center gap-1.5 text-sm"
-                     dateTime={post?.publishedAt}
-                  >
-                     <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                     {formatDistanceStrict(
-                        new Date(post?.publishedAt as string),
-                        new Date(),
-                        {
-                           addSuffix: true,
-                        }
+         <section className="max-w-[728px] mx-auto max-desktop:px-3">
+            <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
+               {post?.title}
+            </h1>
+            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
+               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
+                  {/* @ts-expect-error */}
+                  {post?.author?.avatar ? (
+                     <Image /* @ts-expect-error */
+                        url={post.author.avatar.url}
+                        options="fit=crop,width=60,height=60 ,gravity=auto"
+                        className="h-full w-full object-cover"
+                        /* @ts-expect-error */
+                        alt={post?.author?.username}
+                     />
+                  ) : null}
+               </div>
+               <div className="space-y-0.5">
+                  {/* @ts-expect-error */}
+                  <div className="font-bold">{post?.author?.username}</div>
+                  <div className="flex items-center gap-3">
+                     <time
+                        className="text-1 flex items-center gap-1.5 text-sm"
+                        dateTime={post?.updatedAt}
+                     >
+                        {formatDistanceStrict(
+                           new Date(post?.updatedAt as string),
+                           new Date(),
+                           {
+                              addSuffix: true,
+                           }
+                        )}
+                        {/* <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" /> */}
+                     </time>
+                     {post?.publishedAt && (
+                        <>
+                           <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
+                           <time
+                              className="text-1 flex items-center gap-1.5 text-sm"
+                              dateTime={post?.publishedAt}
+                           >
+                              <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
+                              {formatDistanceStrict(
+                                 new Date(post?.publishedAt as string),
+                                 new Date(),
+                                 {
+                                    addSuffix: true,
+                                 }
+                              )}
+                           </time>
+                        </>
                      )}
-                  </time>
-               </>
-            )}
-         </div>
-         {post.banner ? (
-            <div className="aspect-[1.91/1] overflow-hidden rounded-lg">
-               <Image
-                  alt={post.title}
-                  options="fit=crop,height=440,gravity=auto"
-                  className="h-full w-full object-cover"
-                  //@ts-ignore
-                  url={post?.banner?.url}
-               />
+                  </div>
+               </div>
             </div>
-         ) : null}
-         <div className="border-color mb-3 flex items-center gap-3 border-b-2 py-4">
-            <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-               {/* @ts-ignore */}
-               {post?.author?.avatar ? (
-                  <img
-                     // @ts-ignore
-                     alt={post?.author?.username}
+         </section>
+         <section className="max-w-[800px] mx-auto">
+            {post.banner ? (
+               <div
+                  className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
+                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                        items-center justify-center overflow-hidden tablet:rounded-md
+                        shadow-sm mb-5"
+               >
+                  <Image
+                     alt={post.title}
+                     options="fit=crop,height=440,gravity=auto"
                      className="h-full w-full object-cover"
                      //@ts-ignore
-                     src={`${post.author.avatar.url}?aspect_ratio=1:1&height=100`}
+                     url={post?.banner?.url}
                   />
-               ) : null}
-            </div>
-            {/* @ts-ignore */}
-            <div>{post?.author?.username}</div>
-         </div>
-         <Suspense fallback={<div>Loading...</div>}>
-            {notes.map((note) => (
-               <NoteViewer
-                  key={note.id}
-                  note={note}
-                  //insert custom components here
-                  components={
-                     {
-                        // h2: (props) => <h2 className="text-2xl" {...props} />,
+               </div>
+            ) : null}
+         </section>
+         <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
+            <Suspense fallback={<div>Loading...</div>}>
+               {notes.map((note) => (
+                  <NoteViewer
+                     key={note.id}
+                     note={note}
+                     //insert custom components here
+                     components={
+                        {
+                           // h2: (props) => <h2 className="text-2xl" {...props} />,
+                        }
                      }
-                  }
-               />
-            ))}
-         </Suspense>
-      </div>
+                  />
+               ))}
+            </Suspense>
+         </section>
+      </main>
    );
 }
 

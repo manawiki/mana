@@ -140,7 +140,7 @@ export function NoteSideLayout({ children }: React.PropsWithChildren) {
          p-5 shadow-lg dark:shadow-black/50"
       >
          {React.Children.map(children, (child) => (
-            <div className="min-w-full max-w-[728px]">{child}</div>
+            <div className="min-w-full max-w-[728px] post-content">{child}</div>
          ))}
       </div>
    );

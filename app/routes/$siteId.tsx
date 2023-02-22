@@ -398,7 +398,7 @@ export default function SiteIndex() {
                   <div className="flex items-center justify-center py-4 border-t border-color">
                      <div className="h-[250px] w-[300px] rounded-lg bg-2" />
                   </div>
-                  <div className="items-center justify-between p-3 pr-5 laptop:flex border-t border-color">
+                  <div className="items-center justify-between pl-3 h-14 pr-5 laptop:flex border-t border-color">
                      <div className="flex-none max-laptop:flex max-laptop:justify-center">
                         <DarkModeToggle />
                      </div>
