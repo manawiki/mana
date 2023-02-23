@@ -26,6 +26,7 @@ import {
    ImageMinus,
    InfoIcon,
    Loader2,
+   MoreHorizontal,
    MoreVertical,
    Pencil,
    Plus,
@@ -398,19 +399,21 @@ export default function Post() {
 }
 
 export function PostEdit() {
-   const data = useLoaderData<typeof loader>();
-   const formResponse = useActionData<FormResponse>();
-   const zo = useZorm("newPost", PostSchema, {
-      //@ts-ignore
-      customIssues: formResponse?.serverIssues,
-   });
+   //Hooks
    const fetcher = useFetcher();
+   const transition = useNavigation();
    const isTitleAdding = isAdding(fetcher, "updateTitle");
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
    const isBannerAdding = isAdding(fetcher, "updateBanner");
    const noteFetcher = useFetcher();
    const isNoteAdding = isProcessing(noteFetcher.state);
-   const transition = useNavigation();
+
+   //Form setup
+   const formResponse = useActionData<FormResponse>();
+   const zo = useZorm("newPost", PostSchema, {
+      //@ts-ignore
+      customIssues: formResponse?.serverIssues,
+   });
 
    //Server response toast
    useEffect(() => {
@@ -438,9 +441,9 @@ export function PostEdit() {
       }
    }, [debouncedValue]);
 
+   //Get data. This is necessary to determine whether the user should see the draft notes or not.
+   const data = useLoaderData<typeof loader>();
    const { post } = data;
-
-   //This is necessary to determine whether the user should see the draft notes or not.
    const notes = (data.notes.length ? data.notes : post.notes) as Note[];
 
    // Create new array with show property to control active editable note
@@ -452,7 +455,7 @@ export function PostEdit() {
    const [isEditable, setIsEditable] = useState(noteList);
 
    //On active note change, update the show property of the note, set all other notes to false
-   function updateActiveNote(id: Note["id"], reset: Boolean = false) {
+   const updateActiveNote = (id: Note["id"], reset: Boolean = false) => {
       const updateNotes = (id: string) => {
          return noteList.map((note) => {
             if (reset == true)
@@ -474,7 +477,7 @@ export function PostEdit() {
          });
       };
       return setIsEditable(updateNotes(id));
-   }
+   };
 
    //Determine whether the note is active or not
    const isActiveNote = (noteId: Note["id"]) =>
@@ -497,7 +500,7 @@ export function PostEdit() {
       }
    }, [debouncedInlineSaveValue]);
 
-   // After note is updated with new data, update the editble list, then set the active note again
+   // After note is updated with new data, update the editable list, then set the active note again
    useEffect(() => {
       if (noteFetcher.type === "done") {
          const { note } = noteFetcher.data;
@@ -506,11 +509,15 @@ export function PostEdit() {
       }
    }, [noteFetcher.type]);
 
+   //Update note list state after updating from the modal editor
    useEffect(() => {
       if (transition.state === "idle") {
          setIsEditable(noteList);
       }
    }, [transition]);
+
+   //Note options
+   const [showNoteOptions, setShowNoteOptions] = useState(false);
 
    return (
       <main
@@ -682,6 +689,7 @@ export function PostEdit() {
                   {/* @ts-expect-error */}
                   {note?.ui?.id == "textarea" ? (
                      <>
+                        {/* Render inline editor */}
                         {isActiveNote(note.id) == true ? (
                            <div
                               className="px-3 desktop:px-0 border-y
@@ -710,23 +718,70 @@ export function PostEdit() {
                                     }
                                  />
                               </section>
-                              <button
-                                 disabled={isNoteAdding}
-                                 onClick={() => {
-                                    updateActiveNote(note.id, true);
-                                 }}
-                              >
+                              <section>
                                  <div className="absolute -top-5 right-5 ">
                                     <div className="flex items-center gap-3">
-                                       <Link
-                                          className="w-9 h-9 rounded-full flex !text-emerald-500
+                                       <Transition
+                                          show={showNoteOptions}
+                                          enter="ease-in-out duration-200"
+                                          enterFrom="opacity-0"
+                                          enterTo="opacity-100"
+                                          leave="ease-in-out duration-200"
+                                          leaveFrom="opacity-100"
+                                          leaveTo="opacity-0"
+                                       >
+                                          <div className="flex items-center gap-2">
+                                             <Link
+                                                className="w-9 h-9 rounded-full flex !text-emerald-500
                                        items-center justify-center bg-2 border-2 border-color transition
                                        duration-300 hover:bg-gray-100 active:translate-y-0.5
                                        dark:border-zinc-600 dark:hover:bg-zinc-700"
-                                          to={`edit/${note.id}`}
+                                                to={`edit/${note.id}`}
+                                             >
+                                                <Expand size={16} />
+                                             </Link>
+                                             <button
+                                                className="w-9 h-9 rounded-full flex !text-emerald-500
+                                             items-center justify-center bg-2 border-2 border-color transition
+                                             duration-300 hover:bg-gray-100 active:translate-y-0.5
+                                             dark:border-zinc-600 dark:hover:bg-zinc-700"
+                                                onClick={() =>
+                                                   fetcher.submit(
+                                                      {
+                                                         intent: "deleteNote",
+                                                      },
+                                                      {
+                                                         method: "delete",
+                                                         action: `/mf2YdEGXll/posts/63f6bed21cc1e9376f3bbfa2/edit/${note.id}`,
+                                                      }
+                                                   )
+                                                }
+                                             >
+                                                <Trash2 size={16} />
+                                             </button>
+                                          </div>
+                                       </Transition>
+                                       <button
+                                          className="w-9 h-9 rounded-full flex !text-emerald-500
+                                       items-center justify-center bg-2 border-2 border-color transition
+                                       duration-300 hover:bg-gray-100 active:translate-y-0.5
+                                       dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
+                                          onClick={() =>
+                                             setShowNoteOptions(
+                                                (showNoteOptions) =>
+                                                   !showNoteOptions
+                                             )
+                                          }
                                        >
-                                          <Expand size={16} />
-                                       </Link>
+                                          {showNoteOptions ? (
+                                             <X
+                                                className="text-red-500"
+                                                size={20}
+                                             />
+                                          ) : (
+                                             <MoreHorizontal size={20} />
+                                          )}
+                                       </button>
                                        {isNoteAdding ? (
                                           <div
                                              className="h-9 w-9 border-2 border-color rounded-full 
@@ -738,20 +793,24 @@ export function PostEdit() {
                                              />
                                           </div>
                                        ) : (
-                                          <div
-                                             className="flex text-xs h-10 w-16 items-center border-4 border-emerald-200
-                                             dark:border-emerald-700 shadow-sm dark:shadow-black
-                                            bg-emerald-500 justify-center rounded-full text-white font-bold"
+                                          <button
+                                             disabled={isNoteAdding}
+                                             onClick={() => {
+                                                updateActiveNote(note.id, true);
+                                             }}
+                                             className="flex text-xs h-10 w-16 items-center border-4 border-zinc-100
+                                             dark:border-zinc-700 bg-emerald-500 justify-center rounded-full text-white font-bold"
                                           >
                                              Done
-                                          </div>
+                                          </button>
                                        )}
                                     </div>
                                  </div>
-                              </button>
+                              </section>
                            </div>
                         ) : (
                            <>
+                              {/* Render inline view mode */}
                               <button
                                  disabled={isNoteAdding}
                                  className="relative block text-left w-full"
@@ -782,6 +841,7 @@ export function PostEdit() {
                      </>
                   ) : (
                      <>
+                        {/* Render noteview with edit button */}
                         <Link
                            to={`edit/${note.id}`}
                            prefetch="intent"

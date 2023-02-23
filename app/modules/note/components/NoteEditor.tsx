@@ -62,7 +62,7 @@ export default function NoteEditor({
       //todo we should debounce this in some way
       setMDX(mdx);
       submit(
-         { mdx, autosave: "yes" },
+         { mdx, autosave: "yes", intent: "saveNote" },
          { method: "post", replace: true, preventScrollReset: true }
       );
    };

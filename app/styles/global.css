@@ -81,3 +81,6 @@ html.dark {
 .remirror-editor {
    @apply !rounded-none !p-0 font-body !shadow-none focus:!shadow-none;
 }
+.remirror-editor.ProseMirror {
+   @apply overflow-y-visible;
+}
