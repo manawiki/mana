@@ -601,7 +601,7 @@ export const action = async ({
             user,
             overrideAccess: false,
          });
-         return redirect(`/${siteId}/posts/${post.id}/edit/${note.id}`);
+         return redirect(`/${siteId}/posts/${post.id}`);
       }
       case "createPost": {
          const note = await payload.create({
@@ -624,7 +624,7 @@ export const action = async ({
             overrideAccess: false,
          });
 
-         return redirect(`/${siteId}/posts/${post.id}/edit/${note.id}`);
+         return redirect(`/${siteId}/posts/${post.id}`);
       }
    }
 };

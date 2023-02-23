@@ -88,7 +88,7 @@ export interface Post {
   author: string | User;
   site: string | Site;
   banner?: string | Image;
-  notes: string[] | Note[];
+  notes?: string[] | Note[];
   isPublished?: boolean;
   createdAt: string;
   updatedAt: string;

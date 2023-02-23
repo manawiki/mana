@@ -13,6 +13,7 @@ import {
    useFetcher,
    useActionData,
    useNavigation,
+   useParams,
 } from "@remix-run/react";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
@@ -20,6 +21,7 @@ import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
    ArrowLeft,
+   Check,
    CopyIcon,
    Expand,
    EyeOff,
@@ -30,6 +32,7 @@ import {
    MoreVertical,
    Pencil,
    Plus,
+   Redo2,
    Trash2,
    Upload,
    X,
@@ -58,6 +61,7 @@ import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Image } from "~/components/Image";
 import { EyeIcon } from "@heroicons/react/20/solid";
 import { NoteText } from "~/modules/note/gui/NoteText";
+import { DotLoader } from "~/components/DotLoader";
 
 type Mode = "edit" | "preview";
 
@@ -104,7 +108,7 @@ export async function loader({
       typeof post.author === "string" ? post.author : post.author.id;
 
    //pass in draft docs if the user is the author
-   if (authorId === user?.id)
+   if (post?.notes && authorId === user?.id)
       notes = await Promise.all(
          post?.notes?.map((note) =>
             payload.findByID({
@@ -135,6 +139,7 @@ export default function Post() {
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "delete");
+   const { siteId } = useParams();
 
    return (
       <div className="relative">
@@ -251,7 +256,7 @@ export default function Post() {
             px-3 max-laptop:w-full justify-between max-laptop:border-t laptop:sticky laptop:top-0"
          >
             <div className="flex items-center gap-4">
-               <Link className="pl-2" to={"/"}>
+               <Link className="pl-2" to={`/${siteId}/posts`}>
                   <ArrowLeft size={28} />
                </Link>
                <AdminOrOwner>
@@ -371,17 +376,17 @@ export default function Post() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="border-color bg-2 laptop:bg-1 sticky bottom-12 z-20 flex h-20 
+                  className="border-color bg-2 sticky bottom-12 z-20 flex h-20 
                     items-center justify-between 
-                    border-t px-3 shadow laptop:bottom-0 laptop:h-14"
+                    border-t px-3 laptop:bottom-0 laptop:h-14"
                >
-                  <div className="mx-auto -mt-14 laptop:-mt-8">
+                  <div className="mx-auto -mt-14 laptop:-mt-10">
                      <Link to="add" prefetch="intent">
                         <div
-                           className="mx-auto flex h-11 w-11 items-center justify-center
-                    rounded-full border border-blue-300
-                   bg-blue-500 font-semibold text-white dark:border-blue-700 
-                   dark:bg-blue-800 "
+                           className="mx-auto flex h-12 w-12 items-center justify-center
+                           rounded-full border border-blue-300
+                         bg-blue-500 font-semibold text-white dark:border-blue-700 
+                         dark:bg-blue-800"
                         >
                            <Plus className="h-6 w-6" />
                         </div>
@@ -407,6 +412,7 @@ export function PostEdit() {
    const isBannerAdding = isAdding(fetcher, "updateBanner");
    const noteFetcher = useFetcher();
    const isNoteAdding = isProcessing(noteFetcher.state);
+   const { siteId, postId } = useParams();
 
    //Form setup
    const formResponse = useActionData<FormResponse>();
@@ -503,9 +509,16 @@ export function PostEdit() {
    // After note is updated with new data, update the editable list, then set the active note again
    useEffect(() => {
       if (noteFetcher.type === "done") {
-         const { note } = noteFetcher.data;
-         setIsEditable(noteList);
-         updateActiveNote(note.id);
+         const { note, notes } = noteFetcher.data;
+         //If note is updated, update the active note
+         if (note) {
+            setIsEditable(noteList);
+            updateActiveNote(note.id);
+         }
+         //If post is updated, only update the notes list, ex. after a note is deleted
+         if (notes) {
+            setIsEditable(noteList);
+         }
       }
    }, [noteFetcher.type]);
 
@@ -518,6 +531,61 @@ export function PostEdit() {
 
    //Note options
    const [showNoteOptions, setShowNoteOptions] = useState(false);
+   const showNoteStyle = `w-9 h-9 rounded-full flex dark:!text-zinc-400 !text-zinc-500
+   items-center justify-center bg-2 border border-color transition
+   duration-300 hover:bg-gray-100 active:translate-y-0.5
+   dark:border-zinc-600 dark:hover:bg-zinc-700`;
+   const DeleteNote = ({ noteId }: { noteId: Note["id"] }) => {
+      const [noteDeleteStatus, setNoteDeleteStatus] = useState("default");
+      if (noteDeleteStatus === "default") {
+         return (
+            <button
+               onClick={() => setNoteDeleteStatus("shouldDelete")}
+               className={`${showNoteStyle}`}
+            >
+               <Trash2 size={16} />
+            </button>
+         );
+      }
+      if (noteDeleteStatus === "shouldDelete") {
+         return (
+            <div
+               className="text-xs gap-0.5 px-1 flex font-bold h-9 rounded-full
+            dark:!text-zinc-400 !text-zinc-500
+            items-center justify-center bg-2 border border-color
+            dark:border-zinc-600"
+            >
+               <button
+                  className="w-7 h-7 dark:hover:bg-zinc-700 hover:bg-zinc-100 rounded-full flex items-center justify-center"
+                  onClick={() =>
+                     noteFetcher.submit(
+                        {
+                           intent: "deleteNote",
+                        },
+                        {
+                           method: "delete",
+                           action: `/${siteId}/posts/${postId}/edit/${noteId}`,
+                        }
+                     )
+                  }
+               >
+                  <Check size={20} className="text-green-500" />
+               </button>
+               <button
+                  className="w-7 h-7 dark:hover:bg-zinc-700 hover:bg-zinc-100 rounded-full flex items-center justify-center"
+                  onClick={() => setNoteDeleteStatus("default")}
+               >
+                  <Redo2 className="text-1" size={18} />
+               </button>
+            </div>
+         );
+      }
+      return (
+         <button className={`${showNoteStyle}`}>
+            <Trash2 size={16} />
+         </button>
+      );
+   };
 
    return (
       <main
@@ -636,7 +704,7 @@ export function PostEdit() {
                </div>
             ) : (
                <fetcher.Form
-                  className="mb-5"
+                  className="mb-8"
                   method="patch"
                   encType="multipart/form-data"
                   replace
@@ -732,33 +800,12 @@ export function PostEdit() {
                                        >
                                           <div className="flex items-center gap-2">
                                              <Link
-                                                className="w-9 h-9 rounded-full flex !text-emerald-500
-                                       items-center justify-center bg-2 border-2 border-color transition
-                                       duration-300 hover:bg-gray-100 active:translate-y-0.5
-                                       dark:border-zinc-600 dark:hover:bg-zinc-700"
+                                                className={`${showNoteStyle}`}
                                                 to={`edit/${note.id}`}
                                              >
                                                 <Expand size={16} />
                                              </Link>
-                                             <button
-                                                className="w-9 h-9 rounded-full flex !text-emerald-500
-                                             items-center justify-center bg-2 border-2 border-color transition
-                                             duration-300 hover:bg-gray-100 active:translate-y-0.5
-                                             dark:border-zinc-600 dark:hover:bg-zinc-700"
-                                                onClick={() =>
-                                                   fetcher.submit(
-                                                      {
-                                                         intent: "deleteNote",
-                                                      },
-                                                      {
-                                                         method: "delete",
-                                                         action: `/mf2YdEGXll/posts/63f6bed21cc1e9376f3bbfa2/edit/${note.id}`,
-                                                      }
-                                                   )
-                                                }
-                                             >
-                                                <Trash2 size={16} />
-                                             </button>
+                                             <DeleteNote noteId={note.id} />
                                           </div>
                                        </Transition>
                                        <button
@@ -784,13 +831,10 @@ export function PostEdit() {
                                        </button>
                                        {isNoteAdding ? (
                                           <div
-                                             className="h-9 w-9 border-2 border-color rounded-full 
+                                             className="h-9 w-16 rounded-full bg-white border-2 border-color
                                           flex items-center justify-center bg-2"
                                           >
-                                             <Loader2
-                                                size={16}
-                                                className="mx-auto animate-spin"
-                                             />
+                                             <DotLoader />
                                           </div>
                                        ) : (
                                           <button
@@ -798,8 +842,8 @@ export function PostEdit() {
                                              onClick={() => {
                                                 updateActiveNote(note.id, true);
                                              }}
-                                             className="flex text-xs h-10 w-16 items-center border-4 border-zinc-100
-                                             dark:border-zinc-700 bg-emerald-500 justify-center rounded-full text-white font-bold"
+                                             className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
+                                              rounded-full text-white font-bold"
                                           >
                                              Done
                                           </button>
@@ -823,6 +867,11 @@ export function PostEdit() {
                                             group-hover:visible 
                                           left-0 -top-2 border-dashed border-y-2 border-color invisible"
                                        />
+                                       {note.mdx == "" && (
+                                          <div className="italic text-1">
+                                             Empty...click to edit
+                                          </div>
+                                       )}
                                        <span
                                           className="invisible cursor-pointer absolute top-1 right-3 
                                           text-sm text-1 group-hover:visible"
@@ -945,7 +994,7 @@ export function PostView() {
                   className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
                         laptop:rounded-none laptop:border-x-0 desktop:rounded-md
                         items-center justify-center overflow-hidden tablet:rounded-md
-                        shadow-sm mb-5"
+                        shadow-sm mb-8"
                >
                   <Image
                      alt={post.title}
@@ -1118,16 +1167,17 @@ export async function action({
                user,
             });
          }
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.delete({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.delete({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          const postTitle = post?.title;
          setSuccessMessage(session, `"${postTitle}" successfully deleted`);
          return redirect(`/${siteId}/posts`, {
@@ -1144,19 +1194,20 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.update({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  data: {
-                     _status: "draft",
-                  },
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.update({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     data: {
+                        _status: "draft",
+                     },
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          return redirect(`/${siteId}/posts`);
       }
       case "publish": {
@@ -1175,19 +1226,20 @@ export async function action({
 
          //publish all notes
          //todo: can we do this in one query?
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.update({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  data: {
-                     _status: "published",
-                  },
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.update({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     data: {
+                        _status: "published",
+                     },
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          await payload.update({
             collection: "posts",
             id: postId,

@@ -44,6 +44,20 @@ html.dark {
    }
 }
 
+/* Loader */
+.blue-circle {
+   animation-delay: 0.1s;
+}
+.emerald-circle {
+   animation-delay: 0.2s;
+}
+.yellow-circle {
+   animation-delay: 0.3s;
+}
+.violet-circle {
+   animation-delay: 0.4;
+}
+
 /* Default Editor Styles */
 .post-content ul {
    @apply mb-5 list-disc space-y-1.5 pl-7;
@@ -56,6 +70,12 @@ html.dark {
 }
 .post-content p {
    @apply !mb-3;
+}
+.post-content code {
+   @apply dark:bg-zinc-700 bg-zinc-200 rounded py-[3px] px-[4px] text-sm;
+}
+.post-content pre > code {
+   @apply !bg-transparent p-0;
 }
 .post-content {
    @apply break-words;

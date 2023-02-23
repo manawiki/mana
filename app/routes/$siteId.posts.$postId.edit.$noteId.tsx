@@ -56,25 +56,23 @@ export async function action({
    switch (intent) {
       case "deleteNote": {
          assertIsDelete(request);
-         console.log("pongo");
+
+         const post = await payload.findByID({
+            collection: "posts",
+            id: postId,
+            user,
+         });
+
          await payload.delete({
             collection: "notes",
             id: noteId,
             overrideAccess: false,
             user,
          });
-         console.log(postId);
-         const post = await payload.findByID({
-            collection: "posts",
-            id: postId,
-            user,
-         });
-         console.log(post);
 
          const postCurrentNotes = post?.notes || [];
          //@ts-ignore
          const notes = postCurrentNotes.map(({ id }: { id }) => id);
-         console.log(notes);
 
          //Remove the current note from the posts notes array
          const index = notes.indexOf(noteId);
@@ -82,7 +80,6 @@ export async function action({
             // only splice array when item is found
             notes.splice(index, 1); // 2nd parameter means remove one item only
          }
-         console.log(notes);
 
          return await payload.update({
             collection: "posts",
