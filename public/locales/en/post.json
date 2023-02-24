@@ -1,5 +1,6 @@
 {
    "actions": {
-      "delete": "Delete"
+      "delete": "Delete",
+      "publish": "Publish"
    }
 }

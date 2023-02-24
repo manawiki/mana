@@ -22,6 +22,7 @@ import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
    ArrowLeft,
    Check,
+   ComponentIcon,
    CopyIcon,
    Expand,
    EyeOff,
@@ -34,6 +35,7 @@ import {
    Plus,
    Redo2,
    Trash2,
+   TypeIcon,
    Upload,
    X,
 } from "lucide-react";
@@ -49,10 +51,10 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { formatDistanceStrict } from "date-fns";
+import { format, formatDistanceStrict } from "date-fns";
 import { AdminOrOwner, useIsAdminOrOwner } from "~/modules/auth";
 import { createCustomIssues, useZorm } from "react-zorm";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { Modal } from "~/components/Modal";
 import { useTranslation } from "react-i18next";
 import { toast } from "~/components/Toaster";
@@ -62,6 +64,7 @@ import { Image } from "~/components/Image";
 import { EyeIcon } from "@heroicons/react/20/solid";
 import { NoteText } from "~/modules/note/gui/NoteText";
 import { DotLoader } from "~/components/DotLoader";
+import { useComponentVisible } from "~/hooks";
 
 type Mode = "edit" | "preview";
 
@@ -140,6 +143,9 @@ export default function Post() {
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "delete");
    const { siteId } = useParams();
+   const transition = useNavigation();
+   const isPublishing = isAdding(transition, "publish");
+   const disabled = isProcessing(transition.state);
 
    return (
       <div className="relative">
@@ -255,13 +261,16 @@ export default function Post() {
             className="bg-2 fixed top-20 z-30 flex h-14 items-center border-color
             px-3 max-laptop:w-full justify-between max-laptop:border-t laptop:sticky laptop:top-0"
          >
-            <div className="flex items-center gap-4">
-               <Link className="pl-2" to={`/${siteId}/posts`}>
-                  <ArrowLeft size={28} />
+            <div className="flex items-center gap-3">
+               <Link
+                  className="hover:dark:bg-neutral-700 hover:bg-white rounded-full inline-flex items-center justify-center h-9 w-9"
+                  to={`/${siteId}/posts`}
+               >
+                  <ArrowLeft className="text-1" size={24} />
                </Link>
                <AdminOrOwner>
                   <span className="h-6 rounded-full w-0.5 dark:bg-zinc-600 bg-zinc-300" />
-                  <div className="flex cursor-pointer items-center gap-2.5">
+                  <div className="flex cursor-pointer items-center gap-2.5 pl-1.5">
                      <span
                         onClick={() => setMode("edit")}
                         className={`${
@@ -291,8 +300,8 @@ export default function Post() {
                <div className="flex items-center gap-3">
                   <Menu as="div" className="relative">
                      <Menu.Button
-                        className="bg-2 flex h-8 w-8 items-center justify-center 
-                        rounded-full border-2 text-blue-500 transition
+                        className="bg-1 flex h-9 w-9 items-center justify-center 
+                        rounded-full border-2 text-1 transition
                         duration-300 hover:bg-gray-100 active:translate-y-0.5
                         dark:border-zinc-600 dark:hover:bg-zinc-700"
                      >
@@ -359,14 +368,42 @@ export default function Post() {
                   </Menu>
                   {post.isPublished ? null : (
                      <Form method="post">
-                        <button
-                           type="submit"
-                           name="intent"
-                           value="publish"
-                           className="h-8 rounded-full bg-green-500 px-4 text-sm font-bold text-white"
-                        >
-                           Publish
-                        </button>
+                        {isPublishing ? (
+                           <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
+                              <DotLoader />
+                           </div>
+                        ) : (
+                           <button
+                              disabled={disabled}
+                              type="submit"
+                              name="intent"
+                              value="publish"
+                           >
+                              <div
+                                 className="group inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
+                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                              >
+                                 {t("actions.publish")}
+                                 <svg
+                                    className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                                    fill="none"
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 12 12"
+                                    aria-hidden="true"
+                                 >
+                                    <path
+                                       className="opacity-0 transition group-hover:opacity-100"
+                                       d="M0 5h7"
+                                    ></path>
+                                    <path
+                                       className="transition group-hover:translate-x-[3px]"
+                                       d="M1 1l4 4-4 4"
+                                    ></path>
+                                 </svg>
+                              </div>
+                           </button>
+                        )}
                      </Form>
                   )}
                </div>
@@ -376,24 +413,78 @@ export default function Post() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="border-color bg-2 sticky bottom-12 z-20 flex h-20 
+                  className="bg-1 border-1 sticky bottom-12 z-20 flex h-20 
                     items-center justify-between 
                     border-t px-3 laptop:bottom-0 laptop:h-14"
                >
-                  <div className="mx-auto -mt-14 laptop:-mt-10">
-                     <Link to="add" prefetch="intent">
-                        <div
-                           className="mx-auto flex h-12 w-12 items-center justify-center
-                           rounded-full border border-blue-300
-                         bg-blue-500 font-semibold text-white dark:border-blue-700 
-                         dark:bg-blue-800"
-                        >
-                           <Plus className="h-6 w-6" />
-                        </div>
-                        <div className="pt-1 text-sm font-semibold">
-                           Add Section
-                        </div>
-                     </Link>
+                  <div className="mx-auto -mt-14 laptop:-mt-11">
+                     <Popover className="relative flex items-center justify-center">
+                        {({ open }) => (
+                           <>
+                              <Popover.Button className="focus:outline-none justify-center mx-auto">
+                                 <div
+                                    className="flex h-14 w-14 items-center justify-center
+                              rounded-full border-2 border-emerald-200 active:translate-y-0.5
+                              shadow shadow-emerald-100 bg-emerald-100
+                              font-semibold text-emerald-500 dark:border-emerald-800 
+                              dark:shadow-emerald-900/40 focus-visible:blur-none
+                              transition duration-300 dark:bg-emerald-900"
+                                 >
+                                    <Plus
+                                       size={28}
+                                       className={`${
+                                          open
+                                             ? "rotate-45 dark:text-zinc-200 text-zinc-400"
+                                             : ""
+                                       } transform transition duration-300 ease-in-out`}
+                                    />
+                                 </div>
+                              </Popover.Button>
+                              <Transition
+                                 as={Fragment}
+                                 enter="transition ease-out duration-200"
+                                 enterFrom="opacity-0 translate-y-1"
+                                 enterTo="opacity-100 translate-y-0"
+                                 leave="transition ease-in duration-150"
+                                 leaveFrom="opacity-100 translate-y-0"
+                                 leaveTo="opacity-0 translate-y-1"
+                              >
+                                 <Popover.Panel
+                                    className="absolute flex items-center gap-3 -top-[50px] 
+                                    left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                 >
+                                    <button
+                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
+                                       border border-color bg-2 items-center gap-2 h-11 justify-center hover:bg-white
+                                       dark:hover:bg-zinc-700 dark:hover:border-zinc-600 w-28"
+                                    >
+                                       <TypeIcon
+                                          className="text-emerald-500 flex-none -ml-0.5"
+                                          size={20}
+                                       />
+                                       <span>Text</span>
+                                    </button>
+                                    <Link
+                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
+                                       border border-color bg-2 items-center gap-2 w-28 h-11 justify-center hover:bg-white
+                                     dark:hover:bg-zinc-700 dark:hover:border-zinc-600"
+                                       to="add"
+                                       prefetch="intent"
+                                    >
+                                       <ComponentIcon
+                                          className="text-emerald-500 flex-none -ml-0.5"
+                                          size={20}
+                                       />
+                                       <span>Widget</span>
+                                    </Link>
+                                 </Popover.Panel>
+                              </Transition>
+                           </>
+                        )}
+                     </Popover>
+                     <div className="pt-2 uppercase text-xs text-1 font-bold">
+                        Add Section
+                     </div>
                   </div>
                </div>
             )}
@@ -435,17 +526,17 @@ export function PostEdit() {
 
    //Update title logic
    const [titleValue, setTitleValue] = useState("");
-   const debouncedValue = useDebouncedValue(titleValue, 500);
+   const debouncedTitle = useDebouncedValue(titleValue, 500);
    const isMount = useIsMount();
 
    useEffect(() => {
       if (!isMount) {
          fetcher.submit(
-            { title: debouncedValue, intent: "updateTitle" },
+            { title: debouncedTitle, intent: "updateTitle" },
             { method: "patch" }
          );
       }
-   }, [debouncedValue]);
+   }, [debouncedTitle]);
 
    //Get data. This is necessary to determine whether the user should see the draft notes or not.
    const data = useLoaderData<typeof loader>();
@@ -484,6 +575,8 @@ export function PostEdit() {
       };
       return setIsEditable(updateNotes(id));
    };
+
+   const { ref, isComponentVisible } = useComponentVisible(true);
 
    //Determine whether the note is active or not
    const isActiveNote = (noteId: Note["id"]) =>
@@ -528,6 +621,18 @@ export function PostEdit() {
          setIsEditable(noteList);
       }
    }, [transition]);
+
+   //Set first text note as open after creating a new post
+   const setActiveNoteNewPost = () => {
+      if (
+         isEditable.length === 1 &&
+         //@ts-expect-error
+         isEditable[0].ui?.id === "textarea" &&
+         !isEditable[0].mdx
+      )
+         return true;
+      return false;
+   };
 
    //Note options
    const [showNoteOptions, setShowNoteOptions] = useState(false);
@@ -607,7 +712,7 @@ export function PostEdit() {
                   placeholder="Add a title..."
                />
                {isTitleAdding ? (
-                  <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-blue-500" />
+                  <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-emerald-500" />
                ) : null}
                {zo.errors.title((err) => (
                   <Err>{err.message}</Err>
@@ -651,14 +756,7 @@ export function PostEdit() {
                               className="text-1 flex items-center gap-1.5 text-sm"
                               dateTime={post?.publishedAt}
                            >
-                              <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                              {formatDistanceStrict(
-                                 new Date(post?.publishedAt as string),
-                                 new Date(),
-                                 {
-                                    addSuffix: true,
-                                 }
-                              )}
+                              {format(new Date(post?.publishedAt), "MMM dd")}
                            </time>
                         </>
                      )}
@@ -751,6 +849,7 @@ export function PostEdit() {
                </fetcher.Form>
             )}
          </section>
+
          <Suspense fallback={<div>Loading...</div>}>
             {isEditable.map((note) => (
                <div key={note.id} className="group">
@@ -758,7 +857,8 @@ export function PostEdit() {
                   {note?.ui?.id == "textarea" ? (
                      <>
                         {/* Render inline editor */}
-                        {isActiveNote(note.id) == true ? (
+                        {isActiveNote(note.id) == true ||
+                        setActiveNoteNewPost() ? (
                            <div
                               className="px-3 desktop:px-0 border-y
                               mt-5 mb-6 pt-4 border-color relative"
@@ -782,7 +882,10 @@ export function PostEdit() {
                                     defaultValue={note.mdx}
                                     onChange={(e) =>
                                        //@ts-ignore
-                                       setInlineValue({ mdx: e, id: note.id })
+                                       setInlineValue({
+                                          mdx: e,
+                                          id: note.id,
+                                       })
                                     }
                                  />
                               </section>
@@ -809,7 +912,7 @@ export function PostEdit() {
                                           </div>
                                        </Transition>
                                        <button
-                                          className="w-9 h-9 rounded-full flex !text-emerald-500
+                                          className="w-9 h-9 rounded-full flex !text-1
                                        items-center justify-center bg-2 border-2 border-color transition
                                        duration-300 hover:bg-gray-100 active:translate-y-0.5
                                        dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
@@ -973,14 +1076,7 @@ export function PostView() {
                               className="text-1 flex items-center gap-1.5 text-sm"
                               dateTime={post?.publishedAt}
                            >
-                              <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                              {formatDistanceStrict(
-                                 new Date(post?.publishedAt as string),
-                                 new Date(),
-                                 {
-                                    addSuffix: true,
-                                 }
-                              )}
+                              {format(new Date(post?.publishedAt), "MMM dd")}
                            </time>
                         </>
                      )}
@@ -1190,6 +1286,7 @@ export async function action({
             id: postId,
             data: {
                isPublished: false,
+               publishedAt: "",
             },
             overrideAccess: false,
             user,

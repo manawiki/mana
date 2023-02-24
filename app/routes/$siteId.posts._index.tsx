@@ -24,7 +24,7 @@ import {
 import { format, formatDistanceStrict } from "date-fns";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
-import { useState, useEffect, Fragment, useRef } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useDebouncedValue } from "~/hooks";
 import { isLoading } from "~/utils";
 import { AdminOrOwner } from "~/modules/auth";
