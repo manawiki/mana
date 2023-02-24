@@ -121,9 +121,7 @@ function App() {
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark ">
-            <Suspense fallback={<div>Loading...</div>}>
-               <Outlet />
-            </Suspense>
+            <Outlet />
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
