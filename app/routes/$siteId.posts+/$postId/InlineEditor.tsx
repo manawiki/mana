@@ -15,7 +15,7 @@ import type { Note } from "payload/generated-types";
 import { useState, useEffect } from "react";
 import { DotLoader } from "~/components/DotLoader";
 import { useIsMount, useDebouncedValue } from "~/hooks";
-import { NoteViewer } from "~/modules/note/components/NoteView";
+import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import { NoteText } from "~/modules/note/gui/NoteText";
 import { isProcessing } from "~/utils";
 
