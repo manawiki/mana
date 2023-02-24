@@ -13,7 +13,7 @@ const success = (message: string) => {
             className="flex h-6 w-6 items-center justify-center
                            rounded-full bg-green-500 text-white"
          >
-            <Check size={14} />
+            <Check size={18} />
          </div>
          <div>{message}</div>
       </div>
@@ -32,7 +32,7 @@ const error = (message: string) => {
             className="flex h-6 w-6 items-center justify-center
                       rounded-full bg-red-500 text-white"
          >
-            <X size={14} />
+            <X size={18} />
          </div>
          <div>{message}</div>
       </div>
