@@ -1,8 +1,8 @@
-import * as runtime from "react/jsx-dev-runtime";
 import { useMDXComponents } from "@mdx-js/react";
 import { runSync } from "@mdx-js/mdx";
 import { useMemo } from "react";
 import type { Note } from "payload/generated-types";
+import { runtime } from "../utils";
 
 type NoteViewerProps = {
    note: Note;
@@ -23,7 +23,7 @@ export function NoteViewer({
 //todo perf comparison with async
 export function NoteView({ note, className = "mdx-content" }: NoteViewerProps) {
    const { default: Content } = useMemo(
-      () => runSync(note.source as string, { ...runtime, useMDXComponents }),
+      () => runSync(note.source as string, { ...runtime(), useMDXComponents }),
       [note.source]
    );
 
