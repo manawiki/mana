@@ -112,7 +112,7 @@ export default function PostPage() {
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "delete");
-   const { siteId } = useParams();
+   const { siteId, postId } = useParams();
    const transition = useNavigation();
    const isPublishing = isAdding(transition, "publish");
    const disabled = isProcessing(transition.state);
@@ -420,7 +420,19 @@ export default function PostPage() {
                                     className="absolute flex items-center gap-3 -top-[50px] 
                                     left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                                  >
-                                    <button
+                                    <Popover.Button
+                                       onClick={() =>
+                                          fetcher.submit(
+                                             {
+                                                intent: "addNewInlineSection",
+                                                ui: "textarea",
+                                             },
+                                             {
+                                                method: "post",
+                                                action: `/${siteId}/posts/${postId}/add`,
+                                             }
+                                          )
+                                       }
                                        className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
                                        border border-color bg-2 items-center gap-2 h-11 justify-center hover:bg-white
                                        dark:hover:bg-zinc-700 dark:hover:border-zinc-600 w-28"
@@ -430,7 +442,7 @@ export default function PostPage() {
                                           size={20}
                                        />
                                        <span>Text</span>
-                                    </button>
+                                    </Popover.Button>
                                     <Link
                                        className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
                                        border border-color bg-2 items-center gap-2 w-28 h-11 justify-center hover:bg-white

@@ -84,11 +84,58 @@ const DeleteNote = ({
    );
 };
 
-export const InlineEditor = ({ note }: { note: Note }) => {
-   const fetcher = useFetcher();
+const View = ({
+   note,
+   setIsActive,
+   isNoteAdding,
+}: {
+   note: Note;
+   setIsActive: (prevCheck: boolean) => void;
+   isNoteAdding: boolean | undefined;
+}) => {
+   return (
+      <button
+         //@ts-ignore
+         onClick={() => setIsActive((prevCheck) => !prevCheck)}
+         disabled={isNoteAdding}
+         className="relative block text-left w-full"
+      >
+         <div className="group-hover:cursor-pointer relative">
+            <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
+               <div
+                  className="w-full h-[calc(100%+18px)] absolute
+               group-hover:visible 
+             left-0 -top-2 border-dashed border-y-2 border-color invisible"
+               />
+               {note.mdx == "" && (
+                  <div className="italic text-1">Empty...click to edit</div>
+               )}
+               <span
+                  className="invisible cursor-pointer absolute top-1 right-3 
+             text-sm text-1 group-hover:visible"
+               >
+                  <Pencil size={18} />
+               </span>
+               <NoteViewer className="post-content relative z-10" note={note} />
+            </section>
+         </div>
+      </button>
+   );
+};
+
+const Editor = ({
+   note,
+   setIsActive,
+   isNoteAdding,
+   fetcher,
+}: {
+   note: Note;
+   setIsActive: (prevCheck: boolean) => void;
+   isNoteAdding: boolean | undefined;
+   fetcher: FetcherWithComponents<any>;
+}) => {
    const isMount = useIsMount();
-   const isNoteAdding = isProcessing(fetcher.state);
-   const [isActive, setIsActive] = useState(true);
+   const [showNoteOptions, setShowNoteOptions] = useState(false);
    const [inlineValue, setInlineValue] = useState({ mdx: "", id: "" });
    const debouncedInlineSaveValue = useDebouncedValue(inlineValue, 500);
 
@@ -105,42 +152,14 @@ export const InlineEditor = ({ note }: { note: Note }) => {
       }
    }, [debouncedInlineSaveValue]);
 
-   const [showNoteOptions, setShowNoteOptions] = useState(false);
-
-   return isActive ? (
-      <button
-         onClick={() => setIsActive((prevCheck) => !prevCheck)}
-         disabled={isNoteAdding}
-         className="relative block text-left w-full"
-      >
-         <div className="group-hover:cursor-pointer relative">
-            <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
-               <div
-                  className="w-full h-[calc(100%+18px)] absolute
-                     group-hover:visible 
-                   left-0 -top-2 border-dashed border-y-2 border-color invisible"
-               />
-               {note.mdx == "" && (
-                  <div className="italic text-1">Empty...click to edit</div>
-               )}
-               <span
-                  className="invisible cursor-pointer absolute top-1 right-3 
-                   text-sm text-1 group-hover:visible"
-               >
-                  <Pencil size={18} />
-               </span>
-               <NoteViewer className="post-content relative z-10" note={note} />
-            </section>
-         </div>
-      </button>
-   ) : (
+   return (
       <div className="px-3 desktop:px-0 border-y mt-5 mb-6 pt-4 border-color relative">
          <section className="max-w-[728px] relative mx-auto -mt-8">
             <div className="absolute -top-0.5 -left-11">
                <Link
                   className="w-9 h-9 rounded-full flex
-                      items-center justify-center transition !text-zinc-300
-                      active:translate-y-0.5 dark:!text-zinc-600"
+                items-center justify-center transition !text-zinc-300
+                active:translate-y-0.5 dark:!text-zinc-600"
                   to={"/help"}
                >
                   <Info
@@ -183,9 +202,9 @@ export const InlineEditor = ({ note }: { note: Note }) => {
                   </Transition>
                   <button
                      className="w-9 h-9 rounded-full flex !text-1
-                      items-center justify-center bg-2 border-2 border-color transition
-                      duration-300 hover:bg-gray-100 active:translate-y-0.5
-                      dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
+                items-center justify-center bg-2 border-2 border-color transition
+                duration-300 hover:bg-gray-100 active:translate-y-0.5
+                dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
                      onClick={() =>
                         setShowNoteOptions(
                            (showNoteOptions) => !showNoteOptions
@@ -201,16 +220,17 @@ export const InlineEditor = ({ note }: { note: Note }) => {
                   {isNoteAdding ? (
                      <div
                         className="h-9 w-16 rounded-full bg-white border-2 border-color
-                         flex items-center justify-center bg-2"
+                   flex items-center justify-center bg-2"
                      >
                         <DotLoader />
                      </div>
                   ) : (
                      <button
                         disabled={isNoteAdding}
+                        //@ts-ignore
                         onClick={() => setIsActive((prevCheck) => !prevCheck)}
                         className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
-                         rounded-full text-white font-bold"
+                        rounded-full text-white font-bold"
                      >
                         Done
                      </button>
@@ -219,5 +239,39 @@ export const InlineEditor = ({ note }: { note: Note }) => {
             </div>
          </section>
       </div>
+   );
+};
+
+export const InlineEditor = ({ note }: { note: Note }) => {
+   const fetcher = useFetcher();
+   const isNoteAdding = isProcessing(fetcher.state);
+   const [isActive, setIsActive] = useState<boolean>(true);
+
+   if (note.mdx == "") {
+      return isActive ? (
+         <Editor
+            fetcher={fetcher}
+            note={note}
+            setIsActive={setIsActive}
+            isNoteAdding={isNoteAdding}
+         />
+      ) : (
+         <View
+            note={note}
+            setIsActive={setIsActive}
+            isNoteAdding={isNoteAdding}
+         />
+      );
+   }
+
+   return isActive ? (
+      <View note={note} setIsActive={setIsActive} isNoteAdding={isNoteAdding} />
+   ) : (
+      <Editor
+         fetcher={fetcher}
+         note={note}
+         setIsActive={setIsActive}
+         isNoteAdding={isNoteAdding}
+      />
    );
 };
