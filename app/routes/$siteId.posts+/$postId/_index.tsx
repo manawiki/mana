@@ -11,7 +11,6 @@ import {
    Outlet,
    useLoaderData,
    useFetcher,
-   useActionData,
    useNavigation,
    useParams,
 } from "@remix-run/react";
@@ -21,22 +20,14 @@ import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
    ArrowLeft,
-   Check,
-   ComponentIcon,
-   CopyIcon,
-   Expand,
+   Component,
+   Copy,
    EyeOff,
-   ImageMinus,
-   InfoIcon,
    Loader2,
-   MoreHorizontal,
    MoreVertical,
-   Pencil,
    Plus,
-   Redo2,
    Trash2,
-   TypeIcon,
-   Upload,
+   Type,
    X,
 } from "lucide-react";
 import {
@@ -53,39 +44,18 @@ import {
 } from "~/utils";
 import { format, formatDistanceStrict } from "date-fns";
 import { AdminOrOwner, useIsAdminOrOwner } from "~/modules/auth";
-import { createCustomIssues, useZorm } from "react-zorm";
+import { createCustomIssues } from "react-zorm";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Modal } from "~/components/Modal";
 import { useTranslation } from "react-i18next";
 import { toast } from "~/components/Toaster";
-import { Err } from "~/components/Forms";
-import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Image } from "~/components/Image";
-import { EyeIcon } from "@heroicons/react/20/solid";
-import { NoteText } from "~/modules/note/gui/NoteText";
 import { DotLoader } from "~/components/DotLoader";
-import { useComponentVisible } from "~/hooks";
+import { InlineEditor } from "./InlineEditor";
+import { PostHeaderEdit } from "./PostHeaderEdit";
+import { postSchema } from "./postSchema";
 
 type Mode = "edit" | "preview";
-
-const PostSchema = z.object({
-   title: z
-      .string()
-      .min(3, "Title is too short.")
-      .max(200, "Title is too long.")
-      .optional(),
-   banner: z
-      .any()
-      .refine((file) => file?.size <= 5000000, `Max image size is 5MB.`)
-      .refine(
-         (file) =>
-            ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-               file?.type
-            ),
-         "Only .jpg, .jpeg, .png and .webp formats are supported."
-      )
-      .optional(),
-});
 
 //get notes list from payload
 export async function loader({
@@ -132,7 +102,7 @@ export const handle = {
    i18n: "post",
 };
 
-export default function Post() {
+export default function PostPage() {
    const data = useLoaderData<typeof loader>();
    const { post } = data;
    const viewModeDefault = useIsAdminOrOwner();
@@ -329,10 +299,7 @@ export default function Post() {
                                     className="text-1 flex w-full items-center gap-3 rounded-lg
                                     py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                  >
-                                    <CopyIcon
-                                       className="text-blue-400"
-                                       size="18"
-                                    />
+                                    <Copy className="text-blue-400" size="18" />
                                     Clone
                                  </button>
                               </Menu.Item>
@@ -458,7 +425,7 @@ export default function Post() {
                                        border border-color bg-2 items-center gap-2 h-11 justify-center hover:bg-white
                                        dark:hover:bg-zinc-700 dark:hover:border-zinc-600 w-28"
                                     >
-                                       <TypeIcon
+                                       <Type
                                           className="text-emerald-500 flex-none -ml-0.5"
                                           size={20}
                                        />
@@ -471,7 +438,7 @@ export default function Post() {
                                        to="add"
                                        prefetch="intent"
                                     >
-                                       <ComponentIcon
+                                       <Component
                                           className="text-emerald-500 flex-none -ml-0.5"
                                           size={20}
                                        />
@@ -494,24 +461,8 @@ export default function Post() {
    );
 }
 
-export function PostEdit() {
-   //Hooks
+function PostEdit() {
    const fetcher = useFetcher();
-   const transition = useNavigation();
-   const isTitleAdding = isAdding(fetcher, "updateTitle");
-   const isBannerDeleting = isAdding(fetcher, "deleteBanner");
-   const isBannerAdding = isAdding(fetcher, "updateBanner");
-   const noteFetcher = useFetcher();
-   const isNoteAdding = isProcessing(noteFetcher.state);
-   const { siteId, postId } = useParams();
-
-   //Form setup
-   const formResponse = useActionData<FormResponse>();
-   const zo = useZorm("newPost", PostSchema, {
-      //@ts-ignore
-      customIssues: formResponse?.serverIssues,
-   });
-
    //Server response toast
    useEffect(() => {
       if (fetcher.type === "done") {
@@ -524,473 +475,23 @@ export function PostEdit() {
       }
    }, [fetcher.type]);
 
-   //Update title logic
-   const [titleValue, setTitleValue] = useState("");
-   const debouncedTitle = useDebouncedValue(titleValue, 500);
-   const isMount = useIsMount();
-
-   useEffect(() => {
-      if (!isMount) {
-         fetcher.submit(
-            { title: debouncedTitle, intent: "updateTitle" },
-            { method: "patch" }
-         );
-      }
-   }, [debouncedTitle]);
-
    //Get data. This is necessary to determine whether the user should see the draft notes or not.
    const data = useLoaderData<typeof loader>();
    const { post } = data;
    const notes = (data.notes.length ? data.notes : post.notes) as Note[];
-
-   // Create new array with show property to control active editable note
-   const noteList = notes.map((item) => ({
-      ...item,
-      show: false,
-   }));
-
-   const [isEditable, setIsEditable] = useState(noteList);
-
-   //On active note change, update the show property of the note, set all other notes to false
-   const updateActiveNote = (id: Note["id"], reset: Boolean = false) => {
-      const updateNotes = (id: string) => {
-         return noteList.map((note) => {
-            if (reset == true)
-               return {
-                  ...note,
-                  show: false,
-               };
-            if (note.id === id) {
-               return {
-                  ...note,
-                  show: true,
-               };
-            } else {
-               return {
-                  ...note,
-                  show: false,
-               };
-            }
-         });
-      };
-      return setIsEditable(updateNotes(id));
-   };
-
-   const { ref, isComponentVisible } = useComponentVisible(true);
-
-   //Determine whether the note is active or not
-   const isActiveNote = (noteId: Note["id"]) =>
-      isEditable.find(({ id }) => id === noteId)?.show;
-
-   //Debounce and save inline input
-   const [inlineValue, setInlineValue] = useState({ mdx: "", id: "" });
-   const debouncedInlineSaveValue = useDebouncedValue(inlineValue, 500);
-
-   useEffect(() => {
-      if (!isMount) {
-         const { id, mdx } = inlineValue;
-         noteFetcher.submit(
-            { mdx, autosave: "yes", intent: "updateNote" },
-            {
-               method: "post",
-               action: `/edit/${id}`,
-            }
-         );
-      }
-   }, [debouncedInlineSaveValue]);
-
-   // After note is updated with new data, update the editable list, then set the active note again
-   useEffect(() => {
-      if (noteFetcher.type === "done") {
-         const { note, notes } = noteFetcher.data;
-         //If note is updated, update the active note
-         if (note) {
-            setIsEditable(noteList);
-            updateActiveNote(note.id);
-         }
-         //If post is updated, only update the notes list, ex. after a note is deleted
-         if (notes) {
-            setIsEditable(noteList);
-         }
-      }
-   }, [noteFetcher.type]);
-
-   //Update note list state after updating from the modal editor
-   useEffect(() => {
-      if (transition.state === "idle") {
-         setIsEditable(noteList);
-      }
-   }, [transition]);
-
-   //Set first text note as open after creating a new post
-   const setActiveNoteNewPost = () => {
-      if (
-         isEditable.length === 1 &&
-         //@ts-expect-error
-         isEditable[0].ui?.id === "textarea" &&
-         !isEditable[0].mdx
-      )
-         return true;
-      return false;
-   };
-
-   //Note options
-   const [showNoteOptions, setShowNoteOptions] = useState(false);
-   const showNoteStyle = `w-9 h-9 rounded-full flex dark:!text-zinc-400 !text-zinc-500
-   items-center justify-center bg-2 border border-color transition
-   duration-300 hover:bg-gray-100 active:translate-y-0.5
-   dark:border-zinc-600 dark:hover:bg-zinc-700`;
-   const DeleteNote = ({ noteId }: { noteId: Note["id"] }) => {
-      const [noteDeleteStatus, setNoteDeleteStatus] = useState("default");
-      if (noteDeleteStatus === "default") {
-         return (
-            <button
-               onClick={() => setNoteDeleteStatus("shouldDelete")}
-               className={`${showNoteStyle}`}
-            >
-               <Trash2 size={16} />
-            </button>
-         );
-      }
-      if (noteDeleteStatus === "shouldDelete") {
-         return (
-            <div
-               className="text-xs gap-0.5 px-1 flex font-bold h-9 rounded-full
-            dark:!text-zinc-400 !text-zinc-500
-            items-center justify-center bg-2 border border-color
-            dark:border-zinc-600"
-            >
-               <button
-                  className="w-7 h-7 dark:hover:bg-zinc-700 hover:bg-zinc-100 rounded-full flex items-center justify-center"
-                  onClick={() =>
-                     noteFetcher.submit(
-                        {
-                           intent: "deleteNote",
-                        },
-                        {
-                           method: "delete",
-                           action: `/${siteId}/posts/${postId}/edit/${noteId}`,
-                        }
-                     )
-                  }
-               >
-                  <Check size={20} className="text-green-500" />
-               </button>
-               <button
-                  className="w-7 h-7 dark:hover:bg-zinc-700 hover:bg-zinc-100 rounded-full flex items-center justify-center"
-                  onClick={() => setNoteDeleteStatus("default")}
-               >
-                  <Redo2 className="text-1" size={18} />
-               </button>
-            </div>
-         );
-      }
-      return (
-         <button className={`${showNoteStyle}`}>
-            <Trash2 size={16} />
-         </button>
-      );
-   };
 
    return (
       <main
          className="post-content relative min-h-screen  
          max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
-         <section className="max-w-[728px] mx-auto max-desktop:px-3">
-            <div className="relative mb-3 flex items-center gap-3">
-               <input
-                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-mono text-2xl 
-                  laptop:text-3xl font-semibold !ring-zinc-200
-                  !ring-offset-4 !ring-offset-white hover:bg-white hover:ring-2 focus:bg-white 
-                  focus:ring-2 dark:!ring-zinc-600
-                dark:!ring-offset-zinc-700 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
-                  name={zo.fields.title()}
-                  type="text"
-                  defaultValue={post.title}
-                  onChange={(event) => setTitleValue(event.target.value)}
-                  placeholder="Add a title..."
-               />
-               {isTitleAdding ? (
-                  <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-emerald-500" />
-               ) : null}
-               {zo.errors.title((err) => (
-                  <Err>{err.message}</Err>
-               ))}
-            </div>
-
-            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
-               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-                  {/* @ts-expect-error */}
-                  {post?.author?.avatar ? (
-                     <Image /* @ts-expect-error */
-                        url={post.author.avatar.url}
-                        options="fit=crop,width=60,height=60 ,gravity=auto"
-                        className="h-full w-full object-cover"
-                        /* @ts-expect-error */
-                        alt={post?.author?.username}
-                     />
-                  ) : null}
-               </div>
-               <div className="space-y-0.5">
-                  {/* @ts-expect-error */}
-                  <div className="font-bold">{post?.author?.username}</div>
-                  <div className="flex items-center gap-3">
-                     <time
-                        className="text-1 flex items-center gap-1.5 text-sm"
-                        dateTime={post?.updatedAt}
-                     >
-                        {formatDistanceStrict(
-                           new Date(post?.updatedAt as string),
-                           new Date(),
-                           {
-                              addSuffix: true,
-                           }
-                        )}
-                        {/* <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" /> */}
-                     </time>
-                     {post?.publishedAt && (
-                        <>
-                           <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                           <time
-                              className="text-1 flex items-center gap-1.5 text-sm"
-                              dateTime={post?.publishedAt}
-                           >
-                              {format(new Date(post?.publishedAt), "MMM dd")}
-                           </time>
-                        </>
-                     )}
-                  </div>
-               </div>
-            </div>
-         </section>
-         <section className="max-w-[800px] mx-auto">
-            {post.banner ? (
-               <div className="relative mb-5">
-                  <div
-                     className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
-                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                        items-center justify-center overflow-hidden tablet:rounded-md
-                        shadow-sm"
-                  >
-                     <img
-                        alt="Post Banner"
-                        className="h-full w-full object-cover"
-                        //@ts-ignore
-                        src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
-                     />
-                  </div>
-                  <button
-                     className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
-                  justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
-                     onClick={() =>
-                        fetcher.submit(
-                           { intent: "deleteBanner" },
-                           { method: "delete" }
-                        )
-                     }
-                  >
-                     {isBannerDeleting ? (
-                        <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
-                     ) : (
-                        <ImageMinus
-                           className="text-red-500 dark:text-red-300"
-                           size={20}
-                        />
-                     )}
-                  </button>
-               </div>
-            ) : (
-               <fetcher.Form
-                  className="mb-8"
-                  method="patch"
-                  encType="multipart/form-data"
-                  replace
-                  onChange={(event) => {
-                     fetcher.submit(event.currentTarget, { method: "patch" });
-                  }}
-               >
-                  <label className="cursor-pointer">
-                     <div
-                        className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
-                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                        items-center justify-center overflow-hidden tablet:rounded-md
-                        shadow-sm border-y tablet:border hover:border-dashed hover:border-4"
-                     >
-                        <div className="text-1 space-y-2">
-                           {isBannerAdding ? (
-                              <Loader2
-                                 size={36}
-                                 className="mx-auto animate-spin"
-                              />
-                           ) : (
-                              <Upload className="mx-auto" size={36} />
-                           )}
-
-                           <div className="text-center font-bold">
-                              Click to upload banner
-                           </div>
-                           <div className="text-center text-sm">
-                              JPEG, PNG, JPG or WEBP (MAX. 5MB)
-                           </div>
-                        </div>
-                     </div>
-                     <input
-                        // @ts-ignore
-                        name={zo.fields.banner()}
-                        type="file"
-                        className="hidden"
-                     />
-                     {zo.errors.banner((err) => (
-                        <Err>{err.message}</Err>
-                     ))}
-                  </label>
-                  <input type="hidden" name="intent" value="updateBanner" />
-               </fetcher.Form>
-            )}
-         </section>
-
+         <PostHeaderEdit post={post} />
          <Suspense fallback={<div>Loading...</div>}>
-            {isEditable.map((note) => (
+            {notes.map((note) => (
                <div key={note.id} className="group">
                   {/* @ts-expect-error */}
                   {note?.ui?.id == "textarea" ? (
-                     <>
-                        {/* Render inline editor */}
-                        {isActiveNote(note.id) == true ||
-                        setActiveNoteNewPost() ? (
-                           <div
-                              className="px-3 desktop:px-0 border-y
-                              mt-5 mb-6 pt-4 border-color relative"
-                           >
-                              <section className="max-w-[728px] relative mx-auto -mt-8">
-                                 <div className="absolute -top-0.5 -left-11">
-                                    <Link
-                                       className="w-9 h-9 rounded-full flex
-                                       items-center justify-center transition !text-zinc-300
-                                        active:translate-y-0.5 dark:!text-zinc-600
-                                    "
-                                       to={"/help"}
-                                    >
-                                       <InfoIcon
-                                          className="bg-white rounded-full dark:bg-zinc-800"
-                                          size={24}
-                                       />
-                                    </Link>
-                                 </div>
-                                 <NoteText
-                                    defaultValue={note.mdx}
-                                    onChange={(e) =>
-                                       //@ts-ignore
-                                       setInlineValue({
-                                          mdx: e,
-                                          id: note.id,
-                                       })
-                                    }
-                                 />
-                              </section>
-                              <section>
-                                 <div className="absolute -top-5 right-5 ">
-                                    <div className="flex items-center gap-3">
-                                       <Transition
-                                          show={showNoteOptions}
-                                          enter="ease-in-out duration-200"
-                                          enterFrom="opacity-0"
-                                          enterTo="opacity-100"
-                                          leave="ease-in-out duration-200"
-                                          leaveFrom="opacity-100"
-                                          leaveTo="opacity-0"
-                                       >
-                                          <div className="flex items-center gap-2">
-                                             <Link
-                                                className={`${showNoteStyle}`}
-                                                to={`edit/${note.id}`}
-                                             >
-                                                <Expand size={16} />
-                                             </Link>
-                                             <DeleteNote noteId={note.id} />
-                                          </div>
-                                       </Transition>
-                                       <button
-                                          className="w-9 h-9 rounded-full flex !text-1
-                                       items-center justify-center bg-2 border-2 border-color transition
-                                       duration-300 hover:bg-gray-100 active:translate-y-0.5
-                                       dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
-                                          onClick={() =>
-                                             setShowNoteOptions(
-                                                (showNoteOptions) =>
-                                                   !showNoteOptions
-                                             )
-                                          }
-                                       >
-                                          {showNoteOptions ? (
-                                             <X
-                                                className="text-red-500"
-                                                size={20}
-                                             />
-                                          ) : (
-                                             <MoreHorizontal size={20} />
-                                          )}
-                                       </button>
-                                       {isNoteAdding ? (
-                                          <div
-                                             className="h-9 w-16 rounded-full bg-white border-2 border-color
-                                          flex items-center justify-center bg-2"
-                                          >
-                                             <DotLoader />
-                                          </div>
-                                       ) : (
-                                          <button
-                                             disabled={isNoteAdding}
-                                             onClick={() => {
-                                                updateActiveNote(note.id, true);
-                                             }}
-                                             className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
-                                              rounded-full text-white font-bold"
-                                          >
-                                             Done
-                                          </button>
-                                       )}
-                                    </div>
-                                 </div>
-                              </section>
-                           </div>
-                        ) : (
-                           <>
-                              {/* Render inline view mode */}
-                              <button
-                                 disabled={isNoteAdding}
-                                 className="relative block text-left w-full"
-                                 onClick={() => updateActiveNote(note.id)}
-                              >
-                                 <div className="group-hover:cursor-pointer relative">
-                                    <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
-                                       <div
-                                          className="w-full h-[calc(100%+18px)] absolute
-                                            group-hover:visible 
-                                          left-0 -top-2 border-dashed border-y-2 border-color invisible"
-                                       />
-                                       {note.mdx == "" && (
-                                          <div className="italic text-1">
-                                             Empty...click to edit
-                                          </div>
-                                       )}
-                                       <span
-                                          className="invisible cursor-pointer absolute top-1 right-3 
-                                          text-sm text-1 group-hover:visible"
-                                       >
-                                          <Pencil size={18} />
-                                       </span>
-                                       <NoteViewer
-                                          className="post-content relative z-10"
-                                          note={note}
-                                       />
-                                    </section>
-                                 </div>
-                              </button>
-                           </>
-                        )}
-                     </>
+                     <InlineEditor note={note} />
                   ) : (
                      <>
                         {/* Render noteview with edit button */}
@@ -998,13 +499,15 @@ export function PostEdit() {
                            to={`edit/${note.id}`}
                            prefetch="intent"
                            className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
-                     text-xs font-bold text-white group-hover:inline-block"
+                           text-xs font-bold text-white group-hover:inline-block"
                         >
                            Edit
                         </Link>
                         <NoteViewer
-                           className="post-content outline-1 outline-offset-8 outline-zinc-300 group-hover:cursor-pointer 
-                     group-hover:rounded-sm group-hover:outline-dotted dark:outline-zinc-600"
+                           className="post-content outline-1 outline-offset-8 
+                           outline-zinc-300 group-hover:cursor-pointer 
+                           group-hover:rounded-sm group-hover:outline-dotted 
+                           dark:outline-zinc-600"
                            note={note}
                            //insert custom components here
                            components={
@@ -1022,7 +525,7 @@ export function PostEdit() {
    );
 }
 
-export function PostView() {
+function PostView() {
    const data = useLoaderData<typeof loader>();
 
    const { post } = data;
@@ -1033,7 +536,7 @@ export function PostView() {
    return (
       <main
          className="post-content relative min-h-screen  
-      max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
+         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
          <section className="max-w-[728px] mx-auto max-desktop:px-3">
             <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
@@ -1067,7 +570,6 @@ export function PostView() {
                               addSuffix: true,
                            }
                         )}
-                        {/* <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" /> */}
                      </time>
                      {post?.publishedAt && (
                         <>
@@ -1139,12 +641,12 @@ export async function action({
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
    const session = await getSession(request.headers.get("cookie"));
-   const issues = createCustomIssues(PostSchema);
+   const issues = createCustomIssues(postSchema);
 
    switch (intent) {
       case "updateTitle": {
          assertIsPatch(request);
-         const result = await zx.parseFormSafe(request, PostSchema);
+         const result = await zx.parseFormSafe(request, postSchema);
          if (result.success) {
             const { title } = result.data;
             try {
@@ -1181,7 +683,7 @@ export async function action({
          const result = await getMultipleFormData({
             request,
             prefix: "postBanner",
-            schema: PostSchema,
+            schema: postSchema,
          });
          if (result.success) {
             const { banner } = result.data;
