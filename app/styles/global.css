@@ -44,6 +44,63 @@ html.dark {
    }
 }
 
+/* Loader */
+.blue-circle {
+   animation-delay: 0.1s;
+}
+.emerald-circle {
+   animation-delay: 0.2s;
+}
+.yellow-circle {
+   animation-delay: 0.3s;
+}
+.violet-circle {
+   animation-delay: 0.4;
+}
+
+/* Default Editor Styles */
+.post-content ul {
+   @apply mb-5 list-disc space-y-1.5 pl-7;
+}
+.post-content ol {
+   @apply mb-5 list-decimal space-y-1.5 pl-7;
+}
+.post-content blockquote {
+   @apply border-l-2 pl-3 text-1 my-4 border-color italic;
+}
 .post-content p {
-   @apply mb-3;
+   @apply !mb-3;
+}
+.post-content code {
+   @apply dark:bg-zinc-700 bg-zinc-200 rounded py-[3px] px-[4px] text-sm;
+}
+.post-content pre > code {
+   @apply !bg-transparent p-0;
+}
+.post-content {
+   @apply break-words;
+}
+.post-content h2 {
+   @apply dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light;
+}
+.post-content h3 {
+   @apply dark:text-dark font-bold text-xl pb-2 pt-4 text-light;
+}
+.post-content a {
+   @apply text-blue-500;
+}
+.remirror-list-item-marker-container {
+   @apply -left-6;
+}
+.remirror-collapsible-list-item-button {
+   @apply dark:bg-dark bg-light w-1.5 h-1.5;
+}
+.remirror-editor-wrapper {
+   @apply !pt-3.5;
+}
+.remirror-editor {
+   @apply !rounded-none !p-0 font-body !shadow-none focus:!shadow-none;
+}
+.remirror-editor.ProseMirror {
+   @apply overflow-y-visible;
 }

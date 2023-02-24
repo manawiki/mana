@@ -22,7 +22,7 @@ export const NewNoteType = ({ noteTypes }) => {
          }}
       >
          <div
-            className="border-color bg-1 w-full max-w-lg transform
+            className="border-color bg-1 w-full max-w-lg transform laptop:min-w-[400px]
             rounded-2xl border-2 py-6 px-5 text-left align-middle shadow-xl transition-all"
          >
             <Tab.Group>
@@ -33,7 +33,7 @@ export const NewNoteType = ({ noteTypes }) => {
                            className={`
                             ${
                                selected
-                                  ? "bg-blue-50 font-bold text-blue-500 dark:bg-blue-900/50 dark:text-white"
+                                  ? "bg-emerald-50 font-bold text-emerald-500 dark:bg-emerald-900/50 dark:text-white"
                                   : ""
                             } bg-2 h-10 rounded-lg focus:outline-none`}
                         >
@@ -47,7 +47,7 @@ export const NewNoteType = ({ noteTypes }) => {
                            className={`
                             ${
                                selected
-                                  ? "bg-blue-50 font-bold text-blue-500 dark:bg-blue-900/50 dark:text-white"
+                                  ? "bg-emerald-50 font-bold text-emerald-500 dark:bg-emerald-900/50 dark:text-white"
                                   : ""
                             } bg-2 h-10 rounded-lg focus:outline-none`}
                         >
@@ -72,7 +72,7 @@ export const NewNoteType = ({ noteTypes }) => {
                                        >
                                           <div
                                              className="flex h-11 w-11 flex-none items-center justify-center overflow-hidden rounded-full
-                                                                border border-blue-100 bg-blue-50 text-blue-500 dark:border-blue-900 dark:bg-blue-900/20"
+                                             border border-emerald-100 bg-emerald-50 text-emerald-500 dark:border-emerald-900 dark:bg-emerald-900/20"
                                           >
                                              <Type size={20} />
                                           </div>
@@ -92,14 +92,14 @@ export const NewNoteType = ({ noteTypes }) => {
                                              name="intent"
                                              value="addNewSection"
                                              className="bg-1 border-color flex h-10 items-center justify-center gap-2 rounded-full
-                                                            border pl-3 pr-5 font-bold shadow shadow-zinc-100 hover:bg-blue-50 focus:shadow-none
-                                                            dark:shadow-zinc-900 dark:hover:bg-blue-900/50"
+                                             border pl-3 pr-5 font-bold shadow shadow-zinc-100 hover:bg-emerald-50 focus:shadow-none
+                                             dark:shadow-black/40 dark:hover:bg-emerald-900/50"
                                           >
                                              {adding ? (
                                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
                                              ) : (
                                                 <Plus
-                                                   className="text-blue-500"
+                                                   className="text-emerald-500"
                                                    size={20}
                                                 />
                                              )}
@@ -118,8 +118,8 @@ export const NewNoteType = ({ noteTypes }) => {
             </Tab.Group>
             <button
                className="absolute -right-4 -top-4 flex h-8 w-8
-                                        items-center justify-center rounded-full border-2 border-red-300 bg-white
-                                      hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+               items-center justify-center rounded-full border-2 border-red-300 bg-white
+             hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
                onClick={() => {
                   setIsOpen(false);
                   navigate(-1);

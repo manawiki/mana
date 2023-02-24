@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export function useDebouncedValue<T>(input: T, time = 500) {
+export const useDebouncedValue = <T>(input: T, time = 500) => {
    const [debouncedValue, setDebouncedValue] = useState(input);
 
    // every time input value has changed - set interval before it's actually commited
@@ -15,7 +15,7 @@ export function useDebouncedValue<T>(input: T, time = 500) {
    }, [input, time]);
 
    return debouncedValue;
-}
+};
 
 //Checks if initial render is mounted, used to prevent useEffect from running on initial render
 export const useIsMount = () => {

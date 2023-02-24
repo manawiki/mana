@@ -10,7 +10,7 @@ import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
 import { assertIsPost, isAdding, isProcessing, safeRedirect } from "~/utils";
 import { useTranslation } from "react-i18next";
-import { GithubIcon, Loader2 } from "lucide-react";
+import { Github, Loader2 } from "lucide-react";
 import {
    commitSession,
    getSession,
@@ -109,7 +109,7 @@ export default function Login() {
                href="https://github.com/manawiki/core"
                rel="noreferrer"
             >
-               <GithubIcon className="text-1" size={20} />
+               <Github className="text-1" size={20} />
             </a>
             <span className="h-4 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
             <DarkModeToggle />

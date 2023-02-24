@@ -1,21 +1,19 @@
 import type { Note } from "payload-types";
-import { Form, useNavigate, useNavigation, useSubmit } from "@remix-run/react";
+import { Form, useNavigation, useSubmit } from "@remix-run/react";
 import {
    useRef,
    Suspense,
    Fragment,
    useState,
-   useEffect,
    useMemo,
    useDeferredValue,
 } from "react";
 import { Modal } from "~/components/Modal";
-import { NoteViewer } from "./NoteViewer";
 import useWindowDimensions from "~/hooks/use-window-dimensions";
 import { Tab } from "@headlessui/react";
 import { NoteSelector } from "../gui/NoteSelector";
 import type { MDXComponents } from "mdx/types";
-import { Loader2, Save, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { isAdding } from "~/utils";
 import React from "react";
 import { deferComponents } from "../utils";
@@ -59,12 +57,12 @@ export default function NoteEditor({
 
    //This is the function that is called when the user types in the textarea
    const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const mdx = event.target.value;
-
+      //If not submitting by form, get the value from the event
+      const mdx = event?.target?.value ?? event;
       //todo we should debounce this in some way
       setMDX(mdx);
       submit(
-         { mdx, autosave: "yes" },
+         { mdx, autosave: "yes", intent: "saveNote" },
          { method: "post", replace: true, preventScrollReset: true }
       );
    };
@@ -142,7 +140,7 @@ export function NoteSideLayout({ children }: React.PropsWithChildren) {
          p-5 shadow-lg dark:shadow-black/50"
       >
          {React.Children.map(children, (child) => (
-            <div className="min-w-full max-w-[728px]">{child}</div>
+            <div className="min-w-full max-w-[728px] post-content">{child}</div>
          ))}
       </div>
    );

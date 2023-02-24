@@ -10,23 +10,24 @@ import {
    Link,
    Outlet,
    useLoaderData,
-   useNavigation,
    useFetcher,
-   useActionData,
+   useNavigation,
+   useParams,
 } from "@remix-run/react";
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
-   CopyIcon,
+   ArrowLeft,
+   Component,
+   Copy,
    EyeOff,
-   ImageMinus,
    Loader2,
    MoreVertical,
    Plus,
    Trash2,
-   Upload,
+   Type,
    X,
 } from "lucide-react";
 import {
@@ -41,38 +42,20 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { formatDistanceStrict } from "date-fns";
+import { format, formatDistanceStrict } from "date-fns";
 import { AdminOrOwner, useIsAdminOrOwner } from "~/modules/auth";
-import { createCustomIssues, useZorm } from "react-zorm";
-import { Menu, Transition } from "@headlessui/react";
+import { createCustomIssues } from "react-zorm";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { Modal } from "~/components/Modal";
 import { useTranslation } from "react-i18next";
 import { toast } from "~/components/Toaster";
-import { Err } from "~/components/Forms";
-import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Image } from "~/components/Image";
-import { EyeIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { DotLoader } from "~/components/DotLoader";
+import { InlineEditor } from "./InlineEditor";
+import { PostHeaderEdit } from "./PostHeaderEdit";
+import { postSchema } from "./postSchema";
 
 type Mode = "edit" | "preview";
-
-const PostSchema = z.object({
-   title: z
-      .string()
-      .min(3, "Title is too short.")
-      .max(200, "Title is too long.")
-      .optional(),
-   banner: z
-      .any()
-      .refine((file) => file?.size <= 5000000, `Max image size is 5MB.`)
-      .refine(
-         (file) =>
-            ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-               file?.type
-            ),
-         "Only .jpg, .jpeg, .png and .webp formats are supported."
-      )
-      .optional(),
-});
 
 //get notes list from payload
 export async function loader({
@@ -98,7 +81,7 @@ export async function loader({
       typeof post.author === "string" ? post.author : post.author.id;
 
    //pass in draft docs if the user is the author
-   if (authorId === user?.id)
+   if (post?.notes && authorId === user?.id)
       notes = await Promise.all(
          post?.notes?.map((note) =>
             payload.findByID({
@@ -119,7 +102,7 @@ export const handle = {
    i18n: "post",
 };
 
-export default function Post() {
+export default function PostPage() {
    const data = useLoaderData<typeof loader>();
    const { post } = data;
    const viewModeDefault = useIsAdminOrOwner();
@@ -129,6 +112,10 @@ export default function Post() {
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "delete");
+   const { siteId, postId } = useParams();
+   const transition = useNavigation();
+   const isPublishing = isAdding(transition, "publish");
+   const disabled = isProcessing(transition.state);
 
    return (
       <div className="relative">
@@ -241,49 +228,50 @@ export default function Post() {
             </div>
          </Modal>
          <div
-            className="border-color bg-1 fixed top-20 z-30 flex h-14 items-center 
-            justify-between border-b px-3 max-laptop:w-full max-laptop:border-y laptop:sticky laptop:top-0"
+            className="bg-2 fixed top-20 z-30 flex h-14 items-center border-color
+            px-3 max-laptop:w-full justify-between max-laptop:border-t laptop:sticky laptop:top-0"
          >
+            <div className="flex items-center gap-3">
+               <Link
+                  className="hover:dark:bg-neutral-700 hover:bg-white rounded-full inline-flex items-center justify-center h-9 w-9"
+                  to={`/${siteId}/posts`}
+               >
+                  <ArrowLeft className="text-1" size={24} />
+               </Link>
+               <AdminOrOwner>
+                  <span className="h-6 rounded-full w-0.5 dark:bg-zinc-600 bg-zinc-300" />
+                  <div className="flex cursor-pointer items-center gap-2.5 pl-1.5">
+                     <span
+                        onClick={() => setMode("edit")}
+                        className={`${
+                           mode == "edit"
+                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
+                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
+                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        `}
+                     >
+                        Edit
+                     </span>
+                     <span
+                        onClick={() => setMode("preview")}
+                        className={`${
+                           mode == "preview"
+                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
+                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
+                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        `}
+                     >
+                        Preview
+                     </span>
+                  </div>
+               </AdminOrOwner>
+            </div>
             <AdminOrOwner>
-               {post.isPublished ? (
-                  <span
-                     className="flex h-7 items-center justify-center rounded-md border border-green-200
-                  bg-green-50 px-2 text-xs font-semibold text-green-500 dark:border-green-800 dark:bg-green-900"
-                  >
-                     Published
-                  </span>
-               ) : (
-                  <span className="rounded bg-zinc-500 py-1 px-2 text-xs font-semibold text-white">
-                     Draft
-                  </span>
-               )}
-               <div className="flex cursor-pointer items-center gap-2">
-                  <span
-                     onClick={() => setMode("edit")}
-                     className={`${
-                        mode == "edit" &&
-                        "bg-blue-500 text-white hover:!bg-blue-500"
-                     } rounded-full py-1 px-3 text-sm font-semibold transition 
-                        hover:bg-zinc-100 dark:hover:bg-zinc-800`}
-                  >
-                     Edit
-                  </span>
-                  <span
-                     onClick={() => setMode("preview")}
-                     className={`${
-                        mode == "preview" &&
-                        "bg-blue-500 text-white hover:!bg-blue-500"
-                     } rounded-full py-1 px-3 text-sm font-semibold transition 
-                        hover:bg-zinc-100 dark:hover:bg-zinc-800`}
-                  >
-                     Preview
-                  </span>
-               </div>
                <div className="flex items-center gap-3">
                   <Menu as="div" className="relative">
                      <Menu.Button
-                        className="bg-2 flex h-8 w-8 items-center justify-center 
-                        rounded-full border-2 text-blue-500 transition
+                        className="bg-1 flex h-9 w-9 items-center justify-center 
+                        rounded-full border-2 text-1 transition
                         duration-300 hover:bg-gray-100 active:translate-y-0.5
                         dark:border-zinc-600 dark:hover:bg-zinc-700"
                      >
@@ -311,10 +299,7 @@ export default function Post() {
                                     className="text-1 flex w-full items-center gap-3 rounded-lg
                                     py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                  >
-                                    <CopyIcon
-                                       className="text-blue-400"
-                                       size="18"
-                                    />
+                                    <Copy className="text-blue-400" size="18" />
                                     Clone
                                  </button>
                               </Menu.Item>
@@ -350,14 +335,42 @@ export default function Post() {
                   </Menu>
                   {post.isPublished ? null : (
                      <Form method="post">
-                        <button
-                           type="submit"
-                           name="intent"
-                           value="publish"
-                           className="h-8 rounded-full bg-green-500 px-4 text-sm font-bold text-white"
-                        >
-                           Publish
-                        </button>
+                        {isPublishing ? (
+                           <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
+                              <DotLoader />
+                           </div>
+                        ) : (
+                           <button
+                              disabled={disabled}
+                              type="submit"
+                              name="intent"
+                              value="publish"
+                           >
+                              <div
+                                 className="group inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
+                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                              >
+                                 {t("actions.publish")}
+                                 <svg
+                                    className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                                    fill="none"
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 12 12"
+                                    aria-hidden="true"
+                                 >
+                                    <path
+                                       className="opacity-0 transition group-hover:opacity-100"
+                                       d="M0 5h7"
+                                    ></path>
+                                    <path
+                                       className="transition group-hover:translate-x-[3px]"
+                                       d="M1 1l4 4-4 4"
+                                    ></path>
+                                 </svg>
+                              </div>
+                           </button>
+                        )}
                      </Form>
                   )}
                </div>
@@ -367,24 +380,90 @@ export default function Post() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="border-color bg-2 laptop:bg-1 sticky bottom-12 z-20 flex h-20 
+                  className="bg-1 border-1 sticky bottom-12 z-20 flex h-20 
                     items-center justify-between 
-                    border-t px-3 shadow laptop:bottom-0 laptop:h-14"
+                    border-t px-3 laptop:bottom-0 laptop:h-14"
                >
-                  <div className="mx-auto -mt-14 laptop:-mt-8">
-                     <Link to="add" prefetch="intent">
-                        <div
-                           className="mx-auto flex h-11 w-11 items-center justify-center
-                    rounded-full border border-blue-300
-                   bg-blue-500 font-semibold text-white dark:border-blue-700 
-                   dark:bg-blue-800 "
-                        >
-                           <Plus className="h-6 w-6" />
-                        </div>
-                        <div className="pt-1 text-sm font-semibold">
-                           Add Section
-                        </div>
-                     </Link>
+                  <div className="mx-auto -mt-14 laptop:-mt-11">
+                     <Popover className="relative flex items-center justify-center">
+                        {({ open }) => (
+                           <>
+                              <Popover.Button className="focus:outline-none justify-center mx-auto">
+                                 <div
+                                    className="flex h-14 w-14 items-center justify-center
+                              rounded-full border-2 border-emerald-200 active:translate-y-0.5
+                              shadow shadow-emerald-100 bg-emerald-100
+                              font-semibold text-emerald-500 dark:border-emerald-800 
+                              dark:shadow-emerald-900/40 focus-visible:blur-none
+                              transition duration-300 dark:bg-emerald-900"
+                                 >
+                                    <Plus
+                                       size={28}
+                                       className={`${
+                                          open
+                                             ? "rotate-45 dark:text-zinc-200 text-zinc-400"
+                                             : ""
+                                       } transform transition duration-300 ease-in-out`}
+                                    />
+                                 </div>
+                              </Popover.Button>
+                              <Transition
+                                 as={Fragment}
+                                 enter="transition ease-out duration-200"
+                                 enterFrom="opacity-0 translate-y-1"
+                                 enterTo="opacity-100 translate-y-0"
+                                 leave="transition ease-in duration-150"
+                                 leaveFrom="opacity-100 translate-y-0"
+                                 leaveTo="opacity-0 translate-y-1"
+                              >
+                                 <Popover.Panel
+                                    className="absolute flex items-center gap-3 -top-[50px] 
+                                    left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                                 >
+                                    <Popover.Button
+                                       onClick={() =>
+                                          fetcher.submit(
+                                             {
+                                                intent: "addNewInlineSection",
+                                                ui: "textarea",
+                                             },
+                                             {
+                                                method: "post",
+                                                action: `/${siteId}/posts/${postId}/add`,
+                                             }
+                                          )
+                                       }
+                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
+                                       border border-color bg-2 items-center gap-2 h-11 justify-center hover:bg-white
+                                       dark:hover:bg-zinc-700 dark:hover:border-zinc-600 w-28"
+                                    >
+                                       <Type
+                                          className="text-emerald-500 flex-none -ml-0.5"
+                                          size={20}
+                                       />
+                                       <span>Text</span>
+                                    </Popover.Button>
+                                    <Link
+                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
+                                       border border-color bg-2 items-center gap-2 w-28 h-11 justify-center hover:bg-white
+                                     dark:hover:bg-zinc-700 dark:hover:border-zinc-600"
+                                       to="add"
+                                       prefetch="intent"
+                                    >
+                                       <Component
+                                          className="text-emerald-500 flex-none -ml-0.5"
+                                          size={20}
+                                       />
+                                       <span>Widget</span>
+                                    </Link>
+                                 </Popover.Panel>
+                              </Transition>
+                           </>
+                        )}
+                     </Popover>
+                     <div className="pt-2 uppercase text-xs text-1 font-bold">
+                        Add Section
+                     </div>
                   </div>
                </div>
             )}
@@ -394,27 +473,9 @@ export default function Post() {
    );
 }
 
-export function PostEdit() {
-   const data = useLoaderData<typeof loader>();
-
-   const { post } = data;
-
-   //This is necessary to determine whether the user should see the draft notes or not.
-   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
-
-   const formResponse = useActionData<FormResponse>();
-   const zo = useZorm("newPost", PostSchema, {
-      //@ts-ignore
-      customIssues: formResponse?.serverIssues,
-   });
-   const transition = useNavigation();
-   const disabled = isProcessing(transition.state);
+function PostEdit() {
    const fetcher = useFetcher();
-   const isTitleAdding = isAdding(fetcher, "updateTitle");
-   const isBannerDeleting = isAdding(fetcher, "deleteBanner");
-   const isBannerAdding = isAdding(fetcher, "updateBanner");
-   const isMount = useIsMount();
-
+   //Server response toast
    useEffect(() => {
       if (fetcher.type === "done") {
          if (fetcher.data?.success) {
@@ -426,197 +487,57 @@ export function PostEdit() {
       }
    }, [fetcher.type]);
 
-   const [titleValue, setTitleValue] = useState("");
-   const debouncedValue = useDebouncedValue(titleValue, 500);
-
-   useEffect(() => {
-      if (!isMount) {
-         fetcher.submit(
-            { title: debouncedValue, intent: "updateTitle" },
-            { method: "patch" }
-         );
-      }
-   }, [debouncedValue]);
+   //Get data. This is necessary to determine whether the user should see the draft notes or not.
+   const data = useLoaderData<typeof loader>();
+   const { post } = data;
+   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
 
    return (
-      <div
-         className="post-content relative mx-auto min-h-screen max-w-[728px] 
-      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+      <main
+         className="post-content relative min-h-screen  
+         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
-         <div className="relative mb-3 flex items-center gap-3">
-            <input
-               className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-mono text-3xl font-semibold !ring-zinc-200
-               !ring-offset-4 !ring-offset-white hover:bg-white hover:ring-2 focus:bg-white focus:ring-2 dark:!ring-zinc-600
-               dark:!ring-offset-zinc-700 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
-               name={zo.fields.title()}
-               type="text"
-               defaultValue={post.title}
-               onChange={(event) => setTitleValue(event.target.value)}
-               disabled={disabled}
-               placeholder="Add a title..."
-            />
-            {isTitleAdding ? (
-               <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-blue-500" />
-            ) : null}
-            {zo.errors.title((err) => (
-               <Err>{err.message}</Err>
-            ))}
-         </div>
-         <div className="flex items-center gap-3 pb-5">
-            <time
-               className="text-1 flex items-center gap-1.5 text-sm"
-               dateTime={post?.updatedAt}
-            >
-               <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-               {formatDistanceStrict(
-                  new Date(post?.updatedAt as string),
-                  new Date(),
-                  {
-                     addSuffix: true,
-                  }
-               )}
-            </time>
-            {post?.publishedAt && (
-               <>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                  <time
-                     className="text-1 flex items-center gap-1.5 text-sm"
-                     dateTime={post?.publishedAt}
-                  >
-                     <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                     {formatDistanceStrict(
-                        new Date(post?.publishedAt as string),
-                        new Date(),
-                        {
-                           addSuffix: true,
-                        }
-                     )}
-                  </time>
-               </>
-            )}
-         </div>
-         {post.banner ? (
-            <div className="relative">
-               <div className="aspect-[1.91/1] overflow-hidden rounded">
-                  <img
-                     alt="Post Banner"
-                     className="h-full w-full object-cover"
-                     //@ts-ignore
-                     src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
-                  />
-               </div>
-               <button
-                  className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
-                  justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
-                  onClick={() =>
-                     fetcher.submit(
-                        { intent: "deleteBanner" },
-                        { method: "delete" }
-                     )
-                  }
-               >
-                  {isBannerDeleting ? (
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
-                  ) : (
-                     <ImageMinus
-                        className="text-red-500 dark:text-red-300"
-                        size={20}
-                     />
-                  )}
-               </button>
-            </div>
-         ) : (
-            <fetcher.Form
-               method="patch"
-               encType="multipart/form-data"
-               replace
-               onChange={(event) => {
-                  fetcher.submit(event.currentTarget, { method: "patch" });
-               }}
-            >
-               <label className="cursor-pointer">
-                  <div
-                     className="bg-1 border-color flex aspect-[1.91/1] 
-                   items-center justify-center overflow-hidden rounded border-2 border-dashed hover:border-4"
-                  >
-                     <div className="text-1 space-y-2">
-                        {isBannerAdding ? (
-                           <Loader2
-                              size={36}
-                              className="mx-auto animate-spin"
-                           />
-                        ) : (
-                           <Upload className="mx-auto" size={36} />
-                        )}
-
-                        <div className="text-center font-bold">
-                           Click to upload banner
-                        </div>
-                        <div className="text-center text-sm">
-                           JPEG, PNG, JPG or WEBP (MAX. 5MB)
-                        </div>
-                     </div>
-                  </div>
-                  <input
-                     // @ts-ignore
-                     name={zo.fields.banner()}
-                     type="file"
-                     className="hidden"
-                  />
-                  {zo.errors.banner((err) => (
-                     <Err>{err.message}</Err>
-                  ))}
-               </label>
-               <input type="hidden" name="intent" value="updateBanner" />
-            </fetcher.Form>
-         )}
-
-         <div className="mt-4 mb-5 flex items-center gap-3 rounded-md">
-            <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-               {/* @ts-expect-error */}
-               {post?.author?.avatar ? (
-                  <Image /* @ts-expect-error */
-                     url={post.author.avatar.url}
-                     options="fit=crop,width=44,height=44,gravity=auto"
-                     className="h-full w-full object-cover"
-                     /* @ts-expect-error */
-                     alt={post?.author?.username}
-                  />
-               ) : null}
-            </div>
-            {/* @ts-expect-error */}
-            <div className="font-semibold">{post?.author?.username}</div>
-         </div>
+         <PostHeaderEdit post={post} />
          <Suspense fallback={<div>Loading...</div>}>
             {notes.map((note) => (
                <div key={note.id} className="group">
-                  <Link
-                     to={`edit/${note.id}`}
-                     prefetch="intent"
-                     className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
-                     text-xs font-bold text-white group-hover:inline-block"
-                  >
-                     Edit
-                  </Link>
-                  <NoteViewer
-                     className="post-content outline-1 outline-offset-8 outline-zinc-300 group-hover:cursor-pointer 
-                     group-hover:rounded-sm group-hover:outline-dotted dark:outline-zinc-600"
-                     note={note}
-                     //insert custom components here
-                     components={
-                        {
-                           // h2: (props) => <h2 className="text-2xl" {...props} />,
-                        }
-                     }
-                  />
+                  {/* @ts-expect-error */}
+                  {note?.ui?.id == "textarea" ? (
+                     <InlineEditor note={note} />
+                  ) : (
+                     <>
+                        {/* Render noteview with edit button */}
+                        <Link
+                           to={`edit/${note.id}`}
+                           prefetch="intent"
+                           className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
+                           text-xs font-bold text-white group-hover:inline-block"
+                        >
+                           Edit
+                        </Link>
+                        <NoteViewer
+                           className="post-content outline-1 outline-offset-8 
+                           outline-zinc-300 group-hover:cursor-pointer 
+                           group-hover:rounded-sm group-hover:outline-dotted 
+                           dark:outline-zinc-600"
+                           note={note}
+                           //insert custom components here
+                           components={
+                              {
+                                 // h2: (props) => <h2 className="text-2xl" {...props} />,
+                              }
+                           }
+                        />
+                     </>
+                  )}
                </div>
             ))}
          </Suspense>
-      </div>
+      </main>
    );
 }
 
-export function PostView() {
+function PostView() {
    const data = useLoaderData<typeof loader>();
 
    const { post } = data;
@@ -625,88 +546,93 @@ export function PostView() {
    const notes = (data.notes.length ? data.notes : post.notes) as Note[];
 
    return (
-      <div
-         className="post-content relative mx-auto min-h-screen max-w-[728px] 
-      px-3 max-laptop:pt-24 max-laptop:pb-20 tablet:px-0 laptop:px-3 laptop:py-12 desktop:px-0"
+      <main
+         className="post-content relative min-h-screen  
+         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
       >
-         <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
-            {post?.title}
-         </h1>
-         <div className="flex items-center gap-3 pb-5">
-            <time
-               className="text-1 flex items-center gap-1.5 text-sm"
-               dateTime={post?.updatedAt}
-            >
-               <PencilSquareIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-               {formatDistanceStrict(
-                  new Date(post?.updatedAt as string),
-                  new Date(),
-                  {
-                     addSuffix: true,
-                  }
-               )}
-            </time>
-            {post?.publishedAt && (
-               <>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                  <time
-                     className="text-1 flex items-center gap-1.5 text-sm"
-                     dateTime={post?.publishedAt}
-                  >
-                     <EyeIcon className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500" />
-                     {formatDistanceStrict(
-                        new Date(post?.publishedAt as string),
-                        new Date(),
-                        {
-                           addSuffix: true,
-                        }
+         <section className="max-w-[728px] mx-auto max-desktop:px-3">
+            <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
+               {post?.title}
+            </h1>
+            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
+               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
+                  {/* @ts-expect-error */}
+                  {post?.author?.avatar ? (
+                     <Image /* @ts-expect-error */
+                        url={post.author.avatar.url}
+                        options="fit=crop,width=60,height=60 ,gravity=auto"
+                        className="h-full w-full object-cover"
+                        /* @ts-expect-error */
+                        alt={post?.author?.username}
+                     />
+                  ) : null}
+               </div>
+               <div className="space-y-0.5">
+                  {/* @ts-expect-error */}
+                  <div className="font-bold">{post?.author?.username}</div>
+                  <div className="flex items-center gap-3">
+                     <time
+                        className="text-1 flex items-center gap-1.5 text-sm"
+                        dateTime={post?.updatedAt}
+                     >
+                        {formatDistanceStrict(
+                           new Date(post?.updatedAt as string),
+                           new Date(),
+                           {
+                              addSuffix: true,
+                           }
+                        )}
+                     </time>
+                     {post?.publishedAt && (
+                        <>
+                           <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
+                           <time
+                              className="text-1 flex items-center gap-1.5 text-sm"
+                              dateTime={post?.publishedAt}
+                           >
+                              {format(new Date(post?.publishedAt), "MMM dd")}
+                           </time>
+                        </>
                      )}
-                  </time>
-               </>
-            )}
-         </div>
-         {post.banner ? (
-            <div className="aspect-[1.91/1] overflow-hidden rounded-lg">
-               <Image
-                  alt={post.title}
-                  options="fit=crop,height=440,gravity=auto"
-                  className="h-full w-full object-cover"
-                  //@ts-ignore
-                  url={post?.banner?.url}
-               />
+                  </div>
+               </div>
             </div>
-         ) : null}
-         <div className="border-color mb-3 flex items-center gap-3 border-b-2 py-4">
-            <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-               {/* @ts-ignore */}
-               {post?.author?.avatar ? (
-                  <img
-                     // @ts-ignore
-                     alt={post?.author?.username}
+         </section>
+         <section className="max-w-[800px] mx-auto">
+            {post.banner ? (
+               <div
+                  className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
+                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                        items-center justify-center overflow-hidden tablet:rounded-md
+                        shadow-sm mb-8"
+               >
+                  <Image
+                     alt={post.title}
+                     options="fit=crop,height=440,gravity=auto"
                      className="h-full w-full object-cover"
                      //@ts-ignore
-                     src={`${post.author.avatar.url}?aspect_ratio=1:1&height=100`}
+                     url={post?.banner?.url}
                   />
-               ) : null}
-            </div>
-            {/* @ts-ignore */}
-            <div>{post?.author?.username}</div>
-         </div>
-         <Suspense fallback={<div>Loading...</div>}>
-            {notes.map((note) => (
-               <NoteViewer
-                  key={note.id}
-                  note={note}
-                  //insert custom components here
-                  components={
-                     {
-                        // h2: (props) => <h2 className="text-2xl" {...props} />,
+               </div>
+            ) : null}
+         </section>
+         <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
+            <Suspense fallback={<div>Loading...</div>}>
+               {notes.map((note) => (
+                  <NoteViewer
+                     key={note.id}
+                     note={note}
+                     //insert custom components here
+                     components={
+                        {
+                           // h2: (props) => <h2 className="text-2xl" {...props} />,
+                        }
                      }
-                  }
-               />
-            ))}
-         </Suspense>
-      </div>
+                  />
+               ))}
+            </Suspense>
+         </section>
+      </main>
    );
 }
 
@@ -727,12 +653,12 @@ export async function action({
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
    const session = await getSession(request.headers.get("cookie"));
-   const issues = createCustomIssues(PostSchema);
+   const issues = createCustomIssues(postSchema);
 
    switch (intent) {
       case "updateTitle": {
          assertIsPatch(request);
-         const result = await zx.parseFormSafe(request, PostSchema);
+         const result = await zx.parseFormSafe(request, postSchema);
          if (result.success) {
             const { title } = result.data;
             try {
@@ -769,7 +695,7 @@ export async function action({
          const result = await getMultipleFormData({
             request,
             prefix: "postBanner",
-            schema: PostSchema,
+            schema: postSchema,
          });
          if (result.success) {
             const { banner } = result.data;
@@ -851,16 +777,17 @@ export async function action({
                user,
             });
          }
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.delete({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.delete({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          const postTitle = post?.title;
          setSuccessMessage(session, `"${postTitle}" successfully deleted`);
          return redirect(`/${siteId}/posts`, {
@@ -873,23 +800,25 @@ export async function action({
             id: postId,
             data: {
                isPublished: false,
+               publishedAt: "",
             },
             overrideAccess: false,
             user,
          });
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.update({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  data: {
-                     _status: "draft",
-                  },
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.update({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     data: {
+                        _status: "draft",
+                     },
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          return redirect(`/${siteId}/posts`);
       }
       case "publish": {
@@ -908,19 +837,20 @@ export async function action({
 
          //publish all notes
          //todo: can we do this in one query?
-         await Promise.all(
-            post?.notes?.map((note) =>
-               payload.update({
-                  collection: "notes",
-                  id: typeof note === "string" ? note : note?.id,
-                  data: {
-                     _status: "published",
-                  },
-                  overrideAccess: false,
-                  user,
-               })
-            )
-         );
+         post?.notes &&
+            (await Promise.all(
+               post?.notes?.map((note) =>
+                  payload.update({
+                     collection: "notes",
+                     id: typeof note === "string" ? note : note?.id,
+                     data: {
+                        _status: "published",
+                     },
+                     overrideAccess: false,
+                     user,
+                  })
+               )
+            ));
          await payload.update({
             collection: "posts",
             id: postId,

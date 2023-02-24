@@ -1,5 +1,5 @@
 import type { Note } from "payload-types";
-import NoteText from "./NoteText";
+import { NoteText } from "./NoteText";
 import NoteTierList from "./TierList";
 
 /** Set the default note type to text
