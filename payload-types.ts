@@ -16,6 +16,7 @@ export interface Config {
     questions: Question;
     entries: Entry;
     notetypes: Notetype;
+    'materials-lKJ16E5IhH': MaterialsLKJ16E5IhH;
   };
   globals: {};
 }
@@ -119,6 +120,14 @@ export interface Entry {
   collectionEntity?: string | Collection;
   icon?: string | Image;
   notes?: string[] | Note[];
+  createdAt: string;
+  updatedAt: string;
+}
+export interface MaterialsLKJ16E5IhH {
+  entry: string | Entry;
+  id: string;
+  story?: string;
+  type?: ('consumables' | 'synthesis-material')[];
   createdAt: string;
   updatedAt: string;
 }
