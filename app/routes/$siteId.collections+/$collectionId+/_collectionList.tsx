@@ -80,7 +80,7 @@ export const handle = {
             `${
                isActive &&
                "font-semibold text-zinc-500 underline  dark:text-zinc-300"
-            } flex items-center gap-3 decoration-blue-300 underline-offset-2 hover:underline dark:decoration-blue-400`
+            } flex items-center gap-3 decoration-yellow-300 underline-offset-2 hover:underline dark:decoration-yellow-400`
          }
          to={pathname}
       >
@@ -89,7 +89,6 @@ export const handle = {
       </NavLink>
    ),
    i18n: "entry",
-
 };
 
 export default function CollectionList() {
@@ -129,11 +128,11 @@ export default function CollectionList() {
 
    return (
       <>
-         <div className="my-8 block h-1 w-full rounded-full bg-zinc-100 dark:bg-zinc-700" />
          <Outlet />
-         <div className="mt-8 block h-1 w-full rounded-full bg-zinc-100 dark:bg-zinc-700" />
-         <div className="mx-auto max-w-[728px] px-3 pt-4 laptop:pt-8">
-            <h2 className="pt-6 pb-3 text-2xl font-bold">{collection.name}</h2>
+         <div className="mx-auto max-w-[728px] px-3 tablet:px-0 pt-4 pb-12">
+            <h2 className="pt-6 pb-3.5 text-2xl font-bold">
+               {collection.name}
+            </h2>
             <Form
                ref={zoEntry.ref}
                method="post"
@@ -210,21 +209,17 @@ export default function CollectionList() {
             </Form>
             {entries?.length === 0 ? null : (
                <>
-                  <div
-                     className="divide-y overflow-hidden rounded-lg border border-zinc-200 
-               dark:divide-zinc-600 dark:border-zinc-600"
-                  >
+                  <div className="divide-y overflow-hidden rounded-lg border border-color divide-color bg-3">
                      {entries?.map((entry) => (
                         <Link
                            key={entry.id}
                            to={`${entry.id}`}
                            prefetch="intent"
-                           className="flex items-center gap-3 p-2 odd:bg-zinc-50 even:bg-white 
-                                hover:underline dark:odd:bg-zinc-800 dark:even:bg-zinc-900"
+                           className="flex items-center gap-3 p-2 dark:bg-neutral-800 hover:underline"
                         >
                            <div
-                              className="flex h-8 w-8 items-center justify-between 
-                                    overflow-hidden rounded-full border-2 border-zinc-400"
+                              className="flex h-8 w-8 items-center justify-between dark:border-zinc-600
+                                    overflow-hidden rounded-full border border-zinc-400"
                            >
                               <Image /* @ts-ignore */
                                  url={entry.icon?.url}

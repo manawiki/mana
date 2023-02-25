@@ -1,3 +1,8 @@
+## Entry Template
+
+`collectionSlug.$entryId.tsx` in this (`$siteId.collections+`) directory
+
+```
 import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
 
@@ -23,3 +28,4 @@ export default function CollectionEntry() {
       </>
    );
 }
+```

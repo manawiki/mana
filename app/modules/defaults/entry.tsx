@@ -41,7 +41,7 @@ export const handle = {
             `${
                isActive &&
                "font-semibold text-zinc-500 underline  dark:text-zinc-300"
-            } flex items-center gap-3 decoration-blue-300 underline-offset-2 hover:underline dark:decoration-blue-400`
+            } flex items-center gap-3 decoration-yellow-300 underline-offset-2 hover:underline dark:decoration-yellow-400`
          }
          to={pathname}
       >
