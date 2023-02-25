@@ -21,6 +21,32 @@ export const getDefaultEntryData = async ({
    return entry;
 };
 
+export const getCustomEntryData = async ({
+   payload,
+   params,
+   request,
+}: {
+   payload: Payload;
+   params: Params;
+   request: any; //TODO: fix this type
+}) => {
+   const url = new URL(request.url).pathname;
+   const parts = url.split("/");
+   const slug = parts[3];
+
+   const { entryId, siteId } = zx.parseParams(params, {
+      entryId: z.string(),
+      siteId: z.string(),
+   });
+
+   const entry = await payload.findByID({
+      collection: `${slug}-${siteId}`,
+      id: `${slug}-${entryId}`,
+   });
+
+   return entry;
+};
+
 export const meta: V2_MetaFunction = ({ parentsData, data }) => {
    const siteName = parentsData["routes/$siteId"].site.name;
 
