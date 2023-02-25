@@ -42,7 +42,7 @@ export async function loader({
       collectionId: z.string(),
       siteId: z.string().length(10),
    });
-   const id = `${siteId}${collectionId}`;
+   const id = `${collectionId}-${siteId}`;
    const collection = await payload.findByID({
       collection: "collections",
       id,
@@ -51,7 +51,7 @@ export async function loader({
       collection: "entries",
       where: {
          collectionEntity: {
-            equals: collectionId,
+            equals: id,
          },
       },
       user,
