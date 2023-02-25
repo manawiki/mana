@@ -10,7 +10,7 @@ module.exports = {
    },
    ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {
-      return flatRoutes(["routes", "_custom-routes"], defineRoutes);
+      return flatRoutes(["routes", "_custom"], defineRoutes);
    },
    serverDependenciesToBundle: [
       "nanoid",

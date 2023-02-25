@@ -7,17 +7,17 @@ import { Collections } from "./Collections";
 import { Questions } from "./Questions";
 import { Entries } from "./Entries";
 import { NoteTypes } from "./NoteTypes";
-import { CustomCollections } from "../../_custom/collections";
+import { CustomCollections } from "../../app/_custom/collections";
 
 export const collections = [
-  Sites,
-  Images,
-  Users,
-  Notes,
-  Posts,
-  Collections,
-  Questions,
-  Entries,
-  NoteTypes,
-  ...CustomCollections,
+   Sites,
+   Images,
+   Users,
+   Notes,
+   Posts,
+   Collections,
+   Questions,
+   Entries,
+   NoteTypes,
+   ...CustomCollections,
 ];
