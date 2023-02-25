@@ -27,9 +27,10 @@ import { useEffect, useState } from "react";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { ChevronRight, ImagePlus, Loader2 } from "lucide-react";
 import { AdminOrOwner } from "~/modules/auth";
-import type { loader as siteDetailsLoader } from "./$siteId";
+import type { loader as siteDetailsLoader } from "../$siteId";
 import { toast } from "~/components/Toaster";
 import { Err } from "~/components/Forms";
+import { Image } from "~/components/Image";
 
 export async function loader({
    context: { payload, user },
@@ -51,8 +52,8 @@ export async function loader({
 }
 
 const CollectionSchema = z.object({
-   name: z.string().min(1).max(10),
-   slug: z.string().min(1).max(10),
+   name: z.string().min(1).max(40),
+   slug: z.string().min(1).max(40),
    icon: z.any(),
 });
 
@@ -70,22 +71,7 @@ export const meta: V2_MetaFunction<
 };
 
 export const handle = {
-   breadcrumb: ({ pathname }: { pathname: string }) => (
-      <NavLink
-         end
-         className={({ isActive }) =>
-            `${
-               isActive &&
-               "font-semibold text-zinc-500 underline  dark:text-zinc-300"
-            } flex items-center gap-3 decoration-blue-300 underline-offset-2 hover:underline dark:decoration-blue-400`
-         }
-         to={pathname}
-      >
-         All
-      </NavLink>
-   ),
    i18n: "collection",
-
 };
 
 export default function CollectionIndex() {
@@ -137,17 +123,10 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] px-3 pt-4 laptop:pt-8">
-            <h1 className="pb-2.5 text-3xl font-bold">Collections</h1>
-            <ol className="border-color mb-5 flex items-center gap-3 border-y-2 py-2.5">
-               {matches
-                  // skip routes that don't have a breadcrumb
-                  .filter((match) => match.handle && match.handle.breadcrumb)
-                  // render breadcrumbs!
-                  .map((match, index) => (
-                     <li key={index}>{match?.handle?.breadcrumb(match)}</li>
-                  ))}
-            </ol>
+         <div className="mx-auto max-w-[728px] pt-10 px-3 tablet:px-0">
+            <h1 className="pb-2 text-3xl font-bold border-b-2 border-color mb-5">
+               Collections
+            </h1>
             <AdminOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}
@@ -221,8 +200,8 @@ export default function CollectionIndex() {
                         name="intent"
                         value="addCollection"
                         type="submit"
-                        className="h-10 w-16 rounded bg-zinc-500 px-4 text-sm font-bold 
-                        text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                        className="h-10 w-16 rounded bg-yellow-600 dark:bg-yellow-600 px-4 text-sm font-bold 
+                        text-white hover:bg-yellow-600 focus:bg-yellow-400"
                         disabled={disabled}
                      >
                         {adding ? (
@@ -244,31 +223,32 @@ export default function CollectionIndex() {
                            prefetch="intent"
                            className={({ isActive }) =>
                               `${
-                                 isActive &&
-                                 "border-blue-100 !bg-blue-50 dark:border-blue-900 dark:!bg-blue-900/20"
-                              } border-color flex items-center justify-between gap-2.5 rounded-full border bg-zinc-50 pr-2
-                                    shadow-sm transition hover:bg-white dark:bg-zinc-800 dark:shadow-zinc-900 
-                                    dark:hover:border-zinc-600 dark:hover:bg-zinc-700`
+                                 isActive
+                                    ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
+                                    : "dark:hover:border-zinc-600 dark:hover:bg-zinc-700 hover:bg-zinc-50"
+                              } border-color flex items-center justify-between gap-2.5 rounded-full border bg-3 pr-2
+                              shadow-sm transition  dark:shadow-zinc-900 overflow-hidden`
                            }
                         >
                            <div className="flex items-center gap-2.5 truncate">
                               <div
-                                 className="flex h-9 w-9 flex-none items-center justify-between 
-                                    overflow-hidden rounded-full border-2 border-zinc-400 dark:border-zinc-600"
+                                 className="flex h-10 w-10 flex-none items-center justify-between
+                                    overflow-hidden rounded-full border-2 border-white dark:border-neutral-800 bg-3"
                               >
-                                 <img
+                                 <Image
                                     width={50}
                                     height={50}
                                     alt="List Icon"
-                                    //@ts-ignore
-                                    src={`https://mana.wiki/cdn-cgi/image/fit=crop,width=60,height=60,gravity=auto/${collection.icon?.url}`}
+                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    //@ts-expect-error
+                                    url={collection.icon?.url}
                                  />
                               </div>
-                              <span className="truncate text-sm font-semibold">
+                              <span className="truncate text-sm font-bold">
                                  {collection.name}
                               </span>
                            </div>
-                           <ChevronRight className="h-5 w-5 flex-none text-blue-500" />
+                           <ChevronRight className="h-5 w-5 flex-none text-yellow-500" />
                         </NavLink>
                      ))}
                   </div>

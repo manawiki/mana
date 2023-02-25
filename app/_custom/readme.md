@@ -17,3 +17,6 @@ To develop all apps and packages, run `pnpm dev` from the root of the directory.
 ## Templating
 
 ## Custom styles
+
+Add your custom styles in `styles.css`
+Tailwindcss is supported and recommended, learn more https://tailwindcss.com/

@@ -1,3 +1,8 @@
+## Collections
+
+`collectionSlug.tsx` in this (`collections`} directory
+
+```
 import type { CollectionConfig } from "payload/types";
 
 const Collection: CollectionConfig = {
@@ -13,3 +18,4 @@ const Collection: CollectionConfig = {
 };
 
 export const CustomCollections = [];
+```
