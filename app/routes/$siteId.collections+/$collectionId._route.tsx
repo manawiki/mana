@@ -6,7 +6,6 @@ import {
 } from "@remix-run/node";
 import {
    Link,
-   NavLink,
    Outlet,
    useLoaderData,
    useNavigation,
@@ -26,7 +25,7 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { ChevronRight, ImagePlus, Loader2 } from "lucide-react";
+import { ImagePlus, Loader2 } from "lucide-react";
 import { Err } from "~/components/Forms";
 import { Image } from "~/components/Image";
 
@@ -73,21 +72,6 @@ export const meta: V2_MetaFunction = ({ data, parentsData }) => {
 };
 
 export const handle = {
-   breadcrumb: ({ pathname, data }: { pathname: string; data: any }) => (
-      <NavLink
-         end
-         className={({ isActive }) =>
-            `${
-               isActive &&
-               "font-semibold text-zinc-500 underline  dark:text-zinc-300"
-            } flex items-center gap-3 decoration-yellow-300 underline-offset-2 hover:underline dark:decoration-yellow-400`
-         }
-         to={pathname}
-      >
-         <ChevronRight className="h-5 w-5 text-zinc-300 dark:text-zinc-500" />
-         <span>{data.collection.name}</span>
-      </NavLink>
-   ),
    i18n: "entry",
 };
 

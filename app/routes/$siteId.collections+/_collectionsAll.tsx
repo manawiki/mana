@@ -71,20 +71,6 @@ export const meta: V2_MetaFunction<
 };
 
 export const handle = {
-   breadcrumb: ({ pathname }: { pathname: string }) => (
-      <NavLink
-         end
-         className={({ isActive }) =>
-            `${
-               isActive &&
-               "font-semibold text-zinc-500 underline  dark:text-zinc-300"
-            } flex items-center gap-3 decoration-yellow-300 underline-offset-2 hover:underline dark:decoration-yellow-400`
-         }
-         to={pathname}
-      >
-         All
-      </NavLink>
-   ),
    i18n: "collection",
 };
 
@@ -138,16 +124,9 @@ export default function CollectionIndex() {
    return (
       <>
          <div className="mx-auto max-w-[728px] pt-10 px-3 tablet:px-0">
-            <h1 className="pb-2.5 text-3xl font-bold">Collections</h1>
-            <ol className="border-color mb-5 flex items-center gap-3 border-y-2 py-2.5">
-               {matches
-                  // skip routes that don't have a breadcrumb
-                  .filter((match) => match.handle && match.handle.breadcrumb)
-                  // render breadcrumbs!
-                  .map((match, index) => (
-                     <li key={index}>{match?.handle?.breadcrumb(match)}</li>
-                  ))}
-            </ol>
+            <h1 className="pb-2 text-3xl font-bold border-b-2 border-color mb-5">
+               Collections
+            </h1>
             <AdminOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}

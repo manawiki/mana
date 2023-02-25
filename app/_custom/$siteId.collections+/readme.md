@@ -1,31 +1,47 @@
 ## Entry Template
 
-`collectionSlug.$entryId.tsx` in this (`$siteId.collections+`) directory
+`collectionSlug.$entryId.c.tsx` in this (`$siteId.collections+`) directory
 
 ```
 import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
-
+import { EntryHeader } from "~/routes/$siteId.collections+/$collectionId.$entryId/EntryHeader";
 import {
-   meta,
-   handle,
+   EntryContent,
+   EntryParent,
+} from "~/routes/$siteId.collections+/$collectionId.$entryId/EntryWrappers";
+import {
    getDefaultEntryData,
-} from "../../modules/defaults/entry";
+   meta,
+} from "~/routes/$siteId.collections+/$collectionId.$entryId/entryDefaults";
 
-export { meta, handle };
+export { meta };
 
 export async function loader({ context: { payload }, params }: LoaderArgs) {
+   // Get custom data here
    const entryDefault = await getDefaultEntryData({ payload, params });
    return json({ entryDefault });
 }
 
 export default function CollectionEntry() {
+   //Load custom data here
    const { entryDefault } = useLoaderData<typeof loader>();
    return (
-      <>
-         <h1 className="text-3xl font-bold">{entryDefault.name}</h1>
-         <div>Entry Template</div>
-      </>
+      <EntryParent>
+         <EntryHeader entry={entryDefault} />
+         <EntryContent>
+            <Header />
+            <Stats />
+         </EntryContent>
+      </EntryParent>
    );
 }
+
+const Header = () => {
+   return <div>This is the header</div>;
+};
+
+const Stats = () => {
+   return <div>This is the stats</div>;
+};
 ```
