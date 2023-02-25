@@ -29,7 +29,7 @@ import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import type { envType } from "env/types";
 import { toast } from "./components/Toaster";
 

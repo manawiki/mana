@@ -11,6 +11,7 @@ import { SiteSwitcher } from "~/components/SiteSwitcher";
 import { ChevronDown, Loader2, X } from "lucide-react";
 import type {
    ActionFunction,
+   LinksFunction,
    LoaderArgs,
    V2_MetaFunction,
 } from "@remix-run/node";
@@ -36,6 +37,7 @@ import {
    CircleStackIcon as CircleStackIconBold,
    QuestionMarkCircleIcon as QuestionMarkCircleIconBold,
 } from "@heroicons/react/24/solid";
+import customStylesheetUrl from "../_custom/styles.css";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -88,6 +90,11 @@ export const meta: V2_MetaFunction = ({ data }) => {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
+
+export const links: LinksFunction = () => [
+   { rel: "preload", href: customStylesheetUrl, as: "style" },
+   { rel: "stylesheet", href: customStylesheetUrl },
+];
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation

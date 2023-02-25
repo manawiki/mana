@@ -23,11 +23,11 @@ export const getDefaultEntryData = async ({
    return entry;
 };
 
-export const meta: V2_MetaFunction = ({ parentsData }) => {
-   const name = parentsData["routes/$siteId"].site.name;
+export const meta: V2_MetaFunction = ({ parentsData, data }) => {
+   const siteName = parentsData["routes/$siteId"].site.name;
    return [
       {
-         title: `Entry Page - ${name}`,
+         title: `${data.entryDefault.name} - ${siteName}`,
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -46,7 +46,7 @@ export const handle = {
          to={pathname}
       >
          <ChevronRight className="h-5 w-5 text-zinc-300 dark:text-zinc-500" />
-         <span>{data.entry.name}</span>
+         <span>{data.entryDefault.name}</span>
       </NavLink>
    ),
 };
