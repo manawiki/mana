@@ -26,16 +26,16 @@ import { useTranslation } from "react-i18next";
 import type { envType } from "env/types";
 import { Image } from "~/components/Image";
 import {
+   ChatBubbleLeftIcon,
    CircleStackIcon,
    HomeIcon,
    PencilSquareIcon,
-   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import {
    HomeIcon as HomeIconBold,
    PencilSquareIcon as PencilSquareIconBold,
    CircleStackIcon as CircleStackIconBold,
-   QuestionMarkCircleIcon as QuestionMarkCircleIconBold,
+   ChatBubbleLeftIcon as ChatBubbleLeftIconBold,
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "../_custom/styles.css";
 
@@ -122,8 +122,8 @@ export default function SiteIndex() {
             <section
                className="laptop:bg-1 relative z-40  border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-800
                     dark:shadow-black/60 max-laptop:fixed max-laptop:top-0 max-laptop:h-20  max-laptop:w-full
-                    max-laptop:bg-gradient-to-b max-laptop:from-zinc-100 max-laptop:to-zinc-50 max-laptop:py-4 max-laptop:dark:from-zinc-900
-                    max-laptop:dark:to-zinc-800 laptop:shadow-lg laptop:shadow-zinc-100"
+                    max-laptop:bg-gradient-to-b max-laptop:py-4
+                  laptop:shadow-lg laptop:shadow-zinc-100"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                   <SiteSwitcher />
@@ -240,12 +240,12 @@ export default function SiteIndex() {
                      {({ isActive }) => (
                         <>
                            {isActive ? (
-                              <QuestionMarkCircleIconBold className="h-5 w-5 text-violet-500" />
+                              <ChatBubbleLeftIconBold className="h-5 w-5 text-violet-500" />
                            ) : (
-                              <QuestionMarkCircleIcon className="h-5 w-5 text-violet-500" />
+                              <ChatBubbleLeftIcon className="h-5 w-5 text-violet-500" />
                            )}
                            <span className="max-desktop:absolute max-desktop:bottom-1.5 max-desktop:text-xs laptop:hidden desktop:block">
-                              Q&A
+                              Discussions
                            </span>
                         </>
                      )}
@@ -405,15 +405,15 @@ export default function SiteIndex() {
                   <div className="flex items-center justify-center py-4 border-t border-color">
                      <div className="h-[250px] w-[300px] rounded-lg bg-2" />
                   </div>
-                  <div className="items-center justify-between pl-3 h-14 pr-5 laptop:flex border-t border-color">
-                     <div className="flex-none max-laptop:flex max-laptop:justify-center">
+                  <div className="items-center justify-between pl-3 h-14 pr-5 flex border-t border-color">
+                     <div className="flex-none">
                         <DarkModeToggle />
                      </div>
-                     <div className="flex items-center gap-2 pt-1 max-laptop:justify-center">
+                     <div className="flex items-center gap-2 pt-1">
                         <div className="text-sm dark:text-zinc-400">
                            Powered by
                         </div>
-                        <Link className="pb-1 font-logo text-lg" to="/">
+                        <Link className="pb-1 font-logo text-xl" to="/">
                            mana
                         </Link>
                      </div>
