@@ -9,7 +9,7 @@ module.exports = {
          },
          fontFamily: {
             body: ["NunitoSans", "NunitoSans Override"],
-            logo: ["aller-display", "sans-serif"],
+            logo: ["grover", "sans-serif"],
          },
          animation: {
             enter: "enter 200ms ease-out",

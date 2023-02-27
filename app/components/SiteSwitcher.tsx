@@ -56,7 +56,7 @@ export const SiteSwitcher = () => {
                      <Menu>
                         <Menu.Button
                            className="flex h-12 w-12 items-center justify-center rounded-full 
-                                        border-2 bg-white text-blue-500 transition duration-300
+                                        border-2 bg-white text-1 transition duration-300
                                         active:translate-y-0.5 dark:border-zinc-700
                                         dark:bg-zinc-800 laptop:hidden"
                         >
