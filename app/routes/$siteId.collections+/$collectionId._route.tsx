@@ -28,6 +28,7 @@ import {
 import { ImagePlus, Loader2 } from "lucide-react";
 import { Err } from "~/components/Forms";
 import { Image } from "~/components/Image";
+import { AdminOrOwner } from "~/modules/auth";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -105,7 +106,7 @@ export default function CollectionList() {
    useEffect(() => {
       if (!adding) {
          //@ts-ignore
-         zoEntry.refObject.current.reset();
+         zoEntry.refObject.current && zoEntry.refObject.current.reset();
          setImgData(null);
       }
    }, [adding, zoEntry.refObject]);
@@ -117,80 +118,86 @@ export default function CollectionList() {
             <h2 className="pt-6 pb-3.5 text-2xl font-bold">
                {collection.name}
             </h2>
-            <Form
-               ref={zoEntry.ref}
-               method="post"
-               encType="multipart/form-data"
-               className="pb-3.5"
-               replace
-            >
-               <div className="flex items-center gap-4">
-                  <div>
-                     <label className="cursor-pointer">
-                        {imgData ? (
-                           <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full">
-                              <img
-                                 width={80}
-                                 height={80}
-                                 className="aspect-square object-contain"
-                                 alt="preview"
-                                 src={imgData}
-                              />
-                           </div>
-                        ) : (
-                           <div
-                              className="flex h-11 w-11 
+            <AdminOrOwner>
+               <Form
+                  ref={zoEntry.ref}
+                  method="post"
+                  encType="multipart/form-data"
+                  className="pb-3.5"
+                  replace
+               >
+                  <div className="flex items-center gap-4">
+                     <div>
+                        <label className="cursor-pointer">
+                           {imgData ? (
+                              <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full">
+                                 <img
+                                    width={80}
+                                    height={80}
+                                    className="aspect-square object-contain"
+                                    alt="preview"
+                                    src={imgData}
+                                 />
+                              </div>
+                           ) : (
+                              <div
+                                 className="flex h-11 w-11 
                                     items-center justify-center rounded-full border-2 border-dashed
                                   border-zinc-400 bg-white hover:border-zinc-600 hover:bg-zinc-100 dark:border-zinc-500
                                   dark:bg-zinc-600 dark:hover:border-zinc-400"
+                              >
+                                 <ImagePlus className="h-5 w-5 text-zinc-400" />
+                              </div>
+                           )}
+                           <input
+                              //@ts-ignore
+                              name={zoEntry.fields.icon()}
+                              type="file"
+                              className="hidden"
+                              onChange={onChangePicture}
+                           />
+                           {zoEntry.errors.icon((err) => (
+                              <Err>{err.message}</Err>
+                           ))}
+                        </label>
+                     </div>
+                     <div className="flex-grow">
+                        <input
+                           required
+                           placeholder={t("new.namePlaceholder") ?? undefined}
+                           autoFocus={true}
+                           name={zoEntry.fields.name()}
+                           type="text"
+                           className="input-text mt-0"
+                           disabled={disabled}
+                        />
+                        {zoEntry.errors.name()?.message && (
+                           <div
+                              className="pt-1 text-red-700"
+                              id="entryName-error"
                            >
-                              <ImagePlus className="h-5 w-5 text-zinc-400" />
+                              {zoEntry.errors.name()?.message}
                            </div>
                         )}
-                        <input
-                           //@ts-ignore
-                           name={zoEntry.fields.icon()}
-                           type="file"
-                           className="hidden"
-                           onChange={onChangePicture}
-                        />
-                        {zoEntry.errors.icon((err) => (
-                           <Err>{err.message}</Err>
-                        ))}
-                     </label>
-                  </div>
-                  <div className="flex-grow">
-                     <input
-                        required
-                        placeholder={t("new.namePlaceholder") ?? undefined}
-                        autoFocus={true}
-                        name={zoEntry.fields.name()}
-                        type="text"
-                        className="input-text mt-0"
-                        disabled={disabled}
-                     />
-                     {zoEntry.errors.name()?.message && (
-                        <div className="pt-1 text-red-700" id="entryName-error">
-                           {zoEntry.errors.name()?.message}
-                        </div>
-                     )}
-                  </div>
-                  <button
-                     name="intent"
-                     value="addEntry"
-                     type="submit"
-                     className="h-10 w-16 rounded bg-zinc-500 px-4 text-sm font-bold 
+                     </div>
+                     <button
+                        name="intent"
+                        value="addEntry"
+                        type="submit"
+                        className="h-10 w-16 rounded bg-zinc-500 px-4 text-sm font-bold 
                         text-white hover:bg-zinc-600 focus:bg-zinc-400"
-                     disabled={disabled}
-                  >
-                     {adding ? (
-                        <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
-                     ) : (
-                        t("new.action")
-                     )}
-                  </button>
-               </div>
-            </Form>
+                        disabled={disabled}
+                     >
+                        {adding ? (
+                           <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
+                        ) : (
+                           t("new.action")
+                        )}
+                     </button>
+                  </div>
+               </Form>
+            </AdminOrOwner>
+
             {entries?.length === 0 ? null : (
                <>
                   <div className="divide-y overflow-hidden rounded-lg border border-color divide-color bg-3">

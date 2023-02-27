@@ -89,12 +89,7 @@ export const HomeLink = ({ site }: { site: Site }) => {
             className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
          >
             <div className={style}>
-               <Logo
-                  width={34}
-                  height={34}
-                  options="width=50,height=50"
-                  className="max-laptop:h-7 max-laptop:w-7"
-               />
+               <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
             </div>
          </a>
       );
@@ -104,12 +99,7 @@ export const HomeLink = ({ site }: { site: Site }) => {
          className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
       >
          <div className={style}>
-            <Logo
-               width={34}
-               height={34}
-               options="width=50,height=50"
-               className="max-laptop:h-7 max-laptop:w-7"
-            />
+            <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
          </div>
       </Link>
    );
