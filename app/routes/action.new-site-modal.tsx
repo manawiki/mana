@@ -78,7 +78,7 @@ export function NewSiteModal() {
          <div className="flex items-center justify-center laptop:my-4">
             <button
                className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-white 
-                    text-green-500 transition duration-300
+                    text-1 transition duration-300
                     active:translate-y-0.5 dark:border-zinc-700 dark:bg-zinc-800
                      laptop:h-14 laptop:w-14"
                type="button"

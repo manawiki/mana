@@ -98,10 +98,7 @@ export default function Login() {
             to="/"
             className="absolute top-5 left-5 flex h-9 w-9 items-center gap-1.5"
          >
-            <div className="h-7 w-7 flex-none">
-               <Logo options="width=70,height=70" />
-            </div>
-            <div className="font-logo text-2xl">mana</div>
+            <Logo className="h-8 w-8" />
          </Link>
          <div className="absolute top-5 right-5 flex items-center gap-5">
             <a
