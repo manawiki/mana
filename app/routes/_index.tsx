@@ -67,9 +67,9 @@ export default function HomeRoot() {
       <>
          <div className="laptop:grid laptop:min-h-screen auto-cols-[86px_1fr_334px] laptop:grid-flow-col">
             <section
-               className="bg-2 laptop:bg-1 relative z-40 laptop:border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-700
+               className="bg-1 relative z-40 border-r border-color-1
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full
-               max-laptop:bg-gradient-to-b max-laptop:py-3 max-laptop:border-b"
+               max-laptop:py-3"
             >
                <div
                   className="max-laptop:flex max-laptop:items-center laptop:fixed laptop:top-0 laptop:left-0 laptop:py-3 
@@ -78,20 +78,21 @@ export default function HomeRoot() {
                   <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5">
                      <Link
                         to="/"
-                        className="flex h-12 w-12 items-center justify-center rounded-full border-2 transition duration-300 font-logo bg-2
-                     active:translate-y-0.5 dark:border-zinc-700 dark:shadow-black
-                     laptop:h-14 laptop:w-14 laptop:mx-auto flex-none"
+                        className="flex h-12 w-12 items-center justify-center rounded-full
+                        transition duration-300 font-logo bg-4 mx-auto
+                        active:translate-y-0.5 dark:shadow-black
+                        dark:hover:bg-zinc-800 laptop:h-14 laptop:w-14"
                      >
                         <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
                      </Link>
-                     <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
-                     <div className="mx-auto mt-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
+                     <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 laptop:hidden"></div>
+                     <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
                      <NewSiteModal />
                   </div>
                   <MobileUserMenu />
                </div>
             </section>
-            <section className="bg-2 max-laptop:min-h-screen">
+            <section className="bg-3 max-laptop:min-h-screen">
                <div className="relative">
                   <div
                      className="pattern-dots pattern-zinc-400 dark:pattern-zinc-500
@@ -100,8 +101,8 @@ export default function HomeRoot() {
                   ></div>
                   <div className="max-w-[940px] px-4 mx-auto relative">
                      <section
-                        className="pt-4 px-6 pb-5 shadow-sm rounded-b-2xl border-t-0 bg-3
-                    border border-color dark:shadow-black/70 max-laptop:mt-[73px]"
+                        className="pt-3 px-6 pb-5 shadow-sm rounded-b-2xl border-t-0 bg-2
+                    border border-color shadow-1 max-laptop:mt-[73px]"
                      >
                         <div className="flex items-center justify-between">
                            <Link to="/" className="text-3xl font-logo">
@@ -164,9 +165,9 @@ export default function HomeRoot() {
                      </section>
                      <div className="gap-6 grid tablet:grid-cols-2 pb-24 laptop:grid-cols-3">
                         <section
-                           className="h-36 rounded-lg bg-3 border border-emerald-100/80 shadow bg-gradient-to-t
-                        from-white to-emerald-50/60 dark:from-emerald-900/10 dark:to-emerald-900/20
-                      shadow-zinc-300/40 p-6 dark:border-zinc-700/50 dark:shadow-zinc-900/80"
+                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
+                         from-white to-emerald-50/60 dark:from-emerald-900/5 dark:to-emerald-900/10
+                           shadow-1 p-6"
                         >
                            <div className="flex items-center gap-3 font-bold pb-3">
                               <PencilSquareIcon className="w-6 h-6 text-emerald-500" />
@@ -177,9 +178,9 @@ export default function HomeRoot() {
                            </div>
                         </section>
                         <section
-                           className="h-36 rounded-lg bg-3 border border-yellow-100/80 shadow bg-gradient-to-t
-                        from-white to-yellow-50/40 dark:from-yellow-900/5 dark:to-yellow-900/10
-                       shadow-zinc-300/40 p-6 dark:border-zinc-700/50 dark:shadow-zinc-900/80"
+                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
+                           from-white to-yellow-50/60 dark:from-yellow-900/5 dark:to-yellow-900/10
+                             shadow-1 p-6"
                         >
                            <div className="flex items-center gap-3 font-bold pb-3">
                               <CircleStackIcon className="w-6 h-6 text-yellow-500" />
@@ -190,9 +191,9 @@ export default function HomeRoot() {
                            </div>
                         </section>
                         <section
-                           className="h-36 rounded-lg bg-3 border border-purple-100 shadow bg-gradient-to-t
-                        from-white to-purple-50 dark:from-purple-900/5 dark:to-purple-900/10
-                      shadow-zinc-300/40 p-6 dark:border-zinc-700/50 dark:shadow-zinc-900/80"
+                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
+                           from-white to-purple-50/60 dark:from-purple-900/5 dark:to-purple-900/10
+                             shadow-1 p-6"
                         >
                            <div className="flex items-center gap-3 font-bold pb-3">
                               <ChatBubbleLeftIcon className="w-6 h-6 text-purple-500" />
@@ -206,26 +207,25 @@ export default function HomeRoot() {
                   </div>
                </div>
                <div className="flex items-center justify-between -mt-7">
-                  <span className="border-t border-color flex-grow" />
+                  <span className="border-t border-color-1 flex-grow" />
                   <div
-                     className="px-5 h-16 flex items-center justify-between relative dark:shadow-black/50
+                     className="px-5 h-16 flex items-center justify-between relative shadow-1
                      border w-[92%] laptop:w-full max-w-[740px] bg-3 border-color shadow-sm rounded-xl"
                   >
                      <input
-                        className="bg-transparent placeholder-zinc-400
-                        dark:placeholder-zinc-500 h-16 w-full focus:outline-none"
+                        className="bg-transparent h-16 w-full focus:outline-none"
                         placeholder="Find a community..."
                      />
                      <Search className="text-1" size={24} />
                   </div>
-                  <span className="border-t border-color flex-grow" />
+                  <span className="border-t border-color-1 flex-grow" />
                </div>
             </section>
             <section
-               className="bg-1 border-color relative max-laptop:mx-auto max-laptop:max-w-[728px] 
-               tablet:border-x laptop:border-r-0 laptop:border-l"
+               className="bg-2 border-color-1 relative max-laptop:mx-auto laptop:border-l
+               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
-               <div className="bg-3 flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+               <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <LoggedOut>
                      <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4">
                         <Link
@@ -255,14 +255,14 @@ export default function HomeRoot() {
                   <div className="flex-grow">
                      {featuredSites?.docs.length === 0 ? null : (
                         <>
-                           <section className="bg-3 border-t border-color">
+                           <section className="border-t border-color">
                               <div
                                  className="uppercase
                                  text-xs text-1 font-bold pt-6 p-3"
                               >
                                  Featured sites
                               </div>
-                              <div className="bg-2 border-y border-color divide-y divide-zinc-200/70 dark:divide-zinc-700/70">
+                              <div className="bg-2 border-y border-color divide-y divide-color">
                                  {featuredSites?.docs.map((site) => (
                                     <Link
                                        to={`/${site.id}`}
@@ -270,7 +270,7 @@ export default function HomeRoot() {
                                        className="flex p-3 group items-center justify-between gap-3"
                                     >
                                        <div className="flex items-center gap-2.5 text-1">
-                                          <span className="w-8 h-8 rounded-full overflow-hidden bg-4">
+                                          <span className="w-8 h-8 rounded-full overflow-hidden bg-3">
                                              <Image
                                                 options="fit=crop,width=40,height=40 ,gravity=auto"
                                                 alt="Site Icon"
@@ -291,7 +291,7 @@ export default function HomeRoot() {
                      )}
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-1 
+                     className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
                      border-y max-laptop:bg-2 flex laptop:border-b-0 laptop:border-color"
                   >
                      <Link className="font-logo text-2xl pb-1" to="/">

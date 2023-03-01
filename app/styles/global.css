@@ -13,7 +13,7 @@ html.dark {
 
 @layer base {
    .border-color {
-      @apply border-zinc-200 dark:border-zinc-700;
+      @apply border-[#ededed] dark:border-[#313136];
    }
 }
 
@@ -21,32 +21,38 @@ html.dark {
    .input-text {
       @apply mt-1
         block
-        h-10
+        h-11
         w-full
-        rounded-md
-        border-transparent bg-zinc-100 focus:border-zinc-200 focus:bg-zinc-50
-        focus:ring-0 dark:bg-zinc-700 dark:placeholder:text-zinc-300 dark:focus:border-zinc-500 dark:focus:bg-zinc-600;
+        rounded-md border border-color
+      focus:border-zinc-200 focus:dark:border-zinc-700 focus:bg-3
+        focus:ring-0 bg-3 dark:placeholder:text-zinc-300;
    }
    .label-default {
       @apply text-xs font-bold uppercase;
    }
-   .border-1 {
-      @apply border-zinc-100 dark:border-zinc-700/60;
+   .border-color-1 {
+      @apply border-[#f1f1f1] dark:border-[#2b2b32];
    }
    .divide-color {
-      @apply divide-zinc-200 dark:divide-zinc-700;
+      @apply divide-[#ededed] dark:divide-[#313136];
+   }
+   .shadow-1 {
+      @apply shadow-zinc-300 dark:shadow-black/30;
+   }
+   .shadow-2 {
+      @apply shadow-zinc-500 dark:shadow-black;
    }
    .bg-1 {
-      @apply bg-white dark:bg-zinc-900;
+      @apply bg-zinc-100 dark:bg-[#1b1b1d];
    }
    .bg-2 {
-      @apply bg-zinc-50 dark:bg-zinc-800;
+      @apply bg-zinc-50 dark:bg-[#222225];
    }
    .bg-3 {
-      @apply bg-white dark:bg-neutral-800;
+      @apply bg-white dark:bg-[#252529];
    }
    .bg-4 {
-      @apply bg-zinc-100 dark:bg-zinc-700;
+      @apply bg-white dark:bg-[#2e2e33];
    }
    .text-1 {
       @apply text-zinc-500 dark:text-zinc-400;
