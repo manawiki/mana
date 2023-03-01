@@ -227,27 +227,17 @@ export default function PostPage() {
                </div>
             </div>
          </Modal>
-         <div
-            className="bg-2 fixed top-20 z-30 flex h-14 items-center border-color
-            px-3 max-laptop:w-full justify-between max-laptop:border-t laptop:sticky laptop:top-0"
-         >
-            <div className="flex items-center gap-3">
-               <Link
-                  className="hover:dark:bg-neutral-700 hover:bg-white rounded-full inline-flex items-center justify-center h-9 w-9"
-                  to={`/${siteId}/posts`}
-               >
-                  <ArrowLeft className="text-1" size={24} />
-               </Link>
-               <AdminOrOwner>
-                  <span className="h-6 rounded-full w-0.5 dark:bg-zinc-600 bg-zinc-300" />
-                  <div className="flex cursor-pointer items-center gap-2.5 pl-1.5">
+         <AdminOrOwner>
+            <div className="flex items-center justify-between max-desktop:px-3 pt-8 laptop:pt-5 mx-auto max-w-[728px]">
+               <div className="flex items-center gap-3">
+                  <div className="flex cursor-pointer items-center gap-2.5">
                      <span
                         onClick={() => setMode("edit")}
                         className={`${
                            mode == "edit"
                               ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
                               : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
-                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        } rounded-lg h-8 flex items-center px-3.5 text-xs font-bold transition 
                         `}
                      >
                         Edit
@@ -258,124 +248,128 @@ export default function PostPage() {
                            mode == "preview"
                               ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
                               : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
-                        } rounded-full h-8 flex items-center px-3.5 text-xs font-bold transition 
+                        } rounded-lg h-8 flex items-center px-3.5 text-xs font-bold transition 
                         `}
                      >
                         Preview
                      </span>
                   </div>
-               </AdminOrOwner>
-            </div>
-            <AdminOrOwner>
-               <div className="flex items-center gap-3">
-                  <Menu as="div" className="relative">
-                     <Menu.Button
-                        className="bg-1 flex h-9 w-9 items-center justify-center 
+               </div>
+               <AdminOrOwner>
+                  <div className="flex items-center gap-3 max-laptop:">
+                     <Menu as="div" className="relative">
+                        <Menu.Button
+                           className="bg-2 flex h-9 w-9 items-center justify-center 
                         rounded-full border-2 text-1 transition
                         duration-300 hover:bg-gray-100 active:translate-y-0.5
                         dark:border-zinc-600 dark:hover:bg-zinc-700"
-                     >
-                        <MoreVertical className="h-5 w-5" />
-                     </Menu.Button>
-                     <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                     >
-                        <Menu.Items
-                           className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
-                                        origin-top-right transform transition-all"
                         >
-                           <div
-                              className="border-color rounded-lg border bg-white p-1.5
-                                            shadow dark:bg-zinc-800 dark:shadow-black"
-                           >
-                              <Menu.Item>
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                 >
-                                    <Copy className="text-blue-400" size="18" />
-                                    Clone
-                                 </button>
-                              </Menu.Item>
-                              <Menu.Item>
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    onClick={() => setUnpublishOpen(true)}
-                                 >
-                                    <EyeOff
-                                       className="text-zinc-400"
-                                       size="18"
-                                    />
-                                    Unpublish
-                                 </button>
-                              </Menu.Item>
-                              <Menu.Item>
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    onClick={() => setDeleteOpen(true)}
-                                 >
-                                    <Trash2
-                                       className="text-red-400"
-                                       size="18"
-                                    />
-                                    Delete
-                                 </button>
-                              </Menu.Item>
-                           </div>
-                        </Menu.Items>
-                     </Transition>
-                  </Menu>
-                  {post.isPublished ? null : (
-                     <Form method="post">
-                        {isPublishing ? (
-                           <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
-                              <DotLoader />
-                           </div>
-                        ) : (
-                           <button
-                              disabled={disabled}
-                              type="submit"
-                              name="intent"
-                              value="publish"
+                           <MoreVertical className="h-5 w-5" />
+                        </Menu.Button>
+                        <Transition
+                           as={Fragment}
+                           enter="transition ease-out duration-100"
+                           enterFrom="transform opacity-0 scale-95"
+                           enterTo="transform opacity-100 scale-100"
+                           leave="transition ease-in duration-75"
+                           leaveFrom="transform opacity-100 scale-100"
+                           leaveTo="transform opacity-0 scale-95"
+                        >
+                           <Menu.Items
+                              className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
+                                        origin-top-right transform transition-all z-10"
                            >
                               <div
-                                 className="group inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
-                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                 className="border-color rounded-lg border bg-white p-1.5
+                                            shadow dark:bg-zinc-800 dark:shadow-black"
                               >
-                                 {t("actions.publish")}
-                                 <svg
-                                    className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
-                                    fill="none"
-                                    width="12"
-                                    height="12"
-                                    viewBox="0 0 12 12"
-                                    aria-hidden="true"
-                                 >
-                                    <path
-                                       className="opacity-0 transition group-hover:opacity-100"
-                                       d="M0 5h7"
-                                    ></path>
-                                    <path
-                                       className="transition group-hover:translate-x-[3px]"
-                                       d="M1 1l4 4-4 4"
-                                    ></path>
-                                 </svg>
+                                 <Menu.Item>
+                                    <button
+                                       className="text-1 flex w-full items-center gap-3 rounded-lg
+                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    >
+                                       <Copy
+                                          className="text-blue-400"
+                                          size="18"
+                                       />
+                                       Clone
+                                    </button>
+                                 </Menu.Item>
+                                 <Menu.Item>
+                                    <button
+                                       className="text-1 flex w-full items-center gap-3 rounded-lg
+                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                       onClick={() => setUnpublishOpen(true)}
+                                    >
+                                       <EyeOff
+                                          className="text-zinc-400"
+                                          size="18"
+                                       />
+                                       Unpublish
+                                    </button>
+                                 </Menu.Item>
+                                 <Menu.Item>
+                                    <button
+                                       className="text-1 flex w-full items-center gap-3 rounded-lg
+                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                       onClick={() => setDeleteOpen(true)}
+                                    >
+                                       <Trash2
+                                          className="text-red-400"
+                                          size="18"
+                                       />
+                                       Delete
+                                    </button>
+                                 </Menu.Item>
                               </div>
-                           </button>
-                        )}
-                     </Form>
-                  )}
-               </div>
-            </AdminOrOwner>
-         </div>
+                           </Menu.Items>
+                        </Transition>
+                     </Menu>
+                     {post.isPublished ? null : (
+                        <Form method="post">
+                           {isPublishing ? (
+                              <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
+                                 <DotLoader />
+                              </div>
+                           ) : (
+                              <button
+                                 disabled={disabled}
+                                 type="submit"
+                                 name="intent"
+                                 value="publish"
+                              >
+                                 <div
+                                    className="group inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
+                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                 >
+                                    {t("actions.publish")}
+                                    <svg
+                                       className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                                       fill="none"
+                                       width="12"
+                                       height="12"
+                                       viewBox="0 0 12 12"
+                                       aria-hidden="true"
+                                    >
+                                       <path
+                                          className="opacity-0 transition group-hover:opacity-100"
+                                          d="M0 5h7"
+                                       ></path>
+                                       <path
+                                          className="transition group-hover:translate-x-[3px]"
+                                          d="M1 1l4 4-4 4"
+                                       ></path>
+                                    </svg>
+                                 </div>
+                              </button>
+                           )}
+                        </Form>
+                     )}
+                  </div>
+               </AdminOrOwner>
+            </div>
+         </AdminOrOwner>
+
          {mode === "edit" ? <PostEdit /> : <PostView />}
          <AdminOrOwner>
             {mode === "edit" && (
@@ -495,7 +489,7 @@ function PostEdit() {
    return (
       <main
          className="post-content relative min-h-screen  
-         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
+         max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
       >
          <PostHeaderEdit post={post} />
          <Suspense fallback={<div>Loading...</div>}>
@@ -548,10 +542,10 @@ function PostView() {
    return (
       <main
          className="post-content relative min-h-screen  
-         max-laptop:pt-24 max-laptop:pb-20 laptop:py-12"
+         max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
       >
          <section className="max-w-[728px] mx-auto max-desktop:px-3">
-            <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
+            <h1 className="pb-3 font-header text-3xl font-semibold laptop:text-4xl">
                {post?.title}
             </h1>
             <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
@@ -561,7 +555,6 @@ function PostView() {
                      <Image /* @ts-expect-error */
                         url={post.author.avatar.url}
                         options="fit=crop,width=60,height=60 ,gravity=auto"
-                        className="h-full w-full object-cover"
                         /* @ts-expect-error */
                         alt={post?.author?.username}
                      />
