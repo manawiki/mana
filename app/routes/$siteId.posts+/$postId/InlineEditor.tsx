@@ -20,9 +20,8 @@ import { NoteText } from "~/modules/note/gui/NoteText";
 import { isProcessing } from "~/utils";
 
 const showNoteStyle = `w-9 h-9 rounded-full flex dark:!text-zinc-400 !text-zinc-500
-items-center justify-center bg-2 border border-color transition
-duration-300 hover:bg-gray-100 active:translate-y-0.5
-dark:border-zinc-600 dark:hover:bg-zinc-700`;
+items-center justify-center bg-3 border border-color transition
+duration-300 active:translate-y-0.5`;
 
 const DeleteNote = ({
    noteId,
@@ -153,7 +152,7 @@ const Editor = ({
    }, [debouncedInlineSaveValue]);
 
    return (
-      <div className="px-3 desktop:px-0 border-y mt-5 mb-6 pt-4 border-color relative">
+      <div className="px-3 desktop:px-0 border-y my-10 pt-4 border-color relative">
          <section className="max-w-[728px] relative mx-auto -mt-8">
             <div className="absolute -top-0.5 -left-11">
                <Link
@@ -162,10 +161,7 @@ const Editor = ({
                 active:translate-y-0.5 dark:!text-zinc-600"
                   to={"/help"}
                >
-                  <Info
-                     className="bg-white rounded-full dark:bg-zinc-800"
-                     size={24}
-                  />
+                  <Info className="bg-2 rounded-full" size={24} />
                </Link>
             </div>
             <NoteText
@@ -202,9 +198,9 @@ const Editor = ({
                   </Transition>
                   <button
                      className="w-9 h-9 rounded-full flex !text-1
-                items-center justify-center bg-2 border-2 border-color transition
-                duration-300 hover:bg-gray-100 active:translate-y-0.5
-                dark:border-zinc-600 dark:hover:bg-zinc-700 relative z-10"
+                     items-center justify-center bg-3 border-2 border-color transition
+                     duration-300 active:translate-y-0.5
+                     relative z-10"
                      onClick={() =>
                         setShowNoteOptions(
                            (showNoteOptions) => !showNoteOptions
@@ -220,7 +216,7 @@ const Editor = ({
                   {isNoteAdding ? (
                      <div
                         className="h-9 w-16 rounded-full bg-white border-2 border-color
-                   flex items-center justify-center bg-2"
+                        flex items-center justify-center bg-2"
                      >
                         <DotLoader />
                      </div>

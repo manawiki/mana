@@ -72,15 +72,12 @@ export default function Signup() {
             >
                <Github className="text-1" size={20} />
             </a>
-            <span className="h-4 w-0.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+            <span className="h-4 w-0.5 rounded-full bg-3" />
             <DarkModeToggle />
          </div>
          <div className="mt-20 laptop:mx-auto laptop:mt-40 laptop:max-w-[440px]">
-            <div
-               className="border-color border-y bg-white p-6 shadow 
-               dark:bg-zinc-800 dark:shadow-black laptop:rounded-lg laptop:border"
-            >
-               <div className="border-color mb-4 border-b-2 pb-4 text-center text-xl font-bold">
+            <div className="border-color-1 border-y bg-1 p-6 laptop:rounded-lg laptop:border">
+               <div className="border-color-1 mb-4 border-b-2 pb-4 text-center text-xl font-bold">
                   {t("register.title")}
                </div>
                <Form ref={zo.ref} method="post" className="space-y-4" replace>

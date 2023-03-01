@@ -43,7 +43,7 @@ export default function CheckEmail() {
    return (
       <>
          <div className="flex h-screen w-full items-center justify-center">
-            <div className="border-color border bg-white p-6 shadow-sm dark:bg-zinc-800 laptop:rounded-lg">
+            <div className="border-color border bg-1 p-6 shadow-sm laptop:rounded-lg">
                {t("register.verified")}
                <Link
                   className="flex h-10 items-center justify-center rounded 

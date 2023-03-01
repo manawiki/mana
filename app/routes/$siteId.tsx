@@ -114,7 +114,7 @@ export default function SiteIndex() {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
-   const defaultStyle = `desktop:bg-1 max-laptop:bg-2 
+   const defaultStyle = `bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
    max-desktop:h-12 max-desktop:w-12
    max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-2.5 desktop:justify-start`;
@@ -127,9 +127,8 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_210px_1fr_334px]"
          >
             <section
-               className="laptop:bg-1 relative z-40  border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-800
-                    dark:shadow-black/60 max-laptop:fixed max-laptop:top-0  max-laptop:w-full
-                     bg-2 laptop:shadow-lg laptop:shadow-zinc-100 max-laptop:py-3"
+               className="bg-1 relative z-40 border-r border-color-1
+               max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                   <SiteSwitcher />
@@ -137,8 +136,8 @@ export default function SiteIndex() {
             </section>
             <section>
                <div
-                  className="bg-1 border-color border-1 fixed bottom-0
-                        mx-auto w-full laptop:border-r px-4 
+                  className="bg-1 laptop:bg-2 fixed bottom-0
+                        mx-auto w-full px-4 laptop:border-r border-color-1
                         max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
                         laptop:top-0 laptop:h-full laptop:w-[86px]
                         laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
@@ -148,12 +147,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-blue-200/50 bg-gradient-to-b 
-                           from-white to-blue-50/50 
-                           text-zinc-600 shadow shadow-zinc-100
-                           active:shadow-none dark:border-blue-900/50 dark:from-blue-900/30
-                           dark:to-blue-900/20 dark:!text-white 
-                            dark:shadow-black/30`
+                              ? `border border-blue-100 bg-blue-50 text-zinc-600 
+                               dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-white 
+                            `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -176,12 +172,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-emerald-200/50 bg-gradient-to-b 
-                              from-white to-emerald-50/50
-                              text-zinc-600 shadow shadow-zinc-100
-                              active:shadow-none dark:border-emerald-900/50 dark:from-emerald-900/30
-                              dark:to-emerald-900/20 dark:!text-white 
-                               dark:shadow-black/30 `
+                              ? `border border-emerald-100 bg-emerald-50 text-zinc-600 
+                            dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-white 
+                         `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -204,12 +197,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-yellow-200/50 bg-gradient-to-b 
-                           from-white to-yellow-50/50
-                            text-zinc-600 shadow shadow-zinc-100
-                           active:shadow-none dark:border-yellow-900/50 dark:from-yellow-900/30
-                           dark:to-yellow-900/20 dark:!text-white 
-                            dark:shadow-black/30`
+                              ? `border border-yellow-100 bg-yellow-50 text-zinc-600 
+                         dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-white 
+                      `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -232,12 +222,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-violet-200/50 bg-gradient-to-b 
-                        from-white to-violet-50/50
-                        text-zinc-600 shadow shadow-zinc-100
-                        active:shadow-none dark:border-violet-900/50 dark:from-violet-900/30
-                        dark:to-violet-900/20 dark:!text-white 
-                         dark:shadow-black/30`
+                              ? `border border-violet-100 bg-violet-50 text-zinc-600 
+                               dark:border-violet-900/50 dark:bg-violet-900/20 dark:text-white 
+                                 `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -258,20 +245,22 @@ export default function SiteIndex() {
                   </NavLink>
                </div>
             </section>
-            <section className="max-laptop:border-color bg-2 max-laptop:min-h-screen max-laptop:pt-16 max-laptop:border-b">
+            <section
+               className="max-laptop:border-color bg-3 max-laptop:min-h-screen
+               max-laptop:pt-16 max-laptop:border-b"
+            >
                <section
                   className="sticky max-laptop:top-[72px] z-20 max-laptop:border-t 
                max-desktop:px-3 border-color laptop:top-0"
                >
                   <div
                      className="mx-auto justify-between w-full h-16 border max-w-[740px] 
-                   shadow-zinc-200/50 flex items-center laptop:border-b border-color 
-                     bg-3 shadow dark:shadow-black/40
+                     flex items-center laptop:border-b border-color bg-2 shadow-sm shadow-1
                      rounded-xl rounded-t-none pl-3 pr-4 border-t-0"
                   >
                      <Link
                         to={`/${site.id}`}
-                        className="font-bold truncate p-1 pr-4 flex items-center gap-3 rounded-full hover:bg-4"
+                        className="font-bold truncate p-1 pr-4 flex items-center gap-3 rounded-full hover:bg-3"
                      >
                         <div className="h-8 w-8 overflow-hidden flex-none rounded-full bg-zinc-200">
                            <Image
@@ -290,9 +279,7 @@ export default function SiteIndex() {
                                  <>
                                     <Menu.Button
                                        className="bg-2 flex h-9 w-9 items-center justify-center 
-                                       rounded-full text-1 transition
-                                       duration-300 hover:bg-gray-100 active:translate-y-0.5
-                                     dark:hover:bg-zinc-700"
+                                       rounded-full text-1 transition duration-300 hover:bg-4 active:translate-y-0.5"
                                     >
                                        {open ? (
                                           <X
@@ -324,8 +311,8 @@ export default function SiteIndex() {
                                         origin-top-right transform transition-all z-30"
                                        >
                                           <div
-                                             className="border-color rounded-lg border bg-white p-1.5
-                                            shadow dark:bg-zinc-800 dark:shadow-black"
+                                             className="border-color rounded-lg border bg-3 p-1.5
+                                            shadow-sm shadow-1"
                                           >
                                              <Menu.Item>
                                                 <fetcher.Form method="post">
@@ -383,9 +370,8 @@ export default function SiteIndex() {
                            </div>
                         </NotFollowingSite>
                         <div
-                           className="bg-2 flex h-9 w-9 items-center shadow-sm border border-1
-                           justify-center rounded-full dark:bg-zinc-700 shadow-zinc-300
-                           dark:shadow-black/30"
+                           className="bg-4 flex h-10 w-10 items-center shadow-sm border border-color-1
+                           justify-center rounded-full shadow-1"
                         >
                            <Search size={20} />
                         </div>
@@ -395,16 +381,14 @@ export default function SiteIndex() {
                <Outlet />
             </section>
             <section
-               className="bg-1 border-color relative max-laptop:mx-auto 
-               max-laptop:max-w-[728px] dark:shadow-black/40
-               max-laptop:pb-20 tablet:border-x laptop:border-r-0 
-               laptop:border-l laptop:shadow-sm shadow-zinc-100/60"
+               className="bg-2 border-color-1 relative max-laptop:mx-auto laptop:border-l
+               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
-               <div className="bg-1 flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+               <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   {site.banner && (
                      <div
                         className="border-color flex h-44 items-center justify-center 
-                     overflow-hidden border-b-2 dark:bg-zinc-800"
+                     overflow-hidden border-b-2 bg-1"
                      >
                         <Image
                            //@ts-expect-error
@@ -441,13 +425,13 @@ export default function SiteIndex() {
                         </Link>
                      </div>
                   </LoggedOut>
-                  <div className="flex-grow bg-1"></div>
-                  <div className="flex items-center bg-1 justify-center py-4">
+                  <div className="flex-grow"></div>
+                  <div className="flex items-center justify-center py-4">
                      <div className="h-[250px] w-[300px]" />
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-1 
-                     border-y max-laptop:bg-2 flex laptop:border-b-0 laptop:border-color"
+                     className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
+                     border-y max-laptop:bg-2 flex laptop:border-b-0"
                   >
                      <Link className="font-logo text-2xl pb-1" to="/">
                         mana

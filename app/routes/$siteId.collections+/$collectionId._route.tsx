@@ -200,13 +200,13 @@ export default function CollectionList() {
 
             {entries?.length === 0 ? null : (
                <>
-                  <div className="divide-y overflow-hidden rounded-lg border border-color divide-color bg-3">
+                  <div className="divide-y overflow-hidden rounded-lg border border-color divide-color bg-2">
                      {entries?.map((entry) => (
                         <Link
                            key={entry.id}
                            to={`${entry.id}`}
                            prefetch="intent"
-                           className="flex items-center gap-3 p-2 dark:bg-neutral-800 hover:underline"
+                           className="flex items-center gap-3 p-2 bg-2 hover:underline"
                         >
                            <div
                               className="flex h-8 w-8 items-center justify-between dark:border-zinc-600

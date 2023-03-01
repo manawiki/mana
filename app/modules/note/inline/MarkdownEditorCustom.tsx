@@ -66,11 +66,10 @@ export const Menu = () => {
    const active = useActive();
    const defaultStyle = `dark:bg-neutral-800 dark:border-neutral-700 border h-8 w-8 shadow-sm 
                          rounded-lg bg-white flex items-center justify-center dark:shadow-black/30`;
-   const groupDefaultStyle = `dark:bg-neutral-800 h-8 w-8 shadow-sm 
-                              bg-white flex items-center justify-center dark:shadow-black/30`;
-   const activeStyle = `dark:bg-zinc-800 text-emerald-500 bg-zinc-50`;
-   const groupParentStyle = `divide-x dark:divide-zinc-700 overflow-hidden
-   rounded-md border border-color flex items-center shadow-sm dark:shadow-black/30`;
+   const groupDefaultStyle = `bg-2 h-8 w-8 shadow-sm flex text-1 items-center justify-center shadow-1`;
+   const activeStyle = `bg-3 text-emerald-500`;
+   const groupParentStyle = `divide-x divide-color overflow-hidden
+   rounded-md border border-color-1 flex items-center shadow-sm shadow-1`;
 
    return (
       <div className="flex items-center gap-3">
