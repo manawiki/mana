@@ -7,7 +7,7 @@ const success = (message: string) => {
          className={`${
             t.visible ? "animate-enter" : "animate-leave"
          } border-color pointer-events-auto flex max-w-sm items-center gap-3 rounded-lg
-              border-2 bg-white p-3 font-semibold shadow-lg dark:bg-zinc-800`}
+              border-2 bg-1 p-3 font-semibold shadow-lg `}
       >
          <div
             className="flex h-6 w-6 items-center justify-center
@@ -26,7 +26,7 @@ const error = (message: string) => {
          className={`${
             t.visible ? "animate-enter" : "animate-leave"
          } border-color pointer-events-auto flex max-w-sm items-center gap-3 rounded-lg
-             border-2 bg-white p-3 font-semibold shadow-lg dark:bg-zinc-800`}
+             border-2 bg-1 p-3 font-semibold shadow-lg`}
       >
          <div
             className="flex h-6 w-6 items-center justify-center

@@ -118,8 +118,8 @@ export const NewNoteType = ({ noteTypes }) => {
             </Tab.Group>
             <button
                className="absolute -right-4 -top-4 flex h-8 w-8
-               items-center justify-center rounded-full border-2 border-red-300 bg-white
-             hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+               items-center justify-center rounded-full border-2 border-red-300 bg-1
+             hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
                onClick={() => {
                   setIsOpen(false);
                   navigate(-1);

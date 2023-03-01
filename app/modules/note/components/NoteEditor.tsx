@@ -84,7 +84,7 @@ export default function NoteEditor({
             >
                <div
                   className="flex items-center gap-3 rounded-lg py-2 
-               laptop:bg-white/90 laptop:px-4 dark:laptop:bg-zinc-800/90"
+               laptop:bg-1 laptop:px-4"
                >
                   <span className="font-bold">
                      {typeof note?.ui === "object" && note?.ui?.name}

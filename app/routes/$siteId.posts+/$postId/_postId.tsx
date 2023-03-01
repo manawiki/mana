@@ -140,8 +140,8 @@ export default function PostPage() {
                </div>
                <button
                   className="absolute -right-4 -top-4 flex h-8 w-8
-                  items-center justify-center rounded-full border-2 border-red-300 bg-white
-               hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  items-center justify-center rounded-full border-2 border-red-300 bg-1
+               hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
                   onClick={() => setDeleteOpen(false)}
                >
                   <X className="h-5 w-5 text-red-400" />
@@ -194,8 +194,8 @@ export default function PostPage() {
                </div>
                <button
                   className="absolute -right-4 -top-4 flex h-8 w-8
-                  items-center justify-center rounded-full border-2 border-red-300 bg-white
-               hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                  items-center justify-center rounded-full border-2 border-red-300 bg-1
+               hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
                   onClick={() => setUnpublishOpen(false)}
                >
                   <X className="h-5 w-5 text-red-400" />
@@ -259,10 +259,9 @@ export default function PostPage() {
                   <div className="flex items-center gap-3 max-laptop:">
                      <Menu as="div" className="relative">
                         <Menu.Button
-                           className="bg-2 flex h-9 w-9 items-center justify-center 
-                        rounded-full border-2 text-1 transition
-                        duration-300 hover:bg-gray-100 active:translate-y-0.5
-                        dark:border-zinc-600 dark:hover:bg-zinc-700"
+                           className="bg-3 flex h-9 w-9 items-center justify-center 
+                        rounded-full border-2 text-1 transition border-color
+                        duration-300 active:translate-y-0.5"
                         >
                            <MoreVertical className="h-5 w-5" />
                         </Menu.Button>
@@ -279,10 +278,7 @@ export default function PostPage() {
                               className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
                                         origin-top-right transform transition-all z-10"
                            >
-                              <div
-                                 className="border-color rounded-lg border bg-white p-1.5
-                                            shadow dark:bg-zinc-800 dark:shadow-black"
-                              >
+                              <div className="border-color rounded-lg border bg-3 p-1.5 shadow shadow-1">
                                  <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -374,7 +370,7 @@ export default function PostPage() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="bg-1 border-1 sticky bottom-12 z-20 flex h-20 
+                  className="bg-2 border-color-1 sticky bottom-12 z-20 flex h-20 
                     items-center justify-between 
                     border-t px-3 laptop:bottom-0 laptop:h-14"
                >
@@ -544,11 +540,11 @@ function PostView() {
          className="post-content relative min-h-screen  
          max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
       >
-         <section className="max-w-[728px] mx-auto max-desktop:px-3">
+         <section className="max-w-[728px] mx-auto max-desktop:px-3 mb-6">
             <h1 className="pb-3 font-header text-3xl font-semibold laptop:text-4xl">
                {post?.title}
             </h1>
-            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
+            <div className="mt-1 py-3 laptop:mx-1 flex items-center gap-3 border-color border-y">
                <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
                   {/* @ts-expect-error */}
                   {post?.author?.avatar ? (
@@ -560,7 +556,7 @@ function PostView() {
                      />
                   ) : null}
                </div>
-               <div className="space-y-0.5">
+               <div>
                   {/* @ts-expect-error */}
                   <div className="font-bold">{post?.author?.username}</div>
                   <div className="flex items-center gap-3">

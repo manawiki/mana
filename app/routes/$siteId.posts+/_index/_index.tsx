@@ -110,12 +110,9 @@ export default function PostsIndex() {
       <>
          <div className="mx-auto max-w-[728px] px-3 py-10 tablet:px-0 laptop:px-3 desktop:px-0">
             <div className="border-color relative mb-16 border-b-2 pb-2">
-               <h1 className="text-3xl font-bold">Posts</h1>
+               <h1 className="text-3xl font-header font-bold">Posts</h1>
                <Menu as="div" className="relative">
-                  <Menu.Button
-                     className="absolute right-0 -top-5 rounded-full border-8
-                border-zinc-100  dark:border-zinc-700"
-                  >
+                  <Menu.Button className="absolute right-0 -top-5 rounded-full border-8 border-color-1">
                      {({ open }) => (
                         <div
                            className=" flex h-10 items-center 
@@ -145,8 +142,8 @@ export default function PostsIndex() {
                                  max-w-[220px] origin-top-right transform transition-all"
                      >
                         <div
-                           className="border-color rounded-lg border bg-white p-1.5
-                        shadow-lg dark:bg-zinc-800 dark:shadow-black/50"
+                           className="border-color rounded-lg border bg-3 p-1.5
+                        shadow-lg dark:shadow-black/50"
                         >
                            <Menu.Item>
                               <Form method="post">
@@ -220,7 +217,7 @@ export default function PostsIndex() {
                            >
                               <Listbox.Options
                                  className="border-color text-1 absolute right-0 mt-2 w-[120px]
-                           rounded-lg border bg-white p-1.5 shadow-lg dark:bg-zinc-800 dark:shadow-black/50"
+                                 rounded-lg border bg-3 p-1.5 shadow-1 shadow-lg"
                               >
                                  <Listbox.Option key="draft" value="Drafts">
                                     {({ selected }) => (
@@ -316,10 +313,7 @@ export default function PostsIndex() {
                         </div>
                      </Listbox>
                   </div>
-                  <section
-                     className="border-color divide-y overflow-hidden rounded-md border 
-               border-y bg-neutral-100 dark:divide-zinc-700 dark:bg-neutral-800"
-                  >
+                  <section className="border-color divide-y overflow-hidden rounded-md border divide-color bg-2">
                      {myPosts?.docs.length === 0 ? (
                         <div className="p-3 text-sm ">No posts...</div>
                      ) : (

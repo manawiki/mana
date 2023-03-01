@@ -124,7 +124,7 @@ export default function CollectionIndex() {
    return (
       <>
          <div className="mx-auto max-w-[728px] pt-10 px-3 tablet:px-0">
-            <h1 className="pb-2 text-3xl font-bold border-b-2 border-color mb-5">
+            <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-5">
                Collections
             </h1>
             <AdminOrOwner>
@@ -226,14 +226,14 @@ export default function CollectionIndex() {
                                  isActive
                                     ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
                                     : "dark:hover:border-zinc-600 dark:hover:bg-zinc-700 hover:bg-zinc-50"
-                              } border-color flex items-center justify-between gap-2.5 rounded-full border bg-3 pr-2
+                              } border-color flex items-center justify-between gap-2.5 rounded-full border bg-2 pr-2
                               shadow-sm transition  dark:shadow-zinc-900 overflow-hidden`
                            }
                         >
                            <div className="flex items-center gap-2.5 truncate">
                               <div
                                  className="flex h-10 w-10 flex-none items-center justify-between
-                                    overflow-hidden rounded-full border-2 border-white dark:border-neutral-800 bg-3"
+                                    overflow-hidden rounded-full border-2 border-color-1 bg-3"
                               >
                                  <Image
                                     width={50}

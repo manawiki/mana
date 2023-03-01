@@ -32,10 +32,9 @@ export default function UserIndex() {
         desktop:auto-cols-[86px_210px_1fr_334px]"
       >
          <section
-            className="border-color laptop:bg-1 relative max-laptop:fixed  
-                    max-laptop:top-0 max-laptop:h-20 max-laptop:w-full
-                    max-laptop:bg-gradient-to-b max-laptop:from-zinc-100 max-laptop:to-zinc-50 max-laptop:py-4 max-laptop:dark:from-zinc-900
-                    max-laptop:dark:to-zinc-800 laptop:border-r"
+            className="bg-1 relative z-40 border-r border-color-1
+               max-laptop:fixed max-laptop:top-0 max-laptop:w-full
+               max-laptop:py-3"
          >
             <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                <SiteSwitcher />
@@ -43,19 +42,23 @@ export default function UserIndex() {
          </section>
          <section>
             <div
-               className="border-color bg-1 fixed bottom-0 mx-auto
-                        w-full max-laptop:z-20 max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-0 laptop:h-full laptop:w-[86px] 
-                        laptop:space-y-4 laptop:overflow-y-auto laptop:border-r laptop:py-6
-                        desktop:w-[210px] desktop:space-y-1"
+               className="bg-1 laptop:bg-2 fixed bottom-0
+                        mx-auto w-full px-4 laptop:border-r border-color-1
+                        max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
+                        laptop:top-0 laptop:h-full laptop:w-[86px]
+                        laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
             >
                <LoggedIn>
-                  <Form className="px-4" action="/logout" method="post">
+                  <Form action="/logout" method="post">
                      <button
                         type="submit"
-                        className="bg-2 flex h-12 w-full items-center justify-between gap-3 rounded-lg px-5 text-left"
+                        className="bg-4 shadow-1 shadow-sm flex h-12 w-full items-center justify-between gap-3 rounded-lg px-5 text-left"
                      >
                         <span className="font-bold">Logout</span>
-                        <LogOut className="h-4 w-4 text-red-400 dark:text-red-300" />
+                        <LogOut
+                           size={18}
+                           className="text-red-400 dark:text-red-300"
+                        />
                      </button>
                   </Form>
                </LoggedIn>

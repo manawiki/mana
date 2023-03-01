@@ -6,7 +6,7 @@ import { Edit3, Layout } from "lucide-react";
 export const EntryHeader = ({ entry }: { entry: Entry }) => {
    const { siteId, collectionId, entryId } = useParams();
    return (
-      <section className="border-y overflow-hidden bg-3 pt-5 flex items-center border-color">
+      <section className="border-y overflow-hidden pt-5 flex items-center border-color">
          <div className="max-w-[728px] px-3 tablet:px-0 w-full mx-auto">
             <div className="flex justify-start items-center gap-3 pb-3">
                <div className="w-12 h-12 border-2 border-color rounded-full overflow-hidden flex-none">
