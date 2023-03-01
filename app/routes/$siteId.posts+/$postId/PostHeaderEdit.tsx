@@ -43,8 +43,8 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
          <section className="max-w-[728px] mx-auto max-desktop:px-3">
             <div className="relative mb-3 flex items-center gap-3">
                <input
-                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-mono text-2xl 
-                   laptop:text-3xl font-semibold !ring-zinc-200
+                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-header text-3xl 
+                   laptop:text-4xl font-semibold !ring-zinc-200
                    !ring-offset-4 !ring-offset-white hover:bg-white hover:ring-2 focus:bg-white 
                    focus:ring-2 dark:!ring-zinc-600
                  dark:!ring-offset-zinc-700 dark:hover:bg-zinc-700 dark:focus:bg-zinc-700"
@@ -69,7 +69,6 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                      <Image /* @ts-expect-error */
                         url={post.author.avatar.url}
                         options="fit=crop,width=60,height=60 ,gravity=auto"
-                        className="h-full w-full object-cover"
                         /* @ts-expect-error */
                         alt={post?.author?.username}
                      />

@@ -21,7 +21,7 @@ export const SiteNavLink = ({
          <>
             <Link
                className="bg-2 rounded-full border shadow-zinc-300 transition 
-               duration-200 active:translate-y-0.5  
+               duration-200 active:translate-y-0.5 max-laptop:hidden 
                dark:border-zinc-700 dark:shadow-black laptop:shadow-lg"
                to={url}
             >

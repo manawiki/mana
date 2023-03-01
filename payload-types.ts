@@ -21,6 +21,7 @@ export interface Config {
 }
 export interface Site {
   name: string;
+  featured?: boolean;
   type: 'core' | 'custom';
   subdomain?: string;
   owner?: string | User;
