@@ -24,8 +24,7 @@ export const SiteSwitcher = () => {
                      <>
                         <NotFollowingSite>
                            <div className="max-laptop:hidden">
-                              <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
-                              <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
                               </div>
@@ -33,8 +32,7 @@ export const SiteSwitcher = () => {
                         </NotFollowingSite>
                         {site && (
                            <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5 laptop:hidden">
-                              <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
-                              <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
                               </div>
@@ -44,7 +42,7 @@ export const SiteSwitcher = () => {
                   ) : (
                      sites?.length === 0 && (
                         <>
-                           <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
+                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
                            <NewSiteModal />
                            <MobileUserMenu />
                         </>
@@ -56,9 +54,8 @@ export const SiteSwitcher = () => {
                      <Menu>
                         <Menu.Button
                            className="flex h-12 w-12 items-center justify-center rounded-full 
-                                        border-2 bg-white text-1 transition duration-300
-                                        active:translate-y-0.5 dark:border-zinc-700
-                                        dark:bg-zinc-800 laptop:hidden"
+                                       bg-4 shadow-1 text-1 transition duration-300
+                                       active:translate-y-0.5 laptop:hidden shadow-sm"
                         >
                            <Squares2X2Icon className="h-6 w-6" />
                         </Menu.Button>
@@ -76,15 +73,15 @@ export const SiteSwitcher = () => {
                                         origin-top-right transform transition-all"
                            >
                               <div
-                                 className="border-color mx-3 rounded-xl border-2 bg-white p-4 
-                                            shadow dark:bg-zinc-800 dark:shadow-black/50"
+                                 className="border-color mx-3 rounded-xl border-2 bg-2 p-4 
+                                            shadow dark:shadow-black/50"
                               >
                                  <SiteList />
                               </div>
                            </Menu.Items>
                         </Transition>
                      </Menu>
-                     <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
+                     <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
                      <div className="max-laptop:hidden">
                         <SiteList />
                         <NewSiteModal />
@@ -96,20 +93,22 @@ export const SiteSwitcher = () => {
          </LoggedIn>
          <LoggedOut>
             <div className="max-laptop:flex max-laptop:w-full max-laptop:items-center max-laptop:justify-between max-laptop:gap-3.5">
-               <div className="max-laptop:flex  max-laptop:items-center max-laptop:gap-3.5">
-                  <HomeLink site={site} />
-                  {site && (
-                     <>
-                        <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
-                        <div className="mx-auto mb-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
-                        <div className="relative flex items-center justify-center">
-                           <SiteNavLink site={site} currentSite={site} />
-                        </div>
-                     </>
-                  )}
+               <div className="max-laptop:flex items-center">
+                  <div className="max-laptop:flex  max-laptop:items-center max-laptop:gap-3.5">
+                     <HomeLink site={site} />
+                     {site && (
+                        <>
+                           <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 laptop:hidden"></div>
+                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                           <div className="relative flex items-center justify-center">
+                              <SiteNavLink site={site} currentSite={site} />
+                           </div>
+                        </>
+                     )}
+                  </div>
+                  <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                  <NewSiteModal />
                </div>
-               <div className="mx-auto mt-4 h-0.5 w-12 rounded-full bg-zinc-100 dark:bg-zinc-800 max-laptop:hidden"></div>
-               <NewSiteModal />
                <MobileUserMenu />
             </div>
          </LoggedOut>

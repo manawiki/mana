@@ -29,10 +29,8 @@ export default function HomePage() {
             desktop:auto-cols-[86px_210px_1fr_334px]"
       >
          <section
-            className="laptop:bg-1 relative z-40  border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-800
-             dark:shadow-black/60 max-laptop:fixed max-laptop:top-0 max-laptop:h-20  max-laptop:w-full
-             max-laptop:bg-gradient-to-b max-laptop:py-4
-             laptop:shadow-lg laptop:shadow-zinc-100"
+            className="bg-1 relative z-40 border-r border-color-1
+            max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
          >
             <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                <SiteSwitcher />

@@ -77,10 +77,8 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center laptop:my-4">
             <button
-               className="flex h-12 w-12 items-center justify-center rounded-full border-2 bg-white 
-                    text-1 transition duration-300
-                    active:translate-y-0.5 dark:border-zinc-700 dark:bg-zinc-800
-                     laptop:h-14 laptop:w-14"
+               className="flex h-12 w-12 items-center justify-center rounded-full bg-4 shadow-1
+               text-1 transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14 shadow-sm"
                type="button"
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}
@@ -118,8 +116,8 @@ export function NewSiteModal() {
                         leaveTo="opacity-0 scale-95"
                      >
                         <Dialog.Panel
-                           className="border-color w-full max-w-md transform rounded-2xl border-2
-                                    bg-white p-5 text-left align-middle shadow-xl transition-all dark:bg-zinc-800"
+                           className="w-full max-w-md transform rounded-2xl
+                           bg-3 p-5 text-left align-middle shadow-xl transition-all"
                         >
                            <LoggedOut>
                               <div className="font-bold">
@@ -183,7 +181,7 @@ export function NewSiteModal() {
                                  <div className="pb-5">
                                     <label
                                        htmlFor={zo.fields.siteName()}
-                                       className="text-sm font-semibold"
+                                       className="label-default"
                                     >
                                        {t("new.siteName")}
                                     </label>
@@ -220,9 +218,9 @@ export function NewSiteModal() {
                               name="intent"
                               value="addSite"
                               type="button"
-                              className="absolute -right-4 -top-4 flex h-8 w-8
-                                        items-center justify-center rounded-full border-2 border-red-300 bg-white
-                                      hover:bg-red-50 dark:border-zinc-600 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+                              className="absolute -right-4 -top-4 flex h-8 w-8 border-color-1
+                                        items-center justify-center rounded-full border-2 border-red-300 bg-1
+                                      hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
                               onClick={() => setIsOpen(false)}
                            >
                               <X className="h-5 w-5 text-red-400" />

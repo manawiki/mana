@@ -20,9 +20,9 @@ export const SiteNavLink = ({
       return (
          <>
             <Link
-               className="bg-2 rounded-full border shadow-zinc-300 transition 
-               duration-200 active:translate-y-0.5  
-               dark:border-zinc-700 dark:shadow-black laptop:shadow-lg"
+               className="bg-2 rounded-full shadow-1 transition 
+               duration-200 active:translate-y-0.5 max-laptop:hidden 
+               laptop:shadow-lg"
                to={url}
             >
                <>
@@ -39,7 +39,7 @@ export const SiteNavLink = ({
             {isActive && (
                <span
                   className="absolute top-1.5 -left-1 h-10 w-2.5 
-                  rounded-lg bg-zinc-500 dark:bg-zinc-200 max-laptop:hidden"
+                  rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
                ></span>
             )}
          </>
@@ -68,10 +68,10 @@ export const SiteNavLink = ({
 
 export const HomeLink = ({ site }: { site: Site }) => {
    const { env } = useRouteLoaderData("root") as { env: envType };
-   const style = `flex h-12 w-12 items-center justify-center rounded-full border-2
-   transition duration-300 font-logo bg-2
-   active:translate-y-0.5 dark:border-zinc-700 dark:shadow-black
- dark:hover:bg-zinc-800 dark:focus:bg-zinc-600 laptop:h-14 laptop:w-14`;
+   const style = `flex h-12 w-12 items-center justify-center rounded-full
+   transition duration-300 font-logo bg-4 mx-auto laptop:my-3
+   active:translate-y-0.5 shadow-1 shadow-sm
+   dark:hover:bg-zinc-800 laptop:h-14 laptop:w-14`;
 
    const domain =
       env == "dev-server"
@@ -84,20 +84,14 @@ export const HomeLink = ({ site }: { site: Site }) => {
       site?.subdomain !== "undefined"
    )
       return (
-         <a
-            href={domain}
-            className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
-         >
+         <a href={domain}>
             <div className={style}>
                <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
             </div>
          </a>
       );
    return (
-      <Link
-         to="/home"
-         className="border-color flex items-center justify-center laptop:p-3 laptop:pb-4"
-      >
+      <Link to="/home">
          <div className={style}>
             <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
          </div>

@@ -44,7 +44,7 @@ export default function Question() {
          className="post-content max-laptop:pt-24 max-laptop:pb-20 relative mx-auto 
       min-h-screen max-w-[728px]  laptop:py-12 desktop:px-0"
       >
-         <h1 className="pb-3 font-mono text-2xl font-semibold laptop:text-3xl">
+         <h1 className="pb-3 font-mono text-3xl font-semibold laptop:text-4xl">
             {question?.title}
          </h1>
          <time

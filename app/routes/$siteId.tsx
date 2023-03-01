@@ -8,7 +8,14 @@ import {
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
-import { ChevronDown, Loader2, X } from "lucide-react";
+import {
+   ChevronDown,
+   Loader2,
+   LogOut,
+   MoreVertical,
+   Search,
+   X,
+} from "lucide-react";
 import type {
    ActionFunction,
    LinksFunction,
@@ -20,7 +27,7 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isAdding } from "~/utils";
 import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
-import { Popover, Transition } from "@headlessui/react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import type { envType } from "env/types";
@@ -107,7 +114,7 @@ export default function SiteIndex() {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
-   const defaultStyle = `desktop:bg-1 max-laptop:bg-2 
+   const defaultStyle = `bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
    max-desktop:h-12 max-desktop:w-12
    max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-2.5 desktop:justify-start`;
@@ -120,10 +127,8 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_210px_1fr_334px]"
          >
             <section
-               className="laptop:bg-1 relative z-40  border-r border-zinc-200 shadow-zinc-500 dark:border-zinc-800
-                    dark:shadow-black/60 max-laptop:fixed max-laptop:top-0 max-laptop:h-20  max-laptop:w-full
-                    max-laptop:bg-gradient-to-b max-laptop:py-4
-                  laptop:shadow-lg laptop:shadow-zinc-100"
+               className="bg-1 relative z-40 border-r border-color-1
+               max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                   <SiteSwitcher />
@@ -131,8 +136,8 @@ export default function SiteIndex() {
             </section>
             <section>
                <div
-                  className="max-laptop:bg-1 bg-1 border-color border-1 fixed bottom-0
-                        mx-auto w-full border-r px-4 
+                  className="bg-1 laptop:bg-2 fixed bottom-0
+                        mx-auto w-full px-4 laptop:border-r border-color-1
                         max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
                         laptop:top-0 laptop:h-full laptop:w-[86px]
                         laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
@@ -142,12 +147,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-blue-200/50 bg-gradient-to-b 
-                           from-white to-blue-50/50 
-                           text-zinc-600 shadow shadow-zinc-100
-                           active:shadow-none dark:border-blue-900/50 dark:from-blue-900/30
-                           dark:to-blue-900/20 dark:!text-white 
-                            dark:shadow-black/30`
+                              ? `border border-blue-100 bg-blue-50 text-zinc-600 
+                               dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-white 
+                            `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -170,12 +172,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-emerald-200/50 bg-gradient-to-b 
-                              from-white to-emerald-50/50
-                              text-zinc-600 shadow shadow-zinc-100
-                              active:shadow-none dark:border-emerald-900/50 dark:from-emerald-900/30
-                              dark:to-emerald-900/20 dark:!text-white 
-                               dark:shadow-black/30 `
+                              ? `border border-emerald-100 bg-emerald-50 text-zinc-600 
+                            dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-white 
+                         `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -198,12 +197,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-yellow-200/50 bg-gradient-to-b 
-                           from-white to-yellow-50/50
-                            text-zinc-600 shadow shadow-zinc-100
-                           active:shadow-none dark:border-yellow-900/50 dark:from-yellow-900/30
-                           dark:to-yellow-900/20 dark:!text-white 
-                            dark:shadow-black/30`
+                              ? `border border-yellow-100 bg-yellow-50 text-zinc-600 
+                         dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-white 
+                      `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -226,12 +222,9 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-violet-200/50 bg-gradient-to-b 
-                        from-white to-violet-50/50
-                        text-zinc-600 shadow shadow-zinc-100
-                        active:shadow-none dark:border-violet-900/50 dark:from-violet-900/30
-                        dark:to-violet-900/20 dark:!text-white 
-                         dark:shadow-black/30`
+                              ? `border border-violet-100 bg-violet-50 text-zinc-600 
+                               dark:border-violet-900/50 dark:bg-violet-900/20 dark:text-white 
+                                 `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
@@ -252,89 +245,150 @@ export default function SiteIndex() {
                   </NavLink>
                </div>
             </section>
-            <section className="max-laptop:border-color bg-2 max-laptop:min-h-screen max-laptop:border-b max-laptop:pt-16">
+            <section
+               className="max-laptop:border-color bg-3 max-laptop:min-h-screen
+               max-laptop:pt-16 max-laptop:border-b"
+            >
+               <section
+                  className="sticky max-laptop:top-[72px] z-20 max-laptop:border-t 
+               max-desktop:px-3 border-color laptop:top-0"
+               >
+                  <div
+                     className="mx-auto justify-between w-full h-16 border max-w-[740px] 
+                     flex items-center laptop:border-b border-color bg-2 shadow-sm shadow-1
+                     rounded-xl rounded-t-none pl-3 pr-4 border-t-0"
+                  >
+                     <Link
+                        to={`/${site.id}`}
+                        className="font-bold truncate p-1 pr-4 flex items-center gap-3 rounded-full hover:bg-3"
+                     >
+                        <div className="h-8 w-8 overflow-hidden flex-none rounded-full bg-zinc-200">
+                           <Image
+                              //@ts-expect-error
+                              url={site.icon?.url}
+                              options="fit=crop,width=60,height=60,gravity=auto"
+                              alt="Site Logo"
+                           />
+                        </div>
+                        <div className="truncate">{site.name}</div>
+                     </Link>
+                     <div className="flex items-center gap-3 pl-2">
+                        <FollowingSite>
+                           <Menu as="div" className="relative">
+                              {({ open }) => (
+                                 <>
+                                    <Menu.Button
+                                       className="bg-2 flex h-9 w-9 items-center justify-center 
+                                       rounded-full text-1 transition duration-300 hover:bg-4 active:translate-y-0.5"
+                                    >
+                                       {open ? (
+                                          <X
+                                             size={20}
+                                             className={`${
+                                                open && "text-red-500"
+                                             } transition duration-150 ease-in-out`}
+                                          />
+                                       ) : (
+                                          <>
+                                             <ChevronDown
+                                                size={24}
+                                                className="transition duration-150 ease-in-out"
+                                             />
+                                          </>
+                                       )}
+                                    </Menu.Button>
+                                    <Transition
+                                       as={Fragment}
+                                       enter="transition ease-out duration-100"
+                                       enterFrom="transform opacity-0 scale-95"
+                                       enterTo="transform opacity-100 scale-100"
+                                       leave="transition ease-in duration-75"
+                                       leaveFrom="transform opacity-100 scale-100"
+                                       leaveTo="transform opacity-0 scale-95"
+                                    >
+                                       <Menu.Items
+                                          className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
+                                        origin-top-right transform transition-all z-30"
+                                       >
+                                          <div
+                                             className="border-color rounded-lg border bg-3 p-1.5
+                                            shadow-sm shadow-1"
+                                          >
+                                             <Menu.Item>
+                                                <fetcher.Form method="post">
+                                                   <button
+                                                      name="intent"
+                                                      value="unfollow"
+                                                      className="text-1 flex w-full items-center gap-3 rounded-lg
+                                                      py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                   >
+                                                      <LogOut
+                                                         className="text-red-400"
+                                                         size="18"
+                                                      />
+                                                      {t(
+                                                         "follow.actionUnfollow"
+                                                      )}
+                                                   </button>
+                                                </fetcher.Form>
+                                             </Menu.Item>
+                                          </div>
+                                       </Menu.Items>
+                                    </Transition>
+                                 </>
+                              )}
+                           </Menu>
+                        </FollowingSite>
+
+                        <LoggedOut>
+                           <div className="flex items-center">
+                              <Link
+                                 to={`/login?redirectTo=/${site.id}`}
+                                 className="flex h-9 px-3.5 items-center justify-center rounded-full
+                               bg-zinc-700 text-sm font-bold text-white dark:text-black dark:bg-white"
+                              >
+                                 Follow
+                              </Link>
+                           </div>
+                        </LoggedOut>
+                        <NotFollowingSite>
+                           <div className="flex items-center">
+                              <fetcher.Form className="w-full" method="post">
+                                 <button
+                                    name="intent"
+                                    value="followSite"
+                                    className="flex h-9 px-3.5 items-center justify-center rounded-full
+                                  bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
+                                 >
+                                    {adding ? (
+                                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                    ) : (
+                                       t("follow.actionFollow")
+                                    )}
+                                 </button>
+                              </fetcher.Form>
+                           </div>
+                        </NotFollowingSite>
+                        <div
+                           className="bg-4 flex h-10 w-10 items-center shadow-sm border border-color-1
+                           justify-center rounded-full shadow-1"
+                        >
+                           <Search size={20} />
+                        </div>
+                     </div>
+                  </div>
+               </section>
                <Outlet />
             </section>
             <section
-               className="bg-1 laptop:bg-2 border-color relative max-laptop:mx-auto max-laptop:max-w-[728px] 
-                    max-laptop:pb-20 tablet:border-x laptop:border-r-0 laptop:border-l"
+               className="bg-2 border-color-1 relative max-laptop:mx-auto laptop:border-l
+               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
-               <div className="bg-1 flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <Popover className="relative">
-                     {({ open }) => (
-                        <>
-                           <Popover.Button
-                              className="bg-1 flex h-14 w-full items-center 
-                              justify-between gap-3  px-3 duration-150 
-                              focus:outline-none border-b border-color
-                              "
-                           >
-                              <div className="flex items-center gap-3">
-                                 <div className="h-8 w-8 overflow-hidden rounded-full bg-zinc-200">
-                                    <Image
-                                       //@ts-expect-error
-                                       url={site.icon?.url}
-                                       options="fit=crop,width=60,height=60,gravity=auto"
-                                       alt="Site Logo"
-                                    />
-                                 </div>
-                                 <div className="font-bold">{site.name}</div>
-                              </div>
-                              <div
-                                 className="bg-2 border-color flex h-8 w-8 items-center 
-                              justify-center rounded-full border"
-                              >
-                                 {open ? (
-                                    <X
-                                       size={18}
-                                       className={`${
-                                          open && "text-red-500"
-                                       } transition duration-150 ease-in-out`}
-                                    />
-                                 ) : (
-                                    <>
-                                       <ChevronDown
-                                          size={18}
-                                          className="transition duration-150 ease-in-out"
-                                       />
-                                    </>
-                                 )}
-                              </div>
-                           </Popover.Button>
-                           <Transition
-                              as={Fragment}
-                              enter="transition ease-out duration-200"
-                              enterFrom="opacity-0 translate-y-1"
-                              enterTo="opacity-100 translate-y-0"
-                              leave="transition ease-in duration-150"
-                              leaveFrom="opacity-100 translate-y-0"
-                              leaveTo="opacity-0 translate-y-1"
-                           >
-                              <Popover.Panel className="absolute right-0 z-10 w-full">
-                                 <div className="bg-2 dark:shadow-black">
-                                    <FollowingSite>
-                                       <Popover.Button as="div">
-                                          <fetcher.Form method="post">
-                                             <button
-                                                name="intent"
-                                                value="unfollow"
-                                                className="block w-full p-4 text-left text-sm font-bold"
-                                             >
-                                                {t("follow.actionUnfollow")}
-                                             </button>
-                                          </fetcher.Form>
-                                       </Popover.Button>
-                                    </FollowingSite>
-                                 </div>
-                              </Popover.Panel>
-                           </Transition>
-                        </>
-                     )}
-                  </Popover>
+               <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   {site.banner && (
                      <div
                         className="border-color flex h-44 items-center justify-center 
-                     overflow-hidden border-b-2 dark:bg-zinc-800"
+                     overflow-hidden border-b-2 bg-1"
                      >
                         <Image
                            //@ts-expect-error
@@ -345,39 +399,8 @@ export default function SiteIndex() {
                         />
                      </div>
                   )}
-                  <NotFollowingSite>
-                     <div className="flex w-full p-3 border-b border-color items-center">
-                        <fetcher.Form className="w-full" method="post">
-                           <button
-                              name="intent"
-                              value="followSite"
-                              className="flex h-10 w-full items-center justify-center rounded-full
-                        bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
-                           >
-                              {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                              ) : (
-                                 t("follow.actionFollow")
-                              )}
-                           </button>
-                        </fetcher.Form>
-                     </div>
-                  </NotFollowingSite>
                   <LoggedOut>
-                     <div className="flex w-full p-3 border-b border-color items-center">
-                        <Link
-                           to={`/login?redirectTo=/${site.id}`}
-                           className="flex h-10 w-full items-center justify-center rounded-full
-                        bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
-                        >
-                           Follow
-                        </Link>
-                     </div>
-                  </LoggedOut>
-                  <div className="flex-grow py-4"></div>
-
-                  <LoggedOut>
-                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-t border-color">
+                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color border-b">
                         <Link
                            to="/join"
                            className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
@@ -393,29 +416,28 @@ export default function SiteIndex() {
                            </span>
                         </Link>
                         <Link
-                           className="flex h-10 items-center justify-center hover:border hover:border-color
-                            rounded-full bg-zinc-100 shadow dark:bg-zinc-800 text-center 
-                            text-sm font-bold"
+                           className="flex h-10 items-center border justify-center border-zinc-300
+                          rounded-full bg-zinc-200 dark:bg-zinc-700 dark:border-zinc-600 text-center 
+                          text-sm font-bold"
                            to={`/login?redirectTo=${location.pathname}`}
                         >
                            {t("login.action", { ns: "auth" })}
                         </Link>
                      </div>
                   </LoggedOut>
-                  <div className="flex items-center justify-center py-4 border-t border-color">
-                     <div className="h-[250px] w-[300px] rounded-lg bg-2" />
+                  <div className="flex-grow"></div>
+                  <div className="flex items-center justify-center py-4">
+                     <div className="h-[250px] w-[300px]" />
                   </div>
-                  <div className="items-center justify-between pl-3 h-14 pr-5 flex border-t border-color">
+                  <div
+                     className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
+                     border-y max-laptop:bg-2 flex laptop:border-b-0"
+                  >
+                     <Link className="font-logo text-2xl pb-1" to="/">
+                        mana
+                     </Link>
                      <div className="flex-none">
                         <DarkModeToggle />
-                     </div>
-                     <div className="flex items-center gap-2 pt-1">
-                        <div className="text-sm dark:text-zinc-400">
-                           Powered by
-                        </div>
-                        <Link className="pb-1 font-logo text-xl" to="/">
-                           mana
-                        </Link>
                      </div>
                   </div>
                </div>
