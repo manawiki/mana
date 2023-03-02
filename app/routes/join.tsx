@@ -56,28 +56,32 @@ export default function Signup() {
    const adding = isAdding(transition, "join");
    return (
       <main>
+         <div
+            className="pattern-dots pattern-zinc-400 dark:pattern-zinc-600
+                   pattern-bg-white dark:pattern-bg-black
+                     pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
+         ></div>
+         <div
+            className="bg-gradient-to-b from-white/70 to-zinc-50/80 
+            dark:from-zinc-800/50 via-transparent dark:to-zinc-900/80 
+            absolute top-0 left-0 w-full h-full"
+         ></div>
          <Link
             to="/"
-            className="absolute top-5 left-5 flex h-9 w-9 items-center gap-1.5"
+            className="absolute top-5 left-5 flex h-9 w-9 items-center gap-2.5"
          >
-            <div className="h-7 w-7 flex-none">
-               <Logo className="h-8 w-8" />
-            </div>
+            <Logo className="h-7 w-7" />
+            <span className="font-logo text-3xl pb-1">mana</span>
          </Link>
          <div className="absolute top-5 right-5 flex items-center gap-5">
-            <a
-               target="_blank"
-               href="https://github.com/manawiki/core"
-               rel="noreferrer"
-            >
-               <Github className="text-1" size={20} />
-            </a>
-            <span className="h-4 w-0.5 rounded-full bg-3" />
             <DarkModeToggle />
          </div>
          <div className="mt-20 laptop:mx-auto laptop:mt-40 laptop:max-w-[440px]">
-            <div className="border-color-1 border-y bg-1 p-6 laptop:rounded-lg laptop:border">
-               <div className="border-color-1 mb-4 border-b-2 pb-4 text-center text-xl font-bold">
+            <div
+               className="border-color border-y bg-2 p-6 
+               laptop:rounded-xl shadow-sm shadow-1 laptop:border relative"
+            >
+               <div className="border-color mb-4 border-b-2 pb-4 text-center text-xl font-bold">
                   {t("register.title")}
                </div>
                <Form ref={zo.ref} method="post" className="space-y-4" replace>
@@ -156,11 +160,11 @@ export default function Signup() {
                         t("register.action")
                      )}
                   </button>
-                  <div className="flex items-center justify-center py-2">
+                  <div className="flex items-center !mt-4">
                      <div className="text-center text-sm">
                         {t("register.alreadyHaveAnAccount")}{" "}
                         <Link
-                           className="text-blue-500 underline"
+                           className="text-blue-500 font-bold"
                            to={{
                               pathname: "/login",
                               search: searchParams.toString(),

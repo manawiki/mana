@@ -19,7 +19,7 @@ export const meta: V2_MetaFunction = () => {
       },
       {
          name: "description",
-         content: "A wiki of your own",
+         content: "Build Better Wikis",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];

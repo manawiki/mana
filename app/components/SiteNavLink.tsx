@@ -22,14 +22,14 @@ export const SiteNavLink = ({
             <Link
                className="bg-2 rounded-full shadow-1 transition 
                duration-200 active:translate-y-0.5 max-laptop:hidden 
-               laptop:shadow-lg"
+               laptop:shadow-sm shadow-1"
                to={url}
             >
                <>
                   <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
                      <Image
                         alt="Site Logo"
-                        options="fit=crop,width=70,height=70,gravity=auto"
+                        options="fit=crop,width=88,height=88,gravity=auto"
                         //@ts-ignore
                         url={site.icon?.url}
                      />
@@ -71,7 +71,7 @@ export const HomeLink = ({ site }: { site: Site }) => {
    const style = `flex h-12 w-12 items-center justify-center rounded-full
    transition duration-300 font-logo bg-4 mx-auto laptop:my-3
    active:translate-y-0.5 shadow-1 shadow-sm
-   dark:hover:bg-zinc-800 laptop:h-14 laptop:w-14`;
+   laptop:h-14 laptop:w-14`;
 
    const domain =
       env == "dev-server"

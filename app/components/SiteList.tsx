@@ -12,7 +12,7 @@ export const SiteList = () => {
       <>
          <ul
             className="max-laptop:grid max-laptop:grid-cols-5 max-tablet:grid-cols-5
-                max-tablet:gap-2 max-laptop:gap-3 text-center laptop:mb-4 laptop:space-y-4"
+                max-tablet:gap-2 max-laptop:gap-3 text-center laptop:mb-4 laptop:space-y-3"
          >
             {sites?.map((item) => (
                <li
