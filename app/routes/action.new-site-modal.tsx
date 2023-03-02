@@ -218,9 +218,9 @@ export function NewSiteModal() {
                               name="intent"
                               value="addSite"
                               type="button"
-                              className="absolute -right-4 -top-4 flex h-8 w-8 border-color-1
-                                        items-center justify-center rounded-full border-2 border-red-300 bg-1
-                                      hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
+                              className="absolute right-4 top-4 flex h-8 w-8
+                              items-center justify-center rounded-full
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
                               onClick={() => setIsOpen(false)}
                            >
                               <X className="h-5 w-5 text-red-400" />

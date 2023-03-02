@@ -124,9 +124,14 @@ export default function CollectionIndex() {
    return (
       <>
          <div className="mx-auto max-w-[728px] pt-10 px-3 tablet:px-0">
-            <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-5">
+            <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-2.5">
                Collections
             </h1>
+            <ul className="text-1 flex items-center gap-3 text-xs uppercase pb-5">
+               <li>Changelog</li>
+               <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+               <li>Docs</li>
+            </ul>
             <AdminOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}
@@ -225,15 +230,15 @@ export default function CollectionIndex() {
                               `${
                                  isActive
                                     ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
-                                    : "dark:hover:border-zinc-600 dark:hover:bg-zinc-700 hover:bg-zinc-50"
-                              } border-color flex items-center justify-between gap-2.5 rounded-full border bg-2 pr-2
-                              shadow-sm transition  dark:shadow-zinc-900 overflow-hidden`
+                                    : "dark:hover:border-zinc-600 dark:hover:bg-zinc-800 hover:bg-zinc-50"
+                              } border-color flex items-center justify-between gap-2.5 rounded-xl border bg-2 pr-2
+                              transition overflow-hidden`
                            }
                         >
-                           <div className="flex items-center gap-2.5 truncate">
+                           <div className="flex items-center gap-3.5 truncate">
                               <div
-                                 className="flex h-10 w-10 flex-none items-center justify-between
-                                    overflow-hidden rounded-full border-2 border-color-1 bg-3"
+                                 className="flex h-11 w-11 flex-none items-center justify-between
+                                    overflow-hidden rounded-full border-color-1"
                               >
                                  <Image
                                     width={50}
@@ -244,11 +249,14 @@ export default function CollectionIndex() {
                                     url={collection.icon?.url}
                                  />
                               </div>
-                              <span className="truncate text-sm font-bold">
+                              <span className="truncate font-bold">
                                  {collection.name}
                               </span>
                            </div>
-                           <ChevronRight className="h-5 w-5 flex-none text-yellow-500" />
+                           <ChevronRight
+                              size={24}
+                              className="flex-none text-yellow-500"
+                           />
                         </NavLink>
                      ))}
                   </div>
