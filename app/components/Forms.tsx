@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export function FormLabel(props: {
    text: string;
-   htmlFor: any;
+   htmlFor?: any;
    error?: any;
    tooltipId?: string;
    tooltipContent?: string;

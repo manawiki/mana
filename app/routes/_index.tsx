@@ -67,7 +67,7 @@ export default function HomeRoot() {
       <>
          <div className="laptop:grid laptop:min-h-screen auto-cols-[86px_1fr_334px] laptop:grid-flow-col">
             <section
-               className="bg-1 relative z-40 border-r border-color-1
+               className="bg-1 relative z-40 laptop:border-r border-color
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full
                max-laptop:py-3 max-laptop:border-b"
             >
@@ -79,7 +79,7 @@ export default function HomeRoot() {
                      <Link
                         to="/"
                         className="flex h-12 w-12 items-center justify-center rounded-full
-                        transition duration-300 font-logo bg-4 mx-auto
+                        transition duration-300 font-logo bg-3 mx-auto
                         active:translate-y-0.5 shadow-1 shadow-sm
                        laptop:h-14 laptop:w-14"
                      >
@@ -207,7 +207,7 @@ export default function HomeRoot() {
                   </div>
                </div>
                <div className="flex items-center justify-between -mt-8">
-                  <span className="border-t border-color-1 flex-grow" />
+                  <span className="border-t border-color flex-grow" />
                   <div
                      className="px-5 h-16 flex items-center justify-between relative shadow-1
                      border w-[92%] laptop:w-full max-w-[740px] bg-2 border-color shadow-sm rounded-xl"
@@ -218,11 +218,11 @@ export default function HomeRoot() {
                      />
                      <Search className="text-1" size={24} />
                   </div>
-                  <span className="border-t border-color-1 flex-grow" />
+                  <span className="border-t border-color flex-grow" />
                </div>
             </section>
             <section
-               className="bg-2 border-color-1 relative max-laptop:mx-auto laptop:border-l
+               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l
                max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
@@ -243,9 +243,9 @@ export default function HomeRoot() {
                            </span>
                         </Link>
                         <Link
-                           className="flex h-10 items-center border justify-center border-zinc-300
-                            rounded-full bg-zinc-200 dark:bg-zinc-700 dark:border-zinc-600 text-center 
-                            text-sm font-bold"
+                           className="flex h-10 items-center border justify-center border-color
+                           rounded-full bg-3 text-center shadow-sm shadow-1
+                           text-sm font-bold"
                            to={`/login?redirectTo=${location.pathname}`}
                         >
                            {t("login.action", { ns: "auth" })}
@@ -255,14 +255,14 @@ export default function HomeRoot() {
                   <div className="flex-grow">
                      {featuredSites?.docs.length === 0 ? null : (
                         <>
-                           <section className="border-t border-color-1">
+                           <section className="border-t border-color">
                               <div
                                  className="uppercase
                                  text-xs text-1 font-bold pt-6 p-3"
                               >
                                  Featured sites
                               </div>
-                              <div className="bg-2 border-y border-color-1 divide-y divide-color">
+                              <div className="bg-2 border-y border-color divide-y divide-color">
                                  {featuredSites?.docs.map((site) => (
                                     <Link
                                        to={`/${site.id}`}
@@ -294,7 +294,7 @@ export default function HomeRoot() {
                      )}
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
+                     className="items-center justify-between pr-3 h-14 pl-5 border-color 
                      border-y max-laptop:bg-2 flex laptop:border-b-0"
                   >
                      <Link className="font-logo text-2xl pb-1" to="/">

@@ -8,7 +8,15 @@ import {
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
-import { ChevronDown, Loader2, LogOut, Search, X } from "lucide-react";
+import {
+   Bell,
+   ChevronDown,
+   Loader2,
+   LogOut,
+   Search,
+   User,
+   X,
+} from "lucide-react";
 import type {
    ActionFunction,
    LinksFunction,
@@ -19,7 +27,12 @@ import { json, redirect } from "@remix-run/node";
 import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isAdding } from "~/utils";
-import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
+import {
+   FollowingSite,
+   LoggedIn,
+   LoggedOut,
+   NotFollowingSite,
+} from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
@@ -120,7 +133,7 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 relative z-40 laptop:border-r border-color-1
+               className="bg-1 relative z-40 laptop:border-r border-color
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
@@ -129,8 +142,8 @@ export default function SiteIndex() {
             </section>
             <section>
                <div
-                  className="bg-1 laptop:bg-2 fixed bottom-0 border-zinc-100/50
-                        mx-auto w-full px-4 laptop:border-r border-color-1
+                  className="bg-1 laptop:bg-2 fixed bottom-0
+                        mx-auto w-full px-4 laptop:border-r border-color
                         max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
                         laptop:top-0 laptop:h-full laptop:w-[86px] desktop:pl-5
                         laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[220px] desktop:pr-6"
@@ -272,7 +285,7 @@ export default function SiteIndex() {
                                  <>
                                     <Menu.Button
                                        className="bg-2 flex h-9 w-9 items-center justify-center 
-                                       rounded-full text-1 transition duration-300 hover:bg-4 active:translate-y-0.5"
+                                       rounded-full text-1 transition duration-300 hover:bg-3 active:translate-y-0.5"
                                     >
                                        {open ? (
                                           <X
@@ -304,7 +317,7 @@ export default function SiteIndex() {
                                         origin-top-right transform transition-all z-30"
                                        >
                                           <div
-                                             className="border-color rounded-lg border bg-3 p-1.5
+                                             className="border-color rounded-lg border bg-2 p-1.5
                                             shadow-sm shadow-1"
                                           >
                                              <Menu.Item>
@@ -332,7 +345,6 @@ export default function SiteIndex() {
                               )}
                            </Menu>
                         </FollowingSite>
-
                         <LoggedOut>
                            <div className="flex items-center">
                               <Link
@@ -363,7 +375,7 @@ export default function SiteIndex() {
                            </div>
                         </NotFollowingSite>
                         <div
-                           className="bg-4 flex h-10 w-10 items-center shadow-sm border border-color-1
+                           className="bg-3 flex h-10 w-10 items-center shadow-sm border border-color
                            justify-center rounded-full shadow-1"
                         >
                            <Search size={20} />
@@ -374,10 +386,16 @@ export default function SiteIndex() {
                <Outlet />
             </section>
             <section
-               className="bg-2 border-color-1 relative max-laptop:mx-auto laptop:border-l
+               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l
                max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+                  <LoggedIn>
+                     <section className="border-b h-16 border-color justify-end flex items-center gap-6 px-5">
+                        <Bell size={24} />
+                        <User size={24} />
+                     </section>
+                  </LoggedIn>
                   {site.banner && (
                      <div
                         className="border-color flex h-44 items-center justify-center 
@@ -393,7 +411,7 @@ export default function SiteIndex() {
                      </div>
                   )}
                   <LoggedOut>
-                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color-1 border-b">
+                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color border-b">
                         <Link
                            to="/join"
                            className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
@@ -409,9 +427,9 @@ export default function SiteIndex() {
                            </span>
                         </Link>
                         <Link
-                           className="flex h-10 items-center border justify-center border-zinc-300
-                          rounded-full bg-zinc-200 dark:bg-zinc-700 dark:border-zinc-600 text-center 
-                          text-sm font-bold"
+                           className="flex h-10 items-center border justify-center border-color
+                           rounded-full bg-3 text-center shadow-sm shadow-1
+                           text-sm font-bold"
                            to={`/login?redirectTo=${location.pathname}`}
                         >
                            {t("login.action", { ns: "auth" })}
@@ -423,7 +441,7 @@ export default function SiteIndex() {
                      <div className="h-[250px] w-[300px]" />
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
+                     className="items-center justify-between pr-3 h-14 pl-5 border-color 
                      border-y max-laptop:bg-2 flex laptop:border-b-0"
                   >
                      <Link className="font-logo text-2xl pb-1" to="/">

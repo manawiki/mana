@@ -69,7 +69,7 @@ export const Menu = () => {
    const groupDefaultStyle = `bg-2 h-8 w-8 shadow-sm flex text-1 items-center justify-center shadow-1`;
    const activeStyle = `bg-3 text-emerald-500`;
    const groupParentStyle = `divide-x divide-color overflow-hidden
-   rounded-md border border-color-1 flex items-center shadow-sm shadow-1`;
+   rounded-md border border-color flex items-center shadow-sm shadow-1`;
 
    return (
       <div className="flex items-center gap-3">
