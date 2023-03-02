@@ -29,7 +29,6 @@ import { ChevronRight, ImagePlus, Loader2 } from "lucide-react";
 import { AdminOrOwner } from "~/modules/auth";
 import type { loader as siteDetailsLoader } from "../$siteId";
 import { toast } from "~/components/Toaster";
-import { Err } from "~/components/Forms";
 import { Image } from "~/components/Image";
 
 export async function loader({
@@ -170,9 +169,6 @@ export default function CollectionIndex() {
                               className="hidden"
                               onChange={onChangePicture}
                            />
-                           {zoCollection.errors.icon((err) => (
-                              <Err>{err.message}</Err>
-                           ))}
                         </label>
                      </div>
                      <div className="flex-grow">
@@ -184,10 +180,6 @@ export default function CollectionIndex() {
                            className="input-text mt-0"
                            disabled={disabled}
                         />
-
-                        {zoCollection.errors.name((err) => (
-                           <Err>{err.message}</Err>
-                        ))}
                      </div>
                      <div className="flex-grow">
                         <input
@@ -197,9 +189,6 @@ export default function CollectionIndex() {
                            className="input-text mt-0"
                            disabled={disabled}
                         />
-                        {zoCollection.errors.slug((err) => (
-                           <Err>{err.message}</Err>
-                        ))}
                      </div>
                      <button
                         name="intent"

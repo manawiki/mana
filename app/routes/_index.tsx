@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { Logo } from "~/components/Logo";
 import { LoggedOut } from "~/modules/auth";
-import { NewSiteModal } from "./action.new-site-modal";
+import { NewSiteModal } from "./action+/new-site-modal";
 import { MobileUserMenu } from "~/components/MobileUserMenu";
 import { ChevronRight, Github, Home, Search } from "lucide-react";
 import {

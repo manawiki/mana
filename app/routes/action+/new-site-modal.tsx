@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-import { Err } from "~/components/Forms";
+import { FormLabel } from "~/components/Forms";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),
@@ -173,18 +173,16 @@ export function NewSiteModal() {
                                           className="hidden"
                                           onChange={onChangePicture}
                                        />
-                                       {zo.errors.siteIcon((err) => (
-                                          <Err>{err.message}</Err>
-                                       ))}
                                     </label>
                                  </div>
-                                 <div className="pb-5">
-                                    <label
+                                 <fieldset className="pb-5">
+                                    <FormLabel
                                        htmlFor={zo.fields.siteName()}
-                                       className="label-default"
-                                    >
-                                       {t("new.siteName")}
-                                    </label>
+                                       text={t("new.siteName")}
+                                       error={zo.errors.siteName(
+                                          (err) => err.message
+                                       )}
+                                    />
                                     <div className="mt-1">
                                        <input
                                           required
@@ -194,11 +192,8 @@ export function NewSiteModal() {
                                           className="input-text"
                                           disabled={disabled}
                                        />
-                                       {zo.errors.siteName((err) => (
-                                          <Err>{err.message}</Err>
-                                       ))}
                                     </div>
-                                 </div>
+                                 </fieldset>
                                  <button
                                     name="intent"
                                     value="addSite"
