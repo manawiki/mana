@@ -69,7 +69,7 @@ export const SiteNavLink = ({
 export const HomeLink = ({ site }: { site: Site }) => {
    const { env } = useRouteLoaderData("root") as { env: envType };
    const style = `flex h-12 w-12 items-center justify-center rounded-full
-   transition duration-300 font-logo bg-4 mx-auto laptop:my-3
+   transition duration-300 font-logo bg-3 mx-auto laptop:my-3
    active:translate-y-0.5 shadow-1 shadow-sm
    laptop:h-14 laptop:w-14`;
 

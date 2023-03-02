@@ -238,12 +238,26 @@ const Editor = ({
    );
 };
 
-export const InlineEditor = ({ note }: { note: Note }) => {
+export const InlineEditor = ({
+   note,
+   index,
+   notes,
+}: {
+   note: Note;
+   index: number;
+   notes: Note[];
+}) => {
    const fetcher = useFetcher();
    const isNoteAdding = isProcessing(fetcher.state);
    const [isActive, setIsActive] = useState<boolean>(true);
+   const lastIndex = notes.length - 1;
 
-   if (note.mdx == "") {
+   if (
+      (note.mdx == "" && index == 0) ||
+      (index == 0 && lastIndex == 0) ||
+      (index == lastIndex && note.mdx == "") ||
+      note.mdx == ""
+   ) {
       return isActive ? (
          <Editor
             fetcher={fetcher}
@@ -259,7 +273,6 @@ export const InlineEditor = ({ note }: { note: Note }) => {
          />
       );
    }
-
    return isActive ? (
       <View note={note} setIsActive={setIsActive} isNoteAdding={isNoteAdding} />
    ) : (
