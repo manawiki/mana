@@ -27,9 +27,6 @@ html.dark {
       focus:border-zinc-200 focus:dark:border-zinc-700 focus:bg-3
         focus:ring-0 bg-3 dark:placeholder:text-zinc-300;
    }
-   .label-default {
-      @apply text-xs font-bold uppercase;
-   }
    .border-color-1 {
       @apply border-[#f1f1f1] dark:border-[#3a3a3f];
    }
