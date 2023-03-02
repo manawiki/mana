@@ -69,7 +69,7 @@ export default function HomeRoot() {
             <section
                className="bg-1 relative z-40 border-r border-color-1
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full
-               max-laptop:py-3"
+               max-laptop:py-3 max-laptop:border-b"
             >
                <div
                   className="max-laptop:flex max-laptop:items-center laptop:fixed laptop:top-0 laptop:left-0 laptop:py-3 
@@ -80,13 +80,13 @@ export default function HomeRoot() {
                         to="/"
                         className="flex h-12 w-12 items-center justify-center rounded-full
                         transition duration-300 font-logo bg-4 mx-auto
-                        active:translate-y-0.5 dark:shadow-black
-                        dark:hover:bg-zinc-800 laptop:h-14 laptop:w-14"
+                        active:translate-y-0.5 shadow-1 shadow-sm
+                       laptop:h-14 laptop:w-14"
                      >
                         <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
                      </Link>
-                     <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 laptop:hidden"></div>
-                     <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                     <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
+                     <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                      <NewSiteModal />
                   </div>
                   <MobileUserMenu />
@@ -96,7 +96,7 @@ export default function HomeRoot() {
                <div className="relative">
                   <div
                      className="pattern-dots pattern-zinc-400 dark:pattern-zinc-500
-                   pattern-bg-white dark:pattern-bg-zinc-800
+                   pattern-bg-white dark:pattern-bg-black
                      pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
                   ></div>
                   <div className="max-w-[940px] px-4 mx-auto relative">
@@ -206,11 +206,11 @@ export default function HomeRoot() {
                      </div>
                   </div>
                </div>
-               <div className="flex items-center justify-between -mt-7">
+               <div className="flex items-center justify-between -mt-8">
                   <span className="border-t border-color-1 flex-grow" />
                   <div
                      className="px-5 h-16 flex items-center justify-between relative shadow-1
-                     border w-[92%] laptop:w-full max-w-[740px] bg-3 border-color shadow-sm rounded-xl"
+                     border w-[92%] laptop:w-full max-w-[740px] bg-2 border-color shadow-sm rounded-xl"
                   >
                      <input
                         className="bg-transparent h-16 w-full focus:outline-none"
@@ -255,14 +255,14 @@ export default function HomeRoot() {
                   <div className="flex-grow">
                      {featuredSites?.docs.length === 0 ? null : (
                         <>
-                           <section className="border-t border-color">
+                           <section className="border-t border-color-1">
                               <div
                                  className="uppercase
                                  text-xs text-1 font-bold pt-6 p-3"
                               >
                                  Featured sites
                               </div>
-                              <div className="bg-2 border-y border-color divide-y divide-color">
+                              <div className="bg-2 border-y border-color-1 divide-y divide-color">
                                  {featuredSites?.docs.map((site) => (
                                     <Link
                                        to={`/${site.id}`}
@@ -270,9 +270,12 @@ export default function HomeRoot() {
                                        className="flex p-3 group items-center justify-between gap-3"
                                     >
                                        <div className="flex items-center gap-2.5 text-1">
-                                          <span className="w-8 h-8 rounded-full overflow-hidden bg-3">
+                                          <span
+                                             className="w-8 h-8 shadow-sm shadow-1 
+                                                rounded-full overflow-hidden bg-3"
+                                          >
                                              <Image
-                                                options="fit=crop,width=40,height=40 ,gravity=auto"
+                                                options="fit=crop,width=60,height=60 ,gravity=auto"
                                                 alt="Site Icon"
                                                 //@ts-expect-error
                                                 url={site?.icon?.url}
@@ -292,7 +295,7 @@ export default function HomeRoot() {
                   </div>
                   <div
                      className="items-center justify-between pr-3 h-14 pl-5 border-color-1 
-                     border-y max-laptop:bg-2 flex laptop:border-b-0 laptop:border-color"
+                     border-y max-laptop:bg-2 flex laptop:border-b-0"
                   >
                      <Link className="font-logo text-2xl pb-1" to="/">
                         mana

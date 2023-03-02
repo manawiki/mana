@@ -24,7 +24,7 @@ export const SiteSwitcher = () => {
                      <>
                         <NotFollowingSite>
                            <div className="max-laptop:hidden">
-                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
                               </div>
@@ -32,7 +32,7 @@ export const SiteSwitcher = () => {
                         </NotFollowingSite>
                         {site && (
                            <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5 laptop:hidden">
-                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                              <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
                                  <SiteNavLink site={site} currentSite={site} />
                               </div>
@@ -42,7 +42,7 @@ export const SiteSwitcher = () => {
                   ) : (
                      sites?.length === 0 && (
                         <>
-                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                            <NewSiteModal />
                            <MobileUserMenu />
                         </>
@@ -81,7 +81,7 @@ export const SiteSwitcher = () => {
                            </Menu.Items>
                         </Transition>
                      </Menu>
-                     <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                     <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                      <div className="max-laptop:hidden">
                         <SiteList />
                         <NewSiteModal />
@@ -98,15 +98,15 @@ export const SiteSwitcher = () => {
                      <HomeLink site={site} />
                      {site && (
                         <>
-                           <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 laptop:hidden"></div>
-                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                           <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
+                           <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                            <div className="relative flex items-center justify-center">
                               <SiteNavLink site={site} currentSite={site} />
                            </div>
                         </>
                      )}
                   </div>
-                  <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-800 max-laptop:hidden"></div>
+                  <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                   <NewSiteModal />
                </div>
                <MobileUserMenu />

@@ -8,14 +8,7 @@ import {
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
-import {
-   ChevronDown,
-   Loader2,
-   LogOut,
-   MoreVertical,
-   Search,
-   X,
-} from "lucide-react";
+import { ChevronDown, Loader2, LogOut, Search, X } from "lucide-react";
 import type {
    ActionFunction,
    LinksFunction,
@@ -27,7 +20,7 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isAdding } from "~/utils";
 import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
-import { Menu, Popover, Transition } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import type { envType } from "env/types";
@@ -116,18 +109,18 @@ export default function SiteIndex() {
    const location = useLocation();
    const defaultStyle = `bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
-   max-desktop:h-12 max-desktop:w-12
-   max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-2.5 desktop:justify-start`;
+   max-desktop:h-12 max-desktop:w-12 bg-2
+   max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-3 desktop:justify-start`;
 
    return (
       <>
          <div
             className="laptop:grid laptop:min-h-screen 
                 laptop:auto-cols-[86px_86px_1fr_334px] laptop:grid-flow-col
-                desktop:auto-cols-[86px_210px_1fr_334px]"
+                desktop:auto-cols-[86px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 relative z-40 border-r border-color-1
+               className="bg-1 relative z-40 laptop:border-r border-color-1
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
@@ -136,11 +129,11 @@ export default function SiteIndex() {
             </section>
             <section>
                <div
-                  className="bg-1 laptop:bg-2 fixed bottom-0
+                  className="bg-1 laptop:bg-2 fixed bottom-0 border-zinc-100/50
                         mx-auto w-full px-4 laptop:border-r border-color-1
                         max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
-                        laptop:top-0 laptop:h-full laptop:w-[86px]
-                        laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
+                        laptop:top-0 laptop:h-full laptop:w-[86px] desktop:pl-5
+                        laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[220px] desktop:pr-6"
                >
                   <NavLink
                      end
@@ -148,7 +141,7 @@ export default function SiteIndex() {
                         `${
                            isActive
                               ? `border border-blue-100 bg-blue-50 text-zinc-600 
-                               dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-white 
+                               dark:border-blue-900/50 dark:bg-[#1d2b52] dark:text-white 
                             `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
@@ -172,8 +165,8 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-emerald-100 bg-emerald-50 text-zinc-600 
-                            dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-white 
+                              ? `border border-emerald-200/50 bg-emerald-50 text-zinc-600 
+                            dark:border-emerald-900/50 dark:bg-[#0b372b] dark:text-white 
                          `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
@@ -197,8 +190,8 @@ export default function SiteIndex() {
                      className={({ isActive }) =>
                         `${
                            isActive
-                              ? `border border-yellow-100 bg-yellow-50 text-zinc-600 
-                         dark:border-yellow-900/50 dark:bg-yellow-900/20 dark:text-white 
+                              ? `border border-yellow-200/50 bg-yellow-50 text-zinc-600 
+                         dark:border-yellow-900/50 dark:bg-[#48311d] dark:text-white 
                       `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
@@ -223,7 +216,7 @@ export default function SiteIndex() {
                         `${
                            isActive
                               ? `border border-violet-100 bg-violet-50 text-zinc-600 
-                               dark:border-violet-900/50 dark:bg-violet-900/20 dark:text-white 
+                               dark:border-violet-900/50 dark:bg-[#352b46] dark:text-white 
                                  `
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
@@ -251,12 +244,12 @@ export default function SiteIndex() {
             >
                <section
                   className="sticky max-laptop:top-[72px] z-20 max-laptop:border-t 
-               max-desktop:px-3 border-color laptop:top-0"
+                 border-color laptop:top-0 laptop:px-3"
                >
                   <div
-                     className="mx-auto justify-between w-full h-16 border max-w-[740px] 
-                     flex items-center laptop:border-b border-color bg-2 shadow-sm shadow-1
-                     rounded-xl rounded-t-none pl-3 pr-4 border-t-0"
+                     className="mx-auto justify-between w-full h-16 tablet:border max-w-[740px] 
+                     flex items-center border-color bg-2 border-b shadow-sm shadow-1
+                     tablet:rounded-xl tablet:rounded-t-none pl-3 pr-4 tablet:border-t-0"
                   >
                      <Link
                         to={`/${site.id}`}
@@ -400,7 +393,7 @@ export default function SiteIndex() {
                      </div>
                   )}
                   <LoggedOut>
-                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color border-b">
+                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color-1 border-b">
                         <Link
                            to="/join"
                            className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
