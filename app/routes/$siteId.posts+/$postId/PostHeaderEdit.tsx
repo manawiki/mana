@@ -4,7 +4,6 @@ import { Loader2, ImageMinus, Upload } from "lucide-react";
 import type { Post } from "payload/generated-types";
 import { useState, useEffect } from "react";
 import { useZorm } from "react-zorm";
-import { Err } from "~/components/Forms";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import type { FormResponse } from "~/utils";
 import { isAdding } from "~/utils";
@@ -57,9 +56,6 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                {isTitleAdding ? (
                   <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-emerald-500" />
                ) : null}
-               {zo.errors.title((err) => (
-                  <Err>{err.message}</Err>
-               ))}
             </div>
 
             <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
@@ -182,9 +178,6 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                         type="file"
                         className="hidden"
                      />
-                     {zo.errors.banner((err) => (
-                        <Err>{err.message}</Err>
-                     ))}
                   </label>
                   <input type="hidden" name="intent" value="updateBanner" />
                </fetcher.Form>

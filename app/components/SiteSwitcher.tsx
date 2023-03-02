@@ -1,7 +1,7 @@
 import { useRouteLoaderData } from "@remix-run/react";
 import { LoggedOut, LoggedIn, NotFollowingSite } from "~/modules/auth";
 import type { User, Site } from "payload-types";
-import { NewSiteModal } from "~/routes/action.new-site-modal";
+import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import { Transition, Menu } from "@headlessui/react";
 import { Fragment } from "react";
 import { SiteList } from "./SiteList";

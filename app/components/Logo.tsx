@@ -8,7 +8,7 @@ export const Logo = ({ className }: { className: string }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
          >
-            <g clip-path="url(#clip0_5_7)">
+            <g clipPath="url(#clip0_5_7)">
                <rect
                   x="199.995"
                   y="-18"

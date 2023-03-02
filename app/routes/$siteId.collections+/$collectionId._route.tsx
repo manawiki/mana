@@ -26,7 +26,6 @@ import {
    isProcessing,
 } from "~/utils";
 import { ImagePlus, Loader2 } from "lucide-react";
-import { Err } from "~/components/Forms";
 import { Image } from "~/components/Image";
 import { AdminOrOwner } from "~/modules/auth";
 
@@ -156,9 +155,6 @@ export default function CollectionList() {
                               className="hidden"
                               onChange={onChangePicture}
                            />
-                           {zoEntry.errors.icon((err) => (
-                              <Err>{err.message}</Err>
-                           ))}
                         </label>
                      </div>
                      <div className="flex-grow">

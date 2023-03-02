@@ -4,13 +4,24 @@ import type {
    V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
-import { Form, Link, useNavigation, useSearchParams } from "@remix-run/react";
+import {
+   Form,
+   Link,
+   useActionData,
+   useNavigation,
+   useSearchParams,
+} from "@remix-run/react";
 import { i18nextServer } from "~/utils/i18n";
 import { parseFormAny, useZorm } from "react-zorm";
 import { z } from "zod";
-import { assertIsPost, isAdding, isProcessing, safeRedirect } from "~/utils";
+import {
+   type FormResponse,
+   assertIsPost,
+   isAdding,
+   isProcessing,
+   safeRedirect,
+} from "~/utils";
 import { useTranslation } from "react-i18next";
-import { Github, Loader2 } from "lucide-react";
 import {
    commitSession,
    getSession,
@@ -18,11 +29,13 @@ import {
 } from "~/utils/message.server";
 import { Logo } from "~/components/Logo";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
+import { FormLabel } from "~/components/Forms";
+import { DotLoader } from "~/components/DotLoader";
 
 const LoginFormSchema = z.object({
    email: z
       .string()
-      .email("invalid-email")
+      .email("Invalid email")
       .transform((email) => email.toLowerCase()),
    password: z.string().min(8, "Password must be at least 8 characters long"),
    redirectTo: z.string().optional(),
@@ -84,13 +97,18 @@ export const handle = {
 };
 
 export default function Login() {
-   const zo = useZorm("login", LoginFormSchema);
    const [searchParams] = useSearchParams();
    const redirectTo = searchParams.get("redirectTo") ?? undefined;
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
    const { t } = useTranslation("auth");
    const adding = isAdding(transition, "login");
+
+   const formResponse = useActionData<FormResponse>();
+   const zo = useZorm("login", LoginFormSchema, {
+      //@ts-ignore
+      customIssues: formResponse?.serverIssues,
+   });
 
    return (
       <main>
@@ -100,13 +118,13 @@ export default function Login() {
                      pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
          ></div>
          <div
-            className="bg-gradient-to-b from-white/70 to-zinc-50/80 
+            className="bg-gradient-to-b from-zinc-200/50 to-zinc-50/80 
             dark:from-zinc-800/50 via-transparent dark:to-zinc-900/80 
             absolute top-0 left-0 w-full h-full"
          ></div>
          <Link
             to="/"
-            className="absolute top-5 left-5 flex h-9 w-9 items-center gap-2.5"
+            className="absolute top-5 left-5 flex items-center gap-2.5"
          >
             <Logo className="h-7 w-7" />
             <span className="font-logo text-3xl pb-1">mana</span>
@@ -114,26 +132,23 @@ export default function Login() {
          <div className="absolute top-5 right-5 flex items-center gap-5">
             <DarkModeToggle />
          </div>
-         <div className="mt-20 laptop:mx-auto laptop:mt-40 laptop:max-w-[440px]">
+         <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
             <div
                className="border-color border-y bg-2 p-6 relative
-             laptop:rounded-xl shadow-sm shadow-1 laptop:border"
+               tablet:rounded-xl shadow-sm shadow-1 tablet:border"
             >
-               <div className="border-color mb-4 border-b-2 pb-4 text-center text-xl font-bold">
+               <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                   {t("login.title")}
                </div>
                <Form ref={zo.ref} method="post" className="space-y-6" replace>
-                  <div>
-                     <label
-                        className="label-default"
+                  <fieldset>
+                     <FormLabel
                         htmlFor={zo.fields.email()}
-                     >
-                        {t("login.email")}
-                     </label>
-
+                        text={t("login.email")}
+                        error={zo.errors.email((err) => err.message)}
+                     />
                      <div className="mt-1">
                         <input
-                           required
                            autoFocus={true}
                            name={zo.fields.email()}
                            type="email"
@@ -141,20 +156,14 @@ export default function Login() {
                            autoComplete="email"
                            disabled={disabled}
                         />
-                        {zo.errors.email()?.message && (
-                           <div className="pt-1 text-red-500">
-                              {zo.errors.email()?.message}
-                           </div>
-                        )}
                      </div>
-                  </div>
-                  <div>
-                     <label
-                        className="label-default"
+                  </fieldset>
+                  <fieldset>
+                     <FormLabel
                         htmlFor={zo.fields.password()}
-                     >
-                        {t("register.password")}
-                     </label>
+                        text={t("login.password")}
+                        error={zo.errors.password((err) => err.message)}
+                     />
                      <div className="mt-1">
                         <input
                            name={zo.fields.password()}
@@ -163,13 +172,8 @@ export default function Login() {
                            className="input-text"
                            disabled={disabled}
                         />
-                        {zo.errors.password()?.message && (
-                           <div className="pt-1 text-red-500">
-                              {zo.errors.password()?.message}
-                           </div>
-                        )}
                      </div>
-                  </div>
+                  </fieldset>
                   <input
                      type="hidden"
                      name={zo.fields.redirectTo()}
@@ -182,13 +186,9 @@ export default function Login() {
                      className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
                      disabled={disabled}
                   >
-                     {adding ? (
-                        <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-400" />
-                     ) : (
-                        t("login.action")
-                     )}
+                     {adding ? <DotLoader /> : t("login.action")}
                   </button>
-                  <div className="flex items-center !mt-4">
+                  <div className="flex items-center justify-center !mt-4">
                      <div className="text-center text-sm">
                         {t("login.dontHaveAccount")}
                         <Link
