@@ -227,7 +227,7 @@ export default function CollectionIndex() {
                            <div className="flex items-center gap-3.5 truncate">
                               <div
                                  className="flex h-11 w-11 flex-none items-center justify-between
-                                    overflow-hidden rounded-full border-color-1"
+                                    overflow-hidden rounded-full border-color"
                               >
                                  <Image
                                     width={50}

@@ -19,7 +19,6 @@ import { z } from "zod";
 import { zx } from "zodix";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
 import {
-   ArrowLeft,
    Component,
    Copy,
    EyeOff,
@@ -127,8 +126,8 @@ export default function PostPage() {
             show={isDeleteOpen}
          >
             <div
-               className="border-color bg-1 mx-5 max-w-sm transform rounded-2xl
-                                    border-2 py-6 px-8 text-left align-middle shadow-xl transition-all"
+               className="bg-2 mx-5 max-w-sm transform rounded-2xl
+               p-6 text-left align-middle shadow-xl transition-all"
             >
                <div className="pb-6">
                   <div className="pb-2 text-center text-lg font-bold">
@@ -138,14 +137,6 @@ export default function PostPage() {
                      You cannot undo this action.
                   </div>
                </div>
-               <button
-                  className="absolute -right-4 -top-4 flex h-8 w-8
-                  items-center justify-center rounded-full border-2 border-red-300 bg-1
-               hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
-                  onClick={() => setDeleteOpen(false)}
-               >
-                  <X className="h-5 w-5 text-red-400" />
-               </button>
                <div className="grid grid-cols-2 gap-4">
                   <button
                      className="h-10 rounded-md bg-zinc-200 text-sm 
@@ -278,7 +269,7 @@ export default function PostPage() {
                               className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
                                         origin-top-right transform transition-all z-10"
                            >
-                              <div className="border-color rounded-lg border bg-3 p-1.5 shadow shadow-1">
+                              <div className="border-color rounded-lg border bg-2 p-1.5 shadow shadow-1">
                                  <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -370,7 +361,7 @@ export default function PostPage() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="bg-2 border-color-1 sticky bottom-12 z-20 flex h-20 
+                  className="bg-2 border-color sticky bottom-12 z-20 flex h-20 
                     items-center justify-between 
                     border-t px-3 laptop:bottom-0 laptop:h-14"
                >
@@ -489,11 +480,11 @@ function PostEdit() {
       >
          <PostHeaderEdit post={post} />
          <Suspense fallback={<div>Loading...</div>}>
-            {notes.map((note) => (
+            {notes.map((note, noteIdx) => (
                <div key={note.id} className="group">
                   {/* @ts-expect-error */}
                   {note?.ui?.id == "textarea" ? (
-                     <InlineEditor note={note} />
+                     <InlineEditor note={note} index={noteIdx} notes={notes} />
                   ) : (
                      <>
                         {/* Render noteview with edit button */}

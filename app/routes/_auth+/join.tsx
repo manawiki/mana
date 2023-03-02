@@ -76,7 +76,7 @@ export default function Signup() {
             ></div>
             <div
                className="bg-gradient-to-b from-zinc-200/50 to-zinc-50/80 
-            dark:from-zinc-800/50 via-transparent dark:to-zinc-900/80 
+            dark:from-bg1Dark/80 via-transparent dark:to-bg1Dark/50
             absolute top-0 left-0 w-full h-full"
             ></div>
             <Link

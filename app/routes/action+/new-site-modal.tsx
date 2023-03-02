@@ -77,7 +77,7 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center laptop:my-4">
             <button
-               className="flex h-12 w-12 items-center justify-center rounded-full bg-4 shadow-1
+               className="flex h-12 w-12 items-center justify-center rounded-full bg-3 shadow-1
                text-1 transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14 shadow-sm"
                type="button"
                aria-label="Create New Site"
@@ -117,7 +117,7 @@ export function NewSiteModal() {
                      >
                         <Dialog.Panel
                            className="w-full max-w-md transform rounded-2xl
-                           bg-3 p-5 text-left align-middle shadow-xl transition-all"
+                           bg-2 p-5 pt-10 text-left align-middle shadow-xl transition-all"
                         >
                            <LoggedOut>
                               <div className="font-bold">
@@ -213,12 +213,12 @@ export function NewSiteModal() {
                               name="intent"
                               value="addSite"
                               type="button"
-                              className="absolute right-4 top-4 flex h-8 w-8
+                              className="absolute right-3 top-3 flex h-9 w-9
                               items-center justify-center rounded-full
                             hover:bg-red-50 dark:hover:bg-zinc-700"
                               onClick={() => setIsOpen(false)}
                            >
-                              <X className="h-5 w-5 text-red-400" />
+                              <X className="h-6 w-6 text-red-400" />
                            </button>
                         </Dialog.Panel>
                      </Transition.Child>

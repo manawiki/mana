@@ -29,7 +29,7 @@ export default function HomePage() {
             desktop:auto-cols-[86px_210px_1fr_334px]"
       >
          <section
-            className="bg-1 relative z-40 border-r border-color-1
+            className="bg-1 relative z-40 border-r border-color
             max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
          >
             <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">

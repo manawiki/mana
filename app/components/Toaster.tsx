@@ -10,7 +10,7 @@ const success = (message: string) => {
               border-2 bg-1 p-3 font-semibold shadow-lg `}
       >
          <div
-            className="flex h-6 w-6 items-center justify-center
+            className="flex h-6 w-6 flex-none items-center justify-center
                            rounded-full bg-green-500 text-white"
          >
             <Check size={18} />
@@ -29,7 +29,7 @@ const error = (message: string) => {
              border-2 bg-1 p-3 font-semibold shadow-lg`}
       >
          <div
-            className="flex h-6 w-6 items-center justify-center
+            className="flex h-6 w-6 flex-none items-center justify-center
                       rounded-full bg-red-500 text-white"
          >
             <X size={18} />

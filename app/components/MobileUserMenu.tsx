@@ -26,7 +26,7 @@ export const MobileUserMenu = () => {
                   </Link>
                   <Link
                      className="flex h-10 px-3.5 items-center justify-center 
-                           rounded-full bg-zinc-100 shadow dark:bg-zinc-700 text-center 
+                           rounded-full bg-3 shadow-sm shadow-1 text-center 
                            text-sm font-bold truncate"
                      to={`/login?redirectTo=${location.pathname}`}
                   >
