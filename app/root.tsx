@@ -52,7 +52,7 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 
 export const meta: V2_MetaFunction = () => {
    return [
-      { title: "Mana - A wiki of your own" },
+      { title: "Mana - Build Better Wikis" },
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
