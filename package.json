@@ -53,6 +53,7 @@
       "react-hot-toast": "^2.4.0",
       "react-i18next": "^12.1.4",
       "react-lazily": "^0.9.1",
+      "react-tooltip": "^5.8.3",
       "react-zorm": "^0.6.1",
       "refractor": "^4.8.0",
       "regenerator-runtime": "^0.13.11",

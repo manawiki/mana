@@ -1,6 +1,6 @@
 import type { Site, User } from "payload-types";
 import { useRouteLoaderData } from "@remix-run/react";
-import { NewSiteModal } from "~/routes/action.new-site-modal";
+import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import { SiteNavLink } from "~/components/SiteNavLink";
 
 export const SiteList = () => {
