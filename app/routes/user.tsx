@@ -32,7 +32,7 @@ export default function UserIndex() {
         desktop:auto-cols-[86px_210px_1fr_334px]"
       >
          <section
-            className="bg-1 relative z-40 border-r border-color-1
+            className="bg-1 relative z-40 border-r border-color
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full
                max-laptop:py-3"
          >
@@ -43,7 +43,7 @@ export default function UserIndex() {
          <section>
             <div
                className="bg-1 laptop:bg-2 fixed bottom-0
-                        mx-auto w-full px-4 laptop:border-r border-color-1
+                        mx-auto w-full px-4 laptop:border-r border-color
                         max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
                         laptop:top-0 laptop:h-full laptop:w-[86px]
                         laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[210px] desktop:px-5"
@@ -52,7 +52,7 @@ export default function UserIndex() {
                   <Form action="/logout" method="post">
                      <button
                         type="submit"
-                        className="bg-4 shadow-1 shadow-sm flex h-12 w-full items-center justify-between gap-3 rounded-lg px-5 text-left"
+                        className="bg-3 shadow-1 shadow-sm flex h-12 w-full items-center justify-between gap-3 rounded-lg px-5 text-left"
                      >
                         <span className="font-bold">Logout</span>
                         <LogOut

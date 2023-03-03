@@ -15,8 +15,9 @@ export async function loader({
    if (user) {
       return redirect("/home");
    }
-   const { token } = zx.parseQuery(request, {
+   const { token, email } = zx.parseQuery(request, {
       token: z.string(),
+      email: z.string().email().optional(),
    });
    const result = await payload.verifyEmail({
       collection: "users",
@@ -29,7 +30,7 @@ export async function loader({
          session,
          "Your email has been verified. You can now login."
       );
-      return redirect("/login", {
+      return redirect(`/login?email=${email}`, {
          headers: { "Set-Cookie": await commitSession(session) },
       });
    }

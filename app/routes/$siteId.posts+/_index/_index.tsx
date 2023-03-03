@@ -112,7 +112,7 @@ export default function PostsIndex() {
             <div className="border-color relative mb-16 border-b-2 pb-2">
                <h1 className="text-3xl font-header font-bold">Posts</h1>
                <Menu as="div" className="relative">
-                  <Menu.Button className="absolute right-0 -top-5 rounded-full border-8 border-color-1">
+                  <Menu.Button className="absolute right-0 -top-5 rounded-full border-8 border-color">
                      {({ open }) => (
                         <div
                            className=" flex h-10 items-center 
