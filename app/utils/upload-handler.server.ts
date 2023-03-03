@@ -17,7 +17,7 @@ const uploadHandler = ({ prefix }: { prefix: string }) =>
    unstable_composeUploadHandlers(
       unstable_createFileUploadHandler({
          file: ({ filename }) =>
-            `${prefix}-${nanoid(12)}${extname(filename ?? "")}`,
+            `${prefix}-${nanoid()}${extname(filename ?? "")}`,
       }),
       unstable_createMemoryUploadHandler()
    );
@@ -60,7 +60,9 @@ export const uploadImage = async ({
 }) => {
    const imageUploadResult = await payload.create({
       collection: "images",
-      data: {},
+      data: {
+         id: `${user.id}-${nanoid()}`,
+      },
       filePath: path.resolve(__dirname, image.filepath),
       user,
       overrideAccess: false,

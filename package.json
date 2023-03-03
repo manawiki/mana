@@ -2,7 +2,7 @@
    "private": true,
    "sideEffects": false,
    "scripts": {
-      "build": "remix build && run-s \"build:*\"",
+      "build": "npm run generate:types && remix build && run-s \"build:*\"",
       "build:copyfiles": "copyfiles -u 1 \"db/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
       "build:payload": "cross-env payload build",
       "build:remix": "remix build",

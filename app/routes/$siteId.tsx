@@ -1,4 +1,5 @@
 import {
+   Form,
    Link,
    NavLink,
    Outlet,
@@ -133,7 +134,7 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 relative z-40 laptop:border-r border-color
+               className="bg-1 relative z-50 laptop:border-r border-color
                max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
             >
                <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
@@ -256,7 +257,7 @@ export default function SiteIndex() {
                max-laptop:pt-16 max-laptop:border-b"
             >
                <section
-                  className="sticky max-laptop:top-[72px] z-20 max-laptop:border-t 
+                  className="sticky max-laptop:top-[71px] z-50 max-laptop:border-t 
                  border-color laptop:top-0 laptop:px-3"
                >
                   <div
@@ -391,9 +392,45 @@ export default function SiteIndex() {
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <LoggedIn>
-                     <section className="border-b h-16 border-color justify-end flex items-center gap-6 px-5">
-                        <Bell size={24} />
-                        <User size={24} />
+                     <section className="border-b h-16 border-color justify-end flex items-center gap-5 px-4">
+                        <Bell size={22} />
+                        <Menu as="div" className="relative">
+                           <Menu.Button className="flex items-center h-11 w-11 hover:bg-3 rounded-full justify-center">
+                              <User size={22} />
+                           </Menu.Button>
+                           <Transition
+                              as={Fragment}
+                              enter="transition ease-out duration-100"
+                              enterFrom="transform opacity-0 scale-95"
+                              enterTo="transform opacity-100 scale-100"
+                              leave="transition ease-in duration-75"
+                              leaveFrom="transform opacity-100 scale-100"
+                              leaveTo="transform opacity-0 scale-95"
+                           >
+                              <Menu.Items
+                                 className="absolute right-0 mt-0.5 w-full min-w-[200px] max-w-md
+                                   origin-top-right transform transition-all z-10"
+                              >
+                                 <div className="border-color rounded-lg border bg-3 p-1.5 shadow shadow-1">
+                                    <Menu.Item>
+                                       <Form action="/logout" method="post">
+                                          <button
+                                             type="submit"
+                                             className="text-1 flex w-full items-center gap-3 rounded-lg
+                                             p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          >
+                                             <LogOut
+                                                size={18}
+                                                className="text-red-400 dark:text-red-300"
+                                             />
+                                             <span>Logout</span>
+                                          </button>
+                                       </Form>
+                                    </Menu.Item>
+                                 </div>
+                              </Menu.Items>
+                           </Transition>
+                        </Menu>
                      </section>
                   </LoggedIn>
                   {site.banner && (
