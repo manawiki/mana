@@ -42,7 +42,7 @@ import {
    isProcessing,
 } from "~/utils";
 import { format, formatDistanceStrict } from "date-fns";
-import { AdminOrOwner, useIsAdminOrOwner } from "~/modules/auth";
+import { AdminOrOwner, useIsStaffOrSiteAdminOrOwner } from "~/modules/auth";
 import { createCustomIssues } from "react-zorm";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Modal } from "~/components/Modal";
@@ -104,7 +104,7 @@ export const handle = {
 export default function PostPage() {
    const data = useLoaderData<typeof loader>();
    const { post } = data;
-   const viewModeDefault = useIsAdminOrOwner();
+   const viewModeDefault = useIsStaffOrSiteAdminOrOwner();
    const [mode, setMode] = useState<Mode>(viewModeDefault ? "edit" : "preview");
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
@@ -250,7 +250,7 @@ export default function PostPage() {
                   <div className="flex items-center gap-3 max-laptop:">
                      <Menu as="div" className="relative">
                         <Menu.Button
-                           className="bg-3 flex h-9 w-9 items-center justify-center 
+                           className="bg-2 flex h-9 w-9 items-center justify-center 
                         rounded-full border-2 text-1 transition border-color
                         duration-300 active:translate-y-0.5"
                         >
@@ -361,8 +361,8 @@ export default function PostPage() {
          <AdminOrOwner>
             {mode === "edit" && (
                <div
-                  className="bg-2 border-color sticky bottom-12 z-20 flex h-20 
-                    items-center justify-between 
+                  className="bg-2 border-color sticky bottom-12 z-30 flex h-12 
+                    items-center justify-between
                     border-t px-3 laptop:bottom-0 laptop:h-14"
                >
                   <div className="mx-auto -mt-14 laptop:-mt-11">
@@ -442,7 +442,7 @@ export default function PostPage() {
                            </>
                         )}
                      </Popover>
-                     <div className="pt-2 uppercase text-xs text-1 font-bold">
+                     <div className="pt-2 max-laptop:hidden uppercase text-xs text-1 font-bold">
                         Add Section
                      </div>
                   </div>

@@ -37,16 +37,16 @@ html.dark {
       @apply shadow-zinc-500 dark:shadow-black;
    }
    .bg-1 {
-      @apply bg-zinc-100 dark:bg-[#202225];
+      @apply bg-zinc-100 dark:bg-[#212324];
    }
    .bg-2 {
-      @apply bg-zinc-50 dark:bg-[#292b2f];
+      @apply bg-zinc-50 dark:bg-[#282A2B];
    }
    .bg-3 {
-      @apply bg-white dark:bg-[#2f3136];
+      @apply bg-white dark:bg-[#2E3132];
    }
    .bg-4 {
-      @apply bg-white dark:bg-[#40444b];
+      @apply bg-white dark:bg-[#3D4042];
    }
    .text-1 {
       @apply text-zinc-500 dark:text-zinc-400;
@@ -105,7 +105,7 @@ html.dark {
    @apply dark:bg-dark bg-light w-1.5 h-1.5;
 }
 .remirror-editor-wrapper {
-   @apply !pt-3.5;
+   @apply !pt-3;
 }
 .remirror-editor {
    @apply !rounded-none !p-0 font-body !shadow-none focus:!shadow-none;

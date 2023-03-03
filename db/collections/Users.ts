@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload/types";
 import {
-   authenticatedAndAdmin,
-   isAdminFieldLevel,
-   isAdminOrSelf,
+   authenticatedAndStaff,
+   isStaffFieldLevel,
+   isStaffOrSelf,
 } from "../access";
 import { serverEnv, domainCookie } from "../../shared";
 
@@ -84,8 +84,8 @@ export const Users: CollectionConfig = {
    access: {
       read: () => true,
       create: () => true,
-      delete: authenticatedAndAdmin,
-      update: isAdminOrSelf,
+      delete: authenticatedAndStaff,
+      update: isStaffOrSelf,
    },
    fields: [
       {
@@ -100,13 +100,13 @@ export const Users: CollectionConfig = {
          hasMany: true,
          defaultValue: ["user"],
          access: {
-            create: isAdminFieldLevel,
-            update: isAdminFieldLevel,
+            create: isStaffFieldLevel,
+            update: isStaffFieldLevel,
          },
          options: [
             {
-               label: "Admin",
-               value: "admin",
+               label: "Staff",
+               value: "staff",
             },
             {
                label: "User",

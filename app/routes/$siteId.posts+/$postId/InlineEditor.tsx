@@ -153,7 +153,63 @@ const Editor = ({
 
    return (
       <div className="px-3 desktop:px-0 border-y my-10 pt-4 border-color relative">
-         <section className="max-w-[728px] relative mx-auto -mt-8">
+         <div className="top-[180px] sticky laptop:top-28 z-30">
+            <div className="flex items-center gap-3 absolute right-0 laptop:right-10 -top-9">
+               <Transition
+                  show={showNoteOptions}
+                  enter="ease-in-out duration-200"
+                  enterFrom="opacity-0"
+                  enterTo="opacity-100"
+                  leave="ease-in-out duration-200"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+               >
+                  <div className="flex items-center gap-2">
+                     <Link
+                        className={`${showNoteStyle}`}
+                        to={`edit/${note.id}`}
+                     >
+                        <Expand size={16} />
+                     </Link>
+                     <DeleteNote fetcher={fetcher} noteId={note.id} />
+                  </div>
+               </Transition>
+               <button
+                  className="w-9 h-9 rounded-full flex !text-1
+                     items-center justify-center bg-2 border-2 border-color transition
+                     duration-300 active:translate-y-0.5
+                     relative z-10"
+                  onClick={() =>
+                     setShowNoteOptions((showNoteOptions) => !showNoteOptions)
+                  }
+               >
+                  {showNoteOptions ? (
+                     <X className="text-red-500" size={20} />
+                  ) : (
+                     <MoreHorizontal size={20} />
+                  )}
+               </button>
+               {isNoteAdding ? (
+                  <div
+                     className="h-9 w-16 rounded-full bg-white border-2 border-color
+                        flex items-center justify-center bg-2"
+                  >
+                     <DotLoader />
+                  </div>
+               ) : (
+                  <button
+                     disabled={isNoteAdding}
+                     //@ts-ignore
+                     onClick={() => setIsActive((prevCheck) => !prevCheck)}
+                     className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
+                        rounded-full text-white font-bold"
+                  >
+                     Done
+                  </button>
+               )}
+            </div>
+         </div>
+         <section className="max-w-[728px] relative mx-auto -mt-9">
             <div className="absolute -top-0.5 -left-11">
                <Link
                   className="w-9 h-9 rounded-full flex
@@ -173,66 +229,6 @@ const Editor = ({
                   })
                }
             />
-         </section>
-         <section>
-            <div className="absolute -top-5 right-5 ">
-               <div className="flex items-center gap-3">
-                  <Transition
-                     show={showNoteOptions}
-                     enter="ease-in-out duration-200"
-                     enterFrom="opacity-0"
-                     enterTo="opacity-100"
-                     leave="ease-in-out duration-200"
-                     leaveFrom="opacity-100"
-                     leaveTo="opacity-0"
-                  >
-                     <div className="flex items-center gap-2">
-                        <Link
-                           className={`${showNoteStyle}`}
-                           to={`edit/${note.id}`}
-                        >
-                           <Expand size={16} />
-                        </Link>
-                        <DeleteNote fetcher={fetcher} noteId={note.id} />
-                     </div>
-                  </Transition>
-                  <button
-                     className="w-9 h-9 rounded-full flex !text-1
-                     items-center justify-center bg-3 border-2 border-color transition
-                     duration-300 active:translate-y-0.5
-                     relative z-10"
-                     onClick={() =>
-                        setShowNoteOptions(
-                           (showNoteOptions) => !showNoteOptions
-                        )
-                     }
-                  >
-                     {showNoteOptions ? (
-                        <X className="text-red-500" size={20} />
-                     ) : (
-                        <MoreHorizontal size={20} />
-                     )}
-                  </button>
-                  {isNoteAdding ? (
-                     <div
-                        className="h-9 w-16 rounded-full bg-white border-2 border-color
-                        flex items-center justify-center bg-2"
-                     >
-                        <DotLoader />
-                     </div>
-                  ) : (
-                     <button
-                        disabled={isNoteAdding}
-                        //@ts-ignore
-                        onClick={() => setIsActive((prevCheck) => !prevCheck)}
-                        className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
-                        rounded-full text-white font-bold"
-                     >
-                        Done
-                     </button>
-                  )}
-               </div>
-            </div>
          </section>
       </div>
    );
