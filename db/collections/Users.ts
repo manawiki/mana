@@ -42,6 +42,7 @@ export const Users: CollectionConfig = {
          },
       },
       forgotPassword: {
+         //@ts-expect-error
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =

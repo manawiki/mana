@@ -8,6 +8,7 @@ specifiers:
   '@mdx-js/mdx': ^2.3.0
   '@mdx-js/react': ^2.3.0
   '@payloadcms/plugin-cloud-storage': ^1.0.12
+  '@payloadcms/plugin-search': ^1.0.0
   '@remirror/pm': ^2.0.3
   '@remirror/react': ^2.0.25
   '@remirror/react-editors': ^1.0.25
@@ -82,6 +83,7 @@ dependencies:
   '@mdx-js/mdx': 2.3.0
   '@mdx-js/react': 2.3.0_react@18.2.0
   '@payloadcms/plugin-cloud-storage': 1.0.14_dkmmbt7d52bu42jtpymb6jojje
+  '@payloadcms/plugin-search': 1.0.0_aewf4656z5ohnlmuns7dibtope
   '@remirror/pm': 2.0.3
   '@remirror/react': 2.0.25_eluejsm6ibnts4jk5yrdkk4hf4
   '@remirror/react-editors': 1.0.25_g6ay6ll3oxnj4qr5pvtfc37if4
@@ -3533,6 +3535,17 @@ packages:
       '@aws-sdk/client-s3': 3.271.0
       '@aws-sdk/lib-storage': 3.271.0_@aws-sdk+client-s3@3.271.0
       payload: 1.6.16_typescript@4.9.5
+    dev: false
+
+  /@payloadcms/plugin-search/1.0.0_aewf4656z5ohnlmuns7dibtope:
+    resolution: {integrity: sha512-0XDJGjVYvLCd0Kc90EGiZ4FvB4d+BCc8Z9jQfK2yxdgkyk2yOwlwLhtaLZWaSse7cIm8nirmfaktgbEPZ2DsxA==}
+    peerDependencies:
+      payload: ^0.18.5
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      payload: 1.6.16_typescript@4.9.5
+      react: 18.2.0
+      ts-deepmerge: 2.0.7
     dev: false
 
   /@pkgr/utils/2.3.1:
@@ -15816,6 +15829,10 @@ packages:
     resolution: {integrity: sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==}
     dependencies:
       utf8-byte-length: 1.0.4
+    dev: false
+
+  /ts-deepmerge/2.0.7:
+    resolution: {integrity: sha512-3phiGcxPSSR47RBubQxPoZ+pqXsEsozLo4G4AlSrsMKTFg9TA3l+3he5BqpUi9wiuDbaHWXH/amlzQ49uEdXtg==}
     dev: false
 
   /ts-easing/0.2.0:
