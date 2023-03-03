@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload/types";
 import {
-   isAdmin,
-   isAdminFieldLevel,
-   isAdminOrHasSiteAccess,
+   isStaff,
+   isStaffFieldLevel,
+   isStaffOrHasSiteAccess,
    isLoggedIn,
 } from "../access";
 
@@ -15,8 +15,8 @@ export const Sites: CollectionConfig = {
    access: {
       create: isLoggedIn,
       read: (): boolean => true,
-      update: isAdminOrHasSiteAccess("id"),
-      delete: isAdmin,
+      update: isStaffOrHasSiteAccess("id"),
+      delete: isStaff,
    },
    fields: [
       {
@@ -30,7 +30,7 @@ export const Sites: CollectionConfig = {
          label: "Feature this site on the homepage",
          defaultValue: false,
          access: {
-            update: isAdminFieldLevel,
+            update: isStaffFieldLevel,
          },
       },
       {
@@ -39,7 +39,7 @@ export const Sites: CollectionConfig = {
          required: true,
          defaultValue: "core",
          access: {
-            update: isAdminFieldLevel,
+            update: isStaffFieldLevel,
          },
          options: [
             {
@@ -56,7 +56,7 @@ export const Sites: CollectionConfig = {
          name: "subdomain",
          type: "text",
          access: {
-            update: isAdminFieldLevel,
+            update: isStaffFieldLevel,
          },
       },
       {

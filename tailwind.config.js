@@ -6,10 +6,10 @@ module.exports = {
          colors: {
             light: "#555555",
             dark: "#CBD5E0",
-            bg1Dark: "#202225",
-            bg2Dark: "#292b2f",
-            bg3Dark: "#2f3136",
-            bg4Dark: "#40444b",
+            bg1Dark: "#212324",
+            bg2Dark: "#282A2B",
+            bg3Dark: "#2E3132",
+            bg4Dark: "#3D4042",
          },
          fontFamily: {
             body: ["NunitoSans", "NunitoSans Override"],

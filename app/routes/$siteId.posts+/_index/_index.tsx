@@ -141,10 +141,7 @@ export default function PostsIndex() {
                         className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
                                  max-w-[220px] origin-top-right transform transition-all"
                      >
-                        <div
-                           className="border-color rounded-lg border bg-3 p-1.5
-                        shadow-lg dark:shadow-black/50"
-                        >
+                        <div className="border-color rounded-lg border bg-2 p-1.5 shadow shadow-1">
                            <Menu.Item>
                               <Form method="post">
                                  <button

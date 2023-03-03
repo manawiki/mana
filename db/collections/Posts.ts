@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload/types";
 import {
-   isAdmin,
-   isAdminFieldLevel,
-   isAdminorUser,
+   isStaff,
+   isStaffFieldLevel,
+   isStafforUser,
    isLoggedIn,
 } from "../access";
 import type { User } from "payload/generated-types";
@@ -17,8 +17,8 @@ export const Posts: CollectionConfig = {
    access: {
       create: isLoggedIn,
       read: () => true, //isAdminAuthororPublished
-      update: isAdminorUser("author"), //isAdminorAuthor
-      delete: isAdmin, //isAdminorAuthor
+      update: isStafforUser("author"), //isAdminorAuthor
+      delete: isStaff, //isAdminorAuthor
    },
    fields: [
       {
@@ -38,7 +38,7 @@ export const Posts: CollectionConfig = {
          required: true,
          defaultValue: ({ user }: { user: User }) => user.id,
          access: {
-            update: isAdminFieldLevel,
+            update: isStaffFieldLevel,
          },
          maxDepth: 2,
       },
