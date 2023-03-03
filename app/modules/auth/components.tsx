@@ -1,6 +1,6 @@
-import type { Site, User } from "payload-types";
+import type { Collection, Site, User } from "payload-types";
 import { useRouteLoaderData } from "@remix-run/react";
-import { useIsAdminOrOwner } from ".";
+import { useIsStaffOrSiteAdminOrOwner } from ".";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -9,7 +9,7 @@ export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
 
 //Render child components if the user is an admin or the site owner
 export const AdminOrOwner = ({ children }: { children: React.ReactNode }) => {
-   const hasAccess = useIsAdminOrOwner();
+   const hasAccess = useIsStaffOrSiteAdminOrOwner();
 
    return hasAccess ? <>{children}</> : null;
 };
@@ -21,6 +21,28 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    if (site && user?.sites?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
+};
+
+//Is custom site
+export const CustomSite = ({ children }: { children: React.ReactNode }) => {
+   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
+   const hasAccess = useIsStaffOrSiteAdminOrOwner();
+   const isCustom = site.type === "custom";
+   return hasAccess && isCustom ? <>{children}</> : null;
+};
+
+//Is custom collection
+export const CustomCollection = ({
+   children,
+}: {
+   children: React.ReactNode;
+}) => {
+   const { collection } = useRouteLoaderData(
+      "routes/$siteId.collections+/$collectionId._route"
+   ) as { collection: Collection };
+   const hasAccess = useIsStaffOrSiteAdminOrOwner();
+   const isCustom = collection.customTemplate === true;
+   return hasAccess && isCustom ? <>{children}</> : null;
 };
 
 export const NotFollowingSite = ({

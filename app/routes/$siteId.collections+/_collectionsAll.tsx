@@ -41,6 +41,9 @@ export async function loader({
    const { docs } = await payload.find({
       collection: "collections",
       where: {
+         hiddenCollection: {
+            equals: false,
+         },
          site: {
             equals: siteId,
          },
@@ -75,7 +78,6 @@ export const handle = {
 
 export default function CollectionIndex() {
    const { collections } = useLoaderData<typeof loader>();
-   const matches = useMatches();
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
