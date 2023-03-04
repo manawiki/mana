@@ -1,4 +1,4 @@
-import { isAdmin } from "../../../db/access";
+import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Materials: CollectionConfig = {
@@ -7,10 +7,10 @@ export const Materials: CollectionConfig = {
    admin: { group: "Custom" },
 
    access: {
-      create: isAdmin, //udpate in future to allow site admins as well
+      create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
-      update: isAdmin, //udpate in future to allow site admins as well
-      delete: isAdmin, //udpate in future to allow site admins as well
+      update: isStaff, //udpate in future to allow site admins as well
+      delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
       {
