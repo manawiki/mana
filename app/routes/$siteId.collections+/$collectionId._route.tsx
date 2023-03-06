@@ -25,7 +25,7 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { ImagePlus, Loader2 } from "lucide-react";
+import { Component, ImagePlus, Loader2 } from "lucide-react";
 import { Image } from "~/components/Image";
 import { AdminOrOwner } from "~/modules/auth";
 
@@ -113,8 +113,8 @@ export default function CollectionList() {
    return (
       <>
          <Outlet />
-         <div className="mx-auto max-w-[728px] px-3 tablet:px-0 pt-4 pb-12">
-            <h2 className="pt-6 pb-3.5 text-2xl font-bold">
+         <div className="mx-auto max-w-[728px] max-desktop:px-3 pt-4 pb-12">
+            <h2 className="pt-6 pb-3 text-xl font-bold pl-1">
                {collection.name}
             </h2>
             <AdminOrOwner>
@@ -208,11 +208,19 @@ export default function CollectionList() {
                               className="flex h-8 w-8 items-center justify-between dark:border-zinc-600
                                     overflow-hidden rounded-full border border-zinc-400"
                            >
-                              <Image /* @ts-ignore */
-                                 url={entry.icon?.url}
-                                 options="fit=crop,width=60,height=60,gravity=auto"
-                                 alt="List Icon"
-                              />
+                              {/* @ts-expect-error */}
+                              {entry.icon?.url ? (
+                                 <Image /* @ts-ignore */
+                                    url={entry.icon?.url}
+                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    alt="List Icon"
+                                 />
+                              ) : (
+                                 <Component
+                                    className="mx-auto text-1"
+                                    size={18}
+                                 />
+                              )}
                            </div>
                            <span>{entry.name}</span>
                         </Link>

@@ -51,7 +51,7 @@ import {
    CircleStackIcon as CircleStackIconBold,
    ChatBubbleLeftIcon as ChatBubbleLeftIconBold,
 } from "@heroicons/react/24/solid";
-import customStylesheetUrl from "../_custom/styles.css";
+import customStylesheetUrl from "~/_custom/styles.css";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
