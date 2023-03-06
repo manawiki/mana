@@ -1,4 +1,7 @@
 {
    "name": "@mana/custom",
-   "dependencies": {}
+   "dependencies": {
+      "chart.js": "^3.9.1",
+      "react-chartjs-2": "^4.3.1"
+   }
 }

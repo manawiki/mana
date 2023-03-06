@@ -154,7 +154,12 @@ importers:
       typescript: 4.9.5
 
   app/_custom:
-    specifiers: {}
+    specifiers:
+      chart.js: ^3.9.1
+      react-chartjs-2: ^4.3.1
+    dependencies:
+      chart.js: 3.9.1
+      react-chartjs-2: 4.3.1_chart.js@3.9.1
 
 packages:
 
@@ -6901,6 +6906,10 @@ packages:
 
   /charenc/0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
+    dev: false
+
+  /chart.js/3.9.1:
+    resolution: {integrity: sha512-Ro2JbLmvg83gXF5F4sniaQ+lTbSv18E+TIf2cOeiH1Iqd2PGFOtem+DUufMZsCJwFE7ywPOpfXFBwRTGq7dh6w==}
     dev: false
 
   /chokidar/3.5.3:
@@ -13774,6 +13783,15 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-chartjs-2/4.3.1_chart.js@3.9.1:
+    resolution: {integrity: sha512-5i3mjP6tU7QSn0jvb8I4hudTzHJqS8l00ORJnVwI2sYu0ihpj83Lv2YzfxunfxTZkscKvZu2F2w9LkwNBhj6xA==}
+    peerDependencies:
+      chart.js: ^3.5.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      chart.js: 3.9.1
     dev: false
 
   /react-color/2.19.3_react@18.2.0:
