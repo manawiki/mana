@@ -25,10 +25,12 @@ export const getCustomEntryData = async ({
    payload,
    params,
    request,
+   depth = 2,
 }: {
    payload: Payload;
    params: Params;
    request: any; //TODO: fix this type
+   depth: Integer;
 }) => {
    const url = new URL(request.url).pathname;
    const parts = url.split("/");
@@ -42,6 +44,7 @@ export const getCustomEntryData = async ({
    const entry = await payload.findByID({
       collection: `${slug}-${siteId}`,
       id: `${slug}-${entryId}`,
+	  depth: depth,
    });
 
    return entry;
