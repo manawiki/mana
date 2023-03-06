@@ -25,7 +25,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 import { useEffect, useState } from "react";
 import { createCustomIssues, useZorm } from "react-zorm";
-import { ChevronRight, ImagePlus, Loader2 } from "lucide-react";
+import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
 import { AdminOrOwner } from "~/modules/auth";
 import type { loader as siteDetailsLoader } from "../$siteId";
 import { toast } from "~/components/Toaster";
@@ -124,7 +124,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] pt-10 px-3 tablet:px-0">
+         <div className="mx-auto max-w-[728px] pt-10 max-desktop:px-3">
             <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-2.5">
                Collections
             </h1>
@@ -221,7 +221,7 @@ export default function CollectionIndex() {
                               `${
                                  isActive
                                     ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
-                                    : "dark:hover:border-zinc-600 dark:hover:bg-zinc-800 hover:bg-zinc-50"
+                                    : ""
                               } border-color flex items-center justify-between gap-2.5 rounded-xl border bg-2 pr-2
                               transition overflow-hidden`
                            }
@@ -231,14 +231,22 @@ export default function CollectionIndex() {
                                  className="flex h-11 w-11 flex-none items-center justify-between
                                     overflow-hidden rounded-full border-color"
                               >
-                                 <Image
-                                    width={50}
-                                    height={50}
-                                    alt="List Icon"
-                                    options="fit=crop,width=60,height=60,gravity=auto"
-                                    //@ts-expect-error
-                                    url={collection.icon?.url}
-                                 />
+                                 {/* @ts-expect-error */}
+                                 {collection.icon?.url ? (
+                                    <Image
+                                       width={50}
+                                       height={50}
+                                       alt="List Icon"
+                                       options="fit=crop,width=60,height=60,gravity=auto"
+                                       //@ts-expect-error
+                                       url={collection.icon?.url}
+                                    />
+                                 ) : (
+                                    <Database
+                                       className="mx-auto text-1"
+                                       size={18}
+                                    />
+                                 )}
                               </div>
                               <span className="truncate font-bold">
                                  {collection.name}

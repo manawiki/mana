@@ -11,14 +11,14 @@ import { termPath } from "./termPath";
 import { termItemtype } from "./termItemtype";
 
 export const CustomCollections = [
-    Character, 
-    Materials, 
-    Trace, 
-    Eidolon, 
-    SkillTree, 
-    termElement, 
-    termItemtype,
-    termPath, 
-    termRarity, 
-    termStattype
+   Character,
+   Materials,
+   Trace,
+   Eidolon,
+   SkillTree,
+   termElement,
+   termItemtype,
+   termPath,
+   termRarity,
+   termStattype,
 ];
