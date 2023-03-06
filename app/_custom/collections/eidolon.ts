@@ -1,11 +1,13 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Materials: CollectionConfig = {
-   slug: "materials-lKJ16E5IhH",
-   labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle:  "name", },
-
+export const Eidolon: CollectionConfig = {
+   slug: "eidolon-lKJ16E5IhH",
+   labels: { singular: "eidolon", plural: "eidolons" },
+   admin: { 
+         group: "Custom",
+         useAsTitle:  "name",
+   },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
@@ -19,18 +21,18 @@ export const Materials: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "materials-lKJ16E5IhH" },
-            };
-         },
+		 filterOptions: () => {
+			 return {
+				 collectionEntity: { equals: "eidolon-lKJ16E5IhH" },
+			 };
+		 },
       },
       {
          name: "id",
          type: "text",
       },
       {
-         name: "data_key",
+         name: "eidolon_id",
          type: "text",
       },
       {
@@ -42,34 +44,32 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "bg_description",
+         name: "rank",
+         type: "number",
+      },
+      {
+         name: "trigger",
          type: "text",
       },
       {
-         name: "term_itemtype",
-         type: "relationship",
-         relationTo: "termItemtype-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "term_rarity",
-         type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
+         name: "unlock_materials",
+         type: "array",
+         fields: [
+            {
+               name: "materials",
+               type: "relationship",
+               relationTo: "materials-lKJ16E5IhH",
+               hasMany: false,
+            },
+            {
+               name: "qty",
+               type: "number",
+            },
+         ],
       },
       {
          name: "icon_name",
          type: "text",
-      },
-      {
-         name: "max_limit",
-         type: "number",
-      },
-      {
-         name: "purpose_type",
-         type: "number",
       },
       {
          name: "checksum",

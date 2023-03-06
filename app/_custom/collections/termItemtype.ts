@@ -1,11 +1,13 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Materials: CollectionConfig = {
-   slug: "materials-lKJ16E5IhH",
-   labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle:  "name", },
-
+export const termItemtype: CollectionConfig = {
+   slug: "termItemtype-lKJ16E5IhH",
+   labels: { singular: "termItemtype", plural: "termItemtypes" },
+   admin: { 
+         group: "Custom",
+         useAsTitle:  "name",
+   },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
@@ -19,11 +21,7 @@ export const Materials: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "materials-lKJ16E5IhH" },
-            };
-         },
+
       },
       {
          name: "id",
@@ -38,38 +36,20 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
+         name: "inv_type",
          type: "text",
       },
       {
-         name: "bg_description",
-         type: "text",
+         name: "sort_weight",
+         type: "number",
       },
       {
-         name: "term_itemtype",
-         type: "relationship",
-         relationTo: "termItemtype-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "term_rarity",
-         type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
+         name: "type_categories",
+         type: "json",
       },
       {
          name: "icon_name",
          type: "text",
-      },
-      {
-         name: "max_limit",
-         type: "number",
-      },
-      {
-         name: "purpose_type",
-         type: "number",
       },
       {
          name: "checksum",

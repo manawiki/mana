@@ -1,11 +1,13 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Materials: CollectionConfig = {
-   slug: "materials-lKJ16E5IhH",
-   labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle:  "name", },
-
+export const termElement: CollectionConfig = {
+   slug: "termElement-lKJ16E5IhH",
+   labels: { singular: "termElement", plural: "termElements" },
+   admin: { 
+         group: "Custom",
+         useAsTitle:  "name",
+   },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
@@ -21,7 +23,7 @@ export const Materials: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "materials-lKJ16E5IhH" },
+               collectionEntity: { equals: "termElement-lKJ16E5IhH" },
             };
          },
       },
@@ -38,38 +40,44 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
-         type: "text",
-      },
-      {
-         name: "bg_description",
-         type: "text",
-      },
-      {
-         name: "term_itemtype",
-         type: "relationship",
-         relationTo: "termItemtype-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "term_rarity",
-         type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
          name: "icon_name",
          type: "text",
       },
       {
-         name: "max_limit",
-         type: "number",
+         name: "icon_color_name",
+         type: "text",
       },
       {
-         name: "purpose_type",
-         type: "number",
+         name: "icon_active_name",
+         type: "text",
+      },
+      {
+         name: "icon_inactive_name",
+         type: "text",
+      },
+      {
+         name: "icon_damage_res_name",
+         type: "text",
+      },
+      {
+         name: "icon_color",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_active",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_inactive",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_damage_res",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "checksum",

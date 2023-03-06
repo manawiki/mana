@@ -1,11 +1,13 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Materials: CollectionConfig = {
-   slug: "materials-lKJ16E5IhH",
-   labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle:  "name", },
-
+export const termRarity: CollectionConfig = {
+   slug: "termRarity-lKJ16E5IhH",
+   labels: { singular: "termRarity", plural: "termRarities" },
+   admin: { 
+         group: "Custom",
+         useAsTitle:  "display_number",
+   },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
@@ -19,18 +21,14 @@ export const Materials: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "materials-lKJ16E5IhH" },
-            };
-         },
+		 filterOptions: () => {
+			 return {
+				 collectionEntity: { equals: "termRarity-lKJ16E5IhH" },
+			 };
+		 },
       },
       {
          name: "id",
-         type: "text",
-      },
-      {
-         name: "data_key",
          type: "text",
       },
       {
@@ -38,38 +36,47 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
+         name: "data_key",
          type: "text",
       },
       {
-         name: "bg_description",
+         name: "display_number",
          type: "text",
       },
       {
-         name: "term_itemtype",
-         type: "relationship",
-         relationTo: "termItemtype-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "term_rarity",
-         type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "icon_name",
+         name: "color",
          type: "text",
       },
       {
-         name: "max_limit",
-         type: "number",
+         name: "color_line",
+         type: "text",
       },
       {
-         name: "purpose_type",
-         type: "number",
+         name: "image_frame_name",
+         type: "text",
+      },
+      {
+         name: "icon_frame_name",
+         type: "text",
+      },
+      {
+         name: "image_bg_name",
+         type: "text",
+      },
+      {
+         name: "image_frame",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_frame",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "image_bg",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "checksum",
