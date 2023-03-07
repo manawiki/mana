@@ -57,15 +57,17 @@ interface ReactEditorProps
 export default { title: "Editors / Markdown" };
 
 export interface MarkdownEditorProps
-   extends Partial<Omit<ReactEditorProps, "stringHandler">> {}
+   extends Partial<Omit<ReactEditorProps, "stringHandler">> {
+   theme: "yellow" | "emerald" | "purple";
+}
 
-export const Menu = () => {
+export const Menu = ({ theme }: { theme: "yellow" | "emerald" | "purple" }) => {
    // Using command chaining
    const chain = useChainedCommands();
 
    const active = useActive();
    const groupDefaultStyle = `bg-4 h-8 w-8 flex items-center justify-center`;
-   const activeStyle = `bg-3 text-emerald-500`;
+   const activeStyle = `bg-3 text-${theme}-500`;
    const groupParentStyle = `divide-x divide-color overflow-hidden flex-none
    rounded-lg shadow-1 shadow-sm border border-color flex items-center shadow-1`;
 
@@ -220,7 +222,7 @@ export const Menu = () => {
  */
 export const MarkdownEditorCustom: FC<
    PropsWithChildren<MarkdownEditorProps>
-> = ({ placeholder, children, ...rest }) => {
+> = ({ placeholder, theme, children, ...rest }) => {
    const extensions = useCallback(
       () => [
          new PlaceholderExtension({ placeholder }),
@@ -259,7 +261,7 @@ export const MarkdownEditorCustom: FC<
    return (
       <div className="remirror-theme">
          <Remirror manager={manager} {...rest}>
-            <Menu />
+            <Menu theme={theme} />
             <EditorComponent />
             {/* <FloatingToolbar>
                <Menu />

@@ -28,14 +28,17 @@ function SaveButton() {
 
 //This renders an basic textarea editor
 export const NoteText = ({
+   theme,
    defaultValue,
    onChange,
 }: {
    defaultValue: string;
    onChange: (e: React.ChangeEvent<HTMLTextAreaElement> | string) => void;
+   theme: "yellow" | "emerald" | "purple";
 }) => {
    return (
       <MarkdownEditorCustom
+         theme={theme}
          initialContent={defaultValue}
          placeholder="Enter text..."
       >
