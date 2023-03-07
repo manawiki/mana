@@ -1,5 +1,5 @@
 import type { Params } from "@remix-run/react";
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { Request, V2_MetaFunction } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 import type { Payload } from "payload";
@@ -29,12 +29,11 @@ export const getCustomEntryData = async ({
 }: {
    payload: Payload;
    params: Params;
-   request: any; //TODO: fix this type
-   depth: Integer;
+   request: Request;
+   depth: number;
 }) => {
    const url = new URL(request.url).pathname;
-   const parts = url.split("/");
-   const slug = parts[3];
+   const slug = url.split("/")[3];
 
    const { entryId, siteId } = zx.parseParams(params, {
       entryId: z.string(),
@@ -42,9 +41,10 @@ export const getCustomEntryData = async ({
    });
 
    const entry = await payload.findByID({
+      // @ts-ignore
       collection: `${slug}-${siteId}`,
       id: `${slug}-${entryId}`,
-	  depth: depth,
+      depth: depth,
    });
 
    return entry;

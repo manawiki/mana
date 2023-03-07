@@ -87,9 +87,6 @@ export const Sites: CollectionConfig = {
       {
          name: "id",
          type: "text",
-         admin: {
-            hidden: true,
-         },
       },
    ],
 };
