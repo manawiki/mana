@@ -8,7 +8,6 @@ import {
    NavLink,
    Outlet,
    useLoaderData,
-   useMatches,
    useFetcher,
    useActionData,
 } from "@remix-run/react";
@@ -124,7 +123,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] pt-10 max-desktop:px-3">
+         <div className="mx-auto max-w-[728px] pt-10 max-desktop:px-3 mb-8">
             <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-2.5">
                Collections
             </h1>
@@ -211,7 +210,7 @@ export default function CollectionIndex() {
             </AdminOrOwner>
             {collections?.length === 0 ? null : (
                <>
-                  <div className="grid grid-cols-2 gap-3 laptop:grid-cols-3">
+                  <div className="grid grid-cols-2 gap-3 laptop:grid-cols-3 border-color">
                      {collections?.map((collection) => (
                         <NavLink
                            key={collection.id}
@@ -262,9 +261,7 @@ export default function CollectionIndex() {
                </>
             )}
          </div>
-         <div>
-            <Outlet />
-         </div>
+         <Outlet />
       </>
    );
 }

@@ -30,7 +30,7 @@ const DeleteNote = ({
    noteId: Note["id"];
    fetcher: FetcherWithComponents<any>;
 }) => {
-   const { siteId, postId } = useParams();
+   const { siteId, entryId, collectionId } = useParams();
    const [noteDeleteStatus, setNoteDeleteStatus] = useState("default");
 
    if (noteDeleteStatus === "default") {
@@ -60,7 +60,7 @@ const DeleteNote = ({
                      },
                      {
                         method: "delete",
-                        action: `/${siteId}/posts/${postId}/edit/${noteId}`,
+                        action: `/${siteId}/collections/${collectionId}/${entryId}/edit/${noteId}`,
                      }
                   )
                }
@@ -201,7 +201,7 @@ const Editor = ({
                      disabled={isNoteAdding}
                      //@ts-ignore
                      onClick={() => setIsActive((prevCheck) => !prevCheck)}
-                     className="flex text-sm h-9 w-16 items-center bg-emerald-500 justify-center
+                     className="flex text-sm h-9 w-16 items-center bg-yellow-500 justify-center
                         rounded-full text-white font-bold"
                   >
                      Done
@@ -221,7 +221,7 @@ const Editor = ({
                </Link>
             </div>
             <NoteText
-               theme="emerald"
+               theme="yellow"
                defaultValue={note.mdx}
                onChange={(value: any) =>
                   setInlineValue({
@@ -235,7 +235,7 @@ const Editor = ({
    );
 };
 
-export const InlineEditor = ({
+export const WikiInlineEditor = ({
    note,
    index,
    notes,

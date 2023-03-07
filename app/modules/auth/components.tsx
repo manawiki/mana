@@ -1,5 +1,5 @@
 import type { Collection, Site, User } from "payload-types";
-import { useRouteLoaderData } from "@remix-run/react";
+import { useLocation, useRouteLoaderData } from "@remix-run/react";
 import { useIsStaffOrSiteAdminOrOwner } from ".";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
@@ -26,9 +26,8 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
 //Is custom site
 export const CustomSite = ({ children }: { children: React.ReactNode }) => {
    const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
-   const hasAccess = useIsStaffOrSiteAdminOrOwner();
    const isCustom = site.type === "custom";
-   return hasAccess && isCustom ? <>{children}</> : null;
+   return isCustom ? <>{children}</> : null;
 };
 
 //Is custom collection
@@ -37,12 +36,28 @@ export const CustomCollection = ({
 }: {
    children: React.ReactNode;
 }) => {
-   const { collection } = useRouteLoaderData(
+   const collectionData = useRouteLoaderData(
       "routes/$siteId.collections+/$collectionId._route"
    ) as { collection: Collection };
-   const hasAccess = useIsStaffOrSiteAdminOrOwner();
-   const isCustom = collection.customTemplate === true;
-   return hasAccess && isCustom ? <>{children}</> : null;
+
+   //Pull data for custom site
+   const { pathname } = useLocation();
+   const parts = pathname.split("/");
+   const slug = parts[3];
+
+   const customCollectionData = useRouteLoaderData(
+      `_custom/routes/$siteId.collections+/${slug}.$entryId.c`
+   ) as {
+      entryDefault: { collectionEntity: Collection };
+   };
+
+   const collection = collectionData?.collection
+      ? collectionData?.collection
+      : customCollectionData?.entryDefault.collectionEntity;
+
+   const isCustom = collection?.customTemplate === true;
+
+   return isCustom ? <>{children}</> : null;
 };
 
 export const NotFollowingSite = ({
