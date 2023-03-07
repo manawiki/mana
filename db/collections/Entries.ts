@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaff, isStaffOrSiteOwnerOrSiteAdmin, isLoggedIn } from "../access";
+import type { User } from "payload/generated-types";
 
 export const entriesSlug = "entries";
 export const Entries: CollectionConfig = {
@@ -24,6 +25,14 @@ export const Entries: CollectionConfig = {
          type: "relationship",
          relationTo: "collections",
          hasMany: false,
+      },
+      {
+         name: "author",
+         type: "relationship",
+         relationTo: "users",
+         required: true,
+         defaultValue: ({ user }: { user: User }) => user.id,
+         maxDepth: 2,
       },
       {
          name: "icon",

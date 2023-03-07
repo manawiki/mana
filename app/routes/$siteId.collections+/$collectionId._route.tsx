@@ -3,6 +3,7 @@ import {
    type LoaderArgs,
    type V2_MetaFunction,
    json,
+   redirect,
 } from "@remix-run/node";
 import {
    Link,
@@ -113,10 +114,8 @@ export default function CollectionList() {
    return (
       <>
          <Outlet />
-         <div className="mx-auto max-w-[728px] max-desktop:px-3 pt-4 pb-12">
-            <h2 className="pt-6 pb-3 text-xl font-bold pl-1">
-               {collection.name}
-            </h2>
+         <div className="mx-auto max-w-[728px] max-desktop:px-3 pb-12">
+            <h2 className="pb-3 text-xl font-bold pl-1">{collection.name}</h2>
             <AdminOrOwner>
                <Form
                   ref={zoEntry.ref}
@@ -200,13 +199,18 @@ export default function CollectionList() {
                      {entries?.map((entry) => (
                         <Link
                            key={entry.id}
-                           to={`${entry.id}`}
+                           to={`${
+                              // @ts-expect-error
+                              entry?.collectionEntity?.customTemplate == true
+                                 ? `${entry.id}/c`
+                                 : `${entry.id}/w`
+                           }`}
                            prefetch="intent"
                            className="flex items-center gap-3 p-2 bg-2 hover:underline"
                         >
                            <div
-                              className="flex h-8 w-8 items-center justify-between dark:border-zinc-600
-                                    overflow-hidden rounded-full border border-zinc-400"
+                              className="flex h-8 w-8 items-center justify-between border-color
+                                    overflow-hidden rounded-full border-2 shadow-sm shadow-1"
                            >
                               {/* @ts-expect-error */}
                               {entry.icon?.url ? (
@@ -238,6 +242,8 @@ export const action: ActionFunction = async ({
    request,
    params,
 }) => {
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
    const { collectionId } = zx.parseParams(params, {
       collectionId: z.string(),
    });
@@ -276,6 +282,7 @@ export const action: ActionFunction = async ({
                collection: "entries",
                data: {
                   name,
+                  author: user?.id,
                   icon: iconId,
                   collectionEntity: collectionId,
                },
