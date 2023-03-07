@@ -1,15 +1,13 @@
 import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
-import { EntryHeader } from "~/routes/$siteId.collections+/$collectionId.$entryId/EntryHeader";
 import {
-   EntryContent,
    EntryParent,
-} from "~/routes/$siteId.collections+/$collectionId.$entryId/EntryWrappers";
-import {
-   getCustomEntryData,
+   EntryHeader,
    getDefaultEntryData,
    meta,
-} from "~/routes/$siteId.collections+/$collectionId.$entryId/entryDefaults";
+   EntryContent,
+   getCustomEntryData,
+ } from "~/modules/collections";
 import type { CharacterLKJ16E5IhH } from "payload/generated-types";
 import { Image } from "~/components/Image";
 
