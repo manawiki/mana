@@ -33,39 +33,37 @@ export async function loader({
 
 export default function MaterialsEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
+   const { defaultData } = useLoaderData<typeof loader>();
 
-   console.log(entryDefault);
+   console.log(defaultData);
+
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
-            <Header />
+            <Header defaultData={defaultData} />
             <Stats />
          </EntryContent>
       </EntryParent>
    );
 }
 
-const Header = () => {
-   const { defaultData } = useLoaderData<typeof loader>();
-
-   console.log(defaultData);
-
-   const rarityimg = defaultData.rarity?.entry?.icon?.url;
-   const raritydispnum = defaultData.rarity?.display_number;
+const Header = ({ defaultData }: any) => {
+   const rarityimg = defaultData.term_rarity?.entry?.icon?.url;
+   const raritydispnum = defaultData.term_rarity?.display_number;
    return (
       <>
          <div>
             Relationship: Rarity (Test) Image -
-            defaultData.rarity?.entry?.icon?.url:{" "}
+            defaultData.term_rarity?.entry?.icon?.url:{" "}
          </div>
-         <div className="h-5 w-5 bg-gray-700">
+         <div className="h-5 w-20 bg-gray-700">
             <img alt="rarity" className="object-contain" src={rarityimg} />
          </div>
          <div className="my-1 w-full h-0.5 border"></div>
          <div>
             Relationship: Rarity (Test) Display Number (Custom Field) -
-            defaultData.rarity?.display_number:
+            defaultData.term_rarity?.display_number:
          </div>
          <div>{raritydispnum ?? "ERROR: Null"}</div>
          <div>{defaultData.story}</div>

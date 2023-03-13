@@ -63,6 +63,14 @@ export const SkillTree: CollectionConfig = {
          type: "number",
       },
       {
+         name: "req_level",
+         type: "number",
+      },
+      {
+         name: "req_ascension",
+         type: "number",
+      },
+      {
          name: "default_unlock",
          type: "checkbox",
       },
