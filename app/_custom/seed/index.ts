@@ -62,7 +62,7 @@ const seedUploads = async (result: any) => {
          filePath: path.resolve(__dirname, `./images/${id}.png`),
       });
       //Limit speed
-      sleep(1000);
+      sleep(50);
       console.log(`${JSON.stringify(createItem)} Import completed!`);
    }
 };
