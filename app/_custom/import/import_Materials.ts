@@ -9,6 +9,7 @@ const collectionName = "materials";
 const data = require("./import_files/" + "Item" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
+const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
 
 let payload = null as any;
 
@@ -112,6 +113,7 @@ const seedUploads = async (result: any) => {
 			collectionEntity: collectionName + "-" + siteId,
 			name: result?.name.toString(),
 			icon: siteId + "_" + result.icon?.name.replace(".png",""),
+			author: userId,
 		};
 
 		const updateItem = await payload.update({
@@ -150,6 +152,7 @@ const seedUploads = async (result: any) => {
 			collectionEntity: collectionName + "-" + siteId,
 			name: result?.name.toString(),
 			icon: siteId + "_" + result.icon?.name.replace(".png",""),
+			author: userId,
 		};
 	
 		const createItem = await payload.create({
