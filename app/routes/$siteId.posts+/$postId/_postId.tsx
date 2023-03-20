@@ -471,7 +471,6 @@ function PostEdit() {
    //Get data. This is necessary to determine whether the user should see the draft notes or not.
    const data = useLoaderData<typeof loader>();
    const { post } = data;
-   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
 
    return (
       <main
@@ -479,41 +478,6 @@ function PostEdit() {
          max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
       >
          <PostHeaderEdit post={post} />
-         <Suspense fallback={<div>Loading...</div>}>
-            {notes.map((note, noteIdx) => (
-               <div key={note.id} className="group">
-                  {/* @ts-expect-error */}
-                  {note?.ui?.id == "textarea" ? (
-                     <InlineEditor note={note} index={noteIdx} notes={notes} />
-                  ) : (
-                     <>
-                        {/* Render noteview with edit button */}
-                        <Link
-                           to={`edit/${note.id}`}
-                           prefetch="intent"
-                           className="absolute right-0 hidden rounded bg-blue-500 px-2 py-1 
-                           text-xs font-bold text-white group-hover:inline-block"
-                        >
-                           Edit
-                        </Link>
-                        <NoteViewer
-                           className="post-content outline-1 outline-offset-8 
-                           outline-zinc-300 group-hover:cursor-pointer 
-                           group-hover:rounded-sm group-hover:outline-dotted 
-                           dark:outline-zinc-600"
-                           note={note}
-                           //insert custom components here
-                           components={
-                              {
-                                 // h2: (props) => <h2 className="text-2xl" {...props} />,
-                              }
-                           }
-                        />
-                     </>
-                  )}
-               </div>
-            ))}
-         </Suspense>
       </main>
    );
 }
