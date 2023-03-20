@@ -2,13 +2,12 @@ import styles from "./Header.module.css";
 import { useOthers } from "~/liveblocks.config";
 import Avatar from "./Avatar";
 import Button from "./Button";
-import SunIcon from "../icons/sun.svg";
-import MoonIcon from "../icons/moon.svg";
 import Tooltip from "./Tooltip";
-import { Theme } from "../types";
+import type { Theme } from "../types";
 import { useEffect, useState } from "react";
 import { applyTheme } from "../utils";
 import { LOCAL_STORAGE_THEME, USER_COLORS } from "../constants";
+import { Moon, Sun } from "lucide-react";
 
 export default function Header() {
    const others = useOthers();
@@ -39,7 +38,7 @@ export default function Header() {
                      ariaLabel="Switch Theme"
                      isSquare
                   >
-                     {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+                     {theme === "dark" ? <Sun /> : <Moon />}
                   </Button>
                </Tooltip>
             </div>

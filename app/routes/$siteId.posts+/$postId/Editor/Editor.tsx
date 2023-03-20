@@ -17,6 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import classNames from "classnames";
 
 import {
    useList,
@@ -286,7 +287,7 @@ export default function App() {
          <Header />
 
          <div
-            className=""
+            className={classNames(styles.prose, "prose")}
             id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
@@ -491,7 +492,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="avatars"
+                  className={classNames(styles.avatars, "avatars")}
                   contentEditable={false}
                   style={{ userSelect: "none" }}
                >
@@ -513,7 +514,7 @@ function SortableElement({
                </div>
             )}
             <div
-               className=""
+               className={classNames(styles.inline_actions, "inline_actions")}
                contentEditable={false}
                style={{ userSelect: "none" }}
             >
