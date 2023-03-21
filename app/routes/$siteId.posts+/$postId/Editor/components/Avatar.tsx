@@ -8,7 +8,6 @@ type Props = {
 };
 
 export default function Avatar({ imageUrl, name, color }: Props) {
-   console.log(name);
    return (
       <Tooltip content={name}>
          <button

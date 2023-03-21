@@ -266,7 +266,7 @@ export default function App() {
    );
 
    return (
-      <div className="relative min-h-screen pb-4 cursor-text">
+      <div className="relative min-h-screen pb-4 cursor-text max-laptop:px-3.5">
          <Header />
          <div
             className="max-w-[728px] mx-auto"
@@ -544,7 +544,6 @@ function withShortcuts(editor: Editor) {
          const range = { anchor, focus: start };
          const beforeText = Editor.string(editor, range) + text.slice(0, -1);
          const type = SHORTCUTS[beforeText];
-
          if (type) {
             Transforms.select(editor, range);
 
@@ -555,8 +554,8 @@ function withShortcuts(editor: Editor) {
             const newProperties: Partial<CustomElement> = {
                type,
             };
-            Transforms.setNodes<CustomElement>(editor, newProperties, {
-               match: (n) => Editor.isBlock(editor, n),
+            Transforms.setNodes<Element>(editor, newProperties, {
+               match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
             });
 
             return;

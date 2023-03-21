@@ -532,7 +532,24 @@ function PostEdit() {
                   selectedBlockId: null,
                }}
             >
-               <ClientSideSuspense fallback={"Loading"}>
+               <ClientSideSuspense
+                  fallback={
+                     <div className="max-w-[728px] max-laptop:mx-3.5 space-y-4 mx-auto">
+                        <div
+                           className="animate-pulse bg-2  borer-color
+                         w-full h-14 rounded-lg"
+                        />
+                        <div
+                           className="animate-pulse bg-2  borer-color
+                         w-full h-14 rounded-lg"
+                        />
+                        <div
+                           className="animate-pulse bg-2  borer-color
+                         w-full h-14 rounded-lg"
+                        />
+                     </div>
+                  }
+               >
                   {() => <Editor />}
                </ClientSideSuspense>
             </RoomProvider>

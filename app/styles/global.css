@@ -92,7 +92,7 @@ html.dark {
 .post-content h2 {
    @apply dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light;
 }
-.post-content h3 {
+h3 {
    @apply dark:text-dark font-bold text-xl pb-2 pt-4 text-light;
 }
 .post-content a {

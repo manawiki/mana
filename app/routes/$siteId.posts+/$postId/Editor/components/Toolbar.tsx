@@ -1,21 +1,19 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Editor, Path, Range, Transforms } from "slate";
-import { useFocused, useSlate } from "slate-react";
-import ToggleButton from "./ToggleButton";
+import { useSlate } from "slate-react";
 import Select from "./Select";
 import Tooltip from "./Tooltip";
-import styles from "./Toolbar.module.css";
 
 import { toggleMark, topLevelPath } from "../utils";
 import type { CustomElement, TextBlock } from "../types";
 import { BlockType } from "../types";
 import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
+import Button from "./Button";
 
 export default function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);
    const editor = useSlate();
-   const inFocus = useFocused();
 
    useEffect(() => {
       const el = ref.current;
@@ -55,7 +53,8 @@ export default function Toolbar() {
    return createPortal(
       <div
          ref={ref}
-         className={styles.toolbar}
+         className="flex items-center py-2.5 px-3 rounded-xl pointer-events-auto opacity-0 gap-2
+         transition-opacity duration-200 border border-color shadow-lg shadow-1 ease-in-out bg-1 -mt-16"
          onMouseDown={(e) => {
             // prevent toolbar from taking focus away from editor
             e.preventDefault();
@@ -63,7 +62,7 @@ export default function Toolbar() {
       >
          {type && (
             <>
-               <div className={styles.tag_selector}>
+               <div>
                   <Select
                      defaultValue={BlockType.Paragraph}
                      value={type}
@@ -97,54 +96,65 @@ export default function Toolbar() {
                      }}
                   />
                </div>
-               <div className={styles.separator} />
             </>
          )}
 
-         <div className={styles.group}>
+         <div className="flex items-center gap-1">
             <Tooltip content="Toggle Bold">
-               <ToggleButton
+               <Button
                   ariaLabel="Toggle Bold"
                   onPointerDown={(e) => e.preventDefault()}
                   onClick={() => toggleMark(editor, "bold")}
-                  isSquare
-                  isActive={marks ? marks["bold"] === true : false}
+                  className={`${
+                     marks && marks["bold"] === true
+                        ? "bg-3 border border-color"
+                        : ""
+                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
                >
-                  <Bold />
-               </ToggleButton>
+                  <Bold size={16} />
+               </Button>
             </Tooltip>
             <Tooltip content="Toggle Italic">
-               <ToggleButton
+               <Button
                   ariaLabel="Toggle Italic"
                   onPointerDown={(e) => e.preventDefault()}
                   onClick={() => toggleMark(editor, "italic")}
-                  isSquare
-                  isActive={marks ? marks["italic"] === true : false}
+                  className={`${
+                     marks && marks["italic"] === true
+                        ? "bg-3 border border-color"
+                        : ""
+                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
                >
-                  <Italic />
-               </ToggleButton>
+                  <Italic size={16} />
+               </Button>
             </Tooltip>
             <Tooltip content="Toggle Underline">
-               <ToggleButton
+               <Button
                   ariaLabel="Toggle Underline"
                   onPointerDown={(e) => e.preventDefault()}
                   onClick={() => toggleMark(editor, "underline")}
-                  isSquare
-                  isActive={marks ? marks["underline"] === true : false}
+                  className={`${
+                     marks && marks["underline"] === true
+                        ? "bg-3 border border-color"
+                        : ""
+                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
                >
-                  <Underline />
-               </ToggleButton>
+                  <Underline size={16} />
+               </Button>
             </Tooltip>
             <Tooltip content="Toggle Strikethrough">
-               <ToggleButton
+               <Button
                   ariaLabel="Toggle Strikethrough"
                   onPointerDown={(e) => e.preventDefault()}
                   onClick={() => toggleMark(editor, "strikeThrough")}
-                  isSquare
-                  isActive={marks ? marks["strikeThrough"] === true : false}
+                  className={`${
+                     marks && marks["strikeThrough"] === true
+                        ? "bg-3 border border-color"
+                        : ""
+                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
                >
-                  <Strikethrough />
-               </ToggleButton>
+                  <Strikethrough size={16} />
+               </Button>
             </Tooltip>
          </div>
       </div>,

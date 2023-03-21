@@ -34,7 +34,11 @@ export default function Block({
    attributes,
 }: RenderElementProps) {
    if (element.type === BlockType.Paragraph) {
-      return <p {...attributes}>{children}</p>;
+      return (
+         <p className="mb-3" {...attributes}>
+            {children}
+         </p>
+      );
    }
 
    if (element.type === BlockType.H1) {
@@ -42,7 +46,14 @@ export default function Block({
    }
 
    if (element.type === BlockType.H2) {
-      return <h2 {...attributes}>{children}</h2>;
+      return (
+         <h2
+            className="dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light"
+            {...attributes}
+         >
+            {children}
+         </h2>
+      );
    }
 
    if (element.type === BlockType.H3) {
