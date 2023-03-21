@@ -144,19 +144,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                   });
                },
             },
-            {
-               label: "Figma",
-               description: "Embed Figma project",
-               onSelect: () => {
-                  onSelect({
-                     createdBy,
-                     id: nanoid(),
-                     type: BlockType.Figma,
-                     url: null,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
          ],
       },
    ];

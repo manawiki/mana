@@ -1,10 +1,10 @@
 import styles from "./BlockInlineActions.module.css";
 import Button from "./Button";
-import { useDraggable } from "@dndkit/core";
 import Tooltip from "./Tooltip";
 import BlockTypeSelector from "./BlockTypeSelector";
 import type { CustomElement } from "../types";
 import { GripVertical, Minus, Plus } from "lucide-react";
+import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
    blockId: string;

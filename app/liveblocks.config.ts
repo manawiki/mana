@@ -1,4 +1,5 @@
-import { createClient, type LiveObject } from "@liveblocks/client";
+import type { LiveList } from "@liveblocks/client";
+import { createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 
 const client = createClient({
@@ -15,7 +16,7 @@ export type Presence = {
 };
 
 type Storage = {
-   text: LiveObject<{}>;
+   blocks: LiveList<{}>;
 };
 
 type UserMeta = {
@@ -25,10 +26,6 @@ type UserMeta = {
       avatar: string;
    };
 };
-
-// Optionally, the type of custom events broadcasted and listened for in this
-// room. Must be JSON-serializable.
-// type RoomEvent = {};
 
 export const {
    suspense: {

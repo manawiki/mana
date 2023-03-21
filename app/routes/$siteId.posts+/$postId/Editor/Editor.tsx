@@ -75,6 +75,7 @@ export default function App() {
    ) as CustomElement | undefined;
 
    const room = useRoom();
+
    const blocks = useList("blocks");
    const isEditingRef = useRef(false);
    const updateMyPresence = useUpdateMyPresence();
@@ -283,15 +284,14 @@ export default function App() {
    }
 
    return (
-      <div className={styles.editor}>
+      <div className="relative min-h-screen pb-4 cursor-text">
          <Header />
-
          <div
-            className={classNames(styles.prose, "prose")}
+            className="max-w-[728px] mx-auto"
             id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
-            <div className={styles.container}>
+            <div className="mx-auto w-full">
                <Slate
                   editor={editor}
                   value={blocks?.toArray()}
@@ -475,9 +475,9 @@ function SortableElement({
       .filter((user) => user.presence?.selectedBlockId === element.id);
 
    return (
-      <div className={styles.block} {...attributes}>
+      <div className="flex relative group" {...attributes}>
          <div
-            className={styles.sortable}
+            className="outline-none"
             {...sortable.attributes}
             ref={sortable.setNodeRef}
             style={
@@ -492,9 +492,8 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className={classNames(styles.avatars, "avatars")}
+                  className="flex  select-none items-center absolute top-0.5 left-0 pr-2"
                   contentEditable={false}
-                  style={{ userSelect: "none" }}
                >
                   {othersByBlockId.map((user) => {
                      return (
@@ -514,9 +513,8 @@ function SortableElement({
                </div>
             )}
             <div
-               className={classNames(styles.inline_actions, "inline_actions")}
+               className="opacity-0 select-none	group-hover:opacity-100 absolute top-0 -left-16 pr-3"
                contentEditable={false}
-               style={{ userSelect: "none" }}
             >
                <BlockInlineActions
                   blockId={element.id}
