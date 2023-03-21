@@ -227,7 +227,7 @@ export default function App() {
       const path = ReactEditor.findPath(editor, props.element);
       const isTopLevel = path.length === 1;
 
-      return isTopLevel && path[0] !== 0 ? (
+      return isTopLevel ? (
          <SortableElement
             {...props}
             renderElement={Block}
