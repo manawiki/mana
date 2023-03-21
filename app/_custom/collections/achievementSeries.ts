@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termAchievementseries: CollectionConfig = {
-   slug: "termAchievementseries-lKJ16E5IhH",
-   labels: { singular: "termAchievementseries", plural: "termAchievementserieses" },
+export const achievementSeries: CollectionConfig = {
+   slug: "achievementSeries-lKJ16E5IhH",
+   labels: { singular: "achievementSeries", plural: "achievementSerieses" },
    admin: { 
          group: "Custom",
          useAsTitle:  "name",
@@ -23,7 +23,7 @@ export const termAchievementseries: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "termAchievementseries-lKJ16E5IhH" },
+               collectionEntity: { equals: "achievementSeries-lKJ16E5IhH" },
             };
          },
       },
