@@ -27,7 +27,6 @@ export default function Toolbar() {
 
       if (
          !selection ||
-         Range.includes(selection, [0]) || // If the selection overlap with the title, do not show the toolbar
          Range.isCollapsed(selection) ||
          Editor.string(editor, selection) === ""
       ) {

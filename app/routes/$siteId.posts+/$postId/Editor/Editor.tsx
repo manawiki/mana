@@ -27,7 +27,6 @@ import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
-   withLayout,
    withNodeId,
 } from "./utils";
 import Leaf from "./blocks/Leaf";
@@ -47,10 +46,7 @@ const SHORTCUTS: Record<string, BlockType> = {
 };
 
 const useEditor = () =>
-   useMemo(
-      () => withShortcuts(withNodeId(withLayout(withReact(createEditor())))),
-      []
-   );
+   useMemo(() => withShortcuts(withNodeId(withReact(createEditor()))), []);
 
 function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
@@ -411,8 +407,7 @@ export default function App() {
                               for (const hotkey in HOTKEYS) {
                                  if (
                                     isHotkey(hotkey, event as any) &&
-                                    editor.selection &&
-                                    !Range.includes(editor.selection, [0]) // Do not apply marks if selection include title
+                                    editor.selection
                                  ) {
                                     event.preventDefault();
                                     const mark = HOTKEYS[hotkey];
@@ -460,7 +455,7 @@ function SortableElement({
    );
 
    return (
-      <div className="flex relative group" {...attributes}>
+      <div className="flex relative group flex-col" {...attributes}>
          <div
             className="outline-none"
             {...sortable.attributes}
@@ -477,7 +472,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="flex select-none items-center absolute top-0.5 -left-10 pr-2"
+                  className="flex select-none -translate-x-full items-center absolute top-0.5 left-0 pr-3"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {
@@ -486,7 +481,6 @@ function SortableElement({
                            key={user.connectionId}
                            imageUrl={user.info.avatar}
                            name={user.info.name}
-                           size="sm"
                            color={
                               USER_COLORS[
                                  user.connectionId % USER_COLORS.length
@@ -498,7 +492,8 @@ function SortableElement({
                </div>
             )}
             <div
-               className="opacity-0 select-none	group-hover:opacity-100 absolute top-0 -left-16 pr-3"
+               className="opacity-0 -translate-x-full select-none	
+               group-hover:opacity-100 absolute top-0 left-0 pr-2"
                contentEditable={false}
             >
                <BlockInlineActions

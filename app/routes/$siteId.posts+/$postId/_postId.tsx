@@ -363,114 +363,13 @@ export default function PostPage() {
                </AdminOrOwner>
             </div>
          </AdminOrOwner>
-
          {mode === "edit" ? <PostEdit /> : <PostView />}
-         <AdminOrOwner>
-            {mode === "edit" && (
-               <div
-                  className="bg-2 border-color sticky bottom-12 z-30 flex h-12 
-                    items-center justify-between
-                    border-t px-3 laptop:bottom-0 laptop:h-14"
-               >
-                  <div className="mx-auto -mt-14 laptop:-mt-11">
-                     <Popover className="relative flex items-center justify-center">
-                        {({ open }) => (
-                           <>
-                              <Popover.Button className="focus:outline-none justify-center mx-auto">
-                                 <div
-                                    className="flex h-14 w-14 items-center justify-center
-                              rounded-full border-2 border-emerald-200 active:translate-y-0.5
-                              shadow shadow-emerald-100 bg-emerald-100
-                              font-semibold text-emerald-500 dark:border-emerald-800 
-                              dark:shadow-emerald-900/40 focus-visible:blur-none
-                              transition duration-300 dark:bg-emerald-900"
-                                 >
-                                    <Plus
-                                       size={28}
-                                       className={`${
-                                          open
-                                             ? "rotate-45 dark:text-zinc-200 text-zinc-400"
-                                             : ""
-                                       } transform transition duration-300 ease-in-out`}
-                                    />
-                                 </div>
-                              </Popover.Button>
-                              <Transition
-                                 as={Fragment}
-                                 enter="transition ease-out duration-200"
-                                 enterFrom="opacity-0 translate-y-1"
-                                 enterTo="opacity-100 translate-y-0"
-                                 leave="transition ease-in duration-150"
-                                 leaveFrom="opacity-100 translate-y-0"
-                                 leaveTo="opacity-0 translate-y-1"
-                              >
-                                 <Popover.Panel
-                                    className="absolute flex items-center gap-3 -top-[50px] 
-                                    left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                                 >
-                                    <Popover.Button
-                                       onClick={() =>
-                                          fetcher.submit(
-                                             {
-                                                intent: "addNewInlineSection",
-                                                ui: "textarea",
-                                             },
-                                             {
-                                                method: "post",
-                                                action: `/${siteId}/posts/${postId}/add`,
-                                             }
-                                          )
-                                       }
-                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
-                                       border border-color bg-2 items-center gap-2 h-11 justify-center hover:bg-white
-                                       dark:hover:bg-zinc-700 dark:hover:border-zinc-600 w-28"
-                                    >
-                                       <Type
-                                          className="text-emerald-500 flex-none -ml-0.5"
-                                          size={20}
-                                       />
-                                       <span>Text</span>
-                                    </Popover.Button>
-                                    <Link
-                                       className="flex rounded-full text-sm shadow dark:shadow-black/50 font-bold hover:border-zinc-100
-                                       border border-color bg-2 items-center gap-2 w-28 h-11 justify-center hover:bg-white
-                                     dark:hover:bg-zinc-700 dark:hover:border-zinc-600"
-                                       to="add"
-                                       prefetch="intent"
-                                    >
-                                       <Component
-                                          className="text-emerald-500 flex-none -ml-0.5"
-                                          size={20}
-                                       />
-                                       <span>Widget</span>
-                                    </Link>
-                                 </Popover.Panel>
-                              </Transition>
-                           </>
-                        )}
-                     </Popover>
-                     <div className="pt-2 max-laptop:hidden uppercase text-xs text-1 font-bold">
-                        Add Section
-                     </div>
-                  </div>
-               </div>
-            )}
-         </AdminOrOwner>
          <Outlet />
       </div>
    );
 }
 
 const initialValue: CustomElement[] = [
-   {
-      id: nanoid(),
-      type: BlockType.Title,
-      children: [
-         {
-            text: "Collaborative Block Text Editor",
-         },
-      ],
-   },
    {
       id: nanoid(),
       type: BlockType.Paragraph,
@@ -619,7 +518,7 @@ function PostEdit() {
 
    return (
       <main
-         className="post-content relative min-h-screen  
+         className="relative min-h-screen leading-7
          max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
       >
          <TooltipProvider>

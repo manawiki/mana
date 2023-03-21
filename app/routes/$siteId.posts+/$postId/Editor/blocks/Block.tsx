@@ -33,14 +33,6 @@ export default function Block({
    children,
    attributes,
 }: RenderElementProps) {
-   if (element.type === BlockType.Title) {
-      return (
-         <div className="title" {...attributes}>
-            {children}
-         </div>
-      );
-   }
-
    if (element.type === BlockType.Paragraph) {
       return <p {...attributes}>{children}</p>;
    }

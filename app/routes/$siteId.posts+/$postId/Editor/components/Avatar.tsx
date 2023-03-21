@@ -1,27 +1,27 @@
-import styles from "./Avatar.module.css";
 import Tooltip from "./Tooltip";
+import { Image } from "~/components/Image";
 
 type Props = {
    imageUrl: string;
    name: string;
-   size?: "sm" | "md";
    color?: string;
 };
 
-export default function Avatar({ imageUrl, name, size = "md", color }: Props) {
+export default function Avatar({ imageUrl, name, color }: Props) {
    console.log(name);
    return (
       <Tooltip content={name}>
-         <button className="h-8 w-8 rounded-full overflow-hidden">
-            <img src={imageUrl} alt="" />
-            {color && (
-               <span
-                  className={styles.avatar_color}
-                  style={{
-                     boxShadow: `0 0 0 2px ${color}, 0 0 0 4px rgb(var(--color-surface))`,
-                  }}
+         <button
+            style={{ borderColor: color }}
+            className="h-7 w-7 border relative rounded-full overflow-hidden"
+         >
+            <div className="border-2 rounded-full border-color">
+               <Image
+                  alt={name}
+                  options="fit=crop,width=88,height=88,gravity=auto"
+                  url={imageUrl}
                />
-            )}
+            </div>
          </button>
       </Tooltip>
    );

@@ -41,7 +41,6 @@ export enum BlockType {
 }
 
 export type TextBlock =
-   | BlockType.Title
    | BlockType.H1
    | BlockType.H2
    | BlockType.H3
@@ -91,12 +90,7 @@ export type CodeSandboxElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-export type TitleElement = BlockElement & {
-   type: BlockType.Title;
-};
-
 export type CustomElement =
-   | TitleElement
    | ParagraphElement
    | HeadingElement
    | ListElement
@@ -118,5 +112,3 @@ type LeafDecoration = {
 };
 
 export type Format = "bold" | "underline" | "strikeThrough" | "italic";
-
-export type Theme = "light" | "dark";

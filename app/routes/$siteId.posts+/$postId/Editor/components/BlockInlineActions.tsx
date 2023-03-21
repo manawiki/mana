@@ -1,4 +1,3 @@
-import styles from "./BlockInlineActions.module.css";
 import Button from "./Button";
 import Tooltip from "./Tooltip";
 import BlockTypeSelector from "./BlockTypeSelector";
@@ -22,32 +21,32 @@ export default function BlockInlineActions({
    });
 
    return (
-      <div className={styles.inline_actions}>
+      <div className="flex items-center justify-space-between">
          <Tooltip content="Delete">
             <Button
-               appearance="ghost"
+               className="hover:bg-1 flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
                onClick={onDelete}
                ariaLabel="Delete"
-               isSquare
             >
-               <Minus />
+               <Minus size={16} />
             </Button>
          </Tooltip>
          <BlockTypeSelector onSelect={onInsertBelow}>
-            <Button appearance="ghost" ariaLabel="Insert block below" isSquare>
-               <Plus />
+            <Button
+               className="hover:bg-1 flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
+               ariaLabel="Insert block below"
+            >
+               <Plus size={16} />
             </Button>
          </BlockTypeSelector>
          <Tooltip content="Drag to reorder">
             <Button
-               appearance="ghost"
                ariaLabel="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
-               isSquare
-               className={styles.button_drag}
+               className="hover:bg-1 cursor-grab flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
             >
-               <GripVertical />
+               <GripVertical size={16} />
             </Button>
          </Tooltip>
       </div>

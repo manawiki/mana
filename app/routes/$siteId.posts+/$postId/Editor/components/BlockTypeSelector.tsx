@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import styles from "./BlockTypeSelector.module.css";
+import type { ReactNode } from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { nanoid } from "nanoid";
-import { BlockType, CustomElement } from "../types";
+import type { CustomElement } from "../types";
+import { BlockType } from "../types";
 import { ScrollArea } from "./ScrollArea";
 import Tooltip from "./Tooltip";
 import { useSelf } from "~/liveblocks.config";
@@ -157,31 +157,29 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          </Tooltip>
 
          <DropdownMenuPrimitive.Portal>
-            <DropdownMenuPrimitive.Content className={styles.content}>
-               <ScrollArea className={styles.scroll_area}>
+            <DropdownMenuPrimitive.Content className="overflow-hidden outline-none select-none z-10 rounded-md bg-2">
+               <ScrollArea className="max-h-[280px] w-[220px] p-3">
                   {groups.map((group, indexGroup) => {
                      return (
                         <DropdownMenuPrimitive.Group
                            key={indexGroup}
-                           className={styles.group}
+                           className="pb-1"
                         >
-                           <DropdownMenuPrimitive.Label
-                              className={styles.group_label}
-                           >
+                           <DropdownMenuPrimitive.Label className="sticky top-0">
                               {group.label}
                            </DropdownMenuPrimitive.Label>
 
                            {groups[indexGroup].items.map((item, indexItem) => {
                               return (
                                  <DropdownMenuPrimitive.DropdownMenuItem
-                                    className={styles.item}
+                                    className="outline-none flex flex-col cursor-default"
                                     key={indexItem}
                                     onSelect={item.onSelect}
                                  >
-                                    <span className={styles.item_label}>
+                                    <span className="text-sm">
                                        {item.label}
                                     </span>
-                                    <span className={styles.item_description}>
+                                    <span className="font-bold">
                                        {item.description}
                                     </span>
                                  </DropdownMenuPrimitive.DropdownMenuItem>
