@@ -23,7 +23,7 @@ export type UserMeta = {
    id: string;
    info: {
       name: string;
-      imageUrl: string;
+      avatar: string;
    };
 };
 

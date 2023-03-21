@@ -12,13 +12,13 @@ export default function Header() {
             <div className={styles.avatars}>
                {others.map((user) => {
                   const {
-                     info: { imageUrl, name },
+                     info: { avatar, name },
                      connectionId,
                   } = user;
                   return (
                      <Avatar
                         key={connectionId}
-                        imageUrl={imageUrl}
+                        imageUrl={avatar}
                         name={name}
                         color={USER_COLORS[connectionId % USER_COLORS.length]}
                      />

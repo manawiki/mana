@@ -1,5 +1,3 @@
-import styles from "./Editor.module.css";
-
 import isHotkey from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -15,9 +13,7 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import classNames from "classnames";
 
 import {
    useList,
@@ -37,13 +33,7 @@ import {
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
 import { HOTKEYS, PROSE_CONTAINER_ID, USER_COLORS } from "./constants";
-import {
-   Avatar,
-   BlockInlineActions,
-   Header,
-   Loading,
-   Toolbar,
-} from "./components";
+import { Avatar, BlockInlineActions, Header, Toolbar } from "./components";
 import { nanoid } from "nanoid";
 
 const SHORTCUTS: Record<string, BlockType> = {
@@ -75,8 +65,8 @@ export default function App() {
    ) as CustomElement | undefined;
 
    const room = useRoom();
-
    const blocks = useList("blocks");
+
    const isEditingRef = useRef(false);
    const updateMyPresence = useUpdateMyPresence();
 
@@ -279,10 +269,6 @@ export default function App() {
       [editor.children]
    );
 
-   if (blocks == null) {
-      return <Loading />;
-   }
-
    return (
       <div className="relative min-h-screen pb-4 cursor-text">
          <Header />
@@ -299,7 +285,6 @@ export default function App() {
                      if (blocks == null) {
                         return;
                      }
-
                      // Synchronizing Liveblocks storage and presence...
 
                      // Setting a flag to make sure that we don't create an infinite loop with Storage subscriptions
@@ -470,9 +455,9 @@ function SortableElement({
    onInsertBelow: (block: CustomElement) => void;
 }) {
    const sortable = useSortable({ id: element.id });
-   const othersByBlockId = useOthers()
-      .toArray()
-      .filter((user) => user.presence?.selectedBlockId === element.id);
+   const othersByBlockId = useOthers().filter(
+      (user) => user.presence?.selectedBlockId === element.id
+   );
 
    return (
       <div className="flex relative group" {...attributes}>
@@ -492,14 +477,14 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="flex  select-none items-center absolute top-0.5 left-0 pr-2"
+                  className="flex select-none items-center absolute top-0.5 -left-10 pr-2"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {
                      return (
                         <Avatar
                            key={user.connectionId}
-                           imageUrl={user.info.imageUrl}
+                           imageUrl={user.info.avatar}
                            name={user.info.name}
                            size="sm"
                            color={
