@@ -9,6 +9,7 @@ import { Relic } from "./relic";
 import { EnemySkill } from "./enemySkill";
 import { Enemy } from "./enemy";
 import { Achievement } from "./achievement";
+import { AchievementSeries } from "./achievementSeries";
 
 import { termRarity } from "./termRarity";
 import { termElement } from "./termElement";
@@ -17,7 +18,7 @@ import { termPath } from "./termPath";
 import { termItemtype } from "./termItemtype";
 import { termRelicstat } from "./termRelicstat";
 import { termEnemystatusres } from "./termEnemystatusres";
-import { termAchievementseries } from "./termAchievementseries";
+
 
 export const CustomCollections = [
    Character,
@@ -31,6 +32,7 @@ export const CustomCollections = [
    EnemySkill,
    Enemy,
    Achievement,
+   AchievementSeries,
    termElement,
    termItemtype,
    termPath,
@@ -38,5 +40,4 @@ export const CustomCollections = [
    termStattype,
    termRelicstat,
    termEnemystatusres,
-   termAchievementseries,
 ];
