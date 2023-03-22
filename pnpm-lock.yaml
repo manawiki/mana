@@ -19,6 +19,7 @@ importers:
       '@mdx-js/react': ^2.3.0
       '@payloadcms/plugin-cloud-storage': ^1.0.12
       '@payloadcms/plugin-search': ^1.0.0
+      '@radix-ui/react-checkbox': ^1.0.3
       '@radix-ui/react-dropdown-menu': ^2.0.4
       '@radix-ui/react-popover': ^1.0.5
       '@radix-ui/react-scroll-area': ^1.0.3
@@ -77,7 +78,6 @@ importers:
       react-hot-toast: ^2.4.0
       react-i18next: ^12.1.4
       react-lazily: ^0.9.1
-      react-tooltip: ^5.8.3
       react-zorm: ^0.6.1
       refractor: ^4.8.0
       regenerator-runtime: ^0.13.11
@@ -110,6 +110,7 @@ importers:
       '@mdx-js/react': 2.3.0_react@18.2.0
       '@payloadcms/plugin-cloud-storage': 1.0.14_dkmmbt7d52bu42jtpymb6jojje
       '@payloadcms/plugin-search': 1.0.0_aewf4656z5ohnlmuns7dibtope
+      '@radix-ui/react-checkbox': 1.0.3_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-dropdown-menu': 2.0.4_zula6vjvt3wdocc4mwcxqa6nzi
       '@radix-ui/react-popover': 1.0.5_zula6vjvt3wdocc4mwcxqa6nzi
       '@radix-ui/react-scroll-area': 1.0.3_biqbaboplfbrettd7655fr4n2y
@@ -147,7 +148,6 @@ importers:
       react-hot-toast: 2.4.0_biqbaboplfbrettd7655fr4n2y
       react-i18next: 12.1.5_iakk3dtjhjpukdoa4oua5khgci
       react-lazily: 0.9.1_biqbaboplfbrettd7655fr4n2y
-      react-tooltip: 5.8.3_biqbaboplfbrettd7655fr4n2y
       react-zorm: 0.6.1_7vecugvyoaat5dnzltdehncrna
       refractor: 4.8.0
       regenerator-runtime: 0.13.11
@@ -3144,20 +3144,10 @@ packages:
     resolution: {integrity: sha512-buc8BXHmG9l82+OQXOFU3Kr2XQx9ys01U/Q9HMIrZ300iLc8HLMgh7dcCqgYzAzf4BkoQvDcXf5Y+CuEZ5JBYg==}
     dev: false
 
-  /@floating-ui/core/1.2.2:
-    resolution: {integrity: sha512-FaO9KVLFnxknZaGWGmNtjD2CVFuc0u4yeGEofoyXO2wgRA7fLtkngT6UB0vtWQWuhH3iMTZZ/Y89CMeyGfn8pA==}
-    dev: false
-
   /@floating-ui/dom/0.5.4:
     resolution: {integrity: sha512-419BMceRLq0RrmTSDxn8hf9R3VCJv2K9PUfugh5JyEFmdjzDo+e8U5EdR8nzKq8Yj1htzLm3b6eQEEam3/rrtg==}
     dependencies:
       '@floating-ui/core': 0.7.3
-    dev: false
-
-  /@floating-ui/dom/1.1.1:
-    resolution: {integrity: sha512-TpIO93+DIujg3g7SykEAGZMDtbJRrmnYRCNYSjJlvIbGhBjRSNTLVbNeDQBrzy9qDgUbiWdc7KA0uZHZ2tJmiw==}
-    dependencies:
-      '@floating-ui/core': 1.2.2
     dev: false
 
   /@floating-ui/react-dom/0.7.2_zula6vjvt3wdocc4mwcxqa6nzi:
@@ -3695,6 +3685,25 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.13
       '@radix-ui/react-primitive': 1.0.2_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@radix-ui/react-checkbox/1.0.3_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-55B8/vKzTuzxllH5sGJO4zaBf9gYpJuJRRzaOKm+0oAefRnMvbf+Kgww7IOANVN0w3z7agFJgtnXaZl8Uj95AA==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.20.13
+      '@radix-ui/primitive': 1.0.0
+      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
+      '@radix-ui/react-context': 1.0.0_react@18.2.0
+      '@radix-ui/react-presence': 1.0.0_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-primitive': 1.0.2_biqbaboplfbrettd7655fr4n2y
+      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-previous': 1.0.0_react@18.2.0
+      '@radix-ui/react-use-size': 1.0.0_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
@@ -14696,18 +14705,6 @@ packages:
       react-dom: '>=16'
     dependencies:
       clsx: 1.2.1
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-    dev: false
-
-  /react-tooltip/5.8.3_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-h7maAlm2Xeymc14gWKhhrzsENeB83N65EzZ+AcQIGrOpNE0yefVRJIHhNcWHEJ0FEtf7VZXxtsj5glVXKxEtvA==}
-    peerDependencies:
-      react: '>=16.14.0'
-      react-dom: '>=16.14.0'
-    dependencies:
-      '@floating-ui/dom': 1.1.1
-      classnames: 2.3.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

@@ -158,12 +158,15 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
                className="overflow-scroll shadow shadow-1
-               h-60 w-60 border border-color outline-none z-10 rounded-lg bg-2"
+               h-60 w-52 border border-color outline-none z-10 rounded-lg bg-2"
             >
                {groups.map((group, indexGroup) => {
                   return (
                      <DropdownMenuPrimitive.Group key={indexGroup} className="">
-                        <DropdownMenuPrimitive.Label className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-2 top-0">
+                        <DropdownMenuPrimitive.Label
+                           className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-zinc-100/70
+                        dark:bg-zinc-700/70 top-0"
+                        >
                            {group.label}
                         </DropdownMenuPrimitive.Label>
                         <div className="divide-y border-y border-color divide-color">

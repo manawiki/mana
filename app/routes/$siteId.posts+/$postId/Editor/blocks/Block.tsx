@@ -35,7 +35,7 @@ export default function Block({
 }: RenderElementProps) {
    if (element.type === BlockType.Paragraph) {
       return (
-         <p className="mb-3" {...attributes}>
+         <p className="mb-1.5" {...attributes}>
             {children}
          </p>
       );
@@ -48,7 +48,7 @@ export default function Block({
    if (element.type === BlockType.H2) {
       return (
          <h2
-            className="dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light"
+            className="font-bold dark:text-zinc-100 font-header text-2xl mb-1"
             {...attributes}
          >
             {children}
@@ -57,7 +57,14 @@ export default function Block({
    }
 
    if (element.type === BlockType.H3) {
-      return <h3 {...attributes}>{children}</h3>;
+      return (
+         <h3
+            className="font-bold dark:text-zinc-100 font-header text-xl mb-1"
+            {...attributes}
+         >
+            {children}
+         </h3>
+      );
    }
 
    if (element.type === BlockType.BulletedList) {

@@ -1,6 +1,5 @@
-import styles from "./BlockCodeSandbox.module.css";
 import { ReactEditor, useSlate } from "slate-react";
-import { CustomElement, CodeSandboxElement } from "../types";
+import type { CustomElement, CodeSandboxElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
 import { useSelf } from "~/liveblocks.config";
@@ -15,10 +14,11 @@ export default function BlockCodeSandbox({ element }: Props) {
    const self = useSelf();
 
    return (
-      <div className={styles.block_codesandbox}>
+      <div className="relative my-0.5">
          {element.url ? (
-            <div className={styles.codesandbox_embed}>
+            <div className="flex mb-3 relative justify-center w-full min-h-[100px] h-0 pb-[66%]">
                <iframe
+                  className="absolute left-0 top-0 w-full h-full"
                   width="100%"
                   height="315"
                   src={element.url}

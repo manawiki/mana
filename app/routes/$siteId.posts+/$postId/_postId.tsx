@@ -17,18 +17,7 @@ import {
 import { Fragment, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
-import { NoteViewer } from "~/modules/note/components/NoteViewer";
-import {
-   Component,
-   Copy,
-   EyeOff,
-   Loader2,
-   MoreVertical,
-   Plus,
-   Trash2,
-   Type,
-   X,
-} from "lucide-react";
+import { Copy, EyeOff, Loader2, MoreVertical, Trash2, X } from "lucide-react";
 import {
    type FormResponse,
    assertIsPatch,
@@ -41,16 +30,13 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { format, formatDistanceStrict } from "date-fns";
 import { AdminOrOwner, useIsStaffOrSiteAdminOrOwner } from "~/modules/auth";
 import { createCustomIssues } from "react-zorm";
-import { Menu, Popover, Transition } from "@headlessui/react";
+import { Menu, Transition } from "@headlessui/react";
 import { Modal } from "~/components/Modal";
 import { useTranslation } from "react-i18next";
 import { toast } from "~/components/Toaster";
-import { Image } from "~/components/Image";
 import { DotLoader } from "~/components/DotLoader";
-import { InlineEditor } from "./InlineEditor";
 import { PostHeaderEdit } from "./PostHeaderEdit";
 import { postSchema } from "./postSchema";
 import { RoomProvider } from "~/liveblocks.config";
@@ -58,10 +44,9 @@ import Editor from "./Editor/Editor";
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { nanoid } from "nanoid";
-import { BlockType, CustomElement } from "./Editor/types";
+import type { CustomElement } from "./Editor/types";
+import { BlockType } from "./Editor/types";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-
-type Mode = "edit" | "preview";
 
 //get notes list from payload
 export async function loader({
@@ -111,14 +96,11 @@ export const handle = {
 export default function PostPage() {
    const data = useLoaderData<typeof loader>();
    const { post } = data;
-   const viewModeDefault = useIsStaffOrSiteAdminOrOwner();
-   const [mode, setMode] = useState<Mode>(viewModeDefault ? "edit" : "preview");
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "delete");
-   const { siteId, postId } = useParams();
    const transition = useNavigation();
    const isPublishing = isAdding(transition, "publish");
    const disabled = isProcessing(transition.state);
@@ -227,32 +209,6 @@ export default function PostPage() {
          </Modal>
          <AdminOrOwner>
             <div className="flex items-center justify-between max-desktop:px-3 pt-8 laptop:pt-5 mx-auto max-w-[728px]">
-               <div className="flex items-center gap-3">
-                  <div className="flex cursor-pointer items-center gap-2.5">
-                     <span
-                        onClick={() => setMode("edit")}
-                        className={`${
-                           mode == "edit"
-                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
-                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
-                        } rounded-lg h-8 flex items-center px-3.5 text-xs font-bold transition 
-                        `}
-                     >
-                        Edit
-                     </span>
-                     <span
-                        onClick={() => setMode("preview")}
-                        className={`${
-                           mode == "preview"
-                              ? "dark:bg-zinc-300 bg-zinc-700 text-white dark:text-black"
-                              : "hover:bg-zinc-100 bg-zinc-200 dark:bg-zinc-700 dark:hover:bg-zinc-700"
-                        } rounded-lg h-8 flex items-center px-3.5 text-xs font-bold transition 
-                        `}
-                     >
-                        Preview
-                     </span>
-                  </div>
-               </div>
                <AdminOrOwner>
                   <div className="flex items-center gap-3 max-laptop:">
                      <Menu as="div" className="relative">
@@ -363,7 +319,7 @@ export default function PostPage() {
                </AdminOrOwner>
             </div>
          </AdminOrOwner>
-         {mode === "edit" ? <PostEdit /> : <PostView />}
+         <PostEdit />
          <Outlet />
       </div>
    );
@@ -519,7 +475,7 @@ function PostEdit() {
    return (
       <main
          className="relative min-h-screen leading-7
-         max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
+         max-laptop:pt-10 max-laptop:pb-20 laptop:pt-6"
       >
          <TooltipProvider>
             <PostHeaderEdit post={post} />
@@ -554,104 +510,6 @@ function PostEdit() {
                </ClientSideSuspense>
             </RoomProvider>
          </TooltipProvider>
-      </main>
-   );
-}
-
-function PostView() {
-   const data = useLoaderData<typeof loader>();
-
-   const { post } = data;
-
-   //This is necessary to determine whether the user should see the draft notes or not.
-   const notes = (data.notes.length ? data.notes : post.notes) as Note[];
-
-   return (
-      <main
-         className="post-content relative min-h-screen  
-         max-laptop:pt-10 max-laptop:pb-20 laptop:py-12"
-      >
-         <section className="max-w-[728px] mx-auto max-desktop:px-3 mb-6">
-            <h1 className="pb-3 font-header text-3xl font-semibold laptop:text-4xl">
-               {post?.title}
-            </h1>
-            <div className="mt-1 py-3 laptop:mx-1 flex items-center gap-3 border-color border-y">
-               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
-                  {/* @ts-expect-error */}
-                  {post?.author?.avatar ? (
-                     <Image /* @ts-expect-error */
-                        url={post.author.avatar.url}
-                        options="fit=crop,width=60,height=60 ,gravity=auto"
-                        /* @ts-expect-error */
-                        alt={post?.author?.username}
-                     />
-                  ) : null}
-               </div>
-               <div>
-                  {/* @ts-expect-error */}
-                  <div className="font-bold">{post?.author?.username}</div>
-                  <div className="flex items-center gap-3">
-                     <time
-                        className="text-1 flex items-center gap-1.5 text-sm"
-                        dateTime={post?.updatedAt}
-                     >
-                        {formatDistanceStrict(
-                           new Date(post?.updatedAt as string),
-                           new Date(),
-                           {
-                              addSuffix: true,
-                           }
-                        )}
-                     </time>
-                     {post?.publishedAt && (
-                        <>
-                           <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
-                           <time
-                              className="text-1 flex items-center gap-1.5 text-sm"
-                              dateTime={post?.publishedAt}
-                           >
-                              {format(new Date(post?.publishedAt), "MMM dd")}
-                           </time>
-                        </>
-                     )}
-                  </div>
-               </div>
-            </div>
-         </section>
-         <section className="max-w-[800px] mx-auto">
-            {post.banner ? (
-               <div
-                  className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
-                        laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                        items-center justify-center overflow-hidden tablet:rounded-md
-                        shadow-sm mb-8"
-               >
-                  <Image
-                     alt={post.title}
-                     options="fit=crop,height=440,gravity=auto"
-                     className="h-full w-full object-cover"
-                     //@ts-ignore
-                     url={post?.banner?.url}
-                  />
-               </div>
-            ) : null}
-         </section>
-         <section className="max-w-[728px] px-3 desktop:px-0 mx-auto">
-            <Suspense fallback={<div>Loading...</div>}>
-               {notes.map((note) => (
-                  <NoteViewer
-                     key={note.id}
-                     note={note}
-                     //insert custom components here
-                     components={
-                        {
-                           // h2: (props) => <h2 className="text-2xl" {...props} />,
-                        }
-                     }
-                  />
-               ))}
-            </Suspense>
-         </section>
       </main>
    );
 }

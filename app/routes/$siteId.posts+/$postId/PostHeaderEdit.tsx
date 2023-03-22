@@ -57,20 +57,19 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                   <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-emerald-500" />
                ) : null}
             </div>
-
-            <div className="pb-6 pt-1 flex items-center gap-3 rounded-md">
-               <div className="bg-1 h-9 w-9 overflow-hidden rounded-full">
+            <div className="mt-5 mb-7 py-3 flex items-center gap-3 border-color border-y">
+               <div className="bg-1 h-11 w-11 border-color border-2 overflow-hidden rounded-full">
                   {/* @ts-expect-error */}
                   {post?.author?.avatar ? (
                      <Image /* @ts-expect-error */
                         url={post.author.avatar.url}
-                        options="fit=crop,width=60,height=60 ,gravity=auto"
+                        options="fit=crop,width=80,height=80 ,gravity=auto"
                         /* @ts-expect-error */
                         alt={post?.author?.username}
                      />
                   ) : null}
                </div>
-               <div className="space-y-0.5">
+               <div>
                   {/* @ts-expect-error */}
                   <div className="font-bold">{post?.author?.username}</div>
                   <div className="flex items-center gap-3">
@@ -101,7 +100,7 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                </div>
             </div>
          </section>
-         <section className="max-w-[800px] mx-auto">
+         {/* <section className="max-w-[800px] mx-auto">
             {post.banner ? (
                <div className="relative mb-5">
                   <div
@@ -182,7 +181,7 @@ export const PostHeaderEdit = ({ post }: { post: Post }) => {
                   <input type="hidden" name="intent" value="updateBanner" />
                </fetcher.Form>
             )}
-         </section>
+         </section> */}
       </>
    );
 };

@@ -18,7 +18,7 @@ export default function Header() {
                   />
                </div>
                {others.length === 0 ? null : (
-                  <div>
+                  <div className="space-y-2">
                      <div className="w-5 mb-2 h-0.5 dark:bg-zinc-700 bg-zinc-200 rounded-full mx-auto" />
                      {others.map((user) => {
                         const {

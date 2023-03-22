@@ -11,7 +11,6 @@ import {
 import { Modal } from "~/components/Modal";
 import useWindowDimensions from "~/hooks/use-window-dimensions";
 import { Tab } from "@headlessui/react";
-import { NoteSelector } from "../gui/NoteSelector";
 import type { MDXComponents } from "mdx/types";
 import { Loader2 } from "lucide-react";
 import { isAdding } from "~/utils";
@@ -117,7 +116,6 @@ export default function NoteEditor({
                <NoteLayout
                //Layout should have two childs, first one is the ui editor and second one is the live preview
                >
-                  <NoteSelector note={note} onChange={onChange} />
                   <MDXProvider
                      //Renders a Live preview panel
                      components={memoComponents}

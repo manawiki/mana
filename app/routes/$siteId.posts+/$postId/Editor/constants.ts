@@ -2,8 +2,6 @@ import type { Format } from "./types";
 
 export const PROSE_CONTAINER_ID = "prose_container";
 
-export const LOCAL_STORAGE_THEME = "theme";
-
 export const USER_COLORS = [
    "#0167B5",
    "#2FCABE",

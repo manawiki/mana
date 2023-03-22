@@ -1,4 +1,3 @@
-import styles from "./BlockVideo.module.css";
 import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, VideoElement } from "../types";
 import { Transforms } from "slate";
@@ -15,10 +14,11 @@ export default function BlockVideo({ element }: Props) {
    const self = useSelf();
 
    return (
-      <div className={styles.block_video}>
+      <div className="relative">
          {element.url ? (
-            <div className={styles.video_embed}>
+            <div className="relative mb-3 flex justify-center w-full min-h-[100px] h-0 pb-[56.20608899297424%]">
                <iframe
+                  className="left-0 top-0 w-full h-full absolute"
                   width="100%"
                   height="315"
                   src={element.url}

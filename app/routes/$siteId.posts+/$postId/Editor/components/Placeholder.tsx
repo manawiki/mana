@@ -45,22 +45,24 @@ export default function Placeholder({
             onOpenChange={ready ? setOpen : () => {}}
          >
             <PopoverPrimitive.Trigger asChild>
-               <button className="relative flex items-center w-full rounded select-none cursor-pointer">
-                  <span className="flex items-center mr-1">
+               <button
+                  className="relative border flex dark:border-zinc-600 hover:border-zinc-300 border-zinc-200 border-dotted gap-4 dark:hover:border-zinc-500
+                  items-center w-full font-semibold rounded-lg bg-zinc-50 dark:bg-bg4Dark mb-3 p-3 text-sm select-none cursor-pointer"
+               >
+                  <span className="w-5 flex items-center justify-center text-emerald-500 h-5">
                      <Icon />
                   </span>
                   {text}
                </button>
             </PopoverPrimitive.Trigger>
             <PopoverPrimitive.Anchor />
-
             <PopoverPrimitive.Portal>
                <PopoverPrimitive.Content
-                  className="w-[280px] bg-2 shadow shadow-1 rounded-lg"
+                  className="w-[320px] laptop:w-[400px] border border-color bg-1 p-5 shadow-lg shadow-1 rounded-xl"
                   sideOffset={-20}
                >
                   <form
-                     className="p-4"
+                     className="block space-y-3.5"
                      onSubmit={(e) => {
                         e.preventDefault();
                         onSubmit(values);
@@ -81,8 +83,11 @@ export default function Placeholder({
                            ],
                            index
                         ) => (
-                           <div key={name} className="input-text block">
-                              <label className="text-xs pb-1" htmlFor={name}>
+                           <div key={name} className="">
+                              <label
+                                 className="text-xs uppercase pl-0.5 text-1 font-bold pb-1"
+                                 htmlFor={name}
+                              >
                                  {label}
                               </label>
                               <input
@@ -104,9 +109,15 @@ export default function Placeholder({
                            </div>
                         )
                      )}
-                     <Button ariaLabel="Toggle Strikethrough" type="submit">
-                        Embed
-                     </Button>
+                     <div className="flex justify-end">
+                        <Button
+                           className="block h-10 font-bold text-sm w-20 mt-2 text-white bg-emerald-500 rounded-lg"
+                           ariaLabel="Toggle Strikethrough"
+                           type="submit"
+                        >
+                           Embed
+                        </Button>
+                     </div>
                   </form>
                   <PopoverPrimitive.Arrow className="fill-white dark:fill-bg4Dark" />
                </PopoverPrimitive.Content>

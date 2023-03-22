@@ -28,7 +28,7 @@ export default function Tooltip({
          <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
          <TooltipPrimitive.Portal>
             <TooltipPrimitive.Content
-               className="max-w-[14rem] shadow-lg shadow-1 text-sm font-bold bg-4 rounded-full px-3 py-1.5 z-30"
+               className="max-w-[14rem] text-white text-xs font-semibold bg-black rounded-full px-3.5 py-2 z-30"
                side={side}
                align={align}
                sideOffset={4}
@@ -40,7 +40,7 @@ export default function Tooltip({
                   offset={8}
                   width={11}
                   height={5}
-                  className="fill-white dark:fill-bg4Dark"
+                  className="fill-black"
                />
             </TooltipPrimitive.Content>
          </TooltipPrimitive.Portal>

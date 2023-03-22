@@ -1,4 +1,3 @@
-import styles from "./BlockImage.module.css";
 import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, ImageElement } from "../types";
 import { Transforms } from "slate";
@@ -15,10 +14,14 @@ export default function BlockImage({ element }: Props) {
    const self = useSelf();
 
    return (
-      <div className={styles.block_image}>
+      <div className="relative">
          {element.url ? (
-            <div className={styles.image_embed}>
-               <img src={element.url} alt={element.alt || ""} />
+            <div className="flex relative mb-3 justify-center w-full min-h-[100px] h-auto">
+               <img
+                  className="w-full rounded-md"
+                  src={element.url}
+                  alt={element.alt || ""}
+               />
             </div>
          ) : (
             <Placeholder

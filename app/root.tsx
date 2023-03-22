@@ -26,7 +26,6 @@ import { useTranslation } from "react-i18next";
 
 import editorStyles from "remirror/styles/all.css";
 import tailwindStylesheetUrl from "./styles/global.css";
-import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
@@ -76,9 +75,6 @@ export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
    { rel: "preload", href: fonts, as: "style" },
    { rel: "stylesheet", href: fonts },
-
-   { rel: "preload", href: tooltipStyles, as: "style" },
-   { rel: "stylesheet", href: tooltipStyles },
 
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },

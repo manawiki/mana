@@ -492,7 +492,7 @@ function SortableElement({
                </div>
             )}
             <div
-               className="opacity-0 -translate-x-full select-none	
+               className="opacity-0 translate-y-0 -translate-x-full select-none	
                group-hover:opacity-100 absolute top-0 left-0 pr-2"
                contentEditable={false}
             >
