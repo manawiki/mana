@@ -3,7 +3,6 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
-import { ScrollArea } from "./ScrollArea";
 import Tooltip from "./Tooltip";
 import { useSelf } from "~/liveblocks.config";
 
@@ -157,38 +156,35 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          </Tooltip>
 
          <DropdownMenuPrimitive.Portal>
-            <DropdownMenuPrimitive.Content className="overflow-hidden outline-none select-none z-10 rounded-md bg-2">
-               <ScrollArea className="max-h-[280px] w-[220px] p-3">
-                  {groups.map((group, indexGroup) => {
-                     return (
-                        <DropdownMenuPrimitive.Group
-                           key={indexGroup}
-                           className="pb-1"
-                        >
-                           <DropdownMenuPrimitive.Label className="sticky top-0">
-                              {group.label}
-                           </DropdownMenuPrimitive.Label>
-
+            <DropdownMenuPrimitive.Content
+               className="overflow-scroll shadow shadow-1
+               h-60 w-60 border border-color outline-none z-10 rounded-lg bg-2"
+            >
+               {groups.map((group, indexGroup) => {
+                  return (
+                     <DropdownMenuPrimitive.Group key={indexGroup} className="">
+                        <DropdownMenuPrimitive.Label className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-2 top-0">
+                           {group.label}
+                        </DropdownMenuPrimitive.Label>
+                        <div className="divide-y border-y border-color divide-color">
                            {groups[indexGroup].items.map((item, indexItem) => {
                               return (
                                  <DropdownMenuPrimitive.DropdownMenuItem
-                                    className="outline-none flex flex-col cursor-default"
+                                    className="outline-none space-y-1 text-xs bg-3 flex flex-col hover:bg-4 px-2.5 py-2 cursor-default"
                                     key={indexItem}
                                     onSelect={item.onSelect}
                                  >
-                                    <span className="text-sm">
+                                    <span className="font-bold text-emerald-500">
                                        {item.label}
                                     </span>
-                                    <span className="font-bold">
-                                       {item.description}
-                                    </span>
+                                    <span className="">{item.description}</span>
                                  </DropdownMenuPrimitive.DropdownMenuItem>
                               );
                            })}
-                        </DropdownMenuPrimitive.Group>
-                     );
-                  })}
-               </ScrollArea>
+                        </div>
+                     </DropdownMenuPrimitive.Group>
+                  );
+               })}
             </DropdownMenuPrimitive.Content>
          </DropdownMenuPrimitive.Portal>
       </DropdownMenuPrimitive.Root>

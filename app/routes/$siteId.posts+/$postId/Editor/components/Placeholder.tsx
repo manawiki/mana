@@ -1,7 +1,6 @@
 import type { ComponentType } from "react";
-import React, { createRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
-import styles from "./Placeholder.module.css";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
 type Input = {
@@ -46,8 +45,8 @@ export default function Placeholder({
             onOpenChange={ready ? setOpen : () => {}}
          >
             <PopoverPrimitive.Trigger asChild>
-               <button className={styles.placeholder}>
-                  <span className={styles.placeholder_icon}>
+               <button className="relative flex items-center w-full rounded select-none cursor-pointer">
+                  <span className="flex items-center mr-1">
                      <Icon />
                   </span>
                   {text}
@@ -57,11 +56,11 @@ export default function Placeholder({
 
             <PopoverPrimitive.Portal>
                <PopoverPrimitive.Content
-                  className={styles.popover_content}
+                  className="w-[280px] bg-2 shadow shadow-1 rounded-lg"
                   sideOffset={-20}
                >
                   <form
-                     className={styles.popover_form}
+                     className="p-4"
                      onSubmit={(e) => {
                         e.preventDefault();
                         onSubmit(values);
@@ -82,12 +81,12 @@ export default function Placeholder({
                            ],
                            index
                         ) => (
-                           <div key={name} className={styles.input_row}>
-                              <label className={styles.label} htmlFor={name}>
+                           <div key={name} className="input-text block">
+                              <label className="text-xs pb-1" htmlFor={name}>
                                  {label}
                               </label>
                               <input
-                                 className={styles.input}
+                                 className="input-text"
                                  id={name}
                                  type={type}
                                  placeholder={placeholder}
@@ -109,7 +108,7 @@ export default function Placeholder({
                         Embed
                      </Button>
                   </form>
-                  <PopoverPrimitive.Arrow className={styles.popover_arrow} />
+                  <PopoverPrimitive.Arrow className="fill-white dark:fill-bg4Dark" />
                </PopoverPrimitive.Content>
             </PopoverPrimitive.Portal>
          </PopoverPrimitive.Root>
