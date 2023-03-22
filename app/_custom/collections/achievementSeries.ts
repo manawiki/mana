@@ -1,7 +1,7 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const achievementSeries: CollectionConfig = {
+export const AchievementSeries: CollectionConfig = {
    slug: "achievementSeries-lKJ16E5IhH",
    labels: { singular: "achievementSeries", plural: "achievementSerieses" },
    admin: { 

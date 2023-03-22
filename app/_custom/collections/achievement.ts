@@ -46,7 +46,7 @@ export const Achievement: CollectionConfig = {
       {
          name: "achievement_series",
          type: "relationship",
-         relationTo: "termAchievementseries-lKJ16E5IhH",
+         relationTo: "achievementSeries-lKJ16E5IhH",
          hasMany: false,
       },
       {
