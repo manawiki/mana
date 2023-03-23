@@ -3,12 +3,14 @@ import {
    type LoaderArgs,
    type V2_MetaFunction,
    json,
+   redirect,
 } from "@remix-run/node";
 import {
    Link,
    Outlet,
    useLoaderData,
    useNavigation,
+   useSearchParams,
    Form,
    useActionData,
 } from "@remix-run/react";
@@ -25,9 +27,16 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { ImagePlus, Loader2 } from "lucide-react";
+import {
+   Component,
+   ImagePlus,
+   Loader2,
+   ChevronLeft,
+   ChevronRight,
+} from "lucide-react";
 import { Image } from "~/components/Image";
 import { AdminOrOwner } from "~/modules/auth";
+import { useDebouncedValue } from "~/hooks";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -37,17 +46,23 @@ const EntrySchema = z.object({
 export async function loader({
    context: { payload, user },
    params,
+   request,
 }: LoaderArgs) {
    const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
       siteId: z.string().length(10),
+   });
+
+   const { q, page } = zx.parseQuery(request, {
+      q: z.string().optional(),
+      page: z.coerce.number().optional(),
    });
    const id = `${collectionId}-${siteId}`;
    const collection = await payload.findByID({
       collection: "collections",
       id,
    });
-   const { docs } = await payload.find({
+   const entrylist = await payload.find({
       collection: "entries",
       where: {
          collectionEntity: {
@@ -55,8 +70,11 @@ export async function loader({
          },
       },
       user,
+      limit: 20,
+      page: page ?? 1,
    });
-   return json({ collection, entries: docs });
+   console.log(entrylist);
+   return json({ collection, entrylist, q });
 }
 
 export const meta: V2_MetaFunction = ({ data, parentsData }) => {
@@ -76,7 +94,35 @@ export const handle = {
 };
 
 export default function CollectionList() {
-   const { collection, entries } = useLoaderData<typeof loader>();
+   const { collection, entrylist, q } = useLoaderData<typeof loader>();
+
+   const entries = entrylist?.docs;
+
+   // Paging Variables!
+   const [query, setQuery] = useState(q);
+   const debouncedValue = useDebouncedValue(query, 500);
+   const [searchParams, setSearchParams] = useSearchParams({});
+
+   const currentEntry = entrylist?.pagingCounter;
+   const totalEntries = entrylist?.totalDocs;
+   const totalPages = entrylist?.totalPages;
+   const limit = entrylist?.limit;
+   const hasNextPage = entrylist?.hasNextPage;
+   const hasPrevPage = entrylist?.hasPrevPage;
+
+   useEffect(() => {
+      if (debouncedValue) {
+         setSearchParams((searchParams) => {
+            searchParams.set("q", debouncedValue);
+            return searchParams;
+         });
+      } else {
+         setSearchParams((searchParams) => {
+            searchParams.delete("q");
+            return searchParams;
+         });
+      }
+   }, [debouncedValue]);
 
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
@@ -85,6 +131,7 @@ export default function CollectionList() {
    //Image preview after upload
    const [, setPicture] = useState(null);
    const [imgData, setImgData] = useState(null);
+
    const onChangePicture = (e: any) => {
       if (e.target.files[0]) {
          setPicture(e.target.files[0]);
@@ -113,10 +160,8 @@ export default function CollectionList() {
    return (
       <>
          <Outlet />
-         <div className="mx-auto max-w-[728px] px-3 tablet:px-0 pt-4 pb-12">
-            <h2 className="pt-6 pb-3.5 text-2xl font-bold">
-               {collection.name}
-            </h2>
+         <div className="mx-auto max-w-[728px] max-desktop:px-3 pb-12">
+            <h2 className="pb-3 text-xl font-bold pl-1">{collection.name}</h2>
             <AdminOrOwner>
                <Form
                   ref={zoEntry.ref}
@@ -200,24 +245,99 @@ export default function CollectionList() {
                      {entries?.map((entry) => (
                         <Link
                            key={entry.id}
-                           to={`${entry.id}`}
+                           to={`${
+                              // @ts-expect-error
+                              entry?.collectionEntity?.customTemplate == true
+                                 ? `${entry.id}/c`
+                                 : `${entry.id}/w`
+                           }`}
                            prefetch="intent"
                            className="flex items-center gap-3 p-2 bg-2 hover:underline"
                         >
                            <div
-                              className="flex h-8 w-8 items-center justify-between dark:border-zinc-600
-                                    overflow-hidden rounded-full border border-zinc-400"
+                              className="flex h-8 w-8 items-center justify-between border-color
+                                    overflow-hidden rounded-full border-2 shadow-sm shadow-1"
                            >
-                              <Image /* @ts-ignore */
-                                 url={entry.icon?.url}
-                                 options="fit=crop,width=60,height=60,gravity=auto"
-                                 alt="List Icon"
-                              />
+                              {/* @ts-expect-error */}
+                              {entry.icon?.url ? (
+                                 <Image /* @ts-ignore */
+                                    url={entry.icon?.url}
+                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    alt="List Icon"
+                                 />
+                              ) : (
+                                 <Component
+                                    className="mx-auto text-1"
+                                    size={18}
+                                 />
+                              )}
                            </div>
                            <span>{entry.name}</span>
                         </Link>
                      ))}
                   </div>
+
+                  {/* Pagination Section */}
+                  {totalPages > 1 && (
+                     <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+                        <div>
+                           Showing{" "}
+                           <span className="font-bold">{currentEntry}</span> to{" "}
+                           <span className="font-bold">
+                              {limit + currentEntry - 1 > totalEntries
+                                 ? totalEntries
+                                 : limit + currentEntry - 1}
+                           </span>{" "}
+                           of <span className="font-bold">{totalEntries}</span>{" "}
+                           results
+                        </div>
+                        <div className="flex items-center gap-3 text-xs">
+                           {hasPrevPage ? (
+                              <button
+                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                 onClick={() =>
+                                    setSearchParams((searchParams) => {
+                                       searchParams.set(
+                                          "page",
+                                          entrylist.prevPage as any
+                                       );
+                                       return searchParams;
+                                    })
+                                 }
+                              >
+                                 <ChevronLeft
+                                    size={18}
+                                    className="text-emerald-500"
+                                 />
+                                 Prev
+                              </button>
+                           ) : null}
+                           {hasNextPage && hasPrevPage && (
+                              <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                           )}
+                           {hasNextPage ? (
+                              <button
+                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                 onClick={() =>
+                                    setSearchParams((searchParams) => {
+                                       searchParams.set(
+                                          "page",
+                                          entrylist.nextPage as any
+                                       );
+                                       return searchParams;
+                                    })
+                                 }
+                              >
+                                 Next
+                                 <ChevronRight
+                                    size={18}
+                                    className="text-emerald-500"
+                                 />
+                              </button>
+                           ) : null}
+                        </div>
+                     </div>
+                  )}
                </>
             )}
          </div>
@@ -230,6 +350,8 @@ export const action: ActionFunction = async ({
    request,
    params,
 }) => {
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
    const { collectionId } = zx.parseParams(params, {
       collectionId: z.string(),
    });
@@ -268,6 +390,7 @@ export const action: ActionFunction = async ({
                collection: "entries",
                data: {
                   name,
+                  author: user?.id,
                   icon: iconId,
                   collectionEntity: collectionId,
                },
