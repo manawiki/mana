@@ -5,8 +5,8 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "termRarity";
-const data = require("./import_files/" + collectionName + ".json");
+const collectionName = "materials";
+const data = require("./import_files/" + "Item" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
@@ -41,7 +41,7 @@ const getData = async () =>
 //Uploads an entry and custom field data; NOTE: Still need to add "check for existing entry" functionality
 const seedUploads = async (result: any) => {
 
-	const idValue = result[idField];
+	const idValue = result[idField].toString();
 
 	// Define Image fields (global)
 	const iconImport = {
@@ -53,6 +53,42 @@ const seedUploads = async (result: any) => {
 		image_frame: siteId + "_" + result.image_frame?.name.replace(".png",""),
 		icon_frame: siteId + "_" + result.icon_frame?.name.replace(".png",""),
 		image_bg: siteId + "_" + result.image_bg?.name.replace(".png",""),
+	}
+
+	// Relation Fields (global)
+	const relationFields = [
+		{ name: "itemtype", collection: "_itemType", },
+		{ name: "rarity", collection: "_rarity", }
+	];
+	
+	// Check if Relation entry exists for each field and get ID
+	const relationIds = relationFields.map(async (field:any) => {
+		if (result[field.name]) {
+			const existingRelation =  await payload.find({
+				collection: field.collection + "-" + siteId,
+				where: {
+					data_key: {
+						equals: result[field.name].data_key,
+					}
+				}
+			});
+			return {
+				[field.name]:  existingRelation.docs?.[0]?.id,
+			};
+		}
+		else {
+			return null;
+		}
+	});
+
+	const relationArray = await Promise.all(relationIds);
+
+	var relationImport = {};
+
+	for (var i = 0; i < relationArray?.length; i++) {
+		if (relationArray[i]) {
+			relationImport[Object.keys(relationArray[i])] = relationArray[i][Object.keys(relationArray[i])];
+		}
 	}
 
 	// Check if entry exists
@@ -96,7 +132,10 @@ const seedUploads = async (result: any) => {
 			id: collectionName + "-" + itemId,
 			name: result?.name.toString(),
 			...iconImport,
+			...relationImport,
 		};
+
+
 
 		const updateItemCustom = await payload.update({
 			collection: collectionName + "-" + siteId,
@@ -132,6 +171,7 @@ const seedUploads = async (result: any) => {
 			id: collectionName + "-" + itemId,
 			name: result?.name.toString(),
 			...iconImport,
+			...relationImport,
 		};
 
 		const createItemCustom = await payload.create({

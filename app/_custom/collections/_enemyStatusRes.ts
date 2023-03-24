@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termEnemystatusres: CollectionConfig = {
-   slug: "termEnemystatusres-lKJ16E5IhH",
-   labels: { singular: "termEnemystatusres", plural: "termEnemystatusreses" },
+export const _EnemyStatusRes: CollectionConfig = {
+   slug: "_enemyStatusRes-lKJ16E5IhH",
+   labels: { singular: "_enemyStatusRes", plural: "_enemyStatusReses" },
    admin: { 
          group: "Custom",
          useAsTitle:  "name",
@@ -23,7 +23,7 @@ export const termEnemystatusres: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "termEnemystatusres-lKJ16E5IhH" },
+               collectionEntity: { equals: "_enemyStatusRes-lKJ16E5IhH" },
             };
          },
       },

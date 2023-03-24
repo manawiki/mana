@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termRelicstat: CollectionConfig = {
-   slug: "termRelicstat-lKJ16E5IhH",
-   labels: { singular: "termRelicstat", plural: "termRelicstats" },
+export const _RelicStat: CollectionConfig = {
+   slug: "_relicStat-lKJ16E5IhH",
+   labels: { singular: "_relicStat", plural: "_relicStats" },
    admin: { 
          group: "Custom",
          useAsTitle:  "stat_id",
@@ -23,7 +23,7 @@ export const termRelicstat: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "termRelicstat-lKJ16E5IhH" },
+               collectionEntity: { equals: "_relicStat-lKJ16E5IhH" },
             };
          },
       },
@@ -48,9 +48,9 @@ export const termRelicstat: CollectionConfig = {
          type: "text",
       },
       {
-         name: "term_stattype",
+         name: "stattype",
          type: "relationship",
-         relationTo: "termStattype-lKJ16E5IhH",
+         relationTo: "_statType-lKJ16E5IhH",
          hasMany: false,
       },
       {

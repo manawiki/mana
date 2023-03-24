@@ -40,21 +40,21 @@ export const Character: CollectionConfig = {
          type: "text",
       },
       {
-         name: "term_rarity",
+         name: "rarity",
          type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
+         relationTo: "_rarity-lKJ16E5IhH",
          hasMany: false,
       },
       {
-         name: "term_element",
+         name: "element",
          type: "relationship",
-         relationTo: "termElement-lKJ16E5IhH",
+         relationTo: "_element-lKJ16E5IhH",
          hasMany: false,
       },
       {
-         name: "term_path",
+         name: "path",
          type: "relationship",
-         relationTo: "termPath-lKJ16E5IhH",
+         relationTo: "_path-lKJ16E5IhH",
          hasMany: false,
       },
       {

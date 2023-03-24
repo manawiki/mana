@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termItemtype: CollectionConfig = {
-   slug: "termItemtype-lKJ16E5IhH",
-   labels: { singular: "termItemtype", plural: "termItemtypes" },
+export const _ItemType: CollectionConfig = {
+   slug: "_itemType-lKJ16E5IhH",
+   labels: { singular: "_itemType", plural: "_itemTypes" },
    admin: { 
          group: "Custom",
          useAsTitle:  "name",

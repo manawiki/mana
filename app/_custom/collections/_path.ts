@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termRarity: CollectionConfig = {
-   slug: "termRarity-lKJ16E5IhH",
-   labels: { singular: "termRarity", plural: "termRarities" },
+export const _Path: CollectionConfig = {
+   slug: "_path-lKJ16E5IhH",
+   labels: { singular: "_path", plural: "_paths" },
    admin: { 
          group: "Custom",
-         useAsTitle:  "display_number",
+         useAsTitle:  "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -23,7 +23,7 @@ export const termRarity: CollectionConfig = {
          required: true,
 		 filterOptions: () => {
 			 return {
-				 collectionEntity: { equals: "termRarity-lKJ16E5IhH" },
+				 collectionEntity: { equals: "_path-lKJ16E5IhH" },
 			 };
 		 },
       },
@@ -32,49 +32,27 @@ export const termRarity: CollectionConfig = {
          type: "text",
       },
       {
-         name: "name",
-         type: "text",
-      },
-      {
          name: "data_key",
          type: "text",
       },
       {
-         name: "display_number",
+         name: "name",
          type: "text",
       },
       {
-         name: "color",
+         name: "description",
          type: "text",
       },
       {
-         name: "color_line",
+         name: "icon_name",
          type: "text",
       },
       {
-         name: "image_frame_name",
+         name: "icon_small_name",
          type: "text",
       },
       {
-         name: "icon_frame_name",
-         type: "text",
-      },
-      {
-         name: "image_bg_name",
-         type: "text",
-      },
-      {
-         name: "image_frame",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_frame",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "image_bg",
+         name: "icon_small",
          type: "upload",
          relationTo: "images",
       },
