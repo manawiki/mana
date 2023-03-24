@@ -6,7 +6,7 @@ export const _RelicStat: CollectionConfig = {
    labels: { singular: "_relicStat", plural: "_relicStats" },
    admin: { 
          group: "Custom",
-         useAsTitle:  "stat_id",
+         useAsTitle:  "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -33,6 +33,10 @@ export const _RelicStat: CollectionConfig = {
       },
       {
          name: "data_key",
+         type: "text",
+      },
+      {
+         name: "name",
          type: "text",
       },
       {
