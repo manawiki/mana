@@ -11,13 +11,13 @@ import { Enemy } from "./enemy";
 import { Achievement } from "./achievement";
 import { AchievementSeries } from "./achievementSeries";
 
-import { termRarity } from "./termRarity";
-import { termElement } from "./termElement";
-import { termStattype } from "./termStattype";
-import { termPath } from "./termPath";
-import { termItemtype } from "./termItemtype";
-import { termRelicstat } from "./termRelicstat";
-import { termEnemystatusres } from "./termEnemystatusres";
+import { _Rarity } from "./_rarity";
+import { _Element } from "./_element";
+import { _StatType } from "./_statType";
+import { _Path } from "./_path";
+import { _ItemType } from "./_itemType";
+import { _RelicStat } from "./_relicStat";
+import { _EnemyStatusRes } from "./_enemyStatusRes";
 
 
 export const CustomCollections = [
@@ -33,11 +33,11 @@ export const CustomCollections = [
    Enemy,
    Achievement,
    AchievementSeries,
-   termElement,
-   termItemtype,
-   termPath,
-   termRarity,
-   termStattype,
-   termRelicstat,
-   termEnemystatusres,
+   _Element,
+   _ItemType,
+   _Path,
+   _Rarity,
+   _StatType,
+   _RelicStat,
+   _EnemyStatusRes,
 ];

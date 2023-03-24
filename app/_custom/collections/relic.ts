@@ -40,9 +40,9 @@ export const Relic: CollectionConfig = {
          type: "text",
       },
       {
-         name: "term_rarity",
+         name: "rarity",
          type: "relationship",
-         relationTo: "termRarity-lKJ16E5IhH",
+         relationTo: "_rarity-lKJ16E5IhH",
          hasMany: false,
       },
       {
@@ -90,13 +90,13 @@ export const Relic: CollectionConfig = {
       {
          name: "mainstat_group",
          type: "relationship",
-         relationTo: "termRelicstat-lKJ16E5IhH",
+         relationTo: "_relicStat-lKJ16E5IhH",
          hasMany: true,
       },
       {
          name: "substat_group",
          type: "relationship",
-         relationTo: "termRelicstat-lKJ16E5IhH",
+         relationTo: "_relicStat-lKJ16E5IhH",
          hasMany: true,
       },
       {

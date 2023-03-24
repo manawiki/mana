@@ -5,9 +5,9 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "lightCone";
-const data = require("./import_files/LightCone.json");
-const idField = "lightcone_id";
+const collectionName = "_itemType";
+const data = require("./import_files/" + "_ItemType" + ".json");
+const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
 
@@ -45,142 +45,18 @@ const seedUploads = async (result: any) => {
 
 	// Define Image fields (global)
 	const iconImport = {
-		image_full: siteId + "_" + result.image_full?.name.replace(".png",""),
+		icon_color: siteId + "_" + result.icon_color?.name.replace(".png",""),
+		icon_active: siteId + "_" + result.icon_active?.name.replace(".png",""),
+		icon_inactive: siteId + "_" + result.icon_inactive?.name.replace(".png",""),
+		icon_damage_res: siteId + "_" + result.icon_damage_res?.name.replace(".png",""),
+		icon_small: siteId + "_" + result.icon_small?.name.replace(".png",""),
 	}
-
-	// Unlock Materials array
-	var matData: any = [];
-	var promotionCostImport: any = [];
-
-	const allmatjson = JSON.stringify(result.promotion_cost);
-	const matList = allmatjson?.split("data_key\":").map(a => a.replace(/}.*/,"")).slice(1).filter((v,i,a) => a.indexOf(v) === i);
-
-	if (matList?.length > 0) {
-		matData = await Promise.all(matList.map(async (mat:any) => {
-			const findMat = await payload.find({
-				collection: "materials-" + siteId,
-				where: {
-					data_key: {
-						equals: mat.toString(),
-					}
-				}
-			});
-			if (findMat?.docs?.[0]?.id) {
-				return {
-					data_key: [mat.toString()],
-					id: findMat?.docs?.[0]?.id,
-				};
-			}
-			else {
-				return null;
-			}
-		}));
-	}
-
-	if (result.promotion_cost.length > 0) {
-		promotionCostImport = result.promotion_cost.map((l:any) => {
-			const matQty = l.material_qty?.map((mat:any) => {
-				const matId = matData.find((a:any) => a.data_key == mat.materials?.data_key)?.id;
-	
-				return {
-					...mat,
-					materials: matId,
-				}
-			});
-	
-			return {
-				...l,
-				material_qty: matQty,
-			}
-		});
-	}
-
-	var matQtyImport = {
-		promotion_cost: promotionCostImport,
-	}
-
-	// ====================================
-	// ====================================
-	// Relation Fields
-	// ====================================
-
-	var relationFields: any = {};
-	// Single relation fields
-	relationFields["term_rarity"] = null;
-	relationFields["term_path"] = null;
-
-	// Multi relation fields
-	// relationFields["skill_data"] = null;
-
-	var fieldName = "term_rarity";
-	var idName = "name";
-	var collName = "termRarity";
-	if (result[fieldName]?.[idName]) {
-		const relEntry = await payload.find({
-			collection: collName + "-" + siteId,
-			where: {
-				[idName]: {
-					equals: result[fieldName]?.[idName],
-				},
-			}
-		});
-
-		if (relEntry?.docs?.[0]?.id) {
-			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
-		}
-	}
-	var fieldName = "term_path";
-	var idName = "data_key";
-	var collName = "termPath";
-	if (result[fieldName]?.[idName]) {
-		const relEntry = await payload.find({
-			collection: collName + "-" + siteId,
-			where: {
-				[idName]: {
-					equals: result[fieldName]?.[idName],
-				},
-			}
-		});
-
-		if (relEntry?.docs?.[0]?.id) {
-			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
-		}
-	}
-
-	// if (result.traces?.length > 0) {
-	// 	const traceEntry = await Promise.all(result.traces.map(async (t:any) => {
-	// 		const findTrace = await payload.find({
-	// 			collection: "trace-" + siteId,
-	// 			where: {
-	// 				trace_id: {
-	// 					equals: t.trace_id,
-	// 				},
-	// 			}
-	// 		});
-	// 		if (findTrace?.docs?.[0]?.id) {
-	// 			return findTrace?.docs?.[0]?.id;
-	// 		}
-	// 		else {
-	// 			return null;
-	// 		}
-	// }));
-
-	// 	if (traceEntry.length > 0) {
-	// 		relationFields["traces"] = traceEntry;
-	// 	}
-	// }
-
-	// ====================================
-	// End of Relation Fields
-	// ====================================
-	// ====================================
-
 
 	// Check if entry exists
 	const existingEntry = await payload.find({
 		collection: collectionName + "-" + siteId,
 		where: {
-			[idField]: {
+			data_key: {
 				equals: idValue,
 			},
 		}
@@ -205,7 +81,7 @@ const seedUploads = async (result: any) => {
 			id: baseID,
 			data: baseData,
 		});
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(updateItem)} Entry updated!`);
 
 		const itemId = updateItem.id;
@@ -215,8 +91,6 @@ const seedUploads = async (result: any) => {
 			entry: itemId,
 			id: collectionName + "-" + itemId,
 			...iconImport,
-			...matQtyImport,
-			...relationFields,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -241,7 +115,7 @@ const seedUploads = async (result: any) => {
 			data: baseData,
 		});
 		//Limit speed
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(createItem)} Import completed!`);
 		
 		const itemId = createItem.id;
@@ -251,8 +125,6 @@ const seedUploads = async (result: any) => {
 			entry: itemId,
 			id: collectionName + "-" + itemId,
 			...iconImport,
-			...matQtyImport,
-			...relationFields,
 		};
 
 		const createItemCustom = await payload.create({

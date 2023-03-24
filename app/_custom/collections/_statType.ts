@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termStattype: CollectionConfig = {
-   slug: "termStattype-lKJ16E5IhH",
-   labels: { singular: "termStattype", plural: "termStattypes" },
+export const _StatType: CollectionConfig = {
+   slug: "_statType-lKJ16E5IhH",
+   labels: { singular: "_statType", plural: "_statTypees" },
    admin: { 
          group: "Custom",
          useAsTitle:  "name",
@@ -23,7 +23,7 @@ export const termStattype: CollectionConfig = {
          required: true,
 		 filterOptions: () => {
 			 return {
-				 collectionEntity: { equals: "termStattype-lKJ16E5IhH" },
+				 collectionEntity: { equals: "_statType-lKJ16E5IhH" },
 			 };
 		 },
       },

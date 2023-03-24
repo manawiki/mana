@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termElement: CollectionConfig = {
-   slug: "termElement-lKJ16E5IhH",
-   labels: { singular: "termElement", plural: "termElements" },
+export const _Rarity: CollectionConfig = {
+   slug: "_rarity-lKJ16E5IhH",
+   labels: { singular: "_rarity", plural: "_rarities" },
    admin: { 
          group: "Custom",
-         useAsTitle:  "name",
+         useAsTitle:  "display_number",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -21,18 +21,14 @@ export const termElement: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "termElement-lKJ16E5IhH" },
-            };
-         },
+		 filterOptions: () => {
+			 return {
+				 collectionEntity: { equals: "_rarity-lKJ16E5IhH" },
+			 };
+		 },
       },
       {
          name: "id",
-         type: "text",
-      },
-      {
-         name: "data_key",
          type: "text",
       },
       {
@@ -40,42 +36,45 @@ export const termElement: CollectionConfig = {
          type: "text",
       },
       {
-         name: "icon_name",
+         name: "data_key",
          type: "text",
       },
       {
-         name: "icon_color_name",
+         name: "display_number",
          type: "text",
       },
       {
-         name: "icon_active_name",
+         name: "color",
          type: "text",
       },
       {
-         name: "icon_inactive_name",
+         name: "color_line",
          type: "text",
       },
       {
-         name: "icon_damage_res_name",
+         name: "image_frame_name",
          type: "text",
       },
       {
-         name: "icon_color",
+         name: "icon_frame_name",
+         type: "text",
+      },
+      {
+         name: "image_bg_name",
+         type: "text",
+      },
+      {
+         name: "image_frame",
          type: "upload",
          relationTo: "images",
       },
       {
-         name: "icon_active",
+         name: "icon_frame",
          type: "upload",
          relationTo: "images",
       },
       {
-         name: "icon_inactive",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_damage_res",
+         name: "image_bg",
          type: "upload",
          relationTo: "images",
       },

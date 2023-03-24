@@ -5,8 +5,8 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "termPath";
-const data = require("./import_files/" + collectionName + ".json");
+const collectionName = "_statType";
+const data = require("./import_files/" + "_StatType" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
@@ -81,7 +81,7 @@ const seedUploads = async (result: any) => {
 			id: baseID,
 			data: baseData,
 		});
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(updateItem)} Entry updated!`);
 
 		const itemId = updateItem.id;
@@ -115,7 +115,7 @@ const seedUploads = async (result: any) => {
 			data: baseData,
 		});
 		//Limit speed
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(createItem)} Import completed!`);
 		
 		const itemId = createItem.id;

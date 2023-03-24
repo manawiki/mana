@@ -68,7 +68,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "debuff",
                type: "relationship",
-               relationTo: "termEnemystatusres-lKJ16E5IhH",
+               relationTo: "_enemyStatusRes-lKJ16E5IhH",
                hasMany: false,
             },
             {
@@ -80,7 +80,7 @@ export const Enemy: CollectionConfig = {
       {
          name: "elemental_weaknesses",
          type: "relationship",
-         relationTo: "termElement-lKJ16E5IhH",
+         relationTo: "_element-lKJ16E5IhH",
          hasMany: true,
       },
       {
@@ -90,7 +90,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "element",
                type: "relationship",
-               relationTo: "termElement-lKJ16E5IhH",
+               relationTo: "_element-lKJ16E5IhH",
                hasMany: false,
             },
             {

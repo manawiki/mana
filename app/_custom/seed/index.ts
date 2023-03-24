@@ -51,7 +51,37 @@ const seedUploads = async (result: any) => {
    });
    
    if (existingImage.docs.length > 0) {
-      console.log(`Image ${id} already exists! Skipping.`);
+      // Check if file exists! Sometimes uploads fail even though a DB entry goes through.
+      // Will attempt reupload of image if the image doesn't exist, otherwise skips.
+      var fileurl = existingImage.docs?.[0]?.url;
+      var imgid = existingImage.docs?.[0]?.id;
+
+            const updateItem = await payload.update({
+               collection: "images",
+               id: imgid,
+               data: {
+                  id: imgid,
+               },
+               filePath: path.resolve(__dirname, `./images/${id}.png`),
+            });
+            console.log(`${JSON.stringify(updateItem)} Updated!`);
+
+      // if (await URLExists(fileurl)) {
+      //    console.log(`Image ${id} already exists! Skipping.`);
+
+      // }
+      // else {
+      //    console.log(`!!!! => Image ${id} missing; Re-uploading! ${imgid}`);
+      //    const updateItem = await payload.create({
+      //       collection: "images",
+      //       id: imgid,
+      //       // data: {
+      //       //    id: imgid,
+      //       // },
+      //       filePath: path.resolve(__dirname, `./images/${id}.png`),
+      //    });
+      //    console.log(`${JSON.stringify(updateItem)} Updated!`);
+      // }
    }
    else {
       const createItem = await payload.create({
@@ -76,3 +106,20 @@ const sleep = (milliseconds: any) => {
       }
    }
 };
+
+// URL Check function to confirm if image file exists.
+function URLExists(url: any) {
+   return fetch(url)
+   .then((res) => {
+      if (res.status == 404) {    
+         return false;
+      }
+      else {
+         return true;
+      }
+
+   })
+   .catch((err) => {
+      return false;
+   });
+}

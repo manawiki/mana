@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termPath: CollectionConfig = {
-   slug: "termPath-lKJ16E5IhH",
-   labels: { singular: "termPath", plural: "termPaths" },
+export const _Element: CollectionConfig = {
+   slug: "_element-lKJ16E5IhH",
+   labels: { singular: "_element", plural: "_elements" },
    admin: { 
          group: "Custom",
          useAsTitle:  "name",
@@ -21,11 +21,11 @@ export const termPath: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "termPath-lKJ16E5IhH" },
-			 };
-		 },
+         filterOptions: () => {
+            return {
+               collectionEntity: { equals: "_element-lKJ16E5IhH" },
+            };
+         },
       },
       {
          name: "id",
@@ -40,19 +40,42 @@ export const termPath: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
-         type: "text",
-      },
-      {
          name: "icon_name",
          type: "text",
       },
       {
-         name: "icon_small_name",
+         name: "icon_color_name",
          type: "text",
       },
       {
-         name: "icon_small",
+         name: "icon_active_name",
+         type: "text",
+      },
+      {
+         name: "icon_inactive_name",
+         type: "text",
+      },
+      {
+         name: "icon_damage_res_name",
+         type: "text",
+      },
+      {
+         name: "icon_color",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_active",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_inactive",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_damage_res",
          type: "upload",
          relationTo: "images",
       },
