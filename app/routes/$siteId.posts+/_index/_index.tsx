@@ -346,7 +346,7 @@ export default function PostsIndex() {
                         ))
                      )}
                   </section>
-                  {myPosts?.docs.length > 9 && (
+                  {myPosts?.totalPages > 1 && (
                      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
                         <div>
                            Showing{" "}
