@@ -7,7 +7,7 @@ const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 //Array of objects matching the payload shape, change to match your needs
 const collectionName = "_relicStat";
 const data = require("./import_files/" + "_RelicStat" + ".json");
-const idField = "data_key";
+const idField = "name";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
 
@@ -81,7 +81,7 @@ const seedUploads = async (result: any) => {
 	const existingEntry = await payload.find({
 		collection: collectionName + "-" + siteId,
 		where: {
-			data_key: {
+			[idField]: {
 				equals: idValue,
 			},
 		}

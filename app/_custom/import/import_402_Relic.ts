@@ -218,6 +218,8 @@ const seedUploads = async (result: any) => {
 		const baseID = existingEntry.docs[0].entry.id;
 		const custID = existingEntry.docs[0].id;
 
+		// console.log(`Base: ${baseID} ; Cust: ${custID} `);
+
 		var baseData = {
 			...result,
 			collectionEntity: collectionName + "-" + siteId,
