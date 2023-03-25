@@ -40,6 +40,10 @@ export const _StatType: CollectionConfig = {
          type: "text",
       },
       {
+         name: "property_classify",
+         type: "number",
+      },
+      {
          name: "name",
          type: "text",
       },
