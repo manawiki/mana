@@ -32,11 +32,11 @@ export const CharacterStatBlock = ({ pageData }) => {
    var bgurl = pageData.image_full_bg?.url;
    var fronturl = pageData.image_full_front?.url;
    var mainurl = pageData.image_full?.url;
-   var elemurl = pageData.term_element?.entry?.icon?.url;
-   var pathurl = pageData.term_path?.entry?.icon?.url;
-   var pathsmall = pageData.term_path?.icon_small?.url;
-   var rarityurl = pageData.term_rarity?.entry?.icon?.url;
-   var pathname = pageData.term_path?.name;
+   var elemurl = pageData.element?.entry?.icon?.url;
+   var pathurl = pageData.path?.entry?.icon?.url;
+   var pathsmall = pageData.path?.icon_small?.url;
+   var rarityurl = pageData.rarity?.entry?.icon?.url;
+   var pathname = pageData.path?.name;
 
    var statlist = [
       "HP",
@@ -56,7 +56,7 @@ export const CharacterStatBlock = ({ pageData }) => {
       statobj[i].stat = statlist[i];
 
       // Pull Stat's Icon image hash
-      // var currstat = statData.termStattypes.find((a) => a.name == statlist[i]);
+      // var currstat = statData.statTypes.find((a) => a.name == statlist[i]);
       // if (currstat?.icon) {
       //   statobj[i].hash = currstat.icon?.hash ?? "no_image_42df124128";
       // }

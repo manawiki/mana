@@ -5,7 +5,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
    const [treeNode, setTreeNode] = useState(0);
    const [skillLevel, setSkillLevel] = useState(1);
 
-   var pathkey = pageData?.term_path?.data_key;
+   var pathkey = pageData?.path?.data_key;
    var treelist = skillTreeData; // pageData?.attributes?.tree; //skillTreeData;
    var traces = pageData?.traces;
 
@@ -34,8 +34,6 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
 
    return (
       <>
-         
-
          <div className="text-center">
             <div className="canvas inline-block">
                <div className={`canvas-${pathkey}`}></div>
@@ -164,7 +162,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                <img
                   src={mat.materials?.entry?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
-                     mat.materials?.term_rarity?.display_number ?? "1"
+                     mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
                />
