@@ -49,7 +49,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                <img
                   src={mat.materials?.entry?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
-                     mat.materials?.term_rarity?.display_number ?? "1"
+                     mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
                />
