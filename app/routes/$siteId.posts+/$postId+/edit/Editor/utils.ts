@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
-import { Editor, Element, Transforms } from "slate";
-import type { Format, Theme } from "./types";
+import { Editor } from "slate";
+import type { Format } from "./types";
 
 export function toPx(value: number | undefined): string | undefined {
    return value ? `${Math.round(value)}px` : undefined;
@@ -45,15 +45,6 @@ export function isMarkActive(editor: Editor, format: Format) {
 
 export function topLevelPath(path: Path): Path {
    return [path[0]];
-}
-
-export function applyTheme(theme: Theme) {
-   const htmlElement = document.querySelector("html");
-   if (!htmlElement) {
-      return;
-   }
-
-   htmlElement.className = `theme-${theme}`;
 }
 
 type CursorType = "grab" | "grabbing";

@@ -32,6 +32,10 @@ export const Posts: CollectionConfig = {
          type: "date",
       },
       {
+         name: "content",
+         type: "json",
+      },
+      {
          name: "author",
          type: "relationship",
          relationTo: "users",
@@ -53,13 +57,6 @@ export const Posts: CollectionConfig = {
          name: "banner",
          type: "upload",
          relationTo: "images",
-      },
-      {
-         name: "notes",
-         type: "relationship",
-         relationTo: "notes",
-         hasMany: true,
-         maxDepth: 1,
       },
       { name: "isPublished", type: "checkbox", defaultValue: false },
    ],

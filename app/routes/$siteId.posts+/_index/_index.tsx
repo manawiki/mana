@@ -531,20 +531,11 @@ export const action = async ({
          const { title } = await zx.parseForm(request, {
             title: z.string(),
          });
-         const note = await payload.create({
-            collection: "notes",
-            data: { mdx: "", data: [], ui: "textarea", author: user?.id },
-            user,
-            overrideAccess: false,
-            draft: true,
-         });
-
          const post = await payload.create({
             collection: "posts",
             data: {
                title,
                author: user?.id,
-               notes: [note.id],
                site: siteId,
             },
             user,
@@ -553,20 +544,11 @@ export const action = async ({
          return redirect(`/${siteId}/posts/${post.id}`);
       }
       case "createPost": {
-         const note = await payload.create({
-            collection: "notes",
-            data: { mdx: "", data: [], ui: "textarea", author: user?.id },
-            user,
-            overrideAccess: false,
-            draft: true,
-         });
-
          const post = await payload.create({
             collection: "posts",
             data: {
                title: "Untitled",
                author: user?.id,
-               notes: [note.id],
                site: siteId,
             },
             user,

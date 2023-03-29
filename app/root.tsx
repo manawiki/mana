@@ -34,6 +34,8 @@ import { useEffect } from "react";
 import type { envType } from "env/types";
 import { toast } from "./components/Toaster";
 
+import { DynamicLinks } from "remix-utils";
+
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
@@ -117,7 +119,13 @@ function App() {
          className={`font-body ${theme ?? ""}`}
       >
          <head>
+            <meta charSet="utf-8" />
+            <meta
+               name="viewport"
+               content="width=device-width,initial-scale=1"
+            />
             <Meta />
+            <DynamicLinks />
             <Links />
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>

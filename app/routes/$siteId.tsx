@@ -22,6 +22,7 @@ import type {
    ActionFunction,
    LinksFunction,
    LoaderArgs,
+   SerializeFrom,
    V2_MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
@@ -52,6 +53,7 @@ import {
    ChatBubbleLeftIcon as ChatBubbleLeftIconBold,
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
+import { DynamicLinksFunction } from "remix-utils";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -101,18 +103,28 @@ export const meta: V2_MetaFunction = ({ data }) => {
       {
          title: data.site.name,
       },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
 
-export const links: LinksFunction = () => [
-   { rel: "preload", href: customStylesheetUrl, as: "style" },
-   { rel: "stylesheet", href: customStylesheetUrl },
-];
+const dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
+   data,
+}) => {
+   //@ts-expect-error
+   const icon = data?.site?.icon?.url;
+   const faviconUrl = `https://mana.wiki/cdn-cgi/image/fit=crop,height=50,width=50,gravity=auto/${icon}`;
+   return [{ rel: "icon", href: faviconUrl }];
+};
+
+export const links: LinksFunction = () => {
+   return [
+      { rel: "preload", href: customStylesheetUrl, as: "style" },
+      { rel: "stylesheet", href: customStylesheetUrl },
+   ];
+};
 
 export const handle = {
-   // i18n key for this route. This will be used to load the correct translation
    i18n: "site",
+   dynamicLinks,
 };
 
 export default function SiteIndex() {

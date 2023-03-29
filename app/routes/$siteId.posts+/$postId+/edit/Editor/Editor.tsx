@@ -52,7 +52,7 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export default function App() {
+export const FlowEditor = () => {
    const editor = useEditor();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -276,7 +276,7 @@ export default function App() {
             <div className="mx-auto w-full">
                <Slate
                   editor={editor}
-                  value={blocks?.toArray()}
+                  value={blocks?.toArray() as Descendant[]}
                   onChange={() => {
                      if (blocks == null) {
                         return;
@@ -435,7 +435,7 @@ export default function App() {
          </div>
       </div>
    );
-}
+};
 
 function SortableElement({
    attributes,
