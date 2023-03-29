@@ -1,5 +1,5 @@
-import Tooltip from "./Tooltip";
 import { Image } from "~/components/Image";
+import { Tooltip } from "../forge/components";
 
 type Props = {
    imageUrl: string;
@@ -9,12 +9,12 @@ type Props = {
 
 export default function Avatar({ imageUrl, name, color }: Props) {
    return (
-      <Tooltip content={name}>
+      <Tooltip side="bottom" align="center" content={name}>
          <button
             style={{ borderColor: color }}
-            className="h-7 w-7 border relative rounded-full overflow-hidden"
+            className="h-8 w-8 border-2 relative rounded-full overflow-hidden"
          >
-            <div className="border-2 rounded-full border-color">
+            <div className="border bg-2 rounded-full border-color overflow-hidden">
                <Image
                   alt={name}
                   options="fit=crop,width=88,height=88,gravity=auto"

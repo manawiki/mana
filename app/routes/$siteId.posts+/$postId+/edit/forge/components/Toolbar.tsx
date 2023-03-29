@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Editor, Path, Range, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Select from "./Select";
-import Tooltip from "./Tooltip";
+import Tooltip from "../../../../../../components/Tooltip";
 
 import { toggleMark, topLevelPath } from "../utils";
 import type { CustomElement, TextBlock } from "../types";

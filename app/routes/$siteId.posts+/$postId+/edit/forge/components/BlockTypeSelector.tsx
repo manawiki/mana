@@ -3,7 +3,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
-import Tooltip from "./Tooltip";
+import Tooltip from "../../../../../../components/Tooltip";
 import { useSelf } from "~/liveblocks.config";
 
 type Props = {

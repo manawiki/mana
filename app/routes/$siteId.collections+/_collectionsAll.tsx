@@ -25,7 +25,7 @@ import { zx } from "zodix";
 import { useEffect, useState } from "react";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
-import { AdminOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { loader as siteDetailsLoader } from "../$siteId";
 import { toast } from "~/components/Toaster";
 import { Image } from "~/components/Image";
@@ -132,7 +132,7 @@ export default function CollectionIndex() {
                <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
             </ul>
-            <AdminOrOwner>
+            <AdminOrStaffOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}
                   method="post"
@@ -207,7 +207,7 @@ export default function CollectionIndex() {
                      </button>
                   </div>
                </fetcher.Form>
-            </AdminOrOwner>
+            </AdminOrStaffOrOwner>
             {collections?.length === 0 ? null : (
                <>
                   <div className="grid grid-cols-2 gap-3 laptop:grid-cols-3 border-color">

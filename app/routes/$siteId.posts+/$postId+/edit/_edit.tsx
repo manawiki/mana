@@ -1,11 +1,11 @@
 import { useLoaderData, useFetcher } from "@remix-run/react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import type { V2_MetaFunction } from "@remix-run/node";
 import {
    type ActionArgs,
    type LoaderArgs,
    json,
    redirect,
-   V2_MetaFunction,
 } from "@remix-run/node";
 import {
    type FormResponse,
@@ -21,31 +21,48 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 import { createCustomIssues } from "react-zorm";
-import { PostHeaderEdit } from "./PostHeaderEdit";
-import { FlowEditor } from "./Editor/Editor";
+import { PostHeaderEdit } from "./components";
+import { ForgeEditor } from "./forge/Editor";
 import { postSchema } from "../postSchema";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { toast } from "~/components";
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
+import { nanoid } from "nanoid";
+import type { CustomElement } from "./forge/types";
+import { BlockType } from "./forge/types";
 
 export async function loader({
    context: { payload, user },
    params,
 }: LoaderArgs) {
-   const { postId } = zx.parseParams(params, {
+   const { postId, siteId } = zx.parseParams(params, {
       postId: z.string(),
+      siteId: z.string(),
    });
-
+   if (!user)
+      throw redirect(`/login?redirectTo=/${siteId}/posts/${postId}/edit`);
    const post = await payload.findByID({
       collection: "posts",
       id: postId,
       overrideAccess: false,
       user,
       depth: 2,
+      draft: true,
    });
-   return { post };
+   const versions = await payload.findVersions({
+      collection: "posts",
+      depth: 2,
+      where: {
+         parent: {
+            equals: postId,
+         },
+      },
+      user,
+      overrideAccess: false,
+   });
+   return { post, versions };
 }
 
 export const handle = {
@@ -54,7 +71,7 @@ export const handle = {
 
 export const meta: V2_MetaFunction = ({ data, parentsData }) => {
    const siteName = parentsData["routes/$siteId"].site.name;
-   const postTitle = data.post.title;
+   const postTitle = data?.post?.title ?? "";
 
    return [
       {
@@ -63,6 +80,18 @@ export const meta: V2_MetaFunction = ({ data, parentsData }) => {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
+
+const initialValue: CustomElement[] = [
+   {
+      id: nanoid(),
+      type: BlockType.Paragraph,
+      children: [
+         {
+            text: "",
+         },
+      ],
+   },
+];
 
 export default function PostEditPage() {
    const fetcher = useFetcher();
@@ -79,7 +108,8 @@ export default function PostEditPage() {
       }
    }, [fetcher.type]);
 
-   const { post } = useLoaderData<typeof loader>();
+   const { post, versions } = useLoaderData<typeof loader>();
+   console.log(versions);
 
    return (
       <main
@@ -87,11 +117,10 @@ export default function PostEditPage() {
          max-laptop:pt-10 max-laptop:pb-20 laptop:pt-6"
       >
          <TooltipProvider>
-            <PostHeaderEdit post={post} />
             <RoomProvider
                id={post.id}
                initialStorage={{
-                  blocks: new LiveList(post.content as never[]),
+                  blocks: new LiveList(initialValue),
                }}
                initialPresence={{
                   selectedBlockId: null,
@@ -99,23 +128,36 @@ export default function PostEditPage() {
             >
                <ClientSideSuspense
                   fallback={
-                     <div className="max-w-[728px] max-laptop:mx-3.5 space-y-4 mx-auto">
+                     <div className="max-w-[728px] max-laptop:mx-4 space-y-4 mx-auto">
                         <div
-                           className="animate-pulse bg-2  borer-color
-                         w-full h-14 rounded-lg"
+                           className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
                         />
                         <div
-                           className="animate-pulse bg-2  borer-color
-                         w-full h-14 rounded-lg"
+                           className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
                         />
                         <div
-                           className="animate-pulse bg-2  borer-color
-                         w-full h-14 rounded-lg"
+                           className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                        />
+                        <div
+                           className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                        />
+                        <div
+                           className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
                         />
                      </div>
                   }
                >
-                  {() => <FlowEditor />}
+                  {() => (
+                     <>
+                        <PostHeaderEdit versions={versions} post={post} />
+                        <ForgeEditor />
+                     </>
+                  )}
                </ClientSideSuspense>
             </RoomProvider>
          </TooltipProvider>
@@ -195,6 +237,7 @@ export async function action({
                return await payload.update({
                   collection: "posts",
                   id: postId,
+                  draft: true,
                   data: {
                      banner: bannerId,
                   },
@@ -239,6 +282,7 @@ export async function action({
          return await payload.update({
             collection: "posts",
             id: postId,
+            draft: true,
             data: {
                banner: "",
             },
@@ -300,10 +344,11 @@ export async function action({
 
          const data = result.data.blocks.data;
 
-         await payload.update({
+         return await payload.update({
             collection: "posts",
             id: postId,
             data: {
+               _status: "published",
                content: data,
                isPublished: true,
                publishedAt: new Date().toISOString(),
@@ -311,8 +356,6 @@ export async function action({
             overrideAccess: false,
             user,
          });
-
-         return redirect(`/${siteId}/posts`);
       }
       default:
          return null;

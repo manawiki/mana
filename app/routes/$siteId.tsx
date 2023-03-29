@@ -269,7 +269,7 @@ export default function SiteIndex() {
                max-laptop:pt-16 max-laptop:border-b"
             >
                <section
-                  className="sticky max-laptop:top-[71px] z-50 max-laptop:border-t 
+                  className="sticky max-laptop:top-[71px] z-40 max-laptop:border-t 
                  border-color laptop:top-0 laptop:px-3"
                >
                   <div
@@ -399,7 +399,7 @@ export default function SiteIndex() {
                <Outlet />
             </section>
             <section
-               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l
+               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l z-20
                max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">

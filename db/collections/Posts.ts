@@ -19,6 +19,7 @@ export const Posts: CollectionConfig = {
       read: () => true, //isAdminAuthororPublished
       update: isStafforUser("author"), //isAdminorAuthor
       delete: isStaff, //isAdminorAuthor
+      readVersions: isStaff,
    },
    fields: [
       {
@@ -60,4 +61,8 @@ export const Posts: CollectionConfig = {
       },
       { name: "isPublished", type: "checkbox", defaultValue: false },
    ],
+   versions: {
+      drafts: true,
+      maxPerDoc: 20,
+   },
 };

@@ -43,9 +43,5 @@ module.exports = {
          desktop: "1382px",
       },
    },
-   plugins: [
-      require("@tailwindcss/line-clamp"),
-      require("@tailwindcss/forms"),
-      require("tailwindcss-bg-patterns"),
-   ],
+   plugins: [require("@tailwindcss/forms"), require("tailwindcss-bg-patterns")],
 };

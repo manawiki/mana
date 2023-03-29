@@ -9,3 +9,4 @@ export * from "./SiteList";
 export * from "./SiteNavLink";
 export * from "./SiteSwitcher";
 export * from "./Toaster";
+export * from "./Tooltip";

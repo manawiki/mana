@@ -1,5 +1,5 @@
 import Button from "./Button";
-import Tooltip from "./Tooltip";
+import Tooltip from "../../../../../../components/Tooltip";
 import BlockTypeSelector from "./BlockTypeSelector";
 import type { CustomElement } from "../types";
 import { GripVertical, Minus, Plus } from "lucide-react";

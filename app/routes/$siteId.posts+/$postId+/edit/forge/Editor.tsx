@@ -1,7 +1,7 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Node } from "slate";
+import type { Descendant, Node } from "slate";
 import { createEditor, Editor, Element, Point, Range, Transforms } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
@@ -32,7 +32,7 @@ import {
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
 import { HOTKEYS, PROSE_CONTAINER_ID, USER_COLORS } from "./constants";
-import { Avatar, BlockInlineActions, Header, Toolbar } from "./components";
+import { Avatar, BlockInlineActions, Toolbar } from "./components";
 import { nanoid } from "nanoid";
 
 const SHORTCUTS: Record<string, BlockType> = {
@@ -52,7 +52,7 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export const FlowEditor = () => {
+export const ForgeEditor = () => {
    const editor = useEditor();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -266,8 +266,7 @@ export const FlowEditor = () => {
    );
 
    return (
-      <div className="relative min-h-screen pb-4 cursor-text max-laptop:px-3.5">
-         <Header />
+      <div className="relative min-h-screen pb-4 cursor-text max-desktop:px-4">
          <div
             className="max-w-[728px] mx-auto"
             id={PROSE_CONTAINER_ID}

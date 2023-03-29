@@ -28,7 +28,7 @@ import {
 } from "~/utils";
 import { Component, ImagePlus, Loader2 } from "lucide-react";
 import { Image } from "~/components/Image";
-import { AdminOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -116,7 +116,7 @@ export default function CollectionList() {
          <Outlet />
          <div className="mx-auto max-w-[728px] max-desktop:px-3 pb-12">
             <h2 className="pb-3 text-xl font-bold pl-1">{collection.name}</h2>
-            <AdminOrOwner>
+            <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
                   method="post"
@@ -191,7 +191,7 @@ export default function CollectionList() {
                      </button>
                   </div>
                </Form>
-            </AdminOrOwner>
+            </AdminOrStaffOrOwner>
 
             {entries?.length === 0 ? null : (
                <>

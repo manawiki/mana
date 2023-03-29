@@ -47,7 +47,7 @@ export default function Placeholder({
             <PopoverPrimitive.Trigger asChild>
                <button
                   className="relative border flex dark:border-zinc-600 hover:border-zinc-300 border-zinc-200 border-dotted gap-4 dark:hover:border-zinc-500
-                  items-center w-full font-semibold rounded-lg bg-zinc-50 dark:bg-bg4Dark mb-3 p-3 text-sm select-none cursor-pointer"
+                  items-center w-full font-semibold rounded-lg bg-5 mb-3 p-3 text-sm select-none cursor-pointer"
                >
                   <span className="w-5 flex items-center justify-center text-emerald-500 h-5">
                      <Icon />
