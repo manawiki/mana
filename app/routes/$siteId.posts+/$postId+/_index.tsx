@@ -68,7 +68,7 @@ export default function PostPage() {
    return (
       <div>
          <AdminOrStaffOrOwner>
-            <div className="flex justify-center fixed inset-x-0 mx-auto items-center w-full bottom-24 laptop:bottom-0">
+            <div className="flex justify-center z-10 fixed inset-x-0 mx-auto items-center w-full bottom-24 laptop:bottom-0">
                <Link
                   to="edit"
                   className="inline-flex justify-center w-36 flex-none items-center group laptop:border-b-0 bg-emerald-100 dark:border-emerald-900 

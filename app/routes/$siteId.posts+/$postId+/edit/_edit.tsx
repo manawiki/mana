@@ -59,6 +59,7 @@ export async function loader({
             equals: postId,
          },
       },
+      limit: 20,
       user,
       overrideAccess: false,
    });
