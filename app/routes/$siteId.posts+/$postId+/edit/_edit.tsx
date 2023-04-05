@@ -1,4 +1,4 @@
-import { useLoaderData, useFetcher } from "@remix-run/react";
+import { useLoaderData, useFetcher, useSearchParams } from "@remix-run/react";
 import { useEffect } from "react";
 import type { V2_MetaFunction } from "@remix-run/node";
 import {
@@ -36,6 +36,7 @@ import { BlockType } from "./forge/types";
 export async function loader({
    context: { payload, user },
    params,
+   request,
 }: LoaderArgs) {
    const { postId, siteId } = zx.parseParams(params, {
       postId: z.string(),
@@ -51,6 +52,10 @@ export async function loader({
       depth: 2,
       draft: true,
    });
+
+   const { page } = zx.parseQuery(request, {
+      page: z.coerce.number().optional(),
+   });
    const versions = await payload.findVersions({
       collection: "posts",
       depth: 2,
@@ -61,6 +66,7 @@ export async function loader({
       },
       limit: 20,
       user,
+      page: page ?? 1,
       overrideAccess: false,
    });
    return { post, versions };
@@ -313,20 +319,6 @@ export async function action({
             headers: { "Set-Cookie": await commitSession(session) },
          });
       }
-      case "unpublish": {
-         await payload.update({
-            collection: "posts",
-            id: postId,
-            data: {
-               isPublished: false,
-               publishedAt: "",
-            },
-            overrideAccess: false,
-            user,
-         });
-
-         return redirect(`/${siteId}/posts`);
-      }
 
       case "versionUpdate": {
          const { versionId } = await zx.parseForm(request, {
@@ -368,6 +360,20 @@ export async function action({
             user,
          });
       }
+
+      case "unpublish": {
+         return await payload.update({
+            collection: "posts",
+            id: postId,
+            data: {
+               isPublished: false,
+               publishedAt: "",
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+
       default:
          return null;
    }

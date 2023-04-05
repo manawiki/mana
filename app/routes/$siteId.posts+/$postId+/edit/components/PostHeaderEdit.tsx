@@ -36,6 +36,8 @@ import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "../forge/components";
 import { PostVersionModal } from "./PostVersionModal";
+import { useList, useStorage } from "~/liveblocks.config";
+import { shallow } from "@liveblocks/react";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -58,15 +60,13 @@ export const PostHeaderEdit = ({
    const isTitleAdding = isAdding(fetcher, "updateTitle");
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
    const isBannerAdding = isAdding(fetcher, "updateBanner");
+   const isPublishing = isAdding(fetcher, "publish");
+   const disabled = isProcessing(fetcher.state);
 
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const formResponse = useActionData<FormResponse>();
-   const transition = useNavigation();
-   const isPublishing = isAdding(transition, "publish");
-   const disabled = isProcessing(transition.state);
 
    const [isDeleteOpen, setDeleteOpen] = useState(false);
-
    const [isVersionModalOpen, setVersionModal] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const { t } = useTranslation(handle?.i18n);
@@ -84,6 +84,22 @@ export const PostHeaderEdit = ({
          );
       }
    }, [debouncedTitle]);
+
+   const [isChanged, setChanged] = useState(false);
+
+   const blocks = useStorage((root) => root.blocks);
+
+   //Toggle state for publish button
+   useEffect(() => {
+      if (blocks == null) {
+         return;
+      }
+      const isDiff = JSON.stringify(blocks) === JSON.stringify(post.content);
+      if (isDiff == false) {
+         return setChanged(true);
+      }
+      return setChanged(false);
+   }, [blocks, post]);
 
    return (
       <>
@@ -215,12 +231,12 @@ export const PostHeaderEdit = ({
                            </Tooltip>
                         </>
                      )}
-                     <Form method="post">
-                        {isPublishing ? (
-                           <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
-                              <DotLoader />
-                           </div>
-                        ) : (
+                     {isPublishing ? (
+                        <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
+                           <DotLoader />
+                        </div>
+                     ) : isChanged == true ? (
+                        <fetcher.Form method="post">
                            <button
                               disabled={disabled}
                               type="submit"
@@ -251,8 +267,8 @@ export const PostHeaderEdit = ({
                                  </svg>
                               </div>
                            </button>
-                        )}
-                     </Form>
+                        </fetcher.Form>
+                     ) : null}
                   </div>
                </div>
             </AdminOrStaffOrOwner>

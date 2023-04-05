@@ -63,6 +63,6 @@ export const Posts: CollectionConfig = {
    ],
    versions: {
       drafts: true,
-      maxPerDoc: 20,
+      maxPerDoc: 60,
    },
 };

@@ -1,4 +1,4 @@
-import { useFetcher, useParams } from "@remix-run/react";
+import { useFetcher, useSearchParams } from "@remix-run/react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { isAdding } from "~/utils";
 import type { Descendant } from "slate";
@@ -11,7 +11,6 @@ import Leaf from "../forge/blocks/Leaf";
 import { format } from "date-fns";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useMutation } from "~/liveblocks.config";
-import { ResponsiveModal } from "~/components/ResponsiveModal";
 import { Modal } from "~/components";
 
 export const PostVersionModal = ({
@@ -33,7 +32,8 @@ export const PostVersionModal = ({
       return <Block {...props} />;
    }, []);
 
-   const [selectedVersion, setSelectedVersion] = useState(versions?.docs[0]);
+   const init = versions.docs[0];
+   const [selectedVersion, setSelectedVersion] = useState(init);
 
    //Clear the current list on liveblocks and push the revision
    const updateData = useMutation(
@@ -46,6 +46,15 @@ export const PostVersionModal = ({
       [selectedVersion]
    );
 
+   //Pagination
+   const [, setSearchParams] = useSearchParams({});
+   const currentEntry = versions?.pagingCounter;
+   const totalEntries = versions?.totalDocs;
+   const totalPages = versions?.totalPages;
+   const limit = versions?.limit;
+   const hasNextPage = versions?.hasNextPage;
+   const hasPrevPage = versions?.hasPrevPage;
+
    return (
       <Modal
          onClose={() => {
@@ -54,15 +63,15 @@ export const PostVersionModal = ({
          show={isVersionModalOpen}
       >
          <div
-            className="w-full laptop:max-w-[1200px] laptop:w-[1200px] transform bg-2
-               text-left align-middle transition-all min-h-full overflow-hidden"
+            className="w-full laptop:max-w-[1200px] laptop:w-[1200px] transform bg-2 rounded-md
+               text-left align-middle transition-all min-h-full overflow-hidden border-x border-color"
          >
             <section className="flex items-start bg-3">
                <Tab.Group>
-                  <Tab.Panels className="w-[900px] max-h-[100vh] bg-3 px-4 overflow-auto">
+                  <Tab.Panels className="w-[899px] max-h-[90vh] bg-3 px-4 pb-4 overflow-auto">
                      <div
-                        className="fixed h-12 font-bold flex items-center w-[868px] left-0 
-                        mb-3 z-10 top-0 bg-3 border-b text-1 border-color mx-4 text-sm pl-1"
+                        className="fixed h-12 font-bold flex items-center w-[898px] left-0 
+                        mb-3 z-10 top-0 bg-3 border-b text-1 border-color px-4 text-sm"
                      >
                         {format(
                            new Date(selectedVersion?.updatedAt as string),
@@ -89,79 +98,9 @@ export const PostVersionModal = ({
                            )
                      )}
                   </Tab.Panels>
-                  <div className="w-[300px] h-full border-l border-color min-h-[100vh]">
-                     <Tab.List className="flex flex-col min-h-[100vh]">
-                        <div className="border-b flex items-center justify-between border-color bg-2 py-3 pl-4 pr-2">
-                           <div className="font-bold text-1">History</div>
-                           <div className="flex items-center">
-                              <button className="w-8 h-8 flex items-center justify-center">
-                                 <ChevronLeft
-                                    className="text-emerald-500"
-                                    size={24}
-                                 />
-                              </button>
-                              <button className="w-8 h-8 flex items-center justify-center">
-                                 <ChevronRight
-                                    className="text-emerald-500"
-                                    size={24}
-                                 />
-                              </button>
-                           </div>
-                        </div>
-                        <RadioGroup
-                           className="flex-grow bg-3 py-2.5 px-4 overflow-auto divide-y divide-color"
-                           value={selectedVersion}
-                           onChange={setSelectedVersion}
-                        >
-                           {versions?.docs?.map(
-                              (version: any, index: number) =>
-                                 version.version?.content && (
-                                    <Tab as={Fragment} key={version.id}>
-                                       <RadioGroup.Option
-                                          key={version.id}
-                                          value={version}
-                                       >
-                                          {({ active, checked }) => (
-                                             <RadioGroup.Label
-                                                className={`${
-                                                   checked ? "font-bold" : ""
-                                                } cursor-pointer rounded-md relative group block w-full py-3`}
-                                             >
-                                                <time
-                                                   className={`
-                                          ${
-                                             checked
-                                                ? "font-semibold"
-                                                : "text-1"
-                                          } flex items-center gap-1.5 text-sm group-hover:underline`}
-                                                   dateTime={version?.updatedAt}
-                                                >
-                                                   {format(
-                                                      new Date(
-                                                         version?.updatedAt as string
-                                                      ),
-                                                      "MMMM d, hh:mm aaa"
-                                                   )}
-                                                </time>
-                                                {index == 0 ? (
-                                                   <span className="absolute text-xs right-5 top-2.5 bg-1 rounded-lg px-2 py-1 font-semibold">
-                                                      Live
-                                                   </span>
-                                                ) : null}
-                                                {checked ? (
-                                                   <span
-                                                      className="absolute top-1/2 right-1 h-2 w-2 rounded-full
-                                                 bg-emerald-500  -translate-y-1/2"
-                                                   />
-                                                ) : null}
-                                             </RadioGroup.Label>
-                                          )}
-                                       </RadioGroup.Option>
-                                    </Tab>
-                                 )
-                           )}
-                        </RadioGroup>
-                        <div className="grid grid-cols-2 bg-2 p-3.5 border-t border-color gap-4 flex-none">
+                  <div className="w-[300px] h-full border-l border-color min-h-[90vh]">
+                     <Tab.List className="flex flex-col min-h-[90vh]">
+                        <div className="grid grid-cols-2 p-4 gap-4 flex-none">
                            <button
                               className="text-sm h-9 font-bold text-white bg-emerald-500 rounded-md"
                               onClick={() => {
@@ -192,6 +131,123 @@ export const PostVersionModal = ({
                               Cancel
                            </button>
                         </div>
+                        <RadioGroup
+                           className="flex-grow bg-3 mx-4 border-y border-color overflow-auto divide-y divide-color"
+                           value={selectedVersion}
+                           onChange={setSelectedVersion}
+                        >
+                           {versions?.docs?.map(
+                              (version: any, index: number) =>
+                                 version.version?.content && (
+                                    <Tab as={Fragment} key={version.id}>
+                                       <RadioGroup.Option
+                                          key={version.id}
+                                          value={version}
+                                       >
+                                          {({ active, checked }) => (
+                                             <RadioGroup.Label
+                                                className={`${
+                                                   checked ? "font-bold" : ""
+                                                } cursor-pointer rounded-md flex gap-2 relative group items-center w-full py-3`}
+                                             >
+                                                {index == 0 &&
+                                                currentEntry == 1 ? (
+                                                   <span className="text-xs shadow shadow-1 bg-1 rounded-lg px-2 py-1 font-semibold">
+                                                      Live
+                                                   </span>
+                                                ) : null}
+                                                <time
+                                                   className={`
+                                          ${
+                                             checked
+                                                ? "font-semibold"
+                                                : "text-1"
+                                          } flex items-center gap-1.5 text-sm group-hover:underline`}
+                                                   dateTime={version?.updatedAt}
+                                                >
+                                                   {format(
+                                                      new Date(
+                                                         version?.updatedAt as string
+                                                      ),
+                                                      "MMMM d, hh:mm aaa"
+                                                   )}
+                                                </time>
+                                                {checked ? (
+                                                   <span
+                                                      className="absolute top-1/2 right-0 h-2 w-2 rounded-full
+                                                 bg-emerald-500  -translate-y-1/2 z-10"
+                                                   />
+                                                ) : null}
+                                             </RadioGroup.Label>
+                                          )}
+                                       </RadioGroup.Option>
+                                    </Tab>
+                                 )
+                           )}
+                        </RadioGroup>
+                        <section className="flex items-center justify-between m-4">
+                           <div className="text-sm flex items-center gap-1 text-1">
+                              Showing{" "}
+                              <span className="font-bold">{currentEntry}</span>{" "}
+                              to{" "}
+                              <span className="font-bold">
+                                 {limit + currentEntry - 1 > totalEntries
+                                    ? totalEntries
+                                    : limit + currentEntry - 1}
+                              </span>{" "}
+                              of{" "}
+                              <span className="font-bold">{totalEntries}</span>{" "}
+                              results
+                           </div>
+                           {/* Pagination Section */}
+                           {totalPages > 1 && (
+                              <div className="text-1 flex items-center justify-between text-sm">
+                                 <div className="flex items-center gap-3 text-xs">
+                                    {hasPrevPage ? (
+                                       <button
+                                          className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                          onClick={() =>
+                                             setSearchParams((searchParams) => {
+                                                searchParams.set(
+                                                   "page",
+                                                   versions.prevPage as any
+                                                );
+                                                return searchParams;
+                                             })
+                                          }
+                                       >
+                                          <ChevronLeft
+                                             size={24}
+                                             className="text-emerald-500"
+                                          />
+                                       </button>
+                                    ) : null}
+                                    {hasNextPage && hasPrevPage && (
+                                       <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                                    )}
+                                    {hasNextPage ? (
+                                       <button
+                                          className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                          onClick={() =>
+                                             setSearchParams((searchParams) => {
+                                                searchParams.set(
+                                                   "page",
+                                                   versions.nextPage as any
+                                                );
+                                                return searchParams;
+                                             })
+                                          }
+                                       >
+                                          <ChevronRight
+                                             size={24}
+                                             className="text-emerald-500"
+                                          />
+                                       </button>
+                                    ) : null}
+                                 </div>
+                              </div>
+                           )}
+                        </section>
                      </Tab.List>
                   </div>
                </Tab.Group>

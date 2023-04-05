@@ -75,7 +75,6 @@ export async function loader({
       limit: 20,
       page: page ?? 1,
    });
-   console.log(entrylist);
    return json({ collection, entrylist, q });
 }
 

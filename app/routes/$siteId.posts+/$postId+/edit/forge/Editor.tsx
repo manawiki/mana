@@ -272,7 +272,7 @@ export const ForgeEditor = () => {
             id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
-            <div className="mx-auto w-full">
+            <div className="mx-auto w-full pb-12">
                <Slate
                   editor={editor}
                   value={blocks?.toArray() as Descendant[]}
