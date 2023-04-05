@@ -9,7 +9,7 @@ type Props = {
 
 export default function Avatar({ imageUrl, name, color }: Props) {
    return (
-      <Tooltip side="bottom" align="center" content={name}>
+      <Tooltip id="avatar" side="bottom" content={name}>
          <button
             style={{ borderColor: color }}
             className="h-8 w-8 border-2 relative rounded-full overflow-hidden"

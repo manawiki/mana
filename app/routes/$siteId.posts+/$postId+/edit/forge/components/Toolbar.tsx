@@ -100,7 +100,7 @@ export default function Toolbar() {
          )}
 
          <div className="flex items-center gap-1">
-            <Tooltip content="Toggle Bold">
+            <Tooltip id="bold" content="Toggle Bold">
                <Button
                   ariaLabel="Toggle Bold"
                   onPointerDown={(e) => e.preventDefault()}
@@ -114,7 +114,7 @@ export default function Toolbar() {
                   <Bold size={16} />
                </Button>
             </Tooltip>
-            <Tooltip content="Toggle Italic">
+            <Tooltip id="italic" content="Toggle Italic">
                <Button
                   ariaLabel="Toggle Italic"
                   onPointerDown={(e) => e.preventDefault()}
@@ -128,7 +128,7 @@ export default function Toolbar() {
                   <Italic size={16} />
                </Button>
             </Tooltip>
-            <Tooltip content="Toggle Underline">
+            <Tooltip id="underline" content="Toggle Underline">
                <Button
                   ariaLabel="Toggle Underline"
                   onPointerDown={(e) => e.preventDefault()}
@@ -142,7 +142,7 @@ export default function Toolbar() {
                   <Underline size={16} />
                </Button>
             </Tooltip>
-            <Tooltip content="Toggle Strikethrough">
+            <Tooltip id="strikethrough" content="Toggle Strikethrough">
                <Button
                   ariaLabel="Toggle Strikethrough"
                   onPointerDown={(e) => e.preventDefault()}

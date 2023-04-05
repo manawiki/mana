@@ -22,7 +22,7 @@ export default function BlockInlineActions({
 
    return (
       <div className="flex items-center justify-space-between">
-         <Tooltip content="Delete">
+         <Tooltip id="delete" content="Delete">
             <Button
                className="hover:bg-1 flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
                onClick={onDelete}
@@ -39,7 +39,7 @@ export default function BlockInlineActions({
                <Plus size={16} />
             </Button>
          </BlockTypeSelector>
-         <Tooltip content="Drag to reorder">
+         <Tooltip id="drag" content="Drag to reorder">
             <Button
                ariaLabel="Drag to reorder"
                ref={setActivatorNodeRef}

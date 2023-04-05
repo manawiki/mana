@@ -149,7 +149,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
    return (
       <DropdownMenuPrimitive.Root>
-         <Tooltip content="Insert block below">
+         <Tooltip id="insert-block" content="Insert block below">
             <DropdownMenuPrimitive.Trigger asChild>
                {children}
             </DropdownMenuPrimitive.Trigger>

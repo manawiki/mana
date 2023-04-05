@@ -202,8 +202,8 @@ export const PostHeaderEdit = ({
                      {post.isPublished && (
                         <>
                            <Tooltip
+                              id="history"
                               side="bottom"
-                              align="center"
                               content="History"
                            >
                               <button
@@ -217,8 +217,8 @@ export const PostHeaderEdit = ({
                               </button>
                            </Tooltip>
                            <Tooltip
+                              id="published"
                               side="bottom"
-                              align="center"
                               content="Published View"
                            >
                               <Link

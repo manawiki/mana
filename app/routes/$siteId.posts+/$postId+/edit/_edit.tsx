@@ -24,7 +24,6 @@ import { createCustomIssues } from "react-zorm";
 import { PostHeaderEdit } from "./components";
 import { ForgeEditor } from "./forge/Editor";
 import { postSchema } from "../postSchema";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { toast } from "~/components";
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
@@ -121,51 +120,49 @@ export default function PostEditPage() {
          className="relative min-h-screen leading-7
          max-laptop:pt-10 max-laptop:pb-20 laptop:pt-6"
       >
-         <TooltipProvider>
-            <RoomProvider
-               id={post.id}
-               initialStorage={{
-                  blocks: new LiveList(initialValue),
-               }}
-               initialPresence={{
-                  selectedBlockId: null,
-               }}
+         <RoomProvider
+            id={post.id}
+            initialStorage={{
+               blocks: new LiveList(initialValue),
+            }}
+            initialPresence={{
+               selectedBlockId: null,
+            }}
+         >
+            <ClientSideSuspense
+               fallback={
+                  <div className="max-w-[728px] mx-4 space-y-4 mobile:mx-auto">
+                     <div
+                        className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                     />
+                     <div
+                        className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                     />
+                     <div
+                        className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                     />
+                     <div
+                        className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                     />
+                     <div
+                        className="animate-pulse bg-2 borer-color
+                         w-full h-24 rounded-lg"
+                     />
+                  </div>
+               }
             >
-               <ClientSideSuspense
-                  fallback={
-                     <div className="max-w-[728px] mx-4 space-y-4 mobile:mx-auto">
-                        <div
-                           className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
-                        />
-                        <div
-                           className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
-                        />
-                        <div
-                           className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
-                        />
-                        <div
-                           className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
-                        />
-                        <div
-                           className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
-                        />
-                     </div>
-                  }
-               >
-                  {() => (
-                     <>
-                        <PostHeaderEdit versions={versions} post={post} />
-                        <ForgeEditor />
-                     </>
-                  )}
-               </ClientSideSuspense>
-            </RoomProvider>
-         </TooltipProvider>
+               {() => (
+                  <>
+                     <PostHeaderEdit versions={versions} post={post} />
+                     <ForgeEditor />
+                  </>
+               )}
+            </ClientSideSuspense>
+         </RoomProvider>
       </main>
    );
 }
