@@ -471,7 +471,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="flex select-none -translate-x-full items-center absolute top-0.5 left-0 pr-3"
+                  className="flex select-none laptop:translate-x-full items-center absolute top-0.5 right-0 pr-3"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {

@@ -15,9 +15,10 @@ import {
    Trash2,
    ChevronUp,
    ExternalLink,
+   History,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
-import { useState, useEffect, Fragment, useCallback, useMemo } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useZorm } from "react-zorm";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import type { FormResponse } from "~/utils";
@@ -34,11 +35,7 @@ import { PostUnpublishModal } from "./PostUnpublishModal";
 import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "../forge/components";
-import { createEditor, Descendant } from "slate";
-import { Slate, Editable, RenderElementProps, withReact } from "slate-react";
-import Block from "../forge/blocks/Block";
-import Leaf from "../forge/blocks/Leaf";
-import * as Tabs from "@radix-ui/react-tabs";
+import { PostVersionModal } from "./PostVersionModal";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -69,6 +66,8 @@ export const PostHeaderEdit = ({
    const disabled = isProcessing(transition.state);
 
    const [isDeleteOpen, setDeleteOpen] = useState(false);
+
+   const [isVersionModalOpen, setVersionModal] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const { t } = useTranslation(handle?.i18n);
 
@@ -76,11 +75,6 @@ export const PostHeaderEdit = ({
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
-
-   const editor = useMemo(() => withReact(createEditor()), []);
-   const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
-   }, []);
 
    useEffect(() => {
       if (!isMount) {
@@ -101,7 +95,7 @@ export const PostHeaderEdit = ({
             isUnpublishOpen={isUnpublishOpen}
             setUnpublishOpen={setUnpublishOpen}
          />
-         <section className="max-w-[728px] mx-auto max-desktop:px-3">
+         <section className="max-w-[728px] mx-auto max-tablet:px-3">
             <AdminOrStaffOrOwner>
                <div className="flex items-center justify-between pb-6">
                   <div className="flex items-center justify-between gap-3 desktop:-ml-11">
@@ -190,19 +184,36 @@ export const PostHeaderEdit = ({
                   <div className="flex items-center justify-between gap-3">
                      <ActiveEditors />
                      {post.isPublished && (
-                        <Tooltip
-                           side="bottom"
-                           align="center"
-                           content="Published View"
-                        >
-                           <Link
-                              className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
-                              target="_blank"
-                              to={`/${post.site}/posts/${post.id}`}
+                        <>
+                           <Tooltip
+                              side="bottom"
+                              align="center"
+                              content="History"
                            >
-                              <ExternalLink size={15} className="text-1" />
-                           </Link>
-                        </Tooltip>
+                              <button
+                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
+                                 onClick={() => setVersionModal(true)}
+                              >
+                                 <History
+                                    className="text-emerald-500"
+                                    size={18}
+                                 />
+                              </button>
+                           </Tooltip>
+                           <Tooltip
+                              side="bottom"
+                              align="center"
+                              content="Published View"
+                           >
+                              <Link
+                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
+                                 target="_blank"
+                                 to={`/${post.site}/posts/${post.id}`}
+                              >
+                                 <ExternalLink size={15} className="text-1" />
+                              </Link>
+                           </Tooltip>
+                        </>
                      )}
                      <Form method="post">
                         {isPublishing ? (
@@ -353,53 +364,11 @@ export const PostHeaderEdit = ({
          </section>
          {versions?.docs?.length === 0 ? null : (
             <>
-               <div className="w-full">
-                  <Tabs.Root
-                     className="flex items-center"
-                     defaultValue={versions?.docs[0].id}
-                     orientation="vertical"
-                  >
-                     {versions?.docs?.map((version) => (
-                        <div className="flex-grow" key={version.id}>
-                           {version.version?.content && (
-                              <>
-                                 <Tabs.Content value={version.id}>
-                                    <Slate
-                                       editor={editor}
-                                       value={
-                                          version.version
-                                             .content as Descendant[]
-                                       }
-                                    >
-                                       <Editable
-                                          renderElement={renderElement}
-                                          renderLeaf={Leaf}
-                                          readOnly={true}
-                                       />
-                                    </Slate>
-                                 </Tabs.Content>
-                              </>
-                           )}
-                        </div>
-                     ))}
-                     <Tabs.List className="" aria-label="">
-                        {versions?.docs?.map((version: any) => (
-                           <div key={version.id}>
-                              {version.version?.content && (
-                                 <>
-                                    <Tabs.Trigger
-                                       className=""
-                                       value={version.id}
-                                    >
-                                       {version.id}
-                                    </Tabs.Trigger>
-                                 </>
-                              )}
-                           </div>
-                        ))}
-                     </Tabs.List>
-                  </Tabs.Root>
-               </div>
+               <PostVersionModal
+                  versions={versions}
+                  isVersionModalOpen={isVersionModalOpen}
+                  setVersionModal={setVersionModal}
+               />
             </>
          )}
       </>

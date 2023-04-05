@@ -109,8 +109,6 @@ export default function PostEditPage() {
    }, [fetcher.type]);
 
    const { post, versions } = useLoaderData<typeof loader>();
-   console.log(versions);
-
    return (
       <main
          className="relative min-h-screen leading-7
@@ -128,7 +126,7 @@ export default function PostEditPage() {
             >
                <ClientSideSuspense
                   fallback={
-                     <div className="max-w-[728px] max-laptop:mx-4 space-y-4 mx-auto">
+                     <div className="max-w-[728px] mx-4 space-y-4 mobile:mx-auto">
                         <div
                            className="animate-pulse bg-2 borer-color
                          w-full h-24 rounded-lg"
@@ -327,6 +325,18 @@ export async function action({
          });
 
          return redirect(`/${siteId}/posts`);
+      }
+
+      case "versionUpdate": {
+         const { versionId } = await zx.parseForm(request, {
+            versionId: z.string(),
+         });
+         return await payload.restoreVersion({
+            collection: "posts",
+            id: versionId,
+            overrideAccess: false,
+            user,
+         });
       }
 
       case "publish": {

@@ -39,7 +39,7 @@ module.exports = {
       screens: {
          mobile: "320px",
          tablet: "768px",
-         laptop: "1120px",
+         laptop: "1200px",
          desktop: "1382px",
       },
    },
