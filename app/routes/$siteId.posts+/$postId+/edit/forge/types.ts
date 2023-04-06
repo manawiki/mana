@@ -29,7 +29,6 @@ export type UserMeta = {
 
 export enum BlockType {
    Title = "title",
-   H1 = "h1",
    H2 = "h2",
    H3 = "h3",
    BulletedList = "bulleted-list",
@@ -41,7 +40,6 @@ export enum BlockType {
 }
 
 export type TextBlock =
-   | BlockType.H1
    | BlockType.H2
    | BlockType.H3
    | BlockType.Paragraph
@@ -59,7 +57,7 @@ export type ParagraphElement = BlockElement & {
 };
 
 export type HeadingElement = BlockElement & {
-   type: BlockType.H1 | BlockType.H2 | BlockType.H3;
+   type: BlockType.H2 | BlockType.H3;
 };
 
 export type ListElement = BlockElement & {

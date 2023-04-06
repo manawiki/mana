@@ -19,7 +19,7 @@ import {
    Users,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, SyntheticEvent, useRef } from "react";
 import { useZorm } from "react-zorm";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import type { FormResponse } from "~/utils";
@@ -38,6 +38,7 @@ import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "../forge/components";
 import { PostVersionModal } from "./PostVersionModal";
 import { useStorage } from "~/liveblocks.config";
+import TextareaAutosize from "react-textarea-autosize";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -57,7 +58,6 @@ export const PostHeaderEdit = ({
    const debouncedTitle = useDebouncedValue(titleValue, 500);
    const isMount = useIsMount();
 
-   const isTitleAdding = isAdding(fetcher, "updateTitle");
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
    const isBannerAdding = isAdding(fetcher, "updateBanner");
    const isPublishing = isAdding(fetcher, "publish");
@@ -159,7 +159,7 @@ export const PostHeaderEdit = ({
                               className="absolute left-0 mt-2.5 w-full min-w-[220px]
                                         origin-top-left transform transition-all z-10"
                            >
-                              <div className="border-color space-y-1 rounded-lg border bg-2 p-1.5 shadow shadow-1">
+                              <div className="border-color space-y-1 rounded-lg border bg-2 p-2 shadow shadow-1">
                                  {/* <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -297,7 +297,10 @@ export const PostHeaderEdit = ({
                                  target="_blank"
                                  to={`/${post.site}/posts/${post.id}`}
                               >
-                                 <ExternalLink size={15} className="text-1" />
+                                 <ExternalLink
+                                    size={16}
+                                    className="text-emerald-500"
+                                 />
                               </Link>
                            </Tooltip>
                         </>
@@ -311,7 +314,7 @@ export const PostHeaderEdit = ({
                            <Tooltip
                               id="publish-changes"
                               side="bottom"
-                              content="Publish Changes"
+                              content="Publish New Changes"
                            >
                               <button
                                  disabled={disabled}
@@ -350,18 +353,14 @@ export const PostHeaderEdit = ({
                </div>
             </AdminOrStaffOrOwner>
             <div className="relative mb-3 flex items-center gap-3">
-               <input
-                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-header text-3xl 
-                   laptop:text-4xl font-semibold focus:ring-transparent"
+               <TextareaAutosize
+                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-header text-3xl !leading-[3rem] 
+                   laptop:text-4xl font-semibold focus:ring-transparent resize-none overflow-hidden min-h-[20px]"
                   name={zo.fields.title()}
-                  type="text"
                   defaultValue={post.title}
                   onChange={(event) => setTitleValue(event.target.value)}
                   placeholder="Add a title..."
                />
-               {isTitleAdding ? (
-                  <Loader2 className="absolute right-2 mx-auto h-6 w-6 animate-spin text-emerald-500" />
-               ) : null}
             </div>
             <PostHeader post={post} />
          </section>

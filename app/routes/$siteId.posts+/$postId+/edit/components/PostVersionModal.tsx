@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useMutation } from "~/liveblocks.config";
 import { Modal } from "~/components";
+import { PostHeader } from "../../PostHeader";
 
 export const PostVersionModal = ({
    isVersionModalOpen,
@@ -59,6 +60,10 @@ export const PostVersionModal = ({
       <Modal
          onClose={() => {
             setVersionModal(false);
+            setSearchParams((searchParams) => {
+               searchParams.delete("page");
+               return searchParams;
+            });
          }}
          show={isVersionModalOpen}
       >
@@ -82,6 +87,10 @@ export const PostVersionModal = ({
                         (version: any) =>
                            version.version?.content && (
                               <Tab.Panel className="mt-16" key={version.id}>
+                                 <h1 className="text-3xl font-header font-bold">
+                                    {version.version.title}
+                                 </h1>
+                                 <PostHeader post={version} />
                                  <Slate
                                     editor={editor}
                                     value={
@@ -126,7 +135,13 @@ export const PostVersionModal = ({
                            <button
                               className="h-9 rounded-md bg-zinc-200 text-sm 
                            font-bold focus:bg-zinc-100 dark:bg-zinc-700 dark:focus:bg-zinc-600"
-                              onClick={() => setVersionModal(false)}
+                              onClick={() => {
+                                 setVersionModal(false);
+                                 setSearchParams((searchParams) => {
+                                    searchParams.delete("page");
+                                    return searchParams;
+                                 });
+                              }}
                            >
                               Cancel
                            </button>
@@ -222,9 +237,6 @@ export const PostVersionModal = ({
                                           />
                                        </button>
                                     ) : null}
-                                    {hasNextPage && hasPrevPage && (
-                                       <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                                    )}
                                     {hasNextPage ? (
                                        <button
                                           className="flex items-center gap-1 font-semibold uppercase hover:underline"

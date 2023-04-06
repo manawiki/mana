@@ -35,14 +35,10 @@ export default function Block({
 }: RenderElementProps) {
    if (element.type === BlockType.Paragraph) {
       return (
-         <p className="mb-1.5" {...attributes}>
+         <p className="mb-3" {...attributes}>
             {children}
          </p>
       );
-   }
-
-   if (element.type === BlockType.H1) {
-      return <h1 {...attributes}>{children}</h1>;
    }
 
    if (element.type === BlockType.H2) {

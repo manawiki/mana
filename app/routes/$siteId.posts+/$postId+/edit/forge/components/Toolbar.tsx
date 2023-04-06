@@ -68,7 +68,6 @@ export default function Toolbar() {
                      value={type}
                      items={[
                         { label: "Normal text", value: BlockType.Paragraph },
-                        { label: "Heading 1", value: BlockType.H1 },
                         { label: "Heading 2", value: BlockType.H2 },
                         { label: "Heading 3", value: BlockType.H3 },
                         {
@@ -190,7 +189,6 @@ function getSelectedElementType(editor: Editor): TextBlock | null {
 
 function isTextElementType(type: string): type is TextBlock {
    return (
-      type === BlockType.H1 ||
       type === BlockType.H2 ||
       type === BlockType.H3 ||
       type === BlockType.Paragraph ||

@@ -14,7 +14,7 @@ module.exports = {
          fontFamily: {
             body: ["NunitoSans", "NunitoSans Override"],
             logo: ["new-order", "sans-serif"],
-            header: ["karmina", "sans-serif"],
+            header: ["source-sans-pro", "sans-serif"],
          },
          animation: {
             enter: "enter 200ms ease-out",

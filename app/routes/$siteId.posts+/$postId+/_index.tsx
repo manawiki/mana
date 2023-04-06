@@ -83,7 +83,7 @@ export default function PostPage() {
          </AdminOrStaffOrOwner>
          <main>
             <div className="max-w-[728px] mx-auto max-desktop:px-3">
-               <h1 className="font-header pt-8 laptop:pt-10 text-3xl laptop:text-4xl">
+               <h1 className="font-header pt-8 laptop:pt-10 text-3xl laptop:text-4xl !leading-[3rem]">
                   {post.title}
                </h1>
                <PostHeader post={post} />

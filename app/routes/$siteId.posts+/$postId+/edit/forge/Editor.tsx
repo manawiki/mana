@@ -39,7 +39,6 @@ const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
    "-": BlockType.BulletedList,
    "+": BlockType.BulletedList,
-   "#": BlockType.H1,
    "##": BlockType.H2,
    "###": BlockType.H3,
    "[]": BlockType.ToDo,
