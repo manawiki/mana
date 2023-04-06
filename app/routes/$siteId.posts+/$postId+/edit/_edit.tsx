@@ -1,4 +1,4 @@
-import { useLoaderData, useFetcher, useSearchParams } from "@remix-run/react";
+import { useLoaderData, useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
 import type { V2_MetaFunction } from "@remix-run/node";
 import {
@@ -115,6 +115,7 @@ export default function PostEditPage() {
    }, [fetcher.type]);
 
    const { post, versions } = useLoaderData<typeof loader>();
+
    return (
       <main
          className="relative min-h-screen leading-7
@@ -324,6 +325,23 @@ export async function action({
          return await payload.restoreVersion({
             collection: "posts",
             id: versionId,
+            overrideAccess: false,
+            user,
+         });
+      }
+
+      case "updateCollabStatus": {
+         const { collabStatus } = await zx.parseForm(request, {
+            collabStatus: zx.BoolAsString,
+         });
+         console.log(collabStatus);
+         //toggle status
+         return await payload.update({
+            collection: "posts",
+            id: postId,
+            data: {
+               collaboration: collabStatus,
+            },
             overrideAccess: false,
             user,
          });

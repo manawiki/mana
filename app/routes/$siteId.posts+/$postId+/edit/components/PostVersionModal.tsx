@@ -64,7 +64,7 @@ export const PostVersionModal = ({
       >
          <div
             className="w-full laptop:max-w-[1200px] laptop:w-[1200px] transform bg-2 rounded-md
-               text-left align-middle transition-all min-h-full overflow-hidden border-x border-color"
+               text-left align-middle transition-all min-h-full overflow-hidden"
          >
             <section className="flex items-start bg-3">
                <Tab.Group>

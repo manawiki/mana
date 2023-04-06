@@ -90,7 +90,7 @@ export default function PostPage() {
             </div>
             {post?.banner && (
                <>
-                  <section className="relative mb-8 max-w-[800px] mx-auto">
+                  <section className="relative mb-5 max-w-[800px] mx-auto">
                      <div
                         className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
                          laptop:rounded-none laptop:border-x-0 desktop:rounded-md
@@ -105,9 +105,6 @@ export default function PostPage() {
                         />
                      </div>
                   </section>
-                  <div className="mx-auto max-w-[740px] max-laptop:px-4">
-                     <div className="h-0.5 rounded-full mb-6 bg-zinc-100 dark:bg-zinc-700/50" />
-                  </div>
                </>
             )}
             <div className="max-w-[728px] mx-auto max-desktop:px-4">

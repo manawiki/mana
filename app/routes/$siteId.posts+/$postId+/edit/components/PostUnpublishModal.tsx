@@ -51,9 +51,13 @@ export const PostUnpublishModal = ({
                   Cancel
                </button>
                <button
-                  onClick={() =>
-                     fetcher.submit({ intent: "unpublish" }, { method: "post" })
-                  }
+                  onClick={() => {
+                     fetcher.submit(
+                        { intent: "unpublish" },
+                        { method: "post" }
+                     );
+                     setUnpublishOpen(false);
+                  }}
                   className="h-10 w-full rounded-md bg-zinc-500 text-sm font-bold text-white
                                         focus:bg-zinc-400 dark:bg-zinc-600 dark:focus:bg-zinc-500"
                >

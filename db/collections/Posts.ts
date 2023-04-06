@@ -60,6 +60,12 @@ export const Posts: CollectionConfig = {
          relationTo: "images",
       },
       { name: "isPublished", type: "checkbox", defaultValue: false },
+      {
+         name: "collaboration",
+         type: "checkbox",
+         label: "Enable Collaboration",
+         defaultValue: false,
+      },
    ],
    versions: {
       drafts: true,

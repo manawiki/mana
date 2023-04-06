@@ -16,6 +16,7 @@ import {
    ChevronUp,
    ExternalLink,
    History,
+   Users,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
 import { useState, useEffect, Fragment } from "react";
@@ -26,7 +27,7 @@ import { isProcessing } from "~/utils";
 import { isAdding } from "~/utils";
 import { postSchema } from "../../postSchema";
 import { Image as ImageIcon } from "lucide-react";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Switch, Transition } from "@headlessui/react";
 import { DotLoader } from "~/components/DotLoader";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";
@@ -36,8 +37,7 @@ import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "../forge/components";
 import { PostVersionModal } from "./PostVersionModal";
-import { useList, useStorage } from "~/liveblocks.config";
-import { shallow } from "@liveblocks/react";
+import { useStorage } from "~/liveblocks.config";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -65,10 +65,11 @@ export const PostHeaderEdit = ({
 
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const formResponse = useActionData<FormResponse>();
-
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const [isVersionModalOpen, setVersionModal] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
+   const [collabStatus, setCollabStatus] = useState(post?.collaboration);
+
    const { t } = useTranslation(handle?.i18n);
 
    const zo = useZorm("newPost", postSchema, {
@@ -94,12 +95,31 @@ export const PostHeaderEdit = ({
       if (blocks == null) {
          return;
       }
-      const isDiff = JSON.stringify(blocks) === JSON.stringify(post.content);
-      if (isDiff == false) {
+      const isDiffBlocks =
+         JSON.stringify(blocks) === JSON.stringify(post.content);
+
+      if (isDiffBlocks == false) {
          return setChanged(true);
       }
       return setChanged(false);
    }, [blocks, post]);
+
+   const handleToggleState = () => {
+      if (collabStatus == true) {
+         setCollabStatus(false);
+      } else {
+         setCollabStatus(true);
+      }
+      const status = collabStatus == true ? false : true;
+      return fetcher.submit(
+         {
+            intent: "updateCollabStatus",
+            //@ts-expect-error
+            collabStatus: status,
+         },
+         { method: "patch" }
+      );
+   };
 
    return (
       <>
@@ -136,11 +156,11 @@ export const PostHeaderEdit = ({
                            leaveTo="transform opacity-0 scale-95"
                         >
                            <Menu.Items
-                              className="absolute left-0 mt-2.5 w-full min-w-[200px] max-w-md
+                              className="absolute left-0 mt-2.5 w-full min-w-[220px]
                                         origin-top-left transform transition-all z-10"
                            >
-                              <div className="border-color rounded-lg border bg-2 p-1.5 shadow shadow-1">
-                                 <Menu.Item>
+                              <div className="border-color space-y-1 rounded-lg border bg-2 p-1.5 shadow shadow-1">
+                                 {/* <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
                                     py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
@@ -151,24 +171,75 @@ export const PostHeaderEdit = ({
                                        />
                                        Clone
                                     </button>
+                                 </Menu.Item> */}
+                                 <Menu.Item>
+                                    <div className="flex items-center justify-between">
+                                       <div className="text-1 flex w-full text-sm items-center gap-3 py-2 px-2.5 font-bold">
+                                          <Users
+                                             className="text-blue-500"
+                                             size="18"
+                                          />
+                                          Collaboration
+                                       </div>
+                                       <Tooltip
+                                          id="collaboration-toggle"
+                                          side="right"
+                                          content={`${
+                                             collabStatus
+                                                ? "Disable Collaboration"
+                                                : "Enable Collaboration"
+                                          }`}
+                                          className="flex items-center justify-center"
+                                       >
+                                          <Switch
+                                             checked={collabStatus}
+                                             onChange={handleToggleState}
+                                             className={`${
+                                                collabStatus
+                                                   ? "bg-emerald-500"
+                                                   : "bg-zinc-300 dark:bg-zinc-700"
+                                             }
+                                                relative inline-flex h-5 w-9 shrink-0 cursor-pointer mr-1 
+                                                rounded-full border-2 border-transparent transition-colors 
+                                                duration-200 ease-in-out focus:outline-none focus-visible:ring-2  
+                                              focus-visible:ring-white focus-visible:ring-opacity-75`}
+                                          >
+                                             <span className="sr-only">
+                                                Toggle Collab
+                                             </span>
+                                             <span
+                                                aria-hidden="true"
+                                                className={`${
+                                                   collabStatus
+                                                      ? "translate-x-4"
+                                                      : "translate-x-0"
+                                                }
+                                          pointer-events-none inline-block h-4 w-4 transform rounded-full
+                                          bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+                                             />
+                                          </Switch>
+                                       </Tooltip>
+                                    </div>
                                  </Menu.Item>
+                                 {post.isPublished && (
+                                    <Menu.Item>
+                                       <button
+                                          className="text-1 flex w-full items-center gap-3 rounded-lg text-sm
+                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          onClick={() => setUnpublishOpen(true)}
+                                       >
+                                          <EyeOff
+                                             className="text-zinc-400"
+                                             size="18"
+                                          />
+                                          Unpublish
+                                       </button>
+                                    </Menu.Item>
+                                 )}
                                  <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                       onClick={() => setUnpublishOpen(true)}
-                                    >
-                                       <EyeOff
-                                          className="text-zinc-400"
-                                          size="18"
-                                       />
-                                       Unpublish
-                                    </button>
-                                 </Menu.Item>
-                                 <Menu.Item>
-                                    <button
-                                       className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    py-2 px-2.5 font-bold text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                        onClick={() => setDeleteOpen(true)}
                                     >
                                        <Trash2
@@ -235,38 +306,44 @@ export const PostHeaderEdit = ({
                         <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
                            <DotLoader />
                         </div>
-                     ) : isChanged == true ? (
+                     ) : isChanged == true || post.isPublished == false ? (
                         <fetcher.Form method="post">
-                           <button
-                              disabled={disabled}
-                              type="submit"
-                              name="intent"
-                              value="publish"
+                           <Tooltip
+                              id="publish-changes"
+                              side="bottom"
+                              content="Publish Changes"
                            >
-                              <div
-                                 className="group shadow-sm shadow-1 inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
-                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                              <button
+                                 disabled={disabled}
+                                 type="submit"
+                                 name="intent"
+                                 value="publish"
                               >
-                                 {t("actions.publish")}
-                                 <svg
-                                    className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
-                                    fill="none"
-                                    width="12"
-                                    height="12"
-                                    viewBox="0 0 12 12"
-                                    aria-hidden="true"
+                                 <div
+                                    className="group shadow-sm shadow-1 inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
+                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
                                  >
-                                    <path
-                                       className="opacity-0 transition group-hover:opacity-100"
-                                       d="M0 5h7"
-                                    ></path>
-                                    <path
-                                       className="transition group-hover:translate-x-[3px]"
-                                       d="M1 1l4 4-4 4"
-                                    ></path>
-                                 </svg>
-                              </div>
-                           </button>
+                                    {t("actions.publish")}
+                                    <svg
+                                       className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                                       fill="none"
+                                       width="12"
+                                       height="12"
+                                       viewBox="0 0 12 12"
+                                       aria-hidden="true"
+                                    >
+                                       <path
+                                          className="opacity-0 transition group-hover:opacity-100"
+                                          d="M0 5h7"
+                                       ></path>
+                                       <path
+                                          className="transition group-hover:translate-x-[3px]"
+                                          d="M1 1l4 4-4 4"
+                                       ></path>
+                                    </svg>
+                                 </div>
+                              </button>
+                           </Tooltip>
                         </fetcher.Form>
                      ) : null}
                   </div>
@@ -291,7 +368,7 @@ export const PostHeaderEdit = ({
          <section className="max-w-[800px] mx-auto">
             {post.banner ? (
                <div>
-                  <div className="relative mb-8">
+                  <div className="relative mb-5">
                      <div
                         className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
                          laptop:rounded-none laptop:border-x-0 desktop:rounded-md
@@ -325,12 +402,10 @@ export const PostHeaderEdit = ({
                         )}
                      </button>
                   </div>
-                  <div className="h-0.5 rounded-full mb-6 max-w-[728px] mx-4 tablet:mx-auto bg-zinc-100 dark:bg-zinc-700/50" />
                </div>
             ) : isShowBanner ? (
-               <div className="relative mb-8">
+               <div className="relative mb-5">
                   <fetcher.Form
-                     className="mb-8"
                      method="patch"
                      encType="multipart/form-data"
                      replace
@@ -374,7 +449,6 @@ export const PostHeaderEdit = ({
                      </label>
                      <input type="hidden" name="intent" value="updateBanner" />
                   </fetcher.Form>
-                  <div className="h-0.5 rounded-full mb-5 mx-4 max-w-[728px] bg-zinc-100 dark:bg-zinc-700/50" />
                </div>
             ) : null}
          </section>
