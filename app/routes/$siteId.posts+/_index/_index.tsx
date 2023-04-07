@@ -23,10 +23,11 @@ import {
 import { format } from "date-fns";
 import { useState, useEffect, Fragment } from "react";
 import { useDebouncedValue } from "~/hooks";
-import { isLoading } from "~/utils";
+import { isLoading, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./FeedItem";
+import { nanoid } from "nanoid";
 
 export const handle = {};
 
@@ -45,7 +46,6 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   //TODO Should limit this to only logged in users who are admin users of the site
    const myPosts = await payload.find({
       collection: "posts",
       user,
@@ -531,14 +531,18 @@ export const action = async ({
          const { title } = await zx.parseForm(request, {
             title: z.string(),
          });
+
          const post = await payload.create({
             collection: "posts",
             data: {
+               id: safeNanoID(),
+               url: "untitled",
                title,
                author: user?.id,
                site: siteId,
             },
             user,
+            draft: true,
             overrideAccess: false,
          });
          return redirect(`/${siteId}/posts/${post.id}/edit`);
@@ -547,6 +551,8 @@ export const action = async ({
          const post = await payload.create({
             collection: "posts",
             data: {
+               id: safeNanoID(),
+               url: "untitled",
                title: "Untitled",
                author: user?.id,
                site: siteId,

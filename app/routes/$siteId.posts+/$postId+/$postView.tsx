@@ -1,8 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { Suspense, useCallback, useMemo } from "react";
 import type { V2_MetaFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { type LoaderArgs } from "@remix-run/node";
+import { redirect, type LoaderArgs } from "@remix-run/node";
 
 import { z } from "zod";
 import { zx } from "zodix";
@@ -21,15 +20,16 @@ import { PostHeader } from "./PostHeader";
 import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 
-//get notes list from payload
 export async function loader({
    context: { payload, user },
    params,
 }: LoaderArgs) {
-   const { postId, siteId } = zx.parseParams(params, {
+   const { postId, siteId, postView } = zx.parseParams(params, {
       postId: z.string(),
       siteId: z.string(),
+      postView: z.string(),
    });
+
    const post = await payload.findByID({
       collection: "posts",
       id: postId,
@@ -37,9 +37,18 @@ export async function loader({
       user,
       depth: 2,
    });
+
+   if (post.isPublished == false) {
+      throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 404);
+   }
+   //If slug does not equal slug saved in database, redirect to the correct slug
+   if (postView != post.url) {
+      throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 301);
+   }
+
    if (post._status != "published")
       throw redirect(`/${siteId}/posts/${postId}/edit`);
-   return { post };
+   return { post, siteId };
 }
 
 export const handle = {
@@ -60,7 +69,7 @@ export const meta: V2_MetaFunction = ({ data, parentsData }) => {
 
 export default function PostPage() {
    const editor = useMemo(() => withReact(createEditor()), []);
-   const { post } = useLoaderData<typeof loader>();
+   const { post, siteId } = useLoaderData<typeof loader>();
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
    }, []);
@@ -70,7 +79,7 @@ export default function PostPage() {
          <AdminOrStaffOrOwner>
             <div className="flex justify-center z-10 fixed inset-x-0 mx-auto items-center w-full bottom-24 laptop:bottom-0">
                <Link
-                  to="edit"
+                  to={`/${siteId}/posts/${post.id}/edit`}
                   className="inline-flex justify-center w-36 flex-none items-center group laptop:border-b-0 bg-emerald-100 dark:border-emerald-900 
                gap-2 py-4 laptop:py-5 pr-5 pl-3 laptop:rounded-b-none rounded-2xl border shadow shadow-1 border-emerald-300 dark:bg-emerald-950"
                >

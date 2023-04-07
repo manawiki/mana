@@ -16,6 +16,7 @@ import {
    getSession,
    setSuccessMessage,
    assertIsDelete,
+   slugify,
 } from "~/utils";
 
 import { z } from "zod";
@@ -43,6 +44,7 @@ export async function loader({
    });
    if (!user)
       throw redirect(`/login?redirectTo=/${siteId}/posts/${postId}/edit`);
+
    const post = await payload.findByID({
       collection: "posts",
       id: postId,
@@ -193,12 +195,14 @@ export async function action({
          const result = await zx.parseFormSafe(request, postSchema);
          if (result.success) {
             const { title } = result.data;
+            const slug = slugify(title ?? "");
             try {
                return await payload.update({
                   collection: "posts",
                   id: postId,
                   data: {
                      title,
+                     url: slug,
                   },
                   overrideAccess: false,
                   user,

@@ -295,7 +295,7 @@ export const PostHeaderEdit = ({
                               <Link
                                  className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
                                  target="_blank"
-                                 to={`/${post.site}/posts/${post.id}`}
+                                 to={`/${post.site}/posts/${post.id}/${post.url}`}
                               >
                                  <ExternalLink
                                     size={16}

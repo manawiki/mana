@@ -23,10 +23,17 @@ export const Posts: CollectionConfig = {
    },
    fields: [
       {
+         name: "id",
+         type: "text",
+      },
+      {
+         name: "url",
+         type: "text",
+      },
+      {
          name: "title",
          type: "text",
          required: true,
-         index: true,
       },
       {
          name: "publishedAt",
