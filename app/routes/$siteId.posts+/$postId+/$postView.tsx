@@ -1,6 +1,6 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { Suspense, useCallback, useMemo } from "react";
-import type { V2_MetaFunction } from "@remix-run/node";
+import { json, V2_MetaFunction } from "@remix-run/node";
 import { redirect, type LoaderArgs } from "@remix-run/node";
 
 import { z } from "zod";
@@ -39,7 +39,7 @@ export async function loader({
    });
 
    if (post.isPublished == false) {
-      throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 404);
+      throw json(null, { status: 404 });
    }
    //If slug does not equal slug saved in database, redirect to the correct slug
    if (postView != post.url) {

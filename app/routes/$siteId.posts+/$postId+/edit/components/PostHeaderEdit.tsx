@@ -1,15 +1,8 @@
-import {
-   useFetcher,
-   useActionData,
-   Form,
-   useNavigation,
-   Link,
-} from "@remix-run/react";
+import { useFetcher, useActionData, Link } from "@remix-run/react";
 import {
    Loader2,
    ImageMinus,
    Upload,
-   Copy,
    EyeOff,
    MoreVertical,
    Trash2,
@@ -17,9 +10,11 @@ import {
    ExternalLink,
    History,
    Users,
+   Copy,
+   Share2,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
-import { useState, useEffect, Fragment, SyntheticEvent, useRef } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useZorm } from "react-zorm";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import type { FormResponse } from "~/utils";
@@ -27,7 +22,7 @@ import { isProcessing } from "~/utils";
 import { isAdding } from "~/utils";
 import { postSchema } from "../../postSchema";
 import { Image as ImageIcon } from "lucide-react";
-import { Menu, Switch, Transition } from "@headlessui/react";
+import { Menu, Popover, Switch, Transition } from "@headlessui/react";
 import { DotLoader } from "~/components/DotLoader";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";
@@ -39,6 +34,7 @@ import { Tooltip } from "../forge/components";
 import { PostVersionModal } from "./PostVersionModal";
 import { useStorage } from "~/liveblocks.config";
 import TextareaAutosize from "react-textarea-autosize";
+import { format } from "date-fns";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -120,6 +116,8 @@ export const PostHeaderEdit = ({
          { method: "patch" }
       );
    };
+
+   const postFullUrl = `https://mana.wiki/${post.site}/posts/${post.id}/${post.url}`;
 
    return (
       <>
@@ -278,7 +276,9 @@ export const PostHeaderEdit = ({
                               content="History"
                            >
                               <button
-                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
+                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 
+                                 dark:hover:border-emerald-800 hover:border-emerald-200
+                                 rounded-full flex items-center justify-center"
                                  onClick={() => setVersionModal(true)}
                               >
                                  <History
@@ -287,24 +287,121 @@ export const PostHeaderEdit = ({
                                  />
                               </button>
                            </Tooltip>
-                           <Tooltip
-                              id="published"
-                              side="bottom"
-                              content="Published View"
-                           >
-                              <Link
-                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
-                                 target="_blank"
-                                 to={`/${post.site}/posts/${post.id}/${post.url}`}
-                              >
-                                 <ExternalLink
-                                    size={16}
-                                    className="text-emerald-500"
-                                 />
-                              </Link>
-                           </Tooltip>
                         </>
                      )}
+                     <Popover className="relative">
+                        {({ open }) => (
+                           <>
+                              <Tooltip
+                                 id="share-post"
+                                 side="bottom"
+                                 content="Share"
+                              >
+                                 <Popover.Button
+                                    className="w-9 h-9 border border-color focus:outline-none
+                                    dark:hover:border-emerald-800 hover:border-emerald-200
+                               dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
+                                 >
+                                    <Share2
+                                       size={18}
+                                       className="text-emerald-500"
+                                    />
+                                 </Popover.Button>
+                              </Tooltip>
+                              <Transition
+                                 as={Fragment}
+                                 enter="transition ease-out duration-200"
+                                 enterFrom="opacity-0 translate-y-1"
+                                 enterTo="opacity-100 translate-y-0"
+                                 leave="transition ease-in duration-150"
+                                 leaveFrom="opacity-100 translate-y-0"
+                                 leaveTo="opacity-0 translate-y-1"
+                              >
+                                 <Popover.Panel
+                                    className="absolute z-10 mt-2 w-screen max-w-[300px] right-0
+                                    transform border-color space-y-1 rounded-lg border bg-2 p-4 
+                                    shadow shadow-1"
+                                 >
+                                    {post.isPublished ? (
+                                       <div className="flex items-center justify-between pb-3">
+                                          <div className="text-xs space-y-0.5">
+                                             <div className="text-1">
+                                                Last published
+                                             </div>
+                                             <div className="font-bold">
+                                                {format(
+                                                   new Date(
+                                                      versions?.docs[0]
+                                                         .updatedAt as string
+                                                   ),
+                                                   "MMMM d, hh:mm aaa"
+                                                )}
+                                             </div>
+                                          </div>
+
+                                          <Tooltip
+                                             id="view-live-post"
+                                             side="right"
+                                             content="View post"
+                                          >
+                                             <Link
+                                                className="flex bg-3 rounded-xl w-9 h-9 shadow-sm shadow-1
+                                           items-center gap-2 text-sm font-bold justify-center"
+                                                target="_blank"
+                                                to={`/${post.site}/posts/${post.id}/${post.url}`}
+                                             >
+                                                <ExternalLink
+                                                   size={18}
+                                                   className="text-emerald-500"
+                                                />
+                                             </Link>
+                                          </Tooltip>
+                                       </div>
+                                    ) : (
+                                       <div>
+                                          <div className="text-xs space-y-0.5 pb-3">
+                                             <div className="text-1">
+                                                Status
+                                             </div>
+                                             <div className="font-bold">
+                                                Unpublished
+                                             </div>
+                                          </div>
+                                       </div>
+                                    )}
+                                    <div className="flex h-10 bg-3 items-center pr-1 border border-color rounded-md">
+                                       <input
+                                          className="flex-grow focus:outline-none
+                                           p-3 truncate text-sm text-1 bg-transparent"
+                                          readOnly
+                                          value={postFullUrl}
+                                       />
+                                       <Tooltip
+                                          id="copy-post-url"
+                                          side="right"
+                                          content="Copy"
+                                       >
+                                          <button
+                                             className="flex-none h-7 w-7 flex items-center 
+                                             justify-center rounded-md active:bg-5"
+                                             onClick={() =>
+                                                navigator.clipboard.writeText(
+                                                   postFullUrl
+                                                )
+                                             }
+                                          >
+                                             <Copy
+                                                className="text-emerald-500"
+                                                size={18}
+                                             />
+                                          </button>
+                                       </Tooltip>
+                                    </div>
+                                 </Popover.Panel>
+                              </Transition>
+                           </>
+                        )}
+                     </Popover>
                      {isPublishing ? (
                         <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
                            <DotLoader />
