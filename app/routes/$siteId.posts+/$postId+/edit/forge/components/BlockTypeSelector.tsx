@@ -3,7 +3,7 @@ import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
-import Tooltip from "../../../../../../components/Tooltip";
+import Tooltip from "~/components/Tooltip";
 import { useSelf } from "~/liveblocks.config";
 
 type Props = {
@@ -145,15 +145,15 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
          <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
-               className="overflow-scroll shadow shadow-1
+               className="overflow-scroll shadow shadow-1 left-0
                h-60 w-52 border border-color outline-none z-10 rounded-lg bg-2"
             >
                {groups.map((group, indexGroup) => {
                   return (
                      <DropdownMenuPrimitive.Group key={indexGroup} className="">
                         <DropdownMenuPrimitive.Label
-                           className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-zinc-100/70
-                        dark:bg-zinc-700/70 top-0"
+                           className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-zinc-100
+                        dark:bg-zinc-700 top-0"
                         >
                            {group.label}
                         </DropdownMenuPrimitive.Label>
