@@ -1,9 +1,7 @@
-export const Traces = ({ pageData }) => {
-
-
-	return (
-		<>
-			<h2>Traces</h2>
-		</>
-	);
+export const Blank = ({ pageData }: any) => {
+   return (
+      <>
+         <h2>Blank</h2>
+      </>
+   );
 };

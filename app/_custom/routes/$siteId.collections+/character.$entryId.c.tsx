@@ -17,6 +17,7 @@ import { SkillTree } from "~/_custom/components/characters/SkillTree";
 import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
+import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 
 export { meta };
 
@@ -94,20 +95,13 @@ export default function CharacterEntry() {
             {/* Image Gallery Section showing all relevant images */}
             <h2>Image Gallery</h2>
             <ImageGallery pageData={defaultData} />
+
+            {/* Voice Line Section */}
+            <VoiceLines pageData={defaultData} />
          </EntryContent>
       </EntryParent>
    );
 }
-
-const Header = () => {
-   const { defaultData } = useLoaderData<typeof loader>();
-
-   return (
-      <>
-         <div>{defaultData}</div>
-      </>
-   );
-};
 
 const Stats = () => {
    return <div>This is stats</div>;
