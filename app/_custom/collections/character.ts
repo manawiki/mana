@@ -201,6 +201,20 @@ export const Character: CollectionConfig = {
          ],
       },
       {
+         name: "voice_lines",
+         type: "array",
+         fields: [
+            {
+               name: "title",
+               type: "text",
+            },
+            {
+               name: "text",
+               type: "text",
+            },
+         ],
+      },
+      {
          name: "image_round_icon",
          type: "upload",
          relationTo: "images",
@@ -232,6 +246,10 @@ export const Character: CollectionConfig = {
       },
       {
          name: "checksum",
+         type: "text",
+      },
+      {
+         name: "checksum_voice_lines",
          type: "text",
       },
    ],
