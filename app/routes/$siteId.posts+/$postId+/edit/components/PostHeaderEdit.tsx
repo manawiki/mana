@@ -359,7 +359,7 @@ export const PostHeaderEdit = ({
                                        </div>
                                     ) : (
                                        <div>
-                                          <div className="text-xs space-y-0.5 pb-3">
+                                          <div className="text-xs space-y-0.5 pb-2">
                                              <div className="text-1">
                                                 Status
                                              </div>
