@@ -23,10 +23,11 @@ import {
 import { format } from "date-fns";
 import { useState, useEffect, Fragment } from "react";
 import { useDebouncedValue } from "~/hooks";
-import { isLoading } from "~/utils";
-import { AdminOrOwner } from "~/modules/auth";
+import { isLoading, safeNanoID } from "~/utils";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./FeedItem";
+import { nanoid } from "nanoid";
 
 export const handle = {};
 
@@ -45,7 +46,6 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   //TODO Should limit this to only logged in users who are admin users of the site
    const myPosts = await payload.find({
       collection: "posts",
       user,
@@ -186,7 +186,7 @@ export default function PostsIndex() {
                   <li>Docs</li>
                </ul>
             </div>
-            <AdminOrOwner>
+            <AdminOrStaffOrOwner>
                <section className="pb-6">
                   <div className="flex items-center justify-between pb-3">
                      <h2 className="text-1 text-sm font-bold uppercase">
@@ -317,7 +317,7 @@ export default function PostsIndex() {
                         myPosts.docs.map((post) => (
                            <Link
                               prefetch="intent"
-                              to={post.id}
+                              to={`${post.id}/edit`}
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3 pl-3"
                            >
@@ -346,7 +346,7 @@ export default function PostsIndex() {
                         ))
                      )}
                   </section>
-                  {myPosts?.docs.length > 9 && (
+                  {myPosts?.totalPages > 1 && (
                      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
                         <div>
                            Showing{" "}
@@ -411,7 +411,7 @@ export default function PostsIndex() {
                      </div>
                   )}
                </section>
-            </AdminOrOwner>
+            </AdminOrStaffOrOwner>
             <div className="relative flex h-12 items-center justify-between">
                {searchToggle ? (
                   <>
@@ -531,49 +531,38 @@ export const action = async ({
          const { title } = await zx.parseForm(request, {
             title: z.string(),
          });
-         const note = await payload.create({
-            collection: "notes",
-            data: { mdx: "", data: [], ui: "textarea", author: user?.id },
-            user,
-            overrideAccess: false,
-            draft: true,
-         });
 
          const post = await payload.create({
             collection: "posts",
             data: {
+               id: safeNanoID(),
+               url: "untitled",
                title,
                author: user?.id,
-               notes: [note.id],
                site: siteId,
             },
             user,
+            draft: true,
             overrideAccess: false,
          });
-         return redirect(`/${siteId}/posts/${post.id}`);
+         return redirect(`/${siteId}/posts/${post.id}/edit`);
       }
       case "createPost": {
-         const note = await payload.create({
-            collection: "notes",
-            data: { mdx: "", data: [], ui: "textarea", author: user?.id },
-            user,
-            overrideAccess: false,
-            draft: true,
-         });
-
          const post = await payload.create({
             collection: "posts",
             data: {
+               id: safeNanoID(),
+               url: "untitled",
                title: "Untitled",
                author: user?.id,
-               notes: [note.id],
                site: siteId,
             },
             user,
+            draft: true,
             overrideAccess: false,
          });
 
-         return redirect(`/${siteId}/posts/${post.id}`);
+         return redirect(`/${siteId}/posts/${post.id}/edit`);
       }
    }
 };

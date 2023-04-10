@@ -10,6 +10,7 @@ import {
    Outlet,
    useLoaderData,
    useNavigation,
+   useSearchParams,
    Form,
    useActionData,
 } from "@remix-run/react";
@@ -26,9 +27,18 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-import { Component, ImagePlus, Loader2 } from "lucide-react";
+
+import {
+   Component,
+   ImagePlus,
+   Loader2,
+   ChevronLeft,
+   ChevronRight,
+} from "lucide-react";
+
 import { Image } from "~/components/Image";
-import { AdminOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { useDebouncedValue } from "~/hooks";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -38,17 +48,23 @@ const EntrySchema = z.object({
 export async function loader({
    context: { payload, user },
    params,
+   request,
 }: LoaderArgs) {
    const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
       siteId: z.string().length(10),
+   });
+
+   const { q, page } = zx.parseQuery(request, {
+      q: z.string().optional(),
+      page: z.coerce.number().optional(),
    });
    const id = `${collectionId}-${siteId}`;
    const collection = await payload.findByID({
       collection: "collections",
       id,
    });
-   const { docs } = await payload.find({
+   const entrylist = await payload.find({
       collection: "entries",
       where: {
          collectionEntity: {
@@ -56,8 +72,10 @@ export async function loader({
          },
       },
       user,
+      limit: 20,
+      page: page ?? 1,
    });
-   return json({ collection, entries: docs });
+   return json({ collection, entrylist, q });
 }
 
 export const meta: V2_MetaFunction = ({ data, parentsData }) => {
@@ -77,7 +95,35 @@ export const handle = {
 };
 
 export default function CollectionList() {
-   const { collection, entries } = useLoaderData<typeof loader>();
+   const { collection, entrylist, q } = useLoaderData<typeof loader>();
+
+   const entries = entrylist?.docs;
+
+   // Paging Variables!
+   const [query, setQuery] = useState(q);
+   const debouncedValue = useDebouncedValue(query, 500);
+   const [searchParams, setSearchParams] = useSearchParams({});
+
+   const currentEntry = entrylist?.pagingCounter;
+   const totalEntries = entrylist?.totalDocs;
+   const totalPages = entrylist?.totalPages;
+   const limit = entrylist?.limit;
+   const hasNextPage = entrylist?.hasNextPage;
+   const hasPrevPage = entrylist?.hasPrevPage;
+
+   useEffect(() => {
+      if (debouncedValue) {
+         setSearchParams((searchParams) => {
+            searchParams.set("q", debouncedValue);
+            return searchParams;
+         });
+      } else {
+         setSearchParams((searchParams) => {
+            searchParams.delete("q");
+            return searchParams;
+         });
+      }
+   }, [debouncedValue]);
 
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
@@ -86,6 +132,7 @@ export default function CollectionList() {
    //Image preview after upload
    const [, setPicture] = useState(null);
    const [imgData, setImgData] = useState(null);
+
    const onChangePicture = (e: any) => {
       if (e.target.files[0]) {
          setPicture(e.target.files[0]);
@@ -116,7 +163,7 @@ export default function CollectionList() {
          <Outlet />
          <div className="mx-auto max-w-[728px] max-desktop:px-3 pb-12">
             <h2 className="pb-3 text-xl font-bold pl-1">{collection.name}</h2>
-            <AdminOrOwner>
+            <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
                   method="post"
@@ -191,7 +238,7 @@ export default function CollectionList() {
                      </button>
                   </div>
                </Form>
-            </AdminOrOwner>
+            </AdminOrStaffOrOwner>
 
             {entries?.length === 0 ? null : (
                <>
@@ -230,6 +277,68 @@ export default function CollectionList() {
                         </Link>
                      ))}
                   </div>
+
+                  {/* Pagination Section */}
+                  {totalPages > 1 && (
+                     <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+                        <div>
+                           Showing{" "}
+                           <span className="font-bold">{currentEntry}</span> to{" "}
+                           <span className="font-bold">
+                              {limit + currentEntry - 1 > totalEntries
+                                 ? totalEntries
+                                 : limit + currentEntry - 1}
+                           </span>{" "}
+                           of <span className="font-bold">{totalEntries}</span>{" "}
+                           results
+                        </div>
+                        <div className="flex items-center gap-3 text-xs">
+                           {hasPrevPage ? (
+                              <button
+                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                 onClick={() =>
+                                    setSearchParams((searchParams) => {
+                                       searchParams.set(
+                                          "page",
+                                          entrylist.prevPage as any
+                                       );
+                                       return searchParams;
+                                    })
+                                 }
+                              >
+                                 <ChevronLeft
+                                    size={18}
+                                    className="text-emerald-500"
+                                 />
+                                 Prev
+                              </button>
+                           ) : null}
+                           {hasNextPage && hasPrevPage && (
+                              <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                           )}
+                           {hasNextPage ? (
+                              <button
+                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                                 onClick={() =>
+                                    setSearchParams((searchParams) => {
+                                       searchParams.set(
+                                          "page",
+                                          entrylist.nextPage as any
+                                       );
+                                       return searchParams;
+                                    })
+                                 }
+                              >
+                                 Next
+                                 <ChevronRight
+                                    size={18}
+                                    className="text-emerald-500"
+                                 />
+                              </button>
+                           ) : null}
+                        </div>
+                     </div>
+                  )}
                </>
             )}
          </div>

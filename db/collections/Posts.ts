@@ -19,17 +19,29 @@ export const Posts: CollectionConfig = {
       read: () => true, //isAdminAuthororPublished
       update: isStafforUser("author"), //isAdminorAuthor
       delete: isStaff, //isAdminorAuthor
+      readVersions: isStaff,
    },
    fields: [
+      {
+         name: "id",
+         type: "text",
+      },
+      {
+         name: "url",
+         type: "text",
+      },
       {
          name: "title",
          type: "text",
          required: true,
-         index: true,
       },
       {
          name: "publishedAt",
          type: "date",
+      },
+      {
+         name: "content",
+         type: "json",
       },
       {
          name: "author",
@@ -54,13 +66,16 @@ export const Posts: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
-      {
-         name: "notes",
-         type: "relationship",
-         relationTo: "notes",
-         hasMany: true,
-         maxDepth: 1,
-      },
       { name: "isPublished", type: "checkbox", defaultValue: false },
+      {
+         name: "collaboration",
+         type: "checkbox",
+         label: "Enable Collaboration",
+         defaultValue: false,
+      },
    ],
+   versions: {
+      drafts: true,
+      maxPerDoc: 60,
+   },
 };

@@ -48,6 +48,9 @@ html.dark {
    .bg-4 {
       @apply bg-white dark:bg-[#3D4042];
    }
+   .bg-5 {
+      @apply bg-zinc-50 dark:bg-bg4Dark;
+   }
    .text-1 {
       @apply text-zinc-500 dark:text-zinc-400;
    }
@@ -92,24 +95,6 @@ html.dark {
 .post-content h2 {
    @apply dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light;
 }
-.post-content h3 {
-   @apply dark:text-dark font-bold text-xl pb-2 pt-4 text-light;
-}
 .post-content a {
    @apply text-blue-500;
-}
-.remirror-list-item-marker-container {
-   @apply -left-6;
-}
-.remirror-collapsible-list-item-button {
-   @apply dark:bg-dark bg-light w-1.5 h-1.5;
-}
-.remirror-editor-wrapper {
-   @apply !pt-3;
-}
-.remirror-editor {
-   @apply !rounded-none !p-0 font-body !shadow-none focus:!shadow-none;
-}
-.remirror-editor.ProseMirror {
-   @apply overflow-y-visible;
 }
