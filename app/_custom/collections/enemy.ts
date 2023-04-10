@@ -168,6 +168,26 @@ export const Enemy: CollectionConfig = {
          type: "json",
       },
       {
+         name: "rewards",
+         type: "array",
+         fields: [
+            {
+               name: "world_level",
+               type: "number",
+            },
+            {
+               name: "exp_reward",
+               type: "number",
+            },
+            {
+               name: "drop_list",
+               type: "relationship",
+               relationTo: "materials-lKJ16E5IhH",
+               hasMany: true,
+            },
+         ],
+      },
+      {
          name: "checksum",
          type: "text",
       },
