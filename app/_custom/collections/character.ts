@@ -212,6 +212,26 @@ export const Character: CollectionConfig = {
                name: "text",
                type: "text",
             },
+            {
+               name: "voice_en",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "voice_jp",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "voice_cn",
+               type: "upload",
+               relationTo: "images",
+            },
+            {
+               name: "voice_kr",
+               type: "upload",
+               relationTo: "images",
+            },
          ],
       },
       {
