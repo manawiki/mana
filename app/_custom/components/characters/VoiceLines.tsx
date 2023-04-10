@@ -7,7 +7,7 @@ export const VoiceLines = ({ pageData }: any) => {
          {lines?.length > 0 ? (
             <>
                <h2>Voice Lines</h2>
-               <table className="mb-3">
+               <table className="mb-3 w-full">
                   <thead></thead>
                   <tbody>
                      {/* One row per voice line */}
@@ -57,7 +57,7 @@ const AudioPlayer = ({ voice }: any) => {
 
    return (
       <>
-         <div>
+         <div className="w-full">
             {voice.voice_jp ? (
                <>
                   <Tab.Group>
