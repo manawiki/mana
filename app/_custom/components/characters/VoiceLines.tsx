@@ -38,6 +38,7 @@ export const VoiceLines = ({ pageData }: any) => {
                                        }}
                                     ></div>
                                     {/* Voice line player, if voices available, see AudioPlayer code */}
+                                    <AudioPlayer voice={voice} />
                                  </td>
                               </tr>
                            </>
@@ -57,7 +58,7 @@ const AudioPlayer = ({ voice }: any) => {
    return (
       <>
          <div>
-            {voice.voice_en ? (
+            {voice.voice_jp ? (
                <>
                   <Tab.Group>
                      {/* Create one tab per language of EN, JP, CN, KR */}
