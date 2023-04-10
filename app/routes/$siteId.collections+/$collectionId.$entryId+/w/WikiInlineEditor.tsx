@@ -16,7 +16,6 @@ import { useState, useEffect } from "react";
 import { DotLoader } from "~/components/DotLoader";
 import { useIsMount, useDebouncedValue } from "~/hooks";
 import { NoteViewer } from "~/modules/note/components/NoteViewer";
-import { NoteText } from "~/modules/note/gui/NoteText";
 import { isProcessing } from "~/utils";
 
 const showNoteStyle = `w-9 h-9 rounded-full flex dark:!text-zinc-400 !text-zinc-500
@@ -220,16 +219,6 @@ const Editor = ({
                   <Info className="bg-2 rounded-full" size={24} />
                </Link>
             </div>
-            <NoteText
-               theme="yellow"
-               defaultValue={note.mdx}
-               onChange={(value: any) =>
-                  setInlineValue({
-                     mdx: value,
-                     id: note.id,
-                  })
-               }
-            />
          </section>
       </div>
    );

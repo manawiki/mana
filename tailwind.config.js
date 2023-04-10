@@ -14,7 +14,7 @@ module.exports = {
          fontFamily: {
             body: ["NunitoSans", "NunitoSans Override"],
             logo: ["new-order", "sans-serif"],
-            header: ["karmina", "sans-serif"],
+            header: ["source-sans-pro", "sans-serif"],
          },
          animation: {
             enter: "enter 200ms ease-out",
@@ -39,13 +39,9 @@ module.exports = {
       screens: {
          mobile: "320px",
          tablet: "768px",
-         laptop: "1120px",
+         laptop: "1200px",
          desktop: "1382px",
       },
    },
-   plugins: [
-      require("@tailwindcss/line-clamp"),
-      require("@tailwindcss/forms"),
-      require("tailwindcss-bg-patterns"),
-   ],
+   plugins: [require("@tailwindcss/forms"), require("tailwindcss-bg-patterns")],
 };
