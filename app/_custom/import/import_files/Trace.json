@@ -1,0 +1,380 @@
+[
+	{
+		"trace_id": 100101,
+		"name": "Frigid Cold Arrow",
+		"desc_simple": "Deals minor Ice DMG to a single enemy.",
+		"desc_type": "Basic ATK",
+		"icon_name": "SkillIcon_1001_Normal",
+		"icon_ultra_name": "",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>100%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 2,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>120%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 3,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>140%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 4,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>160%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 5,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>180%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 6,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>200%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 7,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>220%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 8,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>240%</unbreak></span> of March 7th's ATK to a single enemy."
+			},
+			{
+				"level": 9,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>260%</unbreak></span> of March 7th's ATK to a single enemy."
+			}
+		],
+		"max_level": 9,
+		"damage_type": "Ice",
+		"attack_type": "Normal",
+		"effect_type": "SingleAttack",
+		"skill_combovalue": 9.999999843067494,
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_base": 19.999999686134989,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": -0.9999999843067494,
+		"bp_add": 0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"tag": "Single Target",
+		"icon": {
+			"name": "SkillIcon_1001_Normal.png"
+		},
+		"checksum": "1cc9ca3f"
+	},
+	{
+		"trace_id": 100102,
+		"name": "The Power of Cuteness",
+		"desc_simple": "Provides a single ally with a Shield.",
+		"desc_type": "Skill",
+		"icon_name": "SkillIcon_1001_BP",
+		"icon_ultra_name": "",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>96%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>320</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 2,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>102%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>448</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 3,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>109%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>472</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 4,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>115%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>496</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 5,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>122%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>520</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 6,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>128%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>544</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 7,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>136%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>568</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 8,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>144%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>592</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 9,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>152%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>616</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 10,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>160%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>640</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 11,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>166%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>664</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 12,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>173%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>688</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 13,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>179%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>712</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 14,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>186%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>736</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			},
+			{
+				"level": 15,
+				"description": "Provides a single ally with a Shield that can absorb DMG equal to <span style=\"color: #f29e38ff\"><unbreak>192%</unbreak></span> of March 7th's DEF plus <span style=\"color: #f29e38ff\"><unbreak>760</unbreak></span> for <unbreak>6</unbreak> turn(s). If the ally's HP is <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of their Max HP or higher, greatly increases the chance of enemies attacking that ally."
+			}
+		],
+		"max_level": 15,
+		"attack_type": "BPSkill",
+		"effect_type": "Defence",
+		"skill_combovalue": 9.999999843067494,
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_base": 29.999999529202485,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": 0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"tag": "Defense",
+		"icon": {
+			"name": "SkillIcon_1001_BP.png"
+		},
+		"checksum": "-5724553d"
+	},
+	{
+		"trace_id": 100103,
+		"name": "Glacial Cascade",
+		"desc_simple": "Deals Ice DMG to all enemies, with a high chance of Freezing them.",
+		"desc_type": "Ultimate",
+		"icon_name": "SkillIcon_1001_Ultra",
+		"icon_ultra_name": "SkillIcon_1001_Ultra_on",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>180%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>60%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 2,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>192%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>64%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 3,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>204%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>68%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 4,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>216%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>72%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 5,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>228%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>76%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 6,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>240%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>80%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 7,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>255%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>85%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 8,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>270%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>90%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 9,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>285%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>95%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 10,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>300%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>100%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 11,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>312%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>104%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 12,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>324%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>108%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 13,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>336%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>112%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 14,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>348%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>116%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			},
+			{
+				"level": 15,
+				"description": "Deals Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>360%</unbreak></span> of March 7th's ATK to all enemies. On a hit, the enemy has a <unbreak>100%</unbreak> base chance to be Frozen for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot act and will take Ice DoT equal to <span style=\"color: #f29e38ff\"><unbreak>120%</unbreak></span> of March 7th's ATK at the beginning of each turn."
+			}
+		],
+		"max_level": 15,
+		"damage_type": "Ice",
+		"attack_type": "Ultra",
+		"effect_type": "AoEAttack",
+		"skill_combovalue": 29.999999529202485,
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_base": 4.999999921533747,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": -0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"tag": "AoE ATK",
+		"icon": {
+			"name": "SkillIcon_1001_Ultra.png"
+		},
+		"icon_ultra": {
+			"name": "SkillIcon_1001_Ultra_on.png"
+		},
+		"checksum": "-5f15ed85"
+	},
+	{
+		"trace_id": 100104,
+		"name": "Girl Power",
+		"desc_type": "Talent",
+		"icon_name": "SkillIcon_1001_Passive",
+		"icon_ultra_name": "",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>100%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 2,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>110%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 3,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>120%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 4,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>130%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 5,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>140%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 6,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>150%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 7,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>162%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 8,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>175%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 9,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>187%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 10,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>200%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 11,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>210%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 12,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>220%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 13,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>230%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 14,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>240%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			},
+			{
+				"level": 15,
+				"description": "After a shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to <span style=\"color: #f29e38ff\"><unbreak>250%</unbreak></span> of her ATK. This effect can be triggered <unbreak>4</unbreak> time(s) each turn."
+			}
+		],
+		"max_level": 15,
+		"damage_type": "Ice",
+		"effect_type": "SingleAttack",
+		"skill_combovalue": 19.999999686134989,
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_base": 9.999999843067494,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": -0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"tag": "Single Target",
+		"icon": {
+			"name": "SkillIcon_1001_Passive.png"
+		},
+		"checksum": "4f2537a3"
+	},
+	{
+		"trace_id": 100106,
+		"name": "Attack",
+		"icon_name": "SkillIcon_1001_Normal",
+		"icon_ultra_name": "",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "Upon attacking an enemy and entering battle, the enemy target's corresponding Type Toughness will be Weakened."
+			}
+		],
+		"max_level": 1,
+		"damage_type": "Ice",
+		"attack_type": "MazeNormal",
+		"effect_type": "MazeAttack",
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": -0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"icon": {
+			"name": "SkillIcon_1001_Normal.png"
+		},
+		"checksum": "13598af1"
+	},
+	{
+		"trace_id": 100107,
+		"name": "Freezing Beauty",
+		"desc_type": "Technique",
+		"icon_name": "SkillIcon_1001_Maze",
+		"icon_ultra_name": "",
+		"description_per_level": [
+			{
+				"level": 1,
+				"description": "Immediately attacks the enemy. After entering battle, there is a <unbreak>200%</unbreak> base chance to Freeze a random enemy for <unbreak>2</unbreak> turn(s). While Frozen, the enemy cannot move and will take Ice DMG equal to <unbreak>100%</unbreak> of March 7th's ATK at the beginning of each turn."
+			}
+		],
+		"max_level": 1,
+		"damage_type": "Ice",
+		"attack_type": "Maze",
+		"effect_type": "MazeAttack",
+		"init_cooldown": -1,
+		"cooldown": -1,
+		"sp_ratio": 0.499999992619036,
+		"bp_need": -0.9999999843067494,
+		"skill_need": 371857150,
+		"delay_ratio": 0.9999999843067494,
+		"icon": {
+			"name": "SkillIcon_1001_Maze.png"
+		},
+		"checksum": "141636aa"
+	}
+]
