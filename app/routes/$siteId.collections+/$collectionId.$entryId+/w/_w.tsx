@@ -6,7 +6,7 @@ import { WikiInlineEditor } from "./WikiInlineEditor";
 import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
 import { Popover, Transition } from "@headlessui/react";
 import { Plus, Type, Component } from "lucide-react";
-import { AdminOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { Note } from "payload/generated-types";
 
 export async function loader({
@@ -93,7 +93,7 @@ export default function CollectionEntryWiki() {
                ))}
             </Suspense>
          )}
-         <AdminOrOwner>
+         <AdminOrStaffOrOwner>
             <div
                className="bg-2 border-color sticky bottom-12 z-30 flex h-12 
                     items-center justify-between mt-60 mb-12
@@ -181,7 +181,7 @@ export default function CollectionEntryWiki() {
                   </div>
                </div>
             </div>
-         </AdminOrOwner>
+         </AdminOrStaffOrOwner>
       </>
    );
 }

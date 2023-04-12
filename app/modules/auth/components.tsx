@@ -1,6 +1,6 @@
 import type { Collection, Site, User } from "payload-types";
 import { useLocation, useRouteLoaderData } from "@remix-run/react";
-import { useIsStaffOrSiteAdminOrOwner } from ".";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -8,8 +8,12 @@ export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
 };
 
 //Render child components if the user is an admin or the site owner
-export const AdminOrOwner = ({ children }: { children: React.ReactNode }) => {
-   const hasAccess = useIsStaffOrSiteAdminOrOwner();
+export const AdminOrStaffOrOwner = ({
+   children,
+}: {
+   children: React.ReactNode;
+}) => {
+   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
    return hasAccess ? <>{children}</> : null;
 };

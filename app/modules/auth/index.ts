@@ -1,7 +1,7 @@
 import type { User, Site } from "payload-types";
 import { useRouteLoaderData } from "@remix-run/react";
 
-export const useIsStaffOrSiteAdminOrOwner = () => {
+export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
    const { user } = useRouteLoaderData("root") as { user: User };
    const { site } =
       (useRouteLoaderData("routes/$siteId") as { site: Site }) || {};

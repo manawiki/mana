@@ -24,7 +24,6 @@ import type { ToastMessage } from "./utils/message.server";
 import { getThemeSession } from "~/utils/theme.server";
 import { useTranslation } from "react-i18next";
 
-import editorStyles from "remirror/styles/all.css";
 import tailwindStylesheetUrl from "./styles/global.css";
 import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 
@@ -34,6 +33,8 @@ import { commitSession, getSession } from "./utils/message.server";
 import { useEffect } from "react";
 import type { envType } from "env/types";
 import { toast } from "./components/Toaster";
+
+import { DynamicLinks } from "remix-utils";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -64,21 +65,16 @@ export const links: LinksFunction = () => [
    //logo font
    { rel: "preload", href: "https://use.typekit.net/lak0idb.css", as: "style" },
    { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
-
-   { rel: "stylesheet", href: editorStyles },
-
    {
       rel: "preconnect",
       href: "https://use.typekit.net",
       crossOrigin: "anonymous",
    },
-
+   { rel: "preload", href: tooltipStyles, as: "style" },
+   { rel: "stylesheet", href: tooltipStyles },
    //preload css makes it nonblocking to html renders
    { rel: "preload", href: fonts, as: "style" },
    { rel: "stylesheet", href: fonts },
-
-   { rel: "preload", href: tooltipStyles, as: "style" },
-   { rel: "stylesheet", href: tooltipStyles },
 
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
@@ -121,7 +117,13 @@ function App() {
          className={`font-body ${theme ?? ""}`}
       >
          <head>
+            <meta charSet="utf-8" />
+            <meta
+               name="viewport"
+               content="width=device-width,initial-scale=1"
+            />
             <Meta />
+            <DynamicLinks />
             <Links />
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
