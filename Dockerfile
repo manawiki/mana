@@ -11,8 +11,7 @@ COPY package*.json .
 RUN yarn install
 
 # Copy the source files.
-COPY src src
-COPY tsconfig.json .
+COPY . .
 
 # Build the application.
 RUN yarn build && yarn cache clean
