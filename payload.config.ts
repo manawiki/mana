@@ -43,6 +43,9 @@ export default buildConfig({
          titleSuffix: "Mana",
       },
    },
+   rateLimit: {
+      trustProxy: true,
+    },
    plugins: [
       cloudStorage({
          collections: {
