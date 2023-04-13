@@ -27,7 +27,7 @@ export const Sites: CollectionConfig = {
       {
          name: "slug",
          type: "text",
-         unique:"true",
+         unique: true,
       },
       {
          name: "featured",
