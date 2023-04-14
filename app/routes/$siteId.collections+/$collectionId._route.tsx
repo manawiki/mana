@@ -78,8 +78,9 @@ export async function loader({
    return json({ collection, entrylist, q });
 }
 
-export const meta: V2_MetaFunction = ({ data, parentsData }) => {
-   const siteName = parentsData["routes/$siteId"].site.name;
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
+      ?.site.name;
    const collectionName = data.collection.name;
 
    return [
@@ -161,8 +162,8 @@ export default function CollectionList() {
    return (
       <>
          <Outlet />
-         <div className="mx-auto max-w-[728px] max-desktop:px-3 pb-12">
-            <h2 className="pb-3 text-xl font-bold pl-1">{collection.name}</h2>
+         <div className="mx-auto max-w-[728px] pb-12 max-desktop:px-3">
+            <h2 className="pb-3 pl-1 text-xl font-bold">{collection.name}</h2>
             <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
@@ -242,7 +243,7 @@ export default function CollectionList() {
 
             {entries?.length === 0 ? null : (
                <>
-                  <div className="divide-y overflow-hidden rounded-lg border border-color divide-color bg-2">
+                  <div className="border-color divide-color bg-2 divide-y overflow-hidden rounded-lg border">
                      {entries?.map((entry) => (
                         <Link
                            key={entry.id}
@@ -253,11 +254,11 @@ export default function CollectionList() {
                                  : `${entry.id}/w`
                            }`}
                            prefetch="intent"
-                           className="flex items-center gap-3 p-2 bg-2 hover:underline"
+                           className="bg-2 flex items-center gap-3 p-2 hover:underline"
                         >
                            <div
-                              className="flex h-8 w-8 items-center justify-between border-color
-                                    overflow-hidden rounded-full border-2 shadow-sm shadow-1"
+                              className="border-color shadow-1 flex h-8 w-8 items-center
+                                    justify-between overflow-hidden rounded-full border-2 shadow-sm"
                            >
                               {/* @ts-expect-error */}
                               {entry.icon?.url ? (
@@ -268,7 +269,7 @@ export default function CollectionList() {
                                  />
                               ) : (
                                  <Component
-                                    className="mx-auto text-1"
+                                    className="text-1 mx-auto"
                                     size={18}
                                  />
                               )}
