@@ -24,5 +24,7 @@ WORKDIR /home/node
 # Copy the built application.
 COPY --from=build /home/node /home/node
 
+ENV PORT="8080"
+
 # Run the service.
 CMD ["yarn", "run", "start"]
