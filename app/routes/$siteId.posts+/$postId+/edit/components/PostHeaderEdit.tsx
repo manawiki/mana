@@ -129,15 +129,15 @@ export const PostHeaderEdit = ({
             isUnpublishOpen={isUnpublishOpen}
             setUnpublishOpen={setUnpublishOpen}
          />
-         <section className="max-w-[728px] mx-auto max-tablet:px-3">
+         <section className="mx-auto max-w-[728px] max-tablet:px-3">
             <AdminOrStaffOrOwner>
                <div className="flex items-center justify-between pb-6">
                   <div className="flex items-center justify-between gap-3 desktop:-ml-11">
                      <Menu as="div" className="relative">
                         <Menu.Button
-                           className="bg-emerald-50 border-emerald-200 dark:bg-emerald-900 flex h-8 w-8 items-center justify-center 
-                        rounded-xl border transition dark:border-emerald-700
-                        duration-300 active:translate-y-0.5"
+                           className="flex h-8 w-8 items-center justify-center rounded-xl border border-emerald-200 
+                        bg-emerald-50 transition duration-300 active:translate-y-0.5
+                        dark:border-emerald-700 dark:bg-emerald-900"
                         >
                            <MoreVertical
                               className="text-emerald-500"
@@ -154,10 +154,10 @@ export const PostHeaderEdit = ({
                            leaveTo="transform opacity-0 scale-95"
                         >
                            <Menu.Items
-                              className="absolute left-0 mt-2.5 w-full min-w-[220px]
-                                        origin-top-left transform transition-all z-10"
+                              className="absolute left-0 z-10 mt-2.5 w-full
+                                        min-w-[220px] origin-top-left transform transition-all"
                            >
-                              <div className="border-color space-y-1 rounded-lg border bg-2 p-2 shadow shadow-1">
+                              <div className="border-color bg-2 shadow-1 space-y-1 rounded-lg border p-2 shadow">
                                  {/* <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -172,7 +172,7 @@ export const PostHeaderEdit = ({
                                  </Menu.Item> */}
                                  <Menu.Item>
                                     <div className="flex items-center justify-between">
-                                       <div className="text-1 flex w-full text-sm items-center gap-3 py-2 px-2.5 font-bold">
+                                       <div className="text-1 flex w-full items-center gap-3 px-2.5 py-2 text-sm font-bold">
                                           <Users
                                              className="text-blue-500"
                                              size="18"
@@ -197,7 +197,7 @@ export const PostHeaderEdit = ({
                                                    ? "bg-emerald-500"
                                                    : "bg-zinc-300 dark:bg-zinc-700"
                                              }
-                                                relative inline-flex h-5 w-9 shrink-0 cursor-pointer mr-1 
+                                                relative mr-1 inline-flex h-5 w-9 shrink-0 cursor-pointer 
                                                 rounded-full border-2 border-transparent transition-colors 
                                                 duration-200 ease-in-out focus:outline-none focus-visible:ring-2  
                                               focus-visible:ring-white focus-visible:ring-opacity-75`}
@@ -222,8 +222,8 @@ export const PostHeaderEdit = ({
                                  {post.isPublished && (
                                     <Menu.Item>
                                        <button
-                                          className="text-1 flex w-full items-center gap-3 rounded-lg text-sm
-                                    py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          className="text-1 flex w-full items-center gap-3 rounded-lg px-2.5
+                                    py-2 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                           onClick={() => setUnpublishOpen(true)}
                                        >
                                           <EyeOff
@@ -237,7 +237,7 @@ export const PostHeaderEdit = ({
                                  <Menu.Item>
                                     <button
                                        className="text-1 flex w-full items-center gap-3 rounded-lg
-                                    py-2 px-2.5 font-bold text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    px-2.5 py-2 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                        onClick={() => setDeleteOpen(true)}
                                     >
                                        <Trash2
@@ -253,15 +253,15 @@ export const PostHeaderEdit = ({
                      </Menu>
                      <button
                         onClick={() => setIsBannerShowing((v) => !v)}
-                        className="flex bg-5 text-1 dark:hover:border-emerald-800 items-center hover:border-emerald-200 
-                        border px-2.5 h-8 border-color rounded-lg gap-2 dark:border-zinc-600"
+                        className="bg-5 text-1 border-color flex h-8 items-center 
+                        gap-2 rounded-lg border px-2.5 hover:border-emerald-200 dark:border-zinc-600 dark:hover:border-emerald-800"
                      >
                         {isShowBanner ? (
                            <ChevronUp size={16} />
                         ) : (
                            <ImageIcon className="text-emerald-500" size={16} />
                         )}
-                        <span className="font-bold text-xs max-laptop:hidden">
+                        <span className="text-xs font-bold max-laptop:hidden">
                            Banner
                         </span>
                      </button>
@@ -276,9 +276,9 @@ export const PostHeaderEdit = ({
                               content="History"
                            >
                               <button
-                                 className="w-9 h-9 border border-color dark:border-zinc-600 bg-5 
-                                 dark:hover:border-emerald-800 hover:border-emerald-200
-                                 rounded-full flex items-center justify-center"
+                                 className="border-color bg-5 flex h-9 w-9 items-center 
+                                 justify-center rounded-full
+                                 border hover:border-emerald-200 dark:border-zinc-600 dark:hover:border-emerald-800"
                                  onClick={() => setVersionModal(true)}
                               >
                                  <History
@@ -298,9 +298,9 @@ export const PostHeaderEdit = ({
                                  content="Share"
                               >
                                  <Popover.Button
-                                    className="w-9 h-9 border border-color focus:outline-none
-                                    dark:hover:border-emerald-800 hover:border-emerald-200
-                               dark:border-zinc-600 bg-5 rounded-full flex items-center justify-center"
+                                    className="border-color bg-5 flex h-9 w-9
+                                    items-center justify-center
+                               rounded-full border hover:border-emerald-200 focus:outline-none dark:border-zinc-600 dark:hover:border-emerald-800"
                                  >
                                     <Share2
                                        size={18}
@@ -318,13 +318,13 @@ export const PostHeaderEdit = ({
                                  leaveTo="opacity-0 translate-y-1"
                               >
                                  <Popover.Panel
-                                    className="absolute z-10 mt-2 w-screen max-w-[300px] right-0
-                                    transform border-color space-y-1 rounded-lg border bg-2 p-4 
-                                    shadow shadow-1"
+                                    className="border-color bg-2 shadow-1 absolute right-0 z-10
+                                    mt-2 w-screen max-w-[300px] transform space-y-1 rounded-lg border 
+                                    p-4 shadow"
                                  >
                                     {post.isPublished ? (
-                                       <div className="flex items-center justify-between pb-3">
-                                          <div className="text-xs space-y-0.5">
+                                       <div className="flex items-center justify-between pb-2">
+                                          <div className="space-y-0.5 text-xs">
                                              <div className="text-1">
                                                 Last published
                                              </div>
@@ -345,8 +345,8 @@ export const PostHeaderEdit = ({
                                              content="View post"
                                           >
                                              <Link
-                                                className="flex bg-3 rounded-xl w-9 h-9 shadow-sm shadow-1
-                                           items-center gap-2 text-sm font-bold justify-center"
+                                                className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
+                                           gap-2 rounded-xl text-sm font-bold shadow-sm"
                                                 target="_blank"
                                                 to={`/${post.site}/posts/${post.id}/${post.url}`}
                                              >
@@ -359,7 +359,7 @@ export const PostHeaderEdit = ({
                                        </div>
                                     ) : (
                                        <div>
-                                          <div className="text-xs space-y-0.5 pb-2">
+                                          <div className="space-y-0.5 pb-2 text-xs">
                                              <div className="text-1">
                                                 Status
                                              </div>
@@ -369,10 +369,10 @@ export const PostHeaderEdit = ({
                                           </div>
                                        </div>
                                     )}
-                                    <div className="flex h-10 bg-3 items-center pr-1 border border-color rounded-md">
+                                    <div className="bg-3 border-color flex h-10 items-center rounded-md border pr-1">
                                        <input
-                                          className="flex-grow focus:outline-none
-                                           p-3 truncate text-sm text-1 bg-transparent"
+                                          className="text-1 flex-grow
+                                           truncate bg-transparent p-3 text-sm focus:outline-none"
                                           readOnly
                                           value={postFullUrl}
                                        />
@@ -382,8 +382,8 @@ export const PostHeaderEdit = ({
                                           content="Copy"
                                        >
                                           <button
-                                             className="flex-none h-7 w-7 flex items-center 
-                                             justify-center rounded-md active:bg-5"
+                                             className="active:bg-5 flex h-7 w-7 flex-none 
+                                             items-center justify-center rounded-md"
                                              onClick={() =>
                                                 navigator.clipboard.writeText(
                                                    postFullUrl
@@ -403,7 +403,7 @@ export const PostHeaderEdit = ({
                         )}
                      </Popover>
                      {isPublishing ? (
-                        <div className="h-9 w-24 rounded-full border-2 border-color flex items-center justify-center bg-2">
+                        <div className="border-color bg-2 flex h-9 w-24 items-center justify-center rounded-full border-2">
                            <DotLoader />
                         </div>
                      ) : isChanged == true || post.isPublished == false ? (
@@ -420,12 +420,12 @@ export const PostHeaderEdit = ({
                                  value="publish"
                               >
                                  <div
-                                    className="group shadow-sm shadow-1 inline-flex justify-center h-9 items-center rounded-full bg-emerald-500 
-                              w-24 font-bold text-white text-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                    className="shadow-1 group inline-flex h-9 w-24 items-center justify-center rounded-full bg-emerald-500 
+                              text-sm font-bold text-white shadow-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
                                  >
                                     {t("actions.publish")}
                                     <svg
-                                       className="mt-0.5 ml-2 -mr-1 stroke-white stroke-2"
+                                       className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
                                        fill="none"
                                        width="12"
                                        height="12"
@@ -451,8 +451,8 @@ export const PostHeaderEdit = ({
             </AdminOrStaffOrOwner>
             <div className="relative mb-3 flex items-center gap-3">
                <TextareaAutosize
-                  className="mt-0 w-full rounded-sm border-0 bg-transparent p-0 font-header text-3xl !leading-[3rem] 
-                   laptop:text-4xl font-semibold focus:ring-transparent resize-none overflow-hidden min-h-[20px]"
+                  className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
+                   font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
                   name={zo.fields.title()}
                   defaultValue={post.title}
                   onChange={(event) => setTitleValue(event.target.value)}
@@ -461,15 +461,15 @@ export const PostHeaderEdit = ({
             </div>
             <PostHeader post={post} />
          </section>
-         <section className="max-w-[800px] mx-auto">
+         <section className="mx-auto max-w-[800px]">
             {post.banner ? (
                <div>
                   <div className="relative mb-5">
                      <div
-                        className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
-                         laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                         items-center justify-center overflow-hidden tablet:rounded-md
-                         shadow-sm"
+                        className="bg-1 border-color flex aspect-[1.91/1] items-center 
+                         justify-center overflow-hidden shadow-sm
+                         tablet:rounded-md laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                         desktop:border"
                      >
                         <img
                            alt="Post Banner"
@@ -513,10 +513,10 @@ export const PostHeaderEdit = ({
                   >
                      <label className="cursor-pointer">
                         <div
-                           className="bg-2 border-color flex aspect-[1.91/1] desktop:border 
-                         laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                         items-center justify-center overflow-hidden tablet:rounded-md
-                         shadow-sm border-y tablet:border hover:border-dashed hover:border-4"
+                           className="bg-2 border-color flex aspect-[1.91/1] items-center 
+                         justify-center overflow-hidden border-y
+                         shadow-sm hover:border-4 hover:border-dashed tablet:rounded-md
+                         tablet:border laptop:rounded-none laptop:border-x-0 desktop:rounded-md desktop:border"
                         >
                            <div className="text-1 space-y-2">
                               {isBannerAdding ? (
