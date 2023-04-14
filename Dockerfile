@@ -24,8 +24,5 @@ WORKDIR /home/node
 # Copy the built application.
 COPY --from=build /home/node /home/node
 
-# Expose the service's port.
-EXPOSE 3000
-
 # Run the service.
 CMD ["yarn", "run", "start"]
