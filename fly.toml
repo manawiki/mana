@@ -1,6 +1,6 @@
-# fly.toml file generated for mana-prod on 2023-04-13T17:43:29-07:00
+# fly.toml file generated for mana on 2023-04-13T22:18:33-07:00
 
-app = "mana-prod"
+app = "mana"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
