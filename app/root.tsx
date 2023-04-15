@@ -31,7 +31,6 @@ import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
 import { useEffect } from "react";
-import type { envType } from "env/types";
 import { toast } from "./components/Toaster";
 
 import { DynamicLinks } from "remix-utils";
@@ -47,7 +46,6 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
          locale,
          user,
          siteTheme: themeSession.getTheme(),
-         env: process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT as envType,
       },
       { headers: { "Set-Cookie": await commitSession(session) } }
    );

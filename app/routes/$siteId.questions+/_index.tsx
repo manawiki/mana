@@ -15,7 +15,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
 
    const { search } = zx.parseQuery(request, {
@@ -62,7 +62,7 @@ export default function QuestionsIndex() {
          </h1>
 
          <div className="mx-auto max-w-[728px] px-3 pt-4 laptop:pt-8">
-            <h2 className="pt-6 pb-3 text-2xl font-bold">Q & A</h2>
+            <h2 className="pb-3 pt-6 text-2xl font-bold">Q & A</h2>
             <fetcher.Form method="post" className="pb-3.5" replace>
                <div className="flex items-center gap-4">
                   <div className="flex-grow">
@@ -118,7 +118,7 @@ export const action = async ({
    params,
 }: LoaderArgs) => {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
 
    const { intent, title } = await zx.parseForm(request, {
