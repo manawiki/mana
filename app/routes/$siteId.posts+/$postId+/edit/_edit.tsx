@@ -177,7 +177,7 @@ export async function action({
    params,
 }: ActionArgs) {
    const { siteId, postId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
       postId: z.string(),
    });
 

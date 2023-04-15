@@ -77,8 +77,8 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center laptop:my-4">
             <button
-               className="flex h-12 w-12 items-center justify-center rounded-full bg-3 shadow-1
-               text-1 transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14 shadow-sm"
+               className="bg-3 shadow-1 text-1 flex h-12 w-12 items-center justify-center
+               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14"
                type="button"
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}
@@ -116,8 +116,8 @@ export function NewSiteModal() {
                         leaveTo="opacity-0 scale-95"
                      >
                         <Dialog.Panel
-                           className="w-full max-w-md transform rounded-2xl
-                           bg-2 p-5 pt-10 text-left align-middle shadow-xl transition-all"
+                           className="bg-2 w-full max-w-md transform
+                           rounded-2xl p-5 pt-10 text-left align-middle shadow-xl transition-all"
                         >
                            <LoggedOut>
                               <div className="font-bold">
@@ -259,6 +259,7 @@ export const action: ActionFunction = async ({
                name: siteName,
                owner: userId,
                id: siteId,
+               slug: siteId,
                icon,
                type: "core",
             },
