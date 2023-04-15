@@ -19,14 +19,14 @@ export const SiteSwitcher = () => {
          <LoggedIn>
             <>
                <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5">
-                  <HomeLink site={site} />
+                  <HomeLink />
                   {site ? (
                      <>
                         <NotFollowingSite>
                            <div className="max-laptop:hidden">
                               <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
-                                 <SiteNavLink site={site} currentSite={site} />
+                                 <SiteNavLink site={site} />
                               </div>
                            </div>
                         </NotFollowingSite>
@@ -34,7 +34,7 @@ export const SiteSwitcher = () => {
                            <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5 laptop:hidden">
                               <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                               <div className="relative flex w-full items-center justify-center laptop:mb-4">
-                                 <SiteNavLink site={site} currentSite={site} />
+                                 <SiteNavLink site={site} />
                               </div>
                            </div>
                         )}
@@ -53,9 +53,9 @@ export const SiteSwitcher = () => {
                   <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3">
                      <Menu>
                         <Menu.Button
-                           className="flex h-12 w-12 items-center justify-center rounded-full 
-                                       bg-3 shadow-1 text-1 transition duration-300
-                                       active:translate-y-0.5 laptop:hidden shadow-sm"
+                           className="bg-3 shadow-1 text-1 flex h-12 w-12 
+                                       items-center justify-center rounded-full shadow-sm transition
+                                       duration-300 active:translate-y-0.5 laptop:hidden"
                         >
                            <Squares2X2Icon className="h-6 w-6" />
                         </Menu.Button>
@@ -73,7 +73,7 @@ export const SiteSwitcher = () => {
                                         origin-top-right transform transition-all"
                            >
                               <div
-                                 className="border-color mx-3 rounded-xl border-2 bg-2 p-4 
+                                 className="border-color bg-2 mx-3 rounded-xl border-2 p-4 
                                             shadow dark:shadow-black/50"
                               >
                                  <SiteList />
@@ -93,15 +93,15 @@ export const SiteSwitcher = () => {
          </LoggedIn>
          <LoggedOut>
             <div className="max-laptop:flex max-laptop:w-full max-laptop:items-center max-laptop:justify-between max-laptop:gap-3.5">
-               <div className="max-laptop:flex items-center">
+               <div className="items-center max-laptop:flex">
                   <div className="max-laptop:flex  max-laptop:items-center max-laptop:gap-3.5">
-                     <HomeLink site={site} />
+                     <HomeLink />
                      {site && (
                         <>
                            <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
                            <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
                            <div className="relative flex items-center justify-center">
-                              <SiteNavLink site={site} currentSite={site} />
+                              <SiteNavLink site={site} />
                            </div>
                         </>
                      )}

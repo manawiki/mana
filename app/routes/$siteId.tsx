@@ -38,7 +38,6 @@ import {
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import type { envType } from "env/types";
 import { Image } from "~/components/Image";
 import {
    ChatBubbleLeftIcon,
@@ -63,37 +62,21 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
-   const site = await payload.findByID({
+
+   const slug = await payload.find({
       collection: "sites",
-      id: siteId,
+      where: {
+         slug: {
+            equals: siteId,
+         },
+      },
       user,
    });
+   const site = slug?.docs[0];
    if (!site) {
-      return redirect("/404");
-   }
-   const host = new URL(request.url).hostname;
-   const isSubdomain = host.split(".").length > 2;
-   const env = process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT as envType;
-   const domain = env == "dev-server" ? "manatee.wiki" : "mana.wiki";
-
-   if (env != "local" && site.type === "custom" && site.subdomain) {
-      //If incoming request does not contain a subdomain, redirect to the sub-domain site
-      if (!isSubdomain) {
-         return redirect(`https://${site.subdomain}.${domain}/${siteId}`, 301);
-      }
-      //If incoming request contains a subdomain, check if it matches the site's subdomain
-      if (isSubdomain) {
-         const subDomain = host.split(".")[0];
-         if (subDomain == site.subdomain) {
-            return json({ site });
-         }
-      }
-   }
-   //Handle redirects for sub-domains on core sites
-   if (env != "local" && site.type === "core" && isSubdomain) {
-      return redirect(`https://${domain}/${siteId}`, 301);
+      throw json(null, { status: 404 });
    }
    return json({ site });
 }
@@ -146,20 +129,20 @@ export default function SiteIndex() {
                 desktop:auto-cols-[86px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 relative z-50 laptop:border-r border-color
-               max-laptop:fixed max-laptop:top-0 max-laptop:w-full max-laptop:py-3"
+               className="bg-1 border-color relative z-50 max-laptop:fixed
+               max-laptop:top-0 max-laptop:w-full max-laptop:py-3 laptop:border-r"
             >
-               <div className="laptop:fixed laptop:top-0 laptop:left-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
+               <div className="laptop:fixed laptop:left-0 laptop:top-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
                   <SiteSwitcher />
                </div>
             </section>
             <section>
                <div
-                  className="bg-1 laptop:bg-2 fixed bottom-0
-                        mx-auto w-full px-4 laptop:border-r border-color
-                        max-laptop:z-40 max-laptop:flex max-laptop:h-12 max-laptop:border-t
-                        laptop:top-0 laptop:h-full laptop:w-[86px] desktop:pl-5
-                        laptop:space-y-1 laptop:overflow-y-auto laptop:py-5 desktop:w-[220px] desktop:pr-6"
+                  className="bg-1 laptop:bg-2 border-color fixed
+                        bottom-0 mx-auto w-full px-4 max-laptop:z-40
+                        max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-0
+                        laptop:h-full laptop:w-[86px] laptop:space-y-1 laptop:overflow-y-auto
+                        laptop:border-r laptop:py-5 desktop:w-[220px] desktop:pl-5 desktop:pr-6"
                >
                   <NavLink
                      end
@@ -172,7 +155,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}`}
+                     to={`/${site.slug}`}
                   >
                      {({ isActive }) => (
                         <>
@@ -197,7 +180,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/posts`}
+                     to={`/${site.slug}/posts`}
                   >
                      {({ isActive }) => (
                         <>
@@ -222,7 +205,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/collections`}
+                     to={`/${site.slug}/collections`}
                   >
                      {({ isActive }) => (
                         <>
@@ -247,7 +230,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/questions`}
+                     to={`/${site.slug}/questions`}
                   >
                      {({ isActive }) => (
                         <>
@@ -266,22 +249,22 @@ export default function SiteIndex() {
             </section>
             <section
                className="max-laptop:border-color bg-3 max-laptop:min-h-screen
-               max-laptop:pt-16 max-laptop:border-b"
+               max-laptop:border-b max-laptop:pt-16"
             >
                <section
-                  className="sticky max-laptop:top-[71px] z-40 max-laptop:border-t 
-                 border-color laptop:top-0 laptop:px-3"
+                  className="border-color sticky z-40 max-laptop:top-[71px] 
+                 max-laptop:border-t laptop:top-0 laptop:px-3"
                >
                   <div
-                     className="mx-auto justify-between w-full h-16 tablet:border max-w-[740px] 
-                     flex items-center border-color bg-2 border-b shadow-sm shadow-1
-                     tablet:rounded-xl tablet:rounded-t-none pl-3 pr-4 tablet:border-t-0"
+                     className="border-color bg-2 shadow-1 mx-auto flex h-16 
+                     w-full max-w-[740px] items-center justify-between border-b pl-3 pr-4
+                     shadow-sm tablet:rounded-xl tablet:rounded-t-none tablet:border tablet:border-t-0"
                   >
                      <Link
-                        to={`/${site.id}`}
-                        className="font-bold truncate p-1 pr-4 flex items-center gap-3 rounded-full hover:bg-3"
+                        to={`/${site.slug}`}
+                        className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                      >
-                        <div className="h-8 w-8 overflow-hidden flex-none rounded-full bg-zinc-200">
+                        <div className="h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200">
                            <Image
                               //@ts-expect-error
                               url={site.icon?.url}
@@ -297,8 +280,8 @@ export default function SiteIndex() {
                               {({ open }) => (
                                  <>
                                     <Menu.Button
-                                       className="bg-2 flex h-9 w-9 items-center justify-center 
-                                       rounded-full text-1 transition duration-300 hover:bg-3 active:translate-y-0.5"
+                                       className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
+                                       items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
                                     >
                                        {open ? (
                                           <X
@@ -326,12 +309,12 @@ export default function SiteIndex() {
                                        leaveTo="transform opacity-0 scale-95"
                                     >
                                        <Menu.Items
-                                          className="absolute right-0 mt-1.5 w-full min-w-[200px] max-w-md
-                                        origin-top-right transform transition-all z-30"
+                                          className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
+                                        max-w-md origin-top-right transform transition-all"
                                        >
                                           <div
-                                             className="border-color rounded-lg border bg-2 p-1.5
-                                            shadow-sm shadow-1"
+                                             className="border-color bg-2 shadow-1 rounded-lg border
+                                            p-1.5 shadow-sm"
                                           >
                                              <Menu.Item>
                                                 <fetcher.Form method="post">
@@ -339,7 +322,7 @@ export default function SiteIndex() {
                                                       name="intent"
                                                       value="unfollow"
                                                       className="text-1 flex w-full items-center gap-3 rounded-lg
-                                                      py-2 px-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                      px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                    >
                                                       <LogOut
                                                          className="text-red-400"
@@ -361,9 +344,9 @@ export default function SiteIndex() {
                         <LoggedOut>
                            <div className="flex items-center">
                               <Link
-                                 to={`/login?redirectTo=/${site.id}`}
-                                 className="flex h-9 px-3.5 items-center justify-center rounded-full
-                               bg-zinc-700 text-sm font-bold text-white dark:text-black dark:bg-white"
+                                 to={`/login?redirectTo=/${site.slug}`}
+                                 className="flex h-9 items-center justify-center rounded-full bg-zinc-700
+                               px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
                               >
                                  Follow
                               </Link>
@@ -375,8 +358,8 @@ export default function SiteIndex() {
                                  <button
                                     name="intent"
                                     value="followSite"
-                                    className="flex h-9 px-3.5 items-center justify-center rounded-full
-                                  bg-black text-sm font-bold text-white dark:text-black dark:bg-white"
+                                    className="flex h-9 items-center justify-center rounded-full bg-black
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
                                  >
                                     {adding ? (
                                        <Loader2 className="mx-auto h-5 w-5 animate-spin" />
@@ -388,8 +371,8 @@ export default function SiteIndex() {
                            </div>
                         </NotFollowingSite>
                         <div
-                           className="bg-3 flex h-10 w-10 items-center shadow-sm border border-color
-                           justify-center rounded-full shadow-1"
+                           className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
+                           rounded-full border shadow-sm"
                         >
                            <Search size={20} />
                         </div>
@@ -399,15 +382,15 @@ export default function SiteIndex() {
                <Outlet />
             </section>
             <section
-               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l z-20
-               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
+               className="bg-2 border-color relative z-20 max-laptop:mx-auto max-laptop:max-w-[728px]
+               max-laptop:pb-20 tablet:border-x laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <LoggedIn>
-                     <section className="border-b h-16 border-color justify-end flex items-center gap-5 px-4">
+                     <section className="border-color flex h-16 items-center justify-end gap-5 border-b px-4">
                         <Bell size={22} />
                         <Menu as="div" className="relative">
-                           <Menu.Button className="flex items-center h-11 w-11 hover:bg-3 rounded-full justify-center">
+                           <Menu.Button className="hover:bg-3 flex h-11 w-11 items-center justify-center rounded-full">
                               <User size={22} />
                            </Menu.Button>
                            <Transition
@@ -420,10 +403,10 @@ export default function SiteIndex() {
                               leaveTo="transform opacity-0 scale-95"
                            >
                               <Menu.Items
-                                 className="absolute right-0 mt-0.5 w-full min-w-[200px] max-w-md
-                                   origin-top-right transform transition-all z-10"
+                                 className="absolute right-0 z-10 mt-0.5 w-full min-w-[200px]
+                                   max-w-md origin-top-right transform transition-all"
                               >
-                                 <div className="border-color rounded-lg border bg-3 p-1.5 shadow shadow-1">
+                                 <div className="border-color bg-3 shadow-1 rounded-lg border p-1.5 shadow">
                                     <Menu.Item>
                                        <Form action="/logout" method="post">
                                           <button
@@ -447,8 +430,8 @@ export default function SiteIndex() {
                   </LoggedIn>
                   {site.banner && (
                      <div
-                        className="border-color flex h-44 items-center justify-center 
-                     overflow-hidden border-b-2 bg-1"
+                        className="border-color bg-1 flex h-44 items-center 
+                     justify-center overflow-hidden border-b-2"
                      >
                         <Image
                            //@ts-expect-error
@@ -460,25 +443,25 @@ export default function SiteIndex() {
                      </div>
                   )}
                   <LoggedOut>
-                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4 border-color border-b">
+                     <div className="border-color grid grid-cols-2 gap-4 border-b p-4 max-laptop:hidden">
                         <Link
                            to="/join"
-                           className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
-                           text-indigo-600 transition duration-300 ease-out rounded-full group"
+                           className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
+                           py-2 font-medium text-indigo-600 transition duration-300 ease-out"
                         >
-                           <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
                            <span
-                              className="absolute bottom-0 right-0 block w-64 h-64 mb-32 mr-4 transition duration-500 origin-bottom-left 
-                           transform rotate-45 translate-x-24 bg-teal-500 rounded-full opacity-30 group-hover:rotate-90 ease"
+                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                            ></span>
-                           <span className="relative text-white font-bold text-sm">
+                           <span className="relative text-sm font-bold text-white">
                               {t("login.signUp", { ns: "auth" })}
                            </span>
                         </Link>
                         <Link
-                           className="flex h-10 items-center border justify-center border-color
-                           rounded-full bg-3 text-center shadow-sm shadow-1
-                           text-sm font-bold"
+                           className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
                            to={`/login?redirectTo=${location.pathname}`}
                         >
                            {t("login.action", { ns: "auth" })}
@@ -490,10 +473,10 @@ export default function SiteIndex() {
                      <div className="h-[250px] w-[300px]" />
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-color 
-                     border-y max-laptop:bg-2 flex laptop:border-b-0"
+                     className="border-color max-laptop:bg-2 flex h-14 items-center justify-between 
+                     border-y pl-5 pr-3 laptop:border-b-0"
                   >
-                     <Link className="font-logo text-2xl pb-1" to="/">
+                     <Link className="pb-1 font-logo text-2xl" to="/">
                         mana
                      </Link>
                      <div className="flex-none">
@@ -514,7 +497,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),

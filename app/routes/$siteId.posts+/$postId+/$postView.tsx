@@ -1,7 +1,11 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import { Suspense, useCallback, useMemo } from "react";
-import { json, V2_MetaFunction } from "@remix-run/node";
-import { redirect, type LoaderArgs } from "@remix-run/node";
+import {
+   json,
+   redirect,
+   type V2_MetaFunction,
+   type LoaderArgs,
+} from "@remix-run/node";
 
 import { z } from "zod";
 import { zx } from "zodix";
