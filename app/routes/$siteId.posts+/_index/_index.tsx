@@ -27,7 +27,6 @@ import { isLoading, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./FeedItem";
-import { nanoid } from "nanoid";
 
 export const handle = {};
 
@@ -37,7 +36,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
 
    const { q, status, page } = zx.parseQuery(request, {
@@ -45,7 +44,6 @@ export async function loader({
       status: z.union([z.literal("draft"), z.literal("published")]).optional(),
       page: z.coerce.number().optional(),
    });
-
    const myPosts = await payload.find({
       collection: "posts",
       user,
@@ -57,7 +55,7 @@ export async function loader({
                : status === "published"
                ? { equals: true }
                : {},
-         site: {
+         "site.slug": {
             equals: siteId,
          },
       },
@@ -73,7 +71,7 @@ export async function loader({
          isPublished: {
             equals: true,
          },
-         site: {
+         "site.slug": {
             equals: siteId,
          },
       },
@@ -110,13 +108,13 @@ export default function PostsIndex() {
       <>
          <div className="mx-auto max-w-[728px] px-3 py-10 tablet:px-0 laptop:px-3 desktop:px-0">
             <div className="border-color relative mb-16 border-b-2 pb-2">
-               <h1 className="text-3xl font-header font-bold">Posts</h1>
+               <h1 className="font-header text-3xl font-bold">Posts</h1>
                <Menu as="div" className="relative">
-                  <Menu.Button className="absolute right-0 -top-5 rounded-full border-8 border-color">
+                  <Menu.Button className="border-color absolute -top-5 right-0 rounded-full border-8">
                      {({ open }) => (
                         <div
                            className=" flex h-10 items-center 
-                              gap-2 rounded-full bg-emerald-500 pr-4 pl-5 text-white"
+                              gap-2 rounded-full bg-emerald-500 pl-5 pr-4 text-white"
                         >
                            <span className="text-sm font-bold">New Post</span>
                            <ChevronDown
@@ -141,7 +139,7 @@ export default function PostsIndex() {
                         className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
                                  max-w-[220px] origin-top-right transform transition-all"
                      >
-                        <div className="border-color rounded-lg border bg-2 p-1.5 shadow shadow-1">
+                        <div className="border-color bg-2 shadow-1 rounded-lg border p-1.5 shadow">
                            <Menu.Item>
                               <Form method="post">
                                  <button
@@ -213,8 +211,8 @@ export default function PostsIndex() {
                               leaveTo="transform scale-95 opacity-0"
                            >
                               <Listbox.Options
-                                 className="border-color text-1 absolute right-0 mt-2 w-[120px]
-                                 rounded-lg border bg-3 p-1.5 shadow-1 shadow-lg"
+                                 className="border-color text-1 bg-3 shadow-1 absolute right-0
+                                 mt-2 w-[120px] rounded-lg border p-1.5 shadow-lg"
                               >
                                  <Listbox.Option key="draft" value="Drafts">
                                     {({ selected }) => (
@@ -310,7 +308,7 @@ export default function PostsIndex() {
                         </div>
                      </Listbox>
                   </div>
-                  <section className="border-color divide-y overflow-hidden rounded-md border divide-color bg-2">
+                  <section className="border-color divide-color bg-2 divide-y overflow-hidden rounded-md border">
                      {myPosts?.docs.length === 0 ? (
                         <div className="p-3 text-sm ">No posts...</div>
                      ) : (
@@ -517,7 +515,7 @@ export const action = async ({
    params,
 }: LoaderArgs) => {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
 
    if (!user || !user.id) return redirect("/login", { status: 302 });

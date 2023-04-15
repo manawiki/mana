@@ -1,4 +1,5 @@
-import { LoaderArgs, json } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Link, useLoaderData, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
@@ -7,11 +8,10 @@ import { Logo } from "~/components/Logo";
 import { LoggedOut } from "~/modules/auth";
 import { NewSiteModal } from "./action+/new-site-modal";
 import { MobileUserMenu } from "~/components/MobileUserMenu";
-import { ChevronRight, Github, Home, Search } from "lucide-react";
+import { ChevronRight, Search } from "lucide-react";
 import {
    ChatBubbleLeftIcon,
    CircleStackIcon,
-   HomeIcon,
    PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { Image } from "~/components/Image";
@@ -20,25 +20,6 @@ export async function loader({
    context: { user, payload },
    request,
 }: LoaderArgs) {
-   //If subdomain, we want to make /siteId the root
-   const host = new URL(request.url).hostname;
-   const isSubdomain = host.split(".").length > 2;
-   if (
-      process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT != "local" &&
-      isSubdomain
-   ) {
-      const subDomain = host.split(".")[0];
-      const result = await payload.find({
-         collection: "sites",
-         where: {
-            subdomain: {
-               equals: subDomain,
-            },
-         },
-      });
-      const siteId = result.docs[0].id;
-      return redirect(`/${siteId}`, 301);
-   }
    if (user) {
       return redirect("/home");
    }
@@ -65,25 +46,25 @@ export default function HomeRoot() {
 
    return (
       <>
-         <div className="laptop:grid laptop:min-h-screen auto-cols-[86px_1fr_334px] laptop:grid-flow-col">
+         <div className="auto-cols-[86px_1fr_334px] laptop:grid laptop:min-h-screen laptop:grid-flow-col">
             <section
-               className="bg-1 relative z-40 laptop:border-r border-color
-               max-laptop:fixed max-laptop:top-0 max-laptop:w-full
-               max-laptop:py-3 max-laptop:border-b"
+               className="bg-1 border-color relative z-40 max-laptop:fixed
+               max-laptop:top-0 max-laptop:w-full max-laptop:border-b
+               max-laptop:py-3 laptop:border-r"
             >
                <div
-                  className="max-laptop:flex max-laptop:items-center laptop:fixed laptop:top-0 laptop:left-0 laptop:py-3 
-                  laptop:h-full laptop:w-[86px] justify-between laptop:overflow-y-auto max-laptop:px-3 max-laptop:gap-3"
+                  className="justify-between max-laptop:flex max-laptop:items-center max-laptop:gap-3 max-laptop:px-3 laptop:fixed 
+                  laptop:left-0 laptop:top-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto laptop:py-3"
                >
                   <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5">
                      <Link
                         to="/"
-                        className="flex h-12 w-12 items-center justify-center rounded-full
-                        transition duration-300 font-logo bg-3 mx-auto
-                        active:translate-y-0.5 shadow-1 shadow-sm
+                        className="bg-3 shadow-1 mx-auto flex h-12 w-12
+                        items-center justify-center rounded-full font-logo shadow-sm
+                        transition duration-300 active:translate-y-0.5
                        laptop:h-14 laptop:w-14"
                      >
-                        <Logo className="w-6 h-6 laptop:h-7 laptop:w-7" />
+                        <Logo className="h-6 w-6 laptop:h-7 laptop:w-7" />
                      </Link>
                      <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
                      <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
@@ -95,17 +76,17 @@ export default function HomeRoot() {
             <section className="bg-3 max-laptop:min-h-screen">
                <div className="relative">
                   <div
-                     className="pattern-dots pattern-zinc-400 dark:pattern-zinc-500
-                   pattern-bg-white dark:pattern-bg-black
-                     pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
+                     className="pattern-dots absolute left-0
+                   top-0 h-full
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 dark:pattern-bg-black dark:pattern-zinc-500"
                   ></div>
-                  <div className="max-w-[940px] px-4 mx-auto relative">
+                  <div className="relative mx-auto max-w-[940px] px-4">
                      <section
-                        className="pt-3 px-6 pb-5 shadow-sm rounded-b-2xl border-t-0 bg-2
-                    border border-color shadow-1 max-laptop:mt-[73px]"
+                        className="bg-2 border-color shadow-1 rounded-b-2xl border border-t-0 px-6
+                    pb-5 pt-3 shadow-sm max-laptop:mt-[73px]"
                      >
                         <div className="flex items-center justify-between">
-                           <Link to="/" className="text-3xl font-logo">
+                           <Link to="/" className="font-logo text-3xl">
                               mana
                            </Link>
                            <div className="flex items-center gap-2 pt-1">
@@ -113,7 +94,7 @@ export default function HomeRoot() {
                                  href="https://discord.gg/manawiki"
                                  target="_blank"
                                  rel="noreferrer"
-                                 className="dark:text-zinc-500 text-zinc-400/60 w-8 h-8 flex items-center justify-center"
+                                 className="flex h-8 w-8 items-center justify-center text-zinc-400/60 dark:text-zinc-500"
                               >
                                  <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +110,7 @@ export default function HomeRoot() {
                                  href="https://github.com/manawiki"
                                  target="_blank"
                                  rel="noreferrer"
-                                 className="dark:text-zinc-500 text-zinc-400/60 w-8 h-8 flex items-center justify-center"
+                                 className="flex h-8 w-8 items-center justify-center text-zinc-400/60 dark:text-zinc-500"
                               >
                                  <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -145,32 +126,32 @@ export default function HomeRoot() {
                         </div>
                      </section>
                      <section className="pb-12 pt-16">
-                        <div className="text-3xl laptop:text-4xl font-header text-center pb-5 font-bold">
+                        <div className="pb-5 text-center font-header text-3xl font-bold laptop:text-4xl">
                            The{" "}
-                           <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-violet-400">
+                           <span className="bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
                               all-in-one
                            </span>{" "}
                            wiki platform
                         </div>
-                        <div className="text-lg text-center text-1">
+                        <div className="text-1 text-center text-lg">
                            Mana gives you the power to{" "}
                            <span
-                              className="underline text-gray-500 dark:text-gray-300
-                           underline-offset-4 decoration-blue-400 font-semibold"
+                              className="font-semibold text-gray-500 underline
+                           decoration-blue-400 underline-offset-4 dark:text-gray-300"
                            >
                               build a better wiki
                            </span>{" "}
                            for your community
                         </div>
                      </section>
-                     <div className="gap-6 grid tablet:grid-cols-2 pb-24 laptop:grid-cols-3">
+                     <div className="grid gap-6 pb-24 tablet:grid-cols-2 laptop:grid-cols-3">
                         <section
-                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
-                         from-white to-emerald-50/60 dark:from-emerald-900/5 dark:to-emerald-900/10
-                           shadow-1 p-6"
+                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                         from-white to-emerald-50/60 p-6 shadow-sm
+                           dark:from-emerald-900/5 dark:to-emerald-900/10"
                         >
-                           <div className="flex items-center gap-3 font-bold pb-3">
-                              <PencilSquareIcon className="w-6 h-6 text-emerald-500" />
+                           <div className="flex items-center gap-3 pb-3 font-bold">
+                              <PencilSquareIcon className="h-6 w-6 text-emerald-500" />
                               <span>Posts</span>
                            </div>
                            <div className="text-1">
@@ -178,12 +159,12 @@ export default function HomeRoot() {
                            </div>
                         </section>
                         <section
-                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
-                           from-white to-yellow-50/60 dark:from-yellow-900/5 dark:to-yellow-900/10
-                             shadow-1 p-6"
+                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                           from-white to-yellow-50/60 p-6 shadow-sm
+                             dark:from-yellow-900/5 dark:to-yellow-900/10"
                         >
-                           <div className="flex items-center gap-3 font-bold pb-3">
-                              <CircleStackIcon className="w-6 h-6 text-yellow-500" />
+                           <div className="flex items-center gap-3 pb-3 font-bold">
+                              <CircleStackIcon className="h-6 w-6 text-yellow-500" />
                               <span>Collections</span>
                            </div>
                            <div className="text-1">
@@ -191,12 +172,12 @@ export default function HomeRoot() {
                            </div>
                         </section>
                         <section
-                           className="h-36 rounded-lg bg-3 border border-color shadow-sm bg-gradient-to-t
-                           from-white to-purple-50/60 dark:from-purple-900/5 dark:to-purple-900/10
-                             shadow-1 p-6"
+                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                           from-white to-purple-50/60 p-6 shadow-sm
+                             dark:from-purple-900/5 dark:to-purple-900/10"
                         >
-                           <div className="flex items-center gap-3 font-bold pb-3">
-                              <ChatBubbleLeftIcon className="w-6 h-6 text-purple-500" />
+                           <div className="flex items-center gap-3 pb-3 font-bold">
+                              <ChatBubbleLeftIcon className="h-6 w-6 text-purple-500" />
                               <span>Discussions</span>
                            </div>
                            <div className="text-1">
@@ -206,46 +187,46 @@ export default function HomeRoot() {
                      </div>
                   </div>
                </div>
-               <div className="flex items-center justify-between -mt-8">
-                  <span className="border-t border-color flex-grow" />
+               <div className="-mt-8 flex items-center justify-between">
+                  <span className="border-color flex-grow border-t" />
                   <div
-                     className="px-5 h-16 flex items-center justify-between relative shadow-1
-                     border w-[92%] laptop:w-full max-w-[740px] bg-2 border-color shadow-sm rounded-xl"
+                     className="shadow-1 bg-2 border-color relative flex h-16 w-[92%]
+                     max-w-[740px] items-center justify-between rounded-xl border px-5 shadow-sm laptop:w-full"
                   >
                      <input
-                        className="bg-transparent h-16 w-full focus:outline-none"
+                        className="h-16 w-full bg-transparent focus:outline-none"
                         placeholder="Find a community..."
                      />
                      <Search className="text-1" size={24} />
                   </div>
-                  <span className="border-t border-color flex-grow" />
+                  <span className="border-color flex-grow border-t" />
                </div>
             </section>
             <section
-               className="bg-2 border-color relative max-laptop:mx-auto laptop:border-l
-               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:border-r-0"
+               className="bg-2 border-color relative max-laptop:mx-auto max-laptop:max-w-[728px]
+               max-laptop:pb-20 tablet:border-x laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <LoggedOut>
-                     <div className="max-laptop:hidden grid grid-cols-2 gap-4 p-4">
+                     <div className="grid grid-cols-2 gap-4 p-4 max-laptop:hidden">
                         <Link
                            to="/join"
-                           className="relative inline-flex items-center justify-center p-4 px-5 py-2 overflow-hidden font-medium 
-                           text-indigo-600 transition duration-300 ease-out rounded-full group"
+                           className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
+                           py-2 font-medium text-indigo-600 transition duration-300 ease-out"
                         >
-                           <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
                            <span
-                              className="absolute bottom-0 right-0 block w-64 h-64 mb-32 mr-4 transition duration-500 origin-bottom-left 
-                           transform rotate-45 translate-x-24 bg-teal-500 rounded-full opacity-30 group-hover:rotate-90 ease"
+                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                            ></span>
-                           <span className="relative text-white font-bold text-sm">
+                           <span className="relative text-sm font-bold text-white">
                               {t("login.signUp", { ns: "auth" })}
                            </span>
                         </Link>
                         <Link
-                           className="flex h-10 items-center border justify-center border-color
-                           rounded-full bg-3 text-center shadow-sm shadow-1
-                           text-sm font-bold"
+                           className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
                            to={`/login?redirectTo=${location.pathname}`}
                         >
                            {t("login.action", { ns: "auth" })}
@@ -255,24 +236,24 @@ export default function HomeRoot() {
                   <div className="flex-grow">
                      {featuredSites?.docs.length === 0 ? null : (
                         <>
-                           <section className="border-t border-color">
+                           <section className="border-color border-t">
                               <div
-                                 className="uppercase
-                                 text-xs text-1 font-bold pt-6 p-3"
+                                 className="text-1
+                                 p-3 pt-6 text-xs font-bold uppercase"
                               >
                                  Featured sites
                               </div>
-                              <div className="bg-2 border-y border-color divide-y divide-color">
+                              <div className="bg-2 border-color divide-color divide-y border-y">
                                  {featuredSites?.docs.map((site) => (
                                     <Link
-                                       to={`/${site.id}`}
-                                       key={site.id}
-                                       className="flex p-3 group items-center justify-between gap-3"
+                                       to={`/${site.slug}`}
+                                       key={site.slug}
+                                       className="group flex items-center justify-between gap-3 p-3"
                                     >
-                                       <div className="flex items-center gap-2.5 text-1">
+                                       <div className="text-1 flex items-center gap-2.5">
                                           <span
-                                             className="w-8 h-8 shadow-sm shadow-1 
-                                                rounded-full overflow-hidden bg-3"
+                                             className="shadow-1 bg-3 h-8 w-8 
+                                                overflow-hidden rounded-full shadow-sm"
                                           >
                                              <Image
                                                 options="fit=crop,width=60,height=60 ,gravity=auto"
@@ -281,7 +262,7 @@ export default function HomeRoot() {
                                                 url={site?.icon?.url}
                                              />
                                           </span>
-                                          <span className="font-bold group-hover:underline text-sm">
+                                          <span className="text-sm font-bold group-hover:underline">
                                              {site.name}
                                           </span>
                                        </div>
@@ -294,10 +275,10 @@ export default function HomeRoot() {
                      )}
                   </div>
                   <div
-                     className="items-center justify-between pr-3 h-14 pl-5 border-color 
-                     border-y max-laptop:bg-2 flex laptop:border-b-0"
+                     className="border-color max-laptop:bg-2 flex h-14 items-center justify-between 
+                     border-y pl-5 pr-3 laptop:border-b-0"
                   >
-                     <Link className="font-logo text-2xl pb-1" to="/">
+                     <Link className="pb-1 font-logo text-2xl" to="/">
                         mana
                      </Link>
                      <div className="flex-none">

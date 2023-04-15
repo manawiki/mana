@@ -52,7 +52,7 @@ export async function loader({
 }: LoaderArgs) {
    const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
 
    const { q, page } = zx.parseQuery(request, {
