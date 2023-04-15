@@ -61,11 +61,12 @@ const CollectionSchema = z.object({
 export const meta: V2_MetaFunction<
    typeof loader,
    { "routes/$siteId": typeof siteDetailsLoader }
-> = ({ parentsData }) => {
-   const name = parentsData["routes/$siteId"].site.name;
+> = ({ matches }) => {
+   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
+      ?.site.name;
    return [
       {
-         title: `Collections - ${name}`,
+         title: `Collections - ${siteName}`,
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -123,11 +124,11 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] pt-10 max-desktop:px-3 mb-8">
-            <h1 className="pb-2 text-3xl font-header font-bold border-b-2 border-color mb-2.5">
+         <div className="mx-auto mb-8 max-w-[728px] pt-10 max-desktop:px-3">
+            <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
                Collections
             </h1>
-            <ul className="text-1 flex items-center gap-3 text-xs uppercase pb-5">
+            <ul className="text-1 flex items-center gap-3 pb-5 text-xs uppercase">
                <li>Changelog</li>
                <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
@@ -195,8 +196,8 @@ export default function CollectionIndex() {
                         name="intent"
                         value="addCollection"
                         type="submit"
-                        className="h-10 w-16 rounded bg-yellow-600 dark:bg-yellow-600 px-4 text-sm font-bold 
-                        text-white hover:bg-yellow-600 focus:bg-yellow-400"
+                        className="h-10 w-16 rounded bg-yellow-600 px-4 text-sm font-bold text-white 
+                        hover:bg-yellow-600 focus:bg-yellow-400 dark:bg-yellow-600"
                         disabled={disabled}
                      >
                         {adding ? (
@@ -210,7 +211,7 @@ export default function CollectionIndex() {
             </AdminOrStaffOrOwner>
             {collections?.length === 0 ? null : (
                <>
-                  <div className="grid grid-cols-2 gap-3 laptop:grid-cols-3 border-color">
+                  <div className="border-color grid grid-cols-2 gap-3 laptop:grid-cols-3">
                      {collections?.map((collection) => (
                         <NavLink
                            key={collection.id}
@@ -221,14 +222,14 @@ export default function CollectionIndex() {
                                  isActive
                                     ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
                                     : ""
-                              } border-color flex items-center justify-between gap-2.5 rounded-xl border bg-2 pr-2
-                              transition overflow-hidden`
+                              } border-color bg-2 flex items-center justify-between gap-2.5 overflow-hidden rounded-xl border
+                              pr-2 transition`
                            }
                         >
                            <div className="flex items-center gap-3.5 truncate">
                               <div
-                                 className="flex h-11 w-11 flex-none items-center justify-between
-                                    overflow-hidden rounded-full border-color"
+                                 className="border-color flex h-11 w-11 flex-none items-center
+                                    justify-between overflow-hidden rounded-full"
                               >
                                  {/* @ts-expect-error */}
                                  {collection.icon?.url ? (
@@ -242,7 +243,7 @@ export default function CollectionIndex() {
                                     />
                                  ) : (
                                     <Database
-                                       className="mx-auto text-1"
+                                       className="text-1 mx-auto"
                                        size={18}
                                     />
                                  )}

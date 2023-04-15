@@ -26,11 +26,12 @@ export async function loader({
    return json({ question });
 }
 
-export const meta: V2_MetaFunction = ({ parentsData, data }) => {
-   const name = parentsData["routes/$siteId"].site.name;
+export const meta: V2_MetaFunction = ({ matches, data }) => {
+   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
+      ?.site.name;
    return [
       {
-         title: `${name} Q&A - ${data.question.title}`,
+         title: `${siteName} Q&A - ${data.question.title}`,
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -41,8 +42,8 @@ export default function Question() {
 
    return (
       <div
-         className="post-content max-laptop:pt-24 max-laptop:pb-20 relative mx-auto 
-      min-h-screen max-w-[728px]  laptop:py-12 desktop:px-0"
+         className="post-content relative mx-auto min-h-screen max-w-[728px] 
+      max-laptop:pb-20 max-laptop:pt-24  laptop:py-12 desktop:px-0"
       >
          <h1 className="pb-3 font-mono text-3xl font-semibold laptop:text-4xl">
             {question?.title}
@@ -64,7 +65,7 @@ export default function Question() {
                //question container
                <div key="question" className="group">
                   <div
-                     className="max-desktop:justify-end max-desktop:pb-2 hidden group-hover:flex
+                     className="hidden group-hover:flex max-desktop:justify-end max-desktop:pb-2
                                           desktop:absolute desktop:right-0 desktop:mr-2 "
                   >
                      <Link
@@ -96,7 +97,7 @@ export default function Question() {
                {(question?.answers as Note[])?.map((note) => (
                   <div key={note.id} className="group">
                      <div
-                        className="max-desktop:justify-end max-desktop:pb-2 hidden group-hover:flex
+                        className="hidden group-hover:flex max-desktop:justify-end max-desktop:pb-2
                                           desktop:absolute desktop:right-0 desktop:mr-2 "
                      >
                         <Link

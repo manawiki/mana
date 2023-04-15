@@ -56,8 +56,9 @@ export const handle = {
    i18n: "post",
 };
 
-export const meta: V2_MetaFunction = ({ data, parentsData }) => {
-   const siteName = parentsData["routes/$siteId"].site.name;
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
+      ?.site.name;
    const postTitle = data.post.title;
 
    return [
@@ -77,34 +78,34 @@ export default function PostPage() {
    return (
       <div>
          <AdminOrStaffOrOwner>
-            <div className="flex justify-center z-10 fixed inset-x-0 mx-auto items-center w-full bottom-24 laptop:bottom-0">
+            <div className="fixed inset-x-0 bottom-24 z-10 mx-auto flex w-full items-center justify-center laptop:bottom-0">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
-                  className="inline-flex justify-center w-36 flex-none items-center group laptop:border-b-0 bg-emerald-100 dark:border-emerald-900 
-               gap-2 py-4 laptop:py-5 pr-5 pl-3 laptop:rounded-b-none rounded-2xl border shadow shadow-1 border-emerald-300 dark:bg-emerald-950"
+                  className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 
+               border border-emerald-300 bg-emerald-100 py-4 pl-3 pr-5 shadow dark:border-emerald-900 dark:bg-emerald-950 laptop:rounded-b-none laptop:border-b-0 laptop:py-5"
                >
                   <ArrowLeft className="text-emerald-500" size={20} />
-                  <div className="font-bold group-hover:underline dark:text-emerald-100 text-emerald-600">
+                  <div className="font-bold text-emerald-600 group-hover:underline dark:text-emerald-100">
                      Edit post
                   </div>
                </Link>
             </div>
          </AdminOrStaffOrOwner>
          <main>
-            <div className="max-w-[728px] mx-auto max-desktop:px-3">
-               <h1 className="font-header pt-8 laptop:pt-10 text-3xl laptop:text-4xl !leading-[3rem]">
+            <div className="mx-auto max-w-[728px] max-desktop:px-3">
+               <h1 className="pt-8 font-header text-3xl !leading-[3rem] laptop:pt-10 laptop:text-4xl">
                   {post.title}
                </h1>
                <PostHeader post={post} />
             </div>
             {post?.banner && (
                <>
-                  <section className="relative mb-5 max-w-[800px] mx-auto">
+                  <section className="relative mx-auto mb-5 max-w-[800px]">
                      <div
-                        className="bg-1 border-color flex aspect-[1.91/1] desktop:border 
-                         laptop:rounded-none laptop:border-x-0 desktop:rounded-md
-                         items-center justify-center overflow-hidden tablet:rounded-md
-                         shadow-sm"
+                        className="bg-1 border-color flex aspect-[1.91/1] items-center 
+                         justify-center overflow-hidden shadow-sm
+                         tablet:rounded-md laptop:rounded-none laptop:border-x-0 desktop:rounded-md
+                         desktop:border"
                      >
                         <img
                            alt="Post Banner"
@@ -116,7 +117,7 @@ export default function PostPage() {
                   </section>
                </>
             )}
-            <div className="max-w-[728px] mx-auto max-desktop:px-4">
+            <div className="mx-auto max-w-[728px] max-desktop:px-4">
                <Suspense fallback={<div>Loading...</div>}>
                   <Slate editor={editor} value={post.content as Descendant[]}>
                      <Editable
