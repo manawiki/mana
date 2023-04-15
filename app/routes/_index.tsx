@@ -246,8 +246,8 @@ export default function HomeRoot() {
                               <div className="bg-2 border-color divide-color divide-y border-y">
                                  {featuredSites?.docs.map((site) => (
                                     <Link
-                                       to={`/${site.id}`}
-                                       key={site.id}
+                                       to={`/${site.slug}`}
+                                       key={site.slug}
                                        className="group flex items-center justify-between gap-3 p-3"
                                     >
                                        <div className="text-1 flex items-center gap-2.5">

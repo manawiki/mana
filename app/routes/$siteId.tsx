@@ -74,16 +74,9 @@ export async function loader({
       },
       user,
    });
-
-   const id = slug?.docs[0]?.id;
-
-   const site = await payload.findByID({
-      collection: "sites",
-      id: id ?? siteId,
-      user,
-   });
+   const site = slug?.docs[0];
    if (!site) {
-      return redirect("/404");
+      throw json(null, { status: 404 });
    }
    return json({ site });
 }
@@ -162,7 +155,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}`}
+                     to={`/${site.slug}`}
                   >
                      {({ isActive }) => (
                         <>
@@ -187,7 +180,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/posts`}
+                     to={`/${site.slug}/posts`}
                   >
                      {({ isActive }) => (
                         <>
@@ -212,7 +205,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/collections`}
+                     to={`/${site.slug}/collections`}
                   >
                      {({ isActive }) => (
                         <>
@@ -237,7 +230,7 @@ export default function SiteIndex() {
                               : "text-1 border-color border laptop:!border-transparent"
                         } ${defaultStyle}`
                      }
-                     to={`/${site.id}/questions`}
+                     to={`/${site.slug}/questions`}
                   >
                      {({ isActive }) => (
                         <>
@@ -268,7 +261,7 @@ export default function SiteIndex() {
                      shadow-sm tablet:rounded-xl tablet:rounded-t-none tablet:border tablet:border-t-0"
                   >
                      <Link
-                        to={`/${site.id}`}
+                        to={`/${site.slug}`}
                         className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                      >
                         <div className="h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200">
@@ -351,7 +344,7 @@ export default function SiteIndex() {
                         <LoggedOut>
                            <div className="flex items-center">
                               <Link
-                                 to={`/login?redirectTo=/${site.id}`}
+                                 to={`/login?redirectTo=/${site.slug}`}
                                  className="flex h-9 items-center justify-center rounded-full bg-zinc-700
                                px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
                               >
@@ -504,7 +497,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),

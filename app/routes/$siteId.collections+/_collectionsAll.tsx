@@ -35,7 +35,7 @@ export async function loader({
    params,
 }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
    const { docs } = await payload.find({
       collection: "collections",
@@ -273,7 +273,7 @@ export const action: ActionFunction = async ({
    params,
 }) => {
    const { siteId } = zx.parseParams(params, {
-      siteId: z.string().length(10),
+      siteId: z.string(),
    });
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
