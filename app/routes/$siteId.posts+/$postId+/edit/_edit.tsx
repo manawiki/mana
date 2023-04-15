@@ -77,8 +77,9 @@ export const handle = {
    i18n: "post",
 };
 
-export const meta: V2_MetaFunction = ({ data, parentsData }) => {
-   const siteName = parentsData["routes/$siteId"].site.name;
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
+      ?.site.name;
    const postTitle = data?.post?.title ?? "";
 
    return [
@@ -121,7 +122,7 @@ export default function PostEditPage() {
    return (
       <main
          className="relative min-h-screen leading-7
-         max-laptop:pt-10 max-laptop:pb-20 laptop:pt-6"
+         max-laptop:pb-20 max-laptop:pt-10 laptop:pt-6"
       >
          <RoomProvider
             id={post.id}
@@ -134,26 +135,26 @@ export default function PostEditPage() {
          >
             <ClientSideSuspense
                fallback={
-                  <div className="max-w-[728px] mx-4 space-y-4 mobile:mx-auto">
+                  <div className="mx-4 max-w-[728px] space-y-4 mobile:mx-auto">
                      <div
-                        className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
+                        className="bg-2 borer-color h-24
+                         w-full animate-pulse rounded-lg"
                      />
                      <div
-                        className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
+                        className="bg-2 borer-color h-24
+                         w-full animate-pulse rounded-lg"
                      />
                      <div
-                        className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
+                        className="bg-2 borer-color h-24
+                         w-full animate-pulse rounded-lg"
                      />
                      <div
-                        className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
+                        className="bg-2 borer-color h-24
+                         w-full animate-pulse rounded-lg"
                      />
                      <div
-                        className="animate-pulse bg-2 borer-color
-                         w-full h-24 rounded-lg"
+                        className="bg-2 borer-color h-24
+                         w-full animate-pulse rounded-lg"
                      />
                   </div>
                }

@@ -25,6 +25,11 @@ export const Sites: CollectionConfig = {
          required: true,
       },
       {
+         name: "slug",
+         type: "text",
+         unique: true,
+      },
+      {
          name: "featured",
          type: "checkbox",
          label: "Feature this site on the homepage",
