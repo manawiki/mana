@@ -57,7 +57,7 @@ export const SiteNavLink = ({
                className="bg-2 shadow-1 shadow-1 rounded-full 
                   transition duration-200 active:translate-y-0.5 
                   max-laptop:hidden laptop:shadow-sm"
-               href={`https://${site.subdomain}.${domain}/${site.id}`}
+               href={`https://${site.subdomain}.${domain}/${site.slug}`}
             >
                <>
                   <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
@@ -78,16 +78,10 @@ export const SiteNavLink = ({
             )}
          </>
       );
-   if (
-      env != "local" &&
-      currentSite?.type == "custom" &&
-      currentSite?.subdomain !== "undefined"
-   )
-      return <SiteLink url={`https://${domain}/${site.id}`} />;
    if (env == "local") {
-      return <SiteLink url={`/${site.id}`} />;
+      return <SiteLink url={`/${site.slug}`} />;
    }
-   return <SiteLink url={`/${site.id}`} />;
+   return <SiteLink url={`/${site.slug}`} />;
 };
 
 export const HomeLink = ({ site }: { site: Site }) => {
