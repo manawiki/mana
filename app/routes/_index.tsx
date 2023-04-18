@@ -15,6 +15,8 @@ import {
    PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { Image } from "~/components/Image";
+import type { Site } from "payload/generated-types";
+import { domainCookie, serverEnv } from "shared";
 
 export async function loader({
    context: { user, payload },
@@ -37,6 +39,65 @@ export async function loader({
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
    i18n: "auth",
+};
+
+const FeaturedLink = ({ site }: { site: Site }) => {
+   if ((site.type = "custom")) {
+      return (
+         <a
+            href={`${
+               serverEnv == "local"
+                  ? `http://localhost:3000/${site.slug}`
+                  : serverEnv == "dev-server"
+                  ? `https://${site.slug}.manatee.wiki/${site.slug}`
+                  : `https://${site.slug}.mana.wiki/${site.slug}`
+            }`}
+            className="group flex items-center justify-between gap-3 p-3"
+         >
+            <div className="text-1 flex items-center gap-2.5">
+               <span
+                  className="shadow-1 bg-3 h-8 w-8 
+            overflow-hidden rounded-full shadow-sm"
+               >
+                  <Image
+                     options="fit=crop,width=60,height=60 ,gravity=auto"
+                     alt="Site Icon"
+                     //@ts-expect-error
+                     url={site?.icon?.url}
+                  />
+               </span>
+               <span className="text-sm font-bold group-hover:underline">
+                  {site.name}
+               </span>
+            </div>
+            <ChevronRight size={18} />
+         </a>
+      );
+   }
+   return (
+      <Link
+         to={`/${site.slug}`}
+         className="group flex items-center justify-between gap-3 p-3"
+      >
+         <div className="text-1 flex items-center gap-2.5">
+            <span
+               className="shadow-1 bg-3 h-8 w-8 
+            overflow-hidden rounded-full shadow-sm"
+            >
+               <Image
+                  options="fit=crop,width=60,height=60 ,gravity=auto"
+                  alt="Site Icon"
+                  //@ts-expect-error
+                  url={site?.icon?.url}
+               />
+            </span>
+            <span className="text-sm font-bold group-hover:underline">
+               {site.name}
+            </span>
+         </div>
+         <ChevronRight size={18} />
+      </Link>
+   );
 };
 
 export default function HomeRoot() {
@@ -245,29 +306,7 @@ export default function HomeRoot() {
                               </div>
                               <div className="bg-2 border-color divide-color divide-y border-y">
                                  {featuredSites?.docs.map((site) => (
-                                    <Link
-                                       to={`/${site.slug}`}
-                                       key={site.slug}
-                                       className="group flex items-center justify-between gap-3 p-3"
-                                    >
-                                       <div className="text-1 flex items-center gap-2.5">
-                                          <span
-                                             className="shadow-1 bg-3 h-8 w-8 
-                                                overflow-hidden rounded-full shadow-sm"
-                                          >
-                                             <Image
-                                                options="fit=crop,width=60,height=60 ,gravity=auto"
-                                                alt="Site Icon"
-                                                //@ts-expect-error
-                                                url={site?.icon?.url}
-                                             />
-                                          </span>
-                                          <span className="text-sm font-bold group-hover:underline">
-                                             {site.name}
-                                          </span>
-                                       </div>
-                                       <ChevronRight size={18} />
-                                    </Link>
+                                    <FeaturedLink key={site.id} site={site} />
                                  ))}
                               </div>
                            </section>
