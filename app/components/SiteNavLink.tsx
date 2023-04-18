@@ -12,7 +12,7 @@ export const SiteNavLink = ({
    currentSite: Site;
 }) => {
    const { siteId } = useParams();
-   const isActive = siteId == site.id ? true : false;
+   const isActive = siteId == site.slug ? true : false;
    const { env } = useRouteLoaderData("root") as { env: envType };
    const domain = env == "dev-server" ? "manatee.wiki" : "mana.wiki";
 
@@ -78,9 +78,43 @@ export const SiteNavLink = ({
             )}
          </>
       );
+
+   if (
+      env != "local" &&
+      currentSite?.type == "custom" &&
+      currentSite?.subdomain !== "undefined"
+   )
+      return (
+         <>
+            <a
+               className="bg-2 shadow-1 shadow-1 rounded-full 
+               transition duration-200 active:translate-y-0.5 
+               max-laptop:hidden laptop:shadow-sm"
+               href={`https://${domain}/${site.slug}`}
+            >
+               <>
+                  <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
+                     <Image
+                        alt="Site Logo"
+                        options="fit=crop,width=88,height=88,gravity=auto"
+                        //@ts-ignore
+                        url={site.icon?.url}
+                     />
+                  </div>
+               </>
+            </a>
+            {isActive && (
+               <span
+                  className="absolute -left-1 top-1.5 h-10 w-2.5 
+                  rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+               ></span>
+            )}
+         </>
+      );
    if (env == "local") {
       return <SiteLink url={`/${site.slug}`} />;
    }
+
    return <SiteLink url={`/${site.slug}`} />;
 };
 
