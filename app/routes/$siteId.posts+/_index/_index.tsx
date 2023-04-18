@@ -514,11 +514,22 @@ export const action = async ({
    request,
    params,
 }: LoaderArgs) => {
+   if (!user || !user.id) throw redirect("/login", { status: 302 });
+
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   const slug = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteId,
+         },
+      },
+      user,
+   });
+   const site = slug?.docs[0];
 
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
@@ -537,7 +548,7 @@ export const action = async ({
                url: "untitled",
                title,
                author: user?.id,
-               site: siteId,
+               site: site.id,
             },
             user,
             draft: true,
@@ -553,7 +564,7 @@ export const action = async ({
                url: "untitled",
                title: "Untitled",
                author: user?.id,
-               site: siteId,
+               site: site.id,
             },
             user,
             draft: true,
