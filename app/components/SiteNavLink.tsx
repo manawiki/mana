@@ -1,82 +1,122 @@
 import type { Site } from "payload-types";
-import { Link, useParams } from "@remix-run/react";
+import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
 import { Logo } from "./Logo";
+import type { envType } from "env/types";
 import { Image } from "./Image";
-import { serverEnv } from "shared";
 
-export const SiteNavLink = ({ site }: { site: Site }) => {
+export const SiteNavLink = ({
+   site,
+   currentSite,
+}: {
+   site: Site;
+   currentSite: Site;
+}) => {
    const { siteId } = useParams();
-   const isActive = siteId == site.slug ? true : false;
+   const isActive = siteId == site.id ? true : false;
+   const { env } = useRouteLoaderData("root") as { env: envType };
+   const domain = env == "dev-server" ? "manatee.wiki" : "mana.wiki";
 
-   if ((site.type = "custom")) {
+   const SiteLink = ({ url }: { url: string }) => {
       return (
-         <a
-            href={`${
-               serverEnv == "local"
-                  ? `http://localhost:3000/${site.slug}`
-                  : serverEnv == "dev-server"
-                  ? `https://${site.slug}.manatee.wiki/${site.slug}`
-                  : `https://${site.slug}.mana.wiki/${site.slug}`
-            }`}
-            className="bg-2 shadow-1 shadow-1 rounded-full 
-            transition duration-200 active:translate-y-0.5 
-            max-laptop:hidden laptop:shadow-sm"
-         >
-            <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
-               <Image
-                  alt="Site Logo"
-                  options="fit=crop,width=88,height=88,gravity=auto"
-                  //@ts-ignore
-                  url={site.icon?.url}
-               />
-            </div>
+         <>
+            <Link
+               className="bg-2 shadow-1 shadow-1 rounded-full 
+               transition duration-200 active:translate-y-0.5 
+               max-laptop:hidden laptop:shadow-sm"
+               to={url}
+            >
+               <>
+                  <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
+                     <Image
+                        alt="Site Logo"
+                        options="fit=crop,width=88,height=88,gravity=auto"
+                        //@ts-ignore
+                        url={site.icon?.url}
+                     />
+                  </div>
+               </>
+            </Link>
             {isActive && (
                <span
                   className="absolute -left-1 top-1.5 h-10 w-2.5 
-            rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                  rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
                ></span>
             )}
-         </a>
+         </>
       );
+   };
+
+   if (
+      env != "local" &&
+      site?.type == "custom" &&
+      site?.subdomain !== "undefined"
+   )
+      return (
+         <>
+            <a
+               className="bg-2 shadow-1 shadow-1 rounded-full 
+                  transition duration-200 active:translate-y-0.5 
+                  max-laptop:hidden laptop:shadow-sm"
+               href={`https://${site.subdomain}.${domain}/${site.id}`}
+            >
+               <>
+                  <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
+                     <Image
+                        alt="Site Logo"
+                        options="fit=crop,width=88,height=88,gravity=auto"
+                        //@ts-ignore
+                        url={site.icon?.url}
+                     />
+                  </div>
+               </>
+            </a>
+            {isActive && (
+               <span
+                  className="absolute -left-1 top-1.5 h-10 w-2.5 
+                     rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+               ></span>
+            )}
+         </>
+      );
+   if (
+      env != "local" &&
+      currentSite?.type == "custom" &&
+      currentSite?.subdomain !== "undefined"
+   )
+      return <SiteLink url={`https://${domain}/${site.id}`} />;
+   if (env == "local") {
+      return <SiteLink url={`/${site.id}`} />;
    }
-   return (
-      <>
-         <Link
-            className="bg-2 shadow-1 shadow-1 rounded-full 
-         transition duration-200 active:translate-y-0.5 
-         max-laptop:hidden laptop:shadow-sm"
-            to={`/${site.slug}`}
-         >
-            <>
-               <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
-                  <Image
-                     alt="Site Logo"
-                     options="fit=crop,width=88,height=88,gravity=auto"
-                     //@ts-ignore
-                     url={site.icon?.url}
-                  />
-               </div>
-            </>
-         </Link>
-         {isActive && (
-            <span
-               className="absolute -left-1 top-1.5 h-10 w-2.5 
-            rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
-            ></span>
-         )}
-      </>
-   );
+   return <SiteLink url={`/${site.id}`} />;
 };
 
-export const HomeLink = () => {
+export const HomeLink = ({ site }: { site: Site }) => {
+   const { env } = useRouteLoaderData("root") as { env: envType };
+   const style = `flex h-12 w-12 items-center justify-center rounded-full
+   transition duration-300 font-logo bg-3 mx-auto laptop:my-3
+   active:translate-y-0.5 shadow-1 shadow-sm
+   laptop:h-14 laptop:w-14`;
+
+   const domain =
+      env == "dev-server"
+         ? "https://manatee.wiki/home"
+         : "https://mana.wiki/home";
+
+   if (
+      env != "local" &&
+      site?.type == "custom" &&
+      site?.subdomain !== "undefined"
+   )
+      return (
+         <a href={domain}>
+            <div className={style}>
+               <Logo className="h-6 w-6 laptop:h-7 laptop:w-7" />
+            </div>
+         </a>
+      );
    return (
       <Link to="/home">
-         <div
-            className="bg-3 shadow-1 mx-auto flex h-12 w-12
-   items-center justify-center rounded-full font-logo shadow-sm transition
-   duration-300 active:translate-y-0.5 laptop:my-3
-   laptop:h-14 laptop:w-14"
-         >
+         <div className={style}>
             <Logo className="h-6 w-6 laptop:h-7 laptop:w-7" />
          </div>
       </Link>
