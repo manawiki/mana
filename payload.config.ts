@@ -42,10 +42,8 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
+      buildPath: path.resolve(process.cwd(), "pongo"),
    },
-   rateLimit: {
-      trustProxy: true,
-    },
    plugins: [
       cloudStorage({
          collections: {
