@@ -5,9 +5,9 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
-const collectionName = "character";
-const data = require("./import_files/Character.json");
-const idField = "character_id";
+const collectionName = "relic";
+const data = require("./import_files/Relic.json");
+const idField = "relic_id";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
 
@@ -55,7 +55,7 @@ const seedUploads = async (result: any) => {
 	
 	// Unlock Materials array
 	var matData: any = [];
-	var rewardListImport: any = [];
+	var returnItemList: any = [];
 	var rewardMaxListImport: any = [];
 	var promotionCostImport: any = [];
 
@@ -64,7 +64,7 @@ const seedUploads = async (result: any) => {
 	// .map(a => a.replace(/}.*/,"")) -> Removes extraneous text after value
 	// .slice(1) // Removes first element of array that has extraneous text
 	// .filter((v,i,a) => a.indexOf(v) === i) -> Gets unique values
-	const allmatjson = JSON.stringify(result.reward_list) + JSON.stringify(result.reward_max_list) + JSON.stringify(result.promotion_cost);
+	const allmatjson = JSON.stringify(result.return_item_list);
 	const matList = allmatjson?.split("data_key\":").map(a => a.replace(/}.*/,"")).slice(1).filter((v,i,a) => a.indexOf(v) === i);
 
 	if (matList?.length > 0) {
@@ -90,46 +90,19 @@ const seedUploads = async (result: any) => {
 	}
 
 
-	if (result.reward_list.length > 0) {
-		rewardListImport = result.reward_list.map((l:any) => {
+	if (result.return_item_list.length > 0) {
+		returnItemList = result.return_item_list.map((l:any) => {
 			const matId = matData.find((a:any) => a.data_key == l.materials?.data_key)?.id;
 			return {
 				...l,
 				materials: matId,
-			}
-		});
-	}
-	if (result.reward_max_list.length > 0) {
-		rewardMaxListImport = result.reward_max_list.map((l:any) => {
-			const matId = matData.find((a:any) => a.data_key == l.materials?.data_key)?.id;
-			return {
-				...l,
-				materials: matId,
-			}
-		});
-	}
-	if (result.promotion_cost.length > 0) {
-		promotionCostImport = result.promotion_cost.map((l:any) => {
-			const matQty = l.material_qty?.map((mat:any) => {
-				const matId = matData.find((a:any) => a.data_key == mat.materials?.data_key)?.id;
-	
-				return {
-					...mat,
-					materials: matId,
-				}
-			});
-	
-			return {
-				...l,
-				material_qty: matQty,
 			}
 		});
 	}
 
+
 	var matQtyImport = {
-		reward_list: rewardListImport,
-		reward_max_list: rewardMaxListImport,
-		promotion_cost: promotionCostImport,
+		return_item_list: returnItemList,
 	}
 
 	// ====================================
@@ -139,34 +112,19 @@ const seedUploads = async (result: any) => {
 
 	var relationFields: any = {};
 	// Single relation fields
-	relationFields["term_rarity"] = null;
-	relationFields["term_element"] = null;
-	relationFields["term_path"] = null;
+	relationFields["rarity"] = null;
+	relationFields["relicset_id"] = null;
 
 	// Multi relation fields
-	relationFields["eidolons"] = null;
-	relationFields["traces"] = null;
+	// relationFields["eidolons"] = null;
 
-	var fieldName = "term_rarity";
-	var idName = "name";
-	var collName = "termRarity";
-	if (result[fieldName]?.[idName]) {
-		const relEntry = await payload.find({
-			collection: collName + "-" + siteId,
-			where: {
-				[idName]: {
-					equals: result[fieldName]?.[idName],
-				},
-			}
-		});
+	// Multi-same ID relation fields
+	relationFields["mainstat_group"] = null;
+	relationFields["substat_group"] = null;
 
-		if (relEntry?.docs?.[0]?.id) {
-			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
-		}
-	}
-	var fieldName = "term_element";
+	var fieldName = "rarity";
 	var idName = "data_key";
-	var collName = "termElement";
+	var collName = "_rarity";
 	if (result[fieldName]?.[idName]) {
 		const relEntry = await payload.find({
 			collection: collName + "-" + siteId,
@@ -181,9 +139,28 @@ const seedUploads = async (result: any) => {
 			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
 		}
 	}
-	var fieldName = "term_path";
+	var fieldName = "relicset_id";
+	var idName = "relicset_id";
+	var collName = "relicSet";
+	if (result[fieldName]?.[idName]) {
+		const relEntry = await payload.find({
+			collection: collName + "-" + siteId,
+			where: {
+				[idName]: {
+					equals: result[fieldName]?.[idName],
+				},
+			}
+		});
+
+		if (relEntry?.docs?.[0]?.id) {
+			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
+		}
+	}
+
+	// For substats/mainstats, need to get an array of IDs for all _relicStat entries with a matching ID
+	var fieldName = "mainstat_group";
 	var idName = "data_key";
-	var collName = "termPath";
+	var collName = "_relicStat";
 	if (result[fieldName]?.[idName]) {
 		const relEntry = await payload.find({
 			collection: collName + "-" + siteId,
@@ -191,57 +168,31 @@ const seedUploads = async (result: any) => {
 				[idName]: {
 					equals: result[fieldName]?.[idName],
 				},
-			}
+			},
+			limit: 30,
 		});
 
-		if (relEntry?.docs?.[0]?.id) {
-			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
+		if (relEntry?.docs?.length > 0) {
+			relationFields[fieldName] = relEntry?.docs?.map((stat:any) => stat?.id);
 		}
 	}
 
-	if (result.traces?.length > 0) {
-		const traceEntry = await Promise.all(result.traces.map(async (t:any) => {
-			const findTrace = await payload.find({
-				collection: "trace-" + siteId,
-				where: {
-					trace_id: {
-						equals: t.trace_id,
-					},
-				}
-			});
-			if (findTrace?.docs?.[0]?.id) {
-				return findTrace?.docs?.[0]?.id;
-			}
-			else {
-				return null;
-			}
-	}));
+	var fieldName = "substat_group";
+	var idName = "data_key";
+	var collName = "_relicStat";
+	if (result[fieldName]?.[idName]) {
+		const relEntry = await payload.find({
+			collection: collName + "-" + siteId,
+			where: {
+				[idName]: {
+					equals: result[fieldName]?.[idName],
+				},
+			},
+			limit: 30,
+		});
 
-		if (traceEntry.length > 0) {
-			relationFields["traces"] = traceEntry;
-		}
-	}
-
-	if (result.eidolons?.length > 0) {
-		const traceEntry = await Promise.all(result.eidolons.map(async (t:any) => {
-			const findTrace = await payload.find({
-				collection: "eidolon-" + siteId,
-				where: {
-					eidolon_id: {
-						equals: t.eidolon_id,
-					},
-				}
-			});
-			if (findTrace?.docs?.[0]?.id) {
-				return findTrace?.docs?.[0]?.id;
-			}
-			else {
-				return null;
-			}
-	}));
-
-		if (traceEntry.length > 0) {
-			relationFields["eidolons"] = traceEntry;
+		if (relEntry?.docs?.length > 0) {
+			relationFields[fieldName] = relEntry?.docs?.map((stat:any) => stat?.id);
 		}
 	}
 
@@ -266,6 +217,8 @@ const seedUploads = async (result: any) => {
 		
 		const baseID = existingEntry.docs[0].entry.id;
 		const custID = existingEntry.docs[0].id;
+
+		// console.log(`Base: ${baseID} ; Cust: ${custID} `);
 
 		var baseData = {
 			...result,

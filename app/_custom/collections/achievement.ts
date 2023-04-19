@@ -1,11 +1,13 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Materials: CollectionConfig = {
-   slug: "materials",
-   labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle: "name" },
-
+export const Achievement: CollectionConfig = {
+   slug: "achievement",
+   labels: { singular: "achievement", plural: "achievements" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
+   },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
@@ -13,18 +15,6 @@ export const Materials: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "materials" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -42,34 +32,30 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
-         name: "bg_description",
-         type: "text",
-      },
-      {
-         name: "itemtype",
+         name: "achievement_series",
          type: "relationship",
-         relationTo: "_itemType",
+         relationTo: "achievementSeries",
          hasMany: false,
-         required: false,
       },
       {
          name: "rarity",
-         type: "relationship",
-         relationTo: "_rarity",
-         hasMany: false,
-         required: false,
-      },
-      {
-         name: "icon_name",
          type: "text",
       },
       {
-         name: "max_limit",
+         name: "priority",
          type: "number",
       },
       {
-         name: "purpose_type",
-         type: "number",
+         name: "show_type",
+         type: "text",
+      },
+      {
+         name: "quest",
+         type: "text",
+      },
+      {
+         name: "linear_quest",
+         type: "text",
       },
       {
          name: "checksum",

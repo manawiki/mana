@@ -5,8 +5,8 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "termRarity";
-const data = require("./import_files/" + collectionName + ".json");
+const collectionName = "_itemType";
+const data = require("./import_files/" + "_ItemType" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
@@ -50,9 +50,6 @@ const seedUploads = async (result: any) => {
 		icon_inactive: siteId + "_" + result.icon_inactive?.name.replace(".png",""),
 		icon_damage_res: siteId + "_" + result.icon_damage_res?.name.replace(".png",""),
 		icon_small: siteId + "_" + result.icon_small?.name.replace(".png",""),
-		image_frame: siteId + "_" + result.image_frame?.name.replace(".png",""),
-		icon_frame: siteId + "_" + result.icon_frame?.name.replace(".png",""),
-		image_bg: siteId + "_" + result.image_bg?.name.replace(".png",""),
 	}
 
 	// Check if entry exists
@@ -75,7 +72,6 @@ const seedUploads = async (result: any) => {
 		var baseData = {
 			...result,
 			collectionEntity: collectionName + "-" + siteId,
-			name: result?.name.toString(),
 			icon: siteId + "_" + result.icon?.name.replace(".png",""),
 			author: userId,
 		};
@@ -94,7 +90,6 @@ const seedUploads = async (result: any) => {
 			...result,
 			entry: itemId,
 			id: collectionName + "-" + itemId,
-			name: result?.name.toString(),
 			...iconImport,
 		};
 
@@ -111,7 +106,6 @@ const seedUploads = async (result: any) => {
 		var baseData = {
 			...result,
 			collectionEntity: collectionName + "-" + siteId,
-			name: result?.name.toString(),
 			icon: siteId + "_" + result.icon?.name.replace(".png",""),
 			author: userId,
 		};
@@ -130,7 +124,6 @@ const seedUploads = async (result: any) => {
 			...result,
 			entry: itemId,
 			id: collectionName + "-" + itemId,
-			name: result?.name.toString(),
 			...iconImport,
 		};
 

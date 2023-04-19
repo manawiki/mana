@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termElement: CollectionConfig = {
-   slug: "termElement-lKJ16E5IhH",
-   labels: { singular: "termElement", plural: "termElements" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+export const _Element: CollectionConfig = {
+   slug: "_element",
+   labels: { singular: "_element", plural: "_elements" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const termElement: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "termElement-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",

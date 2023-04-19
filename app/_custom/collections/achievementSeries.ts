@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Eidolon: CollectionConfig = {
-   slug: "eidolon-lKJ16E5IhH",
-   labels: { singular: "eidolon", plural: "eidolons" },
+export const AchievementSeries: CollectionConfig = {
+   slug: "achievementSeries",
+   labels: { singular: "achievementSeries", plural: "achievementSerieses" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +20,7 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
-         name: "eidolon_id",
+         name: "data_key",
          type: "text",
       },
       {
@@ -28,36 +28,17 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
-         type: "text",
-      },
-      {
-         name: "rank",
-         type: "number",
-      },
-      {
-         name: "trigger",
-         type: "text",
-      },
-      {
-         name: "unlock_materials",
-         type: "array",
-         fields: [
-            {
-               name: "materials",
-               type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
-               hasMany: false,
-            },
-            {
-               name: "qty",
-               type: "number",
-            },
-         ],
-      },
-      {
          name: "icon_name",
          type: "text",
+      },
+      {
+         name: "icon_small_name",
+         type: "text",
+      },
+      {
+         name: "icon_small",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "checksum",

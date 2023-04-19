@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termItemtype: CollectionConfig = {
-   slug: "termItemtype-lKJ16E5IhH",
-   labels: { singular: "termItemtype", plural: "termItemtypes" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+export const RelicSet: CollectionConfig = {
+   slug: "relicSet",
+   labels: { singular: "relicSet", plural: "relicSets" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -16,19 +16,11 @@ export const termItemtype: CollectionConfig = {
    },
    fields: [
       {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-
-      },
-      {
          name: "id",
          type: "text",
       },
       {
-         name: "data_key",
+         name: "relicset_id",
          type: "text",
       },
       {
@@ -36,20 +28,22 @@ export const termItemtype: CollectionConfig = {
          type: "text",
       },
       {
-         name: "inv_type",
-         type: "text",
-      },
-      {
-         name: "sort_weight",
-         type: "number",
-      },
-      {
-         name: "type_categories",
-         type: "json",
-      },
-      {
          name: "icon_name",
          type: "text",
+      },
+      {
+         name: "set_effect",
+         type: "array",
+         fields: [
+            {
+               name: "req_no",
+               type: "number",
+            },
+            {
+               name: "description",
+               type: "text",
+            },
+         ],
       },
       {
          name: "checksum",

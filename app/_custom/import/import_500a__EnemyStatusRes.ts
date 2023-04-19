@@ -5,8 +5,8 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
-const collectionName = "termElement";
-const data = require("./import_files/" + collectionName + ".json");
+const collectionName = "_enemyStatusRes";
+const data = require("./import_files/" + "_EnemyStatusRes" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
@@ -42,12 +42,13 @@ const getData = async () =>
 const seedUploads = async (result: any) => {
 
 	const idValue = result[idField];
+
 	// Check if entry exists
 	
 	const existingEntry = await payload.find({
 		collection: collectionName + "-" + siteId,
 		where: {
-			data_key: {
+			[idField]: {
 				equals: idValue,
 			},
 		}
@@ -72,7 +73,7 @@ const seedUploads = async (result: any) => {
 			id: baseID,
 			data: baseData,
 		});
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(updateItem)} Entry updated!`);
 
 		const itemId = updateItem.id;
@@ -80,11 +81,6 @@ const seedUploads = async (result: any) => {
 		var custData = {
 			...result,
 			entry: itemId,
-			id: collectionName + "-" + itemId,
-			icon_color: siteId + "_" + result.icon_color?.name.replace(".png",""),
-			icon_active: siteId + "_" + result.icon_active?.name.replace(".png",""),
-			icon_inactive: siteId + "_" + result.icon_inactive?.name.replace(".png",""),
-			icon_damage_res: siteId + "_" + result.icon_damage_res?.name.replace(".png",""),
 		};
 
 		const updateItemCustom = await payload.update({
@@ -109,7 +105,7 @@ const seedUploads = async (result: any) => {
 			data: baseData,
 		});
 		//Limit speed
-		sleep(200);
+		sleep(50);
 		console.log(`${JSON.stringify(createItem)} Import completed!`);
 		
 		const itemId = createItem.id;
@@ -118,10 +114,6 @@ const seedUploads = async (result: any) => {
 			...result,
 			entry: itemId,
 			id: collectionName + "-" + itemId,
-			icon_color: siteId + "_" + result.icon_color?.name.replace(".png",""),
-			icon_active: siteId + "_" + result.icon_active?.name.replace(".png",""),
-			icon_inactive: siteId + "_" + result.icon_inactive?.name.replace(".png",""),
-			icon_damage_res: siteId + "_" + result.icon_damage_res?.name.replace(".png",""),
 		};
 
 		const createItemCustom = await payload.create({

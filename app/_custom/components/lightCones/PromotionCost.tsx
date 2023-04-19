@@ -14,7 +14,7 @@ export const PromotionCost = ({ pageData }: any) => {
                      <>
                         <tr key={index}>
                            <td className="py-0 px-3 text-xs font-bold text-center">
-                              <div>Lv {promo.max_level}</div>
+                              <div>Lv {index + 1}</div>
                            </td>
                            <td className="py-1 px-1 pl-3">
                               {promo.material_qty?.map((mat: any) => (

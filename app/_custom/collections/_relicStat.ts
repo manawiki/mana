@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Eidolon: CollectionConfig = {
-   slug: "eidolon-lKJ16E5IhH",
-   labels: { singular: "eidolon", plural: "eidolons" },
+export const _RelicStat: CollectionConfig = {
+   slug: "_relicStat",
+   labels: { singular: "_relicStat", plural: "_relicStats" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +20,7 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
-         name: "eidolon_id",
+         name: "data_key",
          type: "text",
       },
       {
@@ -28,36 +28,34 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
-         name: "description",
+         name: "group_id",
          type: "text",
       },
       {
-         name: "rank",
+         name: "type",
+         type: "text",
+      },
+      {
+         name: "affix_id",
+         type: "text",
+      },
+      {
+         name: "stattype",
+         type: "relationship",
+         relationTo: "_statType",
+         hasMany: false,
+      },
+      {
+         name: "base_val",
          type: "number",
       },
       {
-         name: "trigger",
-         type: "text",
+         name: "level_add",
+         type: "number",
       },
       {
-         name: "unlock_materials",
-         type: "array",
-         fields: [
-            {
-               name: "materials",
-               type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
-               hasMany: false,
-            },
-            {
-               name: "qty",
-               type: "number",
-            },
-         ],
-      },
-      {
-         name: "icon_name",
-         type: "text",
+         name: "stats",
+         type: "json",
       },
       {
          name: "checksum",

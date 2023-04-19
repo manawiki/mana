@@ -4,10 +4,10 @@ require("dotenv").config();
 
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
-//Array of objects matching the payload shape, change to match your need
-const collectionName = "termStattype";
-const data = require("./import_files/" + collectionName + ".json");
-const idField = "data_key";
+//Array of objects matching the payload shape, change to match your needs
+const collectionName = "relicSet";
+const data = require("./import_files/RelicSet.json");
+const idField = "relicset_id";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
 
@@ -45,18 +45,19 @@ const seedUploads = async (result: any) => {
 
 	// Define Image fields (global)
 	const iconImport = {
-		icon_color: siteId + "_" + result.icon_color?.name.replace(".png",""),
-		icon_active: siteId + "_" + result.icon_active?.name.replace(".png",""),
-		icon_inactive: siteId + "_" + result.icon_inactive?.name.replace(".png",""),
-		icon_damage_res: siteId + "_" + result.icon_damage_res?.name.replace(".png",""),
-		icon_small: siteId + "_" + result.icon_small?.name.replace(".png",""),
+		image_round_icon: siteId + "_" + result.image_round_icon?.name.replace(".png",""),
+		image_action: siteId + "_" + result.image_action?.name.replace(".png",""),
+		image_battle_detail: siteId + "_" + result.image_battle_detail?.name.replace(".png",""),
+		image_full: siteId + "_" + result.image_full?.name.replace(".png",""),
+		image_full_bg: siteId + "_" + result.image_full_bg?.name.replace(".png",""),
+		image_full_front: siteId + "_" + result.image_full_front?.name.replace(".png",""),
 	}
-
+	
 	// Check if entry exists
 	const existingEntry = await payload.find({
 		collection: collectionName + "-" + siteId,
 		where: {
-			data_key: {
+			[idField]: {
 				equals: idValue,
 			},
 		}
@@ -90,7 +91,6 @@ const seedUploads = async (result: any) => {
 			...result,
 			entry: itemId,
 			id: collectionName + "-" + itemId,
-			...iconImport,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -124,7 +124,6 @@ const seedUploads = async (result: any) => {
 			...result,
 			entry: itemId,
 			id: collectionName + "-" + itemId,
-			...iconImport,
 		};
 
 		const createItemCustom = await payload.create({

@@ -5,8 +5,8 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "termItemtype";
-const data = require("./import_files/" + collectionName + ".json");
+const collectionName = "_statType";
+const data = require("./import_files/" + "_StatType" + ".json");
 const idField = "data_key";
 const siteId = "lKJ16E5IhH";
 const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field

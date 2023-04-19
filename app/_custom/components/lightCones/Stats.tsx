@@ -23,30 +23,19 @@ ChartJS.register(
    Legend
 );
 
-export const CharacterStatBlock = ({ pageData }) => {
+export const Stats = ({ pageData }: any) => {
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
    const [graphStat, setGraphStat] = useState("HP");
 
-   var bgurl = pageData.image_full_bg?.url;
-   var fronturl = pageData.image_full_front?.url;
-   var mainurl = pageData.image_full?.url;
-   var elemurl = pageData.element?.entry?.icon?.url;
+   var imgurl = pageData.image_full?.url;
    var pathurl = pageData.path?.entry?.icon?.url;
    var pathsmall = pageData.path?.icon_small?.url;
    var rarityurl = pageData.rarity?.entry?.icon?.url;
    var pathname = pageData.path?.name;
 
-   var statlist = [
-      "HP",
-      "ATK",
-      "DEF",
-      "Speed",
-      "CritRate",
-      "CritDMG",
-      "BaseAggro",
-   ];
+   var statlist = ["HP", "ATK", "DEF"];
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
@@ -77,26 +66,8 @@ export const CharacterStatBlock = ({ pageData }) => {
             {/* ======================== */}
             <div>
                <div className="relative w-full text-center bg-gray-100 dark:bg-neutral-900 rounded-md">
-                  {/* Element Symbol */}
-                  <div className="absolute h-10 w-10 top-3 left-3 bg-gray-800 bg-opacity-20 rounded-full">
-                     <img src={elemurl} className="object-contain" />
-                     {/* layout="fill" objectFit="contain" /> */}
-                  </div>
-
-                  {/* Path + Path Name ? */}
-                  <div className="absolute h-10 w-10 top-3 left-14 ">
-                     <div className="absolute bg-gray-800 rounded-full h-10 w-10 top-0 left-0">
-                        <img
-                           className="relative inline-block object-contain top-1"
-                           src={pathsmall}
-                        />
-                     </div>
-
-                     {/* <div className="absolute bottom-2 font-bold">{pathname}</div> */}
-                  </div>
-
                   {/* Rarity */}
-                  <div className="absolute bottom-3 left-3 w-20 z-20 h-8">
+                  <div className="absolute bottom-3 left-20 laptop:left-12 w-20 z-20 h-8">
                      <img
                         className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-20"
                         src={rarityurl}
@@ -104,26 +75,10 @@ export const CharacterStatBlock = ({ pageData }) => {
                   </div>
 
                   <div className="relative inline-block text-center h-96 w-full">
-                     {/* Background Image */}
-                     {bgurl ? (
-                        <img
-                           src={bgurl}
-                           className="object-contain absolute h-96 w-full"
-                        />
-                     ) : null}
-
                      {/* Main Image */}
-                     {mainurl ? (
+                     {imgurl ? (
                         <img
-                           src={mainurl}
-                           className="object-contain absolute h-96 w-full"
-                        />
-                     ) : null}
-
-                     {/* Front Image */}
-                     {fronturl ? (
-                        <img
-                           src={fronturl}
+                           src={imgurl}
                            className="object-contain absolute h-96 w-full"
                         />
                      ) : null}
@@ -326,15 +281,7 @@ export const CharacterStatBlock = ({ pageData }) => {
 // =====================================
 const StatGraph = ({ charData, graphStat, setGraphStat }) => {
    var data = charData;
-   var statlist = [
-      "HP",
-      "ATK",
-      "DEF",
-      "Speed",
-      "CritRate",
-      "CritDMG",
-      "BaseAggro",
-   ];
+   var statlist = ["HP", "ATK", "DEF"];
 
    var tooltipsuffix = "";
 
@@ -447,7 +394,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                      <>
                         <Disclosure.Button
                            className="font-bold bg-gray-50  dark:bg-neutral-900 dark:border-neutral-700 
-                  flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+				   flex items-center mb-2 w-full border px-3 py-2 rounded-md"
                         >
                            Stat Graph
                            <div
@@ -507,7 +454,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
 // =====================================
 // Collapsible CSV Stat Text box
 // =====================================
-const CSVStats = ({ charData }) => {
+const CSVStats = ({ charData }: any) => {
    var data = charData;
    if (data.stats != undefined && data.stats.length != 0) {
       return (
@@ -517,7 +464,7 @@ const CSVStats = ({ charData }) => {
                   <>
                      <Disclosure.Button
                         className="font-bold bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700
-               flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+				flex items-center mb-2 w-full border px-3 py-2 rounded-md"
                      >
                         Raw Stats for all Levels
                         <div

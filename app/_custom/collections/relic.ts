@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Trace: CollectionConfig = {
-   slug: "trace",
-   labels: { singular: "trace", plural: "traces" },
+export const Relic: CollectionConfig = {
+   slug: "relic",
+   labels: { singular: "relic", plural: "relics" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -16,23 +16,11 @@ export const Trace: CollectionConfig = {
    },
    fields: [
       {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "trace" },
-            };
-         },
-      },
-      {
          name: "id",
          type: "text",
       },
       {
-         name: "trace_id",
+         name: "relic_id",
          type: "text",
       },
       {
@@ -40,69 +28,83 @@ export const Trace: CollectionConfig = {
          type: "text",
       },
       {
-         name: "desc_type",
-         type: "text",
+         name: "rarity",
+         type: "relationship",
+         relationTo: "_rarity",
+         hasMany: false,
+      },
+      {
+         name: "max_limit",
+         type: "number",
       },
       {
          name: "icon_name",
          type: "text",
       },
       {
-         name: "icon_ultra_name",
+         name: "description",
          type: "text",
       },
       {
-         name: "description_per_level",
+         name: "bg_description",
+         type: "text",
+      },
+      {
+         name: "return_item_list",
          type: "array",
          fields: [
             {
-               name: "level",
-               type: "number",
+               name: "materials",
+               type: "relationship",
+               relationTo: "materials",
+               hasMany: false,
             },
             {
-               name: "description",
-               type: "text",
+               name: "qty",
+               type: "number",
             },
          ],
+      },
+      {
+         name: "relicset_id",
+         type: "relationship",
+         relationTo: "relicSet",
+         hasMany: false,
+      },
+      {
+         name: "relic_type",
+         type: "text",
+      },
+      {
+         name: "mainstat_group",
+         type: "relationship",
+         relationTo: "_relicStat",
+         hasMany: true,
+      },
+      {
+         name: "substat_group",
+         type: "relationship",
+         relationTo: "_relicStat",
+         hasMany: true,
       },
       {
          name: "max_level",
          type: "number",
       },
       {
-         name: "damage_type",
-         type: "text",
-      },
-      {
-         name: "effect_type",
-         type: "text",
-      },
-      {
-         name: "init_cooldown",
+         name: "exp_type",
          type: "number",
       },
       {
-         name: "cooldown",
+         name: "exp_value",
          type: "number",
       },
       {
-         name: "sp_ratio",
+         name: "coin_cost",
          type: "number",
       },
       {
-         name: "bp_need",
-         type: "number",
-      },
-      {
-         name: "skill_need",
-         type: "number",
-      },
-      {
-         name: "delay_ratio",
-         type: "number",
-      },
-      {
-         name: "tag",
+         name: "r_storycontent",
          type: "text",
       },
       {

@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termRarity: CollectionConfig = {
-   slug: "termRarity-lKJ16E5IhH",
-   labels: { singular: "termRarity", plural: "termRarities" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "display_number",
+export const EnemySkill: CollectionConfig = {
+   slug: "enemySkill",
+   labels: { singular: "enemySkill", plural: "enemySkills" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -21,18 +21,14 @@ export const termRarity: CollectionConfig = {
          relationTo: "entries",
          hasMany: false,
          required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "termRarity-lKJ16E5IhH" },
-			 };
-		 },
+         filterOptions: () => {
+            return {
+               collectionEntity: { equals: "enemySkill" },
+            };
+         },
       },
       {
          name: "id",
-         type: "text",
-      },
-      {
-         name: "name",
          type: "text",
       },
       {
@@ -40,43 +36,38 @@ export const termRarity: CollectionConfig = {
          type: "text",
       },
       {
-         name: "display_number",
+         name: "name",
          type: "text",
       },
       {
-         name: "color",
+         name: "sp_hit_base",
+         type: "number",
+      },
+      {
+         name: "delay_ratio",
+         type: "number",
+      },
+      {
+         name: "skill_trigger_key",
          type: "text",
       },
       {
-         name: "color_line",
+         name: "damage_type",
+         type: "relationship",
+         relationTo: "_element",
+         hasMany: false,
+      },
+      {
+         name: "description",
          type: "text",
       },
       {
-         name: "image_frame_name",
+         name: "type",
          type: "text",
       },
       {
-         name: "icon_frame_name",
-         type: "text",
-      },
-      {
-         name: "image_bg_name",
-         type: "text",
-      },
-      {
-         name: "image_frame",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "icon_frame",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "image_bg",
-         type: "upload",
-         relationTo: "images",
+         name: "skill_params",
+         type: "json",
       },
       {
          name: "checksum",

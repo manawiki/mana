@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termStattype: CollectionConfig = {
-   slug: "termStattype-lKJ16E5IhH",
-   labels: { singular: "termStattype", plural: "termStattypes" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+export const _EnemyStatusRes: CollectionConfig = {
+   slug: "_enemyStatusRes",
+   labels: { singular: "_enemyStatusRes", plural: "_enemyStatusReses" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -16,23 +16,7 @@ export const termStattype: CollectionConfig = {
    },
    fields: [
       {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "termStattype-lKJ16E5IhH" },
-			 };
-		 },
-      },
-      {
          name: "id",
-         type: "text",
-      },
-      {
-         name: "stat_id",
          type: "text",
       },
       {

@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const termPath: CollectionConfig = {
-   slug: "termPath-lKJ16E5IhH",
-   labels: { singular: "termPath", plural: "termPaths" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+export const _Path: CollectionConfig = {
+   slug: "_path",
+   labels: { singular: "_path", plural: "_paths" },
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const termPath: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "termPath-lKJ16E5IhH" },
-			 };
-		 },
-      },
       {
          name: "id",
          type: "text",
