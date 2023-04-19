@@ -85,6 +85,7 @@ export const isStaffFieldLevel: FieldAccess<{ id: string }, unknown, User> = ({
    req: { user },
 }) => {
    // Return true or false based on if the user has an staff role
+   //@ts-ignore
    return Boolean(user?.roles?.includes("staff"));
 };
 
