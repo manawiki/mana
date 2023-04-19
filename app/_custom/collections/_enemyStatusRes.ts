@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const _EnemyStatusRes: CollectionConfig = {
-   slug: "_enemyStatusRes-lKJ16E5IhH",
+   slug: "_enemyStatusRes",
    labels: { singular: "_enemyStatusRes", plural: "_enemyStatusReses" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const _EnemyStatusRes: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "_enemyStatusRes-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",

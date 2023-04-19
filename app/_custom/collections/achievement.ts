@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Achievement: CollectionConfig = {
-   slug: "achievement-lKJ16E5IhH",
+   slug: "achievement",
    labels: { singular: "achievement", plural: "achievements" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const Achievement: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "achievement-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -46,7 +34,7 @@ export const Achievement: CollectionConfig = {
       {
          name: "achievement_series",
          type: "relationship",
-         relationTo: "achievementSeries-lKJ16E5IhH",
+         relationTo: "achievementSeries",
          hasMany: false,
       },
       {

@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const EnemySkill: CollectionConfig = {
-   slug: "enemySkill-lKJ16E5IhH",
+   slug: "enemySkill",
    labels: { singular: "enemySkill", plural: "enemySkills" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -23,7 +23,7 @@ export const EnemySkill: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "enemySkill-lKJ16E5IhH" },
+               collectionEntity: { equals: "enemySkill" },
             };
          },
       },
@@ -54,7 +54,7 @@ export const EnemySkill: CollectionConfig = {
       {
          name: "damage_type",
          type: "relationship",
-         relationTo: "_element-lKJ16E5IhH",
+         relationTo: "_element",
          hasMany: false,
       },
       {

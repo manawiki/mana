@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const _StatType: CollectionConfig = {
-   slug: "_statType-lKJ16E5IhH",
+   slug: "_statType",
    labels: { singular: "_statType", plural: "_statTypees" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const _StatType: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "_statType-lKJ16E5IhH" },
-			 };
-		 },
-      },
       {
          name: "id",
          type: "text",
