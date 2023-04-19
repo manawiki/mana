@@ -16,7 +16,7 @@ const allowedSites = [
    "https://starrail.manatee.wiki",
 ];
 
-const bucketName = serverEnv === "production" ? "mana-prod" : "mana-dev";
+const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
 
 const csrfDomains =
    serverEnv == "local" ? ["http://localhost:4000"] : allowedSites;
