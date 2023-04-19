@@ -2,7 +2,7 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Eidolon: CollectionConfig = {
-   slug: "eidolon-lKJ16E5IhH",
+   slug: "eidolon",
    labels: { singular: "eidolon", plural: "eidolons" },
    admin: {
       group: "Custom",
@@ -46,7 +46,7 @@ export const Eidolon: CollectionConfig = {
             {
                name: "materials",
                type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
+               relationTo: "materials",
                hasMany: false,
             },
             {
