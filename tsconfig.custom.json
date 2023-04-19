@@ -1,0 +1,23 @@
+{
+   "compilerOptions": {
+      "target": "es5",
+      "lib": ["dom", "dom.iterable", "esnext"],
+      "allowJs": true,
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "outDir": "./dist",
+      "jsx": "react",
+      "baseUrl": ".",
+      "paths": {
+         "~/*": ["./app/*"],
+         "env/types": ["./shared/env.ts"],
+         "payload/generated-types": ["./app/_custom/payload-types.ts"]
+      }
+   },
+   "include": ["server.ts", "app/_custom/payload.ts"],
+   "ts-node": {
+      "swc": true,
+      "transpileOnly": true
+   }
+}

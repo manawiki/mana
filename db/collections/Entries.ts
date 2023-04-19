@@ -39,12 +39,5 @@ export const Entries: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
-      {
-         name: "notes",
-         type: "relationship",
-         relationTo: "notes",
-         hasMany: true,
-         maxDepth: 1,
-      },
    ],
 };

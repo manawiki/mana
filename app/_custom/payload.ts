@@ -1,15 +1,19 @@
 import { buildConfig } from "payload/config";
-import path from "path";
-import { collections } from "./db/collections";
-import { Users } from "./db/collections/Users";
-import { serverEnv } from "./shared";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
+import { CustomCollections } from "./collections";
+import { serverEnv } from "../../shared";
+import { Users } from "../../db/collections/CustomUsers";
+import { Images } from "../../db/collections/Images";
+import invariant from "tiny-invariant";
 
 dotenv.config();
 
-const bucketName = serverEnv === "production" ? "mana-prod" : "mana-dev";
+invariant(
+   process.env.PAYLOAD_PUBLIC_SITE_ID,
+   "PAYLOAD_PUBLIC_SITE_ID is required"
+);
 
 const allowedSites = [
    "https://manatee.wiki",
@@ -18,8 +22,10 @@ const allowedSites = [
    "https://starrail.manatee.wiki",
 ];
 
+const bucketName = serverEnv === "production" ? "mana-prod" : "mana-dev";
+
 const csrfDomains =
-   serverEnv == "local" ? ["http://localhost:3000"] : allowedSites;
+   serverEnv == "local" ? ["http://localhost:4000"] : allowedSites;
 
 const adapter = s3Adapter({
    config: {
@@ -36,7 +42,7 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    admin: {
-      user: Users.slug,
+      user: "users",
       meta: {
          favicon: "/favicon.ico",
          ogImage: "/og-image.png",
@@ -49,16 +55,13 @@ export default buildConfig({
             images: {
                adapter,
                generateFileURL: (file) => {
-                  const { filename } = file;
-                  return `https://static.mana.wiki/file/${bucketName}/${filename}`;
+                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${file}`;
                },
+               prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
          },
       }),
    ],
-   collections,
+   collections: [Users, Images, ...CustomCollections],
    csrf: csrfDomains,
-   typescript: {
-      outputFile: path.resolve(__dirname, "./payload-types.ts"),
-   },
 });

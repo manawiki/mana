@@ -220,7 +220,7 @@ export default function SiteIndex() {
                         </>
                      )}
                   </NavLink>
-                  <NavLink
+                  {/* <NavLink
                      className={({ isActive }) =>
                         `${
                            isActive
@@ -244,7 +244,7 @@ export default function SiteIndex() {
                            </span>
                         </>
                      )}
-                  </NavLink>
+                  </NavLink> */}
                </div>
             </section>
             <section
