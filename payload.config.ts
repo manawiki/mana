@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const bucketName = serverEnv === "production" ? "mana-prod" : "mana-dev";
+const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
 
 const allowedSites = [
    "https://manatee.wiki",

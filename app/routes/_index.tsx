@@ -42,7 +42,7 @@ export const handle = {
 };
 
 const FeaturedLink = ({ site }: { site: Site }) => {
-   if ((site.type = "custom")) {
+   if (site.type == "custom") {
       return (
          <a
             href={`${
