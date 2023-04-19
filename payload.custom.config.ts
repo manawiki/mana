@@ -2,10 +2,10 @@ import { buildConfig } from "payload/config";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
-import { CustomCollections } from "./collections";
-import { serverEnv } from "../../shared";
-import { Users } from "../../db/collections/CustomUsers";
-import { Images } from "../../db/collections/Images";
+import { CustomCollections } from "./app/_custom/collections";
+import { serverEnv } from "./shared";
+import { Users } from "./db/collections/CustomUsers";
+import { Images } from "./db/collections/Images";
 import invariant from "tiny-invariant";
 
 dotenv.config();

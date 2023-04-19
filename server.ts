@@ -6,7 +6,7 @@ import payload from "payload";
 import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
 import nodemailerSendgrid from "nodemailer-sendgrid";
-import buildConfig from "./app/_custom/payload";
+import buildConfig from "./payload.custom.config";
 
 require("dotenv").config();
 

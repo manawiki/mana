@@ -11,11 +11,10 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
-         "env/types": ["./shared/env.ts"],
-         "payload/generated-types": ["./app/_custom/payload-types.ts"]
+         "env/types": ["./shared/env.ts"]
       }
    },
-   "include": ["server.ts", "app/_custom/payload.ts"],
+   "include": ["server.ts", "payload.custom.config.ts"],
    "ts-node": {
       "swc": true,
       "transpileOnly": true

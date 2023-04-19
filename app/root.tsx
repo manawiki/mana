@@ -34,6 +34,7 @@ import { useEffect } from "react";
 import { toast } from "./components/Toaster";
 
 import { DynamicLinks } from "remix-utils";
+import type { envType } from "shared";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -46,6 +47,7 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
          locale,
          user,
          siteTheme: themeSession.getTheme(),
+         env: process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT as envType,
       },
       { headers: { "Set-Cookie": await commitSession(session) } }
    );
@@ -146,15 +148,6 @@ export default function AppWithProviders() {
       </ThemeProvider>
    );
 }
-
-// export const shouldRevalidate: ShouldRevalidateFunction = ({
-//    formMethod,
-//    nextParams,
-// }) => {
-//    //Don't revalidate if we're editing a note
-//    if (formMethod === "post" && nextParams.noteId) return false;
-//    return true;
-// };
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
