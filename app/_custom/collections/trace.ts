@@ -16,18 +16,6 @@ export const Trace: CollectionConfig = {
    },
    fields: [
       {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "trace" },
-            };
-         },
-      },
-      {
          name: "id",
          type: "text",
       },
