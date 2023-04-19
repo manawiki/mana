@@ -11,7 +11,8 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
-         "env/types": ["./shared/env.ts"]
+         "env/types": ["./shared/env.ts"],
+         "payload/generated-types": ["./payload-types.ts"]
       }
    },
    "include": ["server.ts", "payload.custom.config.ts"],
