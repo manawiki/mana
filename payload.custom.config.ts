@@ -6,14 +6,8 @@ import { CustomCollections } from "./app/_custom/collections";
 import { serverEnv } from "./shared";
 import { Users } from "./db/collections/CustomUsers";
 import { Images } from "./db/collections/Images";
-import invariant from "tiny-invariant";
 
 dotenv.config();
-
-invariant(
-   process.env.PAYLOAD_PUBLIC_SITE_ID,
-   "PAYLOAD_PUBLIC_SITE_ID is required"
-);
 
 const allowedSites = [
    "https://manatee.wiki",
