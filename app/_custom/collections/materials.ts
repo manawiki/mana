@@ -14,18 +14,6 @@ export const Materials: CollectionConfig = {
    },
    fields: [
       {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "materials" },
-            };
-         },
-      },
-      {
          name: "id",
          type: "text",
       },
