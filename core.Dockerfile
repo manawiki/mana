@@ -17,7 +17,7 @@ WORKDIR /home/node
 COPY package*.json  ./
 
 RUN yarn install --production
-COPY --from=builder /home/node/public/build ./public/build
+COPY --from=builder /home/node/public ./public
 COPY --from=builder /home/node/dist ./dist
 COPY --from=builder /home/node/build ./build
 
