@@ -4,9 +4,9 @@ import type { CollectionConfig } from "payload/types";
 export const Eidolon: CollectionConfig = {
    slug: "eidolon-lKJ16E5IhH",
    labels: { singular: "eidolon", plural: "eidolons" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const Eidolon: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "eidolon-lKJ16E5IhH" },
-			 };
-		 },
-      },
       {
          name: "id",
          type: "text",

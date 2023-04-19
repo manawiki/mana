@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const _RelicStat: CollectionConfig = {
-   slug: "_relicStat-lKJ16E5IhH",
+   slug: "_relicStat",
    labels: { singular: "_relicStat", plural: "_relicStats" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const _RelicStat: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "_relicStat-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -54,7 +42,7 @@ export const _RelicStat: CollectionConfig = {
       {
          name: "stattype",
          type: "relationship",
-         relationTo: "_statType-lKJ16E5IhH",
+         relationTo: "_statType",
          hasMany: false,
       },
       {

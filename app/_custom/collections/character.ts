@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Character: CollectionConfig = {
-   slug: "character-lKJ16E5IhH",
+   slug: "character",
    labels: { singular: "Character", plural: "Characters" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const Character: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "character-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -42,19 +30,19 @@ export const Character: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity-lKJ16E5IhH",
+         relationTo: "_rarity",
          hasMany: false,
       },
       {
          name: "element",
          type: "relationship",
-         relationTo: "_element-lKJ16E5IhH",
+         relationTo: "_element",
          hasMany: false,
       },
       {
          name: "path",
          type: "relationship",
-         relationTo: "_path-lKJ16E5IhH",
+         relationTo: "_path",
          hasMany: false,
       },
       {
@@ -76,13 +64,13 @@ export const Character: CollectionConfig = {
       {
          name: "eidolons",
          type: "relationship",
-         relationTo: "eidolon-lKJ16E5IhH",
+         relationTo: "eidolon",
          hasMany: true,
       },
       {
          name: "traces",
          type: "relationship",
-         relationTo: "trace-lKJ16E5IhH",
+         relationTo: "trace",
          hasMany: true,
       },
       {
@@ -120,7 +108,7 @@ export const Character: CollectionConfig = {
             {
                name: "materials",
                type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
+               relationTo: "materials",
                hasMany: false,
             },
             {
@@ -136,7 +124,7 @@ export const Character: CollectionConfig = {
             {
                name: "materials",
                type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
+               relationTo: "materials",
                hasMany: false,
             },
             {
@@ -165,7 +153,9 @@ export const Character: CollectionConfig = {
          admin: {
             components: {
                RowLabel: ({ data, index }: any) => {
-                  return data?.label || `Stat ${String(index).padStart(2, '0')}`;
+                  return (
+                     data?.label || `Stat ${String(index).padStart(2, "0")}`
+                  );
                },
             },
          },
@@ -189,14 +179,14 @@ export const Character: CollectionConfig = {
                   {
                      name: "materials",
                      type: "relationship",
-                     relationTo: "materials-lKJ16E5IhH",
+                     relationTo: "materials",
                      hasMany: false,
                   },
                   {
                      name: "qty",
                      type: "number",
                   },
-               ]
+               ],
             },
          ],
       },

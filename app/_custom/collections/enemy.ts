@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Enemy: CollectionConfig = {
-   slug: "enemy-lKJ16E5IhH",
+   slug: "enemy",
    labels: { singular: "enemy", plural: "enemies" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const Enemy: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "enemy-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -58,7 +46,7 @@ export const Enemy: CollectionConfig = {
       {
          name: "skill_list",
          type: "relationship",
-         relationTo: "enemySkill-lKJ16E5IhH",
+         relationTo: "enemySkill",
          hasMany: true,
       },
       {
@@ -68,7 +56,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "debuff",
                type: "relationship",
-               relationTo: "_enemyStatusRes-lKJ16E5IhH",
+               relationTo: "_enemyStatusRes",
                hasMany: false,
             },
             {
@@ -80,7 +68,7 @@ export const Enemy: CollectionConfig = {
       {
          name: "elemental_weaknesses",
          type: "relationship",
-         relationTo: "_element-lKJ16E5IhH",
+         relationTo: "_element",
          hasMany: true,
       },
       {
@@ -90,7 +78,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "element",
                type: "relationship",
-               relationTo: "_element-lKJ16E5IhH",
+               relationTo: "_element",
                hasMany: false,
             },
             {
@@ -182,7 +170,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "drop_list",
                type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
+               relationTo: "materials",
                hasMany: true,
             },
          ],

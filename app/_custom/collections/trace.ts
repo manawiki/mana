@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Trace: CollectionConfig = {
-   slug: "trace-lKJ16E5IhH",
+   slug: "trace",
    labels: { singular: "trace", plural: "traces" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -23,9 +23,9 @@ export const Trace: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "trace-lKJ16E5IhH" },
+               collectionEntity: { equals: "trace" },
             };
-		   },
+         },
       },
       {
          name: "id",

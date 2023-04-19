@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const LightCone: CollectionConfig = {
-   slug: "lightCone-lKJ16E5IhH",
+   slug: "lightCone",
    labels: { singular: "lightCone", plural: "lightCones" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const LightCone: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "lightCone-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -50,13 +38,13 @@ export const LightCone: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity-lKJ16E5IhH",
+         relationTo: "_rarity",
          hasMany: false,
       },
       {
          name: "path",
          type: "relationship",
-         relationTo: "_path-lKJ16E5IhH",
+         relationTo: "_path",
          hasMany: false,
       },
       {
@@ -121,7 +109,9 @@ export const LightCone: CollectionConfig = {
          admin: {
             components: {
                RowLabel: ({ data, index }: any) => {
-                  return data?.label || `Stat ${String(index).padStart(2, '0')}`;
+                  return (
+                     data?.label || `Stat ${String(index).padStart(2, "0")}`
+                  );
                },
             },
          },
@@ -141,14 +131,14 @@ export const LightCone: CollectionConfig = {
                   {
                      name: "materials",
                      type: "relationship",
-                     relationTo: "materials-lKJ16E5IhH",
+                     relationTo: "materials",
                      hasMany: false,
                   },
                   {
                      name: "qty",
                      type: "number",
                   },
-               ]
+               ],
             },
          ],
       },

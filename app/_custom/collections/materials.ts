@@ -2,9 +2,9 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Materials: CollectionConfig = {
-   slug: "materials-lKJ16E5IhH",
+   slug: "materials",
    labels: { singular: "Material", plural: "Materials" },
-   admin: { group: "Custom", useAsTitle:  "name", },
+   admin: { group: "Custom", useAsTitle: "name" },
 
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -21,7 +21,7 @@ export const Materials: CollectionConfig = {
          required: true,
          filterOptions: () => {
             return {
-               collectionEntity: { equals: "materials-lKJ16E5IhH" },
+               collectionEntity: { equals: "materials" },
             };
          },
       },
@@ -48,14 +48,14 @@ export const Materials: CollectionConfig = {
       {
          name: "itemtype",
          type: "relationship",
-         relationTo: "_itemType-lKJ16E5IhH",
+         relationTo: "_itemType",
          hasMany: false,
          required: false,
       },
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity-lKJ16E5IhH",
+         relationTo: "_rarity",
          hasMany: false,
          required: false,
       },

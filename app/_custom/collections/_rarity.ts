@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const _Rarity: CollectionConfig = {
-   slug: "_rarity-lKJ16E5IhH",
+   slug: "_rarity",
    labels: { singular: "_rarity", plural: "_rarities" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "display_number",
+   admin: {
+      group: "Custom",
+      useAsTitle: "display_number",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const _Rarity: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-		 filterOptions: () => {
-			 return {
-				 collectionEntity: { equals: "_rarity-lKJ16E5IhH" },
-			 };
-		 },
-      },
       {
          name: "id",
          type: "text",

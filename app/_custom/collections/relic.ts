@@ -2,11 +2,11 @@ import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
 export const Relic: CollectionConfig = {
-   slug: "relic-lKJ16E5IhH",
+   slug: "relic",
    labels: { singular: "relic", plural: "relics" },
-   admin: { 
-         group: "Custom",
-         useAsTitle:  "name",
+   admin: {
+      group: "Custom",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -15,18 +15,6 @@ export const Relic: CollectionConfig = {
       delete: isStaff, //udpate in future to allow site admins as well
    },
    fields: [
-      {
-         name: "entry",
-         type: "relationship",
-         relationTo: "entries",
-         hasMany: false,
-         required: true,
-         filterOptions: () => {
-            return {
-               collectionEntity: { equals: "relic-lKJ16E5IhH" },
-            };
-         },
-      },
       {
          name: "id",
          type: "text",
@@ -42,7 +30,7 @@ export const Relic: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity-lKJ16E5IhH",
+         relationTo: "_rarity",
          hasMany: false,
       },
       {
@@ -68,7 +56,7 @@ export const Relic: CollectionConfig = {
             {
                name: "materials",
                type: "relationship",
-               relationTo: "materials-lKJ16E5IhH",
+               relationTo: "materials",
                hasMany: false,
             },
             {
@@ -80,7 +68,7 @@ export const Relic: CollectionConfig = {
       {
          name: "relicset_id",
          type: "relationship",
-         relationTo: "relicSet-lKJ16E5IhH",
+         relationTo: "relicSet",
          hasMany: false,
       },
       {
@@ -90,13 +78,13 @@ export const Relic: CollectionConfig = {
       {
          name: "mainstat_group",
          type: "relationship",
-         relationTo: "_relicStat-lKJ16E5IhH",
+         relationTo: "_relicStat",
          hasMany: true,
       },
       {
          name: "substat_group",
          type: "relationship",
-         relationTo: "_relicStat-lKJ16E5IhH",
+         relationTo: "_relicStat",
          hasMany: true,
       },
       {
