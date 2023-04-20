@@ -2,10 +2,8 @@ const { flatRoutes } = require("remix-flat-routes");
 
 /** @type {import('@remix-run/dev').AppConfig} */
 
-require("dotenv/config");
-
 function getPublicPath() {
-   const staticAssetsUrl = process.env.PAYLOAD_PUBLIC_BUCKET;
+   const staticAssetsUrl = process.env.STATIC_URL;
    console.log(staticAssetsUrl);
    if (!staticAssetsUrl) return "/build/";
    return `${staticAssetsUrl}/build/`;
