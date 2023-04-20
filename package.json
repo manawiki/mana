@@ -3,7 +3,7 @@
    "sideEffects": false,
    "scripts": {
       "build": "yarn run generate:types && remix build && run-s \"build:*\"",
-      "build:payload": "cross-env payload build",
+      "build:payload": "payload build",
       "build:remix": "remix build",
       "build:server": "tsc -p tsconfig.server.json",
       "start:core": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js APP_TYPE=core NODE_ENV=production node dist/server.js",
