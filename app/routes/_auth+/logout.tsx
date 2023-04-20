@@ -1,10 +1,12 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { domainCookie } from "shared";
 
 export const action: ActionFunction = async ({ context: { res } }) => {
    const cookieOptions = {
-      domain: domainCookie,
+      domain:
+         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
+            ? "localhost"
+            : ".mana.wiki",
       secure:
          process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
             ? false

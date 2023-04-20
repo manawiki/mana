@@ -3,23 +3,12 @@ import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
 import { CustomCollections } from "./app/_custom/collections";
-import { serverEnv } from "./shared";
 import { Users } from "./db/collections/CustomUsers";
 import { Images } from "./db/collections/Images";
 
 dotenv.config();
 
-const allowedSites = [
-   "https://manatee.wiki",
-   "https://mana.wiki",
-   "https://starrail.mana.wiki",
-   "https://starrail.manatee.wiki",
-];
-
 const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
-
-const csrfDomains =
-   serverEnv == "local" ? ["http://localhost:4000"] : allowedSites;
 
 const adapter = s3Adapter({
    config: {
@@ -57,5 +46,4 @@ export default buildConfig({
       }),
    ],
    collections: [Users, Images, ...CustomCollections],
-   csrf: csrfDomains,
 });
