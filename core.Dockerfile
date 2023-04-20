@@ -1,4 +1,6 @@
 FROM node:16-alpine as base
+
+ARG STATIC_URL
 ENV STATIC_URL $STATIC_URL
 
 FROM base as builder
