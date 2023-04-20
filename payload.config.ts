@@ -2,7 +2,6 @@ import { buildConfig } from "payload/config";
 import path from "path";
 import { collections } from "./db/collections";
 import { Users } from "./db/collections/Users";
-import { serverEnv } from "./shared";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
@@ -10,16 +9,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
-
-const allowedSites = [
-   "https://manatee.wiki",
-   "https://mana.wiki",
-   "https://starrail.mana.wiki",
-   "https://starrail.manatee.wiki",
-];
-
-const csrfDomains =
-   serverEnv == "local" ? ["http://localhost:3000"] : allowedSites;
 
 const adapter = s3Adapter({
    config: {
@@ -57,7 +46,6 @@ export default buildConfig({
       }),
    ],
    collections,
-   csrf: csrfDomains,
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
    },
