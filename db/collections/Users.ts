@@ -4,7 +4,11 @@ import {
    isStaffFieldLevel,
    isStaffOrSelf,
 } from "../access";
-import { serverEnv, domainCookie } from "../../shared";
+
+export type envType = "local" | "dev-server" | "production";
+
+export const serverEnv = process.env
+   .PAYLOAD_PUBLIC_SERVER_ENVIRONMENT as envType;
 
 export const usersSlug = "users";
 export const Users: CollectionConfig = {
@@ -73,7 +77,7 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain: domainCookie,
+         domain: serverEnv == "local" ? "localhost" : ".mana.wiki",
          secure: serverEnv == "local" ? false : true,
          sameSite: serverEnv == "local" ? "lax" : "none",
       },
