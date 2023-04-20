@@ -6,6 +6,7 @@ require("dotenv/config");
 
 function getPublicPath() {
    const staticAssetsUrl = process.env.STATIC_URL;
+   console.log(staticAssetsUrl);
    if (!staticAssetsUrl) return "/build/";
    return `${staticAssetsUrl}/build/`;
 }
