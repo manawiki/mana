@@ -1,6 +1,15 @@
 const { flatRoutes } = require("remix-flat-routes");
 
 /** @type {import('@remix-run/dev').AppConfig} */
+
+require("dotenv/config");
+
+function getPublicPath() {
+   const staticAssetsUrl = process.env.STATIC_URL;
+   if (!staticAssetsUrl) return "/build/";
+   return `${staticAssetsUrl}/build/`;
+}
+
 module.exports = {
    future: {
       v2_routeConvention: true,
@@ -10,6 +19,7 @@ module.exports = {
       unstable_postcss: true,
       unstable_tailwind: true,
    },
+   publicPath: getPublicPath(),
    ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {
       return flatRoutes(["routes", "_custom/routes"], defineRoutes);
