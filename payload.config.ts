@@ -32,6 +32,7 @@ export default buildConfig({
          titleSuffix: "Mana",
       },
    },
+   cors: ["mana.wiki", "starrail-static.mana.wiki"],
    plugins: [
       cloudStorage({
          collections: {
