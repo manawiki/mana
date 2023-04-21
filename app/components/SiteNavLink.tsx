@@ -13,7 +13,11 @@ export const SiteNavLink = ({ site }: { site: Site }) => {
             className="bg-2 shadow-1 shadow-1 rounded-full 
                transition duration-200 active:translate-y-0.5 
                max-laptop:hidden laptop:shadow-sm"
-            to={`/${site.slug}`}
+            to={`${
+               site.type == "custom"
+                  ? `https://mana.wiki/${site.slug}`
+                  : `/${site.slug}`
+            }`}
          >
             <>
                <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">

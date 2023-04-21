@@ -247,7 +247,11 @@ export default function HomeRoot() {
                                  {featuredSites?.docs.map((site) => (
                                     <Link
                                        key={site.id}
-                                       to={`/${site.slug}`}
+                                       to={`${
+                                          site.type == "custom"
+                                             ? `https://mana.wiki/${site.slug}`
+                                             : `/${site.slug}`
+                                       }`}
                                        className="group flex items-center justify-between gap-3 p-3"
                                     >
                                        <div className="text-1 flex items-center gap-2.5">
