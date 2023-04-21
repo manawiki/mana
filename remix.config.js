@@ -4,7 +4,6 @@ const { flatRoutes } = require("remix-flat-routes");
 
 function getPublicPath() {
    const staticAssetsUrl = process.env.STATIC_URL;
-   console.log(staticAssetsUrl);
    if (!staticAssetsUrl) return "/build/";
    return `${staticAssetsUrl}/build/`;
 }
