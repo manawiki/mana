@@ -14,15 +14,12 @@ const BUILD_DIR = path.join(process.cwd(), "build");
 
 const cors = require("cors");
 
-const whitelist = ["http://mana.wiki", "http://starrail-static-mana.wiki"];
 const corsOptions = {
-   origin: (origin: any, callback: any) => {
-      if (whitelist.indexOf(origin) !== -1) {
-         callback(null, true);
-      } else {
-         callback(new Error());
-      }
-   },
+   origin: [
+      "http://mana.wiki",
+      "http://starrail-static.mana.wiki",
+      "http://localhost:3000",
+   ],
 };
 
 function purgeRequireCache() {
