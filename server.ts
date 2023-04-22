@@ -12,6 +12,16 @@ require("dotenv").config();
 
 const BUILD_DIR = path.join(process.cwd(), "build");
 
+const cors = require("cors");
+
+const corsOptions = {
+   origin: [
+      "http://mana.wiki",
+      "http://starrail-static.mana.wiki",
+      "http://localhost:3000",
+   ],
+};
+
 function purgeRequireCache() {
    // purge require cache on requests for "server side HMR" this won't let
    // you have in-memory objects between requests in development,
@@ -29,6 +39,8 @@ function purgeRequireCache() {
 
 async function startCustom() {
    const app = express();
+
+   app.use(cors(corsOptions));
 
    // Redirect all traffic at root to admin UI
    app.get("/", function (_, res) {
@@ -82,6 +94,8 @@ async function startCustom() {
 
 async function startCore() {
    const app = express();
+
+   app.use(cors(corsOptions));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");
