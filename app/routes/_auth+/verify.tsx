@@ -13,7 +13,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    if (user) {
-      return redirect("/home");
+      return redirect("/");
    }
    const { token, email } = zx.parseQuery(request, {
       token: z.string(),
@@ -56,30 +56,30 @@ export default function CheckEmail() {
    return (
       <>
          <main>
-            <div className="flex items-center z-10 justify-center absolute top-12 left-0 w-full">
+            <div className="absolute left-0 top-12 z-10 flex w-full items-center justify-center">
                <Link to="/" className="flex items-center gap-2.5">
                   <Logo className="h-7 w-7" />
-                  <span className="font-logo text-3xl pb-1">mana</span>
+                  <span className="pb-1 font-logo text-3xl">mana</span>
                </Link>
             </div>
             <div
-               className="pattern-dots pattern-zinc-400 dark:pattern-zinc-600
-                   pattern-bg-white dark:pattern-bg-black
-                     pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
+               className="pattern-dots absolute left-0
+                   top-0 h-full
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 dark:pattern-bg-black dark:pattern-zinc-600"
             ></div>
             <div
-               className="bg-gradient-to-b from-zinc-200/50 to-zinc-50/80 
-            dark:from-zinc-800/50 via-transparent dark:to-zinc-900/80 
-            absolute top-0 left-0 w-full h-full"
+               className="absolute left-0 top-0 
+            h-full w-full bg-gradient-to-b 
+            from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-zinc-800/50 dark:to-zinc-900/80"
             ></div>
-            <div className="laptop:mx-auto mt-32 laptop:max-w-[380px]">
+            <div className="mt-32 laptop:mx-auto laptop:max-w-[380px]">
                <div
-                  className="border-color border bg-2 shadow-1 relative 
-               p-6 shadow-sm tablet:rounded-xl text-1 text-lg font-semibold text-center"
+                  className="border-color bg-2 shadow-1 text-1 relative 
+               border p-6 text-center text-lg font-semibold shadow-sm tablet:rounded-xl"
                >
                   <div
-                     className="w-14 h-14 rounded-full bg-3 mx-auto border border-color
-                     mb-3 flex items-center justify-center shadow-sm shadow-1"
+                     className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
+                     w-14 items-center justify-center rounded-full border shadow-sm"
                   >
                      <Check className="mx-auto" size={24} />
                   </div>

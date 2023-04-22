@@ -38,7 +38,8 @@ export default buildConfig({
             images: {
                adapter,
                generateFileURL: (file) => {
-                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${file}`;
+                  const { filename } = file;
+                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
                },
                prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
