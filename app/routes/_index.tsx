@@ -21,7 +21,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    if (user) {
-      return redirect("/home");
+      return redirect("/");
    }
    const featuredSites = await payload.find({
       collection: "sites",
