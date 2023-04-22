@@ -16,8 +16,8 @@ const cors = require("cors");
 
 const corsOptions = {
    origin: [
-      "http://mana.wiki",
-      "http://starrail-static.mana.wiki",
+      "https://mana.wiki",
+      "https://starrail-static.mana.wiki",
       "http://localhost:3000",
    ],
 };
