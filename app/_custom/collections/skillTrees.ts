@@ -39,7 +39,7 @@ export const SkillTrees: CollectionConfig = {
       {
          name: "character",
          type: "relationship",
-         relationTo: "character",
+         relationTo: "characters",
          hasMany: false,
          required: false,
       },
@@ -100,7 +100,7 @@ export const SkillTrees: CollectionConfig = {
       {
          name: "affected_skill",
          type: "relationship",
-         relationTo: "trace",
+         relationTo: "traces",
          hasMany: true,
          required: false,
       },

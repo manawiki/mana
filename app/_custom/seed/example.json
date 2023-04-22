@@ -1,24 +1,3 @@
 [
-{ "id": "1101-avatarcutinfigures"},
-{ "id": "1101-avatarcutinbg"},
-{ "id": "1102-avatarcutinfigures"},
-{ "id": "1102B"},
-{ "id": "1103-avatarcutinbg"},
-{ "id": "1103-battledetailicon"},
-{ "id": "1203-avatarcutinbg"},
-{ "id": "1205-avatarcutinfigures"},
-{ "id": "1206-avatarimgfront"},
-{ "id": "1205B"},
-{ "id": "IconRelic_104_2"},
-{ "id": "IconRelic_101_5"},
-{ "id": "IconRelic_105_1"},
-{ "id": "IconRelic_105_3"},
-{ "id": "IconRelic_109_5"},
-{ "id": "IconRelic_111_1"},
-{ "id": "IconRelic_110_6"},
-{ "id": "IconRelic_112_5"},
-{ "id": "IconRelic_111_4"},
-{ "id": "SkillIcon_1004_Ultra"},
-{ "id": "SkillIcon_1013_SkillTree3"},
-{ "id": "SkillIcon_1102_Rank2"}
+{ "id": "ItemIcon_2"}
 ]

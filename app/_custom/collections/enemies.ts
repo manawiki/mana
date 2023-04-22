@@ -56,7 +56,7 @@ export const Enemies: CollectionConfig = {
       {
          name: "skill_list",
          type: "relationship",
-         relationTo: "enemySkill",
+         relationTo: "enemySkills",
          hasMany: true,
       },
       {
@@ -78,7 +78,7 @@ export const Enemies: CollectionConfig = {
       {
          name: "elemental_weaknesses",
          type: "relationship",
-         relationTo: "_element",
+         relationTo: "_elements",
          hasMany: true,
       },
       {
@@ -88,7 +88,7 @@ export const Enemies: CollectionConfig = {
             {
                name: "element",
                type: "relationship",
-               relationTo: "_element",
+               relationTo: "_elements",
                hasMany: false,
             },
             {
