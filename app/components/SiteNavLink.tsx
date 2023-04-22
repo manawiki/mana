@@ -42,7 +42,7 @@ export const SiteNavLink = ({ site }: { site: Site }) => {
 
 export const HomeLink = () => {
    return (
-      <Link to="/home">
+      <Link to="/">
          <div
             className="bg-3 shadow-1 mx-auto flex h-12 w-12
             items-center justify-center rounded-full font-logo shadow-sm transition
