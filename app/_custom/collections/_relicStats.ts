@@ -47,7 +47,7 @@ export const _RelicStats: CollectionConfig = {
       {
          name: "stattype",
          type: "relationship",
-         relationTo: "_statType",
+         relationTo: "_statTypes",
          hasMany: false,
       },
       {

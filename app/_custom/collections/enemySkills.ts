@@ -47,7 +47,7 @@ export const EnemySkills: CollectionConfig = {
       {
          name: "damage_type",
          type: "relationship",
-         relationTo: "_element",
+         relationTo: "_elements",
          hasMany: false,
       },
       {

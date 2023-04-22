@@ -35,7 +35,7 @@ export const Relics: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity",
+         relationTo: "_rarities",
          hasMany: false,
       },
       {
@@ -73,7 +73,7 @@ export const Relics: CollectionConfig = {
       {
          name: "relicset_id",
          type: "relationship",
-         relationTo: "relicSet",
+         relationTo: "relicSets",
          hasMany: false,
       },
       {
@@ -83,13 +83,13 @@ export const Relics: CollectionConfig = {
       {
          name: "mainstat_group",
          type: "relationship",
-         relationTo: "_relicStat",
+         relationTo: "_relicStats",
          hasMany: true,
       },
       {
          name: "substat_group",
          type: "relationship",
-         relationTo: "_relicStat",
+         relationTo: "_relicStats",
          hasMany: true,
       },
       {

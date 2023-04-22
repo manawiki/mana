@@ -43,13 +43,13 @@ export const LightCones: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity",
+         relationTo: "_rarities",
          hasMany: false,
       },
       {
          name: "path",
          type: "relationship",
-         relationTo: "_path",
+         relationTo: "_paths",
          hasMany: false,
       },
       {
