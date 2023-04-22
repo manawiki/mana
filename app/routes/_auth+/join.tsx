@@ -70,29 +70,29 @@ export default function Signup() {
       <>
          <main>
             <div
-               className="pattern-dots pattern-zinc-400 dark:pattern-zinc-600
-                   pattern-bg-white dark:pattern-bg-black
-                     pattern-size-4 pattern-opacity-10 absolute top-0 left-0 w-full h-full"
+               className="pattern-dots absolute left-0
+                   top-0 h-full
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 dark:pattern-bg-black dark:pattern-zinc-600"
             ></div>
             <div
-               className="bg-gradient-to-b from-zinc-200/50 to-zinc-50/80 
-            dark:from-bg1Dark/80 via-transparent dark:to-bg1Dark/50
-            absolute top-0 left-0 w-full h-full"
+               className="absolute left-0 top-0 
+            h-full w-full bg-gradient-to-b
+            from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
             ></div>
             <Link
                to="/"
-               className="absolute top-5 left-5 flex items-center gap-2.5"
+               className="absolute left-5 top-5 flex items-center gap-2.5"
             >
                <Logo className="h-7 w-7" />
-               <span className="font-logo text-3xl pb-1">mana</span>
+               <span className="pb-1 font-logo text-3xl">mana</span>
             </Link>
-            <div className="absolute top-5 right-5 flex items-center gap-5">
+            <div className="absolute right-5 top-5 flex items-center gap-5">
                <DarkModeToggle />
             </div>
             <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
                <div
-                  className="border-color border-y bg-2 p-6 
-                  tablet:rounded-xl shadow-sm shadow-1 tablet:border relative"
+                  className="border-color bg-2 shadow-1 relative 
+                  border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
                >
                   <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                      {t("register.title")}
@@ -163,9 +163,9 @@ export default function Signup() {
                         {adding ? <DotLoader /> : t("register.action")}
                      </button>
                      <div className="flex items-center justify-center">
-                        <div className="text-center text-1 text-sm">
+                        <div className="text-1 text-center text-sm">
                            <Link
-                              className="text-blue-500 font-bold"
+                              className="font-bold text-blue-500"
                               to={{
                                  pathname: "/login",
                                  search: searchParams.toString(),
@@ -189,7 +189,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/home");
+      return redirect("/");
    }
    const issues = createCustomIssues(JoinFormSchema);
    const result = await parseFormSafe(request, JoinFormSchema);
