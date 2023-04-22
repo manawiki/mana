@@ -1,43 +1,43 @@
 import { Materials } from "./materials";
-import { Character } from "./character";
-import { Trace } from "./trace";
-import { Eidolon } from "./eidolon";
-import { SkillTree } from "./skillTree";
-import { LightCone } from "./lightCone";
-import { RelicSet } from "./relicSet";
-import { Relic } from "./relic";
-import { EnemySkill } from "./enemySkill";
-import { Enemy } from "./enemy";
-import { Achievement } from "./achievement";
+import { Characters } from "./characters";
+import { Traces } from "./traces";
+import { Eidolons } from "./eidolons";
+import { SkillTrees } from "./skillTrees";
+import { LightCones } from "./lightCones";
+import { RelicSets } from "./relicSets";
+import { Relics } from "./relics";
+import { EnemySkills } from "./enemySkills";
+import { Enemies } from "./enemies";
+import { Achievements } from "./achievements";
 import { AchievementSeries } from "./achievementSeries";
 
-import { _Rarity } from "./_rarity";
-import { _Element } from "./_element";
-import { _StatType } from "./_statType";
-import { _Path } from "./_path";
-import { _ItemType } from "./_itemType";
-import { _RelicStat } from "./_relicStat";
+import { _Rarities } from "./_rarities";
+import { _Elements } from "./_elements";
+import { _StatTypes } from "./_statTypes";
+import { _Paths } from "./_paths";
+import { _ItemTypes } from "./_itemTypes";
+import { _RelicStats } from "./_relicStats";
 import { _EnemyStatusRes } from "./_enemyStatusRes";
 
 
 export const CustomCollections = [
-   Character,
+   Characters,
    Materials,
-   Trace,
-   Eidolon,
-   SkillTree,
-   LightCone,
-   RelicSet,
-   Relic,
-   EnemySkill,
-   Enemy,
-   Achievement,
+   Traces,
+   Eidolons,
+   SkillTrees,
+   LightCones,
+   RelicSets,
+   Relics,
+   EnemySkills,
+   Enemies,
+   Achievements,
    AchievementSeries,
-   _Element,
-   _ItemType,
-   _Path,
-   _Rarity,
-   _StatType,
-   _RelicStat,
+   _Elements,
+   _ItemTypes,
+   _Paths,
+   _Rarities,
+   _StatTypes,
+   _RelicStats,
    _EnemyStatusRes,
 ];

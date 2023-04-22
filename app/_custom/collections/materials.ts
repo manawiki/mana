@@ -26,6 +26,11 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "description",
          type: "text",
       },

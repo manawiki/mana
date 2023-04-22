@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Character: CollectionConfig = {
-   slug: "character",
+export const Characters: CollectionConfig = {
+   slug: "characters",
    labels: { singular: "Character", plural: "Characters" },
    admin: {
       group: "Custom",
@@ -26,6 +26,11 @@ export const Character: CollectionConfig = {
       {
          name: "name",
          type: "text",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "rarity",
@@ -99,6 +104,10 @@ export const Character: CollectionConfig = {
       },
       {
          name: "image_full_front_name",
+         type: "text",
+      },
+      {
+         name: "image_draw_name",
          type: "text",
       },
       {
@@ -251,6 +260,11 @@ export const Character: CollectionConfig = {
       },
       {
          name: "image_full_front",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "image_draw",
          type: "upload",
          relationTo: "images",
       },

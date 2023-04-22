@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const RelicSet: CollectionConfig = {
-   slug: "relicSet",
-   labels: { singular: "relicSet", plural: "relicSets" },
+export const _ItemTypes: CollectionConfig = {
+   slug: "_itemTypes",
+   labels: { singular: "_itemType", plural: "_itemTypes" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +20,7 @@ export const RelicSet: CollectionConfig = {
          type: "text",
       },
       {
-         name: "relicset_id",
+         name: "data_key",
          type: "text",
       },
       {
@@ -28,22 +28,25 @@ export const RelicSet: CollectionConfig = {
          type: "text",
       },
       {
-         name: "icon_name",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "inv_type",
          type: "text",
       },
       {
-         name: "set_effect",
-         type: "array",
-         fields: [
-            {
-               name: "req_no",
-               type: "number",
-            },
-            {
-               name: "description",
-               type: "text",
-            },
-         ],
+         name: "sort_weight",
+         type: "number",
+      },
+      {
+         name: "type_categories",
+         type: "json",
+      },
+      {
+         name: "icon_name",
+         type: "text",
       },
       {
          name: "checksum",
