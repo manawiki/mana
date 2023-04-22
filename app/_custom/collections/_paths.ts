@@ -1,12 +1,12 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const _Rarity: CollectionConfig = {
-   slug: "_rarity",
-   labels: { singular: "_rarity", plural: "_rarities" },
+export const _Paths: CollectionConfig = {
+   slug: "_paths",
+   labels: { singular: "_path", plural: "_paths" },
    admin: {
       group: "Custom",
-      useAsTitle: "display_number",
+      useAsTitle: "name",
    },
    access: {
       create: isStaff, //udpate in future to allow site admins as well
@@ -20,49 +20,32 @@ export const _Rarity: CollectionConfig = {
          type: "text",
       },
       {
-         name: "name",
-         type: "text",
-      },
-      {
          name: "data_key",
          type: "text",
       },
       {
-         name: "display_number",
+         name: "name",
          type: "text",
       },
       {
-         name: "color",
-         type: "text",
-      },
-      {
-         name: "color_line",
-         type: "text",
-      },
-      {
-         name: "image_frame_name",
-         type: "text",
-      },
-      {
-         name: "icon_frame_name",
-         type: "text",
-      },
-      {
-         name: "image_bg_name",
-         type: "text",
-      },
-      {
-         name: "image_frame",
+         name: "icon",
          type: "upload",
          relationTo: "images",
       },
       {
-         name: "icon_frame",
-         type: "upload",
-         relationTo: "images",
+         name: "description",
+         type: "text",
       },
       {
-         name: "image_bg",
+         name: "icon_name",
+         type: "text",
+      },
+      {
+         name: "icon_small_name",
+         type: "text",
+      },
+      {
+         name: "icon_small",
          type: "upload",
          relationTo: "images",
       },

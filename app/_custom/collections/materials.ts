@@ -26,6 +26,11 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "description",
          type: "text",
       },
@@ -36,14 +41,14 @@ export const Materials: CollectionConfig = {
       {
          name: "itemtype",
          type: "relationship",
-         relationTo: "_itemType",
+         relationTo: "_itemTypes",
          hasMany: false,
          required: false,
       },
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity",
+         relationTo: "_rarities",
          hasMany: false,
          required: false,
       },

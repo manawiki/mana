@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Enemy: CollectionConfig = {
-   slug: "enemy",
+export const Enemies: CollectionConfig = {
+   slug: "enemies",
    labels: { singular: "enemy", plural: "enemies" },
    admin: {
       group: "Custom",
@@ -28,6 +28,16 @@ export const Enemy: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "image_full",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "hard_level_group",
          type: "number",
       },
@@ -46,7 +56,7 @@ export const Enemy: CollectionConfig = {
       {
          name: "skill_list",
          type: "relationship",
-         relationTo: "enemySkill",
+         relationTo: "enemySkills",
          hasMany: true,
       },
       {
@@ -68,7 +78,7 @@ export const Enemy: CollectionConfig = {
       {
          name: "elemental_weaknesses",
          type: "relationship",
-         relationTo: "_element",
+         relationTo: "_elements",
          hasMany: true,
       },
       {
@@ -78,7 +88,7 @@ export const Enemy: CollectionConfig = {
             {
                name: "element",
                type: "relationship",
-               relationTo: "_element",
+               relationTo: "_elements",
                hasMany: false,
             },
             {
@@ -105,6 +115,10 @@ export const Enemy: CollectionConfig = {
       },
       {
          name: "icon_name",
+         type: "text",
+      },
+      {
+         name: "image_full_name",
          type: "text",
       },
       {

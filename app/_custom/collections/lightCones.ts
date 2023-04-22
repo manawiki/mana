@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const LightCone: CollectionConfig = {
-   slug: "lightCone",
+export const LightCones: CollectionConfig = {
+   slug: "lightCones",
    labels: { singular: "lightCone", plural: "lightCones" },
    admin: {
       group: "Custom",
@@ -28,6 +28,11 @@ export const LightCone: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "description",
          type: "text",
       },
@@ -38,13 +43,13 @@ export const LightCone: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity",
+         relationTo: "_rarities",
          hasMany: false,
       },
       {
          name: "path",
          type: "relationship",
-         relationTo: "_path",
+         relationTo: "_paths",
          hasMany: false,
       },
       {

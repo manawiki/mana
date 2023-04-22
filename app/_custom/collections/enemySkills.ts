@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Eidolon: CollectionConfig = {
-   slug: "eidolon",
-   labels: { singular: "eidolon", plural: "eidolons" },
+export const EnemySkills: CollectionConfig = {
+   slug: "enemySkills",
+   labels: { singular: "enemySkill", plural: "enemySkills" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +20,7 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
-         name: "eidolon_id",
+         name: "data_key",
          type: "text",
       },
       {
@@ -28,36 +28,39 @@ export const Eidolon: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "sp_hit_base",
+         type: "number",
+      },
+      {
+         name: "delay_ratio",
+         type: "number",
+      },
+      {
+         name: "skill_trigger_key",
+         type: "text",
+      },
+      {
+         name: "damage_type",
+         type: "relationship",
+         relationTo: "_elements",
+         hasMany: false,
+      },
+      {
          name: "description",
          type: "text",
       },
       {
-         name: "rank",
-         type: "number",
-      },
-      {
-         name: "trigger",
+         name: "type",
          type: "text",
       },
       {
-         name: "unlock_materials",
-         type: "array",
-         fields: [
-            {
-               name: "materials",
-               type: "relationship",
-               relationTo: "materials",
-               hasMany: false,
-            },
-            {
-               name: "qty",
-               type: "number",
-            },
-         ],
-      },
-      {
-         name: "icon_name",
-         type: "text",
+         name: "skill_params",
+         type: "json",
       },
       {
          name: "checksum",

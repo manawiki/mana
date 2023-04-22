@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Achievement: CollectionConfig = {
-   slug: "achievement",
+export const Achievements: CollectionConfig = {
+   slug: "achievements",
    labels: { singular: "achievement", plural: "achievements" },
    admin: {
       group: "Custom",
@@ -26,6 +26,11 @@ export const Achievement: CollectionConfig = {
       {
          name: "name",
          type: "text",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "description",

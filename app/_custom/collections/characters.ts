@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Character: CollectionConfig = {
-   slug: "character",
+export const Characters: CollectionConfig = {
+   slug: "characters",
    labels: { singular: "Character", plural: "Characters" },
    admin: {
       group: "Custom",
@@ -28,21 +28,26 @@ export const Character: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarity",
+         relationTo: "_rarities",
          hasMany: false,
       },
       {
          name: "element",
          type: "relationship",
-         relationTo: "_element",
+         relationTo: "_elements",
          hasMany: false,
       },
       {
          name: "path",
          type: "relationship",
-         relationTo: "_path",
+         relationTo: "_paths",
          hasMany: false,
       },
       {
@@ -64,13 +69,13 @@ export const Character: CollectionConfig = {
       {
          name: "eidolons",
          type: "relationship",
-         relationTo: "eidolon",
+         relationTo: "eidolons",
          hasMany: true,
       },
       {
          name: "traces",
          type: "relationship",
-         relationTo: "trace",
+         relationTo: "traces",
          hasMany: true,
       },
       {
@@ -99,6 +104,10 @@ export const Character: CollectionConfig = {
       },
       {
          name: "image_full_front_name",
+         type: "text",
+      },
+      {
+         name: "image_draw_name",
          type: "text",
       },
       {
@@ -251,6 +260,11 @@ export const Character: CollectionConfig = {
       },
       {
          name: "image_full_front",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "image_draw",
          type: "upload",
          relationTo: "images",
       },

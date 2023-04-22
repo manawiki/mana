@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const Relic: CollectionConfig = {
-   slug: "relic",
-   labels: { singular: "relic", plural: "relics" },
+export const Traces: CollectionConfig = {
+   slug: "traces",
+   labels: { singular: "trace", plural: "traces" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,7 +20,7 @@ export const Relic: CollectionConfig = {
          type: "text",
       },
       {
-         name: "relic_id",
+         name: "trace_id",
          type: "text",
       },
       {
@@ -28,83 +28,74 @@ export const Relic: CollectionConfig = {
          type: "text",
       },
       {
-         name: "rarity",
-         type: "relationship",
-         relationTo: "_rarity",
-         hasMany: false,
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
-         name: "max_limit",
-         type: "number",
+         name: "desc_type",
+         type: "text",
       },
       {
          name: "icon_name",
          type: "text",
       },
       {
-         name: "description",
+         name: "icon_ultra_name",
          type: "text",
       },
       {
-         name: "bg_description",
-         type: "text",
-      },
-      {
-         name: "return_item_list",
+         name: "description_per_level",
          type: "array",
          fields: [
             {
-               name: "materials",
-               type: "relationship",
-               relationTo: "materials",
-               hasMany: false,
-            },
-            {
-               name: "qty",
+               name: "level",
                type: "number",
             },
+            {
+               name: "description",
+               type: "text",
+            },
          ],
-      },
-      {
-         name: "relicset_id",
-         type: "relationship",
-         relationTo: "relicSet",
-         hasMany: false,
-      },
-      {
-         name: "relic_type",
-         type: "text",
-      },
-      {
-         name: "mainstat_group",
-         type: "relationship",
-         relationTo: "_relicStat",
-         hasMany: true,
-      },
-      {
-         name: "substat_group",
-         type: "relationship",
-         relationTo: "_relicStat",
-         hasMany: true,
       },
       {
          name: "max_level",
          type: "number",
       },
       {
-         name: "exp_type",
+         name: "damage_type",
+         type: "text",
+      },
+      {
+         name: "effect_type",
+         type: "text",
+      },
+      {
+         name: "init_cooldown",
          type: "number",
       },
       {
-         name: "exp_value",
+         name: "cooldown",
          type: "number",
       },
       {
-         name: "coin_cost",
+         name: "sp_ratio",
          type: "number",
       },
       {
-         name: "r_storycontent",
+         name: "bp_need",
+         type: "number",
+      },
+      {
+         name: "skill_need",
+         type: "number",
+      },
+      {
+         name: "delay_ratio",
+         type: "number",
+      },
+      {
+         name: "tag",
          type: "text",
       },
       {

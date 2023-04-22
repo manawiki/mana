@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const SkillTree: CollectionConfig = {
-   slug: "skillTree",
+export const SkillTrees: CollectionConfig = {
+   slug: "skillTrees",
    labels: { singular: "skillTree", plural: "skillTrees" },
    admin: {
       group: "Custom",
@@ -28,13 +28,18 @@ export const SkillTree: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "description",
          type: "text",
       },
       {
          name: "character",
          type: "relationship",
-         relationTo: "character",
+         relationTo: "characters",
          hasMany: false,
          required: false,
       },
@@ -95,7 +100,7 @@ export const SkillTree: CollectionConfig = {
       {
          name: "affected_skill",
          type: "relationship",
-         relationTo: "trace",
+         relationTo: "traces",
          hasMany: true,
          required: false,
       },

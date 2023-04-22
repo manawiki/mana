@@ -2,13 +2,13 @@ import Payload from "payload";
 import path from "path";
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
 
 //Site ID from database - unique identifier to separate images
-const siteId = "lKJ16E5IhH"; // Honkai Star Rail
+// const siteId = "lKJ16E5IhH"; // Honkai Star Rail
 
 let payload = null as any;
 
@@ -16,7 +16,7 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: MONGO_URL as any,
+      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -45,7 +45,7 @@ const seedUploads = async (result: any) => {
       collection: "images",
       where: {
 			id: {
-				equals: siteId + "_" + id,
+				equals: id,
 			},
 		}
    });
@@ -87,7 +87,7 @@ const seedUploads = async (result: any) => {
       const createItem = await payload.create({
          collection: "images",
          data: {
-            id: siteId + "_" + id,
+            id: id,
          },
          filePath: path.resolve(__dirname, `./images/${id}.png`),
       });
@@ -107,7 +107,8 @@ const sleep = (milliseconds: any) => {
    }
 };
 
-// URL Check function to confirm if image file exists.
+// URL Check function to confirm if image file exists. 
+// CAUTION! This is heavy on the server! Only run if absolutely necessary. It counts as a call to the image server! Doing this iteratively across all images too often can max out image requests.
 function URLExists(url: any) {
    return fetch(url)
    .then((res) => {
