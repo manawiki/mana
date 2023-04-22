@@ -1,8 +1,8 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const _Element: CollectionConfig = {
-   slug: "_element",
+export const _Elements: CollectionConfig = {
+   slug: "_elements",
    labels: { singular: "_element", plural: "_elements" },
    admin: {
       group: "Custom",
@@ -26,6 +26,11 @@ export const _Element: CollectionConfig = {
       {
          name: "name",
          type: "text",
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "icon_name",

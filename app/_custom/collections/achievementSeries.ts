@@ -28,6 +28,11 @@ export const AchievementSeries: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "icon_name",
          type: "text",
       },

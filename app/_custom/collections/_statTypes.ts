@@ -1,9 +1,9 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const EnemySkill: CollectionConfig = {
-   slug: "enemySkill",
-   labels: { singular: "enemySkill", plural: "enemySkills" },
+export const _StatTypes: CollectionConfig = {
+   slug: "_statTypes",
+   labels: { singular: "_statType", plural: "_statTypees" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -20,42 +20,29 @@ export const EnemySkill: CollectionConfig = {
          type: "text",
       },
       {
+         name: "stat_id",
+         type: "text",
+      },
+      {
          name: "data_key",
          type: "text",
+      },
+      {
+         name: "property_classify",
+         type: "number",
       },
       {
          name: "name",
          type: "text",
       },
       {
-         name: "sp_hit_base",
-         type: "number",
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
       },
       {
-         name: "delay_ratio",
-         type: "number",
-      },
-      {
-         name: "skill_trigger_key",
+         name: "icon_name",
          type: "text",
-      },
-      {
-         name: "damage_type",
-         type: "relationship",
-         relationTo: "_element",
-         hasMany: false,
-      },
-      {
-         name: "description",
-         type: "text",
-      },
-      {
-         name: "type",
-         type: "text",
-      },
-      {
-         name: "skill_params",
-         type: "json",
       },
       {
          name: "checksum",
