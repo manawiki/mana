@@ -3,7 +3,7 @@ import type { CollectionConfig } from "payload/types";
 
 export const _StatTypes: CollectionConfig = {
    slug: "_statTypes",
-   labels: { singular: "_statType", plural: "_statTypees" },
+   labels: { singular: "_statType", plural: "_statTypes" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
