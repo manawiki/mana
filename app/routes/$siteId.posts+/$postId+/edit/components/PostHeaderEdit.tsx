@@ -349,7 +349,7 @@ export const PostHeaderEdit = ({
                                                 className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
                                            gap-2 rounded-xl text-sm font-bold shadow-sm"
                                                 target="_blank"
-                                                to={`/${post.site}/posts/${post.id}/${post.url}`}
+                                                to={`/${siteId}/posts/${post.id}/${post.url}`}
                                              >
                                                 <ExternalLink
                                                    size={18}
