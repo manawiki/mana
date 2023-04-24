@@ -74,19 +74,13 @@ export async function loader({
 
    // Get custom collection list data
    if (collection.customDatabase) {
-      const result = await (
+      const entrylist = await (
          await fetch(
-            `https://api.${process.env.PAYLOAD_PUBLIC_SITE_ID}.mana.wiki/api/${collectionId}`,
-            {
-               headers: {
-                  Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
-               },
-            }
+            `https://${
+               process.env.PAYLOAD_PUBLIC_SITE_ID
+            }-db.mana.wiki/api/${collectionId}?limit=20&page=${page ?? 1}`
          )
       ).json();
-
-      const entrylist = result.data.blocks.data;
-
       return json({ collection, entrylist, q });
    }
 
@@ -190,6 +184,8 @@ export default function CollectionList() {
       }
    }, [adding, zoEntry.refObject]);
 
+   console.log(entrylist);
+
    return (
       <>
          <Outlet />
@@ -279,7 +275,6 @@ export default function CollectionList() {
                         <Link
                            key={entry.id}
                            to={`${
-                              // @ts-expect-error
                               entry?.collectionEntity?.customEntry == true
                                  ? `${entry.id}/c`
                                  : `${entry.id}/w`
@@ -291,7 +286,6 @@ export default function CollectionList() {
                               className="border-color shadow-1 flex h-8 w-8 items-center
                                     justify-between overflow-hidden rounded-full border-2 shadow-sm"
                            >
-                              {/* @ts-expect-error */}
                               {entry.icon?.url ? (
                                  <Image /* @ts-ignore */
                                     url={entry.icon?.url}
