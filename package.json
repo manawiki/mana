@@ -17,6 +17,7 @@
       "start:custom": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.custom.config.js APP_TYPE=custom NODE_ENV=production node dist/server.js",
       "typecheck": "tsc -p tsconfig.server.json",
       "generate:types": "cross-env payload generate:types",
+      "generate:types:custom": "cross-env PAYLOAD_CONFIG_PATH=payload.custom.config.ts payload generate:types",
       "clean": "shx rm -rf node_modules distc dist build public/build",
       "seed:core": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts ts-node -T app/_custom/seed/index.ts",
       "seed:custom": "cross-env PAYLOAD_CONFIG_PATH=payload.custom.config.js ts-node -T app/_custom/seed/index.ts"
