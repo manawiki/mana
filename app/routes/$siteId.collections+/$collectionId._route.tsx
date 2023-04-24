@@ -184,8 +184,6 @@ export default function CollectionList() {
       }
    }, [adding, zoEntry.refObject]);
 
-   console.log(entrylist);
-
    return (
       <>
          <Outlet />
