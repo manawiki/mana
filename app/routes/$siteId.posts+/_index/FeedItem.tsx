@@ -15,15 +15,20 @@ export const FeedItem = ({ post }: { post: Post }) => {
             <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
                <div className="flex items-center gap-3">
                   <div className="h-6 w-6 overflow-hidden rounded-full">
-                     <Image
-                        width={20}
-                        height={20}
-                        alt={post.title}
-                        options="fit=crop,height=50,width=50,gravity=auto"
-                        className="w-full object-cover laptop:rounded"
-                        //@ts-ignore
-                        url={post?.author.avatar?.url}
-                     />
+                     {/* @ts-ignore */}
+                     {post?.author.avatar?.url ? (
+                        <Image
+                           width={20}
+                           height={20}
+                           alt={post.title}
+                           options="fit=crop,height=50,width=50,gravity=auto"
+                           className="w-full object-cover laptop:rounded"
+                           //@ts-ignore
+                           url={post?.author.avatar?.url}
+                        />
+                     ) : (
+                        <div className="bg-1 border-color shadow-1 h-6 w-6 overflow-hidden rounded-full border-2 shadow-sm"></div>
+                     )}
                   </div>
                   {/* @ts-ignore */}
                   <div className="font-bold">{post.author.username}</div>
@@ -42,7 +47,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
             <div className="flex items-start gap-5">
                <div className="relative flex-grow">
                   <div className="pb-2 text-xl font-bold">{post.title}</div>
-                  <div className="text-1 max-laptop:text-sm max-laptop:line-clamp-2">
+                  <div className="text-1 max-laptop:line-clamp-2 max-laptop:text-sm">
                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                      sed do eiusmod tempor incididunt ut labore et dolore magna
                      aliqua.

@@ -20,9 +20,6 @@ export async function loader({
    context: { user, payload },
    request,
 }: LoaderArgs) {
-   if (user) {
-      return redirect("/");
-   }
    const featuredSites = await payload.find({
       collection: "sites",
       where: {
@@ -144,50 +141,47 @@ export default function HomeRoot() {
                            for your community
                         </div>
                      </section>
-                     <div className="grid gap-6 pb-24 tablet:grid-cols-2 laptop:grid-cols-3">
-                        <section
-                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                     <div className="grid gap-5 pb-24 tablet:grid-cols-2 laptop:grid-cols-3">
+                        <div>
+                           <section
+                              className="bg-3 border-color shadow-1  rounded-lg border bg-gradient-to-t
                          from-white to-emerald-50/60 p-6 shadow-sm
                            dark:from-emerald-900/5 dark:to-emerald-900/10"
-                        >
-                           <div className="flex items-center gap-3 pb-3 font-bold">
-                              <PencilSquareIcon className="h-6 w-6 text-emerald-500" />
-                              <span>Posts</span>
-                           </div>
-                           <div className="text-1">
-                              Lorem ipsum dolor sit amet, consectetur
-                           </div>
-                        </section>
-                        <section
-                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                           >
+                              <div className="flex items-center gap-3 font-bold">
+                                 <PencilSquareIcon className="h-6 w-6 text-emerald-500" />
+                                 <span>Posts</span>
+                              </div>
+                           </section>
+                        </div>
+                        <div>
+                           <section
+                              className="bg-3 border-color shadow-1 rounded-lg border bg-gradient-to-t
                            from-white to-yellow-50/60 p-6 shadow-sm
                              dark:from-yellow-900/5 dark:to-yellow-900/10"
-                        >
-                           <div className="flex items-center gap-3 pb-3 font-bold">
-                              <CircleStackIcon className="h-6 w-6 text-yellow-500" />
-                              <span>Collections</span>
-                           </div>
-                           <div className="text-1">
-                              Lorem ipsum dolor sit amet, consectetur{" "}
-                           </div>
-                        </section>
-                        <section
-                           className="bg-3 border-color shadow-1 h-36 rounded-lg border bg-gradient-to-t
+                           >
+                              <div className="flex items-center gap-3 font-bold">
+                                 <CircleStackIcon className="h-6 w-6 text-yellow-500" />
+                                 <span>Collections</span>
+                              </div>
+                           </section>
+                        </div>
+                        <div>
+                           <section
+                              className="bg-3 border-color shadow-1 rounded-lg border bg-gradient-to-t
                            from-white to-purple-50/60 p-6 shadow-sm
                              dark:from-purple-900/5 dark:to-purple-900/10"
-                        >
-                           <div className="flex items-center gap-3 pb-3 font-bold">
-                              <ChatBubbleLeftIcon className="h-6 w-6 text-purple-500" />
-                              <span>Discussions</span>
-                           </div>
-                           <div className="text-1">
-                              Lorem ipsum dolor sit amet, consectetur{" "}
-                           </div>
-                        </section>
+                           >
+                              <div className="flex items-center gap-3 font-bold">
+                                 <ChatBubbleLeftIcon className="h-6 w-6 text-purple-500" />
+                                 <span>Discussions</span>
+                              </div>
+                           </section>
+                        </div>
                      </div>
                   </div>
                </div>
-               <div className="-mt-8 flex items-center justify-between">
+               {/* <div className="-mt-8 flex items-center justify-between">
                   <span className="border-color flex-grow border-t" />
                   <div
                      className="shadow-1 bg-2 border-color relative flex h-16 w-[92%]
@@ -200,7 +194,7 @@ export default function HomeRoot() {
                      <Search className="text-1" size={24} />
                   </div>
                   <span className="border-color flex-grow border-t" />
-               </div>
+               </div> */}
             </section>
             <section
                className="bg-2 border-color relative max-laptop:mx-auto max-laptop:max-w-[728px]
