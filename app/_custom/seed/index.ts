@@ -6,6 +6,9 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
+const filetype = "mp3"; // either mp3 or png or whatever filetype
+const overwriteexisting = false;
+var count = 0;
 
 //Site ID from database - unique identifier to separate images
 // const siteId = "lKJ16E5IhH"; // Honkai Star Rail
@@ -56,15 +59,21 @@ const seedUploads = async (result: any) => {
       var fileurl = existingImage.docs?.[0]?.url;
       var imgid = existingImage.docs?.[0]?.id;
 
+      if (overwriteexisting) {
             const updateItem = await payload.update({
                collection: "images",
                id: imgid,
                data: {
                   id: imgid,
                },
-               filePath: path.resolve(__dirname, `./images/${id}.png`),
+               filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
             });
+            sleep(1000);
             console.log(`${JSON.stringify(updateItem)} Updated!`);
+         }
+         else {
+            console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
+         }
 
       // if (await URLExists(fileurl)) {
       //    console.log(`Image ${id} already exists! Skipping.`);
@@ -89,12 +98,14 @@ const seedUploads = async (result: any) => {
          data: {
             id: id,
          },
-         filePath: path.resolve(__dirname, `./images/${id}.png`),
+         filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
       });
       //Limit speed
-      sleep(500);
+      sleep(1000);
       console.log(`${JSON.stringify(createItem)} Import completed!`);
    }
+   count++;
+   console.log(`${count} / ${data.length} Completed`);
 };
 
 //Sleep function to limit speed, can remove if not needed

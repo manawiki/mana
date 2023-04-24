@@ -234,6 +234,44 @@ export const Characters: CollectionConfig = {
          ],
       },
       {
+         name: "cv_cn",
+         type: "text",
+      },
+      {
+         name: "cv_jp",
+         type: "text",
+      },
+      {
+         name: "cv_kr",
+         type: "text",
+      },
+      {
+         name: "cv_en",
+         type: "text",
+      },
+      {
+         name: "camp",
+         type: "text",
+      },
+      {
+         name: "story",
+         type: "array",
+         fields: [
+            {
+               name: "title",
+               type: "text",
+            },
+            {
+               name: "text",
+               type: "text",
+            },
+            {
+               name: "unlock",
+               type: "text",
+            },
+         ],
+      },
+      {
          name: "image_round_icon",
          type: "upload",
          relationTo: "images",
@@ -274,6 +312,10 @@ export const Characters: CollectionConfig = {
       },
       {
          name: "checksum_voice_lines",
+         type: "text",
+      },
+      {
+         name: "checksum_profile",
          type: "text",
       },
    ],

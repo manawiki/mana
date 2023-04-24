@@ -6,7 +6,7 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const collectionName = "characters";
-const data = require("./import_files/CharacterVoice.json");
+const data = require("./import_files/CharacterProfile.json");
 const idField = "character_id";
 const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for author field
 
@@ -41,14 +41,6 @@ const getData = async () =>
 const seedUploads = async (result: any) => {
 
 	const idValue = result[idField];
-
-	// Define Voice Fields
-	const voiceImport = {
-		voice_en: result.voice_en?.name,
-		voice_jp: result.voice_jp?.name,
-		voice_cn: result.voice_cn?.name,
-		voice_kr: result.voice_kr?.name,
-	}
 	
 	// Check if entry exists
 	const existingEntry = await payload.find({
@@ -68,7 +60,6 @@ const seedUploads = async (result: any) => {
 
 		var custData = {
 			...result,
-			...voiceImport,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -84,7 +75,6 @@ const seedUploads = async (result: any) => {
 		
 		var custData = {
 			...result,
-			...voiceImport,
 			id: result?.[idField],
 		};
 
