@@ -30,9 +30,27 @@ export const Collections: CollectionConfig = {
          required: true,
       },
       {
-         name: "customTemplate",
+         name: "customDatabase",
          type: "checkbox",
-         label: "Use custom template",
+         label: "Pull data from custom database",
+         defaultValue: false,
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "customEntryTemplate",
+         type: "checkbox",
+         label: "Enable custom entry template",
+         defaultValue: false,
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "customListTemplate",
+         type: "checkbox",
+         label: "Enable custom list template",
          defaultValue: false,
          access: {
             update: isStaffFieldLevel,
@@ -41,7 +59,7 @@ export const Collections: CollectionConfig = {
       {
          name: "hiddenCollection",
          type: "checkbox",
-         label: "Hidden Collection",
+         label: "Hide Collection",
          defaultValue: false,
          access: {
             update: isStaffFieldLevel,

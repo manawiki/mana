@@ -59,22 +59,53 @@ export async function loader({
       q: z.string().optional(),
       page: z.coerce.number().optional(),
    });
-   const id = `${collectionId}-${siteId}`;
-   const collection = await payload.findByID({
+
+   const collectionData = await payload.find({
       collection: "collections",
-      id,
+      where: {
+         slug: {
+            equals: collectionId,
+         },
+      },
+      user,
    });
+
+   const collection = collectionData?.docs[0];
+
+   // Get custom collection list data
+   if (collection.customDatabase) {
+      const result = await (
+         await fetch(
+            `https://api.${process.env.PAYLOAD_PUBLIC_SITE_ID}.mana.wiki/api/${collectionId}`,
+            {
+               headers: {
+                  Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
+               },
+            }
+         )
+      ).json();
+
+      const entrylist = result.data.blocks.data;
+
+      return json({ collection, entrylist, q });
+   }
+
+   // Get default collection list data
    const entrylist = await payload.find({
       collection: "entries",
       where: {
          collectionEntity: {
-            equals: id,
+            equals: collectionId,
+         },
+         site: {
+            equals: siteId,
          },
       },
       user,
       limit: 20,
       page: page ?? 1,
    });
+
    return json({ collection, entrylist, q });
 }
 
@@ -249,7 +280,7 @@ export default function CollectionList() {
                            key={entry.id}
                            to={`${
                               // @ts-expect-error
-                              entry?.collectionEntity?.customTemplate == true
+                              entry?.collectionEntity?.customEntry == true
                                  ? `${entry.id}/c`
                                  : `${entry.id}/w`
                            }`}
@@ -354,8 +385,9 @@ export const action: ActionFunction = async ({
 }) => {
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
-   const { collectionId } = zx.parseParams(params, {
+   const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
+      siteId: z.string(),
    });
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
@@ -395,6 +427,7 @@ export const action: ActionFunction = async ({
                   author: user?.id,
                   icon: iconId,
                   collectionEntity: collectionId,
+                  site: siteId,
                },
                user,
                overrideAccess: false,
