@@ -8,8 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { CharacterLKJ16E5IhH } from "payload/generated-types";
-import { Image } from "~/components/Image";
+import type { Character } from "payload/generated-types";
 
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -18,6 +17,8 @@ import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
+import { zx } from "zodix";
+import { z } from "zod";
 
 export { meta };
 
@@ -32,32 +33,29 @@ export async function loader({
       params,
       request,
       depth: 3,
-   })) as CharacterLKJ16E5IhH;
-
-   //Feel free to query for more data here
+   })) as Character;
 
    // ======================
    // Pull Skill Tree data for character
    // ======================
-   const url = new URL(request.url).pathname;
-   const cid = url.split("/")[4];
+
+   const { entryId } = zx.parseParams(params, {
+      entryId: z.string(),
+   });
 
    const skillTreeRaw = await payload.find({
-      // @ts-ignore
-      collection: `skillTree-lKJ16E5IhH`,
+      collection: "skillTrees",
       where: {
          character: {
-            equals: "character-" + cid,
+            equals: entryId,
          },
       },
       depth: 3,
       limit: 20,
+      xw,
    });
 
    const skillTreeData = skillTreeRaw.docs;
-
-   // ======================
-   // ======================
 
    return json({ entryDefault, defaultData, skillTreeData });
 }
@@ -67,8 +65,8 @@ export default function CharacterEntry() {
    const { defaultData } = useLoaderData<typeof loader>();
    const { skillTreeData } = useLoaderData<typeof loader>();
 
-   console.log(defaultData);
-   console.log(skillTreeData);
+   // console.log(defaultData);
+   // console.log(skillTreeData);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
@@ -102,14 +100,3 @@ export default function CharacterEntry() {
       </EntryParent>
    );
 }
-
-const Stats = () => {
-   return <div>This is stats</div>;
-};
-
-// ========================================
-// Lol manually putting stat data in for now since not sure if Strapi ready to go
-// --- Will be loaded properly from DB ---
-// ========================================
-// ========================================
-// ========================================
