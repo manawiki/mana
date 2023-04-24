@@ -10,6 +10,7 @@ import { EnemySkills } from "./enemySkills";
 import { Enemies } from "./enemies";
 import { Achievements } from "./achievements";
 import { AchievementSeries } from "./achievementSeries";
+import { Banners } from "./banners";
 
 import { _Rarities } from "./_rarities";
 import { _Elements } from "./_elements";
@@ -33,6 +34,7 @@ export const CustomCollections = [
    Enemies,
    Achievements,
    AchievementSeries,
+   Banners,
    _Elements,
    _ItemTypes,
    _Paths,
