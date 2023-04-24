@@ -21,6 +21,12 @@ export const Entries: CollectionConfig = {
          required: true,
       },
       {
+         name: "site",
+         type: "relationship",
+         relationTo: "sites",
+         hasMany: false,
+      },
+      {
          name: "collectionEntity",
          type: "relationship",
          relationTo: "collections",
