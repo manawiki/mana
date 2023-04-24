@@ -2,14 +2,13 @@ import Payload from "payload";
 import path from "path";
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
-const collectionName = "character";
+const collectionName = "characters";
 const data = require("./import_files/CharacterVoice.json");
 const idField = "character_id";
-const siteId = "lKJ16E5IhH";
-const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
+const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for author field
 
 let payload = null as any;
 
@@ -17,7 +16,7 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: MONGO_URL as any,
+      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -42,10 +41,18 @@ const getData = async () =>
 const seedUploads = async (result: any) => {
 
 	const idValue = result[idField];
+
+	// Define Voice Fields
+	const voiceImport = {
+		voice_en: result.voice_en?.name,
+		voice_jp: result.voice_jp?.name,
+		voice_cn: result.voice_cn?.name,
+		voice_kr: result.voice_kr?.name,
+	}
 	
 	// Check if entry exists
 	const existingEntry = await payload.find({
-		collection: collectionName + "-" + siteId,
+		collection: collectionName,
 		where: {
 			[idField]: {
 				equals: idValue,
@@ -56,34 +63,16 @@ const seedUploads = async (result: any) => {
 	// Update entry if exists
 	if (existingEntry.docs.length > 0) {
 		console.log(`Entry "${idField}: ${idValue}" already exists. Overwriting data.`);
-		
-		const baseID = existingEntry.docs[0].entry.id;
+
 		const custID = existingEntry.docs[0].id;
-
-		var baseData = {
-			...result,
-			collectionEntity: collectionName + "-" + siteId,
-			author: userId,
-		};
-
-		const updateItem = await payload.update({
-			collection: "entries",
-			id: baseID,
-			data: baseData,
-		});
-		sleep(50);
-		console.log(`${JSON.stringify(updateItem)} Entry updated!`);
-
-		const itemId = updateItem.id;
 
 		var custData = {
 			...result,
-			entry: itemId,
-			id: collectionName + "-" + itemId,
+			...voiceImport,
 		};
 
 		const updateItemCustom = await payload.update({
-			collection: collectionName + "-" + siteId,
+			collection: collectionName,
 			id: custID,
 			data: custData,
 		});
@@ -92,30 +81,15 @@ const seedUploads = async (result: any) => {
 
 	// Otherwise, create a new entry
 	else {
-		var baseData = {
-			...result,
-			collectionEntity: collectionName + "-" + siteId,
-			author: userId,
-		};
-	
-		const createItem = await payload.create({
-			collection: "entries",
-			data: baseData,
-		});
-		//Limit speed
-		sleep(50);
-		console.log(`${JSON.stringify(createItem)} Import completed!`);
-		
-		const itemId = createItem.id;
 		
 		var custData = {
 			...result,
-			entry: itemId,
-			id: collectionName + "-" + itemId,
+			...voiceImport,
+			id: result?.[idField],
 		};
 
 		const createItemCustom = await payload.create({
-			collection: collectionName + "-" + siteId,
+			collection: collectionName,
 			data: custData,
 		});
 	   

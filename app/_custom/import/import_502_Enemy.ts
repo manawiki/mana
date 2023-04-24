@@ -2,14 +2,13 @@ import Payload from "payload";
 import path from "path";
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
-const collectionName = "enemy";
+const collectionName = "enemies";
 const data = require("./import_files/Enemy.json");
 const idField = "data_key";
-const siteId = "lKJ16E5IhH";
-const userId = "63fec4372464d0e4c5c316e7"; // NorseFTX@gamepress.gg User ID for author field
+const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for author field
 
 let payload = null as any;
 
@@ -21,7 +20,7 @@ var element: any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: MONGO_URL as any,
+      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -42,7 +41,7 @@ start();
 const getData = async () => {
 	// Get _enemyStatusRes, _element arrays to populate later relations
 	const tempEnemyStatusRes = await payload.find({
-		collection: "_enemyStatusRes-" + siteId,
+		collection: "_enemyStatusRes",
 		where: {
 			id: {
 			exists: true
@@ -51,7 +50,7 @@ const getData = async () => {
 		limit: 100,
 	});
 	const tempElement = await payload.find({
-		collection: "_element-" + siteId,
+		collection: "_elements",
 		where: {
 			id: {
 			exists: true
@@ -72,7 +71,17 @@ const seedUploads = async (result: any) => {
 
 	const idValue = result[idField];
 	
-	
+	// Define Image fields (global)
+	const iconImport = {
+		icon: result.icon?.name.replace(".png",""),
+		image_round_icon: result.image_round_icon?.name.replace(".png",""),
+		image_action: result.image_action?.name.replace(".png",""),
+		image_battle_detail: result.image_battle_detail?.name.replace(".png",""),
+		image_full: result.image_full?.name.replace(".png",""),
+		image_full_bg: result.image_full_bg?.name.replace(".png",""),
+		image_full_front: result.image_full_front?.name.replace(".png",""),
+	}
+
 	// =======================
 	// Unlock Materials array
 	// =======================
@@ -91,7 +100,7 @@ const seedUploads = async (result: any) => {
 	if (matList?.length > 0) {
 		matData = await Promise.all(matList.map(async (mat:any) => {
 			const findMat = await payload.find({
-				collection: "materials-" + siteId,
+				collection: "materials",
 				where: {
 					data_key: {
 						equals: mat.toString(),
@@ -179,7 +188,7 @@ const seedUploads = async (result: any) => {
 	// var collName = "_rarity";
 	// if (result[fieldName]?.[idName]) {
 	// 	const relEntry = await payload.find({
-	// 		collection: collName + "-" + siteId,
+	// 		collection: collName,
 	// 		where: {
 	// 			[idName]: {
 	// 				equals: result[fieldName]?.[idName],
@@ -195,7 +204,7 @@ const seedUploads = async (result: any) => {
 	if (result.skill_list?.length > 0) {
 		var skillEntry = await Promise.all(result.skill_list.map(async (t:any) => {
 			const findSkill = await payload.find({
-				collection: "enemySkill-" + siteId,
+				collection: "enemySkills",
 				where: {
 					data_key: {
 						equals: t.data_key,
@@ -240,7 +249,7 @@ const seedUploads = async (result: any) => {
 	
 	// Check if entry exists
 	const existingEntry = await payload.find({
-		collection: collectionName + "-" + siteId,
+		collection: collectionName,
 		where: {
 			[idField]: {
 				equals: idValue,
@@ -251,38 +260,19 @@ const seedUploads = async (result: any) => {
 	// Update entry if exists
 	if (existingEntry.docs.length > 0) {
 		console.log(`Entry "${idField}: ${idValue}" already exists. Overwriting data.`);
-		
-		const baseID = existingEntry.docs[0].entry.id;
+
 		const custID = existingEntry.docs[0].id;
-
-		var baseData = {
-			...result,
-			collectionEntity: collectionName + "-" + siteId,
-			icon: siteId + "_" + result.icon?.name.replace(".png",""),
-			author: userId,
-		};
-
-		const updateItem = await payload.update({
-			collection: "entries",
-			id: baseID,
-			data: baseData,
-		});
-		sleep(50);
-		console.log(`${JSON.stringify(updateItem)} Entry updated!`);
-
-		const itemId = updateItem.id;
 
 		var custData = {
 			...result,
-			entry: itemId,
-			id: collectionName + "-" + itemId,
 			...relationFields,
 			...resistanceFields,
+			...iconImport,
 			rewards: dropList,
 		};
 
 		const updateItemCustom = await payload.update({
-			collection: collectionName + "-" + siteId,
+			collection: collectionName,
 			id: custID,
 			data: custData,
 		});
@@ -291,34 +281,18 @@ const seedUploads = async (result: any) => {
 
 	// Otherwise, create a new entry
 	else {
-		var baseData = {
-			...result,
-			collectionEntity: collectionName + "-" + siteId,
-			icon: siteId + "_" + result.icon?.name.replace(".png",""),
-			author: userId,
-		};
-	
-		const createItem = await payload.create({
-			collection: "entries",
-			data: baseData,
-		});
-		//Limit speed
-		sleep(50);
-		console.log(`${JSON.stringify(createItem)} Import completed!`);
-		
-		const itemId = createItem.id;
 		
 		var custData = {
 			...result,
-			entry: itemId,
-			id: collectionName + "-" + itemId,
+			id: result?.[idField],
 			...relationFields,
 			...resistanceFields,
+			...iconImport,
 			rewards: dropList,
 		};
 
 		const createItemCustom = await payload.create({
-			collection: collectionName + "-" + siteId,
+			collection: collectionName,
 			data: custData,
 		});
 	   

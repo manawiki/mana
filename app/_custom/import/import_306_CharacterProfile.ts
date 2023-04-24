@@ -5,9 +5,9 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
-const collectionName = "_enemyStatusRes";
-const data = require("./import_files/" + "_EnemyStatusRes" + ".json");
-const idField = "data_key";
+const collectionName = "characters";
+const data = require("./import_files/CharacterProfile.json");
+const idField = "character_id";
 const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for author field
 
 let payload = null as any;
@@ -41,14 +41,8 @@ const getData = async () =>
 const seedUploads = async (result: any) => {
 
 	const idValue = result[idField];
-
-	// Define Image fields (global)
-	const iconImport = {
-		icon: result.icon?.name.replace(".png",""),
-	}
-
-	// Check if entry exists
 	
+	// Check if entry exists
 	const existingEntry = await payload.find({
 		collection: collectionName,
 		where: {
@@ -66,7 +60,6 @@ const seedUploads = async (result: any) => {
 
 		var custData = {
 			...result,
-			...iconImport,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -82,7 +75,6 @@ const seedUploads = async (result: any) => {
 		
 		var custData = {
 			...result,
-			...iconImport,
 			id: result?.[idField],
 		};
 
