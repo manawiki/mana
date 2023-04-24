@@ -59,22 +59,47 @@ export async function loader({
       q: z.string().optional(),
       page: z.coerce.number().optional(),
    });
-   const id = `${collectionId}-${siteId}`;
-   const collection = await payload.findByID({
+
+   const collectionData = await payload.find({
       collection: "collections",
-      id,
+      where: {
+         slug: {
+            equals: collectionId,
+         },
+      },
+      user,
    });
+
+   const collection = collectionData?.docs[0];
+
+   // Get custom collection list data
+   if (collection.customDatabase) {
+      const entrylist = await (
+         await fetch(
+            `https://${
+               process.env.PAYLOAD_PUBLIC_SITE_ID
+            }-db.mana.wiki/api/${collectionId}?limit=20&page=${page ?? 1}`
+         )
+      ).json();
+      return json({ collection, entrylist, q });
+   }
+
+   // Get default collection list data
    const entrylist = await payload.find({
       collection: "entries",
       where: {
          collectionEntity: {
-            equals: id,
+            equals: collectionId,
+         },
+         site: {
+            equals: siteId,
          },
       },
       user,
       limit: 20,
       page: page ?? 1,
    });
+
    return json({ collection, entrylist, q });
 }
 
@@ -158,6 +183,8 @@ export default function CollectionList() {
          setImgData(null);
       }
    }, [adding, zoEntry.refObject]);
+
+   console.log(entrylist);
 
    return (
       <>
@@ -248,8 +275,7 @@ export default function CollectionList() {
                         <Link
                            key={entry.id}
                            to={`${
-                              // @ts-expect-error
-                              entry?.collectionEntity?.customTemplate == true
+                              entry?.collectionEntity?.customEntry == true
                                  ? `${entry.id}/c`
                                  : `${entry.id}/w`
                            }`}
@@ -260,7 +286,6 @@ export default function CollectionList() {
                               className="border-color shadow-1 flex h-8 w-8 items-center
                                     justify-between overflow-hidden rounded-full border-2 shadow-sm"
                            >
-                              {/* @ts-expect-error */}
                               {entry.icon?.url ? (
                                  <Image /* @ts-ignore */
                                     url={entry.icon?.url}
@@ -354,8 +379,9 @@ export const action: ActionFunction = async ({
 }) => {
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
-   const { collectionId } = zx.parseParams(params, {
+   const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
+      siteId: z.string(),
    });
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
@@ -395,6 +421,7 @@ export const action: ActionFunction = async ({
                   author: user?.id,
                   icon: iconId,
                   collectionEntity: collectionId,
+                  site: siteId,
                },
                user,
                overrideAccess: false,
