@@ -37,6 +37,19 @@ export async function loader({
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
+
+   const siteData = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteId,
+         },
+      },
+      user,
+   });
+
+   const id = siteData?.docs[0].id;
+
    const { docs } = await payload.find({
       collection: "collections",
       where: {
@@ -44,11 +57,12 @@ export async function loader({
             equals: false,
          },
          site: {
-            equals: siteId,
+            equals: id,
          },
       },
       user,
    });
+
    return json({ collections: docs });
 }
 

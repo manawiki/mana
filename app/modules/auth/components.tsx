@@ -59,7 +59,7 @@ export const CustomCollection = ({
       ? collectionData?.collection
       : customCollectionData?.entryDefault.collectionEntity;
 
-   const isCustom = collection?.customEntry === true;
+   const isCustom = collection?.customEntryTemplate === true;
 
    return isCustom ? <>{children}</> : null;
 };
