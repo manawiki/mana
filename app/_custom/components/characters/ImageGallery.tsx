@@ -1,21 +1,21 @@
 export const ImageGallery = ({ pageData }) => {
    var galleryname = [
       "Icon",
-      "Full Cut-in",
+      "Full",
+      "Figure",
       "Background",
       "Foreground",
       "Team Icon",
       "Round Icon",
-      "Battle Detail",
    ];
    var gallerylist = [
       pageData?.icon?.url,
+      pageData?.image_draw?.url,
       pageData.image_full?.url,
       pageData?.image_full_bg?.url,
       pageData?.image_full_front?.url,
       pageData?.image_action?.url,
       pageData?.image_round_icon?.url,
-      pageData?.image_battle_detail?.url,
    ];
 
    return (

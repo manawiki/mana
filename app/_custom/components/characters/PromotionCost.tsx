@@ -42,9 +42,7 @@ const ItemQtyFrame = ({ mat }: any) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a
-            href={`/starrail/collections/materials/${mat.materials?.entry?.id}/c`}
-         >
+         <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
             <div className="relative mt-0.5 mr-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}
