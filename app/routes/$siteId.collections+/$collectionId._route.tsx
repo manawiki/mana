@@ -190,13 +190,13 @@ export default function CollectionList() {
       <>
          <Outlet />
          <div className="mx-auto max-w-[728px] pb-12 max-desktop:px-3">
-            <h2 className="pb-3 pl-1 text-xl font-bold">{collection.name}</h2>
+            <h2 className="border-0 pb-0">{collection.name}</h2>
             <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
                   method="post"
                   encType="multipart/form-data"
-                  className="pb-3.5"
+                  className="mt-4 pb-3.5"
                   replace
                >
                   <div className="flex items-center gap-4">
@@ -238,7 +238,7 @@ export default function CollectionList() {
                            autoFocus={true}
                            name={zoEntry.fields.name()}
                            type="text"
-                           className="input-text mt-0"
+                           className="input-text bg-2 mt-0"
                            disabled={disabled}
                         />
                         {zoEntry.errors.name()?.message && (
