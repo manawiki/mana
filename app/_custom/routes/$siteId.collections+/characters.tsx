@@ -53,7 +53,7 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { characters } = useLoaderData<typeof loader>();
 
-   console.log(characters);
+   // console.log(characters);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <CharacterList chars={characters} />
@@ -183,7 +183,6 @@ const CharacterList = ({ chars }: any) => {
    // }).filter((v,i,a) => a.indexOf(v) === i);
 
    // sort((a,b) => {
-   // console.log(a); console.log(b);
    // return campsort.findIndex((x) => x.id == a) - campsort.findIndex((x) => x.id == b)})
 
    const filterOptions = [
@@ -204,8 +203,6 @@ const CharacterList = ({ chars }: any) => {
          options: campsort,
       },
    ];
-
-   console.log(filterOptions);
 
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
