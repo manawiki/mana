@@ -1,25 +1,4 @@
-/* Global Element Honkai Styling! (Some borrowed from Nalu) */
-table {
-   border-collapse: collapse;
-}
-th,
-td {
-   border: 1px solid rgba(200, 200, 200, 0.2);
-}
-
-h2 {
-   background-color: #06b6d419;
-   border-color: #06b6d44C;
-   margin-top: 2.25rem;
-   margin-bottom: .75rem;
-   scroll-margin: 5rem;
-   border-radius: .25rem;
-   border-width: 1px;
-   padding: .75rem 1rem;
-   font-size: 1.25rem;
-   line-height: 1.75rem;
-   font-weight: 700;
-}
+/* Global Element Honkai Styling! */
 
 input[type="checkbox"][disabled] {
    opacity: 0.5;
@@ -105,7 +84,6 @@ input[type="checkbox"][disabled] {
    position: relative;
    height: 400px;
    width: 350px;
-   background-color: rgba(0, 0, 50, 1);
 }
 .canvas-Knight {
    position: absolute;

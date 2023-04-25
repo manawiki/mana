@@ -51,7 +51,11 @@ export const PostHeaderEdit = ({
    //Update title logic
    const fetcher = useFetcher();
    const [titleValue, setTitleValue] = useState("");
+   const [subtitleValue, setsubtitleValue] = useState("");
+
    const debouncedTitle = useDebouncedValue(titleValue, 500);
+   const debouncedSubtitle = useDebouncedValue(subtitleValue, 500);
+
    const isMount = useIsMount();
 
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
@@ -83,6 +87,15 @@ export const PostHeaderEdit = ({
          );
       }
    }, [debouncedTitle]);
+
+   useEffect(() => {
+      if (!isMount) {
+         fetcher.submit(
+            { subtitle: debouncedSubtitle, intent: "updateSubtitle" },
+            { method: "patch" }
+         );
+      }
+   }, [debouncedSubtitle]);
 
    const [isChanged, setChanged] = useState(false);
 
@@ -461,6 +474,16 @@ export const PostHeaderEdit = ({
                />
             </div>
             <PostHeader post={post} />
+            <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-5">
+               <TextareaAutosize
+                  className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
+                  p-0 font-semibold focus:ring-transparent"
+                  name={zo.fields.subtitle()}
+                  defaultValue={post.subtitle}
+                  onChange={(event) => setsubtitleValue(event.target.value)}
+                  placeholder="Add a subtitle..."
+               />
+            </div>
          </section>
          <section className="mx-auto max-w-[800px]">
             {post.banner ? (

@@ -1,4 +1,5 @@
 import { Tab } from "@headlessui/react";
+import { H2 } from "../custom";
 
 export const VoiceLines = ({ pageData }: any) => {
    const lines = pageData.voice_lines;
@@ -6,7 +7,7 @@ export const VoiceLines = ({ pageData }: any) => {
       <>
          {lines?.length > 0 ? (
             <>
-               <h2>Voice Lines</h2>
+               <H2 text="Voice Lines" />
                <table className="mb-3 w-full">
                   <thead></thead>
                   <tbody>
@@ -16,7 +17,7 @@ export const VoiceLines = ({ pageData }: any) => {
                            <>
                               {/* Column 1: Voice Line Title + Unlock Cond if applicable */}
                               <tr key={index}>
-                                 <td className="text-sm px-3 py-2">
+                                 <th className="px-3 py-2 text-sm">
                                     <div className="font-bold">
                                        {voice.title}
                                     </div>
@@ -29,9 +30,9 @@ export const VoiceLines = ({ pageData }: any) => {
                                             }}
                                           ></div>
                                         ) : null} */}
-                                 </td>
+                                 </th>
                                  {/* Column 2: Voice Line Text + Playback */}
-                                 <td className="talent-text text-sm px-3 py-2">
+                                 <td className="talent-text px-3 py-4 text-sm">
                                     <div
                                        dangerouslySetInnerHTML={{
                                           __html: voice.text,
@@ -62,7 +63,7 @@ const AudioPlayer = ({ voice }: any) => {
                <>
                   <Tab.Group>
                      {/* Create one tab per language of EN, JP, CN, KR */}
-                     <Tab.List className="grid grid-cols-4 gap-3 bg-gray-100 dark:bg-gray-900 p-1 rounded-lg border border-gray-100 dark:border-slate-800">
+                     <Tab.List className="grid grid-cols-4 gap-3 rounded-lg py-3">
                         {lang.map((l: any) => {
                            return (
                               <>
@@ -71,9 +72,9 @@ const AudioPlayer = ({ voice }: any) => {
                                        <div
                                           className={`${
                                              selected
-                                                ? "text-blue-500 drop-shadow bg-blue-100 dark:bg-blue-800 dark:bg-opacity-30 font-bold"
-                                                : "bg-white dark:bg-slate-800"
-                                          } h-6 w-full flex justify-center items-center rounded px-3`}
+                                                ? "bg-zinc-200 font-bold dark:bg-bg4Dark"
+                                                : "bg-white dark:bg-bg2Dark"
+                                          } shadow-1 border-color flex h-6 w-full items-center justify-center rounded-full border px-3 shadow-sm`}
                                        >
                                           {l.toUpperCase()}
                                        </div>
@@ -86,28 +87,28 @@ const AudioPlayer = ({ voice }: any) => {
                      <Tab.Panels>
                         <Tab.Panel>
                            <audio
-                              className="w-full h-6 mt-1"
+                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_en?.url}
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="w-full h-6 mt-1"
+                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_jp?.url}
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="w-full h-6 mt-1"
+                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_cn?.url}
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="w-full h-6 mt-1"
+                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_kr?.url}
                            ></audio>

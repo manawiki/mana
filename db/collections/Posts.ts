@@ -36,6 +36,10 @@ export const Posts: CollectionConfig = {
          required: true,
       },
       {
+         name: "subtitle",
+         type: "text",
+      },
+      {
          name: "publishedAt",
          type: "date",
       },

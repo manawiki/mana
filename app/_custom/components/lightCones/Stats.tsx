@@ -12,6 +12,7 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
+import { ChevronDown } from "lucide-react";
 
 ChartJS.register(
    CategoryScale,
@@ -65,21 +66,21 @@ export const Stats = ({ pageData }: any) => {
             {/* 1) Character Image div */}
             {/* ======================== */}
             <div>
-               <div className="relative w-full text-center bg-gray-100 dark:bg-neutral-900 rounded-md">
+               <div className="relative w-full rounded-md bg-gray-100 text-center dark:bg-neutral-900">
                   {/* Rarity */}
-                  <div className="absolute bottom-3 left-20 laptop:left-12 w-20 z-20 h-8">
+                  <div className="absolute bottom-3 left-20 z-20 h-8 w-20 laptop:left-12">
                      <img
-                        className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-40"
+                        className="z-20 h-8 w-20 rounded-full bg-black bg-opacity-40 object-contain"
                         src={rarityurl}
                      />
                   </div>
 
-                  <div className="relative inline-block text-center h-96 w-full">
+                  <div className="relative inline-block h-96 w-full text-center">
                      {/* Main Image */}
                      {imgurl ? (
                         <img
                            src={imgurl}
-                           className="object-contain absolute h-96 w-full"
+                           className="absolute h-96 w-full object-contain"
                         />
                      ) : null}
                   </div>
@@ -90,9 +91,9 @@ export const Stats = ({ pageData }: any) => {
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
             <div>
-               <div className="flex rounded-md border bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 mb-3 p-3">
+               <div className="mb-3 flex rounded-md border bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-900">
                   <div className="flex flex-grow items-center space-x-2">
-                     <div className="relative bg-gray-800 rounded-full h-10 w-10">
+                     <div className="relative h-10 w-10 rounded-full bg-gray-800">
                         <img
                            className="relative inline-block object-contain"
                            src={pathurl}
@@ -104,7 +105,7 @@ export const Stats = ({ pageData }: any) => {
                   </div>
                </div>
 
-               <div className="border divide-y dark:divide-neutral-700 dark:border-neutral-700 rounded-md overflow-hidden">
+               <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
                   {statobj.map((stat: any, index) => {
                      return (
                         <div
@@ -112,9 +113,9 @@ export const Stats = ({ pageData }: any) => {
                       /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
                          stat.colormod
-                            ? "block relative bg-gray-50 dark:bg-neutral-800"
-                            : "block relative bg-gray-100 dark:bg-neutral-900"
-                      } p-2 flex items-center`}
+                            ? "relative block bg-gray-50 dark:bg-neutral-800"
+                            : "relative block bg-gray-100 dark:bg-neutral-900"
+                      } flex items-center p-2`}
                            key={index}
                         >
                            {/* 2bi) Stat Icon */}
@@ -122,14 +123,14 @@ export const Stats = ({ pageData }: any) => {
                               <div>
                                  {stat.hash ? (
                                     <div
-                                       className="inline-flex relative items-center align-middle justify-center 
-                          bg-gray-600 rounded-full h-6 w-6"
+                                       className="relative inline-flex h-6 w-6 items-center 
+                          justify-center rounded-full bg-gray-600 align-middle"
                                     >
                                        <img
                                           src={
                                              stat.hash ?? "no_image_42df124128"
                                           }
-                                          className="object-contain h-full w-full"
+                                          className="h-full w-full object-contain"
                                        />
                                     </div>
                                  ) : null}
@@ -190,16 +191,16 @@ export const Stats = ({ pageData }: any) => {
          {/* 2a) Header for Adjusting Level and Slider */}
          {/* ======================== */}
          <div className="relative w-full">
-            <div className="block my-3 font-bold bg-gray-50 dark:bg-neutral-900 py-4 tablet:py-0 tablet:px-3 border rounded-md dark:border-neutral-700 border-solid">
-               <div className="w-full text-center justify-between ">
+            <div className="my-3 block rounded-md border border-solid bg-gray-50 py-4 font-bold dark:border-neutral-700 dark:bg-neutral-900 tablet:px-3 tablet:py-0">
+               <div className="w-full justify-between text-center ">
                   {/* Level Label */}
-                  <div className="align-middle inline-flex justify-between pr-0.5">
+                  <div className="inline-flex justify-between pr-0.5 align-middle">
                      Lvl
                   </div>
                   {/* Level Input Box */}
                   <input
-                     className="align-middle inline-flex ml-1 mr-2 text-center justify-center rounded
-      w-9 border dark:bg-neutral-800 dark:border-neutral-700 scale-20 py-1 px-0 level-input-box"
+                     className="scale-20 level-input-box ml-1 mr-2 inline-flex w-9 justify-center
+      rounded border px-0 py-1 text-center align-middle dark:border-neutral-700 dark:bg-neutral-800"
                      type="number"
                      value={levelSliderValue}
                      onChange={(event) => {
@@ -219,12 +220,12 @@ export const Stats = ({ pageData }: any) => {
                      }}
                   ></input>
                   {/* Asc Label */}
-                  <div className="align-middle inline-flex justify-between text-sm pr-2">
+                  <div className="inline-flex justify-between pr-2 align-middle text-sm">
                      Asc
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="align-middle w-7 h-7 inline-flex flex-shrink-0 justify-between items-center mr-2 focus-within:border-blue-100"
+                     className="mr-2 inline-flex h-7 w-7 flex-shrink-0 items-center justify-between align-middle focus-within:border-blue-100"
                      type="checkbox"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
@@ -241,7 +242,7 @@ export const Stats = ({ pageData }: any) => {
                   ></input>
                   {/* Slider */}
                   <input
-                     className="level-slider align-middle inline-flex justify-end w-4/5 rounded-lg my-8"
+                     className="level-slider my-8 inline-flex w-4/5 justify-end rounded-lg align-middle"
                      type="range"
                      min="1"
                      max="80"
@@ -393,16 +394,16 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                   {({ open }) => (
                      <>
                         <Disclosure.Button
-                           className="font-bold bg-gray-50  dark:bg-neutral-900 dark:border-neutral-700 
-				   flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+                           className="mb-2 flex  w-full items-center 
+				   rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
                         >
                            Stat Graph
                            <div
                               className={`${
                                  open
-                                    ? "transform rotate-180 text-gray-600 font-bold "
+                                    ? "rotate-180 transform font-bold text-gray-600 "
                                     : "text-gray-400"
-                              } inline-block ml-auto `}
+                              } ml-auto inline-block `}
                            >
                               <CaretDownIcon
                                  class="text-brand_1"
@@ -412,13 +413,13 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                            </div>
                         </Disclosure.Button>
                         <Disclosure.Panel className="mb-5">
-                           <div className="border dark:border-neutral-700 text-sm bg-gray-50 dark:bg-neutral-900 px-4 py-3 rounded-md text-center">
+                           <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-neutral-700 dark:bg-neutral-900">
                               <div className="inline-block px-2 font-bold">
                                  Display Stat:{" "}
                               </div>
                               {/* Stat Select Drop Down */}
                               <select
-                                 className="bg-white inline-block dark:bg-neutral-700"
+                                 className="inline-block bg-white dark:bg-neutral-700"
                                  name="stats"
                                  value={graphStat}
                                  onChange={(event) =>
@@ -455,7 +456,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
 // Collapsible CSV Stat Text box
 // =====================================
 const CSVStats = ({ charData }: any) => {
-   var data = charData;
+   const data = charData;
    if (data.stats != undefined && data.stats.length != 0) {
       return (
          <>
@@ -463,18 +464,18 @@ const CSVStats = ({ charData }: any) => {
                {({ open }) => (
                   <>
                      <Disclosure.Button
-                        className="font-bold bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700
-				flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+                        className="mb-2 flex w-full items-center
+				rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
                      >
                         Raw Stats for all Levels
                         <div
                            className={`${
                               open
-                                 ? "transform rotate-180 text-gray-600 font-bold "
+                                 ? "rotate-180 transform font-bold text-gray-600 "
                                  : "text-gray-400"
-                           } inline-block ml-auto `}
+                           } ml-auto inline-block `}
                         >
-                           <CaretDownIcon class="text-brand_1" w={28} h={28} />
+                           <ChevronDown size={28} />
                         </div>
                      </Disclosure.Button>
                      <Disclosure.Panel className="">
@@ -483,7 +484,7 @@ const CSVStats = ({ charData }: any) => {
                            dangerouslySetInnerHTML={{
                               __html: data.stats_csv,
                            }}
-                           className="h-24 font-mono border overflow-y-scroll dark:border-neutral-700 text-base bg-gray-100 dark:bg-neutral-800 px-4 py-3 rounded-md"
+                           className="h-24 overflow-y-scroll rounded-md border bg-gray-100 px-4 py-3 font-mono text-base dark:border-neutral-700 dark:bg-neutral-800"
                         ></div>
                      </Disclosure.Panel>
                   </>

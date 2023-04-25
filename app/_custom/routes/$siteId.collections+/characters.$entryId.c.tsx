@@ -22,6 +22,7 @@ import { Story } from "~/_custom/components/characters/Story";
 
 import { zx } from "zodix";
 import { z } from "zod";
+import { H2 } from "~/_custom/components/custom";
 
 export { meta };
 
@@ -68,23 +69,23 @@ export default function CharacterEntry() {
             <CharacterStatBlock pageData={defaultData} />
 
             {/* Traces / Skills */}
-            <h2>Traces</h2>
+            <H2 text="Traces" />
             <Traces pageData={defaultData} skillTreeData={skillTreeData} />
 
             {/* Skill Tree */}
-            <h2>Tree</h2>
+            <H2 text="Trees" />
             <SkillTree pageData={defaultData} skillTreeData={skillTreeData} />
 
             {/* Eidolons */}
-            <h2>Eidolons</h2>
+            <H2 text="Eidolons" />
             <Eidolons pageData={defaultData} />
 
             {/* Promotion Costs */}
-            <h2>Promotion Cost</h2>
+            <H2 text="Promotion Cost" />
             <PromotionCost pageData={defaultData} />
 
             {/* Image Gallery Section showing all relevant images */}
-            <h2>Image Gallery</h2>
+            <H2 text="Image Gallery" />
             <ImageGallery pageData={defaultData} />
 
             {/* Profile Data/CV */}
@@ -94,6 +95,7 @@ export default function CharacterEntry() {
             <Story pageData={defaultData} />
 
             {/* Voice Line Section */}
+
             <VoiceLines pageData={defaultData} />
          </EntryContent>
       </EntryParent>

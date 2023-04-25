@@ -1,10 +1,12 @@
 import { Disclosure } from "@headlessui/react";
+import { ChevronDown } from "lucide-react";
+import { H2 } from "../custom";
 
 export const Story = ({ pageData }: any) => {
    const stories = pageData.story;
    return (
       <>
-         <h2>Story</h2>
+         <H2 text="Story" />
          {stories.map((story: any, index: any) => {
             return (
                <>
@@ -15,9 +17,8 @@ export const Story = ({ pageData }: any) => {
                               {/* Make sure rounded appearance changes depending on accordion collapse state */}
                               <Disclosure.Button
                                  className={`${
-                                    open ? "rounded-t-md" : "rounded-md"
-                                 } font-bold bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700
-                flex items-center mt-2 w-full border px-3 py-2`}
+                                    open ? "rounded-t-lg" : "rounded-lg"
+                                 } bg-2 border-color shadow-1 mt-2 flex w-full items-center border px-4 py-3 font-bold shadow-sm`}
                               >
                                  {/* Title of story here */}
                                  {story.title}
@@ -26,14 +27,13 @@ export const Story = ({ pageData }: any) => {
                                  <div
                                     className={`${
                                        open
-                                          ? "transform rotate-180 text-gray-600 font-bold "
+                                          ? "rotate-180 transform font-bold text-gray-600 "
                                           : "text-gray-400"
-                                    } inline-block ml-auto `}
+                                    } ml-auto inline-block `}
                                  >
-                                    <CaretDownIcon
-                                       class="text-brand_1"
-                                       w={28}
-                                       h={28}
+                                    <ChevronDown
+                                       className="text-yellow-500"
+                                       size={28}
                                     />
                                  </div>
                               </Disclosure.Button>
@@ -41,8 +41,7 @@ export const Story = ({ pageData }: any) => {
                                  {/* Show unlock conditions if relevant */}
                                  {story.unlock ? (
                                     <div
-                                       className="italic text-base bg-gray-100 border-l border-r
-              dark:bg-neutral-800 dark:border-neutral-700 py-1 px-3"
+                                       className="bg-2 border-color text-1 border-x p-3 text-sm font-bold italic"
                                        dangerouslySetInnerHTML={{
                                           __html: story.unlock,
                                        }}
@@ -51,7 +50,7 @@ export const Story = ({ pageData }: any) => {
 
                                  {/* Story Text */}
                                  <div
-                                    className="text-base bg-gray-50 border rounded-b dark:bg-neutral-900 dark:border-neutral-700 p-3"
+                                    className="bg-1 border-color rounded-b-lg border p-3 text-base"
                                     dangerouslySetInnerHTML={{
                                        __html: story.text,
                                     }}
