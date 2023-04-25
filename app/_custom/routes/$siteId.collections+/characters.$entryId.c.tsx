@@ -73,7 +73,7 @@ export default function CharacterEntry() {
             <Traces pageData={defaultData} skillTreeData={skillTreeData} />
 
             {/* Skill Tree */}
-            <H2 text="Trees" />
+            <H2 text="Tree" />
             <SkillTree pageData={defaultData} skillTreeData={skillTreeData} />
 
             {/* Eidolons */}
