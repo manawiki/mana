@@ -48,9 +48,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                <div className="relative flex-grow">
                   <div className="pb-2 text-xl font-bold">{post.title}</div>
                   <div className="text-1 max-laptop:line-clamp-2 max-laptop:text-sm">
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                     sed do eiusmod tempor incididunt ut labore et dolore magna
-                     aliqua.
+                     {post.subtitle}
                   </div>
                </div>
                {post.banner && (

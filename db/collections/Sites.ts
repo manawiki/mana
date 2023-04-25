@@ -93,5 +93,9 @@ export const Sites: CollectionConfig = {
          name: "id",
          type: "text",
       },
+      {
+         name: "content",
+         type: "json",
+      },
    ],
 };
