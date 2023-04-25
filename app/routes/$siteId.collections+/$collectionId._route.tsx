@@ -265,7 +265,6 @@ export default function CollectionList() {
                   </div>
                </Form>
             </AdminOrStaffOrOwner>
-
             {entries?.length === 0 ? null : (
                <>
                   <div className="border-color divide-color bg-2 divide-y overflow-hidden rounded-lg border">
@@ -273,7 +272,7 @@ export default function CollectionList() {
                         <Link
                            key={entry.id}
                            to={`${
-                              entry?.collectionEntity?.customEntry == true
+                              collection.customDatabase == true
                                  ? `${entry.id}/c`
                                  : `${entry.id}/w`
                            }`}
@@ -332,7 +331,7 @@ export default function CollectionList() {
                               >
                                  <ChevronLeft
                                     size={18}
-                                    className="text-emerald-500"
+                                    className="text-yellow-500"
                                  />
                                  Prev
                               </button>
@@ -356,7 +355,7 @@ export default function CollectionList() {
                                  Next
                                  <ChevronRight
                                     size={18}
-                                    className="text-emerald-500"
+                                    className="text-yellow-500"
                                  />
                               </button>
                            ) : null}
