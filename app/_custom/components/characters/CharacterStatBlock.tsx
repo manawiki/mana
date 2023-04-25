@@ -31,9 +31,7 @@ export const CharacterStatBlock = ({ pageData }) => {
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
    const [graphStat, setGraphStat] = useState("HP");
 
-   const bgurl = pageData.image_full_bg?.url;
-   const fronturl = pageData.image_full_front?.url;
-   const mainurl = pageData.image_full?.url;
+   const mainurl = pageData.image_draw?.url;
    const elemurl = pageData.element?.icon?.url;
    const pathurl = pageData.path?.icon?.url;
    const pathsmall = pageData.path?.icon_small?.url;
@@ -110,18 +108,6 @@ export const CharacterStatBlock = ({ pageData }) => {
                   <Image options="height=100" alt="Rarity" url={rarityurl} />
                </div>
                <div className="relative h-96">
-                  {/* Background Image */}
-                  {bgurl ? (
-                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
-                        <Image
-                           className="h-84 mx-auto object-contain"
-                           options="height=800"
-                           alt="Background Image"
-                           url={bgurl}
-                        />
-                     </div>
-                  ) : null}
-
                   {/* Main Image */}
                   {mainurl ? (
                      <div className="absolute left-0 top-0 flex h-96 w-full items-center">
@@ -130,18 +116,6 @@ export const CharacterStatBlock = ({ pageData }) => {
                            options="height=800"
                            alt="Background Image - Main"
                            url={mainurl}
-                        />
-                     </div>
-                  ) : null}
-
-                  {/* Front Image */}
-                  {fronturl ? (
-                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
-                        <Image
-                           className="h-84 mx-auto object-contain"
-                           options="height=800"
-                           alt="Background Image - Front"
-                           url={fronturl}
                         />
                      </div>
                   ) : null}
