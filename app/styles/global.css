@@ -16,16 +16,21 @@ html.dark {
       @apply border-[#ededed] dark:border-[#36393e];
    }
 }
-
+h2 {
+   @apply border-color mb-3 border-b-2 pb-2 pt-4 font-header text-2xl font-bold dark:text-zinc-100;
+}
+h3 {
+   @apply mb-1.5 pt-3 font-header text-xl font-bold dark:text-zinc-100;
+}
 @layer components {
    .input-text {
-      @apply mt-1
-        block
-        h-11
-        w-full
-        rounded-md border border-color
-      focus:border-zinc-200 focus:dark:border-zinc-700 focus:bg-2
-        focus:ring-0 bg-3 dark:placeholder:text-zinc-300;
+      @apply border-color
+        focus:bg-2
+        bg-3
+        mt-1
+        block h-11 w-full
+      rounded-md border focus:border-zinc-200
+        focus:ring-0 dark:placeholder:text-zinc-300 focus:dark:border-zinc-700;
    }
    .divide-color {
       @apply divide-[#ededed] dark:divide-[#36393e];
@@ -78,13 +83,13 @@ html.dark {
    @apply mb-5 list-decimal space-y-1.5 pl-7;
 }
 .post-content blockquote {
-   @apply border-l-2 pl-3 text-1 my-4 border-color italic;
+   @apply text-1 border-color my-4 border-l-2 pl-3 italic;
 }
 .post-content p {
    @apply !mb-3;
 }
 .post-content code {
-   @apply dark:bg-zinc-700 bg-zinc-200 rounded py-[3px] px-[4px] text-sm;
+   @apply rounded bg-zinc-200 px-[4px] py-[3px] text-sm dark:bg-zinc-700;
 }
 .post-content pre > code {
    @apply !bg-transparent p-0;
@@ -93,7 +98,7 @@ html.dark {
    @apply break-words;
 }
 .post-content h2 {
-   @apply dark:text-dark border-b border-color font-bold text-2xl !mb-3 pb-3 pt-8 text-light;
+   @apply border-color !mb-3 border-b pb-3 pt-8 text-2xl font-bold text-light dark:text-dark;
 }
 .post-content a {
    @apply text-blue-500;
