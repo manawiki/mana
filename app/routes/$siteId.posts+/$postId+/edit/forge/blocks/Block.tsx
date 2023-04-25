@@ -42,25 +42,11 @@ export default function Block({
    }
 
    if (element.type === BlockType.H2) {
-      return (
-         <h2
-            className="font-bold dark:text-zinc-100 font-header text-2xl mb-1"
-            {...attributes}
-         >
-            {children}
-         </h2>
-      );
+      return <h2 {...attributes}>{children}</h2>;
    }
 
    if (element.type === BlockType.H3) {
-      return (
-         <h3
-            className="font-bold dark:text-zinc-100 font-header text-xl mb-1"
-            {...attributes}
-         >
-            {children}
-         </h3>
-      );
+      return <h3 {...attributes}>{children}</h3>;
    }
 
    if (element.type === BlockType.BulletedList) {
