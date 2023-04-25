@@ -78,7 +78,9 @@ export async function loader({
          await fetch(
             `https://${
                process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/${collectionId}?limit=20&page=${page ?? 1}`
+            }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
+               page ?? 1
+            }`
          )
       ).json();
       return json({ collection, entrylist, q });

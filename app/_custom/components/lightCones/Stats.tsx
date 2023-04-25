@@ -30,9 +30,9 @@ export const Stats = ({ pageData }: any) => {
    const [graphStat, setGraphStat] = useState("HP");
 
    var imgurl = pageData.image_full?.url;
-   var pathurl = pageData.path?.entry?.icon?.url;
+   var pathurl = pageData.path?.icon?.url;
    var pathsmall = pageData.path?.icon_small?.url;
-   var rarityurl = pageData.rarity?.entry?.icon?.url;
+   var rarityurl = pageData.rarity?.icon?.url;
    var pathname = pageData.path?.name;
 
    var statlist = ["HP", "ATK", "DEF"];
@@ -69,7 +69,7 @@ export const Stats = ({ pageData }: any) => {
                   {/* Rarity */}
                   <div className="absolute bottom-3 left-20 laptop:left-12 w-20 z-20 h-8">
                      <img
-                        className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-20"
+                        className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-40"
                         src={rarityurl}
                      />
                   </div>

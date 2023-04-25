@@ -76,7 +76,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             {urelics?.map((rname: any) => {
                // Find the relic's entries in the relicData array
                const curr = relicData.filter((r: any) => r.name == rname);
-               const rimg = curr?.[0]?.entry?.icon?.url;
+               const rimg = curr?.[0]?.icon?.url;
 
                return (
                   <>
@@ -176,7 +176,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                         <div className="inline-flex">
                            <div className="w-6 h-6 inline-block align-middle rounded-full bg-gray-800 ">
                               <img
-                                 src={stat.stattype?.entry?.icon?.url}
+                                 src={stat.stattype?.icon?.url}
                                  className="object-contain"
                               />
                            </div>
@@ -208,7 +208,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                         <div className="inline-block w-2/5 text-left">
                            <div className="w-6 h-6 inline-block align-middle rounded-full bg-gray-800 ">
                               <img
-                                 src={stat.stattype?.entry?.icon?.url}
+                                 src={stat.stattype?.icon?.url}
                                  className="object-contain"
                               />
                            </div>
