@@ -1,6 +1,6 @@
 export const ImageGallery = ({ pageData }: any) => {
    var galleryname = ["Icon", "Full Image"];
-   var gallerylist = [pageData.entry?.icon?.url, pageData.image_full?.url];
+   var gallerylist = [pageData?.icon?.url, pageData.image_full?.url];
 
    return (
       <>
