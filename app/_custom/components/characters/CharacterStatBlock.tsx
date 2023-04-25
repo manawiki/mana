@@ -32,10 +32,10 @@ export const CharacterStatBlock = ({ pageData }) => {
    var bgurl = pageData.image_full_bg?.url;
    var fronturl = pageData.image_full_front?.url;
    var mainurl = pageData.image_full?.url;
-   var elemurl = pageData.element?.entry?.icon?.url;
-   var pathurl = pageData.path?.entry?.icon?.url;
+   var elemurl = pageData.element?.icon?.url;
+   var pathurl = pageData.path?.icon?.url;
    var pathsmall = pageData.path?.icon_small?.url;
-   var rarityurl = pageData.rarity?.entry?.icon?.url;
+   var rarityurl = pageData.rarity?.icon?.url;
    var pathname = pageData.path?.name;
 
    var statlist = [
@@ -86,10 +86,12 @@ export const CharacterStatBlock = ({ pageData }) => {
                   {/* Path + Path Name ? */}
                   <div className="absolute h-10 w-10 top-3 left-14 ">
                      <div className="absolute bg-gray-800 rounded-full h-10 w-10 top-0 left-0">
-                        <img
-                           className="relative inline-block object-contain top-1"
-                           src={pathsmall}
-                        />
+                        <div className="h-8 w-8">
+                           <img
+                              className="relative inline-block object-contain left-1 top-1"
+                              src={pathsmall}
+                           />
+                        </div>
                      </div>
 
                      {/* <div className="absolute bottom-2 font-bold">{pathname}</div> */}
