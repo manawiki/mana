@@ -11,28 +11,32 @@ export const Profile = ({ pageData }: any) => {
 
    return (
       <>
-         <H2 text="Profile" />
-         <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
-            {adata.map((stat: any, index: any) => {
-               return (
-                  <div
-                     className={`${
-                        index % 2 == 0
-                           ? "bg-2 relative block"
-                           : "bg-1 relative block"
-                     } flex items-center p-3`}
-                     key={index}
-                  >
-                     {/* 2bi) Stat Icon */}
-                     <div className="flex flex-grow items-center space-x-2">
-                        <div>{stat.name}</div>
-                     </div>
-                     {/* 2biii) Stat value */}
-                     <div className="">{stat.value}</div>
-                  </div>
-               );
-            })}
-         </div>
+         {pageData.cv_cn ? (
+            <>
+               <H2 text="Profile" />
+               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
+                  {adata.map((stat: any, index: any) => {
+                     return (
+                        <div
+                           className={`${
+                              index % 2 == 0
+                                 ? "bg-2 relative block"
+                                 : "bg-1 relative block"
+                           } flex items-center p-3`}
+                           key={index}
+                        >
+                           {/* 2bi) Stat Icon */}
+                           <div className="flex flex-grow items-center space-x-2">
+                              <div>{stat.name}</div>
+                           </div>
+                           {/* 2biii) Stat value */}
+                           <div className="">{stat.value}</div>
+                        </div>
+                     );
+                  })}
+               </div>
+            </>
+         ) : null}
       </>
    );
 };
