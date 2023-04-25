@@ -27,7 +27,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params });
+   const entryDefault = await getDefaultEntryData({ payload, params, request });
    const defaultData = (await getCustomEntryData({
       payload,
       params,
@@ -43,18 +43,8 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const skillTreeRaw = await payload.find({
-      collection: "skillTrees",
-      where: {
-         character: {
-            equals: entryId,
-         },
-      },
-      depth: 3,
-      limit: 20,
-      xw,
-   });
-
+   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/skillTrees?limit=20&depth=3&where[character][equals]=${entryId}`;
+   const skillTreeRaw = await (await fetch(url)).json();
    const skillTreeData = skillTreeRaw.docs;
 
    return json({ entryDefault, defaultData, skillTreeData });
