@@ -187,9 +187,9 @@ export default function PostsIndex() {
             <AdminOrStaffOrOwner>
                <section className="pb-6">
                   <div className="flex items-center justify-between pb-3">
-                     <h2 className="text-1 text-sm font-bold uppercase">
+                     <div className="text-1 text-sm font-bold uppercase">
                         Recent Posts
-                     </h2>
+                     </div>
                      <Listbox
                         value={selectedStatus}
                         onChange={setSelectedStatus}
@@ -446,9 +446,9 @@ export default function PostsIndex() {
                   </>
                ) : (
                   <>
-                     <h2 className="text-1 text-sm font-bold uppercase">
+                     <div className="text-1 text-sm font-bold uppercase">
                         Latest
-                     </h2>
+                     </div>
                      <button
                         onClick={() => {
                            setSearchToggle(true);
