@@ -31,18 +31,20 @@ export const ImageGallery = ({ pageData }) => {
                         <div className="border-color bg-2 relative block rounded-t-lg border py-2 text-center text-sm font-bold">
                            {img}
                         </div>
-                        <div
-                           className="border-color bg-1 relative flex w-full items-center
+                        <a href={gallerylist[i]}>
+                           <div
+                              className="border-color bg-1 relative flex w-full items-center
                            justify-center rounded-b-lg border border-t-0 p-3"
-                        >
-                           <div className="relative h-24 w-24 text-center">
-                              <Image
-                                 alt="Gallery Item"
-                                 url={gallerylist[i]}
-                                 className="h-24 w-24 object-contain"
-                              />
+                           >
+                              <div className="relative h-24 w-24 text-center">
+                                 <Image
+                                    alt="Gallery Item"
+                                    url={gallerylist[i]}
+                                    className="h-24 w-24 object-contain"
+                                 />
+                              </div>
                            </div>
-                        </div>
+                        </a>
                      </div>
                   </>
                );
