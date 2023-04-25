@@ -17,6 +17,9 @@ import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
+import { Profile } from "~/_custom/components/characters/Profile";
+import { Story } from "~/_custom/components/characters/Story";
+
 import { zx } from "zodix";
 import { z } from "zod";
 
@@ -83,6 +86,12 @@ export default function CharacterEntry() {
             {/* Image Gallery Section showing all relevant images */}
             <h2>Image Gallery</h2>
             <ImageGallery pageData={defaultData} />
+
+            {/* Profile Data/CV */}
+            <Profile pageData={defaultData} />
+
+            {/* Story Section with drop downs */}
+            <Story pageData={defaultData} />
 
             {/* Voice Line Section */}
             <VoiceLines pageData={defaultData} />

@@ -16,7 +16,7 @@ export const Eidolons = ({ pageData }) => {
                            <div className="flex self-center justify-center h-9 w-full rounded-full bg-neutral-7">
                               <img
                                  className="object-contain "
-                                 src={eid.entry?.icon?.url}
+                                 src={eid.icon?.url}
                                  alt={eid.name}
                               />
                            </div>

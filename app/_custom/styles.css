@@ -7,6 +7,20 @@ td {
    border: 1px solid rgba(200, 200, 200, 0.2);
 }
 
+h2 {
+   background-color: #06b6d419;
+   border-color: #06b6d44C;
+   margin-top: 2.25rem;
+   margin-bottom: .75rem;
+   scroll-margin: 5rem;
+   border-radius: .25rem;
+   border-width: 1px;
+   padding: .75rem 1rem;
+   font-size: 1.25rem;
+   line-height: 1.75rem;
+   font-weight: 700;
+}
+
 input[type="checkbox"][disabled] {
    opacity: 0.5;
    filter: grayscale(80%);
@@ -99,7 +113,79 @@ input[type="checkbox"][disabled] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://i.imgur.com/s5TKqKj.png");
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsKnight.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Mage {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsnMage.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Rogue {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsRogue.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Priest {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsPirest.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Warlock {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarlock.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Shaman {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsShaman.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Warrior {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarrior.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;

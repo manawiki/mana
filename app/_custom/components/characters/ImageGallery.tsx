@@ -9,7 +9,7 @@ export const ImageGallery = ({ pageData }) => {
       "Battle Detail",
    ];
    var gallerylist = [
-      pageData.entry?.icon?.url,
+      pageData?.icon?.url,
       pageData.image_full?.url,
       pageData?.image_full_bg?.url,
       pageData?.image_full_front?.url,
