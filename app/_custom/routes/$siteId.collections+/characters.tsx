@@ -361,50 +361,53 @@ const CharacterList = ({ chars }: any) => {
                   const pathsmall = char?.path?.icon?.url;
                   const rarityurl = char?.rarity?.icon?.url;
                   const raritynum = char?.rarity?.display_number;
+                  const cid = char?.id;
 
                   return (
                      <>
-                        <div className="relative inline-block rounded-md bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 m-1 w-32 align-top">
-                           {/* Character Icon */}
-                           <div className="relative inline-block h-28 w-28">
-                              {/* Element Symbol */}
-                              <div className="absolute h-7 w-7 -top-1 -left-1 bg-gray-800 bg-opacity-20 rounded-full z-20">
+                        <a href={`/starrail/collections/characters/${cid}/c`}>
+                           <div className="relative inline-block rounded-md bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 m-1 w-32 align-top">
+                              {/* Character Icon */}
+                              <div className="relative inline-block h-28 w-28">
+                                 {/* Element Symbol */}
+                                 <div className="absolute h-7 w-7 -top-1 -left-1 bg-gray-800 bg-opacity-20 rounded-full z-20">
+                                    <img
+                                       src={elemurl}
+                                       className="object-contain"
+                                    />
+                                    {/* layout="fill" objectFit="contain" /> */}
+                                 </div>
+
+                                 {/* Path + Path Name ? */}
+                                 <div className="absolute h-7 w-7 -top-1 -right-1 bg-gray-800 bg-opacity-50 rounded-full z-20">
+                                    <img
+                                       className="relative inline-block object-contain"
+                                       src={pathsmall}
+                                    />
+                                 </div>
+
+                                 {/* Rarity */}
+                                 <div className="absolute -bottom-7 w-28 z-20 h-4">
+                                    <img
+                                       className={`object-contain w-28 z-20 h-4 rounded-full color-rarity-${
+                                          raritynum ?? "1"
+                                       } bg-opacity-10`}
+                                       src={rarityurl}
+                                    />
+                                 </div>
+
                                  <img
-                                    src={elemurl}
                                     className="object-contain"
-                                 />
-                                 {/* layout="fill" objectFit="contain" /> */}
-                              </div>
-
-                              {/* Path + Path Name ? */}
-                              <div className="absolute h-7 w-7 -top-1 -right-1 bg-gray-800 bg-opacity-50 rounded-full z-20">
-                                 <img
-                                    className="relative inline-block object-contain"
-                                    src={pathsmall}
+                                    src={char.icon?.url}
+                                    alt={char?.name}
                                  />
                               </div>
-
-                              {/* Rarity */}
-                              <div className="absolute -bottom-7 w-28 z-20 h-4">
-                                 <img
-                                    className={`object-contain w-28 z-20 h-4 rounded-full color-rarity-${
-                                       raritynum ?? "1"
-                                    } bg-opacity-10`}
-                                    src={rarityurl}
-                                 />
+                              {/* Character Name */}
+                              <div className="text-center text-xs mt-6 ">
+                                 {char.name}
                               </div>
-
-                              <img
-                                 className="object-contain"
-                                 src={char.icon?.url}
-                                 alt={char?.name}
-                              />
                            </div>
-                           {/* Character Name */}
-                           <div className="text-center text-xs mt-6 ">
-                              {char.name}
-                           </div>
-                        </div>
+                        </a>
                      </>
                   );
                })}
