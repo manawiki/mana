@@ -7,14 +7,20 @@ import type { Payload } from "payload";
 export const getDefaultEntryData = async ({
    payload,
    params,
+   request,
 }: {
    payload: Payload;
    params: Params;
+   request: any;
 }) => {
-   const { entryId, collectionId } = zx.parseParams(params, {
+   const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
-      collectionId: z.string(),
    });
+
+   //We must get param from url since we can't access the param for custom templates.
+   const url = new URL(request.url).pathname;
+   const collectionId = url.split("/")[3];
+
    const collectionData = await payload.find({
       collection: "collections",
       where: {
@@ -54,19 +60,17 @@ export const getCustomEntryData = async ({
    depth: number;
 }) => {
    const url = new URL(request.url).pathname;
-   const slug = url.split("/")[3];
+   const collectionId = url.split("/")[3];
 
    const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
    });
 
-   const entry = await payload.findByID({
-      // @ts-ignore
-      collection: slug,
-      id: entryId,
-      depth: depth,
-   });
-
+   const entry = await (
+      await fetch(
+         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${request}`
+      )
+   ).json();
    return entry;
 };
 
