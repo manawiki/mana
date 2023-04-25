@@ -227,6 +227,40 @@ export async function action({
             error: "Something went wrong...unable to update title.",
          });
       }
+      case "updateSubtitle": {
+         assertIsPatch(request);
+         const result = await zx.parseFormSafe(request, postSchema);
+         if (result.success) {
+            const { subtitle } = result.data;
+            try {
+               return await payload.update({
+                  collection: "posts",
+                  id: postId,
+                  data: {
+                     subtitle,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            } catch (error) {
+               console.log(error);
+               return json({
+                  error: "Something went wrong...unable to update subtitle.",
+               });
+            }
+         }
+         //If user input has problems
+         if (issues.hasIssues()) {
+            return json<FormResponse>(
+               { serverIssues: issues.toArray() },
+               { status: 400 }
+            );
+         }
+         // Last resort error message
+         return json({
+            error: "Something went wrong...unable to update subtitle.",
+         });
+      }
       case "updateBanner": {
          assertIsPatch(request);
          const result = await getMultipleFormData({
