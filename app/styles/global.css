@@ -10,6 +10,15 @@ html.light {
 html.dark {
    @apply bg-[#242425];
 }
+table {
+   @apply border-collapse;
+}
+th {
+   @apply bg-2 border border-zinc-200 p-3 dark:border-bg4Dark;
+}
+td {
+   @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
+}
 
 @layer base {
    .border-color {
