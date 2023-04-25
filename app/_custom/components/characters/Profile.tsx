@@ -1,3 +1,5 @@
+import { H2 } from "../custom";
+
 export const Profile = ({ pageData }: any) => {
    const adata = [
       { name: "CN CV", value: pageData.cv_cn },
@@ -9,18 +11,16 @@ export const Profile = ({ pageData }: any) => {
 
    return (
       <>
-         <h2>Profile</h2>
-         <div className="border divide-y dark:divide-neutral-700 dark:border-neutral-700 rounded-md overflow-hidden">
+         <H2 text="Profile" />
+         <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
             {adata.map((stat: any, index: any) => {
                return (
                   <div
-                     className={`
-                        /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
-                        ${
-                           index % 2 == 0
-                              ? "block relative bg-gray-50 dark:bg-neutral-800"
-                              : "block relative bg-gray-100 dark:bg-neutral-900"
-                        } p-2 flex items-center`}
+                     className={`${
+                        index % 2 == 0
+                           ? "bg-2 relative block"
+                           : "bg-1 relative block"
+                     } flex items-center p-3`}
                      key={index}
                   >
                      {/* 2bi) Stat Icon */}

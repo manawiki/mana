@@ -12,6 +12,8 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
+import { Image } from "~/components";
+import { BarChart2, Binary, ChevronDown } from "lucide-react";
 
 ChartJS.register(
    CategoryScale,
@@ -29,14 +31,14 @@ export const CharacterStatBlock = ({ pageData }) => {
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
    const [graphStat, setGraphStat] = useState("HP");
 
-   var bgurl = pageData.image_full_bg?.url;
-   var fronturl = pageData.image_full_front?.url;
-   var mainurl = pageData.image_full?.url;
-   var elemurl = pageData.element?.icon?.url;
-   var pathurl = pageData.path?.icon?.url;
-   var pathsmall = pageData.path?.icon_small?.url;
-   var rarityurl = pageData.rarity?.icon?.url;
-   var pathname = pageData.path?.name;
+   const bgurl = pageData.image_full_bg?.url;
+   const fronturl = pageData.image_full_front?.url;
+   const mainurl = pageData.image_full?.url;
+   const elemurl = pageData.element?.icon?.url;
+   const pathurl = pageData.path?.icon?.url;
+   const pathsmall = pageData.path?.icon_small?.url;
+   const rarityurl = pageData.rarity?.icon?.url;
+   const pathname = pageData.path?.name;
 
    var statlist = [
       "HP",
@@ -50,8 +52,8 @@ export const CharacterStatBlock = ({ pageData }) => {
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   var statobj = [];
-   for (var i = 0; i < statlist.length; i++) {
+   let statobj = [];
+   for (let i = 0; i < statlist.length; i++) {
       statobj[i] = {};
       statobj[i].stat = statlist[i];
 
@@ -75,93 +77,102 @@ export const CharacterStatBlock = ({ pageData }) => {
             {/* ======================== */}
             {/* 1) Character Image div */}
             {/* ======================== */}
-            <div>
-               <div className="relative w-full text-center bg-gray-100 dark:bg-neutral-900 rounded-md">
-                  {/* Element Symbol */}
-                  <div className="absolute h-10 w-10 top-3 left-3 bg-gray-800 bg-opacity-20 rounded-full">
-                     <img src={elemurl} className="object-contain" />
-                     {/* layout="fill" objectFit="contain" /> */}
-                  </div>
+            <section className="bg-2 shadow-1 border-color relative w-full overflow-hidden rounded-md border text-center shadow-sm">
+               {/* Element Symbol */}
+               <div
+                  className="absolute left-3 top-3 z-10 h-10 w-10
+                   rounded-full "
+               >
+                  <Image
+                     options="width=100,height=100"
+                     alt="Element"
+                     url={elemurl}
+                     className="object-contain"
+                  />
+               </div>
 
-                  {/* Path + Path Name ? */}
-                  <div className="absolute h-10 w-10 top-3 left-14 ">
-                     <div className="absolute bg-gray-800 rounded-full h-10 w-10 top-0 left-0">
-                        <div className="h-8 w-8">
-                           <img
-                              className="relative inline-block object-contain left-1 top-1"
-                              src={pathsmall}
-                           />
-                        </div>
-                     </div>
-
-                     {/* <div className="absolute bottom-2 font-bold">{pathname}</div> */}
-                  </div>
-
-                  {/* Rarity */}
-                  <div className="absolute bottom-3 left-3 w-20 z-20 h-8">
-                     <img
-                        className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-20"
-                        src={rarityurl}
+               {/* Path + Path Name ? */}
+               <div
+                  className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center 
+                  rounded-full bg-zinc-400 dark:bg-slate-800"
+               >
+                  <div className="h-6 w-6">
+                     <Image
+                        options="width=100,height=100"
+                        alt="Element"
+                        url={pathsmall}
                      />
                   </div>
-
-                  <div className="relative inline-block text-center h-96 w-full">
-                     {/* Background Image */}
-                     {bgurl ? (
-                        <img
-                           src={bgurl}
-                           className="object-contain absolute h-96 w-full"
-                        />
-                     ) : null}
-
-                     {/* Main Image */}
-                     {mainurl ? (
-                        <img
-                           src={mainurl}
-                           className="object-contain absolute h-96 w-full"
-                        />
-                     ) : null}
-
-                     {/* Front Image */}
-                     {fronturl ? (
-                        <img
-                           src={fronturl}
-                           className="object-contain absolute h-96 w-full"
-                        />
-                     ) : null}
-                  </div>
                </div>
-            </div>
+
+               {/* Rarity */}
+               <div className="absolute bottom-4 left-4 z-20 flex h-8 items-center rounded-full bg-zinc-300 px-2 py-1 dark:bg-bg1Dark">
+                  <Image options="height=100" alt="Rarity" url={rarityurl} />
+               </div>
+               <div className="relative h-96">
+                  {/* Background Image */}
+                  {bgurl ? (
+                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
+                        <Image
+                           className="h-84 mx-auto object-contain"
+                           options="height=800"
+                           alt="Background Image"
+                           url={bgurl}
+                        />
+                     </div>
+                  ) : null}
+
+                  {/* Main Image */}
+                  {mainurl ? (
+                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
+                        <Image
+                           className="h-84 mx-auto object-contain"
+                           options="height=800"
+                           alt="Background Image - Main"
+                           url={mainurl}
+                        />
+                     </div>
+                  ) : null}
+
+                  {/* Front Image */}
+                  {fronturl ? (
+                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
+                        <Image
+                           className="h-84 mx-auto object-contain"
+                           options="height=800"
+                           alt="Background Image - Front"
+                           url={fronturl}
+                        />
+                     </div>
+                  ) : null}
+               </div>
+            </section>
 
             {/* ======================== */}
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
-            <div>
-               <div className="flex rounded-md border bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 mb-3 p-3">
-                  <div className="flex flex-grow items-center space-x-2">
-                     <div className="relative bg-gray-800 rounded-full h-10 w-10">
-                        <img
-                           className="relative inline-block object-contain"
-                           src={pathurl}
-                        />
-                     </div>
+            <section>
+               <div className="bg-2 shadow-1 border-color mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
+                  <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
+                     <Image
+                        className="relative inline-block object-contain"
+                        options="height=100"
+                        alt="Character Stat"
+                        url={pathurl}
+                     />
                   </div>
-                  <div className="flex flex-grow items-center space-x-2">
-                     {pathname}
-                  </div>
+                  <div className="font-bold">{pathname}</div>
                </div>
 
-               <div className="border divide-y dark:divide-neutral-700 dark:border-neutral-700 rounded-md overflow-hidden">
+               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (
                         <div
-                           className={`
-                      /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
-                      ${
-                         stat.colormod
-                            ? "block relative bg-gray-50 dark:bg-neutral-800"
-                            : "block relative bg-gray-100 dark:bg-neutral-900"
-                      } p-2 flex items-center`}
+                           className={`${
+                              stat.colormod
+                                 ? "bg-2 relative block"
+                                 : "bg-1 relative block"
+                           } flex items-center px-2 py-2.5`}
                            key={index}
                         >
                            {/* 2bi) Stat Icon */}
@@ -169,19 +180,22 @@ export const CharacterStatBlock = ({ pageData }) => {
                               <div>
                                  {stat.hash ? (
                                     <div
-                                       className="inline-flex relative items-center align-middle justify-center 
-                          bg-gray-600 rounded-full h-6 w-6"
+                                       className="relative inline-flex h-6 w-6 items-center 
+                                        justify-center rounded-full align-middle"
                                     >
-                                       <img
-                                          src={
+                                       <Image
+                                          alt="Character Stat"
+                                          url={
                                              stat.hash ?? "no_image_42df124128"
                                           }
-                                          className="object-contain h-full w-full"
+                                          className="h-full w-full object-contain"
                                        />
                                     </div>
                                  ) : null}
                               </div>
-                              <div>{stat.stat}</div>
+                              <div className="text-1 font-bold">
+                                 {stat.stat}
+                              </div>
                            </div>
                            {/* 2biii) Stat value */}
                            <div className="">
@@ -229,24 +243,24 @@ export const CharacterStatBlock = ({ pageData }) => {
                      );
                   })}
                </div>
-            </div>
+            </section>
          </div>
          {/* ======================== */}
          {/* Stats Slider and additional top info block */}
          {/* ======================== */}
          {/* 2a) Header for Adjusting Level and Slider */}
          {/* ======================== */}
-         <div className="relative w-full">
-            <div className="block my-3 font-bold bg-gray-50 dark:bg-neutral-900 py-4 tablet:py-0 tablet:px-3 border rounded-md dark:border-neutral-700 border-solid">
-               <div className="w-full text-center justify-between ">
+         <div className="bg-2 shadow-1 border-color my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
+            <div className="flex w-full items-center justify-between text-center">
+               <div className="flex items-center gap-1">
                   {/* Level Label */}
-                  <div className="align-middle inline-flex justify-between pr-0.5">
+                  <div className="inline-flex justify-between pr-0.5 align-middle">
                      Lvl
                   </div>
                   {/* Level Input Box */}
                   <input
-                     className="align-middle inline-flex ml-1 mr-2 text-center justify-center rounded
-      w-9 border dark:bg-neutral-800 dark:border-neutral-700 scale-20 py-1 px-0 level-input-box"
+                     className="scale-20 level-input-box border-color bg-1 ml-1 mr-2 inline-flex
+                     w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
                      type="number"
                      value={levelSliderValue}
                      onChange={(event) => {
@@ -266,12 +280,12 @@ export const CharacterStatBlock = ({ pageData }) => {
                      }}
                   ></input>
                   {/* Asc Label */}
-                  <div className="align-middle inline-flex justify-between text-sm pr-2">
+                  <div className="inline-flex justify-between pr-2 align-middle text-sm">
                      Asc
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="align-middle w-7 h-7 inline-flex flex-shrink-0 justify-between items-center mr-2 focus-within:border-blue-100"
+                     className="mr-2 inline-flex h-7 w-7 flex-shrink-0 items-center justify-between align-middle focus-within:border-blue-100"
                      type="checkbox"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
@@ -286,39 +300,40 @@ export const CharacterStatBlock = ({ pageData }) => {
                         setLevelAscensionCheck(event.target.checked)
                      }
                   ></input>
-                  {/* Slider */}
-                  <input
-                     className="level-slider align-middle inline-flex justify-end w-4/5 rounded-lg my-8"
-                     type="range"
-                     min="1"
-                     max="80"
-                     value={levelSliderValue}
-                     onChange={(event) =>
-                        setLevelSliderValue(parseInt(event.target.value))
-                     }
-                  ></input>
                </div>
+               {/* Slider */}
+               <input
+                  className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
+                   rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                  type="range"
+                  min="1"
+                  max="80"
+                  value={levelSliderValue}
+                  onChange={(event) =>
+                     setLevelSliderValue(parseInt(event.target.value))
+                  }
+               ></input>
             </div>
-
-            {/* 2c0) Material Summary - Just shows the Talent Mat(s) [Book + Boss mat(s)] and Ascension Mat(s) [Crystal + Ingredient + Monster Drop] */}
-            {/* <MaterialSummaryTop charData={charData} talentData={talentData} /> */}
-
-            {/* 2ci) Character Stat Graph */}
-            {/* - Should include a drop down stat selector, shading between pre-post ascension breakpoints */}
-            <StatGraph
-               charData={pageData}
-               graphStat={graphStat}
-               setGraphStat={setGraphStat}
-            />
-
-            {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
-        UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
-            {/* <Stats charData={charData} /> */}
-            <CSVStats charData={pageData} />
-
-            {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
-            {/* <BinOutputLink charData={charData} /> */}
          </div>
+
+         {/* 2c0) Material Summary - Just shows the Talent Mat(s) [Book + Boss mat(s)] and Ascension Mat(s) [Crystal + Ingredient + Monster Drop] */}
+         {/* <MaterialSummaryTop charData={charData} talentData={talentData} /> */}
+
+         {/* 2ci) Character Stat Graph */}
+         {/* - Should include a drop down stat selector, shading between pre-post ascension breakpoints */}
+         <StatGraph
+            charData={pageData}
+            graphStat={graphStat}
+            setGraphStat={setGraphStat}
+         />
+
+         {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
+        UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
+         {/* <Stats charData={charData} /> */}
+         <CSVStats charData={pageData} />
+
+         {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
+         {/* <BinOutputLink charData={charData} /> */}
       </>
    );
 };
@@ -448,32 +463,27 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                   {({ open }) => (
                      <>
                         <Disclosure.Button
-                           className="font-bold bg-gray-50  dark:bg-neutral-900 dark:border-neutral-700 
-                  flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+                           className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+                           gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                         >
+                           <BarChart2 size={20} className="text-yellow-500" />
                            Stat Graph
                            <div
                               className={`${
-                                 open
-                                    ? "transform rotate-180 text-gray-600 font-bold "
-                                    : "text-gray-400"
-                              } inline-block ml-auto `}
+                                 open ? "font-bol rotate-180 transform" : ""
+                              } ml-auto inline-block `}
                            >
-                              <CaretDownIcon
-                                 class="text-brand_1"
-                                 w={28}
-                                 h={28}
-                              />
+                              <ChevronDown size={28} />
                            </div>
                         </Disclosure.Button>
                         <Disclosure.Panel className="mb-5">
-                           <div className="border dark:border-neutral-700 text-sm bg-gray-50 dark:bg-neutral-900 px-4 py-3 rounded-md text-center">
+                           <div className="bg-2 border-color rounded-md border px-4 py-3 text-center text-sm">
                               <div className="inline-block px-2 font-bold">
                                  Display Stat:{" "}
                               </div>
                               {/* Stat Select Drop Down */}
                               <select
-                                 className="bg-white inline-block dark:bg-neutral-700"
+                                 className="bg-1 border-color inline-block rounded-lg border"
                                  name="stats"
                                  value={graphStat}
                                  onChange={(event) =>
@@ -510,7 +520,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
 // Collapsible CSV Stat Text box
 // =====================================
 const CSVStats = ({ charData }) => {
-   var data = charData;
+   const data = charData;
    if (data.stats != undefined && data.stats.length != 0) {
       return (
          <>
@@ -518,18 +528,17 @@ const CSVStats = ({ charData }) => {
                {({ open }) => (
                   <>
                      <Disclosure.Button
-                        className="font-bold bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700
-               flex items-center mb-2 w-full border px-3 py-2 rounded-md"
+                        className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+                        gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                      >
+                        <Binary size={20} className="text-yellow-500" />
                         Raw Stats for all Levels
                         <div
                            className={`${
-                              open
-                                 ? "transform rotate-180 text-gray-600 font-bold "
-                                 : "text-gray-400"
-                           } inline-block ml-auto `}
+                              open ? "font-bol rotate-180 transform" : ""
+                           } ml-auto inline-block `}
                         >
-                           <CaretDownIcon class="text-brand_1" w={28} h={28} />
+                           <ChevronDown size={28} />
                         </div>
                      </Disclosure.Button>
                      <Disclosure.Panel className="">
@@ -538,7 +547,7 @@ const CSVStats = ({ charData }) => {
                            dangerouslySetInnerHTML={{
                               __html: data.stats_csv,
                            }}
-                           className="h-24 font-mono border overflow-y-scroll dark:border-neutral-700 text-base bg-gray-100 dark:bg-neutral-800 px-4 py-3 rounded-md"
+                           className="border-color bg-2 h-24 overflow-y-scroll rounded-md border px-4 py-3 font-mono"
                         ></div>
                      </Disclosure.Panel>
                   </>

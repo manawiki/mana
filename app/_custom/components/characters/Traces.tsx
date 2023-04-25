@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { Image } from "~/components";
 
 export const Traces = ({ pageData, skillTreeData }: any) => {
-   var traces = pageData.traces;
+   const traces = pageData.traces;
 
    return (
-      <>
+      <div
+         className="bg-2 divide-color border-color shadow-1 mb-4 
+      divide-y-4 overflow-hidden rounded-lg border shadow"
+      >
          {traces.map((trace: any, index: any) => {
             const [skillLevel, setSkillLevel] = useState(1);
             const activeNode = skillTreeData.find(
@@ -13,26 +17,21 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
 
             return (
                <>
-                  <div
-                     className="border rounded-md dark:border-neutral-700 dark:bg-neutral-900 p-2 my-1 bg-gray-50"
-                     key={index}
-                  >
+                  <div key={index}>
                      {/* Header with Skill Icon and Name */}
-                     <div className="relative ">
-                        <div className="inline-flex align-middle h-12 w-12 mr-2 rounded-full bg-neutral-700">
-                           <div className="flex self-center justify-center h-9 w-full rounded-full bg-neutral-7">
-                              <img
-                                 className="object-contain "
-                                 src={trace?.icon?.url}
+                     <div className="bg-1 relative flex items-center gap-3 p-3">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
+                           <div className="h-9 w-8 rounded-full">
+                              <Image
+                                 className="object-contain"
+                                 url={trace?.icon?.url}
                                  alt={trace.name}
                               />
                            </div>
                         </div>
-                        <div className="inline-block align-middle w-3/4">
-                           <div className="block text-xl font-bold">
-                              {trace.name}
-                           </div>
-                           <div className="block">{trace.desc_type}</div>
+                        <div className="space-y-1">
+                           <div className="font-bold">{trace.name}</div>
+                           <div className="text-sm">{trace.desc_type}</div>
                         </div>
                      </div>
 
@@ -40,12 +39,13 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                      {trace.description_per_level?.length > 1 ? (
                         <>
                            {/* Slider */}
-                           <div className="border-t border-b p-1 my-1 dark:border-slate-700 w-full flex">
-                              <div className="inline-flex align-middle mr-2 dark:text-gray-200 ">
+                           <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
+                              <div className="mr-2 inline-flex align-middle ">
                                  Lv {skillLevel}
                               </div>
                               <input
-                                 className="level-slider align-middle inline-flex justify-end grow rounded-lg"
+                                 className="h-1 flex-grow appearance-none justify-end
+                                 rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                                  type="range"
                                  min="1"
                                  max={trace?.description_per_level?.length}
@@ -56,13 +56,11 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                               ></input>
                            </div>
                         </>
-                     ) : (
-                        <div className="border-b w-full dark:border-slate-700 h-1 my-1"></div>
-                     )}
+                     ) : null}
 
                      {/* Description */}
                      <div
-                        className="text-sm"
+                        className="border-color border-t p-3 text-sm"
                         dangerouslySetInnerHTML={{
                            __html:
                               trace?.description_per_level?.[skillLevel - 1]
@@ -73,7 +71,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                </>
             );
          })}
-      </>
+      </div>
    );
 };
 
@@ -86,7 +84,7 @@ const LevelMaterials = ({ activeNode, skillLevel }: any) => {
             <>
                {/* Material Upgrade List if applicable */}
                <div className="block w-full text-center">
-                  <div className="inline-block text-center px-3 p-1 rounded-sm bg-gray-100 dark:bg-neutral-800 mt-1 w-fit">
+                  <div className="mt-1 inline-block w-fit rounded-sm bg-gray-100 p-1 px-3 text-center dark:bg-neutral-800">
                      {activeNode?.level_up_cost[
                         skillLevel - 1
                      ]?.material_qty?.map((matqty: any) => {
@@ -112,7 +110,7 @@ const ItemQtyFrame = ({ mat }: any) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
-            <div className="relative mt-0.5 mr-0.5 inline-block h-11 w-11 align-middle text-xs">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${

@@ -14,21 +14,23 @@ export const Header = ({ pageData }: any) => {
             {/* 1) Character Image div */}
             {/* ======================== */}
             <div>
-               <div className="relative w-full text-center bg-gray-100 dark:bg-neutral-900 rounded-md">
+               <div className="bg-4 relative w-full rounded-md text-center">
                   {/* Rarity */}
-                  <div className="absolute bottom-3 left-3 w-20 z-20 h-8">
+                  <div className="absolute bottom-3 left-3 z-20 h-8 w-20">
                      <img
-                        className="object-contain w-20 z-20 h-8 rounded-full bg-black bg-opacity-20"
+                        alt="Material Rarity"
+                        className="z-20 h-8 w-20 rounded-full bg-black bg-opacity-20 object-contain"
                         src={rarityurl}
                      />
                   </div>
 
-                  <div className="relative inline-block text-center h-96 w-full">
+                  <div className="relative inline-block h-96 w-full text-center">
                      {/* Main Image */}
                      {iconurl ? (
                         <img
+                           alt="Materials Icon"
                            src={iconurl}
-                           className="object-contain absolute h-96 w-full"
+                           className="absolute h-96 w-full object-contain"
                         />
                      ) : null}
                   </div>
@@ -53,7 +55,7 @@ export const Header = ({ pageData }: any) => {
                   </div>
                </div> */}
 
-               <div className="border divide-y dark:divide-neutral-700 dark:border-neutral-700 rounded-md overflow-hidden">
+               <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
                   {statobj.map((stat: any, index) => {
                      return (
                         /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
@@ -61,9 +63,9 @@ export const Header = ({ pageData }: any) => {
                            className={`
                       ${
                          index % 2 == 1
-                            ? "block relative bg-gray-50 dark:bg-neutral-800"
-                            : "block relative bg-gray-100 dark:bg-neutral-900"
-                      } p-2 flex items-center`}
+                            ? "relative block bg-gray-50 dark:bg-neutral-800"
+                            : "relative block bg-gray-100 dark:bg-neutral-900"
+                      } flex items-center p-2`}
                            key={index}
                         >
                            {/* 2bi) Stat Icon */}
@@ -71,14 +73,14 @@ export const Header = ({ pageData }: any) => {
                               <div>
                                  {stat.hash ? (
                                     <div
-                                       className="inline-flex relative items-center align-middle justify-center 
-                          bg-gray-600 rounded-full h-6 w-6"
+                                       className="relative inline-flex h-6 w-6 items-center 
+                          justify-center rounded-full bg-gray-600 align-middle"
                                     >
                                        <img
                                           src={
                                              stat.hash ?? "no_image_42df124128"
                                           }
-                                          className="object-contain h-full w-full"
+                                          className="h-full w-full object-contain"
                                        />
                                     </div>
                                  ) : null}
@@ -105,12 +107,12 @@ export const Header = ({ pageData }: any) => {
                   })}
                </div>
 
-               <div className="rounded-md my-2 border bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 mb-3 p-3 text-sm">
+               <div className="my-2 mb-3 rounded-md border bg-gray-50 p-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
                   {pageData?.description}
                   {pageData?.bg_description ? (
                      <>
                         <div
-                           className="border-t mt-2 pt-2 dark:border-neutral-700 text-gray-500 text-sm"
+                           className="mt-2 border-t pt-2 text-sm text-gray-500 dark:border-neutral-700"
                            dangerouslySetInnerHTML={{
                               __html: pageData?.bg_description,
                            }}

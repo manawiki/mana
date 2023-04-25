@@ -34,8 +34,8 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
 
    return (
       <>
-         <div className="text-center">
-            <div className="canvas inline-block">
+         <div className="bg-2 shadow-1 rounded-lg p-6 text-center shadow-sm">
+            <div className="canvas bg-5 mx-auto flex items-center justify-center rounded-2xl bg-zinc-700">
                <div className={`canvas-${pathkey}`}></div>
 
                {connectorlist?.map((con: any) => {
@@ -52,7 +52,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                   return (
                      <>
                         <div
-                           className={`cursor-pointer point point-${
+                           className={`point cursor-pointer point-${
                               i + 1
                            }-${pathkey} ${treeNode == i + 1 ? "invert" : ""}`}
                            style={{
@@ -70,9 +70,9 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
          </div>
          <div className="text-center">
             {treeNode > 0 ? (
-               <div className="inline-block my-0.5 p-3 bg-slate-900 rounded-md border border-slate-700 w-full">
+               <div className="bg-2 -mt-2 inline-block w-full rounded-b-md p-3">
                   {/* Node Name */}
-                  <div className="text-l text-white font-bold">
+                  <div className="text-lg font-bold underline">
                      {activeNode.name}
                   </div>
 
@@ -81,12 +81,13 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                   1 ? (
                      <>
                         {/* Slider */}
-                        <div className="border-t border-b p-1 my-1 border-slate-700">
-                           <div className="inline-flex align-middle mr-2 text-gray-200">
+                        <div className="my-2 flex items-center gap-2 px-10">
+                           <div className="mr-2 inline-flex align-middle">
                               Lv {skillLevel}
                            </div>
                            <input
-                              className="level-slider align-middle inline-flex justify-end w-4/5 rounded-lg"
+                              className="h-1 flex-grow appearance-none justify-end
+                              rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                               type="range"
                               min="1"
                               max={
@@ -104,7 +105,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
 
                   {/* Node Description */}
                   <div
-                     className="text-sm text-white"
+                     className="pt-2 text-sm"
                      dangerouslySetInnerHTML={{
                         __html:
                            activeNode.description +
@@ -117,7 +118,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                   {activeNode.level_up_cost?.length > 0 ? (
                      <>
                         {/* Material Upgrade List if applicable */}
-                        <div>
+                        <div className="space-x-2 p-3">
                            {activeNode.level_up_cost[
                               skillLevel - 1
                            ]?.material_qty?.map((matqty: any) => {
@@ -127,7 +128,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                      </>
                   ) : null}
 
-                  <div className="text-sm text-gray-500">
+                  <div className="p-3 text-sm">
                      {activeNode.req_ascension ? (
                         <div>Req Asc. {activeNode.req_ascension}</div>
                      ) : null}
@@ -155,7 +156,7 @@ const ItemQtyFrame = ({ mat }: any) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
-            <div className="relative mt-0.5 mr-0.5 inline-block h-11 w-11 align-middle text-xs">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
