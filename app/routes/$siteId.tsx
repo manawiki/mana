@@ -25,7 +25,7 @@ import type {
    SerializeFrom,
    V2_MetaFunction,
 } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isAdding } from "~/utils";

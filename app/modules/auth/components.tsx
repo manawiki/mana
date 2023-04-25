@@ -1,5 +1,5 @@
 import type { Collection, Site, User } from "payload-types";
-import { useLocation, useMatches, useRouteLoaderData } from "@remix-run/react";
+import { useRouteLoaderData } from "@remix-run/react";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
