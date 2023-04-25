@@ -9,9 +9,9 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 export async function loader({
    context: { payload, user },
    params,
+   request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params });
-
+   const entryDefault = await getDefaultEntryData({ payload, params, request });
    return json({ entryDefault });
 }
 

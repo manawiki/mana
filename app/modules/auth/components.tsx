@@ -1,5 +1,5 @@
 import type { Collection, Site, User } from "payload-types";
-import { useLocation, useRouteLoaderData } from "@remix-run/react";
+import { useLocation, useMatches, useRouteLoaderData } from "@remix-run/react";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
@@ -40,26 +40,17 @@ export const CustomCollection = ({
 }: {
    children: React.ReactNode;
 }) => {
-   const collectionData = useRouteLoaderData(
+   const coreCollectionData = useRouteLoaderData(
       "routes/$siteId.collections+/$collectionId._route"
    ) as { collection: Collection };
 
-   //Pull data for custom site
-   const { pathname } = useLocation();
-   const parts = pathname.split("/");
-   const slug = parts[3];
+   //On the /w page, we have access to coreCollectionData so we check the collection object to see if customEntryTemplate is set to true
+   const isCustomOnWikiPage =
+      coreCollectionData?.collection?.customEntryTemplate;
 
-   const customCollectionData = useRouteLoaderData(
-      `_custom/routes/$siteId.collections+/${slug}.$entryId.c`
-   ) as {
-      entryDefault: { collectionEntity: Collection };
-   };
-
-   const collection = collectionData?.collection
-      ? collectionData?.collection
-      : customCollectionData?.entryDefault.collectionEntity;
-
-   const isCustom = collection?.customEntryTemplate === true;
+   //On the /c page, coreCollectionData is null, so we know it's a custom collection
+   const isCustom =
+      isCustomOnWikiPage ?? coreCollectionData == undefined ? true : false;
 
    return isCustom ? <>{children}</> : null;
 };
