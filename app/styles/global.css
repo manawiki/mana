@@ -14,10 +14,10 @@ table {
    @apply border-collapse;
 }
 th {
-   @apply border-color bg-2 border p-3;
+   @apply bg-2 border border-zinc-200 p-3 dark:border-bg4Dark;
 }
 td {
-   @apply border-color bg-3 border p-3;
+   @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
 }
 
 @layer base {
