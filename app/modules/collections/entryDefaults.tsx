@@ -35,7 +35,7 @@ export const getDefaultEntryData = async ({
    if (collection.customEntryTemplate) {
       const entry = await (
          await fetch(
-            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}`
+            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=1`
          )
       ).json();
       return entry;
@@ -68,7 +68,7 @@ export const getCustomEntryData = async ({
 
    const entry = await (
       await fetch(
-         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${request}`
+         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${depth}`
       )
    ).json();
    return entry;
