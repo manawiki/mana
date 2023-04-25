@@ -56,8 +56,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                               i + 1
                            }-${pathkey} ${treeNode == i + 1 ? "invert" : ""}`}
                            style={{
-                              backgroundImage:
-                                 "url(" + node.entry?.icon?.url + ")",
+                              backgroundImage: "url(" + node?.icon?.url + ")",
                            }}
                            onClick={() => {
                               setTreeNode(i + 1);
@@ -155,12 +154,10 @@ const ItemQtyFrame = ({ mat }: any) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a
-            href={`/lKJ16E5IhH/collections/materials/${mat.materials?.entry?.id}/c`}
-         >
+         <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
             <div className="relative mt-0.5 mr-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
-                  src={mat.materials?.entry?.icon?.url ?? "no_image_42df124128"}
+                  src={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}

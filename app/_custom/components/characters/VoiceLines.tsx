@@ -16,7 +16,7 @@ export const VoiceLines = ({ pageData }: any) => {
                            <>
                               {/* Column 1: Voice Line Title + Unlock Cond if applicable */}
                               <tr key={index}>
-                                 <td className="bg-gray-50 dark:bg-dark_200 text-sm px-3 py-2">
+                                 <td className="text-sm px-3 py-2">
                                     <div className="font-bold">
                                        {voice.title}
                                     </div>
@@ -62,7 +62,7 @@ const AudioPlayer = ({ voice }: any) => {
                <>
                   <Tab.Group>
                      {/* Create one tab per language of EN, JP, CN, KR */}
-                     <Tab.List className="grid grid-cols-4 gap-3 bg-gray-100 dark:bg-dark_100 p-1 rounded-b-lg border border-t-0 border-gray-100 dark:border-dark_50">
+                     <Tab.List className="grid grid-cols-4 gap-3 bg-gray-100 dark:bg-gray-900 p-1 rounded-lg border border-gray-100 dark:border-slate-800">
                         {lang.map((l: any) => {
                            return (
                               <>
@@ -71,8 +71,8 @@ const AudioPlayer = ({ voice }: any) => {
                                        <div
                                           className={`${
                                              selected
-                                                ? "text-blue-500 drop-shadow bg-blue-50 dark:bg-gray-800 font-bold"
-                                                : "bg-white dark:bg-dark_50 font-semibold"
+                                                ? "text-blue-500 drop-shadow bg-blue-100 dark:bg-blue-800 dark:bg-opacity-30 font-bold"
+                                                : "bg-white dark:bg-slate-800"
                                           } h-6 w-full flex justify-center items-center rounded px-3`}
                                        >
                                           {l.toUpperCase()}
