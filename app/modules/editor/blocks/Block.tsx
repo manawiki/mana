@@ -8,6 +8,7 @@ import { BlockType } from "../types";
 import BlockToDo from "./BlockToDo";
 import BlockList from "./BlockList";
 import { nanoid } from "nanoid";
+import BlockLink from "./BlockLink";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created
@@ -33,6 +34,11 @@ export default function Block({
    children,
    attributes,
 }: RenderElementProps) {
+   if (element.type === BlockType.Link) {
+      return (
+         <BlockLink {...attributes} element={element} children={children} />
+      );
+   }
    if (element.type === BlockType.Paragraph) {
       return (
          <p className="mb-3" {...attributes}>

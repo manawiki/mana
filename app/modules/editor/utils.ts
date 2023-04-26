@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
 import { Editor } from "slate";
 import type { Format } from "./types";
+import { BlockType } from "./types";
+import { Range, Transforms } from "slate";
 
 export function toPx(value: number | undefined): string | undefined {
    return value ? `${Math.round(value)}px` : undefined;
@@ -55,4 +57,63 @@ export function setGlobalCursor(type: CursorType) {
 
 export function removeGlobalCursor(type: CursorType) {
    document.body.classList.remove(type);
+}
+
+export function hasActiveLinkAtSelection(editor: Editor) {
+   return isLinkNodeAtSelection(editor, editor.selection);
+}
+
+export function toggleLinkAtSelection(editor) {
+   if (editor.selection == null) {
+      return;
+   }
+
+   if (hasActiveLinkAtSelection(editor)) {
+      Transforms.unwrapNodes(editor, {
+         match: (n) => Element.isElement(n) && n.type === "link",
+      });
+   } else {
+      const isSelectionCollapsed =
+         editor.selection == null || Range.isCollapsed(editor.selection);
+      if (isSelectionCollapsed) {
+         createLinkForRange(editor, null, "link", "", true /*isInsertion*/);
+      } else {
+         createLinkForRange(editor, editor.selection, "", "", false);
+      }
+   }
+}
+
+export function isLinkNodeAtSelection(editor: Editor, selection: Selection) {
+   if (selection == null) {
+      return false;
+   }
+
+   return (
+      Editor.above(editor, {
+         at: selection,
+         match: (n) => n.type === "link",
+      }) != null
+   );
+}
+
+function createLinkForRange(editor, range, linkText, linkURL, isInsertion) {
+   isInsertion
+      ? Transforms.insertNodes(
+           editor,
+           {
+              type: BlockType.Link,
+              url: linkURL,
+              children: [{ text: linkText }],
+           },
+           range != null ? { at: range } : undefined
+        )
+      : Transforms.wrapNodes(
+           editor,
+           {
+              type: BlockType.Link,
+              url: linkURL,
+              children: [{ text: linkText }],
+           },
+           { split: true, at: range }
+        );
 }

@@ -23,7 +23,8 @@ import {
 } from "~/liveblocks.config";
 import type { CustomElement } from "./types";
 import { BlockType } from "./types";
-import {
+import useSelection, {
+   isLinkNodeAtSelection,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
@@ -61,6 +62,8 @@ export const ForgeEditor = () => {
 
    const room = useRoom();
    const blocks = useList("blocks");
+
+   editor.isInline = (element) => ["link"].includes(element.type);
 
    const isEditingRef = useRef(false);
    const updateMyPresence = useUpdateMyPresence();
