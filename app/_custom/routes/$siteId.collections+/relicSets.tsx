@@ -277,7 +277,7 @@ const EntryWithDescription = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/characters/${cid}/c`}>
+         <a href={`/starrail/collections/relicSets/${cid}/c`}>
             <div className="relative inline-block rounded-md w-full align-middle bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 my-1">
                <div className="relative inline-block rounded-md w-28 align-middle text-center">
                   {/* Icon */}
