@@ -1,12 +1,14 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { redirect } from "@remix-run/node";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
 import { useState } from "react";
 // import { characters } from "./characters";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
-import { Search } from "lucide-react";
+import { Filter, Search, SortDesc } from "lucide-react";
+import { Image } from "~/components";
+import { H2 } from "~/_custom/components/custom";
 
 // export async function loader({
 //    context: { payload },
@@ -41,11 +43,7 @@ export async function loader({
 export const meta: V2_MetaFunction = () => {
    return [
       {
-         title: "Home - Mana",
-      },
-      {
-         name: "description",
-         content: "Build Better Wikis",
+         title: "Characters - Honkai: Star Rail",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -235,183 +233,184 @@ const CharacterList = ({ chars }: any) => {
 
    return (
       <>
-         {/* <DarkModeToggle /> */}
-         <div className="">
-            {/* Filter Options */}
-            <div className="">
-               {filterOptions.map((cat: any) => {
-                  return (
-                     <>
-                        <div className="px-2 py-1 my-1 border rounded-xl dark:border-gray-700">
-                           <div className="relative inline-block mr-1 w-12 text-sm text-center">
-                              {cat.name}{" "}
-                           </div>
-                           <div className="relative inline-block">
-                              {cat.options.map((opt: any) => {
-                                 return (
-                                    <>
-                                       <div
-                                          className={`relative inline-block align-middle text-center w-20 rounded-md border dark:border-gray-700 px-2 py-1 my-0.5 mx-1 leading-none cursor-pointer ${
-                                             filters.find(
-                                                (a: any) => a.id == opt.id
-                                             )
-                                                ? `bg-slate-800 bg-opacity-20 dark:bg-slate-700 dark:bg-opacity-70`
-                                                : ``
-                                          }`}
-                                          onClick={(event) => {
-                                             if (
-                                                filters.find(
-                                                   (a) => a.id == opt.id
-                                                )
-                                             ) {
-                                                setFilters(
-                                                   filters.filter(
-                                                      (a) => a.id != opt.id
-                                                   )
-                                                );
-                                             } else {
-                                                setFilters([
-                                                   // Allows only one filter per category
-                                                   ...filters.filter(
-                                                      (a) =>
-                                                         a.field != cat.field
-                                                   ),
-                                                   { ...opt, field: cat.field },
-                                                ]);
-                                             }
-                                          }}
-                                       >
-                                          {opt.icon ? (
-                                             <>
-                                                <div className="rounded-full bg-gray-800 bg-opacity-50 h-8 w-8 inline-flex">
-                                                   <img
-                                                      className="object-contain"
-                                                      src={opt.icon}
-                                                   />
-                                                </div>
-                                             </>
-                                          ) : null}
-
-                                          <div className="text-xs">
-                                             {opt.name}
-                                          </div>
-                                       </div>
-                                    </>
-                                 );
-                              })}
-                           </div>
+         {/* Filter Options */}
+         <H2 text="Characters" />
+         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+            {filterOptions.map((cat: any) => {
+               return (
+                  <>
+                     <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
+                        <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                           {cat.name}
                         </div>
-                     </>
-                  );
-               })}
-            </div>
+                        <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                           {cat.options.map((opt: any) => {
+                              return (
+                                 <>
+                                    <div
+                                       className={`bg-3 border-color rounded-lg border px-2.5 py-1 ${
+                                          filters.find(
+                                             (a: any) => a.id == opt.id
+                                          )
+                                             ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                             : ``
+                                       }`}
+                                       onClick={(event) => {
+                                          if (
+                                             filters.find((a) => a.id == opt.id)
+                                          ) {
+                                             setFilters(
+                                                filters.filter(
+                                                   (a) => a.id != opt.id
+                                                )
+                                             );
+                                          } else {
+                                             setFilters([
+                                                // Allows only one filter per category
+                                                //@ts-expect-error
+                                                ...filters.filter(
+                                                   (a) =>
+                                                      //@ts-expect-error
+                                                      a.field != cat.field
+                                                ),
+                                                //@ts-expect-error
+                                                { ...opt, field: cat.field },
+                                             ]);
+                                          }
+                                       }}
+                                    >
+                                       {opt.icon ? (
+                                          <>
+                                             <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                                <Image
+                                                   alt="Icon"
+                                                   className="object-contain"
+                                                   url={opt.icon}
+                                                />
+                                             </div>
+                                          </>
+                                       ) : null}
+                                       <div className="text-1 truncate pt-0.5 text-center text-xs">
+                                          {opt.name}
+                                       </div>
+                                    </div>
+                                 </>
+                              );
+                           })}
+                        </div>
+                     </div>
+                  </>
+               );
+            })}
+         </div>
 
-            {/* Sort Options */}
-            <div className="rounded-xl border dark:border-gray-700 p-2 my-2">
-               <div className="relative inline-block mr-1 w-12 text-center">
-                  Sort
-               </div>
+         {/* Search Text Box */}
+         <div
+            className="border-color bg-2 mb-2 mt-4 flex h-12
+            items-center justify-between gap-3 rounded-lg border px-3"
+         >
+            <Search className="text-yellow-500" size={24} />
+            <input
+               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               placeholder="Search..."
+               value={search}
+               onChange={(event) => {
+                  setSearch(event.target.value);
+               }}
+            />
+            <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
+               <span>{cfiltered.length}</span> <span>entries</span>
+            </div>
+         </div>
+
+         {/* Sort Options */}
+         <div className="flex items-center justify-between py-3">
+            <div className="text-1 flex items-center gap-2 text-sm font-bold">
+               <SortDesc size={16} className="text-yellow-500" />
+               Sort
+            </div>
+            <div className="flex items-center gap-2">
                {sortOptions.map((opt: any) => {
                   return (
-                     <>
-                        <div
-                           className={`relative inline-block text-center w-20 rounded-full border dark:border-gray-700 px-2 py-1 mx-1 cursor-pointer ${
-                              sort == opt.field
-                                 ? `bg-slate-800 bg-opacity-20 dark:bg-slate-700 dark:bg-opacity-70`
-                                 : ``
-                           }`}
-                           onClick={(event) => {
-                              setSort(opt.field);
-                           }}
-                        >
-                           {opt.name}
-                        </div>
-                     </>
+                     <div
+                        key={opt.field}
+                        className={`border-color text-1 relative cursor-pointer 
+                        rounded-full border px-4 py-1 text-center text-xs font-bold ${
+                           sort == opt.field
+                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              : ``
+                        }`}
+                        onClick={(event) => {
+                           setSort(opt.field);
+                        }}
+                     >
+                        {opt.name}
+                     </div>
                   );
                })}
             </div>
+         </div>
 
-            {/* Search Text Box */}
-            <div className="flex items-center justify-between my-2">
-               <span className="border-color flex-grow border-t" />
-               <div
-                  className="shadow-1 bg-2 border-color relative flex h-10 w-full
-                     items-center justify-between rounded-xl border px-5 shadow-sm"
-               >
-                  <input
-                     className="h-10 w-full bg-transparent focus:outline-none"
-                     placeholder="Search..."
-                     value={search}
-                     onChange={(event) => {
-                        setSearch(event.target.value);
-                     }}
-                  />
-                  <div className="text-gray-400 dark:text-gray-600 italic mx-1 w-32">
-                     {cfiltered.length} entries
-                  </div>
-                  <Search className="text-1" size={24} />
-               </div>
-               <span className="border-color flex-grow border-t" />
-            </div>
+         {/* List of Characters with applied sorting */}
+         <div className="grid grid-cols-2 gap-3 pb-16 text-center laptop:grid-cols-5">
+            {cfiltered?.map((char: any) => {
+               const elemurl = char?.element?.icon?.url;
+               const pathsmall = char?.path?.icon?.url;
+               const rarityurl = char?.rarity?.icon?.url;
+               const raritynum = char?.rarity?.display_number;
+               const cid = char?.id;
 
-            {/* List of Characters with applied sorting */}
-            <div className="text-center">
-               {cfiltered?.map((char: any) => {
-                  const elemurl = char?.element?.icon?.url;
-                  const pathsmall = char?.path?.icon?.url;
-                  const rarityurl = char?.rarity?.icon?.url;
-                  const raritynum = char?.rarity?.display_number;
-                  const cid = char?.id;
-
-                  return (
-                     <>
-                        <a href={`/starrail/collections/characters/${cid}/c`}>
-                           <div className="relative inline-block rounded-md bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 m-1 w-32 align-top">
-                              {/* Character Icon */}
-                              <div className="relative inline-block h-28 w-28">
-                                 {/* Element Symbol */}
-                                 <div className="absolute h-7 w-7 -top-1 -left-1 bg-gray-800 bg-opacity-20 rounded-full z-20">
-                                    <img
-                                       src={elemurl}
-                                       className="object-contain"
-                                    />
-                                    {/* layout="fill" objectFit="contain" /> */}
-                                 </div>
-
-                                 {/* Path + Path Name ? */}
-                                 <div className="absolute h-7 w-7 -top-1 -right-1 bg-gray-800 bg-opacity-50 rounded-full z-20">
-                                    <img
-                                       className="relative inline-block object-contain"
-                                       src={pathsmall}
-                                    />
-                                 </div>
-
-                                 {/* Rarity */}
-                                 <div className="absolute -bottom-7 w-28 z-20 h-4">
-                                    <img
-                                       className={`object-contain w-28 z-20 h-4 rounded-full color-rarity-${
-                                          raritynum ?? "1"
-                                       } bg-opacity-10`}
-                                       src={rarityurl}
-                                    />
-                                 </div>
-
-                                 <img
-                                    className="object-contain"
-                                    src={char.icon?.url}
-                                    alt={char?.name}
-                                 />
-                              </div>
-                              {/* Character Name */}
-                              <div className="text-center text-xs mt-6 ">
-                                 {char.name}
-                              </div>
+               return (
+                  <>
+                     <Link
+                        to={`/starrail/collections/characters/${cid}/c`}
+                        className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
+                     >
+                        {/* Character Icon */}
+                        <div className="relative">
+                           {/* Element Symbol */}
+                           <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
+                              <Image
+                                 alt="Name"
+                                 url={elemurl}
+                                 className="object-contain"
+                              />
+                              {/* layout="fill" objectFit="contain" /> */}
                            </div>
-                        </a>
-                     </>
-                  );
-               })}
-            </div>
+
+                           {/* Path + Path Name ? */}
+                           <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
+                              <Image
+                                 alt="Path"
+                                 className="relative inline-block object-contain"
+                                 url={pathsmall}
+                              />
+                           </div>
+
+                           {/* Rarity */}
+                           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
+                              <Image
+                                 alt="Rarity"
+                                 className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
+                                    raritynum ?? "1"
+                                 } bg-opacity-10`}
+                                 url={rarityurl}
+                              />
+                           </div>
+                           <Image
+                              className="mx-auto object-contain"
+                              url={char.icon?.url}
+                              alt={char?.name}
+                           />
+                        </div>
+                        {/* Character Name */}
+                        <div className="pb-1.5 pt-2.5 text-center text-xs font-bold">
+                           {char.name}
+                        </div>
+                     </Link>
+                  </>
+               );
+            })}
          </div>
       </>
    );

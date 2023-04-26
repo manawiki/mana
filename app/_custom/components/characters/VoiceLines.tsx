@@ -72,7 +72,7 @@ const AudioPlayer = ({ voice }: any) => {
                                        <div
                                           className={`${
                                              selected
-                                                ? "bg-zinc-200 font-bold dark:bg-bg4Dark"
+                                                ? "bg-yellow-50 dark:bg-yellow-500/10"
                                                 : "bg-white dark:bg-bg2Dark"
                                           } shadow-1 border-color flex h-6 w-full items-center justify-center rounded-full border px-3 shadow-sm`}
                                        >

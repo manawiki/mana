@@ -52,7 +52,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                   alt={mat.materials?.name}
                />
             </div>
-            <div className="relative mr-0.5 w-11 border-b border-gray-700 bg-black align-middle text-xs text-white">
+            <div className="relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs text-white">
                {mat?.qty}
             </div>
          </a>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { Image } from "~/components";
 export const SkillTree = ({ pageData, skillTreeData }: any) => {
    // UseState variable settings
    const [treeNode, setTreeNode] = useState(0);
@@ -34,8 +34,11 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
 
    return (
       <>
-         <div className="bg-2 shadow-1 rounded-lg p-6 text-center shadow-sm">
-            <div className="canvas bg-5 mx-auto flex items-center justify-center rounded-2xl bg-zinc-700">
+         <div
+            className="shadow-1 shadow-1 rounded-lg bg-zinc-500 px-6 text-center
+          shadow-sm dark:bg-bg4Dark"
+         >
+            <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg4Dark">
                <div className={`canvas-${pathkey}`}></div>
 
                {connectorlist?.map((con: any) => {
@@ -70,9 +73,9 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
          </div>
          <div className="text-center">
             {treeNode > 0 ? (
-               <div className="bg-2 -mt-2 inline-block w-full rounded-b-md p-3">
+               <div className="-mt-2 inline-block w-full rounded-b-md bg-zinc-500 p-3 dark:bg-bg4Dark">
                   {/* Node Name */}
-                  <div className="text-lg font-bold underline">
+                  <div className="text-lg font-bold text-zinc-100">
                      {activeNode.name}
                   </div>
 
@@ -82,7 +85,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                      <>
                         {/* Slider */}
                         <div className="my-2 flex items-center gap-2 px-10">
-                           <div className="mr-2 inline-flex align-middle">
+                           <div className="mr-2 inline-flex align-middle text-zinc-200">
                               Lv {skillLevel}
                            </div>
                            <input
@@ -105,7 +108,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
 
                   {/* Node Description */}
                   <div
-                     className="pt-2 text-sm"
+                     className="pt-2 text-sm text-zinc-200"
                      dangerouslySetInnerHTML={{
                         __html:
                            activeNode.description +
@@ -128,7 +131,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                      </>
                   ) : null}
 
-                  <div className="p-3 text-sm">
+                  <div className="p-3 text-sm text-zinc-200">
                      {activeNode.req_ascension ? (
                         <div>Req Asc. {activeNode.req_ascension}</div>
                      ) : null}
@@ -156,16 +159,22 @@ const ItemQtyFrame = ({ mat }: any) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
-            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
-               <img
-                  src={mat.materials?.icon?.url ?? "no_image_42df124128"}
+            <div
+               className="relative mr-0.5 mt-0.5 inline-block h-11 w-11
+            align-middle text-xs"
+            >
+               <Image
+                  url={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
                />
             </div>
-            <div className="relative mr-0.5 w-11 border-b border-gray-700 bg-black align-middle text-xs text-white">
+            <div
+               className="relative mr-0.5 w-11 rounded-b-sm border-b 
+               border-gray-700 bg-bg1Dark align-middle text-xs text-white"
+            >
                {mat?.qty}
             </div>
          </a>

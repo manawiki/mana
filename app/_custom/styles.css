@@ -7,7 +7,7 @@ input[type="checkbox"][disabled] {
 
 /* Item/Material Frame */
 .material-frame {
-   border-radius: 0px 8px 0px 0px;
+   border-radius: 2px 8px 0px 0px;
 }
 
 /* HSR: Rarity Colors */
