@@ -18,8 +18,8 @@ import {
 } from "slate-react";
 import { createEditor, type Descendant } from "slate";
 
-import Block from "./edit/forge/blocks/Block";
-import Leaf from "./edit/forge/blocks/Leaf";
+import Block from "../../../modules/editor/blocks/Block";
+import Leaf from "../../../modules/editor/blocks/Leaf";
 import { PostHeader } from "./PostHeader";
 import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";

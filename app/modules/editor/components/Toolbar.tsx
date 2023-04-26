@@ -3,12 +3,12 @@ import { createPortal } from "react-dom";
 import { Editor, Path, Range, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Select from "./Select";
-import Tooltip from "../../../../../../components/Tooltip";
+import Tooltip from "../../../components/Tooltip";
 
 import { toggleMark, topLevelPath } from "../utils";
 import type { CustomElement, TextBlock } from "../types";
 import { BlockType } from "../types";
-import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
+import { Bold, Italic, Link, Strikethrough, Underline } from "lucide-react";
 import Button from "./Button";
 
 export default function Toolbar() {
@@ -53,8 +53,8 @@ export default function Toolbar() {
    return createPortal(
       <div
          ref={ref}
-         className="flex items-center py-2.5 px-3 rounded-xl pointer-events-auto opacity-0 gap-2
-         transition-opacity duration-200 border border-color shadow-lg shadow-1 ease-in-out bg-1 -mt-16"
+         className="border-color shadow-1 bg-1 pointer-events-auto -mt-16 flex items-center gap-2
+         rounded-xl border px-3 py-2.5 opacity-0 shadow-lg transition-opacity duration-200 ease-in-out"
          onMouseDown={(e) => {
             // prevent toolbar from taking focus away from editor
             e.preventDefault();
@@ -101,14 +101,28 @@ export default function Toolbar() {
          <div className="flex items-center gap-1">
             <Tooltip id="bold" content="Toggle Bold">
                <Button
+                  ariaLabel="Toggle Link"
+                  onPointerDown={(e) => e.preventDefault()}
+                  onClick={() => toggleMark(editor, "bold")}
+                  className={`${
+                     marks && marks["bold"] === true
+                        ? "bg-3 border-color border"
+                        : ""
+                  } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+               >
+                  <Link size={16} />
+               </Button>
+            </Tooltip>
+            <Tooltip id="bold" content="Toggle Bold">
+               <Button
                   ariaLabel="Toggle Bold"
                   onPointerDown={(e) => e.preventDefault()}
                   onClick={() => toggleMark(editor, "bold")}
                   className={`${
                      marks && marks["bold"] === true
-                        ? "bg-3 border border-color"
+                        ? "bg-3 border-color border"
                         : ""
-                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
+                  } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                >
                   <Bold size={16} />
                </Button>
@@ -120,9 +134,9 @@ export default function Toolbar() {
                   onClick={() => toggleMark(editor, "italic")}
                   className={`${
                      marks && marks["italic"] === true
-                        ? "bg-3 border border-color"
+                        ? "bg-3 border-color border"
                         : ""
-                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
+                  } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                >
                   <Italic size={16} />
                </Button>
@@ -134,9 +148,9 @@ export default function Toolbar() {
                   onClick={() => toggleMark(editor, "underline")}
                   className={`${
                      marks && marks["underline"] === true
-                        ? "bg-3 border border-color"
+                        ? "bg-3 border-color border"
                         : ""
-                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
+                  } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                >
                   <Underline size={16} />
                </Button>
@@ -148,9 +162,9 @@ export default function Toolbar() {
                   onClick={() => toggleMark(editor, "strikeThrough")}
                   className={`${
                      marks && marks["strikeThrough"] === true
-                        ? "bg-3 border border-color"
+                        ? "bg-3 border-color border"
                         : ""
-                  } h-8 hover:bg-2 rounded-lg w-8 flex items-center justify-center`}
+                  } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                >
                   <Strikethrough size={16} />
                </Button>
