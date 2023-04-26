@@ -1,3 +1,5 @@
+import { Image } from "~/components";
+
 export const Header = ({ pageData }: any) => {
    const iconurl = pageData?.icon?.url;
    const rarityurl = pageData?.rarity?.icon?.url;
@@ -9,38 +11,37 @@ export const Header = ({ pageData }: any) => {
 
    return (
       <>
-         <div className="grid gap-3 laptop:grid-cols-2">
+         <div className="grid gap-4 laptop:grid-cols-2">
             {/* ======================== */}
             {/* 1) Character Image div */}
             {/* ======================== */}
-            <div>
-               <div className="bg-4 relative w-full rounded-md text-center">
+            <section>
+               <div
+                  className="bg-2 border-color shadow-1 relative w-full
+                rounded-lg border text-center shadow-sm"
+               >
                   {/* Rarity */}
-                  <div className="absolute bottom-3 left-3 z-20 h-8 w-20">
-                     <img
-                        alt="Material Rarity"
-                        className="z-20 h-8 w-20 rounded-full bg-black bg-opacity-20 object-contain"
-                        src={rarityurl}
-                     />
+                  <div className="absolute bottom-4 left-4 z-20 flex h-8 items-center rounded-full bg-zinc-300 px-2 py-1 dark:bg-bg1Dark">
+                     <Image options="height=100" alt="Rarity" url={rarityurl} />
                   </div>
 
                   <div className="relative inline-block h-96 w-full text-center">
                      {/* Main Image */}
                      {iconurl ? (
-                        <img
+                        <Image
                            alt="Materials Icon"
-                           src={iconurl}
+                           url={iconurl}
                            className="absolute h-96 w-full object-contain"
                         />
                      ) : null}
                   </div>
                </div>
-            </div>
+            </section>
 
             {/* ======================== */}
             {/* 2) Info Block Section */}
             {/* ======================== */}
-            <div>
+            <section>
                {/* <div className="flex rounded-md border bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 mb-3 p-3">
                   <div className="flex flex-grow items-center space-x-2">
                      <div className="relative bg-gray-800 rounded-full h-10 w-20">
@@ -55,7 +56,7 @@ export const Header = ({ pageData }: any) => {
                   </div>
                </div> */}
 
-               <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
+               <div className="divide-color border-color shadow-1 mb-4 divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (
                         /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
@@ -63,8 +64,8 @@ export const Header = ({ pageData }: any) => {
                            className={`
                       ${
                          index % 2 == 1
-                            ? "relative block bg-gray-50 dark:bg-neutral-800"
-                            : "relative block bg-gray-100 dark:bg-neutral-900"
+                            ? "bg-1 relative block"
+                            : "bg-2 relative block"
                       } flex items-center p-2`}
                            key={index}
                         >
@@ -76,8 +77,9 @@ export const Header = ({ pageData }: any) => {
                                        className="relative inline-flex h-6 w-6 items-center 
                           justify-center rounded-full bg-gray-600 align-middle"
                                     >
-                                       <img
-                                          src={
+                                       <Image
+                                          alt="Background"
+                                          url={
                                              stat.hash ?? "no_image_42df124128"
                                           }
                                           className="h-full w-full object-contain"
@@ -85,7 +87,9 @@ export const Header = ({ pageData }: any) => {
                                     </div>
                                  ) : null}
                               </div>
-                              <div>{stat.stat}</div>
+                              <div className="text-1 font-bold">
+                                 {stat.stat}
+                              </div>
                            </div>
                            {/* 2biii) Stat value */}
                            <div className="">{stat.value}</div>
@@ -107,12 +111,11 @@ export const Header = ({ pageData }: any) => {
                   })}
                </div>
 
-               <div className="my-2 mb-3 rounded-md border bg-gray-50 p-3 text-sm dark:border-neutral-700 dark:bg-neutral-900">
+               <div className="border-color bg-2 shadow-1 my-2 mb-3 rounded-md border p-3 text-sm shadow-sm">
                   {pageData?.description}
                   {pageData?.bg_description ? (
                      <>
                         <div
-                           className="mt-2 border-t pt-2 text-sm text-gray-500 dark:border-neutral-700"
                            dangerouslySetInnerHTML={{
                               __html: pageData?.bg_description,
                            }}
@@ -120,7 +123,7 @@ export const Header = ({ pageData }: any) => {
                      </>
                   ) : null}
                </div>
-            </div>
+            </section>
          </div>
       </>
    );

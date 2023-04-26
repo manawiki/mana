@@ -13,10 +13,10 @@ export const PromotionCost = ({ pageData }: any) => {
                   return (
                      <>
                         <tr key={index}>
-                           <td className="py-0 px-3 text-xs font-bold text-center">
+                           <td className="px-3 py-0 text-center text-xs font-bold">
                               <div>Lv {index + 1}</div>
                            </td>
-                           <td className="py-1 px-1 pl-3">
+                           <td className="px-1 py-1 pl-3">
                               {promo.material_qty?.map((mat: any) => (
                                  <ItemQtyFrame mat={mat} />
                               ))}
@@ -43,7 +43,7 @@ const ItemQtyFrame = ({ mat }: any) => {
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
          <a href={`/starrail/collections/materials/${mat.materials?.id}/c`}>
-            <div className="relative mt-0.5 mr-0.5 inline-block h-11 w-11 align-middle text-xs">
+            <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
@@ -52,7 +52,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                   alt={mat.materials?.name}
                />
             </div>
-            <div className="relative mr-0.5 w-11 border-b border-gray-700 bg-black align-middle text-xs text-white">
+            <div className="relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs text-white">
                {mat?.qty}
             </div>
          </a>

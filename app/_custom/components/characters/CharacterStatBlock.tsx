@@ -259,7 +259,8 @@ export const CharacterStatBlock = ({ pageData }) => {
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="mr-2 inline-flex h-7 w-7 flex-shrink-0 items-center justify-between align-middle focus-within:border-blue-100"
+                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
+                     justify-between rounded-sm align-middle text-yellow-500"
                      type="checkbox"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
