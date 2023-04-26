@@ -4,7 +4,7 @@ export default function Leaf({ leaf, children, attributes }: RenderLeafProps) {
       return (
          <>
             <span
-               className="absolute text-zinc-300 dark:text-zinc-500 pointer-events-none select-none"
+               className="pointer-events-none absolute select-none text-zinc-300 dark:text-zinc-500"
                contentEditable={false}
             >
                {leaf.placeholder}
