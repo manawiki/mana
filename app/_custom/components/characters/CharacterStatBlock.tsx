@@ -110,14 +110,16 @@ export const CharacterStatBlock = ({ pageData }) => {
                <div className="relative h-96">
                   {/* Main Image */}
                   {mainurl ? (
-                     <div className="absolute left-0 top-0 flex h-96 w-full items-center">
-                        <Image
-                           className="h-84 mx-auto object-contain"
-                           options="height=800"
-                           alt="Background Image - Main"
-                           url={mainurl}
-                        />
-                     </div>
+                     <a href={mainurl}>
+                        <div className="absolute left-0 top-0 flex h-96 w-full items-center">
+                           <Image
+                              className="h-84 mx-auto object-contain"
+                              options="height=800"
+                              alt="Background Image - Main"
+                              url={mainurl}
+                           />
+                        </div>
+                     </a>
                   ) : null}
                </div>
             </section>
