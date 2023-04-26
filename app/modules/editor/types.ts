@@ -87,7 +87,6 @@ export type CodeSandboxElement = BlockElement & {
    url: string | null;
    children: [{ text: "" }];
 };
-
 export type CustomElement =
    | ParagraphElement
    | HeadingElement

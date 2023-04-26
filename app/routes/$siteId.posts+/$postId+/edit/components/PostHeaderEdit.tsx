@@ -30,7 +30,7 @@ import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
 import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
-import { Tooltip } from "../forge/components";
+import { Tooltip } from "../../../../../modules/editor/components";
 import { PostVersionModal } from "./PostVersionModal";
 import { useStorage } from "~/liveblocks.config";
 import TextareaAutosize from "react-textarea-autosize";
