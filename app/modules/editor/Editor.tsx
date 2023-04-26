@@ -23,11 +23,11 @@ import {
 } from "~/liveblocks.config";
 import type { CustomElement } from "./types";
 import { BlockType } from "./types";
-import useSelection, {
-   isLinkNodeAtSelection,
+import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
+   withLayout,
    withNodeId,
 } from "./utils";
 import Leaf from "./blocks/Leaf";
@@ -46,7 +46,10 @@ const SHORTCUTS: Record<string, BlockType> = {
 };
 
 const useEditor = () =>
-   useMemo(() => withShortcuts(withNodeId(withReact(createEditor()))), []);
+   useMemo(
+      () => withShortcuts(withNodeId(withLayout(withReact(createEditor())))),
+      []
+   );
 
 function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
