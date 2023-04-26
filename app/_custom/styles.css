@@ -5,6 +5,10 @@ input[type="checkbox"][disabled] {
    filter: grayscale(80%);
 }
 
+input[type="range"] {
+   border: 1px rgba(255,255,255,.1) solid;
+}
+
 /* Item/Material Frame */
 .material-frame {
    border-radius: 2px 8px 0px 0px;
