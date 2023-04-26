@@ -112,10 +112,13 @@ export const Header = ({ pageData }: any) => {
                </div>
 
                <div className="border-color bg-2 shadow-1 my-2 mb-3 rounded-md border p-3 text-sm shadow-sm">
-                  {pageData?.description}
+                  <div
+                     dangerouslySetInnerHTML={{ __html: pageData?.description }}
+                  ></div>
                   {pageData?.bg_description ? (
                      <>
                         <div
+                           className="mt-2 border-t pt-2 text-sm text-gray-500 dark:border-neutral-700"
                            dangerouslySetInnerHTML={{
                               __html: pageData?.bg_description,
                            }}
