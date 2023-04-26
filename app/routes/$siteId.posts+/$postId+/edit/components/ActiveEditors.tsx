@@ -1,6 +1,6 @@
 import { useOthers } from "~/liveblocks.config";
 import Avatar from "./Avatar";
-import { USER_COLORS } from "../forge/constants";
+import { USER_COLORS } from "../../../../../modules/editor/constants";
 
 export default function ActiveEditors() {
    const others = useOthers();
@@ -17,7 +17,7 @@ export default function ActiveEditors() {
                      return (
                         <div
                            key={user.id}
-                           className="flex -ml-2 first:ml-0 z-10 items-center justify-center gap-2"
+                           className="z-10 -ml-2 flex items-center justify-center gap-2 first:ml-0"
                         >
                            <Avatar
                               key={connectionId}

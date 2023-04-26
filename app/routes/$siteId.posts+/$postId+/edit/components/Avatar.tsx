@@ -1,5 +1,5 @@
 import { Image } from "~/components/Image";
-import { Tooltip } from "../forge/components";
+import { Tooltip } from "../../../../../modules/editor/components";
 import { MousePointer2 } from "lucide-react";
 
 type Props = {

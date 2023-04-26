@@ -1,5 +1,5 @@
 import Button from "./Button";
-import Tooltip from "../../../../../../components/Tooltip";
+import Tooltip from "../../../components/Tooltip";
 import BlockTypeSelector from "./BlockTypeSelector";
 import type { CustomElement } from "../types";
 import { GripVertical, Minus, Plus } from "lucide-react";
@@ -21,10 +21,10 @@ export default function BlockInlineActions({
    });
 
    return (
-      <div className="flex items-center justify-space-between">
+      <div className="justify-space-between flex items-center">
          <Tooltip id="delete" content="Delete">
             <Button
-               className="hover:bg-1 flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
+               className="hover:bg-1 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
                onClick={onDelete}
                ariaLabel="Delete"
             >
@@ -33,7 +33,7 @@ export default function BlockInlineActions({
          </Tooltip>
          <BlockTypeSelector onSelect={onInsertBelow}>
             <Button
-               className="hover:bg-1 flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
+               className="hover:bg-1 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
                ariaLabel="Insert block below"
             >
                <Plus size={16} />
@@ -44,7 +44,7 @@ export default function BlockInlineActions({
                ariaLabel="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
-               className="hover:bg-1 cursor-grab flex items-center justify-center hover:shadow shadow-1 h-7 w-7 rounded-md"
+               className="hover:bg-1 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
             >
                <GripVertical size={16} />
             </Button>

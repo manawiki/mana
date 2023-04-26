@@ -8,11 +8,11 @@ type Props = {
 
 export default function BlockList({ element, children }: Props) {
    return (
-      <ul className="list-none ml-3 m-0 p-0">
+      <ul className="m-0 ml-3 list-none p-0">
          <li
-            className="flex mb-2.5 items-start flex-grow before:content-['•'] 
-           before:w-4 before:mr-2 before:flex-grow-0 before:flex-shrink-0 
-           before:inline-flex before:items-center before:justify-center"
+            className="mb-2.5 flex flex-grow items-start before:mr-2 
+           before:inline-flex before:w-4 before:flex-shrink-0 before:flex-grow-0 
+           before:items-center before:justify-center before:content-['•']"
          >
             {children}
          </li>
