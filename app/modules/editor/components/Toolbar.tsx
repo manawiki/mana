@@ -5,7 +5,12 @@ import { useSlate } from "slate-react";
 import Select from "./Select";
 import Tooltip from "../../../components/Tooltip";
 
-import { toggleMark, topLevelPath } from "../utils";
+import {
+   hasActiveLinkAtSelection,
+   toggleLinkAtSelection,
+   toggleMark,
+   topLevelPath,
+} from "../utils";
 import type { CustomElement, TextBlock } from "../types";
 import { BlockType } from "../types";
 import { Bold, Italic, Link, Strikethrough, Underline } from "lucide-react";
@@ -99,13 +104,13 @@ export default function Toolbar() {
          )}
 
          <div className="flex items-center gap-1">
-            <Tooltip id="bold" content="Toggle Bold">
+            <Tooltip id="link" content="Toggle Link">
                <Button
                   ariaLabel="Toggle Link"
                   onPointerDown={(e) => e.preventDefault()}
-                  onClick={() => toggleMark(editor, "bold")}
+                  onClick={() => toggleLinkAtSelection(editor)}
                   className={`${
-                     marks && marks["bold"] === true
+                     hasActiveLinkAtSelection(editor) === true
                         ? "bg-3 border-color border"
                         : ""
                   } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
@@ -113,6 +118,7 @@ export default function Toolbar() {
                   <Link size={16} />
                </Button>
             </Tooltip>
+
             <Tooltip id="bold" content="Toggle Bold">
                <Button
                   ariaLabel="Toggle Bold"
@@ -207,6 +213,7 @@ function isTextElementType(type: string): type is TextBlock {
       type === BlockType.H3 ||
       type === BlockType.Paragraph ||
       type === BlockType.BulletedList ||
-      type === BlockType.ToDo
+      type === BlockType.ToDo ||
+      type === BlockType.Link
    );
 }
