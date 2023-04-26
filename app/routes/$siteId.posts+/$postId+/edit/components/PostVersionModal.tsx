@@ -6,8 +6,8 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 import { useMemo, useCallback, Fragment, useState } from "react";
-import Block from "../forge/blocks/Block";
-import Leaf from "../forge/blocks/Leaf";
+import Block from "../../../../../modules/editor/blocks/Block";
+import Leaf from "../../../../../modules/editor/blocks/Leaf";
 import { format } from "date-fns";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useMutation } from "~/liveblocks.config";
@@ -68,15 +68,15 @@ export const PostVersionModal = ({
          show={isVersionModalOpen}
       >
          <div
-            className="w-full laptop:max-w-[1200px] laptop:w-[1200px] transform bg-2 rounded-md
-               text-left align-middle transition-all min-h-full overflow-hidden"
+            className="bg-2 min-h-full w-full transform overflow-hidden rounded-md
+               text-left align-middle transition-all laptop:w-[1200px] laptop:max-w-[1200px]"
          >
-            <section className="flex items-start bg-3">
+            <section className="bg-3 flex items-start">
                <Tab.Group>
-                  <Tab.Panels className="w-[899px] max-h-[90vh] bg-3 px-4 pb-4 overflow-auto">
+                  <Tab.Panels className="bg-3 max-h-[90vh] w-[899px] overflow-auto px-4 pb-4">
                      <div
-                        className="fixed h-12 font-bold flex items-center w-[898px] left-0 
-                        mb-3 z-10 top-0 bg-3 border-b text-1 border-color px-4 text-sm"
+                        className="bg-3 text-1 border-color fixed left-0 top-0 z-10 
+                        mb-3 flex h-12 w-[898px] items-center border-b px-4 text-sm font-bold"
                      >
                         {format(
                            new Date(selectedVersion?.updatedAt as string),
@@ -87,7 +87,7 @@ export const PostVersionModal = ({
                         (version: any) =>
                            version.version?.content && (
                               <Tab.Panel className="mt-16" key={version.id}>
-                                 <h1 className="text-3xl font-header font-bold">
+                                 <h1 className="font-header text-3xl font-bold">
                                     {version.version.title}
                                  </h1>
                                  <PostHeader post={version} />
@@ -107,11 +107,11 @@ export const PostVersionModal = ({
                            )
                      )}
                   </Tab.Panels>
-                  <div className="w-[300px] h-full border-l border-color min-h-[90vh]">
-                     <Tab.List className="flex flex-col min-h-[90vh]">
-                        <div className="grid grid-cols-2 p-4 gap-4 flex-none">
+                  <div className="border-color h-full min-h-[90vh] w-[300px] border-l">
+                     <Tab.List className="flex min-h-[90vh] flex-col">
+                        <div className="grid flex-none grid-cols-2 gap-4 p-4">
                            <button
-                              className="text-sm h-9 font-bold text-white bg-emerald-500 rounded-md"
+                              className="h-9 rounded-md bg-emerald-500 text-sm font-bold text-white"
                               onClick={() => {
                                  updateData();
                                  fetcher.submit(
@@ -147,7 +147,7 @@ export const PostVersionModal = ({
                            </button>
                         </div>
                         <RadioGroup
-                           className="flex-grow bg-3 mx-4 border-y border-color overflow-auto divide-y divide-color"
+                           className="bg-3 border-color divide-color mx-4 flex-grow divide-y overflow-auto border-y"
                            value={selectedVersion}
                            onChange={setSelectedVersion}
                         >
@@ -163,11 +163,11 @@ export const PostVersionModal = ({
                                              <RadioGroup.Label
                                                 className={`${
                                                    checked ? "font-bold" : ""
-                                                } cursor-pointer rounded-md flex gap-2 relative group items-center w-full py-3`}
+                                                } group relative flex w-full cursor-pointer items-center gap-2 rounded-md py-3`}
                                              >
                                                 {index == 0 &&
                                                 currentEntry == 1 ? (
-                                                   <span className="text-xs shadow shadow-1 bg-1 rounded-lg px-2 py-1 font-semibold">
+                                                   <span className="shadow-1 bg-1 rounded-lg px-2 py-1 text-xs font-semibold shadow">
                                                       Live
                                                    </span>
                                                 ) : null}
@@ -189,8 +189,8 @@ export const PostVersionModal = ({
                                                 </time>
                                                 {checked ? (
                                                    <span
-                                                      className="absolute top-1/2 right-0 h-2 w-2 rounded-full
-                                                 bg-emerald-500  -translate-y-1/2 z-10"
+                                                      className="absolute right-0 top-1/2 z-10 h-2 w-2
+                                                 -translate-y-1/2  rounded-full bg-emerald-500"
                                                    />
                                                 ) : null}
                                              </RadioGroup.Label>
@@ -200,8 +200,8 @@ export const PostVersionModal = ({
                                  )
                            )}
                         </RadioGroup>
-                        <section className="flex items-center justify-between m-4">
-                           <div className="text-sm flex items-center gap-1 text-1">
+                        <section className="m-4 flex items-center justify-between">
+                           <div className="text-1 flex items-center gap-1 text-sm">
                               Showing{" "}
                               <span className="font-bold">{currentEntry}</span>{" "}
                               to{" "}

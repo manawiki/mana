@@ -40,7 +40,6 @@ export default function Block({
          </p>
       );
    }
-
    if (element.type === BlockType.H2) {
       return <h2 {...attributes}>{children}</h2>;
    }

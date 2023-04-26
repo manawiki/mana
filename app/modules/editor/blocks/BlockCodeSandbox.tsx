@@ -1,28 +1,28 @@
 import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, VideoElement } from "../types";
+import type { CustomElement, CodeSandboxElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
 import { useSelf } from "~/liveblocks.config";
-import { Video } from "lucide-react";
+import { Code } from "lucide-react";
 
 type Props = {
-   element: VideoElement;
+   element: CodeSandboxElement;
 };
 
-export default function BlockVideo({ element }: Props) {
+export default function BlockCodeSandbox({ element }: Props) {
    const editor = useSlate();
    const self = useSelf();
 
    return (
-      <div className="relative">
+      <div className="relative my-0.5">
          {element.url ? (
-            <div className="relative mb-3 flex justify-center w-full min-h-[100px] h-0 pb-[56.20608899297424%]">
+            <div className="relative mb-3 flex h-0 min-h-[100px] w-full justify-center pb-[66%]">
                <iframe
-                  className="left-0 top-0 w-full h-full absolute"
+                  className="absolute left-0 top-0 h-full w-full"
                   width="100%"
                   height="315"
                   src={element.url}
-                  title="YouTube video player"
+                  title="CodeSandbox embed"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -31,23 +31,22 @@ export default function BlockVideo({ element }: Props) {
          ) : (
             <Placeholder
                defaultOpen={self?.connectionId === element?.createdBy}
-               icon={Video}
-               text="Embed a YouTube video"
+               icon={Code}
+               text="Embed a CodeSandbox project"
                inputs={{
                   url: {
                      type: "url",
                      label: "URL",
-                     placeholder: "Paste YouTube video link…",
-                     title: "Please enter a valid YouTube video link",
+                     placeholder: "Paste CodeSandbox link…",
+                     title: "Please enter a valid CodeSandbox project link",
                      required: true,
                      pattern:
-                        "^((?:https?:)?//)?((?:www|m)\\.)?((?:youtube(-nocookie)?\\.com|youtu.be))(/(?:[\\w\\-]+\\?v=|embed/|v/)?)([\\w\\-]+)(\\S+)?$",
+                        "((?:https?:)?//)?(?:www.)?(?:codesandbox.io)((/s/)|(/embed/))(.*)+$",
                   },
                }}
                onSubmit={({ url }) => {
                   if (!url.includes("/embed/")) {
-                     const id = new URL(url).searchParams.get("v");
-                     url = `https://youtube.com/embed/${id}`;
+                     url = url.replace("/s/", "/embed/");
                   }
 
                   const path = ReactEditor.findPath(editor, element);
