@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
 import { Editor } from "slate";
-import type { Format } from "./types";
+import type { Format, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 import { Range, Transforms } from "slate";
 
@@ -29,6 +29,31 @@ export const withNodeId = (editor: Editor) => {
 
    return editor;
 };
+
+export function withLayout(editor: Editor) {
+   const { normalizeNode } = editor;
+
+   editor.normalizeNode = ([node, path]) => {
+      // Make sure the document always contains a paragraph
+      if (path.length === 0) {
+         insertParagraphIfMissing(editor);
+      }
+      return normalizeNode([node, path]);
+   };
+
+   return editor;
+}
+
+function insertParagraphIfMissing(editor: Editor) {
+   if (editor.children.length < 1) {
+      const p: ParagraphElement = {
+         id: nanoid(),
+         type: BlockType.Paragraph,
+         children: [{ text: "" }],
+      };
+      Transforms.insertNodes(editor, p, { at: [0] });
+   }
+}
 
 export function toggleMark(editor: Editor, format: Format) {
    const isActive = isMarkActive(editor, format);
