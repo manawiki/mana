@@ -396,7 +396,7 @@ const EntryIconOnly = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/characters/${cid}/c`}>
+         <a href={`/starrail/collections/lightCones/${cid}/c`}>
             <div className="relative inline-block rounded-md bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 m-1 w-32 align-top">
                {/* Icon */}
                <div className="relative inline-block h-28 w-28">
