@@ -96,10 +96,6 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-export type LinkEditor = BlockElement & {
-   type: BlockType.LinkEditor;
-};
-
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
@@ -112,7 +108,7 @@ export type CustomElement =
 
 export type CustomText = {
    text: string;
-   link: boolean;
+   link?: boolean;
    bold?: boolean;
    italic?: boolean;
    underline?: boolean;
