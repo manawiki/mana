@@ -16,10 +16,10 @@ export default function BlockToDo({ element, children }: Props) {
    const [checked, setChecked] = useState(element.checked);
 
    return (
-      <div className="flex ml-2 mb-3 gap-3 items-start">
+      <div className="mb-3 ml-2 flex items-start gap-3">
          <div contentEditable={false}>
             <Checkbox.Root
-               className="bg-zinc-200 mt-1 bg-4 w-5 h-5 rounded-md flex items-center justify-center"
+               className="bg-4 mt-1 flex h-5 w-5 items-center justify-center rounded-md bg-zinc-200"
                checked={checked}
                onCheckedChange={(e: any) => {
                   const path = ReactEditor.findPath(editor, element);
@@ -32,14 +32,14 @@ export default function BlockToDo({ element, children }: Props) {
                   setChecked((prevCheck) => !prevCheck);
                }}
             >
-               <Checkbox.Indicator className="text-emerald-500 flex items-center justify-center">
+               <Checkbox.Indicator className="flex items-center justify-center text-emerald-500">
                   <Check className="stroke-[4px]" size={14} />
                </Checkbox.Indicator>
             </Checkbox.Root>
          </div>
          <div
             className={`${
-               checked ? "line-through text-1" : ""
+               checked ? "text-1 line-through" : ""
             } flex-grow outline-none`}
          >
             {children}

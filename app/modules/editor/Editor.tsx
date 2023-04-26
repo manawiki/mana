@@ -27,6 +27,7 @@ import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
+   withLayout,
    withNodeId,
 } from "./utils";
 import Leaf from "./blocks/Leaf";
@@ -45,7 +46,10 @@ const SHORTCUTS: Record<string, BlockType> = {
 };
 
 const useEditor = () =>
-   useMemo(() => withShortcuts(withNodeId(withReact(createEditor()))), []);
+   useMemo(
+      () => withShortcuts(withNodeId(withLayout(withReact(createEditor())))),
+      []
+   );
 
 function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
@@ -61,6 +65,8 @@ export const ForgeEditor = () => {
 
    const room = useRoom();
    const blocks = useList("blocks");
+
+   editor.isInline = (element) => ["link"].includes(element.type);
 
    const isEditingRef = useRef(false);
    const updateMyPresence = useUpdateMyPresence();
@@ -265,9 +271,9 @@ export const ForgeEditor = () => {
    );
 
    return (
-      <div className="relative min-h-screen pb-4 cursor-text max-desktop:px-4">
+      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-4">
          <div
-            className="max-w-[728px] mx-auto"
+            className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
@@ -453,7 +459,7 @@ function SortableElement({
    );
 
    return (
-      <div className="flex relative group flex-col" {...attributes}>
+      <div className="group relative flex flex-col" {...attributes}>
          <div
             className="outline-none"
             {...sortable.attributes}
@@ -470,7 +476,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="flex select-none laptop:translate-x-full items-center absolute top-0.5 right-0 pr-3"
+                  className="absolute right-0 top-0.5 flex select-none items-center pr-3 laptop:translate-x-full"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {
@@ -490,8 +496,8 @@ function SortableElement({
                </div>
             )}
             <div
-               className="opacity-0 translate-y-0 -translate-x-full select-none	
-               group-hover:opacity-100 absolute top-0 left-0 pr-2"
+               className="absolute left-0 top-0 -translate-x-full	
+               translate-y-0 select-none pr-2 opacity-0 group-hover:opacity-100"
                contentEditable={false}
             >
                <BlockInlineActions

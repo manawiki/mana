@@ -37,6 +37,7 @@ export enum BlockType {
    Image = "image",
    Video = "video",
    CodeSandbox = "codesandbox",
+   Link = "link",
 }
 
 export type TextBlock =
@@ -44,7 +45,8 @@ export type TextBlock =
    | BlockType.H3
    | BlockType.Paragraph
    | BlockType.BulletedList
-   | BlockType.ToDo;
+   | BlockType.ToDo
+   | BlockType.Link;
 
 export type BlockElement = {
    id: string;
@@ -88,6 +90,12 @@ export type CodeSandboxElement = BlockElement & {
    children: [{ text: "" }];
 };
 
+export type LinkElement = BlockElement & {
+   type: BlockType.Link;
+   url: string | undefined;
+   children: [{ text: "" }];
+};
+
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
@@ -95,10 +103,12 @@ export type CustomElement =
    | ToDoElement
    | ImageElement
    | VideoElement
-   | CodeSandboxElement;
+   | CodeSandboxElement
+   | LinkElement;
 
 export type CustomText = {
    text: string;
+   link?: boolean;
    bold?: boolean;
    italic?: boolean;
    underline?: boolean;

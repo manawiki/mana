@@ -145,23 +145,23 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
          <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
-               className="overflow-scroll shadow shadow-1 left-0
-               h-60 w-52 border border-color outline-none z-10 rounded-lg bg-2"
+               className="shadow-1 border-color bg-2 left-0
+               z-10 h-60 w-52 overflow-scroll rounded-lg border shadow outline-none"
             >
                {groups.map((group, indexGroup) => {
                   return (
                      <DropdownMenuPrimitive.Group key={indexGroup} className="">
                         <DropdownMenuPrimitive.Label
-                           className="sticky pt-2.5 pb-1.5 px-2.5 text-1 text-xs font-bold bg-zinc-100
-                        dark:bg-zinc-700 top-0"
+                           className="text-1 sticky top-0 bg-zinc-100 px-2.5 pb-1.5 pt-2.5 text-xs
+                        font-bold dark:bg-zinc-700"
                         >
                            {group.label}
                         </DropdownMenuPrimitive.Label>
-                        <div className="divide-y border-y border-color divide-color">
+                        <div className="border-color divide-color divide-y border-y">
                            {groups[indexGroup].items.map((item, indexItem) => {
                               return (
                                  <DropdownMenuPrimitive.DropdownMenuItem
-                                    className="outline-none space-y-1 text-xs bg-3 flex flex-col hover:bg-4 px-2.5 py-2 cursor-default"
+                                    className="bg-3 hover:bg-4 flex cursor-default flex-col space-y-1 px-2.5 py-2 text-xs outline-none"
                                     key={indexItem}
                                     onSelect={item.onSelect}
                                  >
