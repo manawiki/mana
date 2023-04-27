@@ -262,7 +262,7 @@ export default function CollectionIndex() {
                                     />
                                  )}
                               </div>
-                              <span className="truncate font-bold">
+                              <span className="text-1 truncate font-bold">
                                  {collection.name}
                               </span>
                            </div>

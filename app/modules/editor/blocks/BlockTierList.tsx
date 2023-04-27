@@ -1,14 +1,14 @@
 import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, ImageElement } from "../types";
+import type { CustomElement, TierElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
 import { Image } from "lucide-react";
 
 type Props = {
-   element: ImageElement;
+   element: TierElement;
 };
 
-export default function BlockImage({ element }: Props) {
+export default function BlockTierList({ element }: Props) {
    const editor = useSlate();
 
    return (

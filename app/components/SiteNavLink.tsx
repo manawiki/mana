@@ -6,35 +6,64 @@ import { Image } from "./Image";
 export const SiteNavLink = ({ site }: { site: Site }) => {
    const { siteId } = useParams();
    const isActive = siteId == site.slug ? true : false;
-
    return (
       <>
-         <Link
-            className="bg-2 shadow-1 shadow-1 rounded-full 
+         {site.type == "core" ? (
+            <div>
+               <Link
+                  className="bg-2 shadow-1 shadow-1 rounded-full 
                transition duration-200 active:translate-y-0.5 
                max-laptop:hidden laptop:shadow-sm"
-            to={`${
-               site.type == "custom"
-                  ? `https://mana.wiki/${site.slug}`
-                  : `/${site.slug}`
-            }`}
-         >
-            <>
-               <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
-                  <Image
-                     alt="Site Logo"
-                     options="fit=crop,width=88,height=88,gravity=auto"
-                     //@ts-ignore
-                     url={site.icon?.url}
-                  />
-               </div>
-            </>
-         </Link>
-         {isActive && (
-            <span
-               className="absolute -left-1 top-1.5 h-10 w-2.5 
+                  to={`/${site.slug}`}
+               >
+                  <>
+                     <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
+                        <Image
+                           alt="Site Logo"
+                           options="fit=crop,width=88,height=88,gravity=auto"
+                           //@ts-ignore
+                           url={site.icon?.url}
+                        />
+                     </div>
+                  </>
+               </Link>
+               {isActive && (
+                  <span
+                     className="absolute -left-1 top-1.5 h-10 w-2.5 
                   rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
-            ></span>
+                  ></span>
+               )}
+            </div>
+         ) : (
+            <div>
+               <a
+                  className="bg-2 shadow-1 shadow-1 rounded-full 
+               transition duration-200 active:translate-y-0.5 
+               max-laptop:hidden laptop:shadow-sm"
+                  href={`${
+                     process.env.NODE_ENV == "production"
+                        ? `https://mana.wiki/${site.slug}`
+                        : `http://localhost:3000/${site.slug}`
+                  }`}
+               >
+                  <>
+                     <div className="h-11 w-11 overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]">
+                        <Image
+                           alt="Site Logo"
+                           options="fit=crop,width=88,height=88,gravity=auto"
+                           //@ts-ignore
+                           url={site.icon?.url}
+                        />
+                     </div>
+                  </>
+               </a>
+               {isActive && (
+                  <span
+                     className="absolute -left-1 top-1.5 h-10 w-2.5 
+                  rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                  ></span>
+               )}
+            </div>
          )}
       </>
    );
