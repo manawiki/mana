@@ -230,6 +230,7 @@ export default function Login() {
                               />
                            </div>
                            <button
+                              type="button"
                               className="pt-1.5 text-sm font-semibold text-blue-500"
                               onClick={() => setIsReset(true)}
                            >
