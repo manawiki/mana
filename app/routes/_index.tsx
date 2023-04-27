@@ -20,6 +20,7 @@ export async function loader({
    context: { user, payload },
    request,
 }: LoaderArgs) {
+   const url = new URL(request.url).origin;
    const featuredSites = await payload.find({
       collection: "sites",
       where: {
@@ -28,7 +29,7 @@ export async function loader({
          },
       },
    });
-   return json({ featuredSites });
+   return json({ featuredSites, url });
 }
 
 export const handle = {
@@ -39,7 +40,7 @@ export const handle = {
 export default function HomeRoot() {
    const { t } = useTranslation(handle?.i18n);
    const location = useLocation();
-   const { featuredSites } = useLoaderData<typeof loader>();
+   const { featuredSites, url } = useLoaderData<typeof loader>();
 
    return (
       <>
@@ -239,33 +240,57 @@ export default function HomeRoot() {
                               </div>
                               <div className="bg-2 border-color divide-color divide-y border-y">
                                  {featuredSites?.docs.map((site) => (
-                                    <Link
-                                       key={site.id}
-                                       to={`${
-                                          site.type == "custom"
-                                             ? `https://mana.wiki/${site.slug}`
-                                             : `/${site.slug}`
-                                       }`}
-                                       className="group flex items-center justify-between gap-3 p-3"
-                                    >
-                                       <div className="text-1 flex items-center gap-2.5">
-                                          <span
-                                             className="shadow-1 bg-3 h-8 w-8 
-                                             overflow-hidden rounded-full shadow-sm"
+                                    <>
+                                       {site.type == "custom" ? (
+                                          <a
+                                             key={site.id}
+                                             href={`${url}/${site.slug}`}
+                                             className="group flex items-center justify-between gap-3 p-3"
                                           >
-                                             <Image
-                                                options="fit=crop,width=60,height=60 ,gravity=auto"
-                                                alt="Site Icon"
-                                                //@ts-expect-error
-                                                url={site?.icon?.url}
-                                             />
-                                          </span>
-                                          <span className="text-sm font-bold group-hover:underline">
-                                             {site.name}
-                                          </span>
-                                       </div>
-                                       <ChevronRight size={18} />
-                                    </Link>
+                                             <div className="text-1 flex items-center gap-2.5">
+                                                <span
+                                                   className="shadow-1 bg-3 h-8 w-8 
+                                          overflow-hidden rounded-full shadow-sm"
+                                                >
+                                                   <Image
+                                                      options="fit=crop,width=60,height=60 ,gravity=auto"
+                                                      alt="Site Icon"
+                                                      //@ts-expect-error
+                                                      url={site?.icon?.url}
+                                                   />
+                                                </span>
+                                                <span className="text-sm font-bold group-hover:underline">
+                                                   {site.name}
+                                                </span>
+                                             </div>
+                                             <ChevronRight size={18} />
+                                          </a>
+                                       ) : (
+                                          <Link
+                                             key={site.id}
+                                             to={`/${site.slug}`}
+                                             className="group flex items-center justify-between gap-3 p-3"
+                                          >
+                                             <div className="text-1 flex items-center gap-2.5">
+                                                <span
+                                                   className="shadow-1 bg-3 h-8 w-8 
+                                             overflow-hidden rounded-full shadow-sm"
+                                                >
+                                                   <Image
+                                                      options="fit=crop,width=60,height=60 ,gravity=auto"
+                                                      alt="Site Icon"
+                                                      //@ts-expect-error
+                                                      url={site?.icon?.url}
+                                                   />
+                                                </span>
+                                                <span className="text-sm font-bold group-hover:underline">
+                                                   {site.name}
+                                                </span>
+                                             </div>
+                                             <ChevronRight size={18} />
+                                          </Link>
+                                       )}
+                                    </>
                                  ))}
                               </div>
                            </section>
