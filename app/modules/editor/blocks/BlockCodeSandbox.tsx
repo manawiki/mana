@@ -2,7 +2,6 @@ import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, CodeSandboxElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
-import { useSelf } from "~/liveblocks.config";
 import { Code } from "lucide-react";
 
 type Props = {
@@ -11,7 +10,6 @@ type Props = {
 
 export default function BlockCodeSandbox({ element }: Props) {
    const editor = useSlate();
-   const self = useSelf();
 
    return (
       <div className="relative my-0.5">
@@ -30,7 +28,7 @@ export default function BlockCodeSandbox({ element }: Props) {
             </div>
          ) : (
             <Placeholder
-               defaultOpen={self?.connectionId === element?.createdBy}
+               defaultOpen={true}
                icon={Code}
                text="Embed a CodeSandbox project"
                inputs={{

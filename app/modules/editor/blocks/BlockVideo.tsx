@@ -2,7 +2,6 @@ import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, VideoElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
-import { useSelf } from "~/liveblocks.config";
 import { Video } from "lucide-react";
 
 type Props = {
@@ -11,7 +10,6 @@ type Props = {
 
 export default function BlockVideo({ element }: Props) {
    const editor = useSlate();
-   const self = useSelf();
 
    return (
       <div className="relative">
@@ -30,7 +28,7 @@ export default function BlockVideo({ element }: Props) {
             </div>
          ) : (
             <Placeholder
-               defaultOpen={self?.connectionId === element?.createdBy}
+               defaultOpen={true}
                icon={Video}
                text="Embed a YouTube video"
                inputs={{
