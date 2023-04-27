@@ -1,4 +1,8 @@
-import { useRouteLoaderData } from "@remix-run/react";
+import {
+   useLocation,
+   useResolvedPath,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import { LoggedOut, LoggedIn, NotFollowingSite } from "~/modules/auth";
 import type { User, Site } from "payload-types";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
@@ -14,6 +18,7 @@ export const SiteSwitcher = () => {
    const { site } =
       (useRouteLoaderData("routes/$siteId") as { site: Site }) ?? {};
    const sites = user?.sites as Site[];
+
    return (
       <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3 max-laptop:px-3">
          <LoggedIn>

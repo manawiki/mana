@@ -38,6 +38,7 @@ export enum BlockType {
    Video = "video",
    CodeSandbox = "codesandbox",
    Link = "link",
+   TierList = "tier-list",
 }
 
 export type TextBlock =
@@ -93,6 +94,17 @@ export type CodeSandboxElement = BlockElement & {
 export type LinkElement = BlockElement & {
    type: BlockType.Link;
    url: string | undefined;
+   children: [{ text: "" }];
+};
+
+export type TierElement = BlockElement & {
+   type: BlockType.TierList;
+   tierLabel: string;
+   tierItems: [
+      {
+         id: string;
+      }
+   ];
    children: [{ text: "" }];
 };
 
