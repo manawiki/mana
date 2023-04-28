@@ -15,6 +15,7 @@ import {
    PencilSquareIcon,
 } from "@heroicons/react/24/solid";
 import { Image } from "~/components/Image";
+import { SiteSwitcher } from "~/components";
 
 export async function loader({
    context: { user, payload },
@@ -46,29 +47,11 @@ export default function HomeRoot() {
       <>
          <div className="auto-cols-[86px_1fr_334px] laptop:grid laptop:min-h-screen laptop:grid-flow-col">
             <section
-               className="bg-1 border-color relative z-40 max-laptop:fixed
-               max-laptop:top-0 max-laptop:w-full max-laptop:border-b
-               max-laptop:py-3 laptop:border-r"
+               className="bg-1 border-color relative z-50 max-laptop:fixed
+               max-laptop:top-0 max-laptop:w-full max-laptop:py-3 laptop:border-r"
             >
-               <div
-                  className="justify-between max-laptop:flex max-laptop:items-center max-laptop:gap-3 max-laptop:px-3 laptop:fixed 
-                  laptop:left-0 laptop:top-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto laptop:py-3"
-               >
-                  <div className="max-laptop:flex max-laptop:items-center max-laptop:gap-3.5">
-                     <Link
-                        to="/"
-                        className="bg-3 shadow-1 mx-auto flex h-12 w-12
-                        items-center justify-center rounded-full font-logo shadow-sm
-                        transition duration-300 active:translate-y-0.5
-                       laptop:h-14 laptop:w-14"
-                     >
-                        <Logo className="h-6 w-6 laptop:h-7 laptop:w-7" />
-                     </Link>
-                     <div className="h-8 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 laptop:hidden"></div>
-                     <div className="mx-auto mt-4 h-0.5 w-10 rounded-full bg-zinc-200 dark:bg-zinc-700 max-laptop:hidden"></div>
-                     <NewSiteModal />
-                  </div>
-                  <MobileUserMenu />
+               <div className="laptop:fixed laptop:left-0 laptop:top-0 laptop:h-full laptop:w-[86px] laptop:overflow-y-auto">
+                  <SiteSwitcher />
                </div>
             </section>
             <section className="bg-3 max-laptop:min-h-screen">

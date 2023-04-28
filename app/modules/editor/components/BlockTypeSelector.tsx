@@ -20,6 +20,24 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          label: "Text",
          items: [
             {
+               label: "Tier List",
+               description: "Build a tier list",
+               onSelect: () => {
+                  onSelect({
+                     createdBy,
+                     id: nanoid(),
+                     type: BlockType.TierList,
+                     tierLabel: "",
+                     tierItems: [
+                        {
+                           id: "",
+                        },
+                     ],
+                     children: [{ text: "" }],
+                  });
+               },
+            },
+            {
                label: "Heading 2",
                description: "Large section heading",
                onSelect: () => {

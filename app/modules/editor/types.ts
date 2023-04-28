@@ -116,7 +116,8 @@ export type CustomElement =
    | ImageElement
    | VideoElement
    | CodeSandboxElement
-   | LinkElement;
+   | LinkElement
+   | TierElement;
 
 export type CustomText = {
    text: string;
