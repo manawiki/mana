@@ -38,11 +38,7 @@ export async function loader({
 export const meta: V2_MetaFunction = () => {
    return [
       {
-         title: "Home - Mana",
-      },
-      {
-         name: "description",
-         content: "Build Better Wikis",
+         title: "Banners - Honkai: Star Rail",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -72,17 +68,17 @@ const BannerList = ({ banners }: any) => {
                {banners?.map((b: any) => {
                   return (
                      <>
-                        <div className="relative rounded-md p-2 my-1 border dark:border-gray-700">
-                           <div className="relative inline-block w-1/4 align-middle text-center px-2">
+                        <div className="relative my-1 rounded-md border p-2 dark:border-gray-700">
+                           <div className="relative inline-block w-1/4 px-2 text-center align-middle">
                               {/* Banner Name */}
 
-                              <div className="text-sm font-bold block">
+                              <div className="block text-sm font-bold">
                                  {b?.name}
                               </div>
                               {/* Banner Image */}
                               <div className="h-28 w-auto">
                                  <img
-                                    className="object-contain h-28"
+                                    className="h-28 object-contain"
                                     src={b?.icon?.url}
                                  />
                               </div>
@@ -98,7 +94,7 @@ const BannerList = ({ banners }: any) => {
                               {b.featured_characters?.map((c: any) => {
                                  return (
                                     <>
-                                       <div className="relative inline-block align-top my-1">
+                                       <div className="relative my-1 inline-block align-top">
                                           <CharFrame char={c} />
                                        </div>
                                     </>
@@ -108,7 +104,7 @@ const BannerList = ({ banners }: any) => {
                               {b.featured_light_cones?.map((c: any) => {
                                  return (
                                     <>
-                                       <div className="relative inline-block align-top my-1">
+                                       <div className="relative my-1 inline-block align-top">
                                           <LightConeFrame char={c} />
                                        </div>
                                     </>
@@ -135,7 +131,7 @@ const CharFrame = ({ char }: any) => {
    // Matqty holds material and quantity information
 
    return (
-      <div className="relative inline-block text-center mx-1" key={char?.id}>
+      <div className="relative mx-1 inline-block text-center" key={char?.id}>
          <a href={`/starrail/collections/characters/${char?.id}/c`}>
             <div className="relative inline-block h-20 w-20 align-middle text-xs">
                <img
@@ -146,7 +142,7 @@ const CharFrame = ({ char }: any) => {
                   alt={char?.name}
                />
             </div>
-            <div className="relative mt-2 rounded-b-md w-20 border-b border-gray-700 bg-black align-middle text-xs text-white">
+            <div className="relative mt-2 w-20 rounded-b-md border-b border-gray-700 bg-black align-middle text-xs text-white">
                {char?.name}
             </div>
          </a>
@@ -158,7 +154,7 @@ const LightConeFrame = ({ char }: any) => {
    // Matqty holds material and quantity information
 
    return (
-      <div className="relative inline-block text-center mx-1" key={char?.id}>
+      <div className="relative mx-1 inline-block text-center" key={char?.id}>
          <a href={`/starrail/collections/lightCones/${char?.id}/c`}>
             <div className="relative inline-block h-20 w-20 align-top text-xs">
                <img
@@ -169,7 +165,7 @@ const LightConeFrame = ({ char }: any) => {
                   alt={char?.name}
                />
             </div>
-            <div className="relative rounded-b-md w-20 border-b border-gray-700 bg-black align-middle text-xs text-white">
+            <div className="relative w-20 rounded-b-md border-b border-gray-700 bg-black align-middle text-xs text-white">
                {char?.name}
             </div>
          </a>
