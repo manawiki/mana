@@ -2,7 +2,6 @@ import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, ImageElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
-import { useSelf } from "~/liveblocks.config";
 import { Image } from "lucide-react";
 
 type Props = {
@@ -11,12 +10,11 @@ type Props = {
 
 export default function BlockImage({ element }: Props) {
    const editor = useSlate();
-   const self = useSelf();
 
    return (
       <div className="relative">
          {element.url ? (
-            <div className="flex relative mb-3 justify-center w-full min-h-[100px] h-auto">
+            <div className="relative mb-3 flex h-auto min-h-[100px] w-full justify-center">
                <img
                   className="w-full rounded-md"
                   src={element.url}
@@ -25,7 +23,7 @@ export default function BlockImage({ element }: Props) {
             </div>
          ) : (
             <Placeholder
-               defaultOpen={self?.connectionId === element.createdBy}
+               defaultOpen={true}
                icon={Image}
                text="Embed an image from a URL"
                inputs={{

@@ -1,14 +1,14 @@
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
-import { ForgeEditor } from "../$siteId.posts+/$postId+/edit/forge/Editor";
+import { ForgeEditor } from "~/modules/editor/Editor";
 import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 import { nanoid } from "nanoid";
-import type { CustomElement } from "../$siteId.posts+/$postId+/edit/forge/types";
-import { BlockType } from "../$siteId.posts+/$postId+/edit/forge/types";
+import type { CustomElement } from "~/modules/editor/types";
+import { BlockType } from "~/modules/editor/types";
 import { useLoaderData } from "@remix-run/react";
 import {
    AdminOrStaffOrOwner,
@@ -19,10 +19,10 @@ import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
-import Block from "../$siteId.posts+/$postId+/edit/forge/blocks/Block";
+import Block from "~/modules/editor/blocks/Block";
 
 import { HomeEdit } from "./HomeEdit";
-import Leaf from "../$siteId.posts+/$postId+/edit/forge/blocks/Leaf";
+import Leaf from "~/modules/editor/blocks/Leaf";
 
 export async function loader({
    context: { payload, user },

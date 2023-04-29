@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { DotLoader } from "~/components";
 import { useStorage } from "~/liveblocks.config";
 import { isAdding, isProcessing } from "~/utils";
-import { Tooltip } from "../$siteId.posts+/$postId+/edit/forge/components";
+import { Tooltip } from "../../modules/editor/components";
 
 export const HomeEdit = ({ site }: { site: Site }) => {
    const fetcher = useFetcher();
