@@ -271,7 +271,7 @@ const seedUploads = async (result: any) => {
 			id: custID,
 			data: custData,
 		});
-		console.log(`${JSON.stringify(updateItemCustom)} Custom Entry updated!`);
+		console.log(`${JSON.stringify(idValue)} Custom Entry updated!`);
 	}
 
 	// Otherwise, create a new entry
