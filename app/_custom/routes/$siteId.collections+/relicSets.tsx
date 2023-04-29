@@ -39,11 +39,7 @@ export async function loader({
 export const meta: V2_MetaFunction = () => {
    return [
       {
-         title: "Home - Mana",
-      },
-      {
-         name: "description",
-         content: "Build Better Wikis",
+         title: "Relic Sets - Honkai: Star Rail",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -144,8 +140,8 @@ const RelicSetList = ({ chars }: any) => {
                {filterOptions.map((cat: any) => {
                   return (
                      <>
-                        <div className="px-2 py-1 my-1 border rounded-xl dark:border-gray-700">
-                           <div className="relative inline-block mr-1 w-12 text-sm text-center">
+                        <div className="my-1 rounded-xl border px-2 py-1 dark:border-gray-700">
+                           <div className="relative mr-1 inline-block w-12 text-center text-sm">
                               {cat.name}{" "}
                            </div>
                            <div className="relative inline-block">
@@ -153,7 +149,7 @@ const RelicSetList = ({ chars }: any) => {
                                  return (
                                     <>
                                        <div
-                                          className={`relative inline-block align-middle text-center w-20 rounded-md border dark:border-gray-700 px-2 py-1 my-0.5 mx-1 leading-none cursor-pointer ${
+                                          className={`relative mx-1 my-0.5 inline-block w-20 cursor-pointer rounded-md border px-2 py-1 text-center align-middle leading-none dark:border-gray-700 ${
                                              filters.find(
                                                 (a: any) => a.id == opt.id
                                              )
@@ -185,7 +181,7 @@ const RelicSetList = ({ chars }: any) => {
                                        >
                                           {opt.icon ? (
                                              <>
-                                                <div className="rounded-full bg-gray-800 bg-opacity-50 h-8 w-8 inline-flex">
+                                                <div className="inline-flex h-8 w-8 rounded-full bg-gray-800 bg-opacity-50">
                                                    <img
                                                       className="object-contain"
                                                       src={opt.icon}
@@ -209,15 +205,15 @@ const RelicSetList = ({ chars }: any) => {
             </div>
 
             {/* Sort Options */}
-            <div className="rounded-xl border dark:border-gray-700 p-2 my-2">
-               <div className="relative inline-block mr-1 w-12 text-center">
+            <div className="my-2 rounded-xl border p-2 dark:border-gray-700">
+               <div className="relative mr-1 inline-block w-12 text-center">
                   Sort
                </div>
                {sortOptions.map((opt: any) => {
                   return (
                      <>
                         <div
-                           className={`relative inline-block text-center w-20 rounded-full border dark:border-gray-700 px-2 py-1 mx-1 cursor-pointer ${
+                           className={`relative mx-1 inline-block w-20 cursor-pointer rounded-full border px-2 py-1 text-center dark:border-gray-700 ${
                               sort == opt.field
                                  ? `bg-slate-800 bg-opacity-20 dark:bg-slate-700 dark:bg-opacity-70`
                                  : ``
@@ -234,7 +230,7 @@ const RelicSetList = ({ chars }: any) => {
             </div>
 
             {/* Search Text Box */}
-            <div className="flex items-center justify-between my-2">
+            <div className="my-2 flex items-center justify-between">
                <span className="border-color flex-grow border-t" />
                <div
                   className="shadow-1 bg-2 border-color relative flex h-10 w-full
@@ -248,7 +244,7 @@ const RelicSetList = ({ chars }: any) => {
                         setSearch(event.target.value);
                      }}
                   />
-                  <div className="text-gray-400 dark:text-gray-600 italic mx-1 w-32">
+                  <div className="mx-1 w-32 italic text-gray-400 dark:text-gray-600">
                      {cfiltered.length} entries
                   </div>
                   <Search className="text-1" size={24} />
@@ -278,8 +274,8 @@ const EntryWithDescription = ({ char }: any) => {
    return (
       <>
          <a href={`/starrail/collections/relicSets/${cid}/c`}>
-            <div className="relative inline-block rounded-md w-full align-middle bg-slate-800 bg-opacity-10 dark:bg-slate-700 dark:bg-opacity-50 p-2 my-1">
-               <div className="relative inline-block rounded-md w-28 align-middle text-center">
+            <div className="relative my-1 inline-block w-full rounded-md bg-slate-800 bg-opacity-10 p-2 align-middle dark:bg-slate-700 dark:bg-opacity-50">
+               <div className="relative inline-block w-28 rounded-md text-center align-middle">
                   {/* Icon */}
                   <div className="relative inline-block h-20 w-20">
                      <img
@@ -291,16 +287,16 @@ const EntryWithDescription = ({ char }: any) => {
                   {/* Name */}
                   <div className="text-center text-xs">{char.name}</div>
                </div>
-               <div className="w-2/3 p-3 relative inline-block text-sm align-middle">
+               <div className="relative inline-block w-2/3 p-3 align-middle text-sm">
                   {effect?.map((eff: any) => {
                      return (
                         <>
-                           <div className="my-1 rounded-md border p-1 px-3 border-gray-300 bg-neutral-300 dark:border-gray-700 dark:bg-neutral-800 text-left">
-                              <div className="inline-block w-1/6 font-bold align-top text-green-900 dark:text-green-200 mr-2">
+                           <div className="my-1 rounded-md border border-gray-300 bg-neutral-300 p-1 px-3 text-left dark:border-gray-700 dark:bg-neutral-800">
+                              <div className="mr-2 inline-block w-1/6 align-top font-bold text-green-900 dark:text-green-200">
                                  {eff.req_no}-Pc:
                               </div>
                               <div
-                                 className="inline-block align-top w-3/4"
+                                 className="inline-block w-3/4 align-top"
                                  dangerouslySetInnerHTML={{
                                     __html: eff.description,
                                  }}
