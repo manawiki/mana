@@ -7,6 +7,7 @@ import { useState } from "react";
 // import { characters } from "./characters";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { Search } from "lucide-react";
+import { Image } from "~/components";
 
 // export async function loader({
 //    context: { payload },
@@ -219,9 +220,10 @@ const LightConeList = ({ chars }: any) => {
                                           {opt.icon ? (
                                              <>
                                                 <div className="inline-flex h-8 w-8 rounded-full bg-gray-800 bg-opacity-50">
-                                                   <img
+                                                   <Image
+                                                      alt="Icon"
                                                       className="object-contain"
-                                                      src={opt.icon}
+                                                      url={opt.icon}
                                                    />
                                                 </div>
                                              </>
@@ -349,25 +351,27 @@ const EntryWithDescription = ({ char }: any) => {
                   <div className="relative inline-block h-28 w-28">
                      {/* Path + Path Name ? */}
                      <div className="absolute -left-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
-                        <img
+                        <Image
+                           alt="Icon"
                            className="relative inline-block object-contain"
-                           src={pathsmall}
+                           url={pathsmall}
                         />
                      </div>
 
                      {/* Rarity */}
                      <div className="absolute -bottom-4 z-20 h-4 w-28">
-                        <img
+                        <Image
+                           alt={raritynum}
                            className={`z-20 h-4 w-28 rounded-full object-contain color-rarity-${
                               raritynum ?? "1"
                            } bg-opacity-10`}
-                           src={rarityurl}
+                           url={rarityurl}
                         />
                      </div>
 
-                     <img
+                     <Image
                         className="object-contain"
-                        src={char.icon?.url}
+                        url={char.icon?.url}
                         alt={char?.name}
                      />
                   </div>
@@ -398,25 +402,27 @@ const EntryIconOnly = ({ char }: any) => {
                <div className="relative inline-block h-28 w-28">
                   {/* Path + Path Name ? */}
                   <div className="absolute -right-1 -top-1 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
-                     <img
+                     <Image
+                        alt="Icon"
                         className="relative inline-block object-contain"
-                        src={pathsmall}
+                        url={pathsmall}
                      />
                   </div>
 
                   {/* Rarity */}
                   <div className="absolute -bottom-5 z-20 h-4 w-28">
-                     <img
+                     <Image
+                        alt={raritynum}
                         className={`z-20 h-4 w-28 rounded-full object-contain color-rarity-${
                            raritynum ?? "1"
                         } bg-opacity-10`}
-                        src={rarityurl}
+                        url={rarityurl}
                      />
                   </div>
 
-                  <img
+                  <Image
                      className="object-contain"
-                     src={char.icon?.url}
+                     url={char.icon?.url}
                      alt={char?.name}
                   />
                </div>
