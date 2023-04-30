@@ -9,7 +9,7 @@ export const SubmittedWarps: CollectionConfig = {
       useAsTitle: "id",
    },
    access: {
-      create: isStaff, //udpate in future to allow site admins as well
+      create: () => true, //udpate in future to allow site admins as well
       read: () => true,
       update: isStaff, //udpate in future to allow site admins as well
       delete: isStaff, //udpate in future to allow site admins as well
