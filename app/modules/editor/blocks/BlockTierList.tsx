@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Minus, Plus } from "lucide-react";
 import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
 
@@ -63,7 +63,7 @@ export default function BlockTierList({ element }: Props) {
    //DND kit needs array of strings
    const itemIds = useMemo(() => tierItems.map((item) => item.id), [tierItems]);
 
-   const updateName = useMutation(({ storage }, index, value) => {
+   const updateRowLb = useMutation(({ storage }, index, value) => {
       const blocks = storage.get("blocks");
       blocks.set(index, value);
    }, []);
@@ -100,7 +100,7 @@ export default function BlockTierList({ element }: Props) {
          };
 
          //Send update to liveblocks
-         updateName(path[0], newProperties);
+         updateRowLb(path[0], newProperties);
 
          //Now we update the local SlateJS state
          return Transforms.setNodes<CustomElement>(editor, newProperties, {
@@ -109,18 +109,44 @@ export default function BlockTierList({ element }: Props) {
       }
    }
 
+   function deleteRow(
+      id: string,
+      editor: BaseEditor & ReactEditor,
+      element: TierElement
+   ) {
+      const tierItems = element.tierItems;
+
+      const path = ReactEditor.findPath(editor, element);
+
+      const updatedTierItems = tierItems.filter((item) => item.id !== id);
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         tierItems: updatedTierItems,
+      };
+
+      updateRowLb(path[0], newProperties);
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   }
+
    return (
       <div className="mt-3">
          <>
             <input
-               className="border-0 bg-transparent p-0 font-bold focus:ring-0"
+               className="border-0 bg-transparent p-0 text-lg font-bold focus:ring-0"
                type="text"
                placeholder="Enter a tier label..."
                defaultValue={element.tierLabel}
                name={zo.fields.tierLabel()}
                onChange={(event) => setTierLabel(event.target.value)}
             />
-            <div className="border-color bg-2 divide-color relative mb-3 mt-2 divide-y rounded-lg border">
+            <div
+               className="border-color divide-color bg-2 relative
+               mt-2 divide-y rounded-lg border shadow-sm"
+            >
                <DndContext
                   onDragEnd={(event) => handleDragEnd(event, editor, element)}
                   modifiers={[restrictToVerticalAxis]}
@@ -134,10 +160,25 @@ export default function BlockTierList({ element }: Props) {
                            key={row.id}
                            rowId={row.id}
                            element={element}
+                           deleteRow={() => deleteRow(row.id, editor, element)}
                         />
                      ))}
                   </SortableContext>
                </DndContext>
+               <div
+                  className="text-1 bg-2 flex h-12 items-center
+                  justify-between rounded-b-lg"
+               >
+                  <div className="flex items-center gap-3 px-2">
+                     <div
+                        className="flex h-7 w-7
+                      items-center justify-center rounded-full bg-zinc-100 dark:bg-bg3Dark"
+                     >
+                        <Plus size={18} />
+                     </div>
+                     <span className="text-sm">Add item...</span>
+                  </div>
+               </div>
             </div>
 
             {/* <form ref={zo.ref}>
@@ -161,9 +202,11 @@ export default function BlockTierList({ element }: Props) {
 const SortableItem = ({
    rowId,
    element,
+   deleteRow,
 }: {
    rowId: string;
    element: TierElement;
+   deleteRow: () => void;
 }) => {
    const {
       transition,
@@ -198,16 +241,25 @@ const SortableItem = ({
       >
          <div>{row?.id}</div>
          <div
-            className="absolute right-2 top-2 select-none opacity-0 group-hover:opacity-100"
+            className="absolute right-2 top-2 flex select-none items-center gap-1 opacity-0 group-hover:opacity-100"
             contentEditable={false}
          >
-            <Tooltip id="drag" content="Drag to reorder">
+            <Tooltip id={`delete-${rowId}`} content="Delete">
+               <button
+                  className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
+                  onClick={deleteRow}
+                  aria-label="Delete"
+               >
+                  <Minus size={16} />
+               </button>
+            </Tooltip>
+            <Tooltip id={`drag-${rowId}`} content="Drag to reorder">
                <button
                   type="button"
                   aria-label="Drag to reorder"
                   ref={setActivatorNodeRef}
                   {...listeners}
-                  className="hover:bg-1 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+                  className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
                >
                   <GripVertical size={16} />
                </button>

@@ -99,6 +99,8 @@ export type LinkElement = BlockElement & {
 
 export interface tierRow {
    id: string;
+   iconUrl?: string;
+   path?: string;
 }
 
 export type TierElement = BlockElement & {
