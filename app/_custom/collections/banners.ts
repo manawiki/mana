@@ -28,6 +28,10 @@ export const Banners: CollectionConfig = {
          type: "text",
       },
       {
+         name: "gacha_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
