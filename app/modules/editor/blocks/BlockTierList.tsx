@@ -1,79 +1,47 @@
 import { ReactEditor, useReadOnly, useSlate } from "slate-react";
 import type { CustomElement, TierElement, tierRow } from "../types";
-import { BlockType } from "../types";
+import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
-import {
-   DndContext,
-   DragEndEvent,
-   DragOverlay,
-   useDraggable,
-} from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
+import { DndContext } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
    SortableContext,
    useSortable,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { nanoid } from "nanoid";
 import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import { GripVertical } from "lucide-react";
-import { createPortal } from "react-dom";
+import { useMutation } from "~/liveblocks.config";
+import { arrayMoveImmutable } from "array-move";
 
 type Props = {
    element: TierElement;
 };
 
 const FormSchema = z.object({
-   name: z.string().min(1),
+   tierLabel: z.string().min(1),
 });
-
-const initialValue: CustomElement[] = [
-   {
-      id: nanoid(),
-      type: BlockType.TierList,
-      tierLabel: "S Tier",
-      tierItems: [
-         {
-            id: "1",
-         },
-      ],
-      children: [
-         {
-            text: "",
-         },
-      ],
-   },
-];
-
-function handleDragEnd(event: DragEndEvent, tierItems: tierRow[]) {
-   const { active, over } = event;
-   console.log(tierItems);
-   console.log(over);
-   console.log(active);
-}
 
 export default function BlockTierList({ element }: Props) {
    const editor = useSlate();
+
    const isMount = useIsMount();
 
-   const [value, setValue] = useState("");
+   const [tierLabel, setTierLabel] = useState(element.tierLabel);
 
-   const debouncedValue = useDebouncedValue(value, 500);
+   const debouncedValue = useDebouncedValue(tierLabel, 500);
+
    useEffect(() => {
       if (!isMount) {
          const path = ReactEditor.findPath(editor, element);
          const newProperties: Partial<CustomElement> = {
-            tierLabel: "S Tier",
-            tierItems: [
-               {
-                  id: "1",
-               },
-            ],
+            tierLabel: tierLabel,
          };
          return Transforms.setNodes<CustomElement>(editor, newProperties, {
             at: path,
@@ -95,44 +63,84 @@ export default function BlockTierList({ element }: Props) {
    //DND kit needs array of strings
    const itemIds = useMemo(() => tierItems.map((item) => item.id), [tierItems]);
 
-   const readOnly = useReadOnly();
+   const updateName = useMutation(({ storage }, index, value) => {
+      const blocks = storage.get("blocks");
+      blocks.set(index, value);
+   }, []);
+
+   function handleDragEnd(
+      event: DragEndEvent,
+      editor: BaseEditor & ReactEditor,
+      element: TierElement
+   ) {
+      const { active, over } = event;
+
+      if (active.id !== over?.id) {
+         const tierItems = element.tierItems;
+
+         const oldIndex = tierItems.findIndex((obj) => {
+            return obj.id === active.id;
+         });
+
+         const newIndex = tierItems.findIndex((obj) => {
+            return obj.id === over?.id;
+         });
+
+         const updatedTierItems = arrayMoveImmutable(
+            tierItems,
+            oldIndex,
+            newIndex
+         );
+
+         const path = ReactEditor.findPath(editor, element);
+
+         const newProperties: Partial<CustomElement> = {
+            ...element,
+            tierItems: updatedTierItems,
+         };
+
+         //Send update to liveblocks
+         updateName(path[0], newProperties);
+
+         //Now we update the local SlateJS state
+         return Transforms.setNodes<CustomElement>(editor, newProperties, {
+            at: path,
+         });
+      }
+   }
 
    return (
-      <div className="border-color bg-2 relative my-3 min-h-[200px] rounded-lg border">
-         {readOnly ? (
-            <>hello</>
-         ) : (
-            <>
-               {tierItems && (
-                  <DndContext
-                     onDragEnd={(event) => handleDragEnd(event, tierItems)}
-                     modifiers={[restrictToVerticalAxis]}
+      <div className="mt-3">
+         <>
+            <input
+               className="border-0 bg-transparent p-0 font-bold focus:ring-0"
+               type="text"
+               placeholder="Enter a tier label..."
+               defaultValue={element.tierLabel}
+               name={zo.fields.tierLabel()}
+               onChange={(event) => setTierLabel(event.target.value)}
+            />
+            <div className="border-color bg-2 divide-color relative mb-3 mt-2 divide-y rounded-lg border">
+               <DndContext
+                  onDragEnd={(event) => handleDragEnd(event, editor, element)}
+                  modifiers={[restrictToVerticalAxis]}
+               >
+                  <SortableContext
+                     items={itemIds}
+                     strategy={verticalListSortingStrategy}
                   >
-                     <SortableContext
-                        items={itemIds}
-                        strategy={verticalListSortingStrategy}
-                     >
-                        {tierItems?.map((row) => (
-                           <SortableItem
-                              key={row.id}
-                              rowId={row.id}
-                              element={element}
-                           />
-                        ))}
-                     </SortableContext>
-                     {/* {createPortal(
-                        <DragOverlay adjustScale={false}>
-                           <DragOverlayContent
-                              element={activeElement}
-                              renderElement={renderElement}
-                           />
-                        </DragOverlay>,
-                        document.getElementById(PROSE_CONTAINER_ID) ||
-                           document.body
-                     )} */}
-                  </DndContext>
-               )}
-               <form ref={zo.ref}>
+                     {tierItems?.map((row) => (
+                        <SortableItem
+                           key={row.id}
+                           rowId={row.id}
+                           element={element}
+                        />
+                     ))}
+                  </SortableContext>
+               </DndContext>
+            </div>
+
+            {/* <form ref={zo.ref}>
                   <input
                      type="text"
                      name={zo.fields.name()}
@@ -144,23 +152,29 @@ export default function BlockTierList({ element }: Props) {
                   <button disabled={disabled} type="submit">
                      Add
                   </button>
-               </form>
-            </>
-         )}
+               </form> */}
+         </>
       </div>
    );
 }
 
-export const SortableItem = ({
+const SortableItem = ({
    rowId,
    element,
 }: {
    rowId: string;
    element: TierElement;
 }) => {
-   const sortable = useSortable({ id: rowId });
-
-   const { listeners, setActivatorNodeRef } = useDraggable({
+   const {
+      transition,
+      attributes,
+      transform,
+      isSorting,
+      isDragging,
+      setActivatorNodeRef,
+      setNodeRef,
+      listeners,
+   } = useSortable({
       id: rowId,
    });
 
@@ -170,26 +184,26 @@ export const SortableItem = ({
 
    return (
       <div
-         {...sortable.attributes}
-         ref={sortable.setNodeRef}
+         {...attributes}
+         ref={setNodeRef}
          style={
             {
-               transition: sortable.transition,
-               transform: CSS.Transform.toString(sortable.transform),
-               pointerEvents: sortable.isSorting ? "none" : undefined,
-               opacity: sortable.isDragging ? 0 : 1,
+               transition: transition,
+               transform: CSS.Transform.toString(transform),
+               pointerEvents: isSorting ? "none" : undefined,
+               opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="relative flex items-center"
+         className="relative px-4 py-2"
       >
          <div>{row?.id}</div>
          <div
-            className="absolute right-0 top-0 -translate-x-full	
-               translate-y-0 select-none pr-2 opacity-0 group-hover:opacity-100"
+            className="absolute right-2 top-2 select-none opacity-0 group-hover:opacity-100"
             contentEditable={false}
          >
             <Tooltip id="drag" content="Drag to reorder">
                <button
+                  type="button"
                   aria-label="Drag to reorder"
                   ref={setActivatorNodeRef}
                   {...listeners}

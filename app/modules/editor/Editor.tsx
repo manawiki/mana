@@ -1,10 +1,9 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import type { Node } from "slate";
 import {
    type Descendant,
-   Node,
-   Text,
    createEditor,
    Editor,
    Element,
@@ -285,7 +284,7 @@ export const ForgeEditor = () => {
    );
 
    return (
-      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-4">
+      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-3">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
