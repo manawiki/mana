@@ -189,7 +189,9 @@ export const CharacterStatBlock = ({ pageData }) => {
                                                   (levelAscensionCheck &&
                                                   [
                                                      "20",
+                                                     "30",
                                                      "40",
+                                                     "50",
                                                      "60",
                                                      "70",
                                                   ].indexOf(
@@ -266,7 +268,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                      type="checkbox"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
-                        ["20", "40", "60", "70"].indexOf(
+                        ["20", "30", "40", "50", "60", "70"].indexOf(
                            levelSliderValue.toString()
                         ) > -1
                            ? null
@@ -546,9 +548,10 @@ function formatStat(type: any, stat: any) {
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
-      stat = "" + Math.round(stat);
+      stat = "" + Math.floor(Math.round(stat * 100) / 100);
    } else {
-      stat = (Math.round(stat * 1000) / 10).toFixed(1) + "%";
+      stat =
+         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%";
    }
    return stat;
 }
