@@ -97,7 +97,7 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-interface tierRow {
+export interface tierRow {
    id: string;
 }
 
