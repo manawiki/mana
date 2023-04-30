@@ -1,10 +1,24 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Descendant, Node } from "slate";
-import { createEditor, Editor, Element, Point, Range, Transforms } from "slate";
-import type { RenderElementProps } from "slate-react";
-import { Editable, ReactEditor, Slate, withReact } from "slate-react";
+import {
+   type Descendant,
+   Node,
+   Text,
+   createEditor,
+   Editor,
+   Element,
+   Point,
+   Range,
+   Transforms,
+} from "slate";
+import {
+   Editable,
+   ReactEditor,
+   Slate,
+   withReact,
+   type RenderElementProps,
+} from "slate-react";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
@@ -21,7 +35,7 @@ import {
    useRoom,
    useUpdateMyPresence,
 } from "~/liveblocks.config";
-import type { CustomElement } from "./types";
+import type { CustomElement, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 import {
    removeGlobalCursor,
@@ -418,6 +432,42 @@ export const ForgeEditor = () => {
                                     toggleMark(editor, mark);
                                  }
                               }
+                              // if (event.key === "Enter") {
+                              //    if (event.shiftKey) {
+                              //       event.preventDefault();
+                              //       editor.insertText("\n");
+                              //    } else {
+                              //       const selectedElement = Node.descendant(
+                              //          editor,
+                              //          editor.selection.anchor.path.slice(0, -1)
+                              //       );
+
+                              //       if (Element.isElement(selectedElement)) {
+                              //          // Allow hard enter to "break out" of certain elements
+                              //          event.preventDefault();
+                              //          const selectedLeaf = Node.descendant(
+                              //             editor,
+                              //             editor.selection.anchor.path
+                              //          );
+
+                              //          if (
+                              //             Text.isText(selectedLeaf) &&
+                              //             String(selectedLeaf.text).length ===
+                              //                editor.selection.anchor.offset
+                              //          ) {
+                              //             const p: ParagraphElement = {
+                              //                id: nanoid(),
+                              //                type: BlockType.Paragraph,
+                              //                children: [{ text: "" }],
+                              //             };
+                              //             Transforms.insertNodes(editor, p);
+                              //          } else {
+                              //             Transforms.splitNodes(editor);
+                              //             Transforms.setNodes(editor, {});
+                              //          }
+                              //       }
+                              //    }
+                              // }
                            }}
                         />
                      </SortableContext>

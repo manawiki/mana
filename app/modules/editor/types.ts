@@ -97,14 +97,14 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
+interface tierRow {
+   id: string;
+}
+
 export type TierElement = BlockElement & {
    type: BlockType.TierList;
    tierLabel: string;
-   tierItems: [
-      {
-         id: string;
-      }
-   ];
+   tierItems: tierRow[];
    children: [{ text: "" }];
 };
 
