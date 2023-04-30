@@ -5,6 +5,7 @@ import { redirect } from "@remix-run/node";
 import { SiteSwitcher } from "~/components/SiteSwitcher";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import { Image } from "~/components";
 
 // export async function loader({
 //    context: { payload },
@@ -186,9 +187,10 @@ const RelicSetList = ({ chars }: any) => {
                                           {opt.icon ? (
                                              <>
                                                 <div className="rounded-full bg-gray-800 bg-opacity-50 h-8 w-8 inline-flex">
-                                                   <img
+                                                   <Image
+                                                      alt="Icon"
                                                       className="object-contain"
-                                                      src={opt.icon}
+                                                      url={opt.icon}
                                                    />
                                                 </div>
                                              </>
@@ -282,9 +284,9 @@ const EntryWithDescription = ({ char }: any) => {
                <div className="relative inline-block rounded-md w-28 align-middle text-center">
                   {/* Icon */}
                   <div className="relative inline-block h-20 w-20">
-                     <img
+                     <Image
                         className="object-contain"
-                        src={char.icon?.url}
+                        url={char.icon?.url}
                         alt={char?.name}
                      />
                   </div>

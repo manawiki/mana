@@ -4,6 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { H2 } from "~/_custom/components/custom";
+import { Image } from "~/components";
 
 // export async function loader({
 //    context: { payload },
@@ -81,9 +82,10 @@ const BannerList = ({ banners }: any) => {
                               </div>
                               {/* Banner Image */}
                               <div className="h-28 w-auto">
-                                 <img
+                                 <Image
+                                    alt={b?.name}
                                     className="object-contain h-28"
-                                    src={b?.icon?.url}
+                                    url={b?.icon?.url}
                                  />
                               </div>
                               {/* Banner Period */}
@@ -138,8 +140,8 @@ const CharFrame = ({ char }: any) => {
       <div className="relative inline-block text-center mx-1" key={char?.id}>
          <a href={`/starrail/collections/characters/${char?.id}/c`}>
             <div className="relative inline-block h-20 w-20 align-middle text-xs">
-               <img
-                  src={char?.icon?.url ?? "no_image_42df124128"}
+               <Image
+                  url={char?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      char?.rarity?.display_number ?? "1"
                   } rounded-t-md`}
@@ -161,8 +163,8 @@ const LightConeFrame = ({ char }: any) => {
       <div className="relative inline-block text-center mx-1" key={char?.id}>
          <a href={`/starrail/collections/lightCones/${char?.id}/c`}>
             <div className="relative inline-block h-20 w-20 align-top text-xs">
-               <img
-                  src={char?.icon?.url ?? "no_image_42df124128"}
+               <Image
+                  url={char?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      char?.rarity?.display_number ?? "1"
                   } rounded-t-md`}
