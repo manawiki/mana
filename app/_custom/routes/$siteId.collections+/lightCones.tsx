@@ -7,7 +7,6 @@ import { useState } from "react";
 // import { characters } from "./characters";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { Search } from "lucide-react";
-import { Image } from "~/components";
 
 // export async function loader({
 //    context: { payload },
@@ -78,14 +77,17 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Rare",
          name: "3",
+         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars3-1.png",
       },
       {
          id: "VeryRare",
          name: "4",
+         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
+         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
@@ -221,10 +223,9 @@ const LightConeList = ({ chars }: any) => {
                                           {opt.icon ? (
                                              <>
                                                 <div className="rounded-full bg-gray-800 bg-opacity-50 h-8 w-8 inline-flex">
-                                                   <Image
-                                                      alt="Icon"
+                                                   <img
                                                       className="object-contain"
-                                                      url={opt.icon}
+                                                      src={opt.icon}
                                                    />
                                                 </div>
                                              </>
@@ -338,7 +339,6 @@ function filterUnique(input: any) {
 
 const EntryWithDescription = ({ char }: any) => {
    const pathsmall = char?.path?.icon?.url;
-   const pathname = char?.path?.name;
    const rarityurl = char?.rarity?.icon?.url;
    const raritynum = char?.rarity?.display_number;
    const cid = char?.id;
@@ -353,27 +353,25 @@ const EntryWithDescription = ({ char }: any) => {
                   <div className="relative inline-block h-28 w-28">
                      {/* Path + Path Name ? */}
                      <div className="absolute h-7 w-7 top-0 -left-1 bg-gray-800 bg-opacity-50 rounded-full z-20">
-                        <Image
-                           alt={pathname}
+                        <img
                            className="relative inline-block object-contain"
-                           url={pathsmall}
+                           src={pathsmall}
                         />
                      </div>
 
                      {/* Rarity */}
                      <div className="absolute -bottom-4 w-28 z-20 h-4">
-                        <Image
-                           alt={raritynum}
+                        <img
                            className={`object-contain w-28 z-20 h-4 rounded-full color-rarity-${
                               raritynum ?? "1"
                            } bg-opacity-10`}
-                           url={rarityurl}
+                           src={rarityurl}
                         />
                      </div>
 
-                     <Image
+                     <img
                         className="object-contain"
-                        url={char.icon?.url}
+                        src={char.icon?.url}
                         alt={char?.name}
                      />
                   </div>
@@ -404,27 +402,25 @@ const EntryIconOnly = ({ char }: any) => {
                <div className="relative inline-block h-28 w-28">
                   {/* Path + Path Name ? */}
                   <div className="absolute h-7 w-7 -top-1 -right-1 bg-gray-800 bg-opacity-50 rounded-full z-20">
-                     <Image
-                        alt="Icon"
+                     <img
                         className="relative inline-block object-contain"
-                        url={pathsmall}
+                        src={pathsmall}
                      />
                   </div>
 
                   {/* Rarity */}
                   <div className="absolute -bottom-5 w-28 z-20 h-4">
-                     <Image
-                        alt={raritynum}
+                     <img
                         className={`object-contain w-28 z-20 h-4 rounded-full color-rarity-${
                            raritynum ?? "1"
                         } bg-opacity-10`}
-                        url={rarityurl}
+                        src={rarityurl}
                      />
                   </div>
 
-                  <Image
+                  <img
                      className="object-contain"
-                     url={char.icon?.url}
+                     src={char.icon?.url}
                      alt={char?.name}
                   />
                </div>
