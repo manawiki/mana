@@ -15,6 +15,7 @@ import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+import { Image } from "~/components";
 
 export async function loader({
    context: { payload },
@@ -565,10 +566,11 @@ const SummonSimulator = (data: any) => {
                      pull.rarity ? pull.rarity.name : "1"
                   } inline-block h-12 w-12 rounded-md align-middle`}
                >
-                  <img
-                     src={pull.icon ? pull.icon.url : "no_image_42df124128"}
-                     width="50"
-                     height="50"
+                  <Image
+                     alt="Icon"
+                     url={pull.icon ? pull.icon.url : "no_image_42df124128"}
+                     width={50}
+                     height={50}
                   />
                </div>
                <div className="ml-2 inline-block align-middle">{pull.name}</div>
@@ -587,7 +589,12 @@ const SummonSimulator = (data: any) => {
                      pull.rarity ? pull.rarity.name : "1"
                   } inline-block h-12 w-12 rounded-md align-middle`}
                >
-                  <img src={pull.icon.url} width="50" height="50" />
+                  <Image
+                     alt="Icon"
+                     url={pull.icon.url}
+                     width={50}
+                     height={50}
+                  />
                </div>
                <div className="ml-2 inline-block align-middle">
                   {pull.name} x {number}
@@ -612,7 +619,7 @@ const SummonSimulator = (data: any) => {
             }}
          >
             <div className="inline-block h-12 w-12 align-middle">
-               <img src={weapon.icon.url} width="50" height="50" />
+               <Image alt="Icon" url={weapon.icon.url} width={50} height={50} />
             </div>
             <div className="inline-block align-middle">{weapon.name}</div>
          </div>
@@ -797,7 +804,7 @@ const SummonSimulator = (data: any) => {
     */
    return (
       <>
-         <div className="mb-5 px-2">
+         <div className="mx-auto max-w-[728px] max-laptop:px-3">
             <h2>Select Banner</h2>
             <BannerCombobox />
 
@@ -805,9 +812,10 @@ const SummonSimulator = (data: any) => {
             <h3 className="text-center">{currentBanner.name}</h3>
             <div className="display-contents relative inline-block text-center h-40 w-full px-2 laptop:h-80 ">
                {currentBanner.icon?.url && (
-                  <img
+                  <Image
+                     alt={currentBanner?.name}
                      className="object-contain h-40 laptop:h-80 inline-block"
-                     src={currentBanner.icon?.url}
+                     url={currentBanner.icon?.url}
                   />
                )}
             </div>
@@ -837,10 +845,13 @@ const SummonSimulator = (data: any) => {
                      <th>
                         <div>
                            <div className="relative inline-block h-6 w-6 align-middle">
-                              <img src="UI_Item_Icon_201_e15cddb1be" />
+                              <Image
+                                 alt="Icon"
+                                 url="https://static.mana.wiki/file/mana-prod/starrail/ItemIcon_900001.png"
+                              />
                            </div>
                            <div className="inline-block align-middle">
-                              Primogems
+                              Stellar Jade
                            </div>
                         </div>
                      </th>
