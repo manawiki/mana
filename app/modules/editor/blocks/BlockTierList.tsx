@@ -4,8 +4,6 @@ import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { useZorm } from "react-zorm";
-import { z } from "zod";
 import type { DragEndEvent } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
@@ -17,6 +15,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
+   ChevronDown,
    ChevronsUpDown,
    Component,
    GripVertical,
@@ -36,10 +35,6 @@ type Props = {
    element: TierElement;
 };
 
-const FormSchema = z.object({
-   tierLabel: z.string().min(1),
-});
-
 const fetcher = (...args: any) => fetch(args).then((res) => res.json());
 
 export default function BlockTierList({ element }: Props) {
@@ -53,10 +48,6 @@ export default function BlockTierList({ element }: Props) {
 
    const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
 
-   const [selectedCollection, setSelectedCollection] = useState(
-      element.collection
-   );
-
    const [tierSelectQuery, setTierSelectQuery] = useState("");
 
    const { data: collectionData } = useSWR(
@@ -64,12 +55,16 @@ export default function BlockTierList({ element }: Props) {
       fetcher
    );
 
+   const [selected, setSelected] = useState(collectionData?.docs[0]);
+
+   const [selectedCollection, setSelectedCollection] = useState(
+      element.collection
+   );
+
    const { data: entryData } = useSWR(
       `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${tierSelectQuery}&depth=1`,
       fetcher
    );
-
-   const [selected, setSelected] = useState(collectionData?.docs[0]);
 
    const filteredEntries =
       tierSelectQuery === ""
@@ -244,7 +239,7 @@ export default function BlockTierList({ element }: Props) {
                      >
                         {({ value }) => (
                            <>
-                              {activeSelectItem(value)}
+                              {activeSelectItem(value) ?? "Select a Collection"}
                               <ChevronsUpDown
                                  className="text-emerald-500"
                                  size={16}
@@ -325,7 +320,7 @@ export default function BlockTierList({ element }: Props) {
                         ? "rounded-t-none"
                         : "border-color border"
                   } text-1 bg-2 relative flex items-center justify-between
-                  rounded-lg p-2`}
+                  rounded-lg px-2.5 py-2`}
                >
                   <div className="flex w-full items-center gap-3">
                      <Combobox
@@ -367,8 +362,7 @@ export default function BlockTierList({ element }: Props) {
                                  className="bg-2 border-color shadow-1 absolute left-0 z-20 mt-4 max-h-60
                               w-full overflow-auto rounded-lg border-2 p-2 shadow-xl focus:outline-none"
                               >
-                                 {filteredEntries?.length === 0 &&
-                                 tierSelectQuery !== "" ? (
+                                 {filteredEntries?.length === 0 ? (
                                     <div className="relative cursor-default select-none px-4 py-2 text-sm">
                                        Nothing found.
                                     </div>
@@ -439,13 +433,13 @@ const SortableItem = ({
                opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="bg-2 relative p-2 first:rounded-t-lg"
+         className="bg-2 relative flex items-center justify-between gap-2 p-2 first:rounded-t-lg"
       >
          <Link
             key={row?.id}
             to={row?.path ?? ""}
             prefetch="intent"
-            className="bg-2 flex items-center gap-3 hover:underline"
+            className="bg-2 flex flex-grow items-center gap-3 hover:underline"
          >
             <div
                className="border-color shadow-1 flex h-8 w-8 items-center
@@ -464,7 +458,7 @@ const SortableItem = ({
             <span>{row?.name}</span>
          </Link>
          <div
-            className="absolute right-2 top-2 flex select-none items-center gap-1 opacity-0 group-hover:opacity-100"
+            className="flex select-none items-center gap-1 opacity-0 group-hover:opacity-100"
             contentEditable={false}
          >
             <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
@@ -487,6 +481,11 @@ const SortableItem = ({
                   <GripVertical size={16} />
                </button>
             </Tooltip>
+         </div>
+         <div className="flex items-center gap-2 text-sm font-bold">
+            <span className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm dark:bg-bg3Dark">
+               <ChevronDown className="text-emerald-500" size={20} />
+            </span>
          </div>
       </div>
    );

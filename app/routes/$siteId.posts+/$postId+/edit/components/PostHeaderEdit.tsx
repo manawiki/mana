@@ -409,7 +409,7 @@ export const PostHeaderEdit = ({
                         )}
                      </Popover>
                      {isPublishing ? (
-                        <div className="border-color bg-2 flex h-9 w-24 items-center justify-center rounded-full border-2">
+                        <div className="border-color bg-5 flex h-9 w-24 items-center justify-center rounded-full border-2">
                            <DotLoader />
                         </div>
                      ) : (
@@ -423,11 +423,7 @@ export const PostHeaderEdit = ({
                                        content="Publish New Changes"
                                     >
                                        <button
-                                          disabled={
-                                             disabled || isChanged == false
-                                                ? false
-                                                : true
-                                          }
+                                          disabled={disabled}
                                           type="submit"
                                           name="intent"
                                           value="publish"
