@@ -17,8 +17,8 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
-   ChevronsDownUp,
    ChevronsUpDown,
+   Component,
    GripVertical,
    Minus,
    Plus,
@@ -26,10 +26,11 @@ import {
 import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
 import { Combobox, Listbox, Transition } from "@headlessui/react";
-import { useParams } from "@remix-run/react";
-import type { Collection, Entry } from "payload/generated-types";
+import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
+import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
 import { nanoid } from "nanoid";
+import { Image } from "~/components";
 
 type Props = {
    element: TierElement;
@@ -49,6 +50,8 @@ export default function BlockTierList({ element }: Props) {
    const [tierLabel, setTierLabel] = useState(element.tierLabel);
 
    const { siteId } = useParams();
+
+   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
 
    const [selectedCollection, setSelectedCollection] = useState(
       element.collection
@@ -92,15 +95,6 @@ export default function BlockTierList({ element }: Props) {
       }
    }, [debouncedTierLabel]);
 
-   const zo = useZorm("signup", FormSchema, {
-      onValidSubmit(e) {
-         e.preventDefault();
-         alert("Form ok!\n" + JSON.stringify(e.data, null, 2));
-      },
-   });
-
-   const disabled = zo.validation?.success === false;
-
    const tierItems = element.tierItems;
 
    //DND kit needs array of strings
@@ -136,7 +130,6 @@ export default function BlockTierList({ element }: Props) {
       element: TierElement
    ) {
       const path = ReactEditor.findPath(editor, element);
-      console.log(event);
       const newProperties: Partial<CustomElement> = {
          ...element,
          tierItems: [
@@ -144,8 +137,10 @@ export default function BlockTierList({ element }: Props) {
             {
                id: nanoid(),
                name: event.name,
-               path: `${siteId}/${selectedCollection}/${event.id}`,
-               iconUrl: `https://mana.wiki/cdn-cgi/image//${event.icon.url}`,
+               path: `/${siteId}/collections/${selectedCollection}/${
+                  event.id
+               }/${site.type == "custom" ? "c" : "w"}`,
+               iconUrl: event?.icon?.url,
             },
          ],
       };
@@ -227,13 +222,13 @@ export default function BlockTierList({ element }: Props) {
    return (
       <div className="my-3">
          <>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pb-2">
                <input
-                  className="border-0 bg-transparent p-0 text-lg font-bold focus:ring-0"
+                  className="w-24 rounded-lg border border-emerald-200 bg-emerald-50
+                   px-2.5 py-1.5  text-sm font-bold focus:ring-0 dark:border-emerald-900 dark:bg-emerald-950/20"
                   type="text"
                   placeholder="Enter a tier label..."
                   defaultValue={element.tierLabel}
-                  name={zo.fields.tierLabel()}
                   onChange={(event) => setTierLabel(event.target.value)}
                />
                <Listbox
@@ -243,7 +238,10 @@ export default function BlockTierList({ element }: Props) {
                   }
                >
                   <div className="relative z-10">
-                     <Listbox.Button className="text-1 flex items-center gap-2 text-sm font-semibold hover:underline">
+                     <Listbox.Button
+                        className="text-1 bg-2 border-color shadow-1 z-20 flex items-center
+                     gap-1.5 rounded-lg border py-2 pl-2.5 pr-2 text-xs font-semibold hover:underline"
+                     >
                         {({ value }) => (
                            <>
                               {activeSelectItem(value)}
@@ -263,8 +261,8 @@ export default function BlockTierList({ element }: Props) {
                         leaveTo="transform scale-95 opacity-0"
                      >
                         <Listbox.Options
-                           className="border-color text-1 bg-3 shadow-1 absolute right-0
-               mt-2 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                           className="border-color text-1 bg-2 shadow-1 absolute right-0
+                           z-30 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
                         >
                            {collectionData?.docs?.map(
                               (row: Collection, rowIdx: number) => (
@@ -297,8 +295,11 @@ export default function BlockTierList({ element }: Props) {
                </Listbox>
             </div>
             <div
-               className="border-color divide-color bg-2 relative
-               mt-2 divide-y rounded-lg border shadow-sm"
+               className={`${
+                  tierItems.length > 0
+                     ? "border-color divide-color relative divide-y rounded-lg border shadow-sm"
+                     : ""
+               } `}
             >
                <DndContext
                   onDragEnd={(event) => handleDragEnd(event, editor, element)}
@@ -319,8 +320,12 @@ export default function BlockTierList({ element }: Props) {
                   </SortableContext>
                </DndContext>
                <div
-                  className="text-1 bg-2 relative flex items-center justify-between
-                  rounded-b-lg px-3 py-2"
+                  className={`${
+                     tierItems.length > 0
+                        ? "rounded-t-none"
+                        : "border-color border"
+                  } text-1 bg-2 relative flex items-center justify-between
+                  rounded-lg p-2`}
                >
                   <div className="flex w-full items-center gap-3">
                      <Combobox
@@ -333,7 +338,7 @@ export default function BlockTierList({ element }: Props) {
                            <div className="bg-2 flex items-center gap-3">
                               <Combobox.Button className="group">
                                  <div
-                                    className="shadow-1 border-color flex h-8 w-8
+                                    className="shadow-1 border-color flex h-[30px] w-[30px]
                                  items-center justify-center rounded-full border bg-white
                                  shadow-sm group-hover:bg-emerald-50 dark:bg-bg3Dark dark:group-hover:bg-zinc-700/50"
                                  >
@@ -372,7 +377,7 @@ export default function BlockTierList({ element }: Props) {
                                        <Combobox.Option
                                           key={entry.id}
                                           className={({ active }) =>
-                                             `cursor-default select-none rounded-md py-2 px-3 text-sm font-bold ${
+                                             `cursor-default select-none rounded-md px-3 py-2 text-sm font-bold ${
                                                 active
                                                    ? "dark:border-emeald-900 shadow-1 bg-zinc-100 shadow-sm dark:bg-bg1Dark"
                                                    : ""
@@ -391,20 +396,6 @@ export default function BlockTierList({ element }: Props) {
                   </div>
                </div>
             </div>
-
-            {/* <form ref={zo.ref}>
-                  <input
-                     type="text"
-                     name={zo.fields.name()}
-                     className="bg-3 text-header border-color h-9
-                w-20 truncate rounded-md border-2 p-0 px-2
-                font-bold focus:border-zinc-200
-               focus:ring-0 dark:placeholder:text-zinc-300 focus:dark:border-zinc-700"
-                  />
-                  <button disabled={disabled} type="submit">
-                     Add
-                  </button>
-               </form> */}
          </>
       </div>
    );
@@ -448,10 +439,30 @@ const SortableItem = ({
                opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="relative px-4 py-2"
+         className="bg-2 relative p-2 first:rounded-t-lg"
       >
-         <Image url={row.icon.url} />
-         <div>{row?.name}</div>
+         <Link
+            key={row?.id}
+            to={row?.path ?? ""}
+            prefetch="intent"
+            className="bg-2 flex items-center gap-3 hover:underline"
+         >
+            <div
+               className="border-color shadow-1 flex h-8 w-8 items-center
+                                    justify-between overflow-hidden rounded-full border-2 shadow-sm"
+            >
+               {row?.iconUrl ? (
+                  <Image
+                     url={row?.iconUrl}
+                     options="fit=crop,width=60,height=60,gravity=auto"
+                     alt={row?.name ?? "Icon"}
+                  />
+               ) : (
+                  <Component className="text-1 mx-auto" size={18} />
+               )}
+            </div>
+            <span>{row?.name}</span>
+         </Link>
          <div
             className="absolute right-2 top-2 flex select-none items-center gap-1 opacity-0 group-hover:opacity-100"
             contentEditable={false}

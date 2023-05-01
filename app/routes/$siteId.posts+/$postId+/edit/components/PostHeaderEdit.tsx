@@ -30,7 +30,7 @@ import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
 import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
-import { Tooltip } from "../../../../../modules/editor/components";
+import { Tooltip } from "~/modules/editor/components";
 import { PostVersionModal } from "./PostVersionModal";
 import { useStorage } from "~/liveblocks.config";
 import TextareaAutosize from "react-textarea-autosize";
@@ -282,27 +282,19 @@ export const PostHeaderEdit = ({
                   </div>
                   <div className="flex items-center justify-between gap-3">
                      <ActiveEditors />
-                     {post.isPublished && (
-                        <>
-                           <Tooltip
-                              id="history"
-                              side="bottom"
-                              content="History"
-                           >
-                              <button
-                                 className="border-color bg-5 flex h-9 w-9 items-center 
+                     <>
+                        <Tooltip id="history" side="bottom" content="History">
+                           <button
+                              className="border-color bg-5 flex h-9 w-9 items-center 
                                  justify-center rounded-full
                                  border hover:border-emerald-200 dark:border-zinc-600 dark:hover:border-emerald-800"
-                                 onClick={() => setVersionModal(true)}
-                              >
-                                 <History
-                                    className="text-emerald-500"
-                                    size={18}
-                                 />
-                              </button>
-                           </Tooltip>
-                        </>
-                     )}
+                              onClick={() => setVersionModal(true)}
+                           >
+                              <History className="text-emerald-500" size={18} />
+                           </button>
+                        </Tooltip>
+                     </>
+
                      <Popover className="relative">
                         {({ open }) => (
                            <>
@@ -420,46 +412,69 @@ export const PostHeaderEdit = ({
                         <div className="border-color bg-2 flex h-9 w-24 items-center justify-center rounded-full border-2">
                            <DotLoader />
                         </div>
-                     ) : isChanged == true || post.isPublished == false ? (
-                        <fetcher.Form method="post">
-                           <Tooltip
-                              id="publish-changes"
-                              side="bottom"
-                              content="Publish New Changes"
-                           >
-                              <button
-                                 disabled={disabled}
-                                 type="submit"
-                                 name="intent"
-                                 value="publish"
+                     ) : (
+                        <>
+                           {isChanged == true || post.isPublished == false ? (
+                              <>
+                                 <fetcher.Form method="post">
+                                    <Tooltip
+                                       id="publish-changes"
+                                       side="bottom"
+                                       content="Publish New Changes"
+                                    >
+                                       <button
+                                          disabled={
+                                             disabled || isChanged == false
+                                                ? false
+                                                : true
+                                          }
+                                          type="submit"
+                                          name="intent"
+                                          value="publish"
+                                          className="
+                                          shadow-1 group inline-flex h-9 cursor-pointer items-center
+                                          justify-center rounded-full bg-emerald-500 px-4 text-sm font-bold text-white shadow-sm 
+                                          transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                       >
+                                          Publish
+                                          <svg
+                                             className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
+                                             fill="none"
+                                             width="12"
+                                             height="12"
+                                             viewBox="0 0 12 12"
+                                             aria-hidden="true"
+                                          >
+                                             <path
+                                                className="opacity-0 transition group-hover:opacity-100"
+                                                d="M0 5h7"
+                                             ></path>
+                                             <path
+                                                className="transition group-hover:translate-x-[3px]"
+                                                d="M1 1l4 4-4 4"
+                                             ></path>
+                                          </svg>
+                                       </button>
+                                    </Tooltip>
+                                 </fetcher.Form>
+                              </>
+                           ) : (
+                              <Tooltip
+                                 id="save-updates"
+                                 side="bottom"
+                                 content="No updates to publish"
                               >
                                  <div
-                                    className="shadow-1 group inline-flex h-9 w-24 items-center justify-center rounded-full bg-emerald-500 
-                              text-sm font-bold text-white shadow-sm transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                    className="shadow-1 bg-5 border-color group inline-flex h-9 w-20 cursor-pointer items-center
+                                 justify-center rounded-full border px-4 text-sm font-semibold shadow-sm transition
+                                 dark:border-zinc-600 dark:text-zinc-500 dark:hover:border-emerald-800"
                                  >
-                                    {t("actions.publish")}
-                                    <svg
-                                       className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
-                                       fill="none"
-                                       width="12"
-                                       height="12"
-                                       viewBox="0 0 12 12"
-                                       aria-hidden="true"
-                                    >
-                                       <path
-                                          className="opacity-0 transition group-hover:opacity-100"
-                                          d="M0 5h7"
-                                       ></path>
-                                       <path
-                                          className="transition group-hover:translate-x-[3px]"
-                                          d="M1 1l4 4-4 4"
-                                       ></path>
-                                    </svg>
+                                    - - -
                                  </div>
-                              </button>
-                           </Tooltip>
-                        </fetcher.Form>
-                     ) : null}
+                              </Tooltip>
+                           )}
+                        </>
+                     )}
                   </div>
                </div>
             </AdminOrStaffOrOwner>

@@ -48,6 +48,7 @@ export default function Block({
       return (
          <div {...attributes} contentEditable={false}>
             <BlockTierList element={element} />
+            <div style={{ display: "none" }}>{children}</div>
          </div>
       );
    }
