@@ -60,6 +60,20 @@ export const SubmittedWarps: CollectionConfig = {
          type: "text",
       },
       {
+         name: "submission_type",
+         type: "select",
+         options: [
+            {
+               label: "api",
+               value: "api",
+            },
+            {
+               label: "file",
+               value: "file",
+            },
+         ]
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
