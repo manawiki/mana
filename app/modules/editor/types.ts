@@ -1,4 +1,5 @@
 import type { LiveList } from "@liveblocks/client";
+import { Collection } from "payload/generated-types";
 import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
 
@@ -99,6 +100,7 @@ export type LinkElement = BlockElement & {
 
 export interface tierRow {
    id: string;
+   name: string;
    iconUrl?: string;
    path?: string;
 }
@@ -106,6 +108,7 @@ export interface tierRow {
 export type TierElement = BlockElement & {
    type: BlockType.TierList;
    tierLabel: string;
+   collection?: Collection["id"];
    tierItems: tierRow[];
    children: [{ text: "" }];
 };

@@ -147,6 +147,7 @@ export default function CollectionIndex() {
                <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
             </ul>
+
             <AdminOrStaffOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}

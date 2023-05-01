@@ -27,18 +27,9 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                      createdBy,
                      id: nanoid(),
                      type: BlockType.TierList,
-                     tierLabel: "S Tier",
-                     tierItems: [
-                        {
-                           id: "1",
-                        },
-                        {
-                           id: "2",
-                        },
-                        {
-                           id: "3",
-                        },
-                     ],
+                     tierLabel: "",
+                     collection: "",
+                     tierItems: [],
                      children: [{ text: "" }],
                   });
                },
