@@ -1,10 +1,23 @@
 import isHotkey from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type { Descendant, Node } from "slate";
-import { createEditor, Editor, Element, Point, Range, Transforms } from "slate";
-import type { RenderElementProps } from "slate-react";
-import { Editable, ReactEditor, Slate, withReact } from "slate-react";
+import type { Node } from "slate";
+import {
+   type Descendant,
+   createEditor,
+   Editor,
+   Element,
+   Point,
+   Range,
+   Transforms,
+} from "slate";
+import {
+   Editable,
+   ReactEditor,
+   Slate,
+   withReact,
+   type RenderElementProps,
+} from "slate-react";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import {
@@ -21,7 +34,7 @@ import {
    useRoom,
    useUpdateMyPresence,
 } from "~/liveblocks.config";
-import type { CustomElement } from "./types";
+import type { CustomElement, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 import {
    removeGlobalCursor,
@@ -271,7 +284,7 @@ export const ForgeEditor = () => {
    );
 
    return (
-      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-4">
+      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-3">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
@@ -418,6 +431,42 @@ export const ForgeEditor = () => {
                                     toggleMark(editor, mark);
                                  }
                               }
+                              // if (event.key === "Enter") {
+                              //    if (event.shiftKey) {
+                              //       event.preventDefault();
+                              //       editor.insertText("\n");
+                              //    } else {
+                              //       const selectedElement = Node.descendant(
+                              //          editor,
+                              //          editor.selection.anchor.path.slice(0, -1)
+                              //       );
+
+                              //       if (Element.isElement(selectedElement)) {
+                              //          // Allow hard enter to "break out" of certain elements
+                              //          event.preventDefault();
+                              //          const selectedLeaf = Node.descendant(
+                              //             editor,
+                              //             editor.selection.anchor.path
+                              //          );
+
+                              //          if (
+                              //             Text.isText(selectedLeaf) &&
+                              //             String(selectedLeaf.text).length ===
+                              //                editor.selection.anchor.offset
+                              //          ) {
+                              //             const p: ParagraphElement = {
+                              //                id: nanoid(),
+                              //                type: BlockType.Paragraph,
+                              //                children: [{ text: "" }],
+                              //             };
+                              //             Transforms.insertNodes(editor, p);
+                              //          } else {
+                              //             Transforms.splitNodes(editor);
+                              //             Transforms.setNodes(editor, {});
+                              //          }
+                              //       }
+                              //    }
+                              // }
                            }}
                         />
                      </SortableContext>
@@ -476,7 +525,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="absolute right-0 top-0.5 flex select-none items-center pr-3 laptop:translate-x-full"
+                  className="absolute right-0 top-0.5 flex select-none items-center pl-3 laptop:translate-x-full"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {

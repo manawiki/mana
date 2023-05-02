@@ -1,5 +1,5 @@
 import { Image } from "~/components/Image";
-import { Tooltip } from "../../../../../modules/editor/components";
+import { Tooltip } from "~/modules/editor/components";
 import { MousePointer2 } from "lucide-react";
 
 type Props = {
@@ -10,10 +10,15 @@ type Props = {
 
 export default function Avatar({ imageUrl, name, color }: Props) {
    return (
-      <Tooltip id="avatar" side="bottom" content={name}>
+      <Tooltip
+         className="flex items-center"
+         id="avatar"
+         side="bottom"
+         content={name}
+      >
          <button
             style={{ borderColor: color }}
-            className="bg-4 relative h-8 w-8 overflow-hidden rounded-full border-2"
+            className="bg-4 relative h-[34px] w-[34px] overflow-hidden rounded-full border-2"
          >
             {imageUrl ? (
                <div className="border-color flex items-center justify-center overflow-hidden rounded-full border">
