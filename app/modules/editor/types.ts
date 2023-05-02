@@ -1,4 +1,5 @@
 import type { LiveList } from "@liveblocks/client";
+import { type Collection } from "payload/generated-types";
 import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
 
@@ -38,7 +39,7 @@ export enum BlockType {
    Video = "video",
    CodeSandbox = "codesandbox",
    Link = "link",
-   TierList = "tier-list",
+   Group = "group",
 }
 
 export type TextBlock =
@@ -97,14 +98,22 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-export type TierElement = BlockElement & {
-   type: BlockType.TierList;
-   tierLabel: string;
-   tierItems: [
-      {
-         id: string;
-      }
-   ];
+export interface groupRow {
+   id: string;
+   tag?: string;
+   tagColor?: string;
+   name: string;
+   iconUrl?: string;
+   path?: string;
+}
+
+export type GroupElement = BlockElement & {
+   type: BlockType.Group;
+   groupLabel: string;
+   color: string;
+   viewMode: "list" | "grid";
+   collection?: Collection["id"];
+   groupItems: groupRow[];
    children: [{ text: "" }];
 };
 
@@ -116,7 +125,8 @@ export type CustomElement =
    | ImageElement
    | VideoElement
    | CodeSandboxElement
-   | LinkElement;
+   | LinkElement
+   | GroupElement;
 
 export type CustomText = {
    text: string;
