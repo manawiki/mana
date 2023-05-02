@@ -700,10 +700,10 @@ const SortableItem = ({
                </div>
                <span className="text-1 font-bold">{row?.name}</span>
             </Link>
-            <input
+            {/* <input
                type="text"
                className="bg-1 h-6 w-10 rounded-full border-0 px-3 text-center text-sm font-bold"
-            />
+            /> */}
             <div className="flex select-none items-center gap-1 opacity-0 group-hover:opacity-100">
                <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
                   <button
