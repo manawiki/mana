@@ -24,6 +24,10 @@ export const SubmittedWarps: CollectionConfig = {
          type: "text",
       },
       {
+         name: "user",
+         type: "text",
+      },
+      {
          name: "gacha_id",
          type: "text",
       },
