@@ -17,6 +17,28 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
    const groups = [
       {
+         label: "Widgets",
+         items: [
+            {
+               label: "Group",
+               description: "Create a group of collections",
+               onSelect: () => {
+                  onSelect({
+                     createdBy,
+                     viewMode: "list",
+                     id: nanoid(),
+                     color: "#444444",
+                     type: BlockType.Group,
+                     groupLabel: "",
+                     collection: "",
+                     groupItems: [],
+                     children: [{ text: "" }],
+                  });
+               },
+            },
+         ],
+      },
+      {
          label: "Text",
          items: [
             {

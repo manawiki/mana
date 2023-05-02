@@ -1,6 +1,6 @@
 import { useOthers } from "~/liveblocks.config";
 import Avatar from "./Avatar";
-import { USER_COLORS } from "../../../../../modules/editor/constants";
+import { USER_COLORS } from "~/modules/editor/constants";
 
 export default function ActiveEditors() {
    const others = useOthers();
