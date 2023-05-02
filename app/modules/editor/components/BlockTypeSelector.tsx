@@ -5,7 +5,6 @@ import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 import Tooltip from "~/components/Tooltip";
 import { useSelf } from "~/liveblocks.config";
-import { TIER_COLORS } from "../blocks/BlockTierList";
 
 type Props = {
    children: ReactNode;
@@ -18,24 +17,30 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
    const groups = [
       {
-         label: "Text",
+         label: "Widgets",
          items: [
             {
-               label: "Tier List",
-               description: "Build a tier list",
+               label: "Group",
+               description: "Create a group of collections",
                onSelect: () => {
                   onSelect({
                      createdBy,
+                     viewMode: "list",
                      id: nanoid(),
                      color: "#444444",
-                     type: BlockType.TierList,
-                     tierLabel: "",
+                     type: BlockType.Group,
+                     groupLabel: "",
                      collection: "",
-                     tierItems: [],
+                     groupItems: [],
                      children: [{ text: "" }],
                   });
                },
             },
+         ],
+      },
+      {
+         label: "Text",
+         items: [
             {
                label: "Heading 2",
                description: "Large section heading",

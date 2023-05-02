@@ -1,25 +1,27 @@
 import { Link } from "@remix-run/react";
-import type { TierElement } from "../types";
+import type { GroupElement } from "../types";
 import { Image } from "~/components";
 import { Component } from "lucide-react";
 
 type Props = {
-   element: TierElement;
+   element: GroupElement;
 };
 
-export default function BlockTierListView({ element }: Props) {
-   const tierItems = element.tierItems;
+export default function GroupView({ element }: Props) {
+   const groupItems = element.groupItems;
    return (
       <section className="my-6">
-         <div
-            className="shadow-1 mb-2 inline-block rounded-lg
-            border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm
-            font-bold shadow-sm dark:border-emerald-900 dark:bg-emerald-950/20"
-         >
-            {element.tierLabel}
+         <div className="flex items-center gap-3 pb-2.5 font-header text-2xl font-bold">
+            <span
+               className="h-7 w-1 rounded-full"
+               style={{
+                  backgroundColor: element.color,
+               }}
+            />
+            {element.groupLabel}
          </div>
          <div className="border-color bg-2 divide-color relative divide-y overflow-hidden rounded-lg border">
-            {tierItems?.map((row) => (
+            {groupItems?.map((row) => (
                <Link
                   key={row?.id}
                   to={row?.path ?? ""}
@@ -27,8 +29,11 @@ export default function BlockTierListView({ element }: Props) {
                   className="bg-2 flex items-center gap-3 p-2 hover:underline"
                >
                   <div
-                     className="border-color shadow-1 flex h-8 w-8 flex-none items-center
-                                 justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                     style={{
+                        borderColor: element.color,
+                     }}
+                     className="shadow-1 flex h-8 w-8 items-center
+                     justify-between overflow-hidden rounded-full border shadow-sm"
                   >
                      {row?.iconUrl ? (
                         <Image
