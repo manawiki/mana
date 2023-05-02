@@ -108,6 +108,7 @@ export interface tierRow {
 export type TierElement = BlockElement & {
    type: BlockType.TierList;
    tierLabel: string;
+   color: string;
    collection?: Collection["id"];
    tierItems: tierRow[];
    children: [{ text: "" }];

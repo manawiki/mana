@@ -46,8 +46,10 @@ export const FeedItem = ({ post }: { post: Post }) => {
             </div>
             <div className="flex items-start gap-5">
                <div className="relative flex-grow">
-                  <div className="pb-2 text-xl font-bold">{post.title}</div>
-                  <div className="text-1 max-laptop:line-clamp-2 max-laptop:text-sm">
+                  <div className="pb-2 font-header text-lg font-bold">
+                     {post.title}
+                  </div>
+                  <div className="text-1 text-sm max-laptop:line-clamp-2">
                      {post.subtitle}
                   </div>
                </div>

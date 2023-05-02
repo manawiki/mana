@@ -525,7 +525,7 @@ function SortableElement({
             {renderElement({ element, children })}
             {othersByBlockId.length > 0 && (
                <div
-                  className="absolute right-0 top-0.5 flex select-none items-center pr-3 laptop:translate-x-full"
+                  className="absolute right-0 top-0.5 flex select-none items-center pl-3 laptop:translate-x-full"
                   contentEditable={false}
                >
                   {othersByBlockId.map((user) => {

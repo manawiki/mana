@@ -16,15 +16,18 @@ import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
    ChevronDown,
+   ChevronsDown,
    ChevronsUpDown,
    Component,
+   Edit,
    GripVertical,
    Minus,
    Plus,
+   X,
 } from "lucide-react";
 import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
-import { Combobox, Listbox, Transition } from "@headlessui/react";
+import { Combobox, Listbox, Popover, Transition } from "@headlessui/react";
 import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
@@ -36,6 +39,14 @@ type Props = {
 };
 
 const fetcher = (...args: any) => fetch(args).then((res) => res.json());
+
+export const TIER_COLORS = [
+   "#FF7F7F",
+   "#FEBF7E",
+   "#FFDF7E",
+   "#FFFF7F",
+   "#BEFF7F",
+];
 
 export default function BlockTierList({ element }: Props) {
    const editor = useSlate();
@@ -147,6 +158,24 @@ export default function BlockTierList({ element }: Props) {
       });
    }
 
+   function handleUpdateTierBlock(
+      event: any,
+      editor: BaseEditor & ReactEditor,
+      element: TierElement
+   ) {
+      console.log(event);
+      const path = ReactEditor.findPath(editor, element);
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         color: event,
+      };
+
+      updateRowLb(path[0], newProperties);
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   }
+
    function handleDragEnd(
       event: DragEndEvent,
       editor: BaseEditor & ReactEditor,
@@ -218,35 +247,36 @@ export default function BlockTierList({ element }: Props) {
       <div className="my-3">
          <>
             <div className="flex items-center justify-between pb-2">
-               <input
-                  className="w-24 rounded-lg border border-emerald-200 bg-emerald-50
-                   px-2.5 py-1.5  text-sm font-bold focus:ring-0 dark:border-emerald-900 dark:bg-emerald-950/20"
-                  type="text"
-                  placeholder="Enter a tier label..."
-                  defaultValue={element.tierLabel}
-                  onChange={(event) => setTierLabel(event.target.value)}
-               />
-               <Listbox
-                  value={selectedCollection}
-                  onChange={(event) =>
-                     handleUpdateCollection(event, editor, element)
-                  }
-               >
-                  <div className="relative z-10">
-                     <Listbox.Button
-                        className="text-1 bg-2 border-color shadow-1 z-20 flex items-center
-                     gap-1.5 rounded-lg border py-2 pl-2.5 pr-2 text-xs font-semibold hover:underline"
-                     >
-                        {({ value }) => (
-                           <>
-                              {activeSelectItem(value) ?? "Select a Collection"}
-                              <ChevronsUpDown
-                                 className="text-emerald-500"
-                                 size={16}
-                              />
-                           </>
-                        )}
-                     </Listbox.Button>
+               <section className="flex items-center gap-3">
+                  <span
+                     className="h-7 w-1 rounded-full"
+                     style={{
+                        backgroundColor: element.color,
+                     }}
+                  />
+                  <input
+                     className="bg-3 border-none p-0 font-header text-2xl font-bold focus:ring-0"
+                     type="text"
+                     placeholder="Tier name..."
+                     defaultValue={element.tierLabel}
+                     onChange={(event) => setTierLabel(event.target.value)}
+                  />
+               </section>
+               <section className="">
+                  <Listbox value={selectedCollection}>
+                     <Tooltip id="tier-color" side="top" content="Switch Color">
+                        <Listbox.Button
+                           className="bg-2 border-color flex h-8 w-8 items-center 
+                              justify-center rounded-md border focus:outline-none"
+                        >
+                           <div
+                              style={{
+                                 backgroundColor: element.color,
+                              }}
+                              className="h-3.5 w-3.5 rounded-full"
+                           />
+                        </Listbox.Button>
+                     </Tooltip>
                      <Transition
                         enter="transition duration-100 ease-out"
                         enterFrom="transform scale-95 opacity-0"
@@ -256,38 +286,34 @@ export default function BlockTierList({ element }: Props) {
                         leaveTo="transform scale-95 opacity-0"
                      >
                         <Listbox.Options
-                           className="border-color text-1 bg-2 shadow-1 absolute right-0
-                           z-30 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                           className="border-color text-1 bg-2 shadow-1 absolute -top-9 right-10 z-30 mt-1
+                                flex h-8 items-center gap-2 rounded-md border px-2"
                         >
-                           {collectionData?.docs?.map(
-                              (row: Collection, rowIdx: number) => (
-                                 <Listbox.Option key={rowIdx} value={row.slug}>
-                                    {({ selected }) => (
-                                       <>
-                                          <button
-                                             className="text-1 relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                             // onClick={() =>
-
-                                             // }
-                                          >
-                                             {selected ? (
-                                                <span
-                                                   className="absolute right-2 h-1.5 w-1.5 rounded-full
-                                        bg-emerald-500"
-                                                />
-                                             ) : null}
-                                             {row.name}
-                                          </button>
-                                       </>
-                                    )}
+                           {TIER_COLORS?.map(
+                              (color: string, rowIdx: number) => (
+                                 <Listbox.Option key={rowIdx} value={color}>
+                                    <button
+                                       type="button"
+                                       onClick={() =>
+                                          handleUpdateTierBlock(
+                                             color,
+                                             editor,
+                                             element
+                                          )
+                                       }
+                                       className="h-3.5 w-3.5 rounded-full"
+                                       key={color}
+                                       style={{
+                                          backgroundColor: color,
+                                       }}
+                                    ></button>
                                  </Listbox.Option>
                               )
                            )}
                         </Listbox.Options>
                      </Transition>
-                  </div>
-               </Listbox>
+                  </Listbox>
+               </section>
             </div>
             <div
                className={`${
@@ -320,7 +346,7 @@ export default function BlockTierList({ element }: Props) {
                         ? "rounded-t-none"
                         : "border-color border"
                   } text-1 bg-2 relative flex items-center justify-between
-                  rounded-lg px-2.5 py-2`}
+                  rounded-lg p-2`}
                >
                   <div className="flex w-full items-center gap-3">
                      <Combobox
@@ -335,12 +361,9 @@ export default function BlockTierList({ element }: Props) {
                                  <div
                                     className="shadow-1 border-color flex h-[30px] w-[30px]
                                  items-center justify-center rounded-full border bg-white
-                                 shadow-sm group-hover:bg-emerald-50 dark:bg-bg3Dark dark:group-hover:bg-zinc-700/50"
+                                 shadow-sm group-hover:bg-zinc-50 dark:bg-bg3Dark dark:group-hover:bg-zinc-700/50"
                                  >
-                                    <Plus
-                                       className="text-emerald-500"
-                                       size={20}
-                                    />
+                                    <Plus className="text-zinc-500" size={20} />
                                  </div>
                               </Combobox.Button>
                               <Combobox.Input
@@ -371,15 +394,39 @@ export default function BlockTierList({ element }: Props) {
                                        <Combobox.Option
                                           key={entry.id}
                                           className={({ active }) =>
-                                             `cursor-default select-none rounded-md px-3 py-2 text-sm font-bold ${
+                                             `cursor-default select-none rounded-md p-2 text-sm font-bold ${
                                                 active
                                                    ? "dark:border-emeald-900 shadow-1 bg-zinc-100 shadow-sm dark:bg-bg1Dark"
                                                    : ""
-                                             }`
+                                             } flex items-center gap-2`
                                           }
                                           value={entry}
                                        >
-                                          {entry.name}
+                                          <>
+                                             <span
+                                                className="border-color shadow-1 flex h-8 w-8 flex-none items-center
+                                             justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                                             >
+                                                {/* @ts-expect-error */}
+                                                {entry?.icon?.url ? (
+                                                   <Image
+                                                      url={entry?.icon?.url}
+                                                      options="fit=crop,width=60,height=60,gravity=auto"
+                                                      alt={
+                                                         entry?.name ?? "Icon"
+                                                      }
+                                                   />
+                                                ) : (
+                                                   <Component
+                                                      className="text-1 mx-auto"
+                                                      size={18}
+                                                   />
+                                                )}
+                                             </span>
+                                             <span className="flex-grow">
+                                                {entry.name}
+                                             </span>
+                                          </>
                                        </Combobox.Option>
                                     ))
                                  )}
@@ -388,6 +435,72 @@ export default function BlockTierList({ element }: Props) {
                         </div>
                      </Combobox>
                   </div>
+                  <Listbox
+                     value={selectedCollection}
+                     onChange={(event) =>
+                        handleUpdateCollection(event, editor, element)
+                     }
+                  >
+                     <div className="relative z-10 flex-none">
+                        <Listbox.Button
+                           className="text-1 bg-3 z-20 flex items-center gap-1.5
+                        rounded-full px-4 py-2 text-xs font-bold shadow hover:underline"
+                        >
+                           {({ value }) => (
+                              <>
+                                 {activeSelectItem(value) ??
+                                    "Select a Collection"}
+                                 <ChevronDown
+                                    className="text-zinc-500"
+                                    size={18}
+                                 />
+                              </>
+                           )}
+                        </Listbox.Button>
+                        <Transition
+                           enter="transition duration-100 ease-out"
+                           enterFrom="transform scale-95 opacity-0"
+                           enterTo="transform scale-100 opacity-100"
+                           leave="transition duration-75 ease-out"
+                           leaveFrom="transform scale-100 opacity-100"
+                           leaveTo="transform scale-95 opacity-0"
+                        >
+                           <Listbox.Options
+                              className="border-color text-1 bg-2 shadow-1 absolute right-0
+                           z-30 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                           >
+                              {collectionData?.docs?.map(
+                                 (row: Collection, rowIdx: number) => (
+                                    <Listbox.Option
+                                       key={rowIdx}
+                                       value={row.slug}
+                                    >
+                                       {({ selected }) => (
+                                          <>
+                                             <button
+                                                className="text-1 relative flex w-full items-center gap-3 truncate
+                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                // onClick={() =>
+
+                                                // }
+                                             >
+                                                {selected ? (
+                                                   <span
+                                                      className="absolute right-2 h-1.5 w-1.5 rounded-full
+                                        bg-zinc-500"
+                                                   />
+                                                ) : null}
+                                                {row.name}
+                                             </button>
+                                          </>
+                                       )}
+                                    </Listbox.Option>
+                                 )
+                              )}
+                           </Listbox.Options>
+                        </Transition>
+                     </div>
+                  </Listbox>
                </div>
             </div>
          </>
@@ -442,8 +555,11 @@ const SortableItem = ({
             className="bg-2 flex flex-grow items-center gap-3 hover:underline"
          >
             <div
-               className="border-color shadow-1 flex h-8 w-8 items-center
-                                    justify-between overflow-hidden rounded-full border-2 shadow-sm"
+               style={{
+                  borderColor: element.color,
+               }}
+               className="shadow-1 flex h-8 w-8 items-center
+               justify-between overflow-hidden rounded-full border shadow-sm"
             >
                {row?.iconUrl ? (
                   <Image
@@ -467,7 +583,7 @@ const SortableItem = ({
                   onClick={deleteRow}
                   aria-label="Delete"
                >
-                  <Minus size={16} />
+                  <X size={16} />
                </button>
             </Tooltip>
             <Tooltip side="left" id={`drag-${rowId}`} content="Drag to reorder">
@@ -482,11 +598,11 @@ const SortableItem = ({
                </button>
             </Tooltip>
          </div>
-         <div className="flex items-center gap-2 text-sm font-bold">
-            <span className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm dark:bg-bg3Dark">
-               <ChevronDown className="text-emerald-500" size={20} />
-            </span>
-         </div>
+         <Tooltip side="left" id={`edit-${rowId}`} content="Edit">
+            {/* <span className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm dark:bg-bg3Dark"> */}
+            <Edit className="text-1 mr-2" size={18} />
+            {/* </span> */}
+         </Tooltip>
       </div>
    );
 };

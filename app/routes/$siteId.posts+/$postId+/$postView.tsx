@@ -80,13 +80,13 @@ export default function PostPage() {
    }, []);
 
    return (
-      <div>
+      <div className="relative">
          <AdminOrStaffOrOwner>
-            <div className="fixed inset-x-0 bottom-24 z-10 mx-auto flex w-full items-center justify-center laptop:bottom-0">
+            <div className="sticky top-16 flex items-center justify-center">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
                   className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 
-               border border-emerald-300 bg-emerald-100 py-4 pl-3 pr-5 shadow dark:border-emerald-900 dark:bg-emerald-950 laptop:rounded-b-none laptop:border-b-0 laptop:py-5"
+               border border-emerald-300 bg-emerald-100 py-4 pl-3 pr-5 shadow dark:border-emerald-900 dark:bg-emerald-950 laptop:rounded-t-none laptop:border-t-0"
                >
                   <ArrowLeft className="text-emerald-500" size={20} />
                   <div className="font-bold text-emerald-600 group-hover:underline dark:text-emerald-100">
