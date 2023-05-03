@@ -16,8 +16,8 @@ export default function GroupView({ element }: Props) {
 
    return (
       <section className="my-6">
-         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 pb-2.5 font-header text-2xl font-bold">
+         <div className="flex items-center justify-between pb-2">
+            <div className="flex items-center gap-3 font-header text-2xl font-bold">
                <span
                   className="h-7 w-1 rounded-full"
                   style={{
@@ -42,9 +42,14 @@ export default function GroupView({ element }: Props) {
                            className={`${
                               checked ? "bg-zinc-200 dark:bg-zinc-700" : ""
                            }
-                              flex h-7 w-7 items-center justify-center rounded`}
+                                 flex h-6 w-6 items-center justify-center rounded`}
                         >
-                           <List size={16} />
+                           <List
+                              style={{
+                                 color: checked == true ? element.color : "",
+                              }}
+                              size={14}
+                           />
                         </div>
                      </Tooltip>
                   )}
@@ -60,9 +65,14 @@ export default function GroupView({ element }: Props) {
                            className={`${
                               checked ? "bg-zinc-200 dark:bg-zinc-700" : ""
                            }
-                           flex h-7 w-7 items-center justify-center rounded`}
+                           flex h-6 w-6 items-center justify-center rounded`}
                         >
-                           <LayoutGrid size={16} />
+                           <LayoutGrid
+                              style={{
+                                 color: checked == true ? element.color : "",
+                              }}
+                              size={14}
+                           />
                         </div>
                      </Tooltip>
                   )}
