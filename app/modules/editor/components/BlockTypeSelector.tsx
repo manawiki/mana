@@ -5,6 +5,7 @@ import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 import Tooltip from "~/components/Tooltip";
 import { useSelf } from "~/liveblocks.config";
+import { GROUP_COLORS } from "../blocks/BlockGroup";
 
 type Props = {
    children: ReactNode;
@@ -16,6 +17,28 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
    const createdBy = self?.connectionId || 0;
 
    const groups = [
+      {
+         label: "Widgets",
+         items: [
+            {
+               label: "Group",
+               description: "Create a group of collections",
+               onSelect: () => {
+                  onSelect({
+                     createdBy,
+                     viewMode: "list",
+                     id: nanoid(),
+                     color: GROUP_COLORS[0],
+                     type: BlockType.Group,
+                     groupLabel: "",
+                     collection: "",
+                     groupItems: [],
+                     children: [{ text: "" }],
+                  });
+               },
+            },
+         ],
+      },
       {
          label: "Text",
          items: [

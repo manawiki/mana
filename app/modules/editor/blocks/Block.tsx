@@ -1,4 +1,4 @@
-import type { RenderElementProps } from "slate-react";
+import { type RenderElementProps, useReadOnly } from "slate-react";
 import { DefaultElement } from "slate-react";
 import BlockImage from "./BlockImage";
 import BlockVideo from "./BlockVideo";
@@ -9,6 +9,9 @@ import BlockToDo from "./BlockToDo";
 import BlockList from "./BlockList";
 import { nanoid } from "nanoid";
 import BlockLink from "./BlockLink";
+
+import BlockGroup from "./BlockGroup";
+import BlockGroupView from "./BlockGroupView";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created
@@ -34,9 +37,20 @@ export default function Block({
    children,
    attributes,
 }: RenderElementProps) {
+   const readOnly = useReadOnly();
+
    if (element.type === BlockType.Link) {
       return (
          <BlockLink {...attributes} element={element} children={children} />
+      );
+   }
+   if (element.type === BlockType.Group) {
+      if (readOnly) return <BlockGroupView element={element} />;
+      return (
+         <div {...attributes} contentEditable={false}>
+            <BlockGroup element={element} />
+            <div style={{ display: "none" }}>{children}</div>
+         </div>
       );
    }
    if (element.type === BlockType.Paragraph) {
