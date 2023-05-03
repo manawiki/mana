@@ -6,6 +6,17 @@ import { BlockType } from "../types";
 import Tooltip from "~/components/Tooltip";
 import { useSelf } from "~/liveblocks.config";
 import { GROUP_COLORS } from "../blocks/BlockGroup";
+import {
+   CheckSquare,
+   Codesandbox,
+   Heading2,
+   Heading3,
+   ImagePlus,
+   LayoutList,
+   List,
+   Type,
+   Youtube,
+} from "lucide-react";
 
 type Props = {
    children: ReactNode;
@@ -22,6 +33,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          items: [
             {
                label: "Group",
+               icon: <LayoutList size={20} />,
                description: "Create a group of collections",
                onSelect: () => {
                   onSelect({
@@ -44,7 +56,8 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          items: [
             {
                label: "Heading 2",
-               description: "Large section heading",
+               icon: <Heading2 size={20} />,
+               description: "Large size heading",
                onSelect: () => {
                   onSelect({
                      createdBy,
@@ -57,7 +70,8 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
             {
                label: "Heading 3",
-               description: "Large section heading",
+               icon: <Heading3 size={20} />,
+               description: "Medium size heading",
                onSelect: () => {
                   onSelect({
                      createdBy,
@@ -69,6 +83,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
             },
             {
                label: "Normal text",
+               icon: <Type size={20} />,
                description: "Plain text",
                onSelect: () => {
                   onSelect({
@@ -81,7 +96,8 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
             },
             {
                label: "Bulleted list",
-               description: "Create a simple bulleted list",
+               icon: <List size={20} />,
+               description: "A basic bulleted list",
                onSelect: () => {
                   onSelect({
                      createdBy,
@@ -92,8 +108,9 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                },
             },
             {
-               label: "To-do list",
-               description: "Track tasks with a to-do list",
+               label: "To do list",
+               icon: <CheckSquare size={20} />,
+               description: "A basic to do list",
                onSelect: () => {
                   onSelect({
                      createdBy,
@@ -111,6 +128,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          items: [
             {
                label: "Image",
+               icon: <ImagePlus size={20} />,
                description: "Embed from URL",
                onSelect: () => {
                   onSelect({
@@ -124,7 +142,8 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                },
             },
             {
-               label: "Video",
+               label: "Youtube Video",
+               icon: <Youtube size={20} />,
                description: "Embed YouTube video",
                onSelect: () => {
                   onSelect({
@@ -143,6 +162,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          items: [
             {
                label: "CodeSandbox",
+               icon: <Codesandbox size={20} />,
                description: "Embed CodeSandbox project",
                onSelect: () => {
                   onSelect({
@@ -168,15 +188,15 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
 
          <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
-               className="shadow-1 border-color bg-2 left-0
-               z-10 h-60 w-52 overflow-scroll rounded-lg border shadow outline-none"
+               className="shadow-1 border-color bg-2 relative z-10
+               ml-60 h-72 w-60 overflow-scroll rounded-lg border shadow outline-none"
             >
                {groups.map((group, indexGroup) => {
                   return (
                      <DropdownMenuPrimitive.Group key={indexGroup} className="">
                         <DropdownMenuPrimitive.Label
-                           className="text-1 sticky top-0 bg-zinc-100 px-2.5 pb-1.5 pt-2.5 text-xs
-                        font-bold dark:bg-zinc-700"
+                           className="text-1 bg-2 sticky top-0 px-2.5 pb-1.5 pt-2.5 text-xs
+                        font-bold"
                         >
                            {group.label}
                         </DropdownMenuPrimitive.Label>
@@ -184,14 +204,27 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                            {groups[indexGroup].items.map((item, indexItem) => {
                               return (
                                  <DropdownMenuPrimitive.DropdownMenuItem
-                                    className="bg-3 hover:bg-4 flex cursor-default flex-col space-y-1 px-2.5 py-2 text-xs outline-none"
+                                    className="bg-3 flex cursor-pointer items-center gap-3 space-y-1 p-3
+                                    text-xs outline-none hover:bg-zinc-50 dark:hover:bg-bg2Dark"
                                     key={indexItem}
                                     onSelect={item.onSelect}
                                  >
-                                    <span className="font-bold text-emerald-500">
-                                       {item.label}
-                                    </span>
-                                    <span className="">{item.description}</span>
+                                    {item.icon && (
+                                       <div
+                                          className="flex h-8 w-8 items-center justify-center
+                                     rounded-lg bg-zinc-100 dark:bg-bg4Dark"
+                                       >
+                                          {item.icon}
+                                       </div>
+                                    )}
+                                    <div>
+                                       <div className="font-bold text-emerald-500">
+                                          {item.label}
+                                       </div>
+                                       <div className="">
+                                          {item.description}
+                                       </div>
+                                    </div>
                                  </DropdownMenuPrimitive.DropdownMenuItem>
                               );
                            })}
