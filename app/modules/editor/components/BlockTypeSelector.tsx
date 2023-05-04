@@ -189,7 +189,7 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
          <DropdownMenuPrimitive.Portal>
             <DropdownMenuPrimitive.Content
                className="shadow-1 border-color bg-2 relative z-10
-               ml-60 h-72 w-60 overflow-scroll rounded-lg border shadow outline-none"
+               h-72 w-60 overflow-scroll rounded-lg border shadow outline-none"
             >
                {groups.map((group, indexGroup) => {
                   return (

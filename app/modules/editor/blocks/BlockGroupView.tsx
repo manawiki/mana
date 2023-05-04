@@ -17,7 +17,7 @@ export default function GroupView({ element }: Props) {
    return (
       <section className="my-6">
          <div className="flex items-center justify-between pb-2">
-            <div className="flex items-center gap-3 font-header text-2xl font-bold">
+            <div className="flex items-center gap-3 font-header text-xl font-bold">
                <span
                   className="h-7 w-1 rounded-full"
                   style={{
@@ -93,7 +93,7 @@ export default function GroupView({ element }: Props) {
                            borderColor: element.color,
                         }}
                         className="shadow-1 flex h-8 w-8 items-center
-                     justify-between overflow-hidden rounded-full border shadow-sm"
+                     justify-between overflow-hidden rounded-full border-2 shadow-sm"
                      >
                         {row?.iconUrl ? (
                            <Image
