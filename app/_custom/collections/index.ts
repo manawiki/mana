@@ -10,6 +10,8 @@ import { EnemySkills } from "./enemySkills";
 import { Enemies } from "./enemies";
 import { Achievements } from "./achievements";
 import { AchievementSeries } from "./achievementSeries";
+import { Aeons } from "./aeons";
+import { Blessings } from "./blessings";
 import { Banners } from "./banners";
 import { SubmittedWarps } from "./submittedWarps";
 
@@ -35,6 +37,8 @@ export const CustomCollections = [
    Enemies,
    Achievements,
    AchievementSeries,
+   Aeons,
+   Blessings,
    Banners,
    SubmittedWarps,
    _Elements,

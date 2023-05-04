@@ -1,15 +1,15 @@
 import { isStaff } from "../../../db/access";
 import type { CollectionConfig } from "payload/types";
 
-export const SubmittedWarps: CollectionConfig = {
-   slug: "submittedWarps",
-   labels: { singular: "submittedWarp", plural: "submittedWarps" },
+export const Aeons: CollectionConfig = {
+   slug: "aeons",
+   labels: { singular: "Aeon", plural: "Aeons" },
    admin: {
       group: "Custom",
-      useAsTitle: "id",
+      useAsTitle: "name",
    },
    access: {
-      create: () => true, //udpate in future to allow site admins as well
+      create: isStaff, //udpate in future to allow site admins as well
       read: () => true,
       update: isStaff, //udpate in future to allow site admins as well
       delete: isStaff, //udpate in future to allow site admins as well
@@ -20,31 +20,7 @@ export const SubmittedWarps: CollectionConfig = {
          type: "text",
       },
       {
-         name: "uid",
-         type: "text",
-      },
-      {
-         name: "user",
-         type: "text",
-      },
-      {
-         name: "gacha_id",
-         type: "text",
-      },
-      {
-         name: "gacha_type",
-         type: "text",
-      },
-      {
-         name: "item_id",
-         type: "text",
-      },
-      {
-         name: "count",
-         type: "text",
-      },
-      {
-         name: "time",
+         name: "data_key",
          type: "text",
       },
       {
@@ -52,35 +28,60 @@ export const SubmittedWarps: CollectionConfig = {
          type: "text",
       },
       {
-         name: "lang",
+         name: "rogue_version",
          type: "text",
       },
       {
-         name: "item_type",
+         name: "sort",
          type: "text",
       },
       {
-         name: "rank_type",
+         name: "subtitle",
          type: "text",
       },
       {
-         name: "submission_type",
-         type: "select",
-         options: [
-            {
-               label: "api",
-               value: "api",
-            },
-            {
-               label: "file",
-               value: "file",
-            },
-         ]
+         name: "path_name",
+         type: "text",
+      },
+      {
+         name: "effect_1",
+         type: "text",
+      },
+      {
+         name: "effect_2",
+         type: "text",
+      },
+      {
+         name: "icon_name",
+         type: "text",
+      },
+      {
+         name: "icon_small_name",
+         type: "text",
+      },
+      {
+         name: "icon_class_name",
+         type: "text",
       },
       {
          name: "icon",
          type: "upload",
          relationTo: "images",
       },
+      {
+         name: "icon_small",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "icon_class",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "checksum",
+         type: "text",
+      },
+      
    ],
 };

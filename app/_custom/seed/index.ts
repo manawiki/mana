@@ -6,7 +6,7 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
-const filetype = "mp3"; // either mp3 or png or whatever filetype
+const filetype = "png"; // either mp3 or png or whatever filetype
 const overwriteexisting = false;
 var count = 0;
 
