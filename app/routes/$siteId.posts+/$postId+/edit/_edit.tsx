@@ -32,6 +32,7 @@ import { RoomProvider } from "~/liveblocks.config";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "../../../../modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
+import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 
 export async function loader({
    context: { payload, user },
@@ -133,32 +134,7 @@ export default function PostEditPage() {
                selectedBlockId: null,
             }}
          >
-            <ClientSideSuspense
-               fallback={
-                  <div className="mx-4 max-w-[728px] space-y-4 mobile:mx-auto">
-                     <div
-                        className="bg-2 borer-color h-24
-                         w-full animate-pulse rounded-lg"
-                     />
-                     <div
-                        className="bg-2 borer-color h-24
-                         w-full animate-pulse rounded-lg"
-                     />
-                     <div
-                        className="bg-2 borer-color h-24
-                         w-full animate-pulse rounded-lg"
-                     />
-                     <div
-                        className="bg-2 borer-color h-24
-                         w-full animate-pulse rounded-lg"
-                     />
-                     <div
-                        className="bg-2 borer-color h-24
-                         w-full animate-pulse rounded-lg"
-                     />
-                  </div>
-               }
-            >
+            <ClientSideSuspense fallback={<PostSkeletonLoader />}>
                {() => (
                   <>
                      <PostHeaderEdit versions={versions} post={post} />
