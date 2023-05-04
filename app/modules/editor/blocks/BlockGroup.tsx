@@ -514,6 +514,7 @@ export default function BlockGroup({ element }: Props) {
                               </div>
                            </Combobox.Button>
                            <Combobox.Input
+                              autoFocus
                               className="bg-2 h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
                               placeholder="Search..."
                               onChange={(event) =>
@@ -832,7 +833,7 @@ const SortableListItem = ({
                      <Component className="text-1 mx-auto" size={18} />
                   )}
                </div>
-               <span className="text-1 font-bold">{row?.name}</span>
+               <span className="text-1 truncate font-bold">{row?.name}</span>
             </Link>
             {/* <input
                type="text"

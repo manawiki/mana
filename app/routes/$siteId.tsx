@@ -428,20 +428,7 @@ export default function SiteIndex() {
                         </Menu>
                      </section>
                   </LoggedIn>
-                  {site.banner && (
-                     <div
-                        className="border-color bg-1 flex h-44 items-center 
-                     justify-center overflow-hidden border-b-2"
-                     >
-                        <Image
-                           //@ts-expect-error
-                           url={site.banner?.url}
-                           options="fit=cover,height=300,gravity=auto"
-                           className="w-full object-cover"
-                           alt="Site Banner"
-                        />
-                     </div>
-                  )}
+
                   <LoggedOut>
                      <div className="border-color grid grid-cols-2 gap-4 border-b p-4 max-laptop:hidden">
                         <Link
