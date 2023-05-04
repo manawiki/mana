@@ -22,5 +22,5 @@ module.exports = {
    routes: async (defineRoutes) => {
       return flatRoutes(["routes", "_custom/routes"], defineRoutes);
    },
-   serverDependenciesToBundle: ["nanoid"],
+   serverDependenciesToBundle: ["nanoid", "array-move"],
 };
