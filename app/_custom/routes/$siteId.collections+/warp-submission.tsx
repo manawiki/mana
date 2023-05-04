@@ -31,10 +31,21 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { H2 } from "~/_custom/components/custom";
 import { useState } from "react";
-import { useFetcher } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+
+import { Image } from "~/components";
 
 // Global Count for total imported Warps
 var count = 0;
+
+export async function loader({
+   context: { payload, user },
+   params,
+   request,
+}: LoaderArgs) {
+   return json({ user });
+}
 
 export const meta: V2_MetaFunction = () => {
    return [
@@ -49,9 +60,8 @@ export const meta: V2_MetaFunction = () => {
    ];
 };
 export default function WarpSubmission() {
-   // const { relicSets } = useLoaderData<typeof loader>();
-   const fetcher = useFetcher();
-   console.log(fetcher);
+   const { user } = useLoaderData<typeof loader>();
+   console.log(user);
 
    const [loaded, setLoaded] = useState(false);
    const [file, setFile] = useState("");
@@ -66,20 +76,7 @@ export default function WarpSubmission() {
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <H2 text="How to upload Warp History information" />
          <div>
-            <p
-               dangerouslySetInnerHTML={{
-                  __html: `
-          1) Log into your game on a PC (Android/iPhone currently not yet supported)<br>
-          2) Go to "Warp"<br>
-          3) On any banner, click on "View Details"<br>
-          4) Click on "Records" and view every page of Warp History that needs to be uploaded.<br>
-          5) Close out of the game.<br>
-          6) Navigate to your game's data folder: \\Star Rail\\Games\\StarRail_Data\\webCaches\\Cache\\Cache_Data<br>
-          7) Find a file named "data_2" and upload it below<br>
-          8) Click Submit to upload!<br>
-         `,
-               }}
-            ></p>
+            <Instructions />
 
             <div className="text-xl mt-2 underline font-bold">
                Upload data_2 file:
@@ -90,7 +87,7 @@ export default function WarpSubmission() {
             </div>
             <input
                type="file"
-               className=""
+               className="my-1"
                onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
                      const test = e.target.files[0];
@@ -112,7 +109,9 @@ export default function WarpSubmission() {
                      import the file?
                   </div>
                </>
-            ) : null}
+            ) : (
+               <div className="h-20 w-20"></div>
+            )}
             {jsonlist.length > 0 ? (
                <>
                   <CorrectFile jsonlist={jsonlist} />
@@ -122,6 +121,108 @@ export default function WarpSubmission() {
       </div>
    );
 }
+
+const Instructions = () => {
+   return (
+      <>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p className="">1) Log into your game on a PC.</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_1_Open.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>2) Go to "Warp".</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_2_Warp.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>3) On all banners with data, click on "View Details".</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_3_ViewDetail.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>
+               4) Click on "Records" and view every page of Warp History that
+               needs to be uploaded.
+            </p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_4_Records.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>5) Close out of the game.</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_5_Exit.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>
+               6) Navigate to your game's data folder:{" "}
+               <code>
+                  \Star Rail\Games\StarRail_Data\webCaches\Cache\Cache_Data\
+               </code>
+            </p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_6_Navigate.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>7) Find a file named "data_2" and upload it below</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_7_data2.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
+         </div>
+         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+            <p>8) Click Submit to upload!</p>
+         </div>
+      </>
+   );
+};
 
 const CorrectFile = ({ jsonlist }: any) => {
    const [submit, setSubmit] = useState(false); // Enabled after submission completes.
@@ -165,6 +266,7 @@ const CorrectFile = ({ jsonlist }: any) => {
             className="rounded-md cursor-pointer w-fit py-1 px-3 my-1 border dark:border-gray-700 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40"
             onClick={(e) => {
                setSubmit(true);
+               // getAPI(url);
                Promise.all(
                   warplist.map((warp: any, i: any) => {
                      setStatus(i + 1);
@@ -224,11 +326,10 @@ async function postWarp(warp: any) {
 
    const submitWarp = await fetch(url, {
       method: "POST",
-      mode: "cors",
       headers: {
          "Content-Type": "application/json",
       },
-      body: JSON.stringify(warp),
+      body: JSON.stringify({ ...warp, submission_type: "file" }),
    })
       .then((r) => {
          // console.log(r);
