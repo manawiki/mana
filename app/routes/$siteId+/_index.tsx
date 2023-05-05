@@ -117,7 +117,7 @@ export default function SiteIndexMain() {
                   <Tooltip id="group-color" side="top" content="Pages">
                      <div className="flex items-center gap-2">
                         <Component size={14} />
-                        <div className="text-1">1k+</div>
+                        <div className="text-1">-</div>
                      </div>
                   </Tooltip>
                </div>
@@ -128,6 +128,7 @@ export default function SiteIndexMain() {
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen leading-7">
                      <RoomProvider
+                        key={site.id}
                         id={site.id}
                         initialStorage={{
                            blocks: new LiveList(initialValue),

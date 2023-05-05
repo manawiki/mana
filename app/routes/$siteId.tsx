@@ -6,16 +6,16 @@ import {
    useFetcher,
    useLoaderData,
    useLocation,
+   useRouteLoaderData,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
-import { SiteSwitcher } from "~/components/SiteSwitcher";
 import {
    Bell,
    ChevronDown,
    Loader2,
    LogOut,
    Search,
-   User,
+   User as UserIcon,
    X,
 } from "lucide-react";
 import type {
@@ -54,6 +54,7 @@ import {
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { DynamicLinksFunction } from "remix-utils";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
+import type { User, Site } from "payload-types";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -121,6 +122,8 @@ export default function SiteIndex() {
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
    max-desktop:h-12 max-desktop:w-12 bg-2
    max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-3 desktop:justify-start`;
+   const { user } = useRouteLoaderData("root") as { user: User };
+   const following = user?.sites as Site[];
 
    return (
       <>
@@ -130,8 +133,8 @@ export default function SiteIndex() {
          px-3 shadow-sm dark:border-zinc-800"
          >
             <Link
-               className="relative z-10 flex items-center gap-2 pb-0.5 font-logo text-2xl"
-               to="/"
+               className="relative z-10 flex items-center gap-2 pb-1 font-logo text-[28px]"
+               to="https://mana.wiki/home"
             >
                <span>mana</span>
                <span className="text-1 pt-1.5 font-body text-[12px]">beta</span>
@@ -172,7 +175,7 @@ export default function SiteIndex() {
                            className="bg-3 shadow-1 flex h-10 w-10
                          items-center justify-center rounded-full shadow-sm"
                         >
-                           <User size={22} />
+                           <UserIcon size={22} />
                         </Menu.Button>
                         <Transition
                            as={Fragment}
@@ -234,7 +237,113 @@ export default function SiteIndex() {
                   className="top-14 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
                laptop:h-full laptop:w-[86px] laptop:overflow-y-auto laptop:pt-4"
                >
-                  <SiteSwitcher />
+                  <LoggedOut>
+                     <div className="relative flex items-center justify-center pb-3">
+                        <NavLink
+                           className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                           to={`/${site.slug}`}
+                        >
+                           {({ isActive }) => (
+                              <>
+                                 <div
+                                    className="h-8 w-8 overflow-hidden 
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                 >
+                                    <Image
+                                       alt="Site Logo"
+                                       options="fit=crop,width=88,height=88,gravity=auto"
+                                       url={site.icon?.url}
+                                    />
+                                 </div>
+                                 {isActive && (
+                                    <span
+                                       className="absolute -left-1 top-2 h-9 w-2.5 
+                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                    />
+                                 )}
+                              </>
+                           )}
+                        </NavLink>
+                     </div>
+                  </LoggedOut>
+                  <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3">
+                     <LoggedIn>
+                        {following?.length === 0 ? (
+                           <div className="relative flex items-center justify-center pb-3">
+                              <NavLink
+                                 className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                                 to={`/${site.slug}`}
+                              >
+                                 {({ isActive }) => (
+                                    <>
+                                       <div
+                                          className="h-8 w-8 overflow-hidden 
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                       >
+                                          <Image
+                                             alt="Site Logo"
+                                             options="fit=crop,width=88,height=88,gravity=auto"
+                                             url={site.icon?.url}
+                                          />
+                                       </div>
+                                       {isActive && (
+                                          <span
+                                             className="absolute -left-1 top-2 h-9 w-2.5 
+                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                          />
+                                       )}
+                                    </>
+                                 )}
+                              </NavLink>
+                           </div>
+                        ) : (
+                           <div className="w-full max-laptop:flex max-laptop:items-center max-laptop:gap-3">
+                              <ul
+                                 className="text-center max-laptop:flex max-laptop:flex-grow
+                   max-laptop:gap-3  laptop:mb-4 laptop:space-y-3"
+                              >
+                                 {following?.map((item) => (
+                                    <li key={item.id}>
+                                       <div className="relative flex items-center justify-center">
+                                          <NavLink
+                                             className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                                             to={`/${item.slug}`}
+                                          >
+                                             {({ isActive }) => (
+                                                <>
+                                                   <div
+                                                      className="h-8 w-8 overflow-hidden 
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                                   >
+                                                      <Image
+                                                         alt="Site Logo"
+                                                         options="fit=crop,width=88,height=88,gravity=auto"
+                                                         url={item.icon?.url}
+                                                      />
+                                                   </div>
+                                                   {isActive && (
+                                                      <span
+                                                         className="absolute -left-1 top-2 h-9 w-2.5 
+                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                                      />
+                                                   )}
+                                                </>
+                                             )}
+                                          </NavLink>
+                                       </div>
+                                    </li>
+                                 ))}
+                              </ul>
+                              <NewSiteModal />
+                           </div>
+                        )}
+                     </LoggedIn>
+                     <LoggedOut>
+                        <div className="items-center justify-center">
+                           <NewSiteModal />
+                        </div>
+                     </LoggedOut>
+                  </menu>
                </div>
             </section>
             <section>

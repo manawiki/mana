@@ -1,7 +1,6 @@
 import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, ImageElement } from "../types";
 import { Transforms } from "slate";
-import Placeholder from "../components/Placeholder";
 import { Loader2, Upload } from "lucide-react";
 import { useFetcher } from "@remix-run/react";
 import type { FormEvent } from "react";
@@ -44,6 +43,7 @@ export default function BlockImage({ element }: Props) {
          fetcher.submit(formData, {
             encType: "multipart/form-data",
             method: "POST",
+            action: "/action/block-actions",
          });
       }
    };
@@ -79,6 +79,7 @@ export default function BlockImage({ element }: Props) {
                      onChange={(event) => {
                         fetcher.submit(event.currentTarget, {
                            method: "post",
+                           action: "/action/block-actions",
                         });
                      }}
                   >

@@ -4,6 +4,5 @@ export * from "./Forms";
 export * from "./Image";
 export * from "./Logo";
 export * from "./Modal";
-export * from "./SiteSwitcher";
 export * from "./Toaster";
 export * from "./Tooltip";
