@@ -2,56 +2,129 @@ import { ReactEditor, useSlate } from "slate-react";
 import type { CustomElement, ImageElement } from "../types";
 import { Transforms } from "slate";
 import Placeholder from "../components/Placeholder";
-import { Image } from "lucide-react";
-
+import { Loader2, Upload } from "lucide-react";
+import { useFetcher } from "@remix-run/react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
+import { isAdding } from "~/utils";
+import { Image } from "~/components";
 type Props = {
    element: ImageElement;
 };
 
 export default function BlockImage({ element }: Props) {
    const editor = useSlate();
+   const fetcher = useFetcher();
+   const isImageAdding = isAdding(fetcher, "addBlockImage");
+
+   const [dragActive, setDragActive] = useState(false);
+
+   useEffect(() => {
+      if (fetcher.state === "idle" && fetcher.type === "done") {
+         const { id, url } = fetcher.data;
+         const path = ReactEditor.findPath(editor, element);
+         const newProperties: Partial<CustomElement> = {
+            refId: id,
+            url,
+         };
+         Transforms.setNodes<CustomElement>(editor, newProperties, {
+            at: path,
+         });
+      }
+   }, [fetcher.state, fetcher.type]);
+
+   const handleDrop = function (e: any, fetcher: any) {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+         const formData = new FormData();
+         formData.append("intent", "addBlockImage");
+         formData.append("image", e.dataTransfer.files[0]);
+         fetcher.submit(formData, {
+            encType: "multipart/form-data",
+            method: "POST",
+         });
+      }
+   };
+
+   const handleDrag = function (e: FormEvent) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.type === "dragenter" || e.type === "dragover") {
+         setDragActive(true);
+      } else if (e.type === "dragleave") {
+         setDragActive(false);
+      }
+   };
 
    return (
       <div className="relative">
          {element.url ? (
-            <div className="relative mb-3 flex h-auto min-h-[100px] w-full justify-center">
-               <img
+            <div className="relative mb-3 flex h-auto min-h-[50px] w-full justify-center">
+               <Image
                   className="w-full rounded-md"
-                  src={element.url}
-                  alt={element.alt || ""}
+                  alt="Inline"
+                  url={element.url}
                />
             </div>
          ) : (
-            <Placeholder
-               defaultOpen={true}
-               icon={Image}
-               text="Embed an image from a URL"
-               inputs={{
-                  url: {
-                     type: "url",
-                     label: "URL",
-                     placeholder: "Paste image link",
-                     title: "Please enter a valid image link",
-                     required: true,
-                  },
-                  alt: {
-                     type: "text",
-                     label: "Alt text",
-                     placeholder: "Enter alt text",
-                     required: false,
-                  },
-               }}
-               onSubmit={({ url, alt }) => {
-                  const path = ReactEditor.findPath(editor, element);
-                  const newProperties: Partial<CustomElement> = {
-                     url,
-                     alt,
-                  };
-                  Transforms.setNodes<CustomElement>(editor, newProperties, {
-                     at: path,
-                  });
-               }}
-            />
+            <>
+               <div className="relative mb-5">
+                  <fetcher.Form
+                     method="post"
+                     encType="multipart/form-data"
+                     replace
+                     onDragEnter={(e) => handleDrag(e)}
+                     onChange={(event) => {
+                        fetcher.submit(event.currentTarget, {
+                           method: "post",
+                        });
+                     }}
+                  >
+                     <label
+                        className={`${
+                           dragActive
+                              ? "border-4 border-zinc-400 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
+                              : "hover:border-zinc-400 dark:hover:border-zinc-500"
+                        } bg-2 group flex cursor-pointer items-center
+                        justify-center overflow-hidden rounded-md border-2 border-y-2
+                        border-dashed border-zinc-300 p-6 shadow-sm dark:border-zinc-600 `}
+                     >
+                        <div className="text-1 space-y-2">
+                           {isImageAdding ? (
+                              <Loader2
+                                 size={24}
+                                 className="mx-auto animate-spin"
+                              />
+                           ) : (
+                              <Upload className="mx-auto" size={24} />
+                           )}
+
+                           <div className="text-center text-sm font-bold group-hover:underline">
+                              Drag or click to upload an image
+                           </div>
+                           <div className="text-center text-xs">
+                              JPEG, PNG, JPG or WEBP (MAX. 5MB)
+                           </div>
+                        </div>
+                        <input name="image" type="file" className="hidden" />
+                     </label>
+                     {dragActive && (
+                        <div
+                           className="absolute bottom-0 left-0 right-0 top-0 h-full w-full"
+                           onDragEnter={handleDrag}
+                           onDragLeave={handleDrag}
+                           onDragOver={handleDrag}
+                           onDrop={(e) => {
+                              handleDrop(e, fetcher);
+                           }}
+                        />
+                     )}
+                     <input type="hidden" name="intent" value="addBlockImage" />
+                  </fetcher.Form>
+               </div>
+            </>
          )}
       </div>
    );

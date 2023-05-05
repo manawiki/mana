@@ -75,8 +75,8 @@ export type ToDoElement = BlockElement & {
 
 export type ImageElement = BlockElement & {
    type: BlockType.Image;
+   refId: string | null;
    url: string | null;
-   alt: string | null;
    children: [{ text: "" }];
 };
 
@@ -100,6 +100,7 @@ export type LinkElement = BlockElement & {
 
 export interface groupRow {
    id: string;
+   refId: string;
    tag?: string;
    tagColor?: string;
    name: string;

@@ -17,6 +17,7 @@ import {
    setSuccessMessage,
    assertIsDelete,
    slugify,
+   assertIsPost,
 } from "~/utils";
 
 import { z } from "zod";
@@ -237,6 +238,39 @@ export async function action({
             error: "Something went wrong...unable to update subtitle.",
          });
       }
+      case "addBlockImage": {
+         assertIsPost(request);
+         const result = await getMultipleFormData({
+            request,
+            prefix: "blockImage",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image } = result.data;
+            try {
+               return await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+               });
+            } catch (error) {
+               return json({
+                  error: "Something went wrong...unable to add image.",
+               });
+            }
+         }
+         //If user input has problems
+         if (issues.hasIssues()) {
+            return json<FormResponse>(
+               { serverIssues: issues.toArray() },
+               { status: 400 }
+            );
+         }
+         // Last resort error message
+         return json({
+            error: "Something went wrong...unable to add image.",
+         });
+      }
       case "updateBanner": {
          assertIsPatch(request);
          const result = await getMultipleFormData({
@@ -247,7 +281,7 @@ export async function action({
          if (result.success) {
             const { banner } = result.data;
             try {
-               const bannerId = await uploadImage({
+               const upload = await uploadImage({
                   payload,
                   image: banner,
                   user,
@@ -257,7 +291,7 @@ export async function action({
                   id: postId,
                   draft: true,
                   data: {
-                     banner: bannerId,
+                     banner: upload.id,
                   },
                   overrideAccess: false,
                   user,
@@ -285,6 +319,7 @@ export async function action({
          const post = await payload.findByID({
             collection: "posts",
             id: postId,
+            draft: true,
             overrideAccess: false,
             user,
             depth: 2,
@@ -349,7 +384,6 @@ export async function action({
          const { collabStatus } = await zx.parseForm(request, {
             collabStatus: zx.BoolAsString,
          });
-         console.log(collabStatus);
          //toggle status
          return await payload.update({
             collection: "posts",

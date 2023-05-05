@@ -59,7 +59,7 @@ export default function GroupView({ element }: Props) {
                      <Tooltip
                         id="group-grid-view"
                         side="top"
-                        content="Gird View (Coming Soon!)"
+                        content="Gird View"
                      >
                         <div
                            className={`${
