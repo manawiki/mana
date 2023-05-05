@@ -14,6 +14,7 @@ import {
    Share2,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
+import type { FormEvent } from "react";
 import { useState, useEffect, Fragment } from "react";
 import { useZorm } from "react-zorm";
 import { useDebouncedValue, useIsMount } from "~/hooks";
@@ -132,6 +133,32 @@ export const PostHeaderEdit = ({
       );
    };
    const postFullUrl = `https://mana.wiki/${siteId}/posts/${post.id}/${post.url}`;
+
+   //Image Upload
+   const [dragActive, setDragActive] = useState(false);
+   const handleDrop = function (e: any, fetcher: any) {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+         const formData = new FormData();
+         formData.append("intent", "updateBanner");
+         formData.append("banner", e.dataTransfer.files[0]);
+         fetcher.submit(formData, {
+            encType: "multipart/form-data",
+            method: "patch",
+         });
+      }
+   };
+   const handleDrag = function (e: FormEvent) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.type === "dragenter" || e.type === "dragover") {
+         setDragActive(true);
+      } else if (e.type === "dragleave") {
+         setDragActive(false);
+      }
+   };
 
    return (
       <>
@@ -540,35 +567,38 @@ export const PostHeaderEdit = ({
                      method="patch"
                      encType="multipart/form-data"
                      replace
+                     onDragEnter={(e) => handleDrag(e)}
                      onChange={(event) => {
                         fetcher.submit(event.currentTarget, {
                            method: "patch",
                         });
                      }}
                   >
-                     <label className="cursor-pointer">
-                        <div
-                           className="bg-2 border-color flex aspect-[1.91/1] items-center 
-                         justify-center overflow-hidden border-y
-                         shadow-sm hover:border-4 hover:border-dashed tablet:rounded-md
-                         tablet:border laptop:rounded-none laptop:border-x-0 desktop:rounded-md desktop:border"
-                        >
-                           <div className="text-1 space-y-2">
-                              {isBannerAdding ? (
-                                 <Loader2
-                                    size={36}
-                                    className="mx-auto animate-spin"
-                                 />
-                              ) : (
-                                 <Upload className="mx-auto" size={36} />
-                              )}
+                     <label
+                        className={`${
+                           dragActive
+                              ? "border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
+                              : "hover:border-dashed hover:border-zinc-300 dark:hover:border-zinc-600 "
+                        } bg-2 border-color group flex aspect-[1.91/1] cursor-pointer items-center
+                        justify-center overflow-hidden border-y shadow-sm hover:border-2
+                        tablet:rounded-md tablet:border laptop:rounded-none 
+                        laptop:border-x-0 desktop:rounded-md desktop:border`}
+                     >
+                        <div className="text-1 space-y-2">
+                           {isBannerAdding ? (
+                              <Loader2
+                                 size={36}
+                                 className="mx-auto animate-spin"
+                              />
+                           ) : (
+                              <Upload className="mx-auto" size={36} />
+                           )}
 
-                              <div className="text-center font-bold">
-                                 Click to upload banner
-                              </div>
-                              <div className="text-center text-sm">
-                                 JPEG, PNG, JPG or WEBP (MAX. 5MB)
-                              </div>
+                           <div className="text-center font-bold group-hover:underline">
+                              Drag or click to upload a banner
+                           </div>
+                           <div className="text-center text-sm">
+                              JPEG, PNG, JPG or WEBP (MAX. 5MB)
                            </div>
                         </div>
                         <input
@@ -578,6 +608,17 @@ export const PostHeaderEdit = ({
                            className="hidden"
                         />
                      </label>
+                     {dragActive && (
+                        <div
+                           className="absolute bottom-0 left-0 right-0 top-0 h-full w-full"
+                           onDragEnter={handleDrag}
+                           onDragLeave={handleDrag}
+                           onDragOver={handleDrag}
+                           onDrop={(e) => {
+                              handleDrop(e, fetcher);
+                           }}
+                        />
+                     )}
                      <input type="hidden" name="intent" value="updateBanner" />
                   </fetcher.Form>
                </div>
