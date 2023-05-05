@@ -1,5 +1,5 @@
 import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, GroupElement } from "../types";
+import type { CustomElement, GroupElement, groupRow } from "../types";
 import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
@@ -30,6 +30,7 @@ import {
    Minus,
    Move,
    Plus,
+   Trash,
    X,
 } from "lucide-react";
 import { useMutation } from "~/liveblocks.config";
@@ -162,6 +163,7 @@ export default function BlockGroup({ element }: Props) {
             ...element.groupItems,
             {
                id: nanoid(),
+               refId: event.id,
                name: event.name,
                path: `/${siteId}/collections/${selectedCollection}/${
                   event.id
@@ -222,8 +224,6 @@ export default function BlockGroup({ element }: Props) {
       "id",
       activeId
    ) as groupRow;
-
-   console.log(activeElement);
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(
@@ -462,7 +462,7 @@ export default function BlockGroup({ element }: Props) {
                            <Tooltip
                               id="group-grid-view"
                               side="top"
-                              content="Gird View (Coming Soon!)"
+                              content="Gird View"
                            >
                               <div
                                  className={`${
@@ -630,8 +630,11 @@ export default function BlockGroup({ element }: Props) {
                                           >
                                              {selected ? (
                                                 <span
-                                                   className="absolute right-2 h-1.5 w-1.5 rounded-full
-                                        bg-zinc-500"
+                                                   style={{
+                                                      backgroundColor:
+                                                         element.color,
+                                                   }}
+                                                   className="absolute right-2 h-1.5 w-1.5 rounded-full"
                                                 />
                                              ) : null}
                                              {row.name}
@@ -846,7 +849,10 @@ const SortableListItem = ({
                      onClick={deleteRow}
                      aria-label="Delete"
                   >
-                     <X className="text-1" size={16} />
+                     <Trash
+                        className="text-zinc-400 dark:text-zinc-500"
+                        size={16}
+                     />
                   </button>
                </Tooltip>
                <Tooltip
@@ -929,11 +935,14 @@ const SortableGridItem = ({
          >
             <Tooltip side="top" id={`delete-${rowId}`} content="Delete">
                <button
-                  className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
+                  className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
                   onClick={deleteRow}
                   aria-label="Delete"
                >
-                  <X className="text-1" size={16} />
+                  <Trash
+                     className="text-zinc-400 dark:text-zinc-500"
+                     size={16}
+                  />
                </button>
             </Tooltip>
             <Tooltip side="top" id={`drag-${rowId}`} content="Drag to reorder">

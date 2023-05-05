@@ -46,8 +46,15 @@ import {
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
 import { HOTKEYS, PROSE_CONTAINER_ID, USER_COLORS } from "./constants";
-import { Avatar, BlockInlineActions, Toolbar } from "./components";
+import {
+   Avatar,
+   BlockInlineActions,
+   Button,
+   Toolbar,
+   Tooltip,
+} from "./components";
 import { nanoid } from "nanoid";
+import { Trash } from "lucide-react";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -545,15 +552,30 @@ function SortableElement({
                </div>
             )}
             <div
-               className="absolute left-0 top-0 -translate-x-full	
-               translate-y-0 select-none pr-2 opacity-0 group-hover:opacity-100"
+               className="absolute -top-0.5 left-0 -translate-x-full	
+               translate-y-0 select-none pr-3 opacity-0 group-hover:opacity-100"
                contentEditable={false}
             >
                <BlockInlineActions
                   blockId={element.id}
-                  onDelete={onDelete}
                   onInsertBelow={onInsertBelow}
                />
+            </div>
+            <div
+               className="absolute -right-11 -top-0.5	 z-40
+                select-none pl-3 opacity-0 group-hover:opacity-100"
+               contentEditable={false}
+            >
+               <Tooltip id="delete" content="Delete">
+                  <Button
+                     className="hover:bg-2 shadow-1 border-color flex
+                      h-8 w-8 items-center justify-center rounded-full border shadow"
+                     onClick={onDelete}
+                     ariaLabel="Delete"
+                  >
+                     <Trash className="text-1" size={14} />
+                  </Button>
+               </Tooltip>
             </div>
          </div>
       </div>

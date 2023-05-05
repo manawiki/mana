@@ -418,7 +418,7 @@ export const action: ActionFunction = async ({
                data: {
                   name,
                   author: user?.id,
-                  icon: iconId,
+                  icon: iconId.id,
                   collectionEntity: collectionId,
                   site: siteId,
                },

@@ -2,53 +2,39 @@ import Button from "./Button";
 import Tooltip from "~/components/Tooltip";
 import BlockTypeSelector from "./BlockTypeSelector";
 import type { CustomElement } from "../types";
-import { GripVertical, Minus, Plus } from "lucide-react";
+import { GripVertical, Plus } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
    blockId: string;
-   onDelete: () => void;
    onInsertBelow: (block: CustomElement) => void;
 };
 
-export default function BlockInlineActions({
-   blockId,
-   onDelete,
-   onInsertBelow,
-}: Props) {
+export default function BlockInlineActions({ blockId, onInsertBelow }: Props) {
    const { listeners, setActivatorNodeRef } = useDraggable({
       id: blockId,
    });
 
    return (
-      <div className="justify-space-between flex items-center">
-         <Tooltip id="delete" content="Delete">
-            <Button
-               className="hover:bg-1 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
-               onClick={onDelete}
-               ariaLabel="Delete"
-            >
-               <Minus size={16} />
-            </Button>
-         </Tooltip>
-         <BlockTypeSelector onSelect={onInsertBelow}>
-            <Button
-               className="hover:bg-1 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
-               ariaLabel="Insert block below"
-            >
-               <Plus size={16} />
-            </Button>
-         </BlockTypeSelector>
+      <div className="shadow-1 border-color flex items-center overflow-hidden rounded-lg border shadow">
          <Tooltip id="drag" content="Drag to reorder">
             <Button
                ariaLabel="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
-               className="hover:bg-1 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+               className="hover:bg-2 flex h-8 w-8 cursor-grab items-center justify-center"
             >
                <GripVertical size={16} />
             </Button>
          </Tooltip>
+         <BlockTypeSelector onSelect={onInsertBelow}>
+            <Button
+               className="hover:bg-2 flex h-8 w-8 items-center justify-center focus:outline-none"
+               ariaLabel="Insert block below"
+            >
+               <Plus size={16} />
+            </Button>
+         </BlockTypeSelector>
       </div>
    );
 }
