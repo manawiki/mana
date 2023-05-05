@@ -329,7 +329,7 @@ export const action: ActionFunction = async ({
                   id: `${siteId}${slug}`,
                   name,
                   slug,
-                  icon: iconId,
+                  icon: iconId.id,
                   site: siteId,
                },
                user,

@@ -1,5 +1,5 @@
 import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, GroupElement } from "../types";
+import type { CustomElement, GroupElement, groupRow } from "../types";
 import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
@@ -163,6 +163,7 @@ export default function BlockGroup({ element }: Props) {
             ...element.groupItems,
             {
                id: nanoid(),
+               refId: event.id,
                name: event.name,
                path: `/${siteId}/collections/${selectedCollection}/${
                   event.id
@@ -223,8 +224,6 @@ export default function BlockGroup({ element }: Props) {
       "id",
       activeId
    ) as groupRow;
-
-   console.log(activeElement);
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(

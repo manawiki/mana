@@ -135,8 +135,8 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                      createdBy,
                      id: nanoid(),
                      type: BlockType.Image,
+                     refId: null,
                      url: null,
-                     alt: null,
                      children: [{ text: "" }],
                   });
                },
