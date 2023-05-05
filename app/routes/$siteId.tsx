@@ -127,7 +127,7 @@ export default function SiteIndex() {
          <header
             className="bg-1 shadow-1 fixed top-0 z-50 flex
          h-14 w-full items-center justify-between border-b border-zinc-200 
-         pl-3 pr-2 shadow-sm dark:border-zinc-800"
+         px-3 shadow-sm dark:border-zinc-800"
          >
             <Link
                className="relative z-10 flex items-center gap-2 pb-0.5 font-logo text-2xl"
@@ -222,13 +222,13 @@ export default function SiteIndex() {
          </header>
 
          <div
-            className="laptop:grid laptop:min-h-screen 
+            className="laptop:grid laptop:min-h-screen
                 laptop:auto-cols-[86px_86px_1fr_334px] laptop:grid-flow-col
                 desktop:auto-cols-[86px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 border-color relative top-14 z-10
-               pt-[64px] max-laptop:fixed max-laptop:w-full laptop:border-r"
+               className="bg-1 border-color relative top-0 z-10
+               max-laptop:fixed max-laptop:w-full laptop:border-r"
             >
                <div
                   className="top-14 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
