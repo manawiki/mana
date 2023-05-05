@@ -3,7 +3,7 @@ import { Transition, Dialog } from "@headlessui/react";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { json, redirect, type ActionFunction } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import {
    assertIsPost,
    isAdding,
@@ -75,9 +75,9 @@ export function NewSiteModal() {
 
    return (
       <>
-         <div className="flex items-center justify-center laptop:my-4">
+         <div className="flex items-center justify-center">
             <button
-               className="bg-3 shadow-1 text-1 flex h-12 w-12 items-center justify-center
+               className="bg-3 shadow-1 text-1 flex h-8 w-8 items-center justify-center
                rounded-full shadow-sm transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14"
                type="button"
                aria-label="Create New Site"
@@ -117,11 +117,49 @@ export function NewSiteModal() {
                      >
                         <Dialog.Panel
                            className="bg-2 w-full max-w-md transform
-                           rounded-2xl p-5 pt-10 text-left align-middle shadow-xl transition-all"
+                           rounded-2xl p-5 text-left align-middle shadow-xl transition-all"
                         >
                            <LoggedOut>
-                              <div className="font-bold">
-                                 Login to create a new site
+                              <div className="space-y-2 pb-8 pt-6">
+                                 <div className="text-center font-header text-xl font-bold">
+                                    Login to create a new wiki on Mana!
+                                 </div>
+                                 <div className="text-1 text-center">
+                                    Mana is currently in its early stages of
+                                    development. Learn more{" "}
+                                    <a
+                                       className="text-blue-500"
+                                       href="https://mana.wiki/home"
+                                    >
+                                       here
+                                    </a>
+                                    .
+                                 </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                 <Link
+                                    to="/join"
+                                    className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
+                           py-2 font-medium text-indigo-600 transition duration-300 ease-out"
+                                 >
+                                    <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                                    <span
+                                       className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                                    ></span>
+                                    <span className="relative text-sm font-bold text-white">
+                                       {t("login.signUp", { ns: "auth" })}
+                                    </span>
+                                 </Link>
+                                 <Link
+                                    className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
+                                    to="/login"
+                                    // to={`/login?redirectTo=${location.pathname}`}
+                                 >
+                                    {t("login.action", { ns: "auth" })}
+                                 </Link>
                               </div>
                            </LoggedOut>
                            <LoggedIn>
@@ -213,7 +251,7 @@ export function NewSiteModal() {
                               name="intent"
                               value="addSite"
                               type="button"
-                              className="absolute right-3 top-3 flex h-9 w-9
+                              className="absolute right-2 top-2 flex h-9 w-9
                               items-center justify-center rounded-full
                             hover:bg-red-50 dark:hover:bg-zinc-700"
                               onClick={() => setIsOpen(false)}
