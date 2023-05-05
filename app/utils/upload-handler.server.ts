@@ -67,5 +67,5 @@ export const uploadImage = async ({
       user,
       overrideAccess: false,
    });
-   return imageUploadResult.id;
+   return imageUploadResult;
 };

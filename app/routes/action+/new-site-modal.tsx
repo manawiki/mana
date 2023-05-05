@@ -260,7 +260,7 @@ export const action: ActionFunction = async ({
                owner: userId,
                id: siteId,
                slug: siteId,
-               icon,
+               icon: icon.id,
                type: "core",
             },
             overrideAccess: false,
