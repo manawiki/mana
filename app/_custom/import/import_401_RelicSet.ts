@@ -12,6 +12,8 @@ const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for 
 
 let payload = null as any;
 
+var statTypes: any;
+
 //Start payload instance
 const start = async () =>
    await Payload.init({
@@ -34,8 +36,24 @@ const start = async () =>
    });
 start();
 
-const getData = async () =>
-   Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+const getData = async () => {
+
+	// Get _statTypes arrays to populate later relations
+	const tempStatTypes = await payload.find({
+		collection: "_statTypes",
+		where: {
+			id: {
+			exists: true
+			},
+		},
+		limit: 200,
+	});
+
+	statTypes = tempStatTypes.docs;
+
+   return Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+
+}
 
 //Uploads an entry and custom field data; NOTE: Still need to add "check for existing entry" functionality
 const seedUploads = async (result: any) => {
@@ -52,6 +70,33 @@ const seedUploads = async (result: any) => {
 		image_full_bg: result.image_full_bg?.name.replace(".png",""),
 		image_full_front: result.image_full_front?.name.replace(".png",""),
 	}
+
+	// ====================================
+	// ====================================
+	// Nested Relation Fields
+	// ====================================
+
+	var relationFields: any = {};
+	// Nested relation fields
+	relationFields["set_effect"] = result.set_effect.map((eff:any) => {
+		var p_out = eff.property_list?.map((prop:any) => {
+
+			const statEntry = statTypes?.find((a:any) => a.data_key == prop.stattype?.data_key);
+
+			return {
+				stattype: statEntry?.id,
+				value: prop.value
+			}
+		});
+
+		return { ...eff, property_list: p_out}
+	});
+	
+
+	// ====================================
+	// End of Relation Fields
+	// ====================================
+	// ====================================
 	
 	// Check if entry exists
 	const existingEntry = await payload.find({
@@ -72,6 +117,7 @@ const seedUploads = async (result: any) => {
 		var custData = {
 			...result,
 			...iconImport,
+			...relationFields,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -88,6 +134,7 @@ const seedUploads = async (result: any) => {
 		var custData = {
 			...result,
 			...iconImport,
+			...relationFields,
 			id: result?.[idField],
 		};
 

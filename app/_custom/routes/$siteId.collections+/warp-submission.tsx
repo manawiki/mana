@@ -204,6 +204,16 @@ const Instructions = () => {
                   alt={"Log in"}
                />
             </div>
+            <p>*To find your install location from the game launcher:</p>
+            <div className="flex justify-center">
+               <Image
+                  url={
+                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_6-2_InstallLoc.png"
+                  }
+                  className="object-contain"
+                  alt={"Log in"}
+               />
+            </div>
          </div>
          <div className="p-2 border rounded-md my-1 dark:border-gray-700">
             <p>7) Find a file named "data_2" and upload it below</p>

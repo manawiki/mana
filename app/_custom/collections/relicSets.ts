@@ -48,6 +48,22 @@ export const RelicSets: CollectionConfig = {
                name: "description",
                type: "text",
             },
+            {
+               name: "property_list",
+               type: "array",
+               fields: [
+                  {
+                     name: "stattype",
+                     type: "relationship",
+                     relationTo: "_statTypes",
+                     hasMany: false,
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
+            },
          ],
       },
       {
