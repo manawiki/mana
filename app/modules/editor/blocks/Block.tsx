@@ -40,9 +40,7 @@ export default function Block({
    const readOnly = useReadOnly();
 
    if (element.type === BlockType.Link) {
-      return (
-         <BlockLink {...attributes} element={element} children={children} />
-      );
+      return <BlockLink element={element} children={children} />;
    }
    if (element.type === BlockType.Group) {
       if (readOnly) return <BlockGroupView element={element} />;

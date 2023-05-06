@@ -52,7 +52,6 @@ import {
    ChatBubbleLeftIcon as ChatBubbleLeftIconBold,
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
-import type { DynamicLinksFunction } from "remix-utils";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { User, Site } from "payload-types";
 
@@ -91,15 +90,6 @@ export const meta: V2_MetaFunction = ({ data }) => {
    ];
 };
 
-const dynamicLinks: DynamicLinksFunction<SerializeFrom<typeof loader>> = ({
-   data,
-}) => {
-   //@ts-expect-error
-   const icon = data?.site?.icon?.url;
-   const faviconUrl = `https://mana.wiki/cdn-cgi/image/fit=crop,height=50,width=50,gravity=auto/${icon}`;
-   return [{ rel: "icon", href: faviconUrl }];
-};
-
 export const links: LinksFunction = () => {
    return [
       { rel: "preload", href: customStylesheetUrl, as: "style" },
@@ -109,7 +99,6 @@ export const links: LinksFunction = () => {
 
 export const handle = {
    i18n: "site",
-   dynamicLinks,
 };
 
 export default function SiteIndex() {
@@ -134,7 +123,7 @@ export default function SiteIndex() {
          >
             <Link
                className="relative z-10 flex items-center gap-2 pb-1 font-logo text-[28px]"
-               to="https://mana.wiki/home"
+               to="https://mana.wiki/hq"
             >
                <span>mana</span>
                <span className="text-1 pt-1.5 font-body text-[12px]">beta</span>
@@ -172,10 +161,10 @@ export default function SiteIndex() {
                   <section className="z-50 flex h-14 items-center justify-end gap-5">
                      <Menu as="div" className="relative">
                         <Menu.Button
-                           className="bg-3 shadow-1 flex h-10 w-10
-                         items-center justify-center rounded-full shadow-sm"
+                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                         justify-center rounded-full border shadow-sm"
                         >
-                           <UserIcon size={22} />
+                           <UserIcon size={20} />
                         </Menu.Button>
                         <Transition
                            as={Fragment}

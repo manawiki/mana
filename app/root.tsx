@@ -33,8 +33,6 @@ import { commitSession, getSession } from "./utils/message.server";
 import { useEffect } from "react";
 import { toast } from "./components/Toaster";
 
-import { DynamicLinks } from "remix-utils";
-
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
@@ -121,7 +119,6 @@ function App() {
                content="width=device-width,initial-scale=1"
             />
             <Meta />
-            <DynamicLinks />
             <Links />
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
