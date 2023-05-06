@@ -37,11 +37,13 @@ import {
 import type { CustomElement, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 import {
+   isLinkNodeAtSelection,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
    withLayout,
    withNodeId,
+   useSelection,
 } from "./utils";
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
@@ -55,6 +57,7 @@ import {
 } from "./components";
 import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
+import LinkEditor from "./blocks/BlockLinkEditor";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -89,6 +92,8 @@ export const ForgeEditor = () => {
    editor.isInline = (element) => ["link"].includes(element.type);
 
    const isEditingRef = useRef(false);
+   const editorRef = useRef(null);
+
    const updateMyPresence = useUpdateMyPresence();
 
    useEffect(() => {
@@ -285,6 +290,18 @@ export const ForgeEditor = () => {
       );
    }, []);
 
+   // const [previousSelection, selection, setSelection] = useSelection(editor);
+
+   // let selectionForLink = null;
+   // if (isLinkNodeAtSelection(editor, selection)) {
+   //    selectionForLink = selection;
+   // } else if (
+   //    selection == null &&
+   //    isLinkNodeAtSelection(editor, previousSelection)
+   // ) {
+   //    selectionForLink = previousSelection;
+   // }
+
    const items = useMemo(
       () => editor.children.map((element: any) => element.id),
       [editor.children]
@@ -401,6 +418,21 @@ export const ForgeEditor = () => {
                         items={items}
                         strategy={verticalListSortingStrategy}
                      >
+                        {/* {selectionForLink != null ? (
+                           <LinkEditor
+                              editorOffsets={
+                                 editorRef.current != null
+                                    ? {
+                                         x: editorRef.current.getBoundingClientRect()
+                                            .x,
+                                         y: editorRef.current.getBoundingClientRect()
+                                            .y,
+                                      }
+                                    : null
+                              }
+                              selectionForLink={selectionForLink}
+                           />
+                        ) : null} */}
                         <Editable
                            renderElement={renderElement}
                            renderLeaf={Leaf}

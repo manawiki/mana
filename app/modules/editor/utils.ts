@@ -1,10 +1,12 @@
 import { nanoid } from "nanoid";
-import type { Operation, Path } from "slate";
-import { Editor } from "slate";
+import type { BaseEditor, BaseRange, Operation, Path } from "slate";
+import { Range, Transforms, Editor, Element } from "slate";
 import type { Format, ParagraphElement } from "./types";
 import { BlockType } from "./types";
-import { Range, Transforms } from "slate";
+import type { ReactEditor } from "slate-react";
+import { useCallback, useRef, useState } from "react";
 
+import areEqual from "deep-equal";
 export function toPx(value: number | undefined): string | undefined {
    return value ? `${Math.round(value)}px` : undefined;
 }
@@ -88,11 +90,10 @@ export function hasActiveLinkAtSelection(editor: Editor) {
    return isLinkNodeAtSelection(editor, editor.selection);
 }
 
-export function toggleLinkAtSelection(editor) {
+export function toggleLinkAtSelection(editor: Editor) {
    if (editor.selection == null) {
       return;
    }
-
    if (hasActiveLinkAtSelection(editor)) {
       Transforms.unwrapNodes(editor, {
          match: (n) => Element.isElement(n) && n.type === "link",
@@ -108,20 +109,28 @@ export function toggleLinkAtSelection(editor) {
    }
 }
 
-export function isLinkNodeAtSelection(editor: Editor, selection: Selection) {
+export function isLinkNodeAtSelection(
+   editor: Editor,
+   selection: Editor["selection"]
+) {
    if (selection == null) {
       return false;
    }
-
    return (
       Editor.above(editor, {
          at: selection,
-         match: (n) => n.type === "link",
+         match: (n: any) => n.type === "link",
       }) != null
    );
 }
 
-function createLinkForRange(editor, range, linkText, linkURL, isInsertion) {
+function createLinkForRange(
+   editor: BaseEditor & ReactEditor,
+   range: BaseRange | null,
+   linkText: string,
+   linkURL: string,
+   isInsertion: boolean
+) {
    isInsertion
       ? Transforms.insertNodes(
            editor,
@@ -141,4 +150,21 @@ function createLinkForRange(editor, range, linkText, linkURL, isInsertion) {
            },
            { split: true, at: range }
         );
+}
+
+export function useSelection(editor: Editor) {
+   const [selection, setSelection] = useState(editor.selection);
+   const previousSelection = useRef(null);
+   const setSelectionOptimized = useCallback(
+      (newSelection) => {
+         if (areEqual(selection, newSelection)) {
+            return;
+         }
+         previousSelection.current = selection;
+         setSelection(newSelection);
+      },
+      [setSelection, selection]
+   );
+
+   return [previousSelection.current, selection, setSelectionOptimized];
 }
