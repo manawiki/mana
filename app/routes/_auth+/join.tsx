@@ -233,7 +233,7 @@ export const action: ActionFunction = async ({
                username,
                email,
                password,
-               sites: ["jZkMu3Hqcj"],
+               sites: ["TLPWIBnfCr"],
             },
             overrideAccess: false,
             user,

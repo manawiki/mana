@@ -16,37 +16,9 @@ export default function BlockLink({ element, children }: Props) {
    const [isOpen] = useState(element?.url == "" ? true : false);
    return (
       <>
-         {element.url ? (
-            <a rel="nofollow" className="text-blue-500" href={element.url}>
-               {children}
-            </a>
-         ) : (
-            <>
-               <PlaceholderLink
-                  defaultOpen={isOpen}
-                  icon={Link}
-                  inputs={{
-                     url: {
-                        type: "url",
-                        label: "URL",
-                        placeholder: "Paste a link…",
-                        title: "Please enter a valid link",
-                        required: true,
-                     },
-                  }}
-                  onSubmit={({ url }) => {
-                     const path = ReactEditor.findPath(editor, element);
-                     const newProperties: Partial<CustomElement> = {
-                        url,
-                     };
-                     Transforms.setNodes<CustomElement>(editor, newProperties, {
-                        at: path,
-                     });
-                  }}
-               />
-               {children}
-            </>
-         )}
+         <a rel="nofollow" className="text-blue-500" href={element.url}>
+            {children}
+         </a>
       </>
    );
 }
