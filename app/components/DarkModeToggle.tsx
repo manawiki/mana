@@ -19,7 +19,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle dark mode"
                >
-                  <MoonIcon className="h-5 w-5 text-1" />
+                  <MoonIcon className="text-1 h-4 w-4" />
                </button>
             }
             light={
@@ -28,7 +28,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle light mode"
                >
-                  <SunIcon className="h-6 w-6 text-1" />
+                  <SunIcon className="text-1 h-5 w-5" />
                </button>
             }
          />

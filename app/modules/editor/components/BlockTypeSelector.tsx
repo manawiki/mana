@@ -218,10 +218,10 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                                        </div>
                                     )}
                                     <div>
-                                       <div className="font-bold text-emerald-500">
+                                       <div className="font-bold text-zinc-500 dark:text-zinc-300">
                                           {item.label}
                                        </div>
-                                       <div className="">
+                                       <div className="text-1 text-xs">
                                           {item.description}
                                        </div>
                                     </div>
