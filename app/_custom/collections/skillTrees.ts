@@ -98,6 +98,22 @@ export const SkillTrees: CollectionConfig = {
          ],
       },
       {
+         name: "stat_added",
+         type: "array",
+         fields: [
+            {
+               name: "stat_type",
+               type: "relationship",
+               relationTo: "_statTypes",
+               hasMany: false,
+            },
+            {
+               name: "value",
+               type: "number",
+            },
+         ],
+      },
+      {
          name: "affected_skill",
          type: "relationship",
          relationTo: "traces",

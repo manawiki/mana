@@ -73,7 +73,7 @@ export default function Showcase() {
 
    return (
       <>
-         <div className="mx-auto mb-8 max-w-[728px] max-desktop:px-3">
+         <div className="mx-auto mb-8 max-w-[960px] max-desktop:px-3">
             {/* 1) Header with main information for Profile */}
             <PlayerHeader data={pdata} />
 
@@ -333,6 +333,7 @@ const CharacterInfo = ({
       { name: "CRIT DMG", base: charbase.stats[6].data[li] },
       { name: "Aggro", base: charbase.stats[7].data[li] },
    ];
+   console.log(statVal);
 
    return (
       <>
@@ -349,7 +350,7 @@ const CharacterInfo = ({
                />
             </div>
             {/* Character Splash Image Left */}
-            <div className="absolute -left-8 top-8 h-80 w-80 opacity-80">
+            <div className="absolute -left-8 top-8 h-96 w-96 opacity-80">
                <Image
                   url={charbase?.image_draw?.url}
                   alt={charbase?.name}
@@ -402,8 +403,73 @@ const CharacterInfo = ({
                })}
             </div>
 
+            {/* Light Cone Display  */}
+            <div className="absolute left-[17rem] top-3 w-48">
+               {/* Light Cone Image + Rarity */}
+               <div className="relative inline-block align-top w-16">
+                  <Image
+                     alt={lcbase.name}
+                     url={lcbase.image_full?.url}
+                     className="object-contain h-16 w-16"
+                  />
+                  <div className="absolute -bottom-4 h-4 w-16 text-center">
+                     <Image
+                        alt="Rarity"
+                        url={lcbase.rarity?.icon?.url}
+                        className="inline-block align-top object-contain h-4"
+                     />
+                  </div>
+               </div>
+
+               {/* Level + Superimposition Levels */}
+               <div className="relative inline-block w-28 align-top text-left">
+                  <div className="relative block text-white text-sm font-bold">
+                     {lcbase.name}
+                  </div>
+                  <div className="relative inline-block px-2 py-0.5 mx-1 bg-black bg-opacity-90 rounded-md text-xs text-white">
+                     Lv.{chardata?.equipment?.level}
+                  </div>
+                  <div className="relative inline-block text-yellow-100 text-xs bg-yellow-900 rounded-full mx-1 p-0.5 w-6 text-center">
+                     {superimp[chardata?.equipment?.promotion]}
+                  </div>
+
+                  {/* Stat Values */}
+                  {wstats?.map((s) => {
+                     const stattype = statTypes.find((a) => a.name == s.name);
+
+                     return (
+                        <>
+                           <div className="inline-block mx-0.5 my-[1px] rounded-sm bg-black bg-opacity-80">
+                              <div className="inline-block align-middle h-5 w-5">
+                                 <Image
+                                    alt="StatIcon"
+                                    url={stattype?.icon?.url}
+                                    className="object-fit"
+                                 />
+                              </div>
+                              <div className="inline-block align-middle text-xs text-white">
+                                 +{formatStat(stattype?.name, s?.base)}
+                              </div>
+                           </div>
+                        </>
+                     );
+                  })}
+               </div>
+
+               {/* Stat Values */}
+            </div>
+
+            {/* Skill Tree ? */}
+            <div className="absolute left-48 top-10">
+               <SkillTreeDisplay
+                  data={chardata}
+                  skillTrees={skillTrees}
+                  path={charbase?.path?.data_key}
+               />
+            </div>
+
             {/* Skill Tree Levels */}
-            <div className="absolute left-60 top-12">
+            {/* <div className="absolute left-60 top-12">
                {chardata?.skilltree_list?.map((s: any, i: any) => {
                   const sentry = skillTrees.find((a) => a.id == s.point_id);
 
@@ -422,83 +488,63 @@ const CharacterInfo = ({
                      </>
                   );
                })}
-            </div>
+            </div> */}
 
             {/* ================================= */}
             {/* Second Column */}
             {/* ================================= */}
-            {/* Light Cone Display  */}
-            <div className="absolute left-72 top-1 h-28 w-48 overflow-hidden text-center">
-               <div className="relative block">
-                  <Image
-                     alt={lcbase.name}
-                     url={lcbase.icon?.url}
-                     className="object-contain h-16 w-48"
-                  />
-                  <div className="absolute bottom-0 left-14 h-4 w-36">
-                     <Image
-                        alt="Rarity"
-                        url={lcbase.rarity?.icon?.url}
-                        className="object-contain h-4"
-                     />
-                  </div>
-               </div>
 
-               <div className="relative block text-white text-sm">
-                  {lcbase.name} Lv.{chardata?.equipment?.level}
-               </div>
-               <div className="relative inline-block text-yellow-100 text-xs bg-yellow-900 rounded-full p-0.5 w-6">
-                  {superimp[chardata?.equipment?.promotion]}
-               </div>
-            </div>
-
-            {/* Stat Display */}
-            <div className="absolute left-72 top-32 w-48 text-white">
-               {statVal.map((s: any) => {
-                  const stattype = statTypes.find((a) => a.name == s.name);
-                  return (
-                     <>
-                        <div className="flex items-center px-2">
-                           <div className="flex flex-grow items-center space-x-2">
-                              <div>
-                                 {stattype?.icon?.url ? (
-                                    <div
-                                       className="relative inline-flex h-6 w-6 items-center 
+            <div className="absolute left-[29rem] top-3 ">
+               {/* Stat Display */}
+               <div className="relative w-48 text-white">
+                  {statVal.map((s: any) => {
+                     const stattype = statTypes.find((a) => a.name == s.name);
+                     return (
+                        <>
+                           <div className="flex items-center px-2">
+                              <div className="flex flex-grow items-center space-x-2">
+                                 <div>
+                                    {stattype?.icon?.url ? (
+                                       <div
+                                          className="relative inline-flex h-6 w-6 items-center 
                                justify-center rounded-full align-middle"
-                                    >
-                                       <Image
-                                          alt={"StatIcon"}
-                                          url={
-                                             stattype?.icon?.url ??
-                                             "no_image_42df124128"
-                                          }
-                                          className="h-full w-full object-contain"
-                                       />
+                                       >
+                                          <Image
+                                             alt={"StatIcon"}
+                                             url={
+                                                stattype?.icon?.url ??
+                                                "no_image_42df124128"
+                                             }
+                                             className="h-full w-full object-contain"
+                                          />
+                                       </div>
+                                    ) : null}
+                                 </div>
+                                 <div className="font-bold text-sm">
+                                    {s.name}
+                                 </div>
+                              </div>
+                              {/* Stat Value With Modifier */}
+                              <div className="text-sm">
+                                 <div className="inline-block">
+                                    {" "}
+                                    {formatStat(s.name, s.base)}
+                                 </div>
+                                 {s.mod ? (
+                                    <div className="text-green-400 inline-block">
+                                       +{formatStat(s.name, s.mod)}
                                     </div>
                                  ) : null}
                               </div>
-                              <div className="font-bold text-sm">{s.name}</div>
                            </div>
-                           {/* Stat Value With Modifier */}
-                           <div className="text-sm">
-                              <div className="inline-block">
-                                 {" "}
-                                 {formatStat(s.name, s.base)}
-                              </div>
-                              {s.mod ? (
-                                 <div className="text-green-400 inline-block">
-                                    +{formatStat(s.name, s.mod)}
-                                 </div>
-                              ) : null}
-                           </div>
-                        </div>
-                     </>
-                  );
-               })}
+                        </>
+                     );
+                  })}
 
-               {/* NOTE TO REMOVE */}
-               <div className="text-xs text-white">
-                  * Stat modifiers only include Light Cone currently
+                  {/* NOTE TO REMOVE */}
+                  <div className="relative text-xs text-white">
+                     * Stat modifiers only include Light Cone currently
+                  </div>
                </div>
             </div>
 
@@ -506,7 +552,7 @@ const CharacterInfo = ({
             {/* Third Column */}
             {/* ================================= */}
 
-            <div className="absolute left-[30rem] top-0 w-60">
+            <div className="absolute left-[42rem] top-3 w-64">
                {rbase?.map((r: any, i: any) => {
                   const rdata = rchar[i];
                   const rlv = rdata.level ?? 0;
@@ -515,12 +561,12 @@ const CharacterInfo = ({
 
                   return (
                      <>
-                        <div className="relative w-60 h-14 text-left my-1 bg-gray-900 bg-opacity-30">
+                        <div className="relative w-64 h-14 text-left my-1 bg-gray-900 bg-opacity-30">
                            {/* Relic Image */}
                            <ItemFrameSquare mat={r} style="" />
 
                            {/* Relic Main Stat and Level */}
-                           <div className="inline-block w-12 text-right text-white align-middle leading-none">
+                           <div className="inline-block w-12 text-right text-white align-middle leading-none mr-1">
                               <div className="inline-block align-middle h-5 w-5">
                                  <Image
                                     alt="StatIcon"
@@ -539,7 +585,7 @@ const CharacterInfo = ({
                               {rdata.subobj?.map((sub) => {
                                  return (
                                     <>
-                                       <div className="inline-block m-0.5 rounded-sm bg-gray-900 bg-opacity-70">
+                                       <div className="inline-block m-0.5 rounded-sm bg-gray-900 bg-opacity-70 pr-1">
                                           <div className="inline-block align-middle h-5 w-5">
                                              <Image
                                                 alt="StatIcon"
@@ -603,3 +649,78 @@ function formatStat(type: any, stat: any) {
    }
    return stat;
 }
+
+const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
+   var pathkey = path;
+   var treelist = skillTrees.filter(
+      (a: any) => a.character?.character_id == data?.avatar_id
+   ); // pageData?.attributes?.tree; //skillTreeData;
+
+   // Need to sort skill nodes in order from Point01 - 18
+   treelist.sort((a: any, b: any) =>
+      a.anchor > b.anchor ? 1 : b.anchor > a.anchor ? -1 : 0
+   );
+
+   const connectorcount: any = {
+      Knight: 8,
+      Warrior: 8,
+      Rogue: 8,
+      Priest: 9,
+      Mage: 6,
+      Shaman: 8,
+      Warlock: 7,
+   };
+   // Initialize an array of form [1, 2, 3, ... n], where n is the number of connectors for the character's Path (from connectorcount)
+   const connectorlist = Array.from(
+      { length: connectorcount[pathkey] },
+      (v, k) => k + 1
+   );
+
+   return (
+      <>
+         <div className="canvas mx-auto flex items-center justify-center scale-[0.7]">
+            <div className={`canvas-${pathkey}`}></div>
+
+            {connectorlist?.map((con: any) => {
+               return (
+                  <>
+                     <div
+                        className={`connector connector-${con}-${pathkey}`}
+                     ></div>
+                  </>
+               );
+            })}
+
+            {treelist?.map((node: any, i: any) => {
+               const nodelv = data.skilltree_list?.find(
+                  (a) => a.point_id == node.point_id
+               )?.level;
+
+               return (
+                  <>
+                     <div
+                        className={`point cursor-pointer point-${
+                           i + 1
+                        }-${pathkey} `}
+                        // style={{
+                        //    backgroundImage: "url(" + node?.icon?.url + ")",
+                        // }}
+                     >
+                        <Image
+                           alt="Icon"
+                           url={node?.icon?.url}
+                           className="object-contain opacity-20"
+                        />
+                        {nodelv ? (
+                           <div className="absolute w-9 top-1 text-white text-2xl text-center font-bold drop-shadow-[0_0_2px_rgba(250,0,0,0.8)]">
+                              {nodelv}
+                           </div>
+                        ) : null}
+                     </div>
+                  </>
+               );
+            })}
+         </div>
+      </>
+   );
+};

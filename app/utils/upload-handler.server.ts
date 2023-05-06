@@ -61,7 +61,8 @@ export const uploadImage = async ({
    const imageUploadResult = await payload.create({
       collection: "images",
       data: {
-         id: `${user.id}-${nanoid()}`,
+         id: nanoid(),
+         createdBy: user.id,
       },
       filePath: path.resolve(__dirname, image.filepath),
       user,

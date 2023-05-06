@@ -106,7 +106,7 @@ export default function PostsIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] px-3 py-10 tablet:px-0 laptop:px-3 desktop:px-0">
+         <div className="mx-auto max-w-[728px] px-3 pt-20 tablet:px-0 laptop:px-3 laptop:pt-14 desktop:px-0">
             <div className="border-color relative mb-16 border-b-2 pb-2">
                <h1 className="font-header text-3xl font-bold">Posts</h1>
                <Menu as="div" className="relative">

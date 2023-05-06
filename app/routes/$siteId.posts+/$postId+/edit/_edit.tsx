@@ -124,9 +124,10 @@ export default function PostEditPage() {
    return (
       <main
          className="relative min-h-screen leading-7
-         max-laptop:pb-20 max-laptop:pt-10 laptop:pt-6"
+         max-laptop:pb-20 max-laptop:pt-10 laptop:pt-14"
       >
          <RoomProvider
+            key={post.id}
             id={post.id}
             initialStorage={{
                blocks: new LiveList(initialValue),
@@ -236,39 +237,6 @@ export async function action({
          // Last resort error message
          return json({
             error: "Something went wrong...unable to update subtitle.",
-         });
-      }
-      case "addBlockImage": {
-         assertIsPost(request);
-         const result = await getMultipleFormData({
-            request,
-            prefix: "blockImage",
-            schema: z.any(),
-         });
-         if (result.success) {
-            const { image } = result.data;
-            try {
-               return await uploadImage({
-                  payload,
-                  image: image,
-                  user,
-               });
-            } catch (error) {
-               return json({
-                  error: "Something went wrong...unable to add image.",
-               });
-            }
-         }
-         //If user input has problems
-         if (issues.hasIssues()) {
-            return json<FormResponse>(
-               { serverIssues: issues.toArray() },
-               { status: 400 }
-            );
-         }
-         // Last resort error message
-         return json({
-            error: "Something went wrong...unable to add image.",
          });
       }
       case "updateBanner": {

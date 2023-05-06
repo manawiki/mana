@@ -138,7 +138,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto mb-8 max-w-[728px] pt-10 max-desktop:px-3">
+         <div className="mx-auto mb-8 max-w-[728px] pt-20 max-desktop:px-3 laptop:pt-14">
             <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
                Collections
             </h1>
