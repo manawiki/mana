@@ -12,6 +12,8 @@ const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for 
 
 let payload = null as any;
 
+var statTypes: any;
+
 //Start payload instance
 const start = async () =>
    await Payload.init({
@@ -34,8 +36,24 @@ const start = async () =>
    });
 start();
 
-const getData = async () =>
-   Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+const getData = async () => {
+
+	// Get _statTypes arrays to populate later relations
+	const tempStatTypes = await payload.find({
+		collection: "_statTypes",
+		where: {
+			id: {
+			exists: true
+			},
+		},
+		limit: 200,
+	});
+
+	statTypes = tempStatTypes.docs;
+
+   return Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+
+}
 
 //Uploads an entry and custom field data; NOTE: Still need to add "check for existing entry" functionality
 const seedUploads = async (result: any) => {
@@ -102,8 +120,13 @@ const seedUploads = async (result: any) => {
 		});
 	}
 
+	// ==================
+	// ==================
 	// Relation Fields
+	// ==================
 	var relationFields: any = {};
+
+	// Single relation fields
 	relationFields["character"] = null;
 	relationFields["affected_skill"] = null;
 	if (result.character?.character_id) {
@@ -144,6 +167,18 @@ const seedUploads = async (result: any) => {
 			relationFields["affected_skill"] = traceEntry;
 		}
 	}
+
+	// Nested relation fields
+	relationFields["stat_added"] = result.stat_added?.map((stat:any) => {
+		const statEntry = statTypes?.find((a:any) => a.data_key == stat.stat_type);
+
+		return { ...stat, stat_type: statEntry?.id }
+	});
+
+	// ==================
+	// End Relation Fields
+	// ==================
+	// ==================
 	
 	// Check if entry exists
 	const existingEntry = await payload.find({
