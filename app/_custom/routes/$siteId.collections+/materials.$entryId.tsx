@@ -9,12 +9,8 @@ import {
    getCustomEntryData,
 } from "~/modules/collections";
 import type { Materials } from "payload/generated-types";
-import { Image } from "~/components/Image";
 
 import { Header } from "~/_custom/components/materials/Header";
-
-import { zx } from "zodix";
-import { z } from "zod";
 
 export { meta };
 

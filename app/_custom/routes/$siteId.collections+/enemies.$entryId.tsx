@@ -9,18 +9,12 @@ import {
    getCustomEntryData,
 } from "~/modules/collections";
 import type { Enemies } from "payload/generated-types";
-import { Image } from "~/components/Image";
 
 import { Stats } from "~/_custom/components/enemies/Stats";
 import { Resistances } from "~/_custom/components/enemies/Resistances";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Drops } from "~/_custom/components/enemies/Drops";
 import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
-import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
-
-import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
-
-import { Eidolons } from "~/_custom/components/characters/Eidolons";
 
 export { meta };
 

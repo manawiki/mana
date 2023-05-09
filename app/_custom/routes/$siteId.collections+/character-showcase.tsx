@@ -8,9 +8,6 @@
     1. Implement select for switching banners in a better way
 */
 
-import { useRef, useEffect } from "react";
-import { Disclosure, Combobox } from "@headlessui/react";
-
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -107,7 +104,7 @@ const PlayerHeader = ({ data }: any) => {
 
    return (
       <>
-         <div className="rounded-md border p-2 my-2">
+         <div className="my-2 rounded-md border p-2">
             {/* ICON - Pending */}
 
             {/* Nickname */}
@@ -150,7 +147,7 @@ const CharacterSelector = ({
 
    return (
       <>
-         <div className="text-center my-3">
+         <div className="my-3 text-center">
             {charids.map((c: any, i: any) => {
                const cdata = characters.find((a) => a.character_id == c);
 
@@ -192,12 +189,12 @@ const ItemFrameRound = ({ mat, style }: any) => {
 
    return (
       <div
-         className={`relative align-middle text-center mx-1 inline-block h-20 w-20 align-middle ${style}`}
+         className={`relative mx-1 inline-block h-20 w-20 text-center align-middle align-middle ${style}`}
          key={mat?.id}
       >
          <Image
             url={mat?.icon?.url ?? "no_image_42df124128"}
-            className={`object-contain h-20 w-20 color-rarity-${
+            className={`h-20 w-20 object-contain color-rarity-${
                mat?.rarity?.display_number ?? "1"
             } rounded-full`}
             alt={mat?.name}
@@ -337,15 +334,15 @@ const CharacterInfo = ({
 
    return (
       <>
-         <div className="relative my-3 rounded-md w-full h-96 text-center overflow-x-auto overflow-y-hidden">
+         <div className="relative my-3 h-96 w-full overflow-x-auto overflow-y-hidden rounded-md text-center">
             {/* ================================= */}
             {/* First Column */}
             {/* ================================= */}
             {/* Background-Div */}
-            <div className="relative inline-block w-full h-96 rounded-lg overflow-hidden">
+            <div className="relative inline-block h-96 w-full overflow-hidden rounded-lg">
                <Image
                   url={bg_url}
-                  className="object-fill w-full"
+                  className="w-full object-fill"
                   alt="background"
                />
             </div>
@@ -359,7 +356,7 @@ const CharacterInfo = ({
             </div>
 
             {/* Character Name Top Left */}
-            <div className="absolute left-2 top-1 text-white font-bold">
+            <div className="absolute left-2 top-1 font-bold text-white">
                {charbase?.name}
             </div>
             {/* Character Level Second Line */}
@@ -374,7 +371,7 @@ const CharacterInfo = ({
                      <>
                         {elv > i ? (
                            <>
-                              <div className="relative block my-1 h-10 w-10 bg-gray-900 rounded-full drop-shadow-md drop-shadow-[0px_0px_4px_rgba(255,255,255,1)]">
+                              <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900 drop-shadow-[0px_0px_4px_rgba(255,255,255,1)] drop-shadow-md">
                                  <Image
                                     alt={"Eidolon Lv." + i + 1}
                                     url={e.icon?.url}
@@ -383,7 +380,7 @@ const CharacterInfo = ({
                               </div>
                            </>
                         ) : (
-                           <div className="relative flex my-1 items-center justify-center h-10 w-10 bg-gray-900 rounded-full border border-gray-700">
+                           <div className="relative my-1 flex h-10 w-10 items-center justify-center rounded-full border border-gray-700 bg-gray-900">
                               <Image
                                  alt={"Eidolon Lv." + i + 1}
                                  url={e.icon?.url}
@@ -394,7 +391,7 @@ const CharacterInfo = ({
                                  url={
                                     "https://wiki-cdn.nalu.wiki/neuralcloud/Algorithm_Lock_Icon_ce5b2d3623.png"
                                  }
-                                 className="absolute object-contain h-5 w-5"
+                                 className="absolute h-5 w-5 object-contain"
                               />
                            </div>
                         )}
@@ -406,30 +403,30 @@ const CharacterInfo = ({
             {/* Light Cone Display  */}
             <div className="absolute left-[17rem] top-3 w-48">
                {/* Light Cone Image + Rarity */}
-               <div className="relative inline-block align-top w-16">
+               <div className="relative inline-block w-16 align-top">
                   <Image
                      alt={lcbase.name}
                      url={lcbase.image_full?.url}
-                     className="object-contain h-16 w-16"
+                     className="h-16 w-16 object-contain"
                   />
                   <div className="absolute -bottom-4 h-4 w-16 text-center">
                      <Image
                         alt="Rarity"
                         url={lcbase.rarity?.icon?.url}
-                        className="inline-block align-top object-contain h-4"
+                        className="inline-block h-4 object-contain align-top"
                      />
                   </div>
                </div>
 
                {/* Level + Superimposition Levels */}
-               <div className="relative inline-block w-28 align-top text-left">
-                  <div className="relative block text-white text-sm font-bold">
+               <div className="relative inline-block w-28 text-left align-top">
+                  <div className="relative block text-sm font-bold text-white">
                      {lcbase.name}
                   </div>
-                  <div className="relative inline-block px-2 py-0.5 mx-1 bg-black bg-opacity-90 rounded-md text-xs text-white">
+                  <div className="relative mx-1 inline-block rounded-md bg-black bg-opacity-90 px-2 py-0.5 text-xs text-white">
                      Lv.{chardata?.equipment?.level}
                   </div>
-                  <div className="relative inline-block text-yellow-100 text-xs bg-yellow-900 rounded-full mx-1 p-0.5 w-6 text-center">
+                  <div className="relative mx-1 inline-block w-6 rounded-full bg-yellow-900 p-0.5 text-center text-xs text-yellow-100">
                      {superimp[chardata?.equipment?.promotion]}
                   </div>
 
@@ -439,8 +436,8 @@ const CharacterInfo = ({
 
                      return (
                         <>
-                           <div className="inline-block mx-0.5 my-[1px] rounded-sm bg-black bg-opacity-80">
-                              <div className="inline-block align-middle h-5 w-5">
+                           <div className="mx-0.5 my-[1px] inline-block rounded-sm bg-black bg-opacity-80">
+                              <div className="inline-block h-5 w-5 align-middle">
                                  <Image
                                     alt="StatIcon"
                                     url={stattype?.icon?.url}
@@ -520,7 +517,7 @@ const CharacterInfo = ({
                                        </div>
                                     ) : null}
                                  </div>
-                                 <div className="font-bold text-sm">
+                                 <div className="text-sm font-bold">
                                     {s.name}
                                  </div>
                               </div>
@@ -531,7 +528,7 @@ const CharacterInfo = ({
                                     {formatStat(s.name, s.base)}
                                  </div>
                                  {s.mod ? (
-                                    <div className="text-green-400 inline-block">
+                                    <div className="inline-block text-green-400">
                                        +{formatStat(s.name, s.mod)}
                                     </div>
                                  ) : null}
@@ -561,13 +558,13 @@ const CharacterInfo = ({
 
                   return (
                      <>
-                        <div className="relative w-64 h-14 text-left my-1 bg-gray-900 bg-opacity-30">
+                        <div className="relative my-1 h-14 w-64 bg-gray-900 bg-opacity-30 text-left">
                            {/* Relic Image */}
                            <ItemFrameSquare mat={r} style="" />
 
                            {/* Relic Main Stat and Level */}
-                           <div className="inline-block w-12 text-right text-white align-middle leading-none mr-1">
-                              <div className="inline-block align-middle h-5 w-5">
+                           <div className="mr-1 inline-block w-12 text-right align-middle leading-none text-white">
+                              <div className="inline-block h-5 w-5 align-middle">
                                  <Image
                                     alt="StatIcon"
                                     url={mainstat?.icon?.url}
@@ -581,12 +578,12 @@ const CharacterInfo = ({
 
                            {/* Relic Substats */}
 
-                           <div className="inline-block align-middle w-32 text-white leading-none">
+                           <div className="inline-block w-32 align-middle leading-none text-white">
                               {rdata.subobj?.map((sub) => {
                                  return (
                                     <>
-                                       <div className="inline-block m-0.5 rounded-sm bg-gray-900 bg-opacity-70 pr-1">
-                                          <div className="inline-block align-middle h-5 w-5">
+                                       <div className="m-0.5 inline-block rounded-sm bg-gray-900 bg-opacity-70 pr-1">
+                                          <div className="inline-block h-5 w-5 align-middle">
                                              <Image
                                                 alt="StatIcon"
                                                 url={sub?.icon?.url}
@@ -619,12 +616,12 @@ const ItemFrameSquare = ({ mat, style }: any) => {
 
    return (
       <div
-         className={`relative inline-block align-middle text-center h-14 w-14 align-middle ${style}`}
+         className={`relative inline-block h-14 w-14 text-center align-middle align-middle ${style}`}
          key={mat?.id}
       >
          <Image
             url={mat?.icon?.url ?? "no_image_42df124128"}
-            className={`object-contain h-14 w-14 color-rarity-${
+            className={`h-14 w-14 object-contain color-rarity-${
                mat?.rarity?.display_number ?? "1"
             } rounded-md`}
             alt={mat?.name}
@@ -678,7 +675,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
 
    return (
       <>
-         <div className="canvas mx-auto flex items-center justify-center scale-[0.7]">
+         <div className="canvas mx-auto flex scale-[0.7] items-center justify-center">
             <div className={`canvas-${pathkey}`}></div>
 
             {connectorlist?.map((con: any) => {
@@ -712,7 +709,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
                            className="object-contain opacity-20"
                         />
                         {nodelv ? (
-                           <div className="absolute w-9 top-1 text-white text-2xl text-center font-bold drop-shadow-[0_0_2px_rgba(250,0,0,0.8)]">
+                           <div className="absolute top-1 w-9 text-center text-2xl font-bold text-white drop-shadow-[0_0_2px_rgba(250,0,0,0.8)]">
                               {nodelv}
                            </div>
                         ) : null}
