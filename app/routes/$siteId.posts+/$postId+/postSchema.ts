@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const postSchema = z.object({
-   title: z
+   name: z
       .string()
       .min(3, "Title is too short.")
       .max(200, "Title is too long.")

@@ -63,7 +63,7 @@ export const handle = {
 export const meta: V2_MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
       ?.site.name;
-   const postTitle = data.post.title;
+   const postTitle = data.post.name;
 
    return [
       {
@@ -82,7 +82,7 @@ export default function PostPage() {
    return (
       <div className="relative">
          <AdminOrStaffOrOwner>
-            <div className="sticky top-16 flex items-center justify-center">
+            <div className="sticky top-[86px] flex items-center justify-center">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
                   className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 
@@ -98,7 +98,7 @@ export default function PostPage() {
          <main>
             <div className="mx-auto max-w-[728px] max-desktop:px-3">
                <h1 className="pt-8 font-header text-3xl !leading-[3rem] laptop:pt-10 laptop:text-4xl">
-                  {post.title}
+                  {post.name}
                </h1>
                <PostHeader post={post} />
                {post.subtitle && (

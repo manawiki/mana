@@ -20,7 +20,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                         <Image
                            width={20}
                            height={20}
-                           alt={post.title}
+                           alt={post.name}
                            options="fit=crop,height=50,width=50,gravity=auto"
                            className="w-full object-cover laptop:rounded"
                            //@ts-ignore
@@ -47,7 +47,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
             <div className="flex items-start gap-5">
                <div className="relative flex-grow">
                   <div className="pb-2 font-header text-xl font-bold">
-                     {post.title}
+                     {post.name}
                   </div>
                   <div className="text-1 text-sm max-laptop:line-clamp-2">
                      {post.subtitle}
@@ -56,7 +56,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                {post.banner && (
                   <div className="aspect-[1.4/1] w-32 flex-none overflow-hidden rounded laptop:w-40">
                      <Image
-                        alt={post.title}
+                        alt={post.name}
                         options="fit=crop,height=200,gravity=auto"
                         className="w-full rounded object-cover"
                         //@ts-ignore

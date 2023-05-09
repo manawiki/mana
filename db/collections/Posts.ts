@@ -12,7 +12,7 @@ export const Posts: CollectionConfig = {
    slug: postsslug,
    // auth: true,
    admin: {
-      useAsTitle: "title",
+      useAsTitle: "name",
    },
    access: {
       create: isLoggedIn,
@@ -31,7 +31,7 @@ export const Posts: CollectionConfig = {
          type: "text",
       },
       {
-         name: "title",
+         name: "name",
          type: "text",
          required: true,
       },
