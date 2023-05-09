@@ -19,10 +19,12 @@ import Tooltip from "~/components/Tooltip";
 import {
    ChevronDown,
    Component,
+   Database,
    GripVertical,
    LayoutGrid,
    List,
    Move,
+   Pencil,
    Plus,
    Trash,
 } from "lucide-react";
@@ -35,6 +37,7 @@ import useSWR from "swr";
 import { nanoid } from "nanoid";
 import { Image } from "~/components";
 import TextareaAutosize from "react-textarea-autosize";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    element: GroupElement;
@@ -200,7 +203,7 @@ export default function BlockGroup({ element }: Props) {
                refId: event.id,
                name: event.name,
                path: rowPath(),
-               iconUrl: event?.icon?.url,
+               iconUrl: event?.icon?.url ?? event?.banner?.url,
             },
          ],
       };
@@ -352,14 +355,8 @@ export default function BlockGroup({ element }: Props) {
          <>
             <div className="flex items-center justify-between pb-2">
                <section className="flex items-center gap-3">
-                  <span
-                     className="h-7 w-1 rounded-full"
-                     style={{
-                        backgroundColor: element.color,
-                     }}
-                  />
                   <input
-                     className="bg-3 border-none p-0 font-header text-2xl font-bold focus:ring-0"
+                     className="bg-3 border-0 p-0 font-header text-[22px] font-bold focus:ring-0 dark:text-zinc-200"
                      type="text"
                      placeholder="Group name..."
                      defaultValue={element.groupLabel}
@@ -408,8 +405,8 @@ export default function BlockGroup({ element }: Props) {
                            content="Switch Color"
                         >
                            <Listbox.Button
-                              className="bg-2 border-color flex h-7 w-7 items-center 
-                              justify-center rounded-full border focus:outline-none"
+                              className="bg-2 flex h-7 w-7 items-center 
+                              justify-center rounded-full focus:outline-none"
                            >
                               <div
                                  style={{
@@ -457,7 +454,7 @@ export default function BlockGroup({ element }: Props) {
                      </Listbox>
                   </div>
                   <RadioGroup
-                     className="border-color bg-2 flex h-10 items-center gap-1 rounded-md border px-1.5"
+                     className="flex cursor-pointer items-center gap-1"
                      value={viewMode}
                      onChange={(event) =>
                         handleUpdateViewMode(event, editor, element)
@@ -473,17 +470,17 @@ export default function BlockGroup({ element }: Props) {
                               <div
                                  className={`${
                                     checked
-                                       ? "bg-zinc-200 dark:bg-zinc-700"
+                                       ? "bg-zinc-100 dark:bg-zinc-700"
                                        : ""
                                  }
-                                 flex h-6 w-6 items-center justify-center rounded`}
+                                 flex h-7 w-7 items-center justify-center rounded`}
                               >
                                  <List
                                     style={{
                                        color:
                                           checked == true ? element.color : "",
                                     }}
-                                    size={14}
+                                    size={16}
                                  />
                               </div>
                            </Tooltip>
@@ -499,17 +496,17 @@ export default function BlockGroup({ element }: Props) {
                               <div
                                  className={`${
                                     checked
-                                       ? "bg-zinc-200 dark:bg-zinc-700"
+                                       ? "bg-zinc-100 dark:bg-zinc-700"
                                        : ""
                                  }
-                           flex h-6 w-6 items-center justify-center rounded`}
+                           flex h-7 w-7 items-center justify-center rounded`}
                               >
                                  <LayoutGrid
                                     style={{
                                        color:
                                           checked == true ? element.color : "",
                                     }}
-                                    size={14}
+                                    size={16}
                                  />
                               </div>
                            </Tooltip>
@@ -588,9 +585,13 @@ export default function BlockGroup({ element }: Props) {
                                              justify-between overflow-hidden rounded-full border-2 shadow-sm"
                                           >
                                              {/* @ts-expect-error */}
-                                             {entry?.icon?.url ? (
+                                             {entry?.icon?.url ||
+                                             entry?.banner?.url ? (
                                                 <Image
-                                                   url={entry?.icon?.url}
+                                                   url={
+                                                      entry?.icon?.url ??
+                                                      entry?.banner?.url
+                                                   }
                                                    options="fit=crop,width=60,height=60,gravity=auto"
                                                    alt={entry?.name ?? "Icon"}
                                                 />
@@ -645,7 +646,7 @@ export default function BlockGroup({ element }: Props) {
                         leaveTo="transform scale-95 opacity-0"
                      >
                         <Listbox.Options
-                           className="border-color text-1 bg-2 shadow-1 absolute right-0
+                           className="border-color bg-2 shadow-1 absolute right-0
                            z-30 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
                         >
                            {collectionData?.docs?.map(
@@ -654,7 +655,7 @@ export default function BlockGroup({ element }: Props) {
                                     {({ selected }) => (
                                        <>
                                           <button
-                                             className="text-1 relative flex w-full items-center gap-3 truncate
+                                             className="relative flex w-full items-center gap-3 truncate
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                           >
                                              {selected ? (
@@ -666,6 +667,10 @@ export default function BlockGroup({ element }: Props) {
                                                    className="absolute right-2 h-1.5 w-1.5 rounded-full"
                                                 />
                                              ) : null}
+                                             <Database
+                                                className="text-1"
+                                                size={14}
+                                             />
                                              {row.name}
                                           </button>
                                        </>
@@ -677,7 +682,7 @@ export default function BlockGroup({ element }: Props) {
                               {({ selected }) => (
                                  <>
                                     <button
-                                       className="text-1 relative flex w-full items-center gap-3 truncate
+                                       className="relative flex w-full items-center gap-3 truncate
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                     >
                                        {selected ? (
@@ -688,6 +693,7 @@ export default function BlockGroup({ element }: Props) {
                                              className="absolute right-2 h-1.5 w-1.5 rounded-full"
                                           />
                                        ) : null}
+                                       <Pencil className="text-1" size={14} />
                                        Post
                                     </button>
                                  </>
@@ -697,7 +703,7 @@ export default function BlockGroup({ element }: Props) {
                               {({ selected }) => (
                                  <>
                                     <button
-                                       className="text-1 relative flex w-full items-center gap-3 truncate
+                                       className="relative flex w-full items-center gap-3 truncate
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                     >
                                        {selected ? (
@@ -708,6 +714,10 @@ export default function BlockGroup({ element }: Props) {
                                              className="absolute right-2 h-1.5 w-1.5 rounded-full"
                                           />
                                        ) : null}
+                                       <Component
+                                          className="text-1"
+                                          size={14}
+                                       />
                                        Site
                                     </button>
                                  </>
@@ -905,7 +915,9 @@ const SortableListItem = ({
                      <Component className="text-1 mx-auto" size={18} />
                   )}
                </div>
-               <span className="text-1 truncate font-bold">{row?.name}</span>
+               <span className="text-1 truncate text-sm font-bold">
+                  {row?.name}
+               </span>
             </Link>
             {/* <input
                type="text"
@@ -996,7 +1008,7 @@ const SortableGridItem = ({
                opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="bg-2 border-color relative rounded-md border p-3"
+         className="bg-2 border-color shadow-1 relative rounded-md border p-3 shadow-sm"
       >
          <div
             className="absolute left-0 top-0 flex w-full select-none 

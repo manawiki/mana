@@ -26,10 +26,10 @@ td {
    }
 }
 h2 {
-   @apply border-color mb-3 border-b-2 pb-2 pt-4 font-header text-2xl font-bold dark:text-zinc-100;
+   @apply pb-2 pt-5 font-header text-[22px] font-bold dark:text-zinc-200;
 }
 h3 {
-   @apply mb-1.5 pt-3 font-header text-xl font-bold dark:text-zinc-100;
+   @apply mb-1.5 pt-3 font-header text-[18px] font-bold dark:text-zinc-200;
 }
 @layer components {
    .input-text {

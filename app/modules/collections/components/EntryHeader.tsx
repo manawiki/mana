@@ -1,8 +1,12 @@
 import { Image } from "~/components/Image";
-import type { Entry } from "payload/generated-types";
-import { NavLink, useLocation, useParams } from "@remix-run/react";
+import type { Collection, Entry } from "payload/generated-types";
+import {
+   NavLink,
+   useLocation,
+   useParams,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import { Component, Layout, Users } from "lucide-react";
-import { CustomCollection } from "~/modules/auth";
 
 export const EntryHeader = ({ entry }: { entry: Entry }) => {
    const params = useParams();
@@ -14,6 +18,12 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
    const slug = pathname.split("/")[3];
 
    const collectionId = params?.collectionId ? params?.collectionId : slug;
+
+   const coreCollectionData = useRouteLoaderData(
+      "routes/$siteId.collections+/$collectionId._route"
+   ) as { collection: Collection };
+
+   const isCustomWikiPage = coreCollectionData?.collection?.customEntryTemplate;
 
    return (
       <section className="border-color relative mb-5 overflow-hidden border-y pt-9">
@@ -46,42 +56,80 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
             <h1 className="text-lg font-bold laptop:text-xl">{entry?.name}</h1>
          </div>
          <div className="text-1 relative mx-auto flex max-w-[728px] items-center gap-4 text-sm font-bold max-desktop:px-3">
-            <CustomCollection>
+            {isCustomWikiPage ? (
+               <>
+                  <NavLink
+                     end
+                     className="relative px-1 py-2"
+                     to={`/${siteId}/collections/${collectionId}/${entryId}`}
+                  >
+                     {({ isActive }) => (
+                        <>
+                           <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700">
+                              <Layout
+                                 className={`${
+                                    isActive
+                                       ? "text-yellow-500"
+                                       : "text-zinc-400 dark:text-zinc-500"
+                                 }`}
+                                 size={18}
+                              />
+                              <span
+                                 className={`${
+                                    isActive ? "dark:text-white" : ""
+                                 }`}
+                              >
+                                 Custom
+                              </span>
+                           </div>
+                           {isActive ? (
+                              <span
+                                 className="absolute -bottom-0.5 left-0 h-1
+                              w-full rounded-full bg-yellow-500 dark:bg-yellow-700"
+                              />
+                           ) : null}
+                        </>
+                     )}
+                  </NavLink>
+                  <NavLink
+                     end
+                     className="relative px-1 py-2"
+                     to={`/${siteId}/collections/${collectionId}/${entryId}/w`}
+                  >
+                     {({ isActive }) => (
+                        <>
+                           <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700">
+                              <Users
+                                 className={`${
+                                    isActive
+                                       ? "text-yellow-500"
+                                       : "text-zinc-400 dark:text-zinc-500"
+                                 }`}
+                                 size={18}
+                              />
+                              <span
+                                 className={`${
+                                    isActive ? "dark:text-white" : ""
+                                 }`}
+                              >
+                                 Wiki
+                              </span>
+                           </div>
+                           {isActive ? (
+                              <span
+                                 className="absolute -bottom-0.5 left-0 h-1 
+                              w-full rounded-full bg-yellow-500 dark:bg-yellow-700"
+                              />
+                           ) : null}
+                        </>
+                     )}
+                  </NavLink>
+               </>
+            ) : (
                <NavLink
                   end
                   className="relative px-1 py-2"
                   to={`/${siteId}/collections/${collectionId}/${entryId}`}
-               >
-                  {({ isActive }) => (
-                     <>
-                        <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700">
-                           <Layout
-                              className={`${
-                                 isActive
-                                    ? "text-yellow-500"
-                                    : "text-zinc-400 dark:text-zinc-500"
-                              }`}
-                              size={18}
-                           />
-                           <span
-                              className={`${isActive ? "dark:text-white" : ""}`}
-                           >
-                              Custom
-                           </span>
-                        </div>
-                        {isActive ? (
-                           <span
-                              className="absolute -bottom-0.5 left-0 h-1
-                              w-full rounded-full bg-yellow-500 dark:bg-yellow-700"
-                           />
-                        ) : null}
-                     </>
-                  )}
-               </NavLink>
-               <NavLink
-                  end
-                  className="relative px-1 py-2"
-                  to={`/${siteId}/collections/${collectionId}/${entryId}/w`}
                >
                   {({ isActive }) => (
                      <>
@@ -109,38 +157,7 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
                      </>
                   )}
                </NavLink>
-            </CustomCollection>
-            <NavLink
-               end
-               className="relative px-1 py-2"
-               to={`/${siteId}/collections/${collectionId}/${entryId}`}
-            >
-               {({ isActive }) => (
-                  <>
-                     <div className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700">
-                        <Users
-                           className={`${
-                              isActive
-                                 ? "text-yellow-500"
-                                 : "text-zinc-400 dark:text-zinc-500"
-                           }`}
-                           size={18}
-                        />
-                        <span
-                           className={`${isActive ? "dark:text-white" : ""}`}
-                        >
-                           Wiki
-                        </span>
-                     </div>
-                     {isActive ? (
-                        <span
-                           className="absolute -bottom-0.5 left-0 h-1 
-                              w-full rounded-full bg-yellow-500 dark:bg-yellow-700"
-                        />
-                     ) : null}
-                  </>
-               )}
-            </NavLink>
+            )}
          </div>
       </section>
    );
