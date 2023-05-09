@@ -547,7 +547,12 @@ function SortableElement({
    );
 
    return (
-      <div className="group relative flex flex-col" {...attributes}>
+      <div
+         className="group relative flex flex-col 
+         border-y border-dashed border-transparent 
+         hover:border-y hover:border-zinc-200 dark:hover:border-zinc-700"
+         {...attributes}
+      >
          <div
             className="outline-none"
             {...sortable.attributes}
@@ -584,8 +589,8 @@ function SortableElement({
                </div>
             )}
             <div
-               className="absolute -top-0.5 left-0 -translate-x-full	
-               translate-y-0 select-none pr-3 opacity-0 group-hover:opacity-100"
+               className="absolute -top-10 select-none pr-3 opacity-0 group-hover:opacity-100
+               laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
                contentEditable={false}
             >
                <BlockInlineActions
@@ -594,14 +599,14 @@ function SortableElement({
                />
             </div>
             <div
-               className="absolute -right-11 -top-0.5	 z-40
-                select-none pl-3 opacity-0 group-hover:opacity-100"
+               className="absolute -top-10 right-0 z-40 select-none pl-3
+                opacity-0 group-hover:opacity-100 laptop:-right-11 laptop:-top-0.5"
                contentEditable={false}
             >
                <Tooltip id="delete" content="Delete">
                   <Button
-                     className="hover:bg-2 shadow-1 border-color flex
-                      h-8 w-8 items-center justify-center rounded-full border shadow"
+                     className="hover:bg-2 shadow-1 border-color bg-3 flex
+                      h-8 w-8 items-center justify-center rounded-md border shadow-sm"
                      onClick={onDelete}
                      ariaLabel="Delete"
                   >

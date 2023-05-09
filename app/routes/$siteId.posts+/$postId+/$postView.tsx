@@ -102,7 +102,7 @@ export default function PostPage() {
                </h1>
                <PostHeader post={post} />
                {post.subtitle && (
-                  <div className="text-1 border-color  mb-6 border-b border-zinc-100 pb-5 font-semibold">
+                  <div className="text-1 border-color mb-5 border-b border-zinc-100 pb-3 text-sm font-semibold">
                      {post.subtitle}
                   </div>
                )}

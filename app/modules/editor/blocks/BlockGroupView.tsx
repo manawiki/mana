@@ -72,7 +72,7 @@ export default function GroupView({ element }: Props) {
             </RadioGroup>
          </div>
          {viewMode == "list" ? (
-            <div className="border-color bg-2 divide-color relative divide-y overflow-hidden rounded-lg border">
+            <div className="border-color bg-2 divide-color shadow-1 relative divide-y overflow-hidden rounded-lg border shadow-sm">
                {groupItems?.map((row) => (
                   <Link
                      key={row?.id}

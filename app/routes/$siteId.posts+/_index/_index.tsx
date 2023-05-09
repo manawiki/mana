@@ -320,7 +320,7 @@ export default function PostsIndex() {
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3"
                            >
-                              <span className="truncate text-sm font-semibold group-hover:underline">
+                              <span className="truncate text-sm font-bold group-hover:underline">
                                  {post.name}
                               </span>
                               {post.updatedAt && (

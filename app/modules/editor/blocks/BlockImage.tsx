@@ -61,7 +61,7 @@ export default function BlockImage({ element }: Props) {
    return (
       <div className="relative">
          {element.url ? (
-            <div className="relative mb-3 flex h-auto min-h-[50px] w-full justify-center">
+            <div className="relative my-3 flex h-auto min-h-[50px] w-full justify-center">
                <Image
                   className="w-full rounded-md"
                   alt="Inline"

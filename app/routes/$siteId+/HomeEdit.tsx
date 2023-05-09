@@ -30,7 +30,7 @@ export const HomeEdit = ({ site }: { site: Site }) => {
    }, [blocks, site]);
 
    return (
-      <div className="relative">
+      <div className="relative max-desktop:px-3">
          {isUpdating ? (
             <div className="border-color bg-2 mb-6 flex h-9 w-24 items-center justify-center rounded-full border-2">
                <DotLoader />

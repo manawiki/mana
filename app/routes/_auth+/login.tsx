@@ -115,7 +115,7 @@ export default function Login() {
             from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
          ></div>
          <Link
-            to="/"
+            to="/hq"
             className="absolute left-5 top-5 flex items-center gap-2.5"
          >
             <Logo className="h-7 w-7" />
