@@ -317,20 +317,30 @@ export const action: ActionFunction = async ({
                { status: 400 }
             );
          }
-         const iconId = await uploadImage({
+         const siteIcon = await uploadImage({
             payload,
             image: icon,
             user,
          });
          try {
+            const sites = await payload.find({
+               collection: "sites",
+               where: {
+                  slug: {
+                     equals: siteId,
+                  },
+               },
+               user,
+            });
+            const siteSlug = sites?.docs[0];
             await payload.create({
                collection: "collections",
                data: {
                   id: `${siteId}${slug}`,
                   name,
                   slug,
-                  icon: iconId.id,
-                  site: siteId,
+                  icon: siteIcon.id,
+                  site: siteSlug.id,
                },
                user,
                overrideAccess: false,

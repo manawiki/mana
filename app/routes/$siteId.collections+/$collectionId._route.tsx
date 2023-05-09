@@ -39,6 +39,8 @@ import {
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useDebouncedValue } from "~/hooks";
+import type { Entry } from "payload/generated-types";
+import { nanoid } from "nanoid";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -66,10 +68,12 @@ export async function loader({
          slug: {
             equals: collectionId,
          },
+         "site.slug": {
+            equals: siteId,
+         },
       },
       user,
    });
-
    const collection = collectionData?.docs[0];
 
    // Get custom collection list data
@@ -91,10 +95,7 @@ export async function loader({
       collection: "entries",
       where: {
          collectionEntity: {
-            equals: collectionId,
-         },
-         site: {
-            equals: siteId,
+            equals: collection.id,
          },
       },
       user,
@@ -270,14 +271,10 @@ export default function CollectionList() {
             {entries?.length === 0 ? null : (
                <>
                   <div className="border-color divide-color bg-2 divide-y overflow-hidden rounded-lg border">
-                     {entries?.map((entry) => (
+                     {entries?.map((entry: Entry) => (
                         <Link
                            key={entry.id}
-                           to={`${
-                              collection.customDatabase == true
-                                 ? `${entry.id}`
-                                 : `${entry.id}/w`
-                           }`}
+                           to={entry.id}
                            prefetch="intent"
                            className="bg-2 flex items-center gap-3 p-2 hover:underline"
                         >
@@ -413,14 +410,25 @@ export const action: ActionFunction = async ({
             user,
          });
          try {
+            const siteData = await payload.find({
+               collection: "sites",
+               where: {
+                  slug: {
+                     equals: siteId,
+                  },
+               },
+               user,
+            });
+            const site = siteData?.docs[0];
             await payload.create({
                collection: "entries",
                data: {
                   name,
+                  id: nanoid(12),
                   author: user?.id,
                   icon: iconId.id,
-                  collectionEntity: collectionId,
-                  site: siteId,
+                  collectionEntity: siteId + collectionId,
+                  site: site.id,
                },
                user,
                overrideAccess: false,

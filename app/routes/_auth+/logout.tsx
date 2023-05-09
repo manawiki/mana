@@ -22,7 +22,7 @@ export const action: ActionFunction = async ({ context: { res } }) => {
             : ("none" as any), // Litteral types out of wack, typescript?
    };
    res.clearCookie("payload-token", cookieOptions);
-   return redirect("/");
+   return redirect("/hq");
 };
 
 export default () => {
