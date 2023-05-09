@@ -4,12 +4,10 @@ import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DragOverlay } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
-import {
-   restrictToParentElement,
-   restrictToVerticalAxis,
-} from "@dnd-kit/modifiers";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
    SortableContext,
    rectSortingStrategy,
@@ -20,28 +18,17 @@ import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
    ChevronDown,
-   ChevronsDown,
-   ChevronsUpDown,
    Component,
-   Edit,
    GripVertical,
    LayoutGrid,
    List,
-   Minus,
    Move,
    Plus,
    Trash,
-   X,
 } from "lucide-react";
 import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
-import {
-   Combobox,
-   Listbox,
-   RadioGroup,
-   Switch,
-   Transition,
-} from "@headlessui/react";
+import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
@@ -79,21 +66,46 @@ export default function BlockGroup({ element }: Props) {
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 
+   const siteType = site.type;
+
+   //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `https://mana.wiki/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
       fetcher
    );
 
-   const [selected, setSelected] = useState(collectionData?.docs[0]);
+   const defaultOptions = [
+      { slug: "post", name: "Post" },
+      { slug: "entry", name: "Entry" },
+      { slug: "site", name: "Site" },
+   ];
+
+   const selectOptions = collectionData
+      ? [].concat(defaultOptions, collectionData?.docs)
+      : defaultOptions;
+
+   const [selected] = useState();
 
    const [selectedCollection, setSelectedCollection] = useState(
       element.collection
    );
 
-   const { data: entryData } = useSWR(
-      `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`,
-      fetcher
-   );
+   const getDataType = () => {
+      const endPoint =
+         siteType == "custom"
+            ? `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`
+            : `https://mana.wiki/api/entries/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1 ${siteId}`;
+
+      switch (intent) {
+         case "updateTitle": {
+         }
+         default:
+            return null;
+      }
+   };
+
+   //Get custom entry data to popular icon and title
+   const { data: entryData } = useSWR(() => getDataType(), fetcher);
 
    const filteredEntries =
       groupSelectQuery === ""
@@ -310,7 +322,7 @@ export default function BlockGroup({ element }: Props) {
    }
 
    const activeSelectItem = (item: any) =>
-      collectionData?.docs?.find((obj: Collection) => obj.slug === item)?.name;
+      selectOptions.find((obj: Collection) => obj.slug === item)?.name;
 
    const [editMode, setEditMode] = useState(false);
    const [viewMode, setViewMode] = useState(element.viewMode);
@@ -624,9 +636,6 @@ export default function BlockGroup({ element }: Props) {
                                           <button
                                              className="text-1 relative flex w-full items-center gap-3 truncate
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                             // onClick={() =>
-
-                                             // }
                                           >
                                              {selected ? (
                                                 <span
@@ -644,6 +653,26 @@ export default function BlockGroup({ element }: Props) {
                                  </Listbox.Option>
                               )
                            )}
+                           <Listbox.Option key="site" value="site">
+                              {({ selected }) => (
+                                 <>
+                                    <button
+                                       className="text-1 relative flex w-full items-center gap-3 truncate
+                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    >
+                                       {selected ? (
+                                          <span
+                                             style={{
+                                                backgroundColor: element.color,
+                                             }}
+                                             className="absolute right-2 h-1.5 w-1.5 rounded-full"
+                                          />
+                                       ) : null}
+                                       Site
+                                    </button>
+                                 </>
+                              )}
+                           </Listbox.Option>
                         </Listbox.Options>
                      </Transition>
                   </div>
