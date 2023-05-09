@@ -1,6 +1,7 @@
 import { Disclosure, Popover, Tab } from "@headlessui/react";
 import React, { useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { Image } from "~/components";
 
 import {
    Chart as ChartJS,
@@ -69,17 +70,19 @@ export const Stats = ({ pageData }: any) => {
                <div className="relative w-full rounded-md bg-gray-100 text-center dark:bg-neutral-900">
                   {/* Rarity */}
                   <div className="absolute bottom-3 left-20 z-20 h-8 w-20 laptop:left-12">
-                     <img
+                     <Image
                         className="z-20 h-8 w-20 rounded-full bg-black bg-opacity-40 object-contain"
-                        src={rarityurl}
+                        url={rarityurl}
+                        alt={"Rarity"}
                      />
                   </div>
 
                   <div className="relative inline-block h-96 w-full text-center">
                      {/* Main Image */}
                      {imgurl ? (
-                        <img
-                           src={imgurl}
+                        <Image
+                           alt={"Main Image"}
+                           url={imgurl}
                            className="absolute h-96 w-full object-contain"
                         />
                      ) : null}
@@ -94,9 +97,10 @@ export const Stats = ({ pageData }: any) => {
                <div className="mb-3 flex rounded-md border bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-900">
                   <div className="flex flex-grow items-center space-x-2">
                      <div className="relative h-10 w-10 rounded-full bg-gray-800">
-                        <img
+                        <Image
+                           alt="Path Icon"
                            className="relative inline-block object-contain"
-                           src={pathurl}
+                           url={pathurl}
                         />
                      </div>
                   </div>
@@ -126,8 +130,9 @@ export const Stats = ({ pageData }: any) => {
                                        className="relative inline-flex h-6 w-6 items-center 
                           justify-center rounded-full bg-gray-600 align-middle"
                                     >
-                                       <img
-                                          src={
+                                       <Image
+                                          alt="Icon"
+                                          url={
                                              stat.hash ?? "no_image_42df124128"
                                           }
                                           className="h-full w-full object-contain"
@@ -168,19 +173,6 @@ export const Stats = ({ pageData }: any) => {
                                    )
                                  : ""}
                            </div>
-
-                           {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
-                           {/* 
-                    {stat.bonus ? (
-                      <div className="inline-flex absolute items-center align-middle justify-center rounded-full h-4 w-4 mt-1 right-2/3 bg-gray-400 text-center">
-                        <img
-                          src="https://res.cloudinary.com/genshinimpact-nalu/image/upload/v1631645303/UI_Icon_Arrow_Point_1a06775238.png"
-                          height="15"
-                          width="15"
-                        ></img>
-                      </div>
-                    ) : null}
-                     */}
                         </div>
                      );
                   })}
