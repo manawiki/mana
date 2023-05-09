@@ -12,6 +12,7 @@ import { Achievements } from "./achievements";
 import { AchievementSeries } from "./achievementSeries";
 import { Aeons } from "./aeons";
 import { Blessings } from "./blessings";
+import { Recipes } from "./recipes";
 import { Banners } from "./banners";
 import { SubmittedWarps } from "./submittedWarps";
 
@@ -22,7 +23,7 @@ import { _Paths } from "./_paths";
 import { _ItemTypes } from "./_itemTypes";
 import { _RelicStats } from "./_relicStats";
 import { _EnemyStatusRes } from "./_enemyStatusRes";
-
+import { _RecipeTypes } from "./_recipeTypes";
 
 export const CustomCollections = [
    Characters,
@@ -39,6 +40,7 @@ export const CustomCollections = [
    AchievementSeries,
    Aeons,
    Blessings,
+   Recipes,
    Banners,
    SubmittedWarps,
    _Elements,
@@ -48,4 +50,5 @@ export const CustomCollections = [
    _StatTypes,
    _RelicStats,
    _EnemyStatusRes,
+   _RecipeTypes,
 ];
