@@ -1,13 +1,3 @@
-/**
-  Summon Simulator page
-  implementation notes:
-    1. switching banners will reset the guaranteed rateup counter
-    2. switching banners will reset the epitomized weapon thing (nonTargetWeaponPulled counter)
-
-  TODO:
-    1. Implement select for switching banners in a better way
-*/
-
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -22,7 +12,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relics?depth=3&limit=500`;
+   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relics?depth=3&limit=502`;
    const relicRaw = await (await fetch(url)).json();
    const relics = relicRaw.docs;
 
@@ -268,6 +258,8 @@ const CharacterInfo = ({
       const mainstat = rbase[i]?.mainstat_group?.find(
          (a) => a.affix_id == r.main_affix_id
       );
+
+      // Main stats
       const mainobj = {
          id: mainstat?.stattype?.id,
          name: mainstat?.stattype?.name,
@@ -278,6 +270,7 @@ const CharacterInfo = ({
          value: mainstat?.stats[rlv],
       };
 
+      // Sub stats
       const subobj = r.sub_affix_list?.map((s) => {
          const ss = rbase[i]?.substat_group?.find(
             (a) => a.affix_id == s.affix_id
@@ -287,6 +280,19 @@ const CharacterInfo = ({
          const sstep = s.step ?? 0;
          const sstepval = ss.level_add;
 
+         var stepdist: any = []; // Has an array of [1, 2, 1, 1, 2, 1 ...] equal in size to scnt, where total sum of elements = sstep.
+
+         // number of '2' rolls is equal to step - cnt;
+         for (var d = 0; d < scnt; d++) {
+            if (d < sstep - scnt) {
+               stepdist[d] = 2;
+            } else if (!sstep) {
+               stepdist[d] = 0;
+            } else {
+               stepdist[d] = 1;
+            }
+         }
+
          return {
             id: ss?.stattype?.id,
             name: ss?.stattype?.name,
@@ -294,15 +300,112 @@ const CharacterInfo = ({
                url: ss?.stattype?.icon?.url,
             },
             affix_id: ss?.affix_id,
+            property_classify: ss?.stattype?.property_classify,
+            stepDistribution: stepdist,
             value: scnt * sbase + sstepval * sstep, // Value = count * base + (step_value * step)
          };
       });
-      // console.log(substats);
 
-      return { ...r, mainobj, subobj };
+      // Set name/icon
+
+      return { ...r, mainobj, subobj, set: rbase[i]?.relicset_id };
    });
 
-   console.log(rchar);
+   // Relic Sets
+   // =================
+   // Put all relic set data into an object with Relic Set + their corresponding bonuses
+   // const rset = [{
+   //    id: "102",
+   //    name: "Musketeer of Wild Wheat",
+   //    num: 2, // Number of artifacts in set
+   //    bonuses: [{ stattype: "AttackAddedRatio", value: 0.1199999 }], // Total bonuses from this set, lists all of them for set number requirements less than or equal to amount in set.
+   // }];
+   const setlist = rbase.map((r) => r.relicset_id);
+   const rsetids = rchar.map((r) => r.set?.id);
+   const rset = rsetids
+      .filter((v, i, a) => a.indexOf(v) === i)
+      .map((r) => {
+         const currset = setlist.find((s) => s.relicset_id == r);
+         const numInSet = rsetids.filter((a) => a == r)?.length;
+
+         // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
+         var bonuses: any = [];
+         for (var ei = 0; ei < currset?.set_effect?.length; ei++) {
+            const eff = currset?.set_effect[ei];
+
+            // If number equipped is at least the required number, return the stat bonuses in property_list
+            if (numInSet >= eff?.req_no) {
+               eff?.property_list.map((p) => {
+                  bonuses.push(p);
+               });
+            }
+         }
+
+         return {
+            id: r,
+            name: currset?.name,
+            num: numInSet,
+            bonuses: bonuses,
+         };
+      });
+
+   // Total all relic-sourced bonuses:
+   // ============================
+   // [ "HPDelta" // FLAT, "HPAddedRatio" // PERCENT]
+   var relicbonuses: any = [];
+
+   for (var rb = 0; rb < rchar.length; rb++) {
+      const curr = rchar[rb];
+      relicbonuses.push(curr.mainobj);
+
+      curr.subobj?.map((a) => {
+         relicbonuses.push(a);
+      });
+   }
+
+   for (var sb = 0; sb < rset.length; sb++) {
+      const curr = rset[sb];
+
+      curr.bonuses?.map((a) => {
+         const tempbonus = {
+            id: a?.stattype?.id,
+            icon: {
+               url: a?.stattype?.icon?.url,
+            },
+            name: a?.stattype?.name,
+            property_classify: a?.stattype?.property_classify,
+            value: a.value,
+         };
+         relicbonuses.push(tempbonus);
+      });
+   }
+
+   // Total all skill tree-sourced bonuses, same format as relic bonuses:
+   // ============================
+   var skilltreebonuses: any = [];
+
+   for (var sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
+      const currpoint = chardata?.skilltree_list[sk];
+      var treepoint = skillTrees.find(
+         (a: any) => a.point_id == currpoint.point_id
+      );
+
+      treepoint.stat_added?.map((a) => {
+         const tempbonus = {
+            id: a?.stat_type?.id,
+            icon: {
+               url: a?.stat_type?.icon?.url,
+            },
+            name: a?.stat_type?.name,
+            property_classify: a?.stat_type?.property_classify,
+            value: a.value,
+         };
+         skilltreebonuses.push(tempbonus);
+      });
+   }
+
+   // ============================
+   // ============================
 
    // Character Base Stat Calculation
    const lv = chardata.level;
@@ -320,50 +423,151 @@ const CharacterInfo = ({
       suffix = "A";
    }
 
-   const li = charbase.stats[0].data.findIndex((a) => a == lv) + suffix;
-   var statVal = [
-      { name: "HP", base: charbase.stats[1].data[li], mod: wstats[0].base },
-      { name: "ATK", base: charbase.stats[2].data[li], mod: wstats[1].base },
-      { name: "DEF", base: charbase.stats[3].data[li], mod: wstats[2].base },
-      { name: "SPD", base: charbase.stats[4].data[li] },
-      { name: "CRIT Rate", base: charbase.stats[5].data[li] },
-      { name: "CRIT DMG", base: charbase.stats[6].data[li] },
-      { name: "Aggro", base: charbase.stats[7].data[li] },
+   const li = charbase.stats[0].data.findIndex((a) => a == lv + suffix);
+
+   const defaultStats = [
+      "HP",
+      "ATK",
+      "DEF",
+      "SPD",
+      "CRIT Rate",
+      "CRIT DMG",
+      //   "Aggro",
    ];
-   console.log(statVal);
+   var statVal = defaultStats.map((stat: any, i: any) => {
+      // Final Modifier is calculated as follows:
+      // ============================
+      // Stat = BASE + MODIFIER
+      // ---
+      // BASE (statbase) = BaseATK + WATK
+      // BaseATK = Character's base atk @ LV
+      // WATK = Light cone base atk
+      // ---
+      // MODIFIER (statmod) = RelicATK + BASE*(RelicATK% + Tree% + SetATK%)
+      // RelicATK = All relic Flat ATK bonuses
+      // RelicATK% = All relic ATK % bonuses
+      // SetATK% = All relic set ATK % bonuses
+      // Tree% = All tree ATK% bonuses
+      const statbase =
+         parseFloat(charbase.stats[i + 1].data[li]) +
+         (wstats[i]?.base ? parseFloat(wstats[i]?.base) : 0);
+
+      // Flat bonuses =
+      const relicflat = relicbonuses
+         .filter((a) => a.name == stat)
+         ?.map((a) => a.value)
+         ?.reduce((ps, a) => ps + a, 0);
+
+      // Percent Bonuses =
+      // - relicperc // Contains both relic and set bonuses
+      // - treeperc // Contains all Skill Tree bonuses.
+      const relicperc = relicbonuses
+         .filter((a) => a.name == stat + "%")
+         .map((a) => a.value)
+         ?.reduce((ps, a) => ps + a, 0);
+
+      const treeperc = skilltreebonuses
+         .filter((a) => a.name == stat + "%")
+         .map((a) => a.value)
+         ?.reduce((ps, a) => ps + a, 0);
+
+      const statmod = relicflat + statbase * (relicperc + treeperc);
+
+      return {
+         name: stat,
+         base: statbase,
+         mod: statmod,
+      };
+   });
+
+   const additionalStats = [
+      "Break Effect%",
+      "Outgoing Healing Boost%",
+      "Max Energy",
+      "Energy Regeneration Rate%",
+      "Effect Hit Rate",
+      "Effect RES",
+      "Physical DMG Boost%",
+      "Fire DMG Boost%",
+      "Ice DMG Boost%",
+      "Lightning DMG Boost%",
+      "Wind DMG Boost%",
+      "Quantum DMG Boost%",
+      "Imaginary DMG Boost%",
+      "Physical RES Boost",
+      "Fire RES Boost",
+      "Ice RES Boost",
+      "Lightning RES Boost",
+      "Wind RES Boost",
+      "Quantum RES Boost",
+      "Imaginary RES Boost",
+   ];
+
+   additionalStats.map((stat) => {
+      // Percent Bonuses =
+      // - relicperc // Contains both relic and set bonuses
+      // - treeperc // Contains all Skill Tree bonuses.
+      const relicperc = relicbonuses
+         .filter((a) => a.name == stat)
+         .map((a) => a.value)
+         ?.reduce((ps, a) => ps + a, 0);
+
+      const treeperc = skilltreebonuses
+         .filter((a) => a.name == stat)
+         .map((a) => a.value)
+         ?.reduce((ps, a) => ps + a, 0);
+
+      const statmod = relicperc + treeperc;
+
+      if (statmod > 0) {
+         statVal.push({
+            name: stat,
+            base: 0,
+            mod: statmod,
+         });
+      }
+   });
 
    return (
       <>
-         <div className="relative my-3 h-96 w-full overflow-x-auto overflow-y-hidden rounded-md text-center">
-            {/* ================================= */}
-            {/* First Column */}
-            {/* ================================= */}
+         <div className="relative my-3 rounded-md w-full h-[32rem] text-center overflow-x-auto overflow-y-hidden">
             {/* Background-Div */}
-            <div className="relative inline-block h-96 w-full overflow-hidden rounded-lg">
+            <div className="relative inline-block w-full h-[32rem] rounded-lg overflow-hidden">
                <Image
                   url={bg_url}
                   className="w-full object-fill"
                   alt="background"
                />
             </div>
+
+            {/* ================================= */}
+            {/* First Column */}
+            {/* ================================= */}
+
             {/* Character Splash Image Left */}
-            <div className="absolute -left-8 top-8 h-96 w-96 opacity-80">
-               <Image
-                  url={charbase?.image_draw?.url}
-                  alt={charbase?.name}
-                  className="object-contain"
-               />
-            </div>
+            <a href={`/starrail/collections/characters/${charbase?.id}/c`}>
+               <div className="absolute -left-4 -top-0 h-[30rem] w-[30rem] opacity-80">
+                  <Image
+                     url={charbase?.image_draw?.url}
+                     alt={charbase?.name}
+                     className="object-contain hsr-showcase-character"
+                  />
+               </div>
+            </a>
 
             {/* Character Name Top Left */}
-            <div className="absolute left-2 top-1 font-bold text-white">
-               {charbase?.name}
-            </div>
+
+            <a href={`/starrail/collections/characters/${charbase?.id}/c`}>
+               <div className="absolute left-2 top-1 text-white font-bold text-2xl">
+                  {charbase?.name}
+               </div>
+            </a>
+
             {/* Character Level Second Line */}
-            <div className="absolute left-2 top-6 text-white">Lv.{lv}</div>
+            <div className="absolute left-2 top-8 text-white">Lv.{lv}</div>
 
             {/* Eidolon Levels; if not unlocked, show 🔒 */}
-            <div className="absolute left-2 top-12">
+            <div className="absolute left-2 top-14">
                {charbase?.eidolons?.map((e: any, i: any) => {
                   const elv = chardata?.promotion ?? 0;
 
@@ -400,64 +604,8 @@ const CharacterInfo = ({
                })}
             </div>
 
-            {/* Light Cone Display  */}
-            <div className="absolute left-[17rem] top-3 w-48">
-               {/* Light Cone Image + Rarity */}
-               <div className="relative inline-block w-16 align-top">
-                  <Image
-                     alt={lcbase.name}
-                     url={lcbase.image_full?.url}
-                     className="h-16 w-16 object-contain"
-                  />
-                  <div className="absolute -bottom-4 h-4 w-16 text-center">
-                     <Image
-                        alt="Rarity"
-                        url={lcbase.rarity?.icon?.url}
-                        className="inline-block h-4 object-contain align-top"
-                     />
-                  </div>
-               </div>
-
-               {/* Level + Superimposition Levels */}
-               <div className="relative inline-block w-28 text-left align-top">
-                  <div className="relative block text-sm font-bold text-white">
-                     {lcbase.name}
-                  </div>
-                  <div className="relative mx-1 inline-block rounded-md bg-black bg-opacity-90 px-2 py-0.5 text-xs text-white">
-                     Lv.{chardata?.equipment?.level}
-                  </div>
-                  <div className="relative mx-1 inline-block w-6 rounded-full bg-yellow-900 p-0.5 text-center text-xs text-yellow-100">
-                     {superimp[chardata?.equipment?.promotion]}
-                  </div>
-
-                  {/* Stat Values */}
-                  {wstats?.map((s) => {
-                     const stattype = statTypes.find((a) => a.name == s.name);
-
-                     return (
-                        <>
-                           <div className="mx-0.5 my-[1px] inline-block rounded-sm bg-black bg-opacity-80">
-                              <div className="inline-block h-5 w-5 align-middle">
-                                 <Image
-                                    alt="StatIcon"
-                                    url={stattype?.icon?.url}
-                                    className="object-fit"
-                                 />
-                              </div>
-                              <div className="inline-block align-middle text-xs text-white">
-                                 +{formatStat(stattype?.name, s?.base)}
-                              </div>
-                           </div>
-                        </>
-                     );
-                  })}
-               </div>
-
-               {/* Stat Values */}
-            </div>
-
             {/* Skill Tree ? */}
-            <div className="absolute left-48 top-10">
+            <div className="absolute -left-20 top-44">
                <SkillTreeDisplay
                   data={chardata}
                   skillTrees={skillTrees}
@@ -465,40 +613,82 @@ const CharacterInfo = ({
                />
             </div>
 
-            {/* Skill Tree Levels */}
-            {/* <div className="absolute left-60 top-12">
-               {chardata?.skilltree_list?.map((s: any, i: any) => {
-                  const sentry = skillTrees.find((a) => a.id == s.point_id);
-
-                  return (
-                     <>
-                        <div className="relative block m-1 h-10 w-10 bg-gray-900 bg-opacity-30 rounded-full drop-shadow-md drop-shadow-[0px_0px_4px_rgba(255,255,255,1)]">
-                           <Image
-                              alt={sentry.name}
-                              url={sentry.icon?.url}
-                              className="absolute object-contain"
-                           />
-                           <div className="absolute -bottom-1 right-0 text-right mx-auto bg-neutral-800 rounded-full text-xs px-1 text-white">
-                              {s.level}
-                           </div>
-                        </div>
-                     </>
-                  );
-               })}
-            </div> */}
-
             {/* ================================= */}
             {/* Second Column */}
             {/* ================================= */}
 
-            <div className="absolute left-[29rem] top-3 ">
+            <div className="absolute left-[26rem] top-3 ">
+               {/* Light Cone Display  */}
+               <div className="w-64 mb-1">
+                  {/* Light Cone Image + Rarity */}
+                  <a href={`/starrail/collections/lightCones/${lcbase?.id}/c`}>
+                     <div className="relative inline-block align-top w-16">
+                        <Image
+                           alt={lcbase.name}
+                           url={lcbase.image_full?.url}
+                           className="object-contain h-16 w-16"
+                        />
+                        <div className="absolute -bottom-4 h-4 w-16 text-center">
+                           <Image
+                              alt="Rarity"
+                              url={lcbase.rarity?.icon?.url}
+                              className="inline-block align-top object-contain h-4"
+                           />
+                        </div>
+                     </div>
+                  </a>
+
+                  {/* Level + Superimposition Levels */}
+                  <div className="relative inline-block w-48 align-top text-left">
+                     <a
+                        href={`/starrail/collections/lightCones/${lcbase?.id}/c`}
+                     >
+                        <div className="relative block text-white text-sm font-bold">
+                           {lcbase.name}
+                        </div>
+                     </a>
+                     <div className="relative inline-block px-2 py-0.5 mx-1 bg-black bg-opacity-90 rounded-md text-xs text-white">
+                        Lv.{chardata?.equipment?.level}
+                     </div>
+                     <div className="relative inline-block text-yellow-100 text-xs bg-yellow-900 rounded-full mx-1 p-0.5 w-6 text-center">
+                        {superimp[chardata?.equipment?.promotion]}
+                     </div>
+
+                     {/* Stat Values */}
+                     <div>
+                        {wstats?.map((s) => {
+                           const stattype = statTypes.find(
+                              (a) => a.name == s.name
+                           );
+
+                           return (
+                              <>
+                                 <div className="inline-block mx-0.5 my-[1px] rounded-sm bg-black bg-opacity-80">
+                                    <div className="inline-block align-middle h-5 w-5">
+                                       <Image
+                                          alt="StatIcon"
+                                          url={stattype?.icon?.url}
+                                          className="object-fit"
+                                       />
+                                    </div>
+                                    <div className="inline-block align-middle text-xs text-white pr-1">
+                                       +{formatStat(stattype?.name, s?.base)}
+                                    </div>
+                                 </div>
+                              </>
+                           );
+                        })}
+                     </div>
+                  </div>
+               </div>
+
                {/* Stat Display */}
-               <div className="relative w-48 text-white">
+               <div className="relative w-64 text-white">
                   {statVal.map((s: any) => {
                      const stattype = statTypes.find((a) => a.name == s.name);
                      return (
                         <>
-                           <div className="flex items-center px-2">
+                           <div className="flex items-center px-2 h-9">
                               <div className="flex flex-grow items-center space-x-2">
                                  <div>
                                     {stattype?.icon?.url ? (
@@ -517,31 +707,34 @@ const CharacterInfo = ({
                                        </div>
                                     ) : null}
                                  </div>
-                                 <div className="text-sm font-bold">
+
+                                 <div className="font-bold text-left leading-none">
                                     {s.name}
                                  </div>
                               </div>
                               {/* Stat Value With Modifier */}
-                              <div className="text-sm">
-                                 <div className="inline-block">
-                                    {" "}
-                                    {formatStat(s.name, s.base)}
+                              <div className="text-right leading-none">
+                                 <div className="font-bold">
+                                    {formatStat(s.name, s.base + s.mod)}
                                  </div>
-                                 {s.mod ? (
-                                    <div className="inline-block text-green-400">
-                                       +{formatStat(s.name, s.mod)}
-                                    </div>
-                                 ) : null}
+                                 <div className="text-[8pt]">
+                                    {s.base > 0 ? (
+                                       <div className="inline-block">
+                                          {formatStat(s.name, s.base)}
+                                       </div>
+                                    ) : null}
+
+                                    {s.mod ? (
+                                       <div className="text-green-400 inline-block">
+                                          +{formatStat(s.name, s.mod)}
+                                       </div>
+                                    ) : null}
+                                 </div>
                               </div>
                            </div>
                         </>
                      );
                   })}
-
-                  {/* NOTE TO REMOVE */}
-                  <div className="relative text-xs text-white">
-                     * Stat modifiers only include Light Cone currently
-                  </div>
                </div>
             </div>
 
@@ -549,7 +742,8 @@ const CharacterInfo = ({
             {/* Third Column */}
             {/* ================================= */}
 
-            <div className="absolute left-[42rem] top-3 w-64">
+            <div className="absolute left-[43rem] top-2 w-64">
+               {/* Individual Relics */}
                {rbase?.map((r: any, i: any) => {
                   const rdata = rchar[i];
                   const rlv = rdata.level ?? 0;
@@ -563,23 +757,34 @@ const CharacterInfo = ({
                            <ItemFrameSquare mat={r} style="" />
 
                            {/* Relic Main Stat and Level */}
-                           <div className="mr-1 inline-block w-12 text-right align-middle leading-none text-white">
-                              <div className="inline-block h-5 w-5 align-middle">
+
+                           <div className="inline-block w-12 text-right text-white align-middle mr-1">
+                              <div className="inline-block align-middle h-5 w-5 leading-none">
                                  <Image
                                     alt="StatIcon"
                                     url={mainstat?.icon?.url}
                                  />
                               </div>
-                              <div className="align-middle text-sm font-bold">
+                              <div className="align-middle text-sm font-bold leading-none">
                                  {formatStat(mainstat?.name, mainstat?.value)}
                               </div>
-                              <div className="align-middle text-xs">+{rlv}</div>
+                              <div className="align-middle text-xs leading-none">
+                                 +{rlv}
+                              </div>
                            </div>
 
                            {/* Relic Substats */}
 
-                           <div className="inline-block w-32 align-middle leading-none text-white">
+                           <div className="inline-block align-middle w-36 text-white leading-none">
                               {rdata.subobj?.map((sub) => {
+                                 const steptext = sub?.stepDistribution?.map(
+                                    (step: any) =>
+                                       step == 0
+                                          ? "."
+                                          : step == 1
+                                          ? ".."
+                                          : "..."
+                                 );
                                  return (
                                     <>
                                        <div className="m-0.5 inline-block rounded-sm bg-gray-900 bg-opacity-70 pr-1">
@@ -594,6 +799,23 @@ const CharacterInfo = ({
                                              +
                                              {formatStat(sub?.name, sub?.value)}
                                           </div>
+                                          <div className="w-full flex">
+                                             {steptext?.map((st: any) => {
+                                                return (
+                                                   <>
+                                                      <div
+                                                         className={`inline-flex mx-1 -mt-2.5 w-full border-b border-white border-opacity-70 text-white text-sm text-center leading-none justify-center ${
+                                                            st == "="
+                                                               ? "text-opacity-0"
+                                                               : ""
+                                                         }`}
+                                                      >
+                                                         {st}
+                                                      </div>
+                                                   </>
+                                                );
+                                             })}
+                                          </div>
                                        </div>
                                     </>
                                  );
@@ -603,6 +825,24 @@ const CharacterInfo = ({
                      </>
                   );
                })}
+
+               {/* Relic Set Bonuses */}
+               <div className="w-full mt-2">
+                  {rset?.map((set: any) => {
+                     return (
+                        <>
+                           <div className="text-xs my-0.5">
+                              <div className="relative inline-block px-2 rounded-md text-white w-3/4">
+                                 {set.name}
+                              </div>
+                              <div className="relative inline-block bg-black bg-opacity-40 px-2 rounded-md text-green-400">
+                                 {set.num}
+                              </div>
+                           </div>
+                        </>
+                     );
+                  })}
+               </div>
             </div>
          </div>
       </>
@@ -611,22 +851,24 @@ const CharacterInfo = ({
 
 const ItemFrameSquare = ({ mat, style }: any) => {
    // ========================
-   // Generic Item / Character Circle Frame
+   // Generic Item / Character Circle Frame - Light Cone
    // ========================
 
    return (
-      <div
-         className={`relative inline-block h-14 w-14 text-center align-middle align-middle ${style}`}
-         key={mat?.id}
-      >
-         <Image
-            url={mat?.icon?.url ?? "no_image_42df124128"}
-            className={`h-14 w-14 object-contain color-rarity-${
-               mat?.rarity?.display_number ?? "1"
-            } rounded-md`}
-            alt={mat?.name}
-         />
-      </div>
+      <a href={`/starrail/collections/relicSets/${mat?.relicset_id?.id}/c`}>
+         <div
+            className={`relative inline-block align-middle text-center h-14 w-14 align-middle ${style}`}
+            key={mat?.id}
+         >
+            <Image
+               url={mat?.icon?.url ?? "no_image_42df124128"}
+               className={`object-contain h-14 w-14 color-rarity-${
+                  mat?.rarity?.display_number ?? "1"
+               } rounded-md`}
+               alt={mat?.name}
+            />
+         </div>
+      </a>
    );
 };
 
@@ -675,7 +917,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
 
    return (
       <>
-         <div className="canvas mx-auto flex scale-[0.7] items-center justify-center">
+         <div className="canvas mx-auto flex items-center justify-center scale-[0.5]">
             <div className={`canvas-${pathkey}`}></div>
 
             {connectorlist?.map((con: any) => {
@@ -696,9 +938,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
                return (
                   <>
                      <div
-                        className={`point cursor-pointer point-${
-                           i + 1
-                        }-${pathkey} `}
+                        className={`point point-${i + 1}-${pathkey} `}
                         // style={{
                         //    backgroundImage: "url(" + node?.icon?.url + ")",
                         // }}
