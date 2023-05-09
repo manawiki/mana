@@ -70,8 +70,9 @@ input[type="range"] {
 
 /* HSR Character Showcase Image */
 .hsr-showcase-character {
-   mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 60%, rgba(0,0,0,0));
    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 80%, rgba(0,0,0,0));
+   
+  
 }
 
 /* Honkai Star Rail Character Stat Block */
