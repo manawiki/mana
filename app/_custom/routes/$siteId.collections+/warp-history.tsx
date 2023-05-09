@@ -1,7 +1,6 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
-import { Filter, Search, SortDesc } from "lucide-react";
+import { useLoaderData } from "@remix-run/react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
 import { useState, useEffect } from "react";

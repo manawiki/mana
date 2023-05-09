@@ -1,11 +1,8 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { redirect } from "@remix-run/node";
-import { SiteSwitcher } from "~/components/SiteSwitcher";
 import { useState } from "react";
 // import { characters } from "./characters";
-import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { Search } from "lucide-react";
 import { Image } from "~/components";
 

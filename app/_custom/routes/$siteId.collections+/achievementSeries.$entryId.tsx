@@ -9,7 +9,6 @@ import {
    getCustomEntryData,
 } from "~/modules/collections";
 import type { AchievementSeries } from "payload/generated-types";
-import { Image } from "~/components/Image";
 
 import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
 import { Header } from "~/_custom/components/achievementSeries/Header";

@@ -9,7 +9,6 @@ import {
    getCustomEntryData,
 } from "~/modules/collections";
 import type { LightCones } from "payload/generated-types";
-import { Image } from "~/components/Image";
 
 import { Stats } from "~/_custom/components/lightCones/Stats";
 import { Effect } from "~/_custom/components/lightCones/Effect";
@@ -17,9 +16,6 @@ import { Description } from "~/_custom/components/lightCones/Description";
 import { PromotionCost } from "~/_custom/components/lightCones/PromotionCost";
 import { ImageGallery } from "~/_custom/components/lightCones/ImageGallery";
 import { AdditionalData } from "~/_custom/components/lightCones/AdditionalData";
-
-import { zx } from "zodix";
-import { z } from "zod";
 
 export { meta };
 
