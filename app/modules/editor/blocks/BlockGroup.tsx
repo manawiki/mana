@@ -100,7 +100,7 @@ export default function BlockGroup({ element }: Props) {
                return `https://mana.wiki/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
             }
             case "site": {
-               return `https://mana.wiki/api/sites?where[slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
+               return `https://mana.wiki/api/sites?where[name][contains]=${groupSelectQuery}&depth=1`;
             }
             default:
                return null;
@@ -184,7 +184,7 @@ export default function BlockGroup({ element }: Props) {
       const rowPath = () => {
          switch (selectedCollection) {
             case "site": {
-               return `/${siteId}`;
+               return `/${event.slug}`;
             }
             case "post": {
                return `/${siteId}/posts/${event.id}/${event.url}`;
@@ -194,12 +194,15 @@ export default function BlockGroup({ element }: Props) {
          }
       };
 
+      const isCustomSite = event.type == "custom" ? true : false;
+      console.log(isCustomSite);
       const newProperties: Partial<CustomElement> = {
          ...element,
          groupItems: [
             ...element.groupItems,
             {
                id: nanoid(),
+               isCustomSite,
                refId: event.id,
                name: event.name,
                path: rowPath(),
@@ -892,33 +895,61 @@ const SortableListItem = ({
          className="bg-2 relative"
       >
          <div className="flex items-center justify-between gap-2 p-2.5">
-            <Link
-               key={row?.id}
-               to={row?.path ?? ""}
-               prefetch="intent"
-               className="bg-2 flex flex-grow items-center gap-3 hover:underline"
-            >
-               <div
-                  style={{
-                     borderColor: element.color,
-                  }}
-                  className="shadow-1 flex h-8 w-8 items-center
-               justify-between overflow-hidden rounded-full border-2 shadow-sm"
+            {row?.isCustomSite ? (
+               <a
+                  className="bg-2 flex flex-grow items-center gap-3 hover:underline"
+                  href={row?.path ?? ""}
                >
-                  {row?.iconUrl ? (
-                     <Image
-                        url={row?.iconUrl}
-                        options="fit=crop,width=60,height=60,gravity=auto"
-                        alt={row?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
-               </div>
-               <span className="text-1 truncate text-sm font-bold">
-                  {row?.name}
-               </span>
-            </Link>
+                  <div
+                     style={{
+                        borderColor: element.color,
+                     }}
+                     className="shadow-1 flex h-8 w-8 items-center
+                     justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                  >
+                     {row?.iconUrl ? (
+                        <Image
+                           url={row?.iconUrl}
+                           options="fit=crop,width=60,height=60,gravity=auto"
+                           alt={row?.name ?? "Icon"}
+                        />
+                     ) : (
+                        <Component className="text-1 mx-auto" size={18} />
+                     )}
+                  </div>
+                  <span className="text-1 truncate text-sm font-bold">
+                     {row?.name}
+                  </span>
+               </a>
+            ) : (
+               <Link
+                  key={row?.id}
+                  to={row?.path ?? ""}
+                  prefetch="intent"
+                  className="bg-2 flex flex-grow items-center gap-3 hover:underline"
+               >
+                  <div
+                     style={{
+                        borderColor: element.color,
+                     }}
+                     className="shadow-1 flex h-8 w-8 items-center
+               justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                  >
+                     {row?.iconUrl ? (
+                        <Image
+                           url={row?.iconUrl}
+                           options="fit=crop,width=60,height=60,gravity=auto"
+                           alt={row?.name ?? "Icon"}
+                        />
+                     ) : (
+                        <Component className="text-1 mx-auto" size={18} />
+                     )}
+                  </div>
+                  <span className="text-1 truncate text-sm font-bold">
+                     {row?.name}
+                  </span>
+               </Link>
+            )}
             {/* <input
                type="text"
                className="bg-1 h-6 w-10 rounded-full border-0 px-3 text-center text-sm font-bold"
@@ -1038,33 +1069,59 @@ const SortableGridItem = ({
                </button>
             </Tooltip>
          </div>
-         <Link
-            key={row?.id}
-            to={row?.path ?? ""}
-            prefetch="intent"
-            className="block"
-         >
-            <div
-               style={{
-                  borderColor: element.color,
-               }}
-               className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
+         {/* Can't use client routing if site is custom */}
+         {row?.isCustomSite ? (
+            <a className="block" href={row?.path ?? ""}>
+               <div
+                  style={{
+                     borderColor: element.color,
+                  }}
+                  className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
                items-center overflow-hidden rounded-full border-2 shadow-sm"
+               >
+                  {row?.iconUrl ? (
+                     <Image
+                        url={row?.iconUrl}
+                        options="fit=crop,width=60,height=60,gravity=auto"
+                        alt={row?.name ?? "Icon"}
+                     />
+                  ) : (
+                     <Component className="text-1 mx-auto" size={18} />
+                  )}
+               </div>
+               <div className="text-1 truncate text-center text-xs font-bold">
+                  {row?.name}
+               </div>
+            </a>
+         ) : (
+            <Link
+               key={row?.id}
+               to={row?.path ?? ""}
+               prefetch="intent"
+               className="block"
             >
-               {row?.iconUrl ? (
-                  <Image
-                     url={row?.iconUrl}
-                     options="fit=crop,width=60,height=60,gravity=auto"
-                     alt={row?.name ?? "Icon"}
-                  />
-               ) : (
-                  <Component className="text-1 mx-auto" size={18} />
-               )}
-            </div>
-            <div className="text-1 truncate text-center text-xs font-bold">
-               {row?.name}
-            </div>
-         </Link>
+               <div
+                  style={{
+                     borderColor: element.color,
+                  }}
+                  className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
+               items-center overflow-hidden rounded-full border-2 shadow-sm"
+               >
+                  {row?.iconUrl ? (
+                     <Image
+                        url={row?.iconUrl}
+                        options="fit=crop,width=60,height=60,gravity=auto"
+                        alt={row?.name ?? "Icon"}
+                     />
+                  ) : (
+                     <Component className="text-1 mx-auto" size={18} />
+                  )}
+               </div>
+               <div className="text-1 truncate text-center text-xs font-bold">
+                  {row?.name}
+               </div>
+            </Link>
+         )}
       </div>
    );
 };

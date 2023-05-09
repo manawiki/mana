@@ -100,6 +100,7 @@ export type LinkElement = BlockElement & {
 
 export interface groupRow {
    id: string;
+   isCustomSite?: boolean;
    refId: string;
    tag?: string;
    tagColor?: string;
