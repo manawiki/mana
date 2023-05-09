@@ -50,7 +50,7 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
                <NavLink
                   end
                   className="relative px-1 py-2"
-                  to={`/${siteId}/collections/${collectionId}/${entryId}/c`}
+                  to={`/${siteId}/collections/${collectionId}/${entryId}`}
                >
                   {({ isActive }) => (
                      <>

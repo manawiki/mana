@@ -74,16 +74,16 @@ export default function HomePage() {
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <H2 text="Warp History" />
-         <div className="flex justify-left gap-x-1 items-center">
+         <div className="justify-left flex items-center gap-x-1">
             <input
-               className="border p-2 rounded-sm my-2 inline-flex dark:bg-neutral-800"
+               className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"
                onChange={(e) => setUid(e.target.value)}
                placeholder="Set UID ..."
                value={uid}
             />
 
             <div
-               className="inline-flex h-min rounded-md cursor-pointer w-fit py-1 px-3 my-1 border dark:border-gray-700 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40"
+               className="my-1 inline-flex h-min w-fit cursor-pointer rounded-md border px-3 py-1 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40 dark:border-gray-700"
                onClick={(e) => {
                   const filtWarps = loadWarps(uid, warps);
                   setWarpList(filtWarps);
@@ -215,7 +215,7 @@ const WarpHistoryDisplay = ({
       <>
          <div className="">
             <select
-               className="border rounded-md p-2 my-1 w-full dark:bg-neutral-800"
+               className="my-1 w-full rounded-md border p-2 dark:bg-neutral-800"
                onChange={(e) => setType(e.target.value)}
             >
                {bannerTypes.map((t: any) => {
@@ -231,8 +231,8 @@ const WarpHistoryDisplay = ({
          <div className="mt-2 grid gap-3 laptop:grid-cols-2">
             <div className="w-full">
                {/* Total Pulls */}
-               <div className="text-2xl my-2">
-                  <div className="inline-block font-bold mr-2">
+               <div className="my-2 text-2xl">
+                  <div className="mr-2 inline-block font-bold">
                      Total Rolls:
                   </div>
                   <div className="inline-block">{wfilt?.length}</div>
@@ -240,24 +240,24 @@ const WarpHistoryDisplay = ({
 
                {/* Pity Counters */}
                <div className="text-xl">
-                  <div className="inline-block font-bold mr-2">
+                  <div className="mr-2 inline-block font-bold">
                      5* Pity Counter:
                   </div>
                   <div className="inline-block">{pity5}</div>
                </div>
                <div className="text-xl italic text-gray-500">
-                  <div className="inline-block mr-2">5* Guaranteed at:</div>
+                  <div className="mr-2 inline-block">5* Guaranteed at:</div>
                   <div className="inline-block">{guarantee5}</div>
                </div>
 
                <div className="text-xl">
-                  <div className="inline-block font-bold mr-2">
+                  <div className="mr-2 inline-block font-bold">
                      4* Pity Counter:
                   </div>
                   <div className="inline-block">{pity4}</div>
                </div>
                <div className="text-xl italic text-gray-500">
-                  <div className="inline-block mr-2">4* Guaranteed at:</div>
+                  <div className="mr-2 inline-block">4* Guaranteed at:</div>
                   <div className="inline-block">{guarantee4}</div>
                </div>
 
@@ -322,15 +322,15 @@ const ResultFrame = ({ entry, type }: any) => {
    }
    return (
       <>
-         <a href={`/starrail/collections/${type}/${entry?.id}/c`}>
+         <a href={`/starrail/collections/${type}/${entry?.id}`}>
             <div
-               className={`relative w-full rounded-md m-1 border dark:border-gray-700 p-2 ${customcolor}`}
+               className={`relative m-1 w-full rounded-md border p-2 dark:border-gray-700 ${customcolor}`}
             >
                <ItemFrame mat={entry} type={type} />
-               <div className="inline-block align-middle mx-1">
+               <div className="mx-1 inline-block align-middle">
                   {entry?.rarity?.display_number}*
                </div>
-               <div className="inline-block align-middle mx-1">
+               <div className="mx-1 inline-block align-middle">
                   {entry?.name}
                </div>
             </div>
@@ -351,7 +351,7 @@ const ItemFrame = ({ mat, type }: any) => {
 
    return (
       <div
-         className="relative inline-block align-middle text-center"
+         className="relative inline-block text-center align-middle"
          key={mat?.id}
       >
          <div className="relative mx-0.5 inline-block h-11 w-11 align-middle text-xs">

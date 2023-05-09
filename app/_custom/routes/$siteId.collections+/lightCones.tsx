@@ -344,7 +344,7 @@ const EntryWithDescription = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/characters/${cid}/c`}>
+         <a href={`/starrail/collections/characters/${cid}`}>
             <div className="relative my-1 inline-block w-full rounded-md bg-slate-800 bg-opacity-10 p-2 align-middle dark:bg-slate-700 dark:bg-opacity-50">
                <div className="relative inline-block w-32  rounded-md text-left align-middle">
                   {/* Icon */}
@@ -396,7 +396,7 @@ const EntryIconOnly = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/lightCones/${cid}/c`}>
+         <a href={`/starrail/collections/lightCones/${cid}`}>
             <div className="relative m-1 inline-block w-32 rounded-md bg-slate-800 bg-opacity-10 p-2 align-top dark:bg-slate-700 dark:bg-opacity-50">
                {/* Icon */}
                <div className="relative inline-block h-28 w-28">
