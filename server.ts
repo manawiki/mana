@@ -37,7 +37,7 @@ function purgeRequireCache() {
 
 //Start custom database (payload instance only)
 
-async function startCustom() {
+const startCustom = async () => {
    const app = express();
 
    app.use(cors(corsOptions));
@@ -88,11 +88,11 @@ async function startCustom() {
    app.listen(port, () => {
       console.log(`Custom server listening on port ${port}`);
    });
-}
+};
 
 //Start core site (remix + payload instance)
 
-async function startCore() {
+const startCore = async () => {
    const app = express();
 
    app.use(cors(corsOptions));
@@ -189,7 +189,7 @@ async function startCore() {
    app.listen(port, () => {
       console.log(`Express server listening on port ${port}`);
    });
-}
+};
 
 if (process.env.APP_TYPE == "custom") {
    startCustom();

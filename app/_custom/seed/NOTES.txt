@@ -1,5 +1,0 @@
-Export all Texture2D/Sprite output from 
-/asbres/spriteoutput -> Texture2D ONLY
-/asbres/ui -> Both
-
-You can copy the HSRProcessImages.ps1 file into the asbres directory and run it to extract all required images into an "Output" directory. Make sure directory does not contain special characters.
