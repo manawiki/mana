@@ -618,10 +618,22 @@ export const action: ActionFunction = async ({
       //@ts-ignore
       const sites = userCurrentSites.map(({ id }: { id }) => id);
       //Finally we update the user with the new site id
+
+      const siteData = await payload.find({
+         collection: "sites",
+         where: {
+            slug: {
+               equals: siteId,
+            },
+         },
+         user,
+      });
+      const siteUID = siteData?.docs[0].id;
+
       return await payload.update({
          collection: "users",
          id: userId ?? "",
-         data: { sites: [...sites, siteId] },
+         data: { sites: [...sites, siteUID] },
          overrideAccess: false,
          user,
       });
@@ -631,9 +643,19 @@ export const action: ActionFunction = async ({
    if (intent === "unfollow") {
       const userId = user?.id;
 
+      const siteData = await payload.find({
+         collection: "sites",
+         where: {
+            slug: {
+               equals: siteId,
+            },
+         },
+         user,
+      });
+      const siteUID = siteData?.docs[0].id;
       const site = await payload.findByID({
          collection: "sites",
-         id: siteId,
+         id: siteUID,
          user,
       });
 

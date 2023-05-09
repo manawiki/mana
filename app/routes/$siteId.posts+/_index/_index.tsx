@@ -67,7 +67,7 @@ export async function loader({
       user,
       depth: 2,
       where: {
-         title: q ? { contains: q } : {},
+         name: q ? { contains: q } : {},
          isPublished: {
             equals: true,
          },
@@ -320,7 +320,7 @@ export default function PostsIndex() {
                               className="group flex items-center justify-between gap-2 py-3 pl-3"
                            >
                               <span className="truncate text-sm font-semibold group-hover:underline">
-                                 {post.title}
+                                 {post.name}
                               </span>
                               {post.updatedAt && (
                                  <div className="flex flex-none items-center gap-4">
@@ -481,7 +481,7 @@ export default function PostsIndex() {
                                     <input
                                        type="hidden"
                                        value={searchParams.get("q") ?? ""}
-                                       name="title"
+                                       name="name"
                                     />
                                     <span className="font-bold text-emerald-500 underline-offset-2 group-hover:underline">
                                        New Post
@@ -537,8 +537,8 @@ export const action = async ({
 
    switch (intent) {
       case "createWithTitle": {
-         const { title } = await zx.parseForm(request, {
-            title: z.string(),
+         const { name } = await zx.parseForm(request, {
+            name: z.string(),
          });
 
          const post = await payload.create({
@@ -546,7 +546,7 @@ export const action = async ({
             data: {
                id: safeNanoID(),
                url: "untitled",
-               title,
+               name,
                author: user?.id,
                site: site.id,
             },
@@ -562,7 +562,7 @@ export const action = async ({
             data: {
                id: safeNanoID(),
                url: "untitled",
-               title: "Untitled",
+               name: "Untitled",
                author: user?.id,
                site: site.id,
             },

@@ -40,6 +40,7 @@ import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useDebouncedValue } from "~/hooks";
 import type { Entry } from "payload/generated-types";
+import { nanoid } from "nanoid";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -409,7 +410,7 @@ export const action: ActionFunction = async ({
             user,
          });
          try {
-            const sites = await payload.find({
+            const siteData = await payload.find({
                collection: "sites",
                where: {
                   slug: {
@@ -418,15 +419,16 @@ export const action: ActionFunction = async ({
                },
                user,
             });
-            const siteSlug = sites?.docs[0];
+            const site = siteData?.docs[0];
             await payload.create({
                collection: "entries",
                data: {
                   name,
+                  id: nanoid(12),
                   author: user?.id,
                   icon: iconId.id,
                   collectionEntity: siteId + collectionId,
-                  site: siteSlug.id,
+                  site: site.id,
                },
                user,
                overrideAccess: false,

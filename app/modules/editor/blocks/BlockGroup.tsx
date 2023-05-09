@@ -4,12 +4,10 @@ import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DragOverlay } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
-import {
-   restrictToParentElement,
-   restrictToVerticalAxis,
-} from "@dnd-kit/modifiers";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
    SortableContext,
    rectSortingStrategy,
@@ -20,28 +18,17 @@ import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
    ChevronDown,
-   ChevronsDown,
-   ChevronsUpDown,
    Component,
-   Edit,
    GripVertical,
    LayoutGrid,
    List,
-   Minus,
    Move,
    Plus,
    Trash,
-   X,
 } from "lucide-react";
 import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
-import {
-   Combobox,
-   Listbox,
-   RadioGroup,
-   Switch,
-   Transition,
-} from "@headlessui/react";
+import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
@@ -79,21 +66,54 @@ export default function BlockGroup({ element }: Props) {
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 
+   const siteType = site.type;
+
+   //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `https://mana.wiki/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
       fetcher
    );
 
-   const [selected, setSelected] = useState(collectionData?.docs[0]);
+   const defaultOptions = [
+      { slug: "post", name: "Post" },
+      { slug: "site", name: "Site" },
+   ];
+
+   const selectOptions = collectionData
+      ? [].concat(defaultOptions, collectionData?.docs)
+      : defaultOptions;
+
+   const [selected] = useState();
 
    const [selectedCollection, setSelectedCollection] = useState(
       element.collection
    );
 
-   const { data: entryData } = useSWR(
-      `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`,
-      fetcher
-   );
+   const getDataType = () => {
+      //For posts and site
+      if (defaultOptions.some((e) => e.slug === selectedCollection)) {
+         switch (selectedCollection) {
+            case "post": {
+               return `https://mana.wiki/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
+            }
+            case "site": {
+               return `https://mana.wiki/api/sites?where[slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
+            }
+            default:
+               return null;
+         }
+      }
+      //For entries
+      if (siteType == "custom") {
+         return `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`;
+      }
+      if (siteType == "core") {
+         return `https://mana.wiki/api/entries?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${selectedCollection}&where[name][contains]=${groupSelectQuery}&depth=1`;
+      }
+   };
+
+   //Get custom entry data to popular icon and title
+   const { data: entryData } = useSWR(() => getDataType(), fetcher);
 
    const filteredEntries =
       groupSelectQuery === ""
@@ -157,6 +177,20 @@ export default function BlockGroup({ element }: Props) {
       element: GroupElement
    ) {
       const path = ReactEditor.findPath(editor, element);
+
+      const rowPath = () => {
+         switch (selectedCollection) {
+            case "site": {
+               return `/${siteId}`;
+            }
+            case "post": {
+               return `/${siteId}/posts/${event.id}/${event.url}`;
+            }
+            default:
+               return `/${siteId}/collections/${selectedCollection}/${event.id}`;
+         }
+      };
+
       const newProperties: Partial<CustomElement> = {
          ...element,
          groupItems: [
@@ -165,9 +199,7 @@ export default function BlockGroup({ element }: Props) {
                id: nanoid(),
                refId: event.id,
                name: event.name,
-               path: `/${siteId}/collections/${selectedCollection}/${
-                  event.id
-               }/${site.type == "custom" ? "c" : "w"}`,
+               path: rowPath(),
                iconUrl: event?.icon?.url,
             },
          ],
@@ -310,7 +342,7 @@ export default function BlockGroup({ element }: Props) {
    }
 
    const activeSelectItem = (item: any) =>
-      collectionData?.docs?.find((obj: Collection) => obj.slug === item)?.name;
+      selectOptions.find((obj: Collection) => obj.slug === item)?.name;
 
    const [editMode, setEditMode] = useState(false);
    const [viewMode, setViewMode] = useState(element.viewMode);
@@ -624,9 +656,6 @@ export default function BlockGroup({ element }: Props) {
                                           <button
                                              className="text-1 relative flex w-full items-center gap-3 truncate
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                             // onClick={() =>
-
-                                             // }
                                           >
                                              {selected ? (
                                                 <span
@@ -644,6 +673,46 @@ export default function BlockGroup({ element }: Props) {
                                  </Listbox.Option>
                               )
                            )}
+                           <Listbox.Option key="post" value="post">
+                              {({ selected }) => (
+                                 <>
+                                    <button
+                                       className="text-1 relative flex w-full items-center gap-3 truncate
+                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    >
+                                       {selected ? (
+                                          <span
+                                             style={{
+                                                backgroundColor: element.color,
+                                             }}
+                                             className="absolute right-2 h-1.5 w-1.5 rounded-full"
+                                          />
+                                       ) : null}
+                                       Post
+                                    </button>
+                                 </>
+                              )}
+                           </Listbox.Option>
+                           <Listbox.Option key="site" value="site">
+                              {({ selected }) => (
+                                 <>
+                                    <button
+                                       className="text-1 relative flex w-full items-center gap-3 truncate
+                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    >
+                                       {selected ? (
+                                          <span
+                                             style={{
+                                                backgroundColor: element.color,
+                                             }}
+                                             className="absolute right-2 h-1.5 w-1.5 rounded-full"
+                                          />
+                                       ) : null}
+                                       Site
+                                    </button>
+                                 </>
+                              )}
+                           </Listbox.Option>
                         </Listbox.Options>
                      </Transition>
                   </div>
@@ -878,7 +947,7 @@ const SortableListItem = ({
           p-0 px-3 py-3 placeholder-zinc-300 focus:outline-none
           focus:ring-transparent dark:bg-bg1Dark dark:placeholder-zinc-700"
                // name={zo.fields.title()}
-               // defaultValue={post.title}
+               // defaultValue={post.name}
                // onChange={(event) => setTitleValue(event.target.value)}
                placeholder="Add a description..."
             />
