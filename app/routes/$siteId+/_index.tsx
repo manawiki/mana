@@ -151,18 +151,20 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {site.content && (
-                     <Suspense fallback={<div>Loading...</div>}>
-                        <Slate
-                           editor={editor}
-                           value={site.content as Descendant[]}
-                        >
-                           <Editable
-                              renderElement={renderElement}
-                              renderLeaf={Leaf}
-                              readOnly={true}
-                           />
-                        </Slate>
-                     </Suspense>
+                     <div className="max-desktop:px-3">
+                        <Suspense fallback={<div>Loading...</div>}>
+                           <Slate
+                              editor={editor}
+                              value={site.content as Descendant[]}
+                           >
+                              <Editable
+                                 renderElement={renderElement}
+                                 renderLeaf={Leaf}
+                                 readOnly={true}
+                              />
+                           </Slate>
+                        </Suspense>
+                     </div>
                   )}
                </>
             )}
