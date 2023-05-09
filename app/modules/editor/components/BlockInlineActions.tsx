@@ -16,20 +16,23 @@ export default function BlockInlineActions({ blockId, onInsertBelow }: Props) {
    });
 
    return (
-      <div className="shadow-1 border-color flex items-center overflow-hidden rounded-lg border shadow">
+      <div
+         className="shadow-1 border-color bg-3 
+         flex items-center overflow-hidden rounded-lg border shadow-sm"
+      >
          <Tooltip id="drag" content="Drag to reorder">
             <Button
                ariaLabel="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
-               className="hover:bg-2 flex h-8 w-8 cursor-grab items-center justify-center"
+               className="hover:bg-2 flex h-7 w-7 cursor-grab items-center justify-center"
             >
                <GripVertical size={16} />
             </Button>
          </Tooltip>
          <BlockTypeSelector onSelect={onInsertBelow}>
             <Button
-               className="hover:bg-2 flex h-8 w-8 items-center justify-center focus:outline-none"
+               className="hover:bg-2 flex h-7 w-7 items-center justify-center focus:outline-none"
                ariaLabel="Insert block below"
             >
                <Plus size={16} />

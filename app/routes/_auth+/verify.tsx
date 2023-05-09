@@ -57,7 +57,7 @@ export default function CheckEmail() {
       <>
          <main>
             <div className="absolute left-0 top-12 z-10 flex w-full items-center justify-center">
-               <Link to="/" className="flex items-center gap-2.5">
+               <Link to="/hq" className="flex items-center gap-2.5">
                   <Logo className="h-7 w-7" />
                   <span className="pb-1 font-logo text-3xl">mana</span>
                </Link>

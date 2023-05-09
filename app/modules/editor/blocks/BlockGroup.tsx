@@ -743,7 +743,7 @@ export default function BlockGroup({ element }: Props) {
                   >
                      {groupItems?.length === 0 ? null : viewMode == "list" ? (
                         <div
-                           className="border-color divide-color relative 
+                           className="border-color divide-color shadow-1 relative
                         divide-y overflow-hidden rounded-lg border shadow-sm"
                         >
                            {groupItems?.map((row) => (

@@ -512,10 +512,10 @@ export const PostHeaderEdit = ({
                />
             </div>
             <PostHeader post={post} />
-            <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-5">
+            <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-3">
                <TextareaAutosize
                   className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
-                  p-0 font-semibold focus:ring-transparent"
+                  p-0 text-sm font-semibold focus:ring-transparent"
                   name={zo.fields.subtitle()}
                   defaultValue={post.subtitle}
                   onChange={(event) => setsubtitleValue(event.target.value)}

@@ -123,7 +123,7 @@ export default function SiteIndexMain() {
                </div>
             </div>
          </div>
-         <main className="mx-auto max-w-[728px] pb-20 pt-4 max-desktop:px-3">
+         <main className="mx-auto max-w-[728px] pb-20 pt-4">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen leading-7">
