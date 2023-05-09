@@ -12,19 +12,50 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relics?depth=3&limit=502`;
+   var charids = [
+      showcaseSample?.detail_info?.assist_avatar?.avatar_id,
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
+         (a: any) => a.avatar_id
+      ),
+   ];
+   var lcids = [
+      showcaseSample?.detail_info?.assist_avatar?.equipment?.tid,
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
+         (a: any) => a.equipment?.tid
+      ),
+   ];
+   var rids = [
+      ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map(
+         (a: any) => a.tid
+      ),
+   ];
+   showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => {
+      a.relic_list?.map((b: any) => {
+         rids.push(b.tid);
+      });
+   });
+
+   var url = `https://${
+      process.env.PAYLOAD_PUBLIC_SITE_ID
+   }-db.mana.wiki/api/relics?depth=3&limit=502&where[id][in]=${rids.toString()}`;
    const relicRaw = await (await fetch(url)).json();
    const relics = relicRaw.docs;
 
-   url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=500`;
+   url = `https://${
+      process.env.PAYLOAD_PUBLIC_SITE_ID
+   }-db.mana.wiki/api/characters?limit=100&where[id][in]=${charids.toString()}`;
    const characterRaw = await (await fetch(url)).json();
    const characters = characterRaw.docs;
 
-   url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/lightCones?limit=500`;
+   url = `https://${
+      process.env.PAYLOAD_PUBLIC_SITE_ID
+   }-db.mana.wiki/api/lightCones?limit=100&where[id][in]=${lcids.toString()}`;
    const lightConeRaw = await (await fetch(url)).json();
    const lightCones = lightConeRaw.docs;
 
-   url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/skillTrees?limit=5000`;
+   url = `https://${
+      process.env.PAYLOAD_PUBLIC_SITE_ID
+   }-db.mana.wiki/api/skillTrees?limit=500&where[character][in]=${charids.toString()}`;
    const skillTreeRaw = await (await fetch(url)).json();
    const skillTrees = skillTreeRaw.docs;
 
@@ -132,14 +163,14 @@ const CharacterSelector = ({
    // Get full list of character IDs, including the assist avatar and all characters in avatar_detail_list
    var charids = [
       data?.detail_info?.assist_avatar?.avatar_id,
-      ...data?.detail_info?.avatar_detail_list?.map((a) => a.avatar_id),
+      ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
    ];
 
    return (
       <>
          <div className="my-3 text-center">
             {charids.map((c: any, i: any) => {
-               const cdata = characters.find((a) => a.character_id == c);
+               const cdata = characters.find((a: any) => a.character_id == c);
 
                // Make sure to only show the selector if that character is different from the assist_avatar
                return (
@@ -151,6 +182,7 @@ const CharacterSelector = ({
                               onClick={() => {
                                  setDisplayChar(i - 1);
                               }}
+                              key={c}
                            >
                               {/* NOTE: Passing style in as a parameter in case we want to format the actively selected character differently! */}
                               <ItemFrameRound
@@ -210,7 +242,7 @@ const CharacterInfo = ({
          : data?.detail_info?.avatar_detail_list[displayChar];
    const charid = chardata?.avatar_id;
 
-   const charbase = characters.find((a) => a.character_id == charid);
+   const charbase = characters.find((a: any) => a.character_id == charid);
 
    // Character Showcase Canvas!
    const bg_url =
@@ -218,7 +250,7 @@ const CharacterInfo = ({
 
    // Light Cone data loading
    const lcid = chardata?.equipment?.tid;
-   const lcbase = lightCones.find((a) => a.lightcone_id == lcid);
+   const lcbase = lightCones.find((a: any) => a.lightcone_id == lcid);
    const superimp = ["0", "I", "II", "III", "IV", "V"];
 
    // Light Cone Stat Calculation
@@ -236,7 +268,7 @@ const CharacterInfo = ({
    ) {
       wsuffix = "A";
    }
-   const wi = lcbase.stats[0].data?.findIndex((a) => a == wlv) + wsuffix;
+   const wi = lcbase.stats[0].data?.findIndex((a: any) => a == wlv) + wsuffix;
    var wstats = [
       { name: "HP", base: lcbase.stats[1].data[wi] },
       { name: "ATK", base: lcbase.stats[2].data[wi] },
@@ -244,8 +276,8 @@ const CharacterInfo = ({
    ];
 
    // Relic data loading
-   const rid = chardata?.relic_list?.map((a) => a.tid);
-   const rbase = rid?.map((r) => relics.find((a) => a.relic_id == r));
+   const rid = chardata?.relic_list?.map((a: any) => a.tid);
+   const rbase = rid?.map((r: any) => relics.find((a: any) => a.relic_id == r));
 
    const rchar = chardata.relic_list?.map((r: any, i: any) => {
       // Relic level
@@ -256,7 +288,7 @@ const CharacterInfo = ({
       // - Get Main Stat Icon / Affix ID / Name
       // - Get Value of Main Stat at level
       const mainstat = rbase[i]?.mainstat_group?.find(
-         (a) => a.affix_id == r.main_affix_id
+         (a: any) => a.affix_id == r.main_affix_id
       );
 
       // Main stats
@@ -271,9 +303,9 @@ const CharacterInfo = ({
       };
 
       // Sub stats
-      const subobj = r.sub_affix_list?.map((s) => {
+      const subobj = r.sub_affix_list?.map((s: any) => {
          const ss = rbase[i]?.substat_group?.find(
-            (a) => a.affix_id == s.affix_id
+            (a: any) => a.affix_id == s.affix_id
          );
          const scnt = s.cnt ?? 0;
          const sbase = ss.base_val;
@@ -320,13 +352,13 @@ const CharacterInfo = ({
    //    num: 2, // Number of artifacts in set
    //    bonuses: [{ stattype: "AttackAddedRatio", value: 0.1199999 }], // Total bonuses from this set, lists all of them for set number requirements less than or equal to amount in set.
    // }];
-   const setlist = rbase.map((r) => r.relicset_id);
-   const rsetids = rchar.map((r) => r.set?.id);
+   const setlist = rbase.map((r: any) => r.relicset_id);
+   const rsetids = rchar.map((r: any) => r.set?.id);
    const rset = rsetids
-      .filter((v, i, a) => a.indexOf(v) === i)
-      .map((r) => {
-         const currset = setlist.find((s) => s.relicset_id == r);
-         const numInSet = rsetids.filter((a) => a == r)?.length;
+      .filter((v: any, i: any, a: any) => a.indexOf(v) === i)
+      .map((r: any) => {
+         const currset = setlist.find((s: any) => s.relicset_id == r);
+         const numInSet = rsetids.filter((a: any) => a == r)?.length;
 
          // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
          var bonuses: any = [];
@@ -335,7 +367,7 @@ const CharacterInfo = ({
 
             // If number equipped is at least the required number, return the stat bonuses in property_list
             if (numInSet >= eff?.req_no) {
-               eff?.property_list.map((p) => {
+               eff?.property_list.map((p: any) => {
                   bonuses.push(p);
                });
             }
@@ -358,7 +390,7 @@ const CharacterInfo = ({
       const curr = rchar[rb];
       relicbonuses.push(curr.mainobj);
 
-      curr.subobj?.map((a) => {
+      curr.subobj?.map((a: any) => {
          relicbonuses.push(a);
       });
    }
@@ -366,7 +398,7 @@ const CharacterInfo = ({
    for (var sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
-      curr.bonuses?.map((a) => {
+      curr.bonuses?.map((a: any) => {
          const tempbonus = {
             id: a?.stattype?.id,
             icon: {
@@ -390,7 +422,7 @@ const CharacterInfo = ({
          (a: any) => a.point_id == currpoint.point_id
       );
 
-      treepoint.stat_added?.map((a) => {
+      treepoint.stat_added?.map((a: any) => {
          const tempbonus = {
             id: a?.stat_type?.id,
             icon: {
@@ -423,7 +455,7 @@ const CharacterInfo = ({
       suffix = "A";
    }
 
-   const li = charbase.stats[0].data.findIndex((a) => a == lv + suffix);
+   const li = charbase.stats[0].data.findIndex((a: any) => a == lv + suffix);
 
    const defaultStats = [
       "HP",
@@ -454,22 +486,22 @@ const CharacterInfo = ({
 
       // Flat bonuses =
       const relicflat = relicbonuses
-         .filter((a) => a.name == stat)
-         ?.map((a) => a.value)
-         ?.reduce((ps, a) => ps + a, 0);
+         .filter((a: any) => a.name == stat)
+         ?.map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
 
       // Percent Bonuses =
       // - relicperc // Contains both relic and set bonuses
       // - treeperc // Contains all Skill Tree bonuses.
       const relicperc = relicbonuses
-         .filter((a) => a.name == stat + "%")
-         .map((a) => a.value)
-         ?.reduce((ps, a) => ps + a, 0);
+         .filter((a: any) => a.name == stat + "%")
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
 
       const treeperc = skilltreebonuses
-         .filter((a) => a.name == stat + "%")
-         .map((a) => a.value)
-         ?.reduce((ps, a) => ps + a, 0);
+         .filter((a: any) => a.name == stat + "%")
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
 
       const statmod = relicflat + statbase * (relicperc + treeperc);
 
@@ -508,14 +540,14 @@ const CharacterInfo = ({
       // - relicperc // Contains both relic and set bonuses
       // - treeperc // Contains all Skill Tree bonuses.
       const relicperc = relicbonuses
-         .filter((a) => a.name == stat)
-         .map((a) => a.value)
-         ?.reduce((ps, a) => ps + a, 0);
+         .filter((a: any) => a.name == stat)
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
 
       const treeperc = skilltreebonuses
-         .filter((a) => a.name == stat)
-         .map((a) => a.value)
-         ?.reduce((ps, a) => ps + a, 0);
+         .filter((a: any) => a.name == stat)
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
 
       const statmod = relicperc + treeperc;
 
@@ -656,9 +688,9 @@ const CharacterInfo = ({
 
                      {/* Stat Values */}
                      <div>
-                        {wstats?.map((s) => {
+                        {wstats?.map((s: any) => {
                            const stattype = statTypes.find(
-                              (a) => a.name == s.name
+                              (a: any) => a.name == s.name
                            );
 
                            return (
@@ -685,7 +717,9 @@ const CharacterInfo = ({
                {/* Stat Display */}
                <div className="relative w-64 text-white">
                   {statVal.map((s: any) => {
-                     const stattype = statTypes.find((a) => a.name == s.name);
+                     const stattype = statTypes.find(
+                        (a: any) => a.name == s.name
+                     );
                      return (
                         <>
                            <div className="flex items-center px-2 h-9">
@@ -776,7 +810,7 @@ const CharacterInfo = ({
                            {/* Relic Substats */}
 
                            <div className="inline-block align-middle w-36 text-white leading-none">
-                              {rdata.subobj?.map((sub) => {
+                              {rdata.subobj?.map((sub: any) => {
                                  const steptext = sub?.stepDistribution?.map(
                                     (step: any) =>
                                        step == 0
@@ -932,7 +966,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
 
             {treelist?.map((node: any, i: any) => {
                const nodelv = data.skilltree_list?.find(
-                  (a) => a.point_id == node.point_id
+                  (a: any) => a.point_id == node.point_id
                )?.level;
 
                return (
