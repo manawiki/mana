@@ -33,6 +33,11 @@ export const Eidolons: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "image",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "description",
          type: "text",
       },
@@ -62,6 +67,10 @@ export const Eidolons: CollectionConfig = {
       },
       {
          name: "icon_name",
+         type: "text",
+      },
+      {
+         name: "image_name",
          type: "text",
       },
       {

@@ -45,6 +45,7 @@ const seedUploads = async (result: any) => {
 	// Define Image fields (global)
 	const iconImport = {
 		icon: result.icon?.name.replace(".png",""),
+		image: result.image?.name.replace(".png",""),
 		image_round_icon: result.image_round_icon?.name.replace(".png",""),
 		image_action: result.image_action?.name.replace(".png",""),
 		image_battle_detail: result.image_battle_detail?.name.replace(".png",""),
