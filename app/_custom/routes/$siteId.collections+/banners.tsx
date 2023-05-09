@@ -134,7 +134,7 @@ const CharFrame = ({ char }: any) => {
 
    return (
       <div className="relative mx-1 inline-block text-center" key={char?.id}>
-         <a href={`/starrail/collections/characters/${char?.id}/c`}>
+         <a href={`/starrail/collections/characters/${char?.id}`}>
             <div className="relative inline-block h-20 w-20 align-middle text-xs">
                <Image
                   url={char?.icon?.url ?? "no_image_42df124128"}
@@ -157,7 +157,7 @@ const LightConeFrame = ({ char }: any) => {
 
    return (
       <div className="relative mx-1 inline-block text-center" key={char?.id}>
-         <a href={`/starrail/collections/lightCones/${char?.id}/c`}>
+         <a href={`/starrail/collections/lightCones/${char?.id}`}>
             <div className="relative inline-block h-20 w-20 align-top text-xs">
                <Image
                   url={char?.icon?.url ?? "no_image_42df124128"}

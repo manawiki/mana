@@ -275,7 +275,7 @@ export default function CollectionList() {
                            key={entry.id}
                            to={`${
                               collection.customDatabase == true
-                                 ? `${entry.id}/c`
+                                 ? `${entry.id}`
                                  : `${entry.id}/w`
                            }`}
                            prefetch="intent"

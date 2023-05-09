@@ -363,7 +363,7 @@ const CharacterList = ({ chars }: any) => {
                return (
                   <>
                      <Link
-                        to={`/starrail/collections/characters/${cid}/c`}
+                        to={`/starrail/collections/characters/${cid}`}
                         className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
                      >
                         {/* Character Icon */}

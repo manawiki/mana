@@ -97,6 +97,11 @@ async function startCore() {
 
    app.use(cors(corsOptions));
 
+   // Redirect all traffic at root to HQ UI
+   app.get("/", function (_, res) {
+      res.redirect("/hq");
+   });
+
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");
 

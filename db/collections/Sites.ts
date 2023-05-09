@@ -30,15 +30,6 @@ export const Sites: CollectionConfig = {
          unique: true,
       },
       {
-         name: "featured",
-         type: "checkbox",
-         label: "Feature this site on the homepage",
-         defaultValue: false,
-         access: {
-            update: isStaffFieldLevel,
-         },
-      },
-      {
          name: "type",
          type: "select",
          required: true,
@@ -56,13 +47,6 @@ export const Sites: CollectionConfig = {
                value: "custom",
             },
          ],
-      },
-      {
-         name: "subdomain",
-         type: "text",
-         access: {
-            update: isStaffFieldLevel,
-         },
       },
       {
          name: "owner",

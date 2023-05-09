@@ -106,7 +106,7 @@ export function NewSiteModal() {
                         Learn more{" "}
                         <a
                            className="text-blue-500"
-                           href="https://mana.wiki/home"
+                           href="https://mana.wiki/hq"
                         >
                            here
                         </a>

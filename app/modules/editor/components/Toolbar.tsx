@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { Editor, Path, Range, Transforms } from "slate";
 import { useSlate } from "slate-react";
 import Select from "./Select";
-import Tooltip from "../../../components/Tooltip";
+import Tooltip from "~/components/Tooltip";
 
 import {
    hasActiveLinkAtSelection,
@@ -104,7 +104,7 @@ export default function Toolbar() {
          )}
 
          <div className="flex items-center gap-1">
-            <Tooltip id="link" content="Toggle Link">
+            {/* <Tooltip id="link" content="Toggle Link">
                <Button
                   ariaLabel="Toggle Link"
                   onPointerDown={(e) => e.preventDefault()}
@@ -117,7 +117,7 @@ export default function Toolbar() {
                >
                   <Link size={16} />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip id="bold" content="Toggle Bold">
                <Button
