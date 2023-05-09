@@ -83,7 +83,7 @@ export const PostHeaderEdit = ({
    useEffect(() => {
       if (!isMount) {
          fetcher.submit(
-            { title: debouncedTitle, intent: "updateTitle" },
+            { name: debouncedTitle, intent: "updateTitle" },
             { method: "patch" }
          );
       }
@@ -505,8 +505,8 @@ export const PostHeaderEdit = ({
                <TextareaAutosize
                   className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
                    font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
-                  name={zo.fields.title()}
-                  defaultValue={post.title}
+                  name={zo.fields.name()}
+                  defaultValue={post.name}
                   onChange={(event) => setTitleValue(event.target.value)}
                   placeholder="Add a title..."
                />

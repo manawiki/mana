@@ -21,6 +21,10 @@ export const Entries: CollectionConfig = {
          required: true,
       },
       {
+         name: "id",
+         type: "text",
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",

@@ -88,7 +88,7 @@ export const PostVersionModal = ({
                            version.version?.content && (
                               <Tab.Panel className="mt-16" key={version.id}>
                                  <h1 className="font-header text-3xl font-bold">
-                                    {version.version.title}
+                                    {version.version.name}
                                  </h1>
                                  <PostHeader post={version} />
                                  <Slate

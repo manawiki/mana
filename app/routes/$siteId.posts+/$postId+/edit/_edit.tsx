@@ -82,7 +82,7 @@ export const handle = {
 export const meta: V2_MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
       ?.site.name;
-   const postTitle = data?.post?.title ?? "";
+   const postTitle = data?.post?.name ?? "";
 
    return [
       {
@@ -173,14 +173,14 @@ export async function action({
          assertIsPatch(request);
          const result = await zx.parseFormSafe(request, postSchema);
          if (result.success) {
-            const { title } = result.data;
-            const slug = slugify(title ?? "");
+            const { name } = result.data;
+            const slug = slugify(name ?? "");
             try {
                return await payload.update({
                   collection: "posts",
                   id: postId,
                   data: {
-                     title,
+                     name,
                      url: slug,
                   },
                   overrideAccess: false,
@@ -329,7 +329,7 @@ export async function action({
                user,
             });
          }
-         const postTitle = post?.title;
+         const postTitle = post?.name;
          setSuccessMessage(session, `"${postTitle}" successfully deleted`);
          return redirect(`/${siteId}/posts`, {
             headers: { "Set-Cookie": await commitSession(session) },
