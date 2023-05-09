@@ -17,17 +17,9 @@ export default function GroupView({ element }: Props) {
    return (
       <section className="my-6">
          <div className="flex items-center justify-between pb-2">
-            <div className="flex items-center gap-3 font-header text-xl font-bold">
-               <span
-                  className="h-7 w-1 rounded-full"
-                  style={{
-                     backgroundColor: element.color,
-                  }}
-               />
-               {element.groupLabel}
-            </div>
+            <h2 className="p-0">{element.groupLabel}</h2>
             <RadioGroup
-               className="border-color bg-2 flex h-10 cursor-pointer items-center gap-1 rounded-md border px-1.5"
+               className="flex cursor-pointer items-center gap-1"
                value={viewMode}
                onChange={setViewMode}
             >
@@ -40,15 +32,15 @@ export default function GroupView({ element }: Props) {
                      >
                         <div
                            className={`${
-                              checked ? "bg-zinc-200 dark:bg-zinc-700" : ""
+                              checked ? "bg-zinc-100 dark:bg-zinc-700" : ""
                            }
-                                 flex h-6 w-6 items-center justify-center rounded`}
+                                 flex h-7 w-7 items-center justify-center rounded`}
                         >
                            <List
                               style={{
                                  color: checked == true ? element.color : "",
                               }}
-                              size={14}
+                              size={16}
                            />
                         </div>
                      </Tooltip>
@@ -63,15 +55,15 @@ export default function GroupView({ element }: Props) {
                      >
                         <div
                            className={`${
-                              checked ? "bg-zinc-200 dark:bg-zinc-700" : ""
+                              checked ? "bg-zinc-100 dark:bg-zinc-700" : ""
                            }
-                           flex h-6 w-6 items-center justify-center rounded`}
+                           flex h-7 w-7 items-center justify-center rounded`}
                         >
                            <LayoutGrid
                               style={{
                                  color: checked == true ? element.color : "",
                               }}
-                              size={14}
+                              size={16}
                            />
                         </div>
                      </Tooltip>
@@ -105,7 +97,9 @@ export default function GroupView({ element }: Props) {
                            <Component className="text-1 mx-auto" size={18} />
                         )}
                      </div>
-                     <div className="truncate">{row?.name}</div>
+                     <div className="text-1 truncate text-sm font-bold">
+                        {row?.name}
+                     </div>
                   </Link>
                ))}
             </div>
@@ -116,7 +110,7 @@ export default function GroupView({ element }: Props) {
                      key={row?.id}
                      to={row?.path ?? ""}
                      prefetch="intent"
-                     className="bg-2 border-color relative rounded-md border p-3"
+                     className="bg-2 border-color shadow-1 relative rounded-md border p-3 shadow-sm"
                   >
                      <div
                         style={{

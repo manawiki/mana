@@ -5,8 +5,8 @@ import { Image } from "~/components/Image";
 export const PostHeader = ({ post }: { post: Post }) => {
    return (
       <section>
-         <div className="mb-5 border-y border-zinc-100 py-3 border-color mt-4 flex items-center gap-3">
-            <div className="bg-1 h-10 w-10 border-2 border-color shadow-sm shadow-1 overflow-hidden rounded-full">
+         <div className="border-color mb-5 mt-1 flex items-center gap-3 border-y border-zinc-100 py-3 laptop:mt-4">
+            <div className="bg-1 border-color shadow-1 h-10 w-10 overflow-hidden rounded-full border-2 shadow-sm">
                {/* @ts-expect-error */}
                {post?.author?.avatar ? (
                   <Image /* @ts-expect-error */

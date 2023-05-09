@@ -54,7 +54,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                   </div>
                </div>
                {post.banner && (
-                  <div className="aspect-[1.4/1] w-32 flex-none overflow-hidden rounded laptop:w-40">
+                  <div className="w-32 flex-none overflow-hidden rounded laptop:w-40">
                      <Image
                         alt={post.name}
                         options="fit=crop,height=200,gravity=auto"

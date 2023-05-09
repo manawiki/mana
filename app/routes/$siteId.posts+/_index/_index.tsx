@@ -27,6 +27,7 @@ import { isLoading, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./FeedItem";
+import Tooltip from "~/components/Tooltip";
 
 export const handle = {};
 
@@ -157,7 +158,7 @@ export default function PostsIndex() {
                                  </button>
                               </Form>
                            </Menu.Item>
-                           <Menu.Item>
+                           {/* <Menu.Item>
                               <Form method="post">
                                  <button
                                     className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -173,7 +174,7 @@ export default function PostsIndex() {
                                     <span>Template</span>
                                  </button>
                               </Form>
-                           </Menu.Item>
+                           </Menu.Item> */}
                         </div>
                      </Menu.Items>
                   </Transition>
@@ -186,9 +187,9 @@ export default function PostsIndex() {
             </div>
             <AdminOrStaffOrOwner>
                <section className="pb-6">
-                  <div className="flex items-center justify-between pb-3">
-                     <div className="text-1 text-sm font-bold uppercase">
-                        Recent Posts
+                  <div className="flex items-center justify-between pb-2">
+                     <div className="text-1 text-xs font-bold uppercase">
+                        Last Edited
                      </div>
                      <Listbox
                         value={selectedStatus}
@@ -308,16 +309,16 @@ export default function PostsIndex() {
                         </div>
                      </Listbox>
                   </div>
-                  <section className="border-color divide-color bg-2 divide-y overflow-hidden rounded-md border">
+                  <section className="border-color divide-color divide-y border-y">
                      {myPosts?.docs.length === 0 ? (
-                        <div className="p-3 text-sm ">No posts...</div>
+                        <div className="py-3 text-sm ">No drafts...</div>
                      ) : (
                         myPosts.docs.map((post) => (
                            <Link
                               prefetch="intent"
                               to={`${post.id}/edit`}
                               key={post.id}
-                              className="group flex items-center justify-between gap-2 py-3 pl-3"
+                              className="group flex items-center justify-between gap-2 py-3"
                            >
                               <span className="truncate text-sm font-semibold group-hover:underline">
                                  {post.name}
@@ -334,9 +335,21 @@ export default function PostsIndex() {
                                        )}
                                     </time>
                                     {post.isPublished ? (
-                                       <span className="-mr-1.5 h-3 w-3 rounded-full bg-green-300 dark:bg-green-400" />
+                                       <Tooltip
+                                          id="published"
+                                          content="Published"
+                                          side="left"
+                                       >
+                                          <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
+                                       </Tooltip>
                                     ) : (
-                                       <span className="-mr-1.5 h-3 w-3 rounded-full bg-zinc-300 dark:bg-zinc-500" />
+                                       <Tooltip
+                                          id="draft"
+                                          content="Draft"
+                                          side="left"
+                                       >
+                                          <div className="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-500" />
+                                       </Tooltip>
                                     )}
                                  </div>
                               )}
@@ -461,7 +474,7 @@ export default function PostsIndex() {
             </div>
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
                {publishedPosts?.docs.length === 0 ? (
-                  <div className="flex items-center justify-between py-5 text-sm">
+                  <div className="flex items-center justify-between py-3 text-sm">
                      <div className="flex items-center gap-1">
                         {searchParams.get("q") ? (
                            <>
@@ -494,7 +507,7 @@ export default function PostsIndex() {
                               </Form>
                            </>
                         ) : (
-                           <>No posts...</>
+                           <>No published posts...</>
                         )}
                      </div>
                   </div>

@@ -97,7 +97,7 @@ export default function PostPage() {
          </AdminOrStaffOrOwner>
          <main>
             <div className="mx-auto max-w-[728px] max-desktop:px-3">
-               <h1 className="pt-8 font-header text-3xl !leading-[3rem] laptop:pt-10 laptop:text-4xl">
+               <h1 className="pt-20 font-header text-2xl !leading-[3rem] laptop:pt-14 laptop:text-4xl">
                   {post.name}
                </h1>
                <PostHeader post={post} />
@@ -126,7 +126,7 @@ export default function PostPage() {
                   </section>
                </>
             )}
-            <div className="mx-auto max-w-[728px] pb-8 max-desktop:px-4">
+            <div className="mx-auto max-w-[728px] pb-8 max-desktop:px-3">
                <Suspense fallback={<div>Loading...</div>}>
                   <Slate editor={editor} value={post.content as Descendant[]}>
                      <Editable

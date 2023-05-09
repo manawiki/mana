@@ -34,27 +34,6 @@ export const CustomSite = ({ children }: { children: React.ReactNode }) => {
    return isCustom ? <>{children}</> : null;
 };
 
-//Is custom collection
-export const CustomCollection = ({
-   children,
-}: {
-   children: React.ReactNode;
-}) => {
-   const coreCollectionData = useRouteLoaderData(
-      "routes/$siteId.collections+/$collectionId._route"
-   ) as { collection: Collection };
-
-   //On the /w page, we have access to coreCollectionData so we check the collection object to see if customEntryTemplate is set to true
-   const isCustomOnWikiPage =
-      coreCollectionData?.collection?.customEntryTemplate;
-
-   //On the /c page, coreCollectionData is null, so we know it's a custom collection
-   const isCustom =
-      isCustomOnWikiPage ?? coreCollectionData == undefined ? true : false;
-
-   return isCustom ? <>{children}</> : null;
-};
-
 export const NotFollowingSite = ({
    children,
 }: {
