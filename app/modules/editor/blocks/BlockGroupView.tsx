@@ -75,6 +75,7 @@ export default function GroupView({ element }: Props) {
             <div className="border-color bg-2 divide-color shadow-1 relative divide-y overflow-hidden rounded-lg border shadow-sm">
                {groupItems?.map((row) => (
                   <Link
+                     reloadDocument={row?.isCustomSite ?? false}
                      key={row?.id}
                      to={row?.path ?? ""}
                      prefetch="intent"
@@ -107,6 +108,7 @@ export default function GroupView({ element }: Props) {
             <div className="grid grid-cols-2 gap-3 tablet:grid-cols-3 desktop:grid-cols-4">
                {groupItems?.map((row) => (
                   <Link
+                     reloadDocument={row?.isCustomSite ?? false}
                      key={row?.id}
                      to={row?.path ?? ""}
                      prefetch="intent"
