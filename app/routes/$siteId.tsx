@@ -126,6 +126,7 @@ export default function SiteIndex() {
          >
             <LoggedIn>
                <Link
+                  reloadDocument={site.type == "custom" && true}
                   className="relative z-10 pb-1 font-logo text-[30px] max-laptop:hidden"
                   to="/hq"
                >
@@ -133,6 +134,7 @@ export default function SiteIndex() {
                </Link>
                <div className="z-10 flex items-center gap-3">
                   <div className="laptop:hidden">
+                     {/* Mobile site menu modal */}
                      <Modal
                         onClose={() => {
                            setMenuOpen(false);
@@ -152,11 +154,16 @@ export default function SiteIndex() {
                            >
                               <X size={28} className="text-red-400" />
                            </button>
-
                            {following?.length === 0 ? null : (
                               <menu className="space-y-3">
                                  {following?.map((item) => (
                                     <NavLink
+                                       reloadDocument={
+                                          // Reload if custom site, but NOT if current site is custom
+                                          item.type == "custom" &&
+                                          site.type != "custom" &&
+                                          true
+                                       }
                                        key={item.id}
                                        onClick={() => setMenuOpen(false)}
                                        className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-2 pr-4 shadow-sm"
@@ -253,6 +260,7 @@ export default function SiteIndex() {
             </LoggedIn>
             <LoggedOut>
                <Link
+                  reloadDocument={site.type == "custom" && true}
                   className="relative z-10 pb-1 font-logo text-[30px]"
                   to="/hq"
                >
@@ -284,7 +292,6 @@ export default function SiteIndex() {
                   </Link>
                </div>
             </LoggedOut>
-
             <div
                className="pattern-opacity-50 pattern-dots absolute
                    left-0 top-0
@@ -374,6 +381,12 @@ export default function SiteIndex() {
                                     <li key={item.id}>
                                        <div className="relative flex items-center justify-center">
                                           <NavLink
+                                             reloadDocument={
+                                                // Reload if custom site, but NOT if current site is custom
+                                                item.type == "custom" &&
+                                                site.type != "custom" &&
+                                                true
+                                             }
                                              className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
                                              to={`/${item.slug}`}
                                           >
@@ -622,6 +635,7 @@ export default function SiteIndex() {
                         <LoggedOut>
                            <div className="flex items-center">
                               <Link
+                                 reloadDocument={site.type != "custom" && true}
                                  to={`/login?redirectTo=/${site.slug}`}
                                  className="flex h-9 items-center justify-center rounded-full bg-zinc-700
                                px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"

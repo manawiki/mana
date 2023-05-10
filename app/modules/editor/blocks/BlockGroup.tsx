@@ -895,61 +895,34 @@ const SortableListItem = ({
          className="bg-2 relative"
       >
          <div className="flex items-center justify-between gap-2 p-2.5">
-            {row?.isCustomSite ? (
-               <a
-                  className="bg-2 flex flex-grow items-center gap-3 hover:underline"
-                  href={row?.path ?? ""}
-               >
-                  <div
-                     style={{
-                        borderColor: element.color,
-                     }}
-                     className="shadow-1 flex h-8 w-8 items-center
-                     justify-between overflow-hidden rounded-full border-2 shadow-sm"
-                  >
-                     {row?.iconUrl ? (
-                        <Image
-                           url={row?.iconUrl}
-                           options="fit=crop,width=60,height=60,gravity=auto"
-                           alt={row?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Component className="text-1 mx-auto" size={18} />
-                     )}
-                  </div>
-                  <span className="text-1 truncate text-sm font-bold">
-                     {row?.name}
-                  </span>
-               </a>
-            ) : (
-               <Link
-                  key={row?.id}
-                  to={row?.path ?? ""}
-                  prefetch="intent"
-                  className="bg-2 flex flex-grow items-center gap-3 hover:underline"
-               >
-                  <div
-                     style={{
-                        borderColor: element.color,
-                     }}
-                     className="shadow-1 flex h-8 w-8 items-center
+            <Link
+               reloadDocument={row?.isCustomSite}
+               key={row?.id}
+               to={row?.path ?? ""}
+               prefetch="intent"
+               className="bg-2 flex flex-grow items-center gap-3 hover:underline"
+            >
+               <div
+                  style={{
+                     borderColor: element.color,
+                  }}
+                  className="shadow-1 flex h-8 w-8 items-center
                justify-between overflow-hidden rounded-full border-2 shadow-sm"
-                  >
-                     {row?.iconUrl ? (
-                        <Image
-                           url={row?.iconUrl}
-                           options="fit=crop,width=60,height=60,gravity=auto"
-                           alt={row?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Component className="text-1 mx-auto" size={18} />
-                     )}
-                  </div>
-                  <span className="text-1 truncate text-sm font-bold">
-                     {row?.name}
-                  </span>
-               </Link>
-            )}
+               >
+                  {row?.iconUrl ? (
+                     <Image
+                        url={row?.iconUrl}
+                        options="fit=crop,width=60,height=60,gravity=auto"
+                        alt={row?.name ?? "Icon"}
+                     />
+                  ) : (
+                     <Component className="text-1 mx-auto" size={18} />
+                  )}
+               </div>
+               <span className="text-1 truncate text-sm font-bold">
+                  {row?.name}
+               </span>
+            </Link>
             {/* <input
                type="text"
                className="bg-1 h-6 w-10 rounded-full border-0 px-3 text-center text-sm font-bold"
@@ -1070,58 +1043,34 @@ const SortableGridItem = ({
             </Tooltip>
          </div>
          {/* Can't use client routing if site is custom */}
-         {row?.isCustomSite ? (
-            <a className="block" href={row?.path ?? ""}>
-               <div
-                  style={{
-                     borderColor: element.color,
-                  }}
-                  className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
+         <Link
+            reloadDocument={row?.isCustomSite}
+            key={row?.id}
+            to={row?.path ?? ""}
+            prefetch="intent"
+            className="block"
+         >
+            <div
+               style={{
+                  borderColor: element.color,
+               }}
+               className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
                items-center overflow-hidden rounded-full border-2 shadow-sm"
-               >
-                  {row?.iconUrl ? (
-                     <Image
-                        url={row?.iconUrl}
-                        options="fit=crop,width=60,height=60,gravity=auto"
-                        alt={row?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
-               </div>
-               <div className="text-1 truncate text-center text-xs font-bold">
-                  {row?.name}
-               </div>
-            </a>
-         ) : (
-            <Link
-               key={row?.id}
-               to={row?.path ?? ""}
-               prefetch="intent"
-               className="block"
             >
-               <div
-                  style={{
-                     borderColor: element.color,
-                  }}
-                  className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
-               items-center overflow-hidden rounded-full border-2 shadow-sm"
-               >
-                  {row?.iconUrl ? (
-                     <Image
-                        url={row?.iconUrl}
-                        options="fit=crop,width=60,height=60,gravity=auto"
-                        alt={row?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
-               </div>
-               <div className="text-1 truncate text-center text-xs font-bold">
-                  {row?.name}
-               </div>
-            </Link>
-         )}
+               {row?.iconUrl ? (
+                  <Image
+                     url={row?.iconUrl}
+                     options="fit=crop,width=60,height=60,gravity=auto"
+                     alt={row?.name ?? "Icon"}
+                  />
+               ) : (
+                  <Component className="text-1 mx-auto" size={18} />
+               )}
+            </div>
+            <div className="text-1 truncate text-center text-xs font-bold">
+               {row?.name}
+            </div>
+         </Link>
       </div>
    );
 };

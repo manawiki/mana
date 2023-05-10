@@ -100,21 +100,10 @@ export default function SiteIndexMain() {
                />
             </div>
          )}
-
-         <div className="relative mx-auto -mt-8 h-20 max-w-[728px] max-desktop:px-3">
-            <div className="shadow-1 absolute left-0 top-0 h-16 w-16 overflow-hidden rounded-full shadow max-desktop:left-3">
-               <Image
-                  //@ts-expect-error
-                  url={site.icon?.url}
-                  options="height=200"
-                  alt="Site Icon"
-               />
-            </div>
-         </div>
          <main className="mx-auto max-w-[728px] pb-20">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
-                  <div className="relative min-h-screen leading-7">
+                  <div className="relative min-h-screen pt-3">
                      <RoomProvider
                         key={site.id}
                         id={site.id}
@@ -129,7 +118,9 @@ export default function SiteIndexMain() {
                            {() => (
                               <>
                                  <HomeEdit site={site} />
-                                 <ForgeEditor />
+                                 <div className="pt-4">
+                                    <ForgeEditor />
+                                 </div>
                               </>
                            )}
                         </ClientSideSuspense>

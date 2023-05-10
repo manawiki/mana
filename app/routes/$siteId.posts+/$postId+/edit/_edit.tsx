@@ -123,7 +123,7 @@ export default function PostEditPage() {
 
    return (
       <main
-         className="relative min-h-screen leading-7
+         className="relative min-h-screen
          max-laptop:pb-20 max-laptop:pt-10 laptop:pt-14"
       >
          <RoomProvider
