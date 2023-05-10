@@ -1,10 +1,11 @@
-import { useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import type { Site } from "payload/generated-types";
 import { useState, useEffect } from "react";
 import { DotLoader } from "~/components";
 import { useStorage } from "~/liveblocks.config";
 import { isAdding, isProcessing } from "~/utils";
 import { Tooltip } from "../../modules/editor/components";
+import { Home, Loader2, Save } from "lucide-react";
 
 export const HomeEdit = ({ site }: { site: Site }) => {
    const fetcher = useFetcher();
@@ -30,51 +31,52 @@ export const HomeEdit = ({ site }: { site: Site }) => {
    }, [blocks, site]);
 
    return (
-      <div className="relative max-desktop:px-3">
-         {isUpdating ? (
-            <div className="border-color bg-2 mb-6 flex h-9 w-24 items-center justify-center rounded-full border-2">
-               <DotLoader />
-            </div>
-         ) : isChanged == true ? (
-            <fetcher.Form method="post" className="relative mb-6 h-9 w-24">
-               <Tooltip
-                  id="save-home-changes"
-                  side="right"
-                  content="Save Changes"
+      <div className="max-desktop:px-3">
+         <div
+            className="border-color bg-3 shadow-1 shadow-1 relative -mt-10 flex h-14
+      w-full items-center justify-between gap-3 rounded-xl border-2 pr-2 shadow-sm"
+         >
+            <menu className="divide-color divide-x px-1"></menu>
+            {isUpdating ? (
+               <div
+                  className="shadow-1 inline-flex items-center justify-center rounded-lg border 
+               border-blue-200/80 bg-gradient-to-b
+               from-blue-50 to-blue-100 p-2 text-sm font-bold text-white shadow-sm transition
+               dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
+               dark:shadow-blue-950"
                >
-                  <button
-                     disabled={disabled}
-                     type="submit"
-                     name="intent"
-                     value="update"
+                  <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+               </div>
+            ) : isChanged == true ? (
+               <fetcher.Form method="post">
+                  <Tooltip
+                     id="save-home-changes"
+                     side="left"
+                     content="Save Changes"
                   >
-                     <div
-                        className="shadow-1 group inline-flex h-9 w-24 items-center justify-center rounded-full bg-blue-500 
-                              text-sm font-bold text-white shadow-sm transition hover:bg-blue-600 dark:hover:bg-blue-400"
+                     <button
+                        disabled={disabled}
+                        type="submit"
+                        name="intent"
+                        value="update"
                      >
-                        Update
-                        <svg
-                           className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
-                           fill="none"
-                           width="12"
-                           height="12"
-                           viewBox="0 0 12 12"
-                           aria-hidden="true"
+                        <div
+                           className="shadow-1 inline-flex items-center justify-center rounded-lg border 
+                           border-blue-200/80 bg-gradient-to-b
+                           from-blue-50 to-blue-100 p-2 text-sm font-bold text-white shadow-sm transition
+                           dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
+                           dark:shadow-blue-950"
                         >
-                           <path
-                              className="opacity-0 transition group-hover:opacity-100"
-                              d="M0 5h7"
-                           ></path>
-                           <path
-                              className="transition group-hover:translate-x-[3px]"
-                              d="M1 1l4 4-4 4"
-                           ></path>
-                        </svg>
-                     </div>
-                  </button>
-               </Tooltip>
-            </fetcher.Form>
-         ) : null}
+                           <Save
+                              className="text-blue-400 dark:text-blue-200"
+                              size={18}
+                           />
+                        </div>
+                     </button>
+                  </Tooltip>
+               </fetcher.Form>
+            ) : null}
+         </div>
       </div>
    );
 };

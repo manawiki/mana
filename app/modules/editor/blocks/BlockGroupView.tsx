@@ -17,7 +17,7 @@ export default function GroupView({ element }: Props) {
    return (
       <section className="my-6">
          <div className="flex items-center justify-between pb-2">
-            <h2 className="p-0">{element.groupLabel}</h2>
+            <h2 className="m-0 p-0">{element.groupLabel}</h2>
             <RadioGroup
                className="flex cursor-pointer items-center gap-1"
                value={viewMode}
