@@ -341,15 +341,17 @@ const RecipeList = ({ chars }: any) => {
 const ItemFrameSmall = ({ mat }: any) => {
    return (
       <>
-         <div className="relative inline-block h-8 w-8 align-middle text-xs m-0.5">
-            <Image
-               url={mat?.icon?.url ?? "no_image_42df124128"}
-               className={`object-contain color-rarity-${
-                  mat?.rarity?.display_number ?? "1"
-               } rounded-md`}
-               alt={mat?.name}
-            />
-         </div>
+         <Link to={`/starrail/collections/materials/${mat?.id}`}>
+            <div className="relative inline-block h-8 w-8 align-middle text-xs m-0.5">
+               <Image
+                  url={mat?.icon?.url ?? "no_image_42df124128"}
+                  className={`object-contain color-rarity-${
+                     mat?.rarity?.display_number ?? "1"
+                  } rounded-md`}
+                  alt={mat?.name}
+               />
+            </div>
+         </Link>
       </>
    );
 };
