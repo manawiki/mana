@@ -14,6 +14,7 @@ import { Aeons } from "./aeons";
 import { Blessings } from "./blessings";
 import { Recipes } from "./recipes";
 import { Banners } from "./banners";
+import { PlayerIcons } from "./playerIcons";
 import { SubmittedWarps } from "./submittedWarps";
 
 import { _Rarities } from "./_rarities";
@@ -42,6 +43,7 @@ export const CustomCollections = [
    Blessings,
    Recipes,
    Banners,
+   PlayerIcons,
    SubmittedWarps,
    _Elements,
    _ItemTypes,
