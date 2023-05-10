@@ -86,6 +86,7 @@ export const Users: CollectionConfig = {
       create: () => true,
       delete: isStaff,
       update: isStaffOrSelf,
+      //@ts-expect-error
       admin: isStaff,
    },
    fields: [
