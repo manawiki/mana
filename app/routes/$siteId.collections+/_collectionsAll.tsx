@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import type { loader as siteDetailsLoader } from "../$siteId";
+import type { loader as siteDetailsLoader } from "../$siteId+/_route+";
 import { toast } from "~/components/Toaster";
 import { Image } from "~/components/Image";
 

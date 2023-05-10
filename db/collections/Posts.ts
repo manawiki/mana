@@ -1,10 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import {
-   isStaff,
-   isStaffFieldLevel,
-   isStafforUser,
-   isLoggedIn,
-} from "../access";
+import { isStaffFieldLevel, isStaffOrSiteOwnerOrSiteAdmin } from "../access";
 import type { User } from "payload/generated-types";
 
 export const postsslug = "posts";
@@ -15,11 +10,11 @@ export const Posts: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isLoggedIn,
-      read: () => true, //isAdminAuthororPublished
-      update: isStafforUser("author"), //isAdminorAuthor
-      delete: isStaff, //isAdminorAuthor
-      readVersions: isStaff,
+      create: isStaffOrSiteOwnerOrSiteAdmin("site"),
+      read: () => true,
+      update: isStaffOrSiteOwnerOrSiteAdmin("site"),
+      delete: isStaffOrSiteOwnerOrSiteAdmin("site"),
+      readVersions: isStaffOrSiteOwnerOrSiteAdmin("site"),
    },
    fields: [
       {

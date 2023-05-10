@@ -3,7 +3,6 @@ import {
    isStaff,
    isStaffFieldLevel,
    isStaffOrSiteOwnerOrSiteAdmin,
-   isLoggedIn,
 } from "../access";
 
 export const collectionsSlug = "collections";
@@ -13,7 +12,7 @@ export const Collections: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isLoggedIn,
+      create: isStaffOrSiteOwnerOrSiteAdmin("site"),
       read: (): boolean => true,
       update: isStaffOrSiteOwnerOrSiteAdmin("site"),
       delete: isStaff,

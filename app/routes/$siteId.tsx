@@ -14,6 +14,7 @@ import {
    ChevronDown,
    Loader2,
    LogOut,
+   MoreVertical,
    Search,
    User as UserIcon,
    X,
@@ -36,7 +37,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -54,6 +55,8 @@ import {
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { User, Site } from "payload-types";
+import { MobileMenuModal } from "./MobileMenuModal";
+import { Modal } from "~/components";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -113,7 +116,7 @@ export default function SiteIndex() {
    max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-3 desktop:justify-start`;
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
-
+   const [isMenuOpen, setMenuOpen] = useState(false);
    return (
       <>
          <header
@@ -121,19 +124,142 @@ export default function SiteIndex() {
          h-14 w-full items-center justify-between border-b border-zinc-200 
          px-3 shadow-sm dark:border-zinc-800"
          >
-            <Link
-               className="relative z-10 flex items-center gap-2 pb-1 font-logo text-[28px]"
-               to="https://mana.wiki/hq"
-            >
-               <span>mana</span>
-               <span className="text-1 pt-1.5 font-body text-[12px]">beta</span>
-            </Link>
-            <div className="relative z-10 flex items-center gap-3">
-               <DarkModeToggle />
-               <div className="laptop:hidden">
-                  <NewSiteModal />
+            <LoggedIn>
+               <Link
+                  className="relative z-10 pb-1 font-logo text-[30px] max-laptop:hidden"
+                  to="/hq"
+               >
+                  mana
+               </Link>
+               <div className="z-10 flex items-center gap-3">
+                  <div className="laptop:hidden">
+                     <Modal
+                        onClose={() => {
+                           setMenuOpen(false);
+                        }}
+                        show={isMenuOpen}
+                     >
+                        <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
+                           <button
+                              name="intent"
+                              value="addSite"
+                              type="button"
+                              className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                              onClick={() => setMenuOpen(false)}
+                           >
+                              <X size={28} className="text-red-400" />
+                           </button>
+
+                           {following?.length === 0 ? null : (
+                              <menu className="space-y-3">
+                                 {following?.map((item) => (
+                                    <NavLink
+                                       key={item.id}
+                                       onClick={() => setMenuOpen(false)}
+                                       className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-2 pr-4 shadow-sm"
+                                       to={`/${item.slug}`}
+                                    >
+                                       {({ isActive }) => (
+                                          <>
+                                             <div className="flex items-center gap-3 truncate">
+                                                <div
+                                                   className="h-8 w-8 flex-none 
+                                    overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                                >
+                                                   <Image
+                                                      alt="Site Logo"
+                                                      options="fit=crop,width=88,height=88,gravity=auto"
+                                                      url={item.icon?.url}
+                                                   />
+                                                </div>
+                                                <div className="text-1 truncate text-sm font-bold">
+                                                   {item.name}
+                                                </div>
+                                             </div>
+                                             {isActive && (
+                                                <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
+                                             )}
+                                          </>
+                                       )}
+                                    </NavLink>
+                                 ))}
+                              </menu>
+                           )}
+                        </div>
+                     </Modal>
+                     <button
+                        className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                  justify-center rounded-full border shadow-sm"
+                        onClick={() => setMenuOpen(true)}
+                     >
+                        <MoreVertical size={20} />
+                     </button>
+                  </div>
                </div>
-               <LoggedOut>
+               <Link
+                  className="relative z-10 pb-1 font-logo text-[30px] laptop:hidden"
+                  to="/hq"
+               >
+                  mana
+               </Link>
+               <section className="z-50 flex h-14 items-center justify-end gap-2">
+                  <DarkModeToggle />
+                  <Menu as="div" className="relative">
+                     <Menu.Button
+                        className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                         justify-center rounded-full border shadow-sm"
+                     >
+                        <UserIcon size={20} />
+                     </Menu.Button>
+                     <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                     >
+                        <Menu.Items
+                           className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
+                                   max-w-md origin-top-right transform transition-all"
+                        >
+                           <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
+                              <Menu.Item>
+                                 <Form action="/logout" method="post">
+                                    <button
+                                       type="submit"
+                                       className="text-1 flex w-full items-center gap-3 rounded-lg
+                                             p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    >
+                                       <div className="flex-grow text-left">
+                                          Logout
+                                       </div>
+                                       <LogOut
+                                          size={18}
+                                          className="text-red-400 dark:text-red-300"
+                                       />
+                                    </button>
+                                 </Form>
+                              </Menu.Item>
+                           </div>
+                        </Menu.Items>
+                     </Transition>
+                  </Menu>
+               </section>
+            </LoggedIn>
+            <LoggedOut>
+               <Link
+                  className="relative z-10 pb-1 font-logo text-[30px]"
+                  to="/hq"
+               >
+                  mana
+               </Link>
+               <div className="relative z-10 flex items-center gap-3">
+                  <DarkModeToggle />
                   <Link
                      to="/join"
                      className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
@@ -156,54 +282,8 @@ export default function SiteIndex() {
                   >
                      {t("login.action", { ns: "auth" })}
                   </Link>
-               </LoggedOut>
-               <LoggedIn>
-                  <section className="z-50 flex h-14 items-center justify-end gap-5">
-                     <Menu as="div" className="relative">
-                        <Menu.Button
-                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
-                         justify-center rounded-full border shadow-sm"
-                        >
-                           <UserIcon size={20} />
-                        </Menu.Button>
-                        <Transition
-                           as={Fragment}
-                           enter="transition ease-out duration-100"
-                           enterFrom="transform opacity-0 scale-95"
-                           enterTo="transform opacity-100 scale-100"
-                           leave="transition ease-in duration-75"
-                           leaveFrom="transform opacity-100 scale-100"
-                           leaveTo="transform opacity-0 scale-95"
-                        >
-                           <Menu.Items
-                              className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
-                                   max-w-md origin-top-right transform transition-all"
-                           >
-                              <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
-                                 <Menu.Item>
-                                    <Form action="/logout" method="post">
-                                       <button
-                                          type="submit"
-                                          className="text-1 flex w-full items-center gap-3 rounded-lg
-                                             p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                       >
-                                          <div className="flex-grow text-left">
-                                             Logout
-                                          </div>
-                                          <LogOut
-                                             size={18}
-                                             className="text-red-400 dark:text-red-300"
-                                          />
-                                       </button>
-                                    </Form>
-                                 </Menu.Item>
-                              </div>
-                           </Menu.Items>
-                        </Transition>
-                     </Menu>
-                  </section>
-               </LoggedIn>
-            </div>
+               </div>
+            </LoggedOut>
 
             <div
                className="pattern-opacity-50 pattern-dots absolute
@@ -212,7 +292,6 @@ export default function SiteIndex() {
                      pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
             />
          </header>
-
          <div
             className="laptop:grid laptop:min-h-screen
                 laptop:auto-cols-[86px_86px_1fr_334px] laptop:grid-flow-col

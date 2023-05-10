@@ -26,7 +26,7 @@ td {
    }
 }
 h2 {
-   @apply pb-2 pt-5 font-header text-[22px] font-bold dark:text-zinc-200;
+   @apply mb-2 mt-5 font-header text-[22px] font-bold dark:text-zinc-200;
 }
 h3 {
    @apply mb-1.5 pt-3 font-header text-[18px] font-bold dark:text-zinc-200;

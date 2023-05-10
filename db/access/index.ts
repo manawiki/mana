@@ -1,9 +1,6 @@
 import type { Access, Where, FieldAccess } from "payload/types";
 import type { User } from "payload/generated-types";
 
-export const authenticatedAndStaff: Access = ({ req: { user } }) =>
-   user && user?.roles?.includes("staff");
-
 export const pageIsPublic = (): Where => ({
    public: {
       equals: true,
