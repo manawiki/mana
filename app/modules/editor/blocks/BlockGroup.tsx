@@ -195,7 +195,7 @@ export default function BlockGroup({ element }: Props) {
       };
 
       const isCustomSite = event.type == "custom" ? true : false;
-      console.log(isCustomSite);
+
       const newProperties: Partial<CustomElement> = {
          ...element,
          groupItems: [
@@ -896,7 +896,7 @@ const SortableListItem = ({
       >
          <div className="flex items-center justify-between gap-2 p-2.5">
             <Link
-               reloadDocument={row?.isCustomSite}
+               reloadDocument={row?.isCustomSite ?? false}
                key={row?.id}
                to={row?.path ?? ""}
                prefetch="intent"
