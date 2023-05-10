@@ -3,8 +3,9 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 // import { characters } from "./characters";
-import { Search } from "lucide-react";
+import { Search, SortDesc } from "lucide-react";
 import { Image } from "~/components";
+import { H2 } from "~/_custom/components/custom";
 
 // export async function loader({
 //    context: { payload },
@@ -171,30 +172,31 @@ const LightConeList = ({ chars }: any) => {
       <>
          <div className="">
             {/* Filter Options */}
-            <div className="">
+            <H2 text="Light Cones" />
+            <div className="divide-color bg-2 border-color divide-y rounded-md border">
                {filterOptions.map((cat: any) => {
                   return (
                      <>
-                        <div className="my-1 rounded-xl border px-2 py-1 dark:border-gray-700">
-                           <div className="relative mr-1 inline-block w-12 text-center text-sm">
-                              {cat.name}{" "}
+                        <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
+                           <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                              {cat.name}
                            </div>
-                           <div className="relative inline-block">
+                           <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
                               {cat.options.map((opt: any) => {
                                  return (
                                     <>
                                        <div
-                                          className={`relative mx-1 my-0.5 inline-block w-20 cursor-pointer rounded-md border px-2 py-1 text-center align-middle leading-none dark:border-gray-700 ${
+                                          className={`bg-3 border-color rounded-lg border px-2.5 py-1 ${
                                              filters.find(
                                                 (a: any) => a.id == opt.id
                                              )
-                                                ? `bg-slate-800 bg-opacity-20 dark:bg-slate-700 dark:bg-opacity-70`
+                                                ? `bg-yellow-50 dark:bg-yellow-500/10`
                                                 : ``
                                           }`}
                                           onClick={(event) => {
                                              if (
                                                 filters.find(
-                                                   (a) => a.id == opt.id
+                                                   (a: any) => a.id == opt.id
                                                 )
                                              ) {
                                                 setFilters(
@@ -216,7 +218,7 @@ const LightConeList = ({ chars }: any) => {
                                        >
                                           {opt.icon ? (
                                              <>
-                                                <div className="inline-flex h-8 w-8 rounded-full bg-gray-800 bg-opacity-50">
+                                                <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
                                                    <Image
                                                       alt="Icon"
                                                       className="object-contain"
@@ -226,7 +228,7 @@ const LightConeList = ({ chars }: any) => {
                                              </>
                                           ) : null}
 
-                                          <div className="text-xs">
+                                          <div className="text-1 truncate pt-0.5 text-center text-xs">
                                              {opt.name}
                                           </div>
                                        </div>
@@ -240,52 +242,51 @@ const LightConeList = ({ chars }: any) => {
                })}
             </div>
 
+            {/* Search Text Box */}
+            <div
+               className="border-color bg-2 mb-2 mt-4 flex h-12
+            items-center justify-between gap-3 rounded-lg border px-3"
+            >
+               <Search className="text-yellow-500" size={24} />
+               <input
+                  className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(event) => {
+                     setSearch(event.target.value);
+                  }}
+               />
+               <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
+                  <span>{cfiltered.length}</span> <span>entries</span>
+               </div>
+            </div>
+
             {/* Sort Options */}
-            <div className="my-2 rounded-xl border p-2 dark:border-gray-700">
-               <div className="relative mr-1 inline-block w-12 text-center">
+            <div className="flex items-center justify-between py-3">
+               <div className="text-1 flex items-center gap-2 text-sm font-bold">
+                  <SortDesc size={16} className="text-yellow-500" />
                   Sort
                </div>
-               {sortOptions.map((opt: any) => {
-                  return (
-                     <>
+               <div className="flex items-center gap-2">
+                  {sortOptions.map((opt: any) => {
+                     return (
                         <div
-                           className={`relative mx-1 inline-block w-20 cursor-pointer rounded-full border px-2 py-1 text-center dark:border-gray-700 ${
-                              sort == opt.field
-                                 ? `bg-slate-800 bg-opacity-20 dark:bg-slate-700 dark:bg-opacity-70`
-                                 : ``
-                           }`}
+                           key={opt.field}
+                           className={`border-color text-1 relative cursor-pointer 
+                        rounded-full border px-4 py-1 text-center text-xs font-bold ${
+                           sort == opt.field
+                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              : ``
+                        }`}
                            onClick={(event) => {
                               setSort(opt.field);
                            }}
                         >
                            {opt.name}
                         </div>
-                     </>
-                  );
-               })}
-            </div>
-
-            {/* Search Text Box */}
-            <div className="my-2 flex items-center justify-between">
-               <span className="border-color flex-grow border-t" />
-               <div
-                  className="shadow-1 bg-2 border-color relative flex h-10 w-full
-                     items-center justify-between rounded-xl border px-5 shadow-sm"
-               >
-                  <input
-                     className="h-10 w-full bg-transparent focus:outline-none"
-                     placeholder="Search..."
-                     value={search}
-                     onChange={(event) => {
-                        setSearch(event.target.value);
-                     }}
-                  />
-                  <div className="mx-1 w-32 italic text-gray-400 dark:text-gray-600">
-                     {cfiltered.length} entries
-                  </div>
-                  <Search className="text-1" size={24} />
+                     );
+                  })}
                </div>
-               <span className="border-color flex-grow border-t" />
             </div>
 
             {/* Toggle Show Description */}
