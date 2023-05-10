@@ -1,9 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import {
-   authenticatedAndStaff,
-   isStaffFieldLevel,
-   isStaffOrSelf,
-} from "../access";
+import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../access";
 
 export type envType = "local" | "dev-server" | "production";
 
@@ -88,8 +84,9 @@ export const Users: CollectionConfig = {
    access: {
       read: () => true,
       create: () => true,
-      delete: authenticatedAndStaff,
+      delete: isStaff,
       update: isStaffOrSelf,
+      admin: isStaff,
    },
    fields: [
       {

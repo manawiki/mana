@@ -1,10 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import {
-   isStaff,
-   isStaffFieldLevel,
-   isStaffOrHasSiteAccess,
-   isLoggedIn,
-} from "../access";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../access";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
@@ -15,7 +10,7 @@ export const Sites: CollectionConfig = {
    access: {
       create: isLoggedIn,
       read: (): boolean => true,
-      update: isStaffOrHasSiteAccess("id"),
+      update: isStaff,
       delete: isStaff,
    },
    fields: [
@@ -72,6 +67,9 @@ export const Sites: CollectionConfig = {
          name: "banner",
          type: "upload",
          relationTo: "images",
+         admin: {
+            hidden: true,
+         },
       },
       {
          name: "id",

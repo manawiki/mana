@@ -101,8 +101,8 @@ export default function SiteIndexMain() {
             </div>
          )}
 
-         <div className="relative mx-auto -mt-10 h-20 max-w-[728px] max-desktop:px-3">
-            <div className="shadow-1 absolute left-0 top-0 h-20 w-20 overflow-hidden rounded-full shadow max-desktop:left-3">
+         <div className="relative mx-auto -mt-8 h-20 max-w-[728px] max-desktop:px-3">
+            <div className="shadow-1 absolute left-0 top-0 h-16 w-16 overflow-hidden rounded-full shadow max-desktop:left-3">
                <Image
                   //@ts-expect-error
                   url={site.icon?.url}
@@ -111,19 +111,7 @@ export default function SiteIndexMain() {
                />
             </div>
          </div>
-         <div className="relative z-10 mx-auto -mt-[52px] max-w-[728px] max-desktop:px-3">
-            <div className="flex flex-row-reverse py-3">
-               <div className="border-color bg-2 shadow-1 rounded-b-lg border border-t-0 px-3 py-2 shadow-sm">
-                  <Tooltip id="group-color" side="top" content="Pages">
-                     <div className="flex items-center gap-2">
-                        <Component size={14} />
-                        <div className="text-1">-</div>
-                     </div>
-                  </Tooltip>
-               </div>
-            </div>
-         </div>
-         <main className="mx-auto max-w-[728px] pb-20 pt-4">
+         <main className="mx-auto max-w-[728px] pb-20">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen leading-7">
@@ -154,6 +142,7 @@ export default function SiteIndexMain() {
                      <div className="max-desktop:px-3">
                         <Suspense fallback={<div>Loading...</div>}>
                            <Slate
+                              key={site.id}
                               editor={editor}
                               value={site.content as Descendant[]}
                            >
