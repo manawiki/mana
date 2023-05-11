@@ -33,21 +33,22 @@ export async function loader({
       postView: z.string(),
    });
    const url = new URL(request.url).origin;
-
    const post = (await (
-      await fetch(`${url}/api/posts/${postId}?depth=2`)
+      await fetch(`${url}/api/posts/${postId}?depth=1`, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })
    ).json()) as Post;
 
    if (post._status == "draft") {
       throw json(null, { status: 404 });
    }
    //If slug does not equal slug saved in database, redirect to the correct slug
+
    if (postView != post.url) {
       throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 301);
    }
-
-   if (post._status != "published")
-      throw redirect(`/${siteId}/posts/${postId}/edit`);
 
    return json(
       { post, siteId },

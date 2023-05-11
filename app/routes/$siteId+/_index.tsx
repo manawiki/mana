@@ -20,11 +20,8 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 import Block from "~/modules/editor/blocks/Block";
-import { Image } from "~/components";
 import { HomeEdit } from "./HomeEdit";
 import Leaf from "~/modules/editor/blocks/Leaf";
-import { Component, Twitter } from "lucide-react";
-import Tooltip from "~/components/Tooltip";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 
 export async function loader({

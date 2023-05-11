@@ -18,7 +18,6 @@ import {
    assertIsDelete,
    slugify,
 } from "~/utils";
-
 import { z } from "zod";
 import { zx } from "zodix";
 import { createCustomIssues } from "react-zorm";
@@ -30,7 +29,7 @@ import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
 import { nanoid } from "nanoid";
-import type { CustomElement } from "../../../../modules/editor/types";
+import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 
@@ -52,7 +51,6 @@ export async function loader({
       overrideAccess: false,
       user,
       depth: 2,
-      draft: true,
    });
 
    const { page } = zx.parseQuery(request, {

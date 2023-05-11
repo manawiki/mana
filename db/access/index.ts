@@ -39,22 +39,26 @@ export const canReadPost: Access = async ({
    req: { user, payload },
    id: postId,
 }) => {
-   if (user) {
-      if (user.roles.includes("staff")) return true;
-      if (postId) {
-         const post = await payload.findByID({
-            collection: "posts",
-            id: postId,
-            depth: 1,
-            draft: true,
-         });
-         if (post._status == "published") return true;
-         const siteAdmins = (post.site as Site).admins;
-         const userId = user.id;
-         const isSiteOwner = userId == (post.site as Site).owner;
-         const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-         if (isSiteOwner || isSiteAdmin) return true;
-      }
+   if (!user && postId) {
+      const post = await payload.findByID({
+         collection: "posts",
+         id: postId,
+         depth: 1,
+      });
+      if (post._status == "published") return true;
+   }
+   if (user && user.roles.includes("staff")) return true;
+   if (user && postId) {
+      const post = await payload.findByID({
+         collection: "posts",
+         id: postId,
+         depth: 1,
+      });
+      const siteAdmins = (post.site as Site).admins;
+      const userId = user.id;
+      const isSiteOwner = userId == (post.site as Site).owner;
+      const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+      if (isSiteOwner || isSiteAdmin) return true;
    }
    // Reject everyone else
    return false;
