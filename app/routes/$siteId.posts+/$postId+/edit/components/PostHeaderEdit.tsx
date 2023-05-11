@@ -260,7 +260,7 @@ export const PostHeaderEdit = ({
                                        </Tooltip>
                                     </div>
                                  </Menu.Item>
-                                 {post.isPublished && (
+                                 {post._status == "published" && (
                                     <Menu.Item>
                                        <button
                                           className="text-1 flex w-full items-center gap-3 rounded-lg px-2.5
@@ -355,7 +355,7 @@ export const PostHeaderEdit = ({
                                     mt-2 w-screen max-w-[300px] transform space-y-1 rounded-lg border 
                                     p-4 shadow"
                                  >
-                                    {post.isPublished ? (
+                                    {post._status == "published" ? (
                                        <div className="flex items-center justify-between pb-2">
                                           <div className="space-y-0.5 text-xs">
                                              <div className="text-1">
@@ -441,7 +441,7 @@ export const PostHeaderEdit = ({
                         </div>
                      ) : (
                         <>
-                           {isChanged == true || post.isPublished == false ? (
+                           {isChanged == true || post._status == "draft" ? (
                               <>
                                  <fetcher.Form method="post">
                                     <Tooltip

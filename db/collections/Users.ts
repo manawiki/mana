@@ -84,7 +84,7 @@ export const Users: CollectionConfig = {
    access: {
       read: () => true,
       create: () => true,
-      delete: isStaff,
+      delete: isStaffOrSelf,
       update: isStaffOrSelf,
       //@ts-expect-error
       admin: isStaff,

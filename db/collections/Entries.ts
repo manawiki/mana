@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import { isStaff, isStaffOrSiteOwnerOrSiteAdmin, isLoggedIn } from "../access";
+import { canMutateAsSiteAdmin } from "../access";
 import type { User } from "payload/generated-types";
 
 export const entriesSlug = "entries";
@@ -9,10 +9,10 @@ export const Entries: CollectionConfig = {
       useAsTitle: "name",
    },
    access: {
-      create: isStaffOrSiteOwnerOrSiteAdmin("site"),
+      create: canMutateAsSiteAdmin("entries"),
       read: (): boolean => true,
-      update: isStaffOrSiteOwnerOrSiteAdmin("site"),
-      delete: isStaff,
+      update: canMutateAsSiteAdmin("entries"),
+      delete: canMutateAsSiteAdmin("entries"),
    },
    fields: [
       {
