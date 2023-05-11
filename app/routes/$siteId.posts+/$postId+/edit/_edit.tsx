@@ -17,9 +17,7 @@ import {
    setSuccessMessage,
    assertIsDelete,
    slugify,
-   assertIsPost,
 } from "~/utils";
-
 import { z } from "zod";
 import { zx } from "zodix";
 import { createCustomIssues } from "react-zorm";
@@ -31,7 +29,7 @@ import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
 import { nanoid } from "nanoid";
-import type { CustomElement } from "../../../../modules/editor/types";
+import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 
@@ -53,12 +51,13 @@ export async function loader({
       overrideAccess: false,
       user,
       depth: 2,
-      draft: true,
    });
 
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
    });
+
+   //We disable perms since ID is not a paramater we can use, if above perms pass, we pull versions.
    const versions = await payload.findVersions({
       collection: "posts",
       depth: 2,
@@ -70,7 +69,6 @@ export async function loader({
       limit: 20,
       user,
       page: page ?? 1,
-      overrideAccess: false,
    });
    return { post, versions };
 }
@@ -130,7 +128,7 @@ export default function PostEditPage() {
             key={post.id}
             id={post.id}
             initialStorage={{
-               blocks: new LiveList(initialValue),
+               blocks: new LiveList(initialValue as any) as any,
             }}
             initialPresence={{
                selectedBlockId: null,
@@ -385,7 +383,6 @@ export async function action({
             data: {
                _status: "published",
                content: data,
-               isPublished: true,
                publishedAt: new Date().toISOString(),
             },
             overrideAccess: false,
@@ -398,7 +395,7 @@ export async function action({
             collection: "posts",
             id: postId,
             data: {
-               isPublished: false,
+               _status: "draft",
                publishedAt: "",
             },
             overrideAccess: false,

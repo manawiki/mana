@@ -6,10 +6,8 @@ import {
    type V2_MetaFunction,
    type LoaderArgs,
 } from "@remix-run/node";
-
 import { z } from "zod";
 import { zx } from "zodix";
-
 import {
    Editable,
    Slate,
@@ -17,42 +15,45 @@ import {
    type RenderElementProps,
 } from "slate-react";
 import { createEditor, type Descendant } from "slate";
-
-import Block from "../../../modules/editor/blocks/Block";
-import Leaf from "../../../modules/editor/blocks/Leaf";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
 import { PostHeader } from "./PostHeader";
 import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+import type { Post } from "payload/generated-types";
 
 export async function loader({
    context: { payload, user },
    params,
+   request,
 }: LoaderArgs) {
    const { postId, siteId, postView } = zx.parseParams(params, {
       postId: z.string(),
       siteId: z.string(),
       postView: z.string(),
    });
+   const url = new URL(request.url).origin;
+   const post = (await (
+      await fetch(`${url}/api/posts/${postId}?depth=1`, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })
+   ).json()) as Post;
 
-   const post = await payload.findByID({
-      collection: "posts",
-      id: postId,
-      overrideAccess: false,
-      user,
-      depth: 2,
-   });
-
-   if (post.isPublished == false) {
+   if (post._status == "draft") {
       throw json(null, { status: 404 });
    }
    //If slug does not equal slug saved in database, redirect to the correct slug
+
    if (postView != post.url) {
       throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 301);
    }
 
-   if (post._status != "published")
-      throw redirect(`/${siteId}/posts/${postId}/edit`);
-   return { post, siteId };
+   return json(
+      { post, siteId },
+      { headers: { "Cache-Control": "public, s-maxage=60" } }
+   );
 }
 
 export const handle = {

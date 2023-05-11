@@ -1,22 +1,30 @@
 import type { CollectionConfig } from "payload/types";
-import { isStaffFieldLevel, isStaffOrSiteOwnerOrSiteAdmin } from "../access";
+import {
+   isStaffFieldLevel,
+   canMutateAsSiteAdmin,
+   canReadPost,
+} from "../access";
 import type { User } from "payload/generated-types";
 
 export const postsslug = "posts";
 export const Posts: CollectionConfig = {
    slug: postsslug,
-   // auth: true,
    admin: {
       useAsTitle: "name",
    },
    access: {
-      create: isStaffOrSiteOwnerOrSiteAdmin("site"),
-      read: () => true,
-      update: isStaffOrSiteOwnerOrSiteAdmin("site"),
-      delete: isStaffOrSiteOwnerOrSiteAdmin("site"),
-      readVersions: isStaffOrSiteOwnerOrSiteAdmin("site"),
+      create: canMutateAsSiteAdmin("posts"),
+      read: canReadPost,
+      update: canMutateAsSiteAdmin("posts"),
+      delete: canMutateAsSiteAdmin("posts"),
+      readVersions: canMutateAsSiteAdmin("posts"),
    },
    fields: [
+      {
+         name: "name",
+         type: "text",
+         required: true,
+      },
       {
          name: "id",
          type: "text",
@@ -24,11 +32,6 @@ export const Posts: CollectionConfig = {
       {
          name: "url",
          type: "text",
-      },
-      {
-         name: "name",
-         type: "text",
-         required: true,
       },
       {
          name: "subtitle",
@@ -58,14 +61,13 @@ export const Posts: CollectionConfig = {
          type: "relationship",
          relationTo: "sites",
          required: true,
-         maxDepth: 0,
+         maxDepth: 1,
       },
       {
          name: "banner",
          type: "upload",
          relationTo: "images",
       },
-      { name: "isPublished", type: "checkbox", defaultValue: false },
       {
          name: "collaboration",
          type: "checkbox",

@@ -165,8 +165,8 @@ export const PostVersionModal = ({
                                                    checked ? "font-bold" : ""
                                                 } group relative flex w-full cursor-pointer items-center gap-2 rounded-md py-3`}
                                              >
-                                                {index == 0 &&
-                                                currentEntry == 1 ? (
+                                                {version._status ==
+                                                "published" ? (
                                                    <span className="shadow-1 bg-1 rounded-lg px-2 py-1 text-xs font-semibold shadow">
                                                       Live
                                                    </span>
