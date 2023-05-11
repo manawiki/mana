@@ -48,15 +48,11 @@ export const canReadPost: Access = async ({
             depth: 1,
             draft: true,
          });
-         console.log(post);
          if (post._status == "published") return true;
-         //Check if user is a site owner or admin?
          const siteAdmins = (post.site as Site).admins;
-         // invariant(siteAdmins);
          const userId = user.id;
          const isSiteOwner = userId == (post.site as Site).owner;
-         const isSiteAdmin = siteAdmins.includes(userId);
-         console.log(isSiteAdmin);
+         const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
          if (isSiteOwner || isSiteAdmin) return true;
       }
    }
