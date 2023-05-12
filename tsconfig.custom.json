@@ -3,18 +3,17 @@
       "target": "es5",
       "lib": ["dom", "dom.iterable", "esnext"],
       "allowJs": true,
-      "strict": true,
+      "strict": false,
       "esModuleInterop": true,
       "skipLibCheck": true,
       "outDir": "./dist",
       "jsx": "react-jsx",
       "baseUrl": ".",
       "paths": {
-         "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-types.ts"]
       }
    },
-   "include": ["server.ts", "payload.custom.config.ts"],
+   "include": ["custom.server.ts", "payload.custom.config.ts"],
    "ts-node": {
       "swc": true,
       "transpileOnly": true
