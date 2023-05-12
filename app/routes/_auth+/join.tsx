@@ -41,8 +41,19 @@ const JoinFormSchema = z.object({
       .string()
       .email("Invalid email")
       .transform((email) => email.toLowerCase()),
-   password: z.string().min(8, "Password must be at least 8 characters long"),
-   username: z.string().min(3, "Username must be at least 3 characters long"),
+   password: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .toLowerCase(),
+   username: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Username contains invalide characters"
+      )
+      .min(3, "Username must be at least 3 characters long")
+      .max(16, "Username must be at least 16 characters long")
+      .toLowerCase(),
 });
 
 export const meta: V2_MetaFunction = ({ data }) => {
@@ -115,7 +126,7 @@ export default function Signup() {
                               type="text"
                               name={zo.fields.username()}
                               autoComplete="username"
-                              className="input-text"
+                              className="input-text lowercase"
                               disabled={disabled}
                            />
                         </div>

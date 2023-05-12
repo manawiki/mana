@@ -25,6 +25,11 @@ export const Sites: CollectionConfig = {
          unique: true,
       },
       {
+         name: "gaTagId",
+         label: "Google Analytics tag id",
+         type: "text",
+      },
+      {
          name: "type",
          type: "select",
          required: true,
