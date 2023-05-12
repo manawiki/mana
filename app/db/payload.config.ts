@@ -1,10 +1,11 @@
 import { buildConfig } from "payload/config";
+import path from "path";
+import { collections } from "./collections";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
-import { CustomCollections } from "./app/_custom/collections";
-import { Users } from "./db/collections/CustomUsers";
-import { Images } from "./db/collections/Images";
+import { Logo } from "./components/Logo";
+import { BackMana } from "./components/BackMana";
 
 dotenv.config();
 
@@ -25,6 +26,14 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    admin: {
+      components: {
+         beforeNavLinks: [BackMana],
+         graphics: {
+            Icon: Logo,
+            Logo: Logo,
+         },
+      },
+      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",
@@ -32,6 +41,7 @@ export default buildConfig({
          titleSuffix: "Mana",
       },
    },
+   cors: ["mana.wiki", "starrail-static.mana.wiki"],
    plugins: [
       cloudStorage({
          collections: {
@@ -39,12 +49,14 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
+                  return `https://static.mana.wiki/file/${bucketName}/${filename}`;
                },
-               prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
          },
       }),
    ],
-   collections: [Users, Images, ...CustomCollections],
+   collections,
+   typescript: {
+      outputFile: path.resolve(__dirname, "./payload-types.ts"),
+   },
 });

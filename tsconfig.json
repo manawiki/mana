@@ -13,7 +13,7 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
-         "payload/generated-types": ["./payload-types.ts"]
+         "payload/generated-types": ["./app/db/payload-types.ts"]
       },
       "noEmit": true,
       "target": "ES2019"

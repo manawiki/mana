@@ -1,4 +1,4 @@
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../access";
+import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 export const Users: CollectionConfig = {
    slug: "users",

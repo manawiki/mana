@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload/types";
-import { canMutateAsSiteAdmin, isStaffFieldLevel } from "../access";
+import { isStaffFieldLevel } from "../../access/user";
+import { canMutateAsSiteAdmin } from "../../access/site";
 
 export const collectionsSlug = "collections";
 export const Collections: CollectionConfig = {
