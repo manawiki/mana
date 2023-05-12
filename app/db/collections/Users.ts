@@ -1,11 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 
-export type envType = "local" | "dev-server" | "production";
-
-export const serverEnv = process.env
-   .PAYLOAD_PUBLIC_SERVER_ENVIRONMENT as envType;
-
+export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
 export const Users: CollectionConfig = {
    slug: usersSlug,
@@ -14,10 +10,8 @@ export const Users: CollectionConfig = {
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =
-               serverEnv == "local"
+               serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
-                  : serverEnv == "dev-server"
-                  ? `https://manatee.wiki/verify?token=${token}`
                   : `https://mana.wiki/verify?token=${token}`;
 
             return `
@@ -45,10 +39,8 @@ export const Users: CollectionConfig = {
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =
-               serverEnv == "local"
+               serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
-                  : serverEnv == "dev-server"
-                  ? `https://manatee.wiki/reset-password?token=${token}`
                   : `https://mana.wiki/reset-password?token=${token}`;
 
             return `
@@ -72,9 +64,9 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain: serverEnv == "local" ? "localhost" : ".mana.wiki",
-         secure: serverEnv == "local" ? false : true,
-         sameSite: serverEnv == "local" ? "lax" : "none",
+         domain: serverEnv == "development" ? "localhost" : ".mana.wiki",
+         secure: serverEnv == "development" ? false : true,
+         sameSite: serverEnv == "development" ? "lax" : "none",
       },
    },
    admin: {
