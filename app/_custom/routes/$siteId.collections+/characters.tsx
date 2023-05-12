@@ -15,9 +15,12 @@ export async function loader({
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=100`;
    const characterRaw = await (await fetch(url)).json();
    const characters = characterRaw.docs;
-   return json(characters, {
-      headers: { "Cache-Control": "public, s-maxage=60" },
-   });
+   return json(
+      { characters },
+      {
+         headers: { "Cache-Control": "public, s-maxage=60" },
+      }
+   );
 }
 
 export const meta: V2_MetaFunction = () => {
