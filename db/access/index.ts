@@ -1,11 +1,6 @@
-import type { Access, Where, FieldAccess } from "payload/types";
-import type { User } from "payload/generated-types";
-
-export const pageIsPublic = (): Where => ({
-   public: {
-      equals: true,
-   },
-});
+import type { Access, FieldAccess } from "payload/types";
+import type { Site, User } from "payload/generated-types";
+import invariant from "tiny-invariant";
 
 export const isLoggedIn: Access = ({ req: { user } }) => {
    // Return true if user is logged in, false if not
@@ -17,117 +12,18 @@ export const isStaff: Access = ({ req: { user } }) => {
    return Boolean(user?.roles?.includes("staff"));
 };
 
-export const isStafforUser =
-   (userField = "user"): Access =>
-   ({ req: { user } }) => {
-      // Return true or false based on if the user has a staff role
-      if (user?.roles?.includes("staff")) return true;
-
-      // using a query constraint, we can restrict it based on the `user` field
-      if (user)
-         return {
-            [userField]: {
-               equals: user?.id,
-            },
-         };
-
-      return false;
-   };
-export const isStafforUserorPublished =
-   (userField = "user"): Access =>
-   ({ req: { user } }) => {
-      // Return true or false based on if the user has an staff role
-      if (user?.roles?.includes("staff")) return true;
-
-      // using a query constraint, we can restrict it based on the `user` field
-      if (user)
-         return {
-            or: [
-               {
-                  [userField]: {
-                     equals: user?.id,
-                  },
-               },
-               {
-                  _status: {
-                     equals: "published",
-                  },
-               },
-               {
-                  _status: {
-                     equals: false,
-                  },
-               },
-            ],
-         };
-
-      //otherwise return published version only
-      return {
-         or: [
-            {
-               _status: {
-                  equals: "published",
-               },
-            },
-            {
-               _status: {
-                  equals: false,
-               },
-            },
-         ],
-      };
-   };
-
 export const isStaffFieldLevel: FieldAccess<{ id: string }, unknown, User> = ({
    req: { user },
 }) => {
    // Return true or false based on if the user has an staff role
-   //@ts-ignore
    return Boolean(user?.roles?.includes("staff"));
 };
 
-export const isStaffOrHasSiteAccess =
-   (siteIDFieldName = "site"): Access =>
-   ({ req: { user } }) => {
-      // Need to be logged in
-      if (user) {
-         // If user has role of 'admin'
-         if (user?.roles?.includes("staff")) return true;
-
-         // If user has role of 'user' and has access to a site,
-         // return a query constraint to restrict the documents this user can edit
-         // to only those that are assigned to a site, or have no site assigned
-         if (user?.roles?.includes("user") && user.sites?.length > 0) {
-            // Otherwise, we can restrict it based on the `site` field
-            return {
-               or: [
-                  {
-                     [siteIDFieldName]: {
-                        in: user.sites,
-                     },
-                  },
-                  {
-                     [siteIDFieldName]: {
-                        exists: false,
-                     },
-                  },
-               ],
-            };
-         }
-      }
-
-      // Reject everyone else
-      return false;
-   };
-
 export const isStaffOrSelf: Access = ({ req: { user } }) => {
-   // Need to be logged in
    if (user) {
-      // If user has role of 'admin'
       if (user?.roles?.includes("staff")) {
          return true;
       }
-
       // If any other type of user, only provide access to themselves
       return {
          id: {
@@ -135,33 +31,70 @@ export const isStaffOrSelf: Access = ({ req: { user } }) => {
          },
       };
    }
-
    // Reject everyone else
    return false;
 };
 
-export const isStaffOrSiteOwnerOrSiteAdmin =
-   (siteIDFieldName = "site"): Access =>
-   ({ req: { user } }) => {
+export const canReadPost: Access = async ({
+   req: { user, payload },
+   id: postId,
+}) => {
+   if (!user && postId) {
+      const post = await payload.findByID({
+         collection: "posts",
+         id: postId,
+         depth: 1,
+      });
+      if (post._status == "published") return true;
+   }
+   if (user && user.roles.includes("staff")) return true;
+   if (user && postId) {
+      const post = await payload.findByID({
+         collection: "posts",
+         id: postId,
+         depth: 1,
+      });
+      const siteAdmins = (post.site as Site).admins;
+      const userId = user.id;
+      const isSiteOwner = userId == (post.site as Site).owner;
+      const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+      if (isSiteOwner || isSiteAdmin) return true;
+   }
+   // Reject everyone else
+   return false;
+};
+
+export const canMutateAsSiteAdmin =
+   (collectionSlug: "collections" | "entries" | "posts"): Access =>
+   async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {
          if (user.roles.includes("staff")) return true;
-         if (user.roles.includes("user") && user.sites?.length > 0) {
-            // Otherwise, we can restrict it based on the `site` field
-            return {
-               or: [
-                  {
-                     [siteIDFieldName]: {
-                        in: user.sites,
-                     },
-                  },
-                  {
-                     [siteIDFieldName]: {
-                        exists: false,
-                     },
-                  },
-               ],
-            };
+         const userId = user.id;
+         // Update and Delete
+         if (resultId) {
+            const item = await payload.findByID({
+               collection: collectionSlug,
+               id: resultId,
+               depth: 1,
+            });
+            //Check if user is a site owner or admin?
+            const siteAdmins = (item.site as Site).admins;
+            const isSiteOwner = userId == (item.site as Site).owner;
+            const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+            if (isSiteOwner || isSiteAdmin) return true;
          }
+         // Create
+         invariant(data);
+         const site = await payload.findByID({
+            collection: "sites",
+            id: data.site,
+            depth: 0,
+         });
+         //Check if user is a site owner or admin?
+         const siteAdmins = site.admins;
+         const isSiteOwner = userId == site.owner;
+         const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+         if (isSiteOwner || isSiteAdmin) return true;
       }
       // Reject everyone else
       return false;

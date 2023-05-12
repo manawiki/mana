@@ -17,7 +17,7 @@ export default function GroupView({ element }: Props) {
    return (
       <section className="my-6">
          <div className="flex items-center justify-between pb-2">
-            <h2 className="p-0">{element.groupLabel}</h2>
+            <h2 className="m-0 p-0">{element.groupLabel}</h2>
             <RadioGroup
                className="flex cursor-pointer items-center gap-1"
                value={viewMode}
@@ -75,6 +75,7 @@ export default function GroupView({ element }: Props) {
             <div className="border-color bg-2 divide-color shadow-1 relative divide-y overflow-hidden rounded-lg border shadow-sm">
                {groupItems?.map((row) => (
                   <Link
+                     reloadDocument={row?.isCustomSite ?? false}
                      key={row?.id}
                      to={row?.path ?? ""}
                      prefetch="intent"
@@ -107,6 +108,7 @@ export default function GroupView({ element }: Props) {
             <div className="grid grid-cols-2 gap-3 tablet:grid-cols-3 desktop:grid-cols-4">
                {groupItems?.map((row) => (
                   <Link
+                     reloadDocument={row?.isCustomSite ?? false}
                      key={row?.id}
                      to={row?.path ?? ""}
                      prefetch="intent"

@@ -50,12 +50,7 @@ export async function loader({
       user,
       page: page ?? 1,
       where: {
-         isPublished:
-            status === "draft"
-               ? { equals: false }
-               : status === "published"
-               ? { equals: true }
-               : {},
+         _status: status ? { equals: status } : {},
          "site.slug": {
             equals: siteId,
          },
@@ -69,9 +64,7 @@ export async function loader({
       depth: 2,
       where: {
          name: q ? { contains: q } : {},
-         isPublished: {
-            equals: true,
-         },
+         _status: { equals: "published" },
          "site.slug": {
             equals: siteId,
          },
@@ -334,7 +327,7 @@ export default function PostsIndex() {
                                           "MMM dd"
                                        )}
                                     </time>
-                                    {post.isPublished ? (
+                                    {post._status == "published" ? (
                                        <Tooltip
                                           id="published"
                                           content="Published"
