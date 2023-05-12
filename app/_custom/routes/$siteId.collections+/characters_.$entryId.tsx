@@ -1,5 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+
 import {
    EntryParent,
    EntryHeader,
@@ -12,11 +13,12 @@ import type { Character } from "payload/generated-types";
 
 import { Navigation } from "~/_custom/components/characters/Navigation";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
-import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
 import { SkillTree } from "~/_custom/components/characters/SkillTree";
 import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
+import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
+import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 import { Profile } from "~/_custom/components/characters/Profile";
 import { Story } from "~/_custom/components/characters/Story";
@@ -105,6 +107,9 @@ export default function CharacterEntry() {
             {/* Image Gallery Section showing all relevant images */}
             <H2 text="Image Gallery" />
             <ImageGallery pageData={defaultData} />
+
+            {/* Video Section */}
+            <Videos pageData={defaultData} />
 
             <div id="profile"></div>
             {/* Profile Data/CV */}
