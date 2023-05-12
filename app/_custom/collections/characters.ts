@@ -307,6 +307,20 @@ export const Characters: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "videos",
+         type: "array",
+         fields: [
+            {
+               name: "title",
+               type: "text",
+            },
+            {
+               name: "url",
+               type: "text",
+            },
+         ]
+      },
+      {
          name: "checksum",
          type: "text",
       },
