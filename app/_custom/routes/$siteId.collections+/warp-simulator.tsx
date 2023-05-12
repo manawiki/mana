@@ -60,8 +60,8 @@ const SummonSimulator = (data: any) => {
       ========================================================================
     */
    // TODO maybe use useReducer?
-   const [beginnerPulls, setBeginnerPulls] = useState(0); //only 2 pulls allowed on beginner pull
-   const [isBeginner, setIsBeginner] = useState(false); //only 2 pulls allowed on beginner pull
+   const [beginnerPulls, setBeginnerPulls] = useState(0); //only 5 pulls allowed on beginner pull
+   const [isBeginner, setIsBeginner] = useState(false); //only 5 pulls allowed on beginner pull
    const [currentBanner, setCurrentBanner] = useState(banners?.slice(-2)?.[0]); // take the latest banner
    useEffect(() => {
       buildRatesDict(currentBanner);
@@ -77,11 +77,13 @@ const SummonSimulator = (data: any) => {
          characters: 0,
          weapons: 0,
          standard: 0,
+         beginner: 0,
       },
       SR: {
          characters: 0,
          weapons: 0,
          standard: 0,
+         beginner: 0,
       },
    });
 
@@ -201,9 +203,9 @@ const SummonSimulator = (data: any) => {
       currGuaranteedRateup = guaranteedRateup;
       //decide what banner type it is (weapon, character, standard, beginner) based on if there's featured stuff
       if (isBeginner) {
-         currRates = Object.assign({}, rates.standard);
-         // pityFunctionSSR = calculateSSRRateCharacter;
-         // pityFunctionSR = calculateSRRateCharacter;
+         currRates = Object.assign({}, rates.beginner);
+         pityFunctionSSR = calculateSSRRateCharacter;
+         pityFunctionSR = calculateSRRateCharacter;
          bannerType = "beginner";
       } else if (currRatesDict.current.SSR.featured.weapons.length > 0) {
          currRates = Object.assign({}, rates.weapons);
@@ -229,10 +231,9 @@ const SummonSimulator = (data: any) => {
          currCurrencySpent += costPerPullCurrency;
          currMoneySpent += costPerPullMoney;
          const pullChance = Math.random() * 100;
-         if (bannerType !== "beginner") {
-            currRates.SSR = pityFunctionSSR(currPityCounters.SSR[bannerType]);
-            currRates.SR = pityFunctionSR(currPityCounters.SR[bannerType]);
-         }
+
+         currRates.SSR = pityFunctionSSR(currPityCounters.SSR[bannerType]);
+         currRates.SR = pityFunctionSR(currPityCounters.SR[bannerType]);
 
          let currChance = 0;
          for (
@@ -246,6 +247,7 @@ const SummonSimulator = (data: any) => {
                //currPriority = the rarity of the character they just pulled
                const pool = currRatesDict.current[currPriority];
                //each banner type is handled differently enough that we may as well just make 3 separate cases here
+
                switch (bannerType) {
                   case "weapons":
                      {
@@ -352,17 +354,19 @@ const SummonSimulator = (data: any) => {
                      break;
 
                   case "beginner":
-                     if (pullIdx === 7 && beginnerPulls === 0) {
-                        //guaranteed noelle
-                        const noelle =
-                           currRatesDict.current.SR.featured.characters[0];
-                        pulls.push(
-                           currRatesDict.current.SR.featured.characters[0]
+                     if (pullIdx === 9 && beginnerPulls === 4) {
+                        //guaranteed SSR
+                        let pullType = "characters";
+                        let finalPool =
+                           currRatesDict.current["SSR"].nonfeatured[pullType];
+                        let poolIdx = Math.floor(
+                           Math.random() * finalPool.length
                         );
                         addOrIncrementPulls(
-                           currGoodPulls.SR.characters,
-                           noelle
+                           currGoodPulls["SSR"][pullType],
+                           finalPool[poolIdx]
                         );
+                        pulls.push(finalPool[poolIdx]);
                      } else {
                         let pullType = "characters";
                         if (currPriority === "R") {
@@ -416,11 +420,13 @@ const SummonSimulator = (data: any) => {
             characters: 0,
             weapons: 0,
             standard: 0,
+            beginner: 0,
          },
          SR: {
             characters: 0,
             weapons: 0,
             standard: 0,
+            beginner: 0,
          },
       });
       setGuaranteedRateup({ SSR: false, SR: false });
@@ -556,7 +562,7 @@ const SummonSimulator = (data: any) => {
    };
    // Displayed Pull Result Items
 
-   function Pull({ pull }: any) {
+   function Pull({ pull, index }: any) {
       const resulttype = pull.character_id ? "characters" : "lightCones";
       var customcolor = "";
       switch (pull?.rarity?.name) {
@@ -573,6 +579,7 @@ const SummonSimulator = (data: any) => {
          <a href={`/collections/${resulttype}/${pull.id}`}>
             <div
                className={`m-0.5 inline-block rounded-md border border-color text-left laptop:w-5/12 w-full ${customcolor}`}
+               key={pull.id + "-" + index}
             >
                <div
                   className={`color-rarity-${
@@ -607,6 +614,7 @@ const SummonSimulator = (data: any) => {
          <a href={`/collections/${resulttype}/${pull.id}`}>
             <div
                className={`m-0.5 rounded-md border border border-color text-left ${customcolor}`}
+               key={pull.id + "-" + number}
             >
                <div
                   className={`color-rarity-${
@@ -894,7 +902,7 @@ const SummonSimulator = (data: any) => {
                               </td>
                            </tr>
                            <tr>
-                              <th className={tableStyle}>Acquaint Fate</th>
+                              <th className={tableStyle}>Tickets</th>
                               <td className={tableStyle}>
                                  {acquaintFateSpent}
                               </td>
@@ -947,8 +955,12 @@ const SummonSimulator = (data: any) => {
             <div>
                <div className="flex justify-between">
                   <button
-                     className={`rounded-full border border-gray-400 hover:bg-blue-700 hover:bg-opacity-10
-                         m-1 w-full px-2 py-1 dark:border-gray-600`}
+                     className={`rounded-full border border-gray-400 
+                         m-1 w-full px-2 py-1 dark:border-gray-600 ${
+                            isBeginner
+                               ? "opacity-50"
+                               : "hover:bg-blue-700 hover:bg-opacity-10"
+                         }`}
                      onClick={() => {
                         simulate(1);
                      }}
@@ -957,8 +969,12 @@ const SummonSimulator = (data: any) => {
                      Warp x1
                   </button>
                   <button
-                     className={`rounded-full border border-gray-400 hover:bg-blue-700 hover:bg-opacity-10
-                     m-1 w-full px-2 py-1 dark:border-gray-600`}
+                     className={`rounded-full border border-gray-400 
+                     m-1 w-full px-2 py-1 dark:border-gray-600 ${
+                        isBeginner && beginnerPulls >= 5
+                           ? "opacity-50"
+                           : "hover:bg-blue-700 hover:bg-opacity-10"
+                     }`}
                      onClick={() => {
                         simulate(10);
                      }}
@@ -979,8 +995,8 @@ const SummonSimulator = (data: any) => {
             <div>
                {/* <H2 text="Results" /> */}
                <div className="text-center">
-                  {pulls.map((pull: any) => (
-                     <Pull pull={pull} />
+                  {pulls.map((pull: any, index: any) => (
+                     <Pull pull={pull} index={index} />
                   ))}
                </div>
             </div>
@@ -1033,7 +1049,7 @@ const SummonSimulator = (data: any) => {
       @param pullItem - the item to add
     */
    function addOrIncrementPulls(pullsArray: any, pullItem: any) {
-      const idKey = pullItem.lightcone_id ? "lightcone_id" : "character_id";
+      const idKey = pullItem?.lightcone_id ? "lightcone_id" : "character_id";
       if (pullsArray[pullItem[idKey]]) {
          pullsArray[pullItem[idKey]] = pullsArray[pullItem[idKey]] + 1;
       } else {
@@ -1106,9 +1122,8 @@ const SummonSimulator = (data: any) => {
             },
          },
       };
-      if (banner.id === 1) {
+      if (banner.id == 1) {
          setIsBeginner(true);
-         setNumPerPull(10);
       } else if (isBeginner) {
          setIsBeginner(false);
       }
