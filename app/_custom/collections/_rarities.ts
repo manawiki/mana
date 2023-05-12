@@ -1,4 +1,4 @@
-import { isStaff } from "../../../db/access";
+import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const _Rarities: CollectionConfig = {

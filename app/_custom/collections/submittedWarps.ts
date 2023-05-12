@@ -1,4 +1,4 @@
-import { isStaff } from "../../../db/access";
+import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const SubmittedWarps: CollectionConfig = {
@@ -75,7 +75,7 @@ export const SubmittedWarps: CollectionConfig = {
                label: "file",
                value: "file",
             },
-         ]
+         ],
       },
       {
          name: "icon",
