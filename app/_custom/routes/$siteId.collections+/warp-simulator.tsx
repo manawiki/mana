@@ -16,13 +16,14 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Image } from "~/components";
+import { H2 } from "~/_custom/components/custom";
 
 export async function loader({
    context: { payload },
    params,
    request,
 }: LoaderArgs) {
-   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=500`;
+   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=500&sort=id`;
    const bannerRaw = await (await fetch(url)).json();
    const banners = bannerRaw.docs;
 
@@ -61,7 +62,7 @@ const SummonSimulator = (data: any) => {
    // TODO maybe use useReducer?
    const [beginnerPulls, setBeginnerPulls] = useState(0); //only 2 pulls allowed on beginner pull
    const [isBeginner, setIsBeginner] = useState(false); //only 2 pulls allowed on beginner pull
-   const [currentBanner, setCurrentBanner] = useState(banners?.slice(-1)?.[0]);
+   const [currentBanner, setCurrentBanner] = useState(banners?.slice(-2)?.[0]); // take the latest banner
    useEffect(() => {
       buildRatesDict(currentBanner);
    }, []);
@@ -100,7 +101,6 @@ const SummonSimulator = (data: any) => {
    const [moneySpent, setMoneySpent] = useState(0);
    const [acquaintFateSpent, setAcquaintFateSpent] = useState(0);
    const [currencySpent, setCurrencySpent] = useState(0);
-   const [numPerPull, setNumPerPull] = useState(10);
 
    /*
       ========================================================================
@@ -156,7 +156,7 @@ const SummonSimulator = (data: any) => {
    const rarityMap = {
       QUALITY_PURPLE: 4,
    };
-   const costPerPullCurrency = 160; //primogems (genesis crystals?) per roll
+   const costPerPullCurrency = 160; //Oneiric Shards (genesis crystals?) per roll
    const costPerPullMoney = 1.98; //usd per roll based on most efficient, permanent package, no first-time bonus
    const selectedBG =
       "bg-blue-800 dark:bg-blue-200 text-blue-200 dark:text-blue-800 font-bold"; //placeholder styling, just to let them know which weapon is selected
@@ -185,7 +185,7 @@ const SummonSimulator = (data: any) => {
       },
    };
    const rollOrder = ["SSR", "SR", "R"]; //roll priority
-   const simulate = () => {
+   const simulate = (numPerPull: any) => {
       let currRates: any = null;
       let pityFunctionSSR = null,
          pityFunctionSR = null;
@@ -466,23 +466,23 @@ const SummonSimulator = (data: any) => {
       return (
          <Combobox value={currentBanner} onChange={simChanged}>
             <div className="relative mt-1">
-               <div className="sm:text-sm relative w-full cursor-default overflow-hidden rounded-lg border border-gray-200 bg-white text-left dark:border-gray-700 dark:bg-dark_100">
+               <div className="sm:text-sm relative w-full cursor-default overflow-hidden rounded-lg border border-gray-200 bg-white text-left dark:border-gray-700 dark:bg-neutral-800">
                   <Combobox.Input
-                     className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5"
+                     className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 dark:bg-neutral-800"
                      onChange={(event) => setBannerQuery(event.target.value)}
                      displayValue={(banner: any) => banner.name}
                   />
                   <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                     {/* <BsFillCaretDownFill className="h-2.5 w-2.5" /> */}
+                     <CaretDownIcon class="h-3 w-3" />
                   </Combobox.Button>
                </div>
-               <Combobox.Options className="sm:text-sm absolute z-10 max-h-60 w-full list-none overflow-auto rounded-md bg-white text-base shadow-lg focus:outline-none dark:bg-dark_100">
+               <Combobox.Options className="sm:text-sm absolute z-20 max-h-60 w-full list-none overflow-auto rounded-md bg-white text-base shadow-lg focus:outline-none dark:bg-neutral-700">
                   {filteredBanners.map((banner: any) => (
                      <Combobox.Option
                         key={banner.id}
                         value={banner}
                         className={({ active }) =>
-                           `relative m-0 cursor-default select-none p-1 ${
+                           `relative m-0 cursor-default select-none py-1 px-3 ${
                               active ? "bg-gray-300 dark:bg-gray-700" : ""
                            }`
                         }
@@ -558,9 +558,22 @@ const SummonSimulator = (data: any) => {
 
    function Pull({ pull }: any) {
       const resulttype = pull.character_id ? "characters" : "lightCones";
+      var customcolor = "";
+      switch (pull?.rarity?.name) {
+         case "5":
+            customcolor = "bg-orange-500 bg-opacity-5 font-bold";
+            break;
+         case "4":
+            customcolor = "bg-purple-500 bg-opacity-5 font-bold";
+            break;
+         default:
+      }
+
       return (
          <a href={`/collections/${resulttype}/${pull.id}`}>
-            <div className="m-0.5 rounded-md border border-gray-200 text-left dark:border-gray-800">
+            <div
+               className={`m-0.5 inline-block rounded-md border border-color text-left laptop:w-5/12 w-full ${customcolor}`}
+            >
                <div
                   className={`color-rarity-${
                      pull.rarity ? pull.rarity.name : "1"
@@ -569,8 +582,7 @@ const SummonSimulator = (data: any) => {
                   <Image
                      alt="Icon"
                      url={pull.icon ? pull.icon.url : "no_image_42df124128"}
-                     width={50}
-                     height={50}
+                     className="object-contain h-12 w-12"
                   />
                </div>
                <div className="ml-2 inline-block align-middle">{pull.name}</div>
@@ -581,9 +593,21 @@ const SummonSimulator = (data: any) => {
 
    function GoodPull({ pull, number }: any) {
       const resulttype = pull.character_id ? "characters" : "lightCones";
+      var customcolor = "";
+      switch (pull?.rarity?.name) {
+         case "5":
+            customcolor = "bg-orange-500 bg-opacity-5 font-bold";
+            break;
+         case "4":
+            customcolor = "bg-purple-500 bg-opacity-5 font-bold";
+            break;
+         default:
+      }
       return (
          <a href={`/collections/${resulttype}/${pull.id}`}>
-            <div className="m-0.5 rounded-md border border-gray-200 text-left dark:border-gray-800">
+            <div
+               className={`m-0.5 rounded-md border border border-color text-left ${customcolor}`}
+            >
                <div
                   className={`color-rarity-${
                      pull.rarity ? pull.rarity.name : "1"
@@ -592,8 +616,7 @@ const SummonSimulator = (data: any) => {
                   <Image
                      alt="Icon"
                      url={pull.icon.url}
-                     width={50}
-                     height={50}
+                     className="object-contain h-12 w-12"
                   />
                </div>
                <div className="ml-2 inline-block align-middle">
@@ -635,7 +658,7 @@ const SummonSimulator = (data: any) => {
                      <>
                         <Disclosure.Button
                            className="mb-1 mt-2 flex w-full
-               items-center rounded-md border bg-gray-50 px-3 py-2 font-bold shadow-sm dark:border-dark_50 dark:bg-dark_200"
+               items-center rounded-md border bg-gray-50 dark:bg-neutral-800 px-3 py-2 font-bold shadow-sm border-color"
                         >
                            Banner Rate Details
                            <div
@@ -645,11 +668,11 @@ const SummonSimulator = (data: any) => {
                                     : "text-gray-400"
                               } ml-auto inline-block `}
                            >
-                              {/* <BsFillCaretDownFill className="h-2.5 w-2.5" /> */}
+                              <CaretDownIcon class="h-2.5 w-2.5" />
                            </div>
                         </Disclosure.Button>
                         <Disclosure.Panel className="mb-5">
-                           <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-dark_50 dark:bg-dark_200">
+                           <div className="rounded-md border bg-gray-50 dark:bg-neutral-900 px-4 py-3 text-center text-sm border-color">
                               <div
                                  className="break-words px-2"
                                  dangerouslySetInnerHTML={{
@@ -802,27 +825,29 @@ const SummonSimulator = (data: any) => {
       DEFAULT RENDER
       ==================================================================================
     */
+   const tableStyle = "p-1";
    return (
       <>
          <div className="mx-auto max-w-[728px] max-laptop:px-3">
             <h2>Select Banner</h2>
             <BannerCombobox />
 
-            <h2>Banner Info</h2>
+            <H2 text="Banner Info" />
             <h3 className="text-center">{currentBanner.name}</h3>
-            <div className="display-contents relative inline-block text-center h-40 w-full px-2 laptop:h-80 ">
+            <div className="display-contents relative inline-block text-center h-32 w-full px-2 laptop:h-40 ">
                {currentBanner.icon?.url && (
                   <Image
                      alt={currentBanner?.name}
-                     className="object-contain h-40 laptop:h-80 inline-block"
+                     className="object-contain h-32 laptop:h-40 inline-block"
                      url={currentBanner.icon?.url}
                   />
                )}
             </div>
-            <div className="my-1 h-24 w-full overflow-y-auto rounded-md p-1 px-2">
-               {currentBanner.description}
-            </div>
-            <h2>Current Info</h2>
+            <div
+               className="my-1 h-min w-full rounded-md p-1 px-2 text-center"
+               dangerouslySetInnerHTML={{ __html: currentBanner.description }}
+            ></div>
+
             <div>
                {/* <h3>Guaranteed Rateup</h3>
           <table>
@@ -839,123 +864,111 @@ const SummonSimulator = (data: any) => {
               <td>{receivedGuaranteedRateup.SR ? "Yes" : "No"}</td>
             </tr>
           </table> */}
-               <h3>Money Spent</h3>
-               <table>
-                  <tr>
-                     <th>
-                        <div>
-                           <div className="relative inline-block h-6 w-6 align-middle">
-                              <Image
-                                 alt="Icon"
-                                 url="https://static.mana.wiki/file/mana-prod/starrail/ItemIcon_900001.png"
-                              />
-                           </div>
-                           <div className="inline-block align-middle">
-                              Stellar Jade
-                           </div>
-                        </div>
-                     </th>
-                     <td>{currencySpent}</td>
-                  </tr>
-                  <tr>
-                     <th>USD</th>
-                     <td>${moneySpent.toFixed(2)}</td>
-                  </tr>
-                  <tr>
-                     <th>Acquaint Fate</th>
-                     <td>{acquaintFateSpent}</td>
-                  </tr>
-               </table>
-               <h3>Pity Counters</h3>
-               <table>
-                  <thead>
-                     <tr>
-                        <th>Rarity</th>
-                        <th>Character</th>
-                        <th>Weapon</th>
-                        <th>Standard</th>
-                     </tr>
-                  </thead>
-                  <tbody>
-                     <tr>
-                        <th>SSR</th>
-                        <td>{pityCounters.SSR.characters}</td>
-                        <td>{pityCounters.SSR.weapons}</td>
-                        <td>{pityCounters.SSR.standard}</td>
-                     </tr>
-                     <tr>
-                        <th>SR</th>
-                        <td>{pityCounters.SR.characters}</td>
-                        <td>{pityCounters.SR.weapons}</td>
-                        <td>{pityCounters.SR.standard}</td>
-                     </tr>
-                  </tbody>
-               </table>
+
+               <div className="grid laptop:grid-cols-2">
+                  <div className="text-center">
+                     <h3>Money Spent</h3>
+                     <table className="inline-block">
+                        <thead></thead>
+                        <tbody>
+                           <tr>
+                              <th className={tableStyle}>
+                                 <div>
+                                    <div className="relative inline-block h-6 w-6 align-middle">
+                                       <Image
+                                          alt="Icon"
+                                          url="https://static.mana.wiki/file/mana-prod/starrail/ItemIcon_900001.png"
+                                       />
+                                    </div>
+                                    <div className="inline-block align-middle">
+                                       Stellar Jade
+                                    </div>
+                                 </div>
+                              </th>
+                              <td className={tableStyle}>{currencySpent}</td>
+                           </tr>
+                           <tr>
+                              <th className={tableStyle}>USD</th>
+                              <td className={tableStyle}>
+                                 ${moneySpent.toFixed(2)}
+                              </td>
+                           </tr>
+                           <tr>
+                              <th className={tableStyle}>Acquaint Fate</th>
+                              <td className={tableStyle}>
+                                 {acquaintFateSpent}
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+                  <div className="text-center">
+                     <h3>Pity Counters</h3>
+                     <table className="inline-block">
+                        <thead>
+                           <tr>
+                              <th className={tableStyle}>Rarity</th>
+                              <th className={tableStyle}>Character</th>
+                              <th className={tableStyle}>Weapon</th>
+                              <th className={tableStyle}>Standard</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <th className={tableStyle}>SSR</th>
+                              <td className={tableStyle}>
+                                 {pityCounters.SSR.characters}
+                              </td>
+                              <td className={tableStyle}>
+                                 {pityCounters.SSR.weapons}
+                              </td>
+                              <td className={tableStyle}>
+                                 {pityCounters.SSR.standard}
+                              </td>
+                           </tr>
+                           <tr>
+                              <th className={tableStyle}>SR</th>
+                              <td className={tableStyle}>
+                                 {pityCounters.SR.characters}
+                              </td>
+                              <td className={tableStyle}>
+                                 {pityCounters.SR.weapons}
+                              </td>
+                              <td className={tableStyle}>
+                                 {pityCounters.SR.standard}
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
             </div>
 
-            {/* Description Drop Down Accordion for how Rates work */}
-            <BannerRateDetailDropDown />
-
-            <h2>Sim Options</h2>
             <div>
                <div className="flex justify-between">
                   <button
-                     className={`rounded-full border border-gray-400 ${
-                        numPerPull === 1 ? selectedBG : unselectedBG
-                     } m-1 w-full px-2 py-1 dark:border-gray-600`}
+                     className={`rounded-full border border-gray-400 hover:bg-blue-700 hover:bg-opacity-10
+                         m-1 w-full px-2 py-1 dark:border-gray-600`}
                      onClick={() => {
-                        setNumPerPull(1);
+                        simulate(1);
                      }}
                      disabled={isBeginner}
                   >
-                     Wish x1
+                     Warp x1
                   </button>
                   <button
-                     className={`rounded-full border border-gray-400 ${
-                        numPerPull === 10 ? selectedBG : unselectedBG
-                     } m-1 w-full px-2 py-1 dark:border-gray-600`}
+                     className={`rounded-full border border-gray-400 hover:bg-blue-700 hover:bg-opacity-10
+                     m-1 w-full px-2 py-1 dark:border-gray-600`}
                      onClick={() => {
-                        setNumPerPull(10);
+                        simulate(10);
                      }}
                   >
-                     Wish x10
+                     Warp x10
                   </button>
                </div>
-               {currentBanner.featured_light_cones &&
-                  currentBanner.featured_light_cones.length > 1 &&
-                  currentBanner.id > 32 && (
-                     <div>
-                        <h3>Epitomized Path: Select Target Weapon</h3>
-                        {currentBanner.featured_light_cones.map(
-                           (weapon: any) => (
-                              <>
-                                 {is5StarWeapon(weapon.id) ? (
-                                    <TargetWeaponButton
-                                       weapon={getWeaponById(weapon.id)}
-                                    />
-                                 ) : null}
-                              </>
-                           )
-                        )}
-                        <div className="text-center italic">
-                           Non-Target Featured Weapons Pulled:{" "}
-                           {targetWeaponPulled
-                              ? "Already pulled target."
-                              : nonTargetWeaponPulled}
-                        </div>
-                     </div>
-                  )}
             </div>
-
             <button
-               className="mt-4 w-full rounded-full border border-yellow-900 bg-yellow-600 p-3 text-white dark:border-gray-600 dark:bg-yellow-900"
-               onClick={simulate}
-               disabled={isBeginner && beginnerPulls >= 2}
-            >
-               Pull x{numPerPull}
-            </button>
-            <button
-               className="my-2 w-full rounded-full border border-gray-400 bg-gray-200 px-2 py-1 dark:border-gray-600 dark:bg-gray-800"
+               className="my-2 w-full rounded-full border border-gray-400 bg-gray-200 px-2 py-1 dark:border-gray-600 dark:bg-gray-800 hover:bg-red-900 hover:bg-opacity-10"
                onClick={() => {
                   reset();
                }}
@@ -964,16 +977,20 @@ const SummonSimulator = (data: any) => {
             </button>
 
             <div>
-               <h2>Results</h2>
-               {pulls.map((pull: any) => (
-                  <Pull pull={pull} />
-               ))}
+               {/* <H2 text="Results" /> */}
+               <div className="text-center">
+                  {pulls.map((pull: any) => (
+                     <Pull pull={pull} />
+                  ))}
+               </div>
             </div>
             <div>
-               <h2>Rare Pulls</h2>
                <PullsTable header="SSR" pullsArray={goodPulls.SSR} />
                <PullsTable header="SR" pullsArray={goodPulls.SR} />
             </div>
+
+            {/* Description Drop Down Accordion for how Rates work */}
+            <BannerRateDetailDropDown />
          </div>
       </>
    );
@@ -1181,5 +1198,21 @@ const SummonSimulator = (data: any) => {
       return rate;
    }
 };
+
+// =====================================
+// For rendering Down Icon
+// =====================================
+export const CaretDownIcon = (props: any) => (
+   <svg
+      className={props.class}
+      width={props.w}
+      height={props.h}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+   >
+      <path fill="currentColor" d="M20 8H4L12 16L20 8Z"></path>
+   </svg>
+);
 
 export default SummonSimulator;
