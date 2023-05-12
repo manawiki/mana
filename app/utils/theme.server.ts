@@ -4,28 +4,17 @@ import { isTheme } from "./theme-provider";
 import type { Theme } from "./theme-provider";
 
 const sessionSecret = process.env.PAYLOADCMS_SECRET ?? "DEFAULT_SECRET";
+const isDev = process.env.NODE_ENV == "development";
 
 const themeStorage = createCookieSessionStorage({
    cookie: {
       name: "theme",
-      secure:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? false
-            : true,
+      secure: isDev ? false : true,
       path: "/",
-      domain:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? "localhost"
-            : ".mana.wiki",
+      domain: isDev ? "localhost" : ".mana.wiki",
       secrets: [sessionSecret],
-      httpOnly:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? false
-            : true,
-      sameSite:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? "lax"
-            : "none",
+      httpOnly: isDev ? false : true,
+      sameSite: isDev ? "lax" : "none",
    },
 });
 
