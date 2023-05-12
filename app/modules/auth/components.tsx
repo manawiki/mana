@@ -1,4 +1,4 @@
-import type { Collection, Site, User } from "payload-types";
+import type { Site, User } from "payload-types";
 import { useRouteLoaderData } from "@remix-run/react";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 

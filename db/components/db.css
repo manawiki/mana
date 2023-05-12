@@ -1,0 +1,26 @@
+.nav header {
+   margin-top: 40px;
+   margin-bottom: 20px;
+}
+.side-menu {
+   position: fixed;
+   top: 0px;
+   left: 0px;
+   width: var(--nav-width);
+   border-bottom: 1px solid var(--theme-elevation-100);
+   border-right: 1px solid var(--theme-elevation-100);
+   background: var(--theme-input-bg);
+   padding: 0.75rem 1rem;
+}
+
+.side-menu-nested {
+   display: flex;
+   align-items: center;
+   gap: 0.25rem;
+}
+.collection-edit__collection-actions {
+   padding: 18px;
+}
+.nav__controls {
+   display: none;
+}

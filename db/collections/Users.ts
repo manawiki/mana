@@ -42,7 +42,6 @@ export const Users: CollectionConfig = {
          },
       },
       forgotPassword: {
-         //@ts-expect-error
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =
@@ -86,7 +85,7 @@ export const Users: CollectionConfig = {
       create: () => true,
       delete: isStaffOrSelf,
       update: isStaffOrSelf,
-      //@ts-expect-error
+      //@ts-ignore
       admin: isStaff,
    },
    fields: [

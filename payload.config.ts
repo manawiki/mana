@@ -5,6 +5,8 @@ import { Users } from "./db/collections/Users";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
+import { Logo } from "./db/components/Logo";
+import { BackMana } from "./db/components/BackMana";
 
 dotenv.config();
 
@@ -25,6 +27,14 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    admin: {
+      components: {
+         beforeNavLinks: [BackMana],
+         graphics: {
+            Icon: Logo,
+            Logo: Logo,
+         },
+      },
+      css: path.resolve(__dirname, "./db/components/db.css"),
       user: Users.slug,
       meta: {
          favicon: "/favicon.ico",
