@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../access";
+import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 
 export type envType = "local" | "dev-server" | "production";
 

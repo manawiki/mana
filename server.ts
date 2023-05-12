@@ -6,7 +6,8 @@ import payload from "payload";
 import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
 import nodemailerSendgrid from "nodemailer-sendgrid";
-import buildConfig from "./payload.custom.config";
+import customBuildConfig from "./app/db/payload.custom.config";
+import coreBuildConfig from "./app/db/payload.config";
 
 require("dotenv").config();
 
@@ -51,7 +52,7 @@ const startCustom = async () => {
    invariant(process.env.CUSTOM_MONGO_URL, "CUSTOM_MONGO_URL is required");
 
    await payload.init({
-      config: buildConfig,
+      config: customBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.CUSTOM_MONGO_URL,
       express: app,
@@ -107,6 +108,7 @@ const startCore = async () => {
 
    // Initialize Payload
    await payload.init({
+      config: coreBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.MONGO_URL,
       express: app,

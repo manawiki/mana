@@ -1,4 +1,4 @@
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../access";
+import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 import type { User } from "payload/generated-types";
 import type { CollectionConfig } from "payload/types";
 
