@@ -10,7 +10,7 @@ export const Videos = ({ pageData }: any) => {
                {vids.map((v: any) => {
                   const embedurl = v.url.replace(/.*v=/, "");
 
-                  console.log(`https://www.youtube.com/embed/${embedurl}`);
+                  // console.log(`https://www.youtube.com/embed/${embedurl}`);
 
                   return (
                      <>
