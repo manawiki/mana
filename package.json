@@ -13,7 +13,6 @@
       "custom": "cross-env NODE_ENV=development APP_TYPE=custom PAYLOAD_CONFIG_PATH=payload.custom.config.ts nodemon --exec 'ts-node --require dotenv/config ./server.ts'  --watch ./server.ts",
       "custom-build": "cross-env PAYLOAD_CONFIG_PATH=payload.custom.config.ts payload generate:types && run-s \"custom-build:*\"",
       "custom-build:payload": "cross-env PAYLOAD_CONFIG_PATH=payload.custom.config.ts payload build",
-      "custom-build:server": "tsc -p tsconfig.custom.json",
       "start:custom": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.custom.config.js APP_TYPE=custom NODE_ENV=production node dist/server.js",
       "typecheck": "tsc -p tsconfig.server.json",
       "generate:types": "cross-env payload generate:types",
