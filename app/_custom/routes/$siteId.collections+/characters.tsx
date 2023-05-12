@@ -7,24 +7,6 @@ import { Search, SortDesc } from "lucide-react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
-
 export async function loader({
    context: { payload },
    params,
@@ -33,8 +15,9 @@ export async function loader({
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=100`;
    const characterRaw = await (await fetch(url)).json();
    const characters = characterRaw.docs;
-
-   return json({ characters });
+   return json(characters, {
+      headers: { "Cache-Control": "public, s-maxage=60" },
+   });
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -47,8 +30,6 @@ export const meta: V2_MetaFunction = () => {
 };
 export default function HomePage() {
    const { characters } = useLoaderData<typeof loader>();
-
-   // console.log(characters);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <CharacterList chars={characters} />

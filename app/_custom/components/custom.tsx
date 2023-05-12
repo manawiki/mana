@@ -2,8 +2,8 @@ export const H2 = ({ text }: { text: string }) => {
    return (
       <>
          <h2
-            className="border-color shadow-1 relative mt-8 overflow-hidden rounded-lg 
-         border-2 px-4 py-3 text-xl shadow-sm"
+            className="border-color shadow-1 relative mb-2.5 mt-8 overflow-hidden 
+         rounded-lg border-2 px-4 py-3 text-xl shadow-sm"
          >
             <div
                className="pattern-dots absolute left-0
