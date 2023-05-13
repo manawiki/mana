@@ -10,6 +10,7 @@
       "jsx": "react-jsx",
       "baseUrl": ".",
       "paths": {
+         "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-types.ts"]
       }
    },
