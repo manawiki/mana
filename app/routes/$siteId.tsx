@@ -69,15 +69,14 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const slug = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteId,
+   const url = new URL(request.url).origin;
+   const slug = (await (
+      await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=1`, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
          },
-      },
-      user,
-   });
+      })
+   ).json()) as Site;
    const site = slug?.docs[0];
    if (!site) {
       throw json(null, { status: 404 });

@@ -6,6 +6,7 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
+import { cachePlugin } from "@aengz/payload-redis-cache";
 
 dotenv.config();
 
@@ -54,6 +55,8 @@ export default buildConfig({
             },
          },
       }),
+      //@ts-ignore
+      ...(process.env.NODE_ENV == "production" ? cachePlugin({}) : []),
    ],
    collections,
    typescript: {
