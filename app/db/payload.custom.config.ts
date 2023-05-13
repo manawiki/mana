@@ -8,6 +8,7 @@ import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import { Users } from "./collections/CustomUsers";
 import { CustomCollections } from "../_custom/collections";
+import { cachePlugin } from "@aengz/payload-redis-cache";
 
 dotenv.config();
 
