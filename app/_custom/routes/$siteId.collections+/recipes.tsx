@@ -48,7 +48,6 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { recipes } = useLoaderData<typeof loader>();
 
-   // console.log(characters);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <RecipeList chars={recipes} />
@@ -158,7 +157,7 @@ const RecipeList = ({ chars }: any) => {
                               return (
                                  <>
                                     <div
-                                       className={`bg-3 border-color rounded-lg border px-2.5 py-1 w-24 h-24 ${
+                                       className={`bg-3 border-color h-24 w-24 rounded-lg border px-2.5 py-1 ${
                                           filters.find(
                                              (a: any) => a.id == opt.id
                                           )
@@ -277,14 +276,14 @@ const RecipeList = ({ chars }: any) => {
                return (
                   <>
                      <div className="bg-2 border-color shadow-1 rounded-sm border shadow-sm">
-                        <div className="flex justify-between align-center p-2">
+                        <div className="align-center flex justify-between p-2">
                            {/* Result Item */}
                            <Link
                               to={`/starrail/collections/${collectionName}/${cid}`}
                               className="inline-flex"
                            >
                               <div className="inline-flex items-center">
-                                 <div className="inline-flex w-16 h-16 rounded-md">
+                                 <div className="inline-flex h-16 w-16 rounded-md">
                                     <Image
                                        url={curl ?? "no_image_42df124128"}
                                        className={`object-contain color-rarity-${
@@ -293,7 +292,7 @@ const RecipeList = ({ chars }: any) => {
                                        alt={cname}
                                     />
                                  </div>
-                                 <div className="inline-flex ml-2">{cname}</div>
+                                 <div className="ml-2 inline-flex">{cname}</div>
                               </div>
                            </Link>
 
@@ -313,7 +312,7 @@ const RecipeList = ({ chars }: any) => {
                                     {/* Special Ingredients */}
                                     {spec?.length > 0 ? (
                                        <>
-                                          <div className="inline-block mx-1">
+                                          <div className="mx-1 inline-block">
                                              <div className="w-full">
                                                 {spec?.map((mat: any) => (
                                                    <ItemFrameSmall mat={mat} />
@@ -342,7 +341,7 @@ const ItemFrameSmall = ({ mat }: any) => {
    return (
       <>
          <Link to={`/starrail/collections/materials/${mat?.id}`}>
-            <div className="relative inline-block h-8 w-8 align-middle text-xs m-0.5">
+            <div className="relative m-0.5 inline-block h-8 w-8 align-middle text-xs">
                <Image
                   url={mat?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${

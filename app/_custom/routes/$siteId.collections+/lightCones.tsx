@@ -47,8 +47,6 @@ export const meta: V2_MetaFunction = () => {
 };
 export default function HomePage() {
    const { lightCones } = useLoaderData<typeof loader>();
-
-   console.log(lightCones);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <LightConeList chars={lightCones} />

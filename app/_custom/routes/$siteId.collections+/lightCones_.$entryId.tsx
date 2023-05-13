@@ -65,8 +65,6 @@ export default function LightConeEntry() {
    const { defaultData } = useLoaderData<typeof loader>();
    // const { relicData } = useLoaderData<typeof loader>();
 
-   console.log(defaultData);
-   // console.log(entryDefault);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />

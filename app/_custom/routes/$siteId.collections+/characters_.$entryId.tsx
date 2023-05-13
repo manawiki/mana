@@ -70,9 +70,6 @@ export default function CharacterEntry() {
       { name: "Gallery", link: "gallery" },
       { name: "Profile", link: "profile" },
    ];
-
-   // console.log(defaultData);
-   // console.log(skillTreeData);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />

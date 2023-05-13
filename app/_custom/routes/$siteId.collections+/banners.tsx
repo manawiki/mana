@@ -46,7 +46,6 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { banners } = useLoaderData<typeof loader>();
 
-   console.log(banners);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <BannerList banners={banners} />

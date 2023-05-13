@@ -1162,12 +1162,9 @@ const ScreenshotButton = () => {
          className=""
          onClick={() => {
             const summ = document.getElementById("hsr-char-summary");
-            console.log(summ);
             getScreenshotOfElement(summ, 0, 0, 960, 512, function (data) {
                // in the data variable there is the base64 image
                // exmaple for displaying the image in an <img>
-
-               console.log(data);
             });
          }}
       >

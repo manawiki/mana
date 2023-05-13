@@ -14,7 +14,6 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
    //    const urelics = relicData
    //       ?.map((r: any) => r.name)
    //       .filter((v: any, i: any, a: any) => a.indexOf(v) == i);
-   console.log(urelics);
 
    // Get max rarity for relic set
    const rarities = relicData
@@ -66,13 +65,11 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
       (rar: any) => rar.rarity == activeRarity
    )?.maxlv;
 
-   console.log(maxlv);
-
    return (
       <>
          <h2>Relics in Set</h2>
 
-         <div className="justify-between my-1 rounded-md border dark:border-gray-700 dark:bg-neutral-800 text-center">
+         <div className="my-1 justify-between rounded-md border text-center dark:border-gray-700 dark:bg-neutral-800">
             {urelics?.map((rname: any) => {
                // Find the relic's entries in the relicData array
                const curr = relicData.filter((r: any) => r.name == rname);
@@ -81,13 +78,13 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                return (
                   <>
                      <div
-                        className="inline-block align-top m-1 cursor-pointer overflow-x-auto"
+                        className="m-1 inline-block cursor-pointer overflow-x-auto align-top"
                         onClick={(e) => {
                            setActiveRelic(rname);
                         }}
                      >
                         <div
-                           className={`rounded-md mb-1 border dark:border-gray-700 w-24 h-24 ${
+                           className={`mb-1 h-24 w-24 rounded-md border dark:border-gray-700 ${
                               activeRelic == rname
                                  ? "bg-blue-800 bg-opacity-20"
                                  : ""
@@ -96,10 +93,10 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                            <img src={rimg} className="object-contain" />
                         </div>
                         <div
-                           className={`text-xs text-center w-24 ${
+                           className={`w-24 text-center text-xs ${
                               activeRelic == rname
-                                 ? "dark:text-blue-200 text-blue-900 "
-                                 : "dark:text-gray-400 text-gray-600"
+                                 ? "text-blue-900 dark:text-blue-200 "
+                                 : "text-gray-600 dark:text-gray-400"
                            }}`}
                         >
                            {rname}
@@ -119,7 +116,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                return (
                   <>
                      <div
-                        className={`inline-flex w-full border rounded-md p-2 justify-center cursor-pointer dark:border-gray-700 ${
+                        className={`inline-flex w-full cursor-pointer justify-center rounded-md border p-2 dark:border-gray-700 ${
                            activeRarity == r.toString()
                               ? "bg-blue-800 bg-opacity-20"
                               : ""
@@ -146,18 +143,18 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             })}
          </div>
 
-         <div className="border rounded-t-md mt-1 pt-1 font-bold text-lg text-center dark:border-gray-700 bg-yellow-800 bg-opacity-10">
+         <div className="mt-1 rounded-t-md border bg-yellow-800 bg-opacity-10 pt-1 text-center text-lg font-bold dark:border-gray-700">
             Main Stats
          </div>
-         <div className="border-l border-r border-b rounded-b-md text-center mb-1 p-2 dark:border-gray-700">
+         <div className="mb-1 rounded-b-md border-b border-l border-r p-2 text-center dark:border-gray-700">
             {/* Level Slider Section */}
             <div className="">
-               <div className="align-middle inline-flex justify-between pr-0.5">
+               <div className="inline-flex justify-between pr-0.5 align-middle">
                   Lv + {mainLevel}
                </div>
                {/* Level Input Box */}
                <input
-                  className="level-slider align-middle inline-flex justify-end w-4/5 rounded-lg my-2"
+                  className="level-slider my-2 inline-flex w-4/5 justify-end rounded-lg align-middle"
                   type="range"
                   min="0"
                   max={maxlv ?? 15}
@@ -172,20 +169,20 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             {mainStatData?.map((stat: any) => {
                return (
                   <>
-                     <div className="flex justify-between m-1 border dark:border-gray-700 dark:bg-neutral-800 rounded-sm text-center p-2">
+                     <div className="m-1 flex justify-between rounded-sm border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
                         <div className="inline-flex">
-                           <div className="w-6 h-6 inline-block align-middle rounded-full bg-gray-800 ">
+                           <div className="inline-block h-6 w-6 rounded-full bg-gray-800 align-middle ">
                               <img
                                  src={stat.stattype?.icon?.url}
                                  className="object-contain"
                               />
                            </div>
-                           <div className="inline-block align-middle self-center ml-2 text-sm">
+                           <div className="ml-2 inline-block self-center align-middle text-sm">
                               {stat.stattype?.name}
                            </div>
                         </div>
                         <div className="inline-flex">
-                           <div className="inline-block align-middle self-center">
+                           <div className="inline-block self-center align-middle">
                               {formatStat(stat.stats[mainLevel], stat.stattype)}
                            </div>
                         </div>
@@ -196,30 +193,30 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
          </div>
 
          {/* Substat Data */}
-         <div className="border rounded-t-md mt-1 pt-1 font-bold text-lg text-center dark:border-gray-700 bg-yellow-800 bg-opacity-10">
+         <div className="mt-1 rounded-t-md border bg-yellow-800 bg-opacity-10 pt-1 text-center text-lg font-bold dark:border-gray-700">
             Sub Stats
          </div>
-         <div className="border-l border-r border-b rounded-b-md text-center mb-1 p-2 dark:border-gray-700">
+         <div className="mb-1 rounded-b-md border-b border-l border-r p-2 text-center dark:border-gray-700">
             {/* All tiled possible Substats, and their three possible rolls */}
             {subStatData?.map((stat: any) => {
                return (
                   <>
-                     <div className="m-1 border dark:border-gray-700 dark:bg-neutral-800 rounded-sm text-center p-2">
+                     <div className="m-1 rounded-sm border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
                         <div className="inline-block w-2/5 text-left">
-                           <div className="w-6 h-6 inline-block align-middle rounded-full bg-gray-800 ">
+                           <div className="inline-block h-6 w-6 rounded-full bg-gray-800 align-middle ">
                               <img
                                  src={stat.stattype?.icon?.url}
                                  className="object-contain"
                               />
                            </div>
-                           <div className="inline-block align-middle self-center ml-2 text-sm">
+                           <div className="ml-2 inline-block self-center align-middle text-sm">
                               {stat.stattype?.name}
                            </div>
                         </div>
                         {stat.stats?.map((val: any) => {
                            return (
                               <>
-                                 <div className="inline-block w-1/6 align-middle self-center">
+                                 <div className="inline-block w-1/6 self-center align-middle">
                                     {formatStat(val, stat.stattype)}
                                  </div>
                               </>

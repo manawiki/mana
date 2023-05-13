@@ -56,8 +56,6 @@ export default function CharacterEntry() {
    const { defaultData } = useLoaderData<typeof loader>();
    const { relicData } = useLoaderData<typeof loader>();
 
-   // console.log(defaultData);
-   // console.log(relicData);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />

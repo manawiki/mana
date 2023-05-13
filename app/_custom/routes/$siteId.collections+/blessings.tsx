@@ -48,7 +48,6 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { blessings } = useLoaderData<typeof loader>();
 
-   // console.log(characters);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <BlessingList chars={blessings} />
@@ -317,7 +316,7 @@ const BlessingList = ({ chars }: any) => {
                   <>
                      <Link
                         to={`/starrail/collections/${collectionName}/${cid}`}
-                        className="bg-2 border-color shadow-1 rounded-sm border shadow-sm overflow-hidden"
+                        className="bg-2 border-color shadow-1 overflow-hidden rounded-sm border shadow-sm"
                      >
                         <div>
                            <div
@@ -327,12 +326,12 @@ const BlessingList = ({ chars }: any) => {
                               <div className="absolute bottom-1 z-20 h-8 w-full text-center">
                                  <Image
                                     alt="Stars"
-                                    className="inline-block z-20 h-8 w-20 rounded-full  object-contain"
+                                    className="z-20 inline-block h-8 w-20 rounded-full  object-contain"
                                     url={rarityurl}
                                  />
                               </div>
 
-                              <div className="absolute flex h-40 w-full justify-center items-center">
+                              <div className="absolute flex h-40 w-full items-center justify-center">
                                  {/* Main Image */}
                                  <div className="inline-flex h-32 w-32">
                                     {curl ? (
@@ -346,7 +345,7 @@ const BlessingList = ({ chars }: any) => {
                               </div>
 
                               {/* RogueBgImage */}
-                              <div className="inline-block flex h-40 w-full justify-center items-end">
+                              <div className="inline-block flex h-40 w-full items-end justify-center">
                                  <div className="inline-flex h-auto w-auto">
                                     <Image
                                        alt="Background"
@@ -357,13 +356,13 @@ const BlessingList = ({ chars }: any) => {
                               </div>
                            </div>
                            <div
-                              className="relative w-full bg-gray-200 dark:bg-neutral-700 border-b dark:border-neutral-600 text-center font-bold px-2 pb-1 pt-2"
+                              className="relative w-full border-b bg-gray-200 px-2 pb-1 pt-2 text-center font-bold dark:border-neutral-600 dark:bg-neutral-700"
                               dangerouslySetInnerHTML={{
                                  __html: cname,
                               }}
                            ></div>
                            <div
-                              className="relative w-full h-full rounded-b-md text-sm text-center p-2"
+                              className="relative h-full w-full rounded-b-md p-2 text-center text-sm"
                               dangerouslySetInnerHTML={{
                                  __html: descsimple,
                               }}
