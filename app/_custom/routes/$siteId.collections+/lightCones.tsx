@@ -239,7 +239,6 @@ const LightConeList = ({ chars }: any) => {
                   );
                })}
             </div>
-
             {/* Search Text Box */}
             <div
                className="border-color bg-2 mb-2 mt-4 flex h-12
