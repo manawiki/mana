@@ -24,6 +24,6 @@ COPY --from=builder /home/node/public ./public
 COPY --from=builder /home/node/dist ./dist
 COPY --from=builder /home/node/build ./build
 
-EXPOSE 8080
+EXPOSE 4040
 
 CMD ["yarn", "run", "start:core"]

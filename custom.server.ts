@@ -5,7 +5,6 @@ import payload from "payload";
 import invariant from "tiny-invariant";
 import nodemailerSendgrid from "nodemailer-sendgrid";
 import customBuildConfig from "./app/db/payload.custom.config";
-import { initRedis } from "@aengz/payload-redis-cache";
 
 require("dotenv").config();
 const cors = require("cors");
@@ -17,11 +16,6 @@ const corsOptions = {
       "http://localhost:3000",
    ],
 };
-if (process.env.NODE_ENV == "production")
-   initRedis({
-      redisUrl: process.env.REDISHOST ?? "",
-   });
-
 //Start custom database (payload instance only)
 async function startCustom() {
    const app = express();
