@@ -56,6 +56,8 @@ export default buildConfig({
             },
          },
       }),
+      //@ts-ignore
+      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
    ],
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
