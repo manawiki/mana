@@ -37,7 +37,7 @@ function purgeRequireCache() {
 }
 if (process.env.NODE_ENV == "production")
    initRedis({
-      redisUrl: process.env.REDISHOST ?? "",
+      redisUrl: process.env.REDIS_URI ?? "",
    });
 
 //Start core site (remix + payload instance)

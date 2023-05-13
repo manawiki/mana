@@ -56,7 +56,7 @@ export default buildConfig({
          },
       }),
       //@ts-ignore
-      ...(process.env.NODE_ENV == "production" ? cachePlugin({}) : []),
+      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
    ],
    collections,
    typescript: {
