@@ -70,25 +70,20 @@ export default function LightConeEntry() {
          <EntryHeader entry={entryDefault} />
          <EntryContent>
             <Stats pageData={defaultData} />
-
+            
             {/* Effects for Light Cone */}
-            <h2>Effect</h2>
             <Effect pageData={defaultData} />
 
             {/* Promotion Cost for Weapon */}
-            <h2>Promotion Cost</h2>
             <PromotionCost pageData={defaultData} />
 
             {/* Description and Flavor Text */}
-            <h2>Description</h2>
             <Description pageData={defaultData} />
 
             {/* Additional Data */}
-            <h2>Additional Data</h2>
             <AdditionalData pageData={defaultData} />
 
             {/* Image Gallery */}
-            <h2>Images</h2>
             <ImageGallery pageData={defaultData} />
          </EntryContent>
       </EntryParent>
