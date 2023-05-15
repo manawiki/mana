@@ -3,6 +3,9 @@ FROM node:16-alpine as base
 ARG STATIC_URL
 ENV STATIC_URL $STATIC_URL
 
+ARG REDIS_URI
+ENV REDIS_URI $REDIS_URI
+
 FROM base as builder
 
 WORKDIR /home/node
