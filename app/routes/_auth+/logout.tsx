@@ -2,24 +2,13 @@ import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 export const action: ActionFunction = async ({ context: { res } }) => {
+   const isDev = process.env.NODE_ENV == "development";
    const cookieOptions = {
-      domain:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? "localhost"
-            : ".mana.wiki",
-      secure:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? false
-            : true,
+      domain: isDev ? "localhost" : ".mana.wiki",
+      secure: isDev ? false : true,
       path: "/",
-      httpOnly:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? false
-            : true,
-      sameSite:
-         process.env.PAYLOAD_PUBLIC_SERVER_ENVIRONMENT == "local"
-            ? "lax"
-            : ("none" as any), // Litteral types out of wack, typescript?
+      httpOnly: isDev ? false : true,
+      sameSite: isDev ? "lax" : ("none" as any), // Litteral types out of wack, typescript?
    };
    res.clearCookie("payload-token", cookieOptions);
    return redirect("/hq");

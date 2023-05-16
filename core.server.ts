@@ -6,7 +6,8 @@ import payload from "payload";
 import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
 import nodemailerSendgrid from "nodemailer-sendgrid";
-import buildConfig from "./payload.custom.config";
+import coreBuildConfig from "./app/db/payload.config";
+import { initRedis } from "@aengz/payload-redis-cache";
 
 require("dotenv").config();
 
@@ -34,61 +35,10 @@ function purgeRequireCache() {
       }
    }
 }
-
-//Start custom database (payload instance only)
-
-async function startCustom() {
-   const app = express();
-
-   app.use(cors(corsOptions));
-
-   // Redirect all traffic at root to admin UI
-   app.get("/", function (_, res) {
-      res.redirect("/admin");
+if (process.env.NODE_ENV == "production")
+   initRedis({
+      redisUrl: process.env.REDIS_URI ?? "",
    });
-
-   invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
-   invariant(process.env.CUSTOM_MONGO_URL, "CUSTOM_MONGO_URL is required");
-
-   await payload.init({
-      config: buildConfig,
-      secret: process.env.PAYLOADCMS_SECRET,
-      mongoURL: process.env.CUSTOM_MONGO_URL,
-      express: app,
-      onInit: () => {
-         payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
-      },
-      ...(process.env.SENDGRID_API_KEY
-         ? {
-              email: {
-                 transportOptions: nodemailerSendgrid({
-                    apiKey: process.env.SENDGRID_API_KEY,
-                 }),
-                 fromName: "No Reply - Mana Wiki",
-                 fromAddress: "dev@mana.wiki",
-              },
-           }
-         : {
-              email: {
-                 fromName: "Admin",
-                 fromAddress: "admin@example.com",
-                 logMockCredentials: true, // Optional
-              },
-           }),
-   });
-
-   app.use(compression());
-
-   app.disable("x-powered-by");
-
-   app.use(morgan("tiny"));
-
-   const port = process.env.PORT || 4000;
-
-   app.listen(port, () => {
-      console.log(`Custom server listening on port ${port}`);
-   });
-}
 
 //Start core site (remix + payload instance)
 
@@ -107,6 +57,7 @@ async function startCore() {
 
    // Initialize Payload
    await payload.init({
+      config: coreBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.MONGO_URL,
       express: app,
@@ -191,9 +142,4 @@ async function startCore() {
    });
 }
 
-if (process.env.APP_TYPE == "custom") {
-   startCustom();
-}
-if (process.env.APP_TYPE == "core") {
-   startCore();
-}
+startCore();

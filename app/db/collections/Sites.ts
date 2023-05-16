@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload/types";
-import { isStaff, isStaffFieldLevel, isLoggedIn } from "../access";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../access/user";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
@@ -23,6 +23,11 @@ export const Sites: CollectionConfig = {
          name: "slug",
          type: "text",
          unique: true,
+      },
+      {
+         name: "gaTagId",
+         label: "Google Analytics tag id",
+         type: "text",
       },
       {
          name: "type",

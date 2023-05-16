@@ -2,14 +2,14 @@ import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
 import { ForgeEditor } from "~/modules/editor/Editor";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
-import { useLoaderData } from "@remix-run/react";
+import { useRouteLoaderData } from "@remix-run/react";
 import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
@@ -23,30 +23,7 @@ import Block from "~/modules/editor/blocks/Block";
 import { HomeEdit } from "./HomeEdit";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
-
-export async function loader({
-   context: { payload, user },
-   params,
-   request,
-}: LoaderArgs) {
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
-
-   const siteData = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteId,
-         },
-      },
-      user,
-   });
-
-   const site = siteData?.docs[0];
-
-   return { site };
-}
+import type { Site } from "payload/generated-types";
 
 const initialValue: CustomElement[] = [
    {
@@ -61,7 +38,8 @@ const initialValue: CustomElement[] = [
 ];
 
 export default function SiteIndexMain() {
-   const { site } = useLoaderData<typeof loader>();
+   const { site } =
+      (useRouteLoaderData("routes/$siteId") as { site: Site }) || {};
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;

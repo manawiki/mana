@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
-import { canMutateAsSiteAdmin } from "../access";
 import type { User } from "payload/generated-types";
+import { canMutateAsSiteAdmin } from "../../access/site";
 
 export const entriesSlug = "entries";
 export const Entries: CollectionConfig = {

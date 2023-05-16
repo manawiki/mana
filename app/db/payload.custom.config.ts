@@ -2,9 +2,13 @@ import { buildConfig } from "payload/config";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
-import { CustomCollections } from "./app/_custom/collections";
-import { Users } from "./db/collections/CustomUsers";
-import { Images } from "./db/collections/Images";
+import path from "path";
+import { Images } from "./collections/Images";
+import { BackMana } from "./components/BackMana";
+import { Logo } from "./components/Logo";
+import { Users } from "./collections/CustomUsers";
+import { CustomCollections } from "../_custom/collections";
+import { cachePlugin } from "@aengz/payload-redis-cache";
 
 dotenv.config();
 
@@ -25,6 +29,14 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    admin: {
+      components: {
+         beforeNavLinks: [BackMana],
+         graphics: {
+            Icon: Logo,
+            Logo: Logo,
+         },
+      },
+      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",
@@ -45,6 +57,11 @@ export default buildConfig({
             },
          },
       }),
+      //@ts-ignore
+      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
    ],
+   typescript: {
+      outputFile: path.resolve(__dirname, "./payload-types.ts"),
+   },
    collections: [Users, Images, ...CustomCollections],
 });

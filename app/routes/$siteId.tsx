@@ -10,9 +10,10 @@ import {
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
-   Bell,
    ChevronDown,
+   HardDrive,
    Loader2,
+   Lock,
    LogOut,
    MoreVertical,
    Search,
@@ -23,7 +24,6 @@ import type {
    ActionFunction,
    LinksFunction,
    LoaderArgs,
-   SerializeFrom,
    V2_MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -31,17 +31,17 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isAdding } from "~/utils";
 import {
+   AdminOrStaffOrOwner,
    FollowingSite,
    LoggedIn,
    LoggedOut,
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
-   ChatBubbleLeftIcon,
    CircleStackIcon,
    HomeIcon,
    PencilSquareIcon,
@@ -50,13 +50,13 @@ import {
    HomeIcon as HomeIconBold,
    PencilSquareIcon as PencilSquareIconBold,
    CircleStackIcon as CircleStackIconBold,
-   ChatBubbleLeftIcon as ChatBubbleLeftIconBold,
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { User, Site } from "payload-types";
-import { MobileMenuModal } from "./MobileMenuModal";
 import { Modal } from "~/components";
+import Tooltip from "~/components/Tooltip";
+import * as gtag from "~/routes/$siteId+/gtags.client";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -69,15 +69,14 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const slug = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteId,
+   const url = new URL(request.url).origin;
+   const slug = (await (
+      await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=1`, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
          },
-      },
-      user,
-   });
+      })
+   ).json()) as Site;
    const site = slug?.docs[0];
    if (!site) {
       throw json(null, { status: 404 });
@@ -117,8 +116,40 @@ export default function SiteIndex() {
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
+
+   const gaTrackingId = site?.gaTagId;
+
+   useEffect(() => {
+      if (gaTrackingId?.length) {
+         gtag.pageview(location.pathname, gaTrackingId);
+      }
+   }, [location, gaTrackingId]);
+
    return (
       <>
+         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+            <>
+               <script
+                  async
+                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+               />
+               <script
+                  async
+                  id="gtag-init"
+                  dangerouslySetInnerHTML={{
+                     __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+                  }}
+               />
+            </>
+         )}
          <header
             className="bg-1 shadow-1 fixed top-0 z-50 flex
          h-14 w-full items-center justify-between border-b border-zinc-200 
@@ -212,8 +243,32 @@ export default function SiteIndex() {
                >
                   mana
                </Link>
-               <section className="z-50 flex h-14 items-center justify-end gap-2">
+               <section className="z-50 flex h-14 items-center justify-end gap-2.5">
                   <DarkModeToggle />
+                  <AdminOrStaffOrOwner>
+                     {site.type == "custom" && (
+                        <Tooltip id="site-dashboard" content="Site Dashboard">
+                           <a
+                              className="bg-3 shadow-1 border-color flex h-8 w-8 items-center
+                         justify-center rounded-xl border shadow-sm"
+                              href={`https://${site.slug}-db.mana.wiki/admin`}
+                           >
+                              <HardDrive className="text-1" size={16} />
+                           </a>
+                        </Tooltip>
+                     )}
+                  </AdminOrStaffOrOwner>
+                  {user?.roles?.includes("staff") && (
+                     <Tooltip id="staff-dashboard" content="Staff Dashboard">
+                        <a
+                           className="bg-3 shadow-1 border-color flex h-8 w-8 items-center
+                           justify-center rounded-xl border shadow-sm"
+                           href="/admin"
+                        >
+                           <Lock className="text-1" size={16} />
+                        </a>
+                     </Tooltip>
+                  )}
                   <Menu as="div" className="relative">
                      <Menu.Button
                         className="bg-3 shadow-1 border-color flex h-9 w-9 items-center

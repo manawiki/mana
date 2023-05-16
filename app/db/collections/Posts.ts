@@ -1,10 +1,7 @@
 import type { CollectionConfig } from "payload/types";
-import {
-   isStaffFieldLevel,
-   canMutateAsSiteAdmin,
-   canReadPost,
-} from "../access";
+import { isStaffFieldLevel } from "../../access/user";
 import type { User } from "payload/generated-types";
+import { canMutateAsSiteAdmin, canReadPost } from "../../access/site";
 
 export const postsslug = "posts";
 export const Posts: CollectionConfig = {
