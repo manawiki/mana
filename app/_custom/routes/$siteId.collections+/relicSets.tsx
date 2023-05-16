@@ -73,8 +73,6 @@ const RelicSetList = ({ chars }: any) => {
 
    chars = relics;
 
-   console.log(chars);
-
    // All Filter Options listed individually atm to control order filter options appear in
    const settypes = [
       {

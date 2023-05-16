@@ -3,7 +3,6 @@ import { Image } from "~/components";
 export const Eidolons = ({ pageData }: any) => {
    const eidolons = pageData.eidolons;
 
-   console.log(pageData);
    return (
       <div
          className="bg-2 divide-color border-color shadow-1 mb-4 
@@ -14,7 +13,7 @@ export const Eidolons = ({ pageData }: any) => {
                <>
                   <div className="p-3" key={index}>
                      {eid.image?.url ? (
-                        <div className="inline-block align-middle h-auto w-[10%]">
+                        <div className="inline-block h-auto w-[10%] align-middle">
                            <Image
                               className="object-contain"
                               url={eid.image?.url}
@@ -23,7 +22,7 @@ export const Eidolons = ({ pageData }: any) => {
                         </div>
                      ) : null}
 
-                     <div className="inline-block align-middle w-[85%]">
+                     <div className="inline-block w-[85%] align-middle">
                         {/* Header with Skill Icon and Name */}
                         <div className="flex items-center gap-3">
                            <div className="flex h-10 w-10 rounded-full bg-bg4Dark">

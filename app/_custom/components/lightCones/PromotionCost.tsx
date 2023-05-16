@@ -1,6 +1,9 @@
+import { H2 } from "~/_custom/components/custom";
+
 export const PromotionCost = ({ pageData }: any) => {
    return (
       <>
+         <H2 text="Promotion Cost" />
          <table className="talent-table w-full overflow-auto text-sm">
             <thead>
                <tr className="text-sm">
@@ -13,9 +16,9 @@ export const PromotionCost = ({ pageData }: any) => {
                   return (
                      <>
                         <tr key={index}>
-                           <td className="px-3 py-0 text-center text-xs font-bold">
-                              <div>Lv {index + 1}</div>
-                           </td>
+                           <th className="px-3 py-0 text-center text-xs font-bold">
+                              <div>Lv. {index + 1}</div>
+                           </th>
                            <td className="px-1 py-1 pl-3">
                               {promo.material_qty?.map((mat: any) => (
                                  <ItemQtyFrame mat={mat} />

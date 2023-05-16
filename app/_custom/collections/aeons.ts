@@ -1,4 +1,4 @@
-import { isStaff } from "../../../db/access";
+import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const Aeons: CollectionConfig = {
@@ -82,6 +82,5 @@ export const Aeons: CollectionConfig = {
          name: "checksum",
          type: "text",
       },
-      
    ],
 };

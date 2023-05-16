@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Image } from "~/components";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -16,8 +16,7 @@ export async function loader({
    const uid = new URL(request.url)?.searchParams.get("uid");
 
    var url = `https://starrail-profiles-prod-fwq2wjp57a-uc.a.run.app/profile/${uid}`;
-   const showcaseRaw = await (await fetch(url)).json();
-   const showcaseData = { detail_info: showcaseRaw };
+   const showcaseData = await (await fetch(url)).json();
 
    var relics = null;
    var characters = null;
@@ -643,9 +642,9 @@ const CharacterInfo = ({
    return (
       <>
          <div id="hsr-char-summary">
-            <div className="relative my-3 rounded-md w-full h-[32rem] text-center overflow-x-auto overflow-y-hidden">
+            <div className="relative my-3 h-[32rem] w-full overflow-x-auto overflow-y-hidden rounded-md text-center">
                {/* Background-Div */}
-               <div className="relative inline-block w-full h-[32rem] rounded-lg overflow-hidden">
+               <div className="relative inline-block h-[32rem] w-full overflow-hidden rounded-lg">
                   <img
                      src={bg_url}
                      className="w-full object-fill"
@@ -663,7 +662,7 @@ const CharacterInfo = ({
                      <Image
                         url={charbase?.image_draw?.url}
                         alt={charbase?.name}
-                        className="object-contain hsr-showcase-character"
+                        className="hsr-showcase-character object-contain"
                      />
                   </div>
                </a>
@@ -671,7 +670,7 @@ const CharacterInfo = ({
                {/* Character Name Top Left */}
 
                <a href={`/starrail/collections/characters/${charbase?.id}/c`}>
-                  <div className="absolute left-2 top-1 text-white font-bold text-2xl">
+                  <div className="absolute left-2 top-1 text-2xl font-bold text-white">
                      {charbase?.name}
                   </div>
                </a>
@@ -732,40 +731,40 @@ const CharacterInfo = ({
 
                <div className="absolute left-[26rem] top-3 ">
                   {/* Light Cone Display  */}
-                  <div className="w-64 mb-1">
+                  <div className="mb-1 w-64">
                      {/* Light Cone Image + Rarity */}
                      <a
                         href={`/starrail/collections/lightCones/${lcbase?.id}/c`}
                      >
-                        <div className="relative inline-block align-top w-16">
+                        <div className="relative inline-block w-16 align-top">
                            <Image
                               alt={lcbase.name}
                               url={lcbase.image_full?.url}
-                              className="object-contain h-16 w-16"
+                              className="h-16 w-16 object-contain"
                            />
                            <div className="absolute -bottom-4 h-4 w-16 text-center">
                               <Image
                                  alt="Rarity"
                                  url={lcbase.rarity?.icon?.url}
-                                 className="inline-block align-top object-contain h-4"
+                                 className="inline-block h-4 object-contain align-top"
                               />
                            </div>
                         </div>
                      </a>
 
                      {/* Level + Superimposition Levels */}
-                     <div className="relative inline-block w-48 align-top text-left">
+                     <div className="relative inline-block w-48 text-left align-top">
                         <a
                            href={`/starrail/collections/lightCones/${lcbase?.id}/c`}
                         >
-                           <div className="relative block text-white text-sm font-bold">
+                           <div className="relative block text-sm font-bold text-white">
                               {lcbase.name}
                            </div>
                         </a>
-                        <div className="relative inline-block px-2 py-0.5 mx-1 bg-black bg-opacity-90 rounded-md text-xs text-white">
+                        <div className="relative mx-1 inline-block rounded-md bg-black bg-opacity-90 px-2 py-0.5 text-xs text-white">
                            Lv.{chardata?.equipment?.level}
                         </div>
-                        <div className="relative inline-block text-yellow-100 text-xs bg-yellow-900 rounded-full mx-1 p-0.5 w-6 text-center">
+                        <div className="relative mx-1 inline-block w-6 rounded-full bg-yellow-900 p-0.5 text-center text-xs text-yellow-100">
                            {superimp[chardata?.equipment?.promotion]}
                         </div>
 
@@ -778,15 +777,15 @@ const CharacterInfo = ({
 
                               return (
                                  <>
-                                    <div className="inline-block mx-0.5 my-[1px] rounded-sm bg-black bg-opacity-80">
-                                       <div className="inline-block align-middle h-5 w-5">
+                                    <div className="mx-0.5 my-[1px] inline-block rounded-sm bg-black bg-opacity-80">
+                                       <div className="inline-block h-5 w-5 align-middle">
                                           <Image
                                              alt="StatIcon"
                                              url={stattype?.icon?.url}
                                              className="object-fit"
                                           />
                                        </div>
-                                       <div className="inline-block align-middle text-xs text-white pr-1">
+                                       <div className="inline-block pr-1 align-middle text-xs text-white">
                                           +{formatStat(stattype?.name, s?.base)}
                                        </div>
                                     </div>
@@ -805,7 +804,7 @@ const CharacterInfo = ({
                         );
                         return (
                            <>
-                              <div className="flex items-center px-2 h-9">
+                              <div className="flex h-9 items-center px-2">
                                  <div className="flex flex-grow items-center space-x-2">
                                     <div>
                                        {stattype?.icon?.url ? (
@@ -825,7 +824,7 @@ const CharacterInfo = ({
                                        ) : null}
                                     </div>
 
-                                    <div className="font-bold text-left leading-none">
+                                    <div className="text-left font-bold leading-none">
                                        {s.name}
                                     </div>
                                  </div>
@@ -842,7 +841,7 @@ const CharacterInfo = ({
                                        ) : null}
 
                                        {s.mod ? (
-                                          <div className="text-green-400 inline-block">
+                                          <div className="inline-block text-green-400">
                                              +{formatStat(s.name, s.mod)}
                                           </div>
                                        ) : null}
@@ -875,8 +874,8 @@ const CharacterInfo = ({
 
                               {/* Relic Main Stat and Level */}
 
-                              <div className="inline-block w-12 text-right text-white align-middle mr-1">
-                                 <div className="inline-block align-middle h-5 w-5 leading-none">
+                              <div className="mr-1 inline-block w-12 text-right align-middle text-white">
+                                 <div className="inline-block h-5 w-5 align-middle leading-none">
                                     <Image
                                        alt="StatIcon"
                                        url={mainstat?.icon?.url}
@@ -895,7 +894,7 @@ const CharacterInfo = ({
 
                               {/* Relic Substats */}
 
-                              <div className="inline-block align-middle w-36 text-white leading-none">
+                              <div className="inline-block w-36 align-middle leading-none text-white">
                                  {rdata.subobj?.map((sub: any) => {
                                     const steptext = sub?.stepDistribution?.map(
                                        (step: any) =>
@@ -922,12 +921,12 @@ const CharacterInfo = ({
                                                    sub?.value
                                                 )}
                                              </div>
-                                             <div className="w-full flex">
+                                             <div className="flex w-full">
                                                 {steptext?.map((st: any) => {
                                                    return (
                                                       <>
                                                          <div
-                                                            className={`inline-flex mx-1 -mt-2.5 w-full border-b border-white border-opacity-70 text-white text-sm text-center leading-none justify-center ${
+                                                            className={`mx-1 -mt-2.5 inline-flex w-full justify-center border-b border-white border-opacity-70 text-center text-sm leading-none text-white ${
                                                                st == "="
                                                                   ? "text-opacity-0"
                                                                   : ""
@@ -950,15 +949,15 @@ const CharacterInfo = ({
                   })}
 
                   {/* Relic Set Bonuses */}
-                  <div className="w-full mt-2">
+                  <div className="mt-2 w-full">
                      {rset?.map((set: any) => {
                         return (
                            <>
-                              <div className="text-xs my-0.5">
-                                 <div className="relative inline-block px-2 rounded-md text-white w-3/4">
+                              <div className="my-0.5 text-xs">
+                                 <div className="relative inline-block w-3/4 rounded-md px-2 text-white">
                                     {set.name}
                                  </div>
-                                 <div className="relative inline-block bg-black bg-opacity-40 px-2 rounded-md text-green-400">
+                                 <div className="relative inline-block rounded-md bg-black bg-opacity-40 px-2 text-green-400">
                                     {set.num}
                                  </div>
                               </div>
@@ -983,12 +982,12 @@ const ItemFrameSquare = ({ mat, style }: any) => {
    return (
       <a href={`/starrail/collections/relicSets/${mat?.relicset_id?.id}/c`}>
          <div
-            className={`relative inline-block align-middle text-center h-14 w-14 align-middle ${style}`}
+            className={`relative inline-block h-14 w-14 text-center align-middle align-middle ${style}`}
             key={mat?.id}
          >
             <Image
                url={mat?.icon?.url ?? "no_image_42df124128"}
-               className={`object-contain h-14 w-14 color-rarity-${
+               className={`h-14 w-14 object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
                } rounded-md`}
                alt={mat?.name}
@@ -1043,7 +1042,7 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
 
    return (
       <>
-         <div className="canvas mx-auto flex items-center justify-center scale-[0.5]">
+         <div className="canvas mx-auto flex scale-[0.5] items-center justify-center">
             <div className={`canvas-${pathkey}`}></div>
 
             {connectorlist?.map((con: any) => {
@@ -1094,20 +1093,20 @@ const InputUIDNote = () => {
    return (
       <>
          {" "}
-         <div className="mx-auto mb-8 max-w-[960px] max-desktop:px-3 text-center">
-            <div className="p-3 text-center w-full font-bold text-2xl border border-color rounded-md my-2">
+         <div className="mx-auto mb-8 max-w-[960px] text-center max-desktop:px-3">
+            <div className="border-color my-2 w-full rounded-md border p-3 text-center text-2xl font-bold">
                Input a UID to load:
             </div>
 
             <input
-               className="px-3 py-1 rounded-full text-neutral-800 border my-2 border-color"
+               className="border-color my-2 rounded-full border px-3 py-1 text-neutral-800"
                value={inputUID}
                onChange={(e) => setInputUID(e.target.value)}
             ></input>
             <a
-               href={`/starrail/collections/character-showcase?uid=${inputUID}`}
+               href={`/starrail/profile?uid=${inputUID}`}
             >
-               <div className="rounded-md cursor-pointer w-fit py-1 px-3 my-1 mx-auto border dark:border-gray-700 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40">
+               <div className="mx-auto my-1 w-fit cursor-pointer rounded-md border px-3 py-1 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40 dark:border-gray-700">
                   Submit
                </div>
             </a>
@@ -1119,9 +1118,9 @@ const InputUIDNote = () => {
 const BadUIDNote = () => {
    return (
       <div className="mx-auto mb-8 max-w-[960px] max-desktop:px-3">
-         <div className="border border-color p-3 rounded-md text-xl">
+         <div className="border-color rounded-md border p-3 text-xl">
             <div>UID data not found.</div>
-            <div className="italic text-md">
+            <div className="text-md italic">
                * Note CN Server support is not yet available.
             </div>
          </div>
@@ -1162,12 +1161,9 @@ const ScreenshotButton = () => {
          className=""
          onClick={() => {
             const summ = document.getElementById("hsr-char-summary");
-            console.log(summ);
             getScreenshotOfElement(summ, 0, 0, 960, 512, function (data) {
                // in the data variable there is the base64 image
                // exmaple for displaying the image in an <img>
-
-               console.log(data);
             });
          }}
       >

@@ -13,7 +13,7 @@ import {
    Tooltip,
    Legend,
 } from "chart.js";
-import { ChevronDown } from "lucide-react";
+import { BarChart2, ChevronDown, Binary } from "lucide-react";
 
 ChartJS.register(
    CategoryScale,
@@ -67,7 +67,7 @@ export const Stats = ({ pageData }: any) => {
             {/* 1) Character Image div */}
             {/* ======================== */}
             <div>
-               <div className="relative w-full rounded-md bg-gray-100 text-center dark:bg-neutral-900">
+               <div className="bg-2 shadow-1 border-color relative w-full overflow-hidden rounded-md border text-center shadow-sm">
                   {/* Rarity */}
                   <div className="absolute bottom-3 left-20 z-20 h-8 w-20 laptop:left-12">
                      <Image
@@ -94,7 +94,7 @@ export const Stats = ({ pageData }: any) => {
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
             <div>
-               <div className="mb-3 flex rounded-md border bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-900">
+               <div className="bg-2 shadow-1 border-color mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
                   <div className="flex flex-grow items-center space-x-2">
                      <div className="relative h-10 w-10 rounded-full bg-gray-800">
                         <Image
@@ -109,7 +109,7 @@ export const Stats = ({ pageData }: any) => {
                   </div>
                </div>
 
-               <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
+               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (
                         <div
@@ -117,8 +117,8 @@ export const Stats = ({ pageData }: any) => {
                       /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
                          stat.colormod
-                            ? "relative block bg-gray-50 dark:bg-neutral-800"
-                            : "relative block bg-gray-100 dark:bg-neutral-900"
+                            ? "bg-2 relative block"
+                            : "bg-1 relative block"
                       } flex items-center p-2`}
                            key={index}
                         >
@@ -185,16 +185,16 @@ export const Stats = ({ pageData }: any) => {
          {/* 2a) Header for Adjusting Level and Slider */}
          {/* ======================== */}
          <div className="relative w-full">
-            <div className="my-3 block rounded-md border border-solid bg-gray-50 py-4 font-bold dark:border-neutral-700 dark:bg-neutral-900 tablet:px-3 tablet:py-0">
-               <div className="w-full justify-between text-center ">
+            <div className="bg-2 shadow-1 border-color my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
+               <div className="flex w-full items-center justify-between text-center">
                   {/* Level Label */}
                   <div className="inline-flex justify-between pr-0.5 align-middle">
-                     Lvl
+                     Lv.
                   </div>
                   {/* Level Input Box */}
                   <input
-                     className="scale-20 level-input-box ml-1 mr-2 inline-flex w-9 justify-center
-      rounded border px-0 py-1 text-center align-middle dark:border-neutral-700 dark:bg-neutral-800"
+                     className="scale-20 level-input-box border-color bg-1 ml-1 mr-2 inline-flex
+                     w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
                      type="number"
                      value={levelSliderValue}
                      onChange={(event) => {
@@ -219,7 +219,8 @@ export const Stats = ({ pageData }: any) => {
                   </div>
                   {/* Ascension Checkbox */}
                   <input
-                     className="mr-2 inline-flex h-7 w-7 flex-shrink-0 items-center justify-between align-middle focus-within:border-blue-100"
+                     className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
+                     justify-between rounded-sm align-middle text-yellow-500"
                      type="checkbox"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
@@ -236,7 +237,8 @@ export const Stats = ({ pageData }: any) => {
                   ></input>
                   {/* Slider */}
                   <input
-                     className="level-slider my-8 inline-flex w-4/5 justify-end rounded-lg align-middle"
+                     className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
+                     rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                      type="range"
                      min="1"
                      max="80"
@@ -388,32 +390,29 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                   {({ open }) => (
                      <>
                         <Disclosure.Button
-                           className="mb-2 flex  w-full items-center 
-				   rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
+                           className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+                           gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                         >
+                           <BarChart2 size={20} className="text-yellow-500" />
                            Stat Graph
                            <div
                               className={`${
                                  open
-                                    ? "rotate-180 transform font-bold text-gray-600 "
-                                    : "text-gray-400"
+                                    ? "font-bol rotate-180 transform "
+                                    : ""
                               } ml-auto inline-block `}
                            >
-                              <CaretDownIcon
-                                 class="text-brand_1"
-                                 w={28}
-                                 h={28}
-                              />
+                              <ChevronDown size={28} />
                            </div>
                         </Disclosure.Button>
                         <Disclosure.Panel className="mb-5">
-                           <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-neutral-700 dark:bg-neutral-900">
+                           <div className="bg-2 border-color rounded-md border px-4 py-3 text-center text-sm">
                               <div className="inline-block px-2 font-bold">
                                  Display Stat:{" "}
                               </div>
                               {/* Stat Select Drop Down */}
                               <select
-                                 className="inline-block bg-white dark:bg-neutral-700"
+                                 className="bg-1 border-color inline-block rounded-lg border"
                                  name="stats"
                                  value={graphStat}
                                  onChange={(event) =>
@@ -458,15 +457,16 @@ const CSVStats = ({ charData }: any) => {
                {({ open }) => (
                   <>
                      <Disclosure.Button
-                        className="mb-2 flex w-full items-center
-				rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
+                        className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+                        gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                      >
+                        <Binary size={20} className="text-yellow-500" />
                         Raw Stats for all Levels
                         <div
                            className={`${
                               open
-                                 ? "rotate-180 transform font-bold text-gray-600 "
-                                 : "text-gray-400"
+                                 ? "font-bol rotate-180 transform "
+                                 : ""
                            } ml-auto inline-block `}
                         >
                            <ChevronDown size={28} />
@@ -478,7 +478,7 @@ const CSVStats = ({ charData }: any) => {
                            dangerouslySetInnerHTML={{
                               __html: data.stats_csv,
                            }}
-                           className="h-24 overflow-y-scroll rounded-md border bg-gray-100 px-4 py-3 font-mono text-base dark:border-neutral-700 dark:bg-neutral-800"
+                           className="border-color bg-2 h-24 overflow-y-scroll rounded-md border px-4 py-3 font-mono"
                         ></div>
                      </Disclosure.Panel>
                   </>

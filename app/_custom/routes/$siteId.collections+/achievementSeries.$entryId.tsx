@@ -55,8 +55,6 @@ export default function CharacterEntry() {
    const { defaultData } = useLoaderData<typeof loader>();
    const { achievementData } = useLoaderData<typeof loader>();
 
-   console.log(defaultData);
-   console.log(achievementData);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />

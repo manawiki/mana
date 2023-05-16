@@ -47,8 +47,6 @@ export const meta: V2_MetaFunction = () => {
 };
 export default function HomePage() {
    const { lightCones } = useLoaderData<typeof loader>();
-
-   console.log(lightCones);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:px-3">
          <LightConeList chars={lightCones} />
@@ -241,7 +239,6 @@ const LightConeList = ({ chars }: any) => {
                   );
                })}
             </div>
-
             {/* Search Text Box */}
             <div
                className="border-color bg-2 mb-2 mt-4 flex h-12

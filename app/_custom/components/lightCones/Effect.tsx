@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { H2 } from "~/_custom/components/custom";
+
 export const Effect = ({ pageData }: any) => {
    const [skillLevel, setSkillLevel] = useState(1);
 
@@ -7,21 +9,25 @@ export const Effect = ({ pageData }: any) => {
 
    return (
       <>
-         <div>
-            <div className="inline-block my-0.5 p-3 rounded-md border border-slate-300 w-full dark:bg-neutral-900 dark:border-neutral-700">
+         <H2 text="Effect" />
+         <div
+         className="bg-2 divide-color border-color shadow-1 mb-4 
+      divide-y-4 overflow-hidden rounded-lg border shadow"
+      >
+            <div>
                {/* Node Name */}
-               <div className="text-l text-center font-bold">
-                  {skill?.[0]?.name}
+               <div className="bg-1 relative flex justify-center items-center gap-3 p-3">
+                  <div className="font-bold">{skill?.[0]?.name}</div>
                </div>
 
                {/* Slider */}
-
-               <div className="border-t border-b p-1 my-1 border-slate-200 text-center dark:border-neutral-700">
-                  <div className="inline-flex align-middle mr-2">
-                     Lv {skillLevel}
+               <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
+                  <div className="mr-2 inline-flex align-middle ">
+                     Lv. {skillLevel}
                   </div>
                   <input
-                     className="level-slider align-middle inline-flex justify-end w-4/5 rounded-lg"
+                     className="h-1 flex-grow appearance-none justify-end
+                     rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                      type="range"
                      min="1"
                      max={skill?.length}
@@ -34,7 +40,7 @@ export const Effect = ({ pageData }: any) => {
 
                {/* Node Description */}
                <div
-                  className="mt-2 "
+                  className="border-color border-t p-3 text-sm"
                   dangerouslySetInnerHTML={{
                      __html: skill?.[skillLevel - 1]?.desc,
                   }}

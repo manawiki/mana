@@ -63,7 +63,6 @@ export default function CharacterEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
    const { defaultData } = useLoaderData<typeof loader>();
 
-   console.log(defaultData);
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />

@@ -1,4 +1,4 @@
-import { isStaff } from "../../../db/access";
+import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const Banners: CollectionConfig = {
@@ -64,7 +64,7 @@ export const Banners: CollectionConfig = {
                label: "Light Cone",
                value: "light_cone",
             },
-         ]
+         ],
       },
       {
          name: "run",
@@ -76,9 +76,9 @@ export const Banners: CollectionConfig = {
          admin: {
             date: {
                pickerAppearance: "dayAndTime",
-               displayFormat: "yyyy-MM-dd H:mm:ss X"
-            }
-         }
+               displayFormat: "yyyy-MM-dd H:mm:ss X",
+            },
+         },
       },
       {
          name: "end_date",
@@ -86,9 +86,9 @@ export const Banners: CollectionConfig = {
          admin: {
             date: {
                pickerAppearance: "dayAndTime",
-               displayFormat: "yyyy-MM-dd H:mm:ss X"
-            }
-         }
+               displayFormat: "yyyy-MM-dd H:mm:ss X",
+            },
+         },
       },
       {
          name: "featured_characters",
@@ -114,6 +114,5 @@ export const Banners: CollectionConfig = {
          relationTo: "lightCones",
          hasMany: true,
       },
-      
    ],
 };

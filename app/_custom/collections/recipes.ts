@@ -1,4 +1,4 @@
-import { isStaff } from "../../../db/access";
+import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const Recipes: CollectionConfig = {
@@ -35,7 +35,7 @@ export const Recipes: CollectionConfig = {
       {
          name: "icon_name",
          type: "text",
-      },   
+      },
       {
          name: "formula_type",
          type: "text",
@@ -119,6 +119,6 @@ export const Recipes: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
-      }
+      },
    ],
 };
