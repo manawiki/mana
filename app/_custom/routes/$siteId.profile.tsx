@@ -16,8 +16,7 @@ export async function loader({
    const uid = new URL(request.url)?.searchParams.get("uid");
 
    var url = `https://starrail-profiles-prod-fwq2wjp57a-uc.a.run.app/profile/${uid}`;
-   const showcaseRaw = await (await fetch(url)).json();
-   const showcaseData = { detail_info: showcaseRaw };
+   const showcaseData = await (await fetch(url)).json();
 
    var relics = null;
    var characters = null;
@@ -1105,7 +1104,7 @@ const InputUIDNote = () => {
                onChange={(e) => setInputUID(e.target.value)}
             ></input>
             <a
-               href={`/starrail/collections/character-showcase?uid=${inputUID}`}
+               href={`/starrail/profile?uid=${inputUID}`}
             >
                <div className="mx-auto my-1 w-fit cursor-pointer rounded-md border px-3 py-1 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40 dark:border-gray-700">
                   Submit
