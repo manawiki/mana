@@ -129,6 +129,7 @@ export default function Showcase() {
    if (result == "bad_uid") {
       return (
          <>
+            <div className="mt-10"></div>
             <InputUIDNote />
             <BadUIDNote />
          </>
@@ -136,6 +137,7 @@ export default function Showcase() {
    } else if (!result) {
       return (
          <>
+            <div className="mt-10"></div>
             <InputUIDNote />
          </>
       );
@@ -143,6 +145,7 @@ export default function Showcase() {
 
    return (
       <>
+         <div className="mt-10"></div>
          <DisplayPlayerInfo
             relics={relics}
             characters={characters}
@@ -441,6 +444,7 @@ const CharacterInfo = ({
 
          // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
          var bonuses: any = [];
+         var effect_desc: any = [];
          for (var ei = 0; ei < currset?.set_effect?.length; ei++) {
             const eff = currset?.set_effect[ei];
 
@@ -449,6 +453,7 @@ const CharacterInfo = ({
                eff?.property_list.map((p: any) => {
                   bonuses.push(p);
                });
+               effect_desc.push(eff?.description);
             }
          }
 
@@ -457,6 +462,7 @@ const CharacterInfo = ({
             name: currset?.name,
             num: numInSet,
             bonuses: bonuses,
+            effect_desc: effect_desc,
          };
       });
 
@@ -642,9 +648,9 @@ const CharacterInfo = ({
    return (
       <>
          <div id="hsr-char-summary">
-            <div className="relative my-3 h-[32rem] w-full overflow-x-auto overflow-y-hidden rounded-md text-center">
+            <div className="relative my-3 rounded-md w-full h-[32rem] text-center ">
                {/* Background-Div */}
-               <div className="relative inline-block h-[32rem] w-full overflow-hidden rounded-lg">
+               <div className="relative inline-block w-[960px] h-[32rem] rounded-lg overflow-hidden">
                   <img
                      src={bg_url}
                      className="w-full object-fill"
@@ -657,7 +663,7 @@ const CharacterInfo = ({
                {/* ================================= */}
 
                {/* Character Splash Image Left */}
-               <a href={`/starrail/collections/characters/${charbase?.id}/c`}>
+               <a href={`/starrail/collections/characters/${charbase?.id}`}>
                   <div className="absolute -left-4 -top-0 h-[30rem] w-[30rem] opacity-80">
                      <Image
                         url={charbase?.image_draw?.url}
@@ -669,8 +675,8 @@ const CharacterInfo = ({
 
                {/* Character Name Top Left */}
 
-               <a href={`/starrail/collections/characters/${charbase?.id}/c`}>
-                  <div className="absolute left-2 top-1 text-2xl font-bold text-white">
+               <a href={`/starrail/collections/characters/${charbase?.id}`}>
+                  <div className="absolute left-2 top-1 text-white font-bold text-2xl">
                      {charbase?.name}
                   </div>
                </a>
@@ -693,6 +699,10 @@ const CharacterInfo = ({
                                        url={e.icon?.url}
                                        className="object-contain"
                                     />
+                                    <NameToolTip
+                                       text={e?.name}
+                                       tooltip={e?.description}
+                                    />
                                  </div>
                               </>
                            ) : (
@@ -708,6 +718,10 @@ const CharacterInfo = ({
                                        "https://wiki-cdn.nalu.wiki/neuralcloud/Algorithm_Lock_Icon_ce5b2d3623.png"
                                     }
                                     className="absolute h-5 w-5 object-contain"
+                                 />
+                                 <NameToolTip
+                                    text={e?.name}
+                                    tooltip={e?.description}
                                  />
                               </div>
                            )}
@@ -729,14 +743,12 @@ const CharacterInfo = ({
                {/* Second Column */}
                {/* ================================= */}
 
-               <div className="absolute left-[26rem] top-3 ">
+               <div className="absolute left-[25rem] top-3 ">
                   {/* Light Cone Display  */}
                   <div className="mb-1 w-64">
                      {/* Light Cone Image + Rarity */}
-                     <a
-                        href={`/starrail/collections/lightCones/${lcbase?.id}/c`}
-                     >
-                        <div className="relative inline-block w-16 align-top">
+                     <a href={`/starrail/collections/lightCones/${lcbase?.id}`}>
+                        <div className="relative inline-block align-top w-16">
                            <Image
                               alt={lcbase.name}
                               url={lcbase.image_full?.url}
@@ -753,15 +765,21 @@ const CharacterInfo = ({
                      </a>
 
                      {/* Level + Superimposition Levels */}
-                     <div className="relative inline-block w-48 text-left align-top">
-                        <a
-                           href={`/starrail/collections/lightCones/${lcbase?.id}/c`}
-                        >
-                           <div className="relative block text-sm font-bold text-white">
-                              {lcbase.name}
-                           </div>
-                        </a>
-                        <div className="relative mx-1 inline-block rounded-md bg-black bg-opacity-90 px-2 py-0.5 text-xs text-white">
+                     <div className="relative inline-block w-48 align-top text-left">
+                        <div className="relative block text-white text-sm font-bold">
+                           {lcbase.name}
+                           <NameToolTip
+                              text={lcbase?.name}
+                              tooltip={
+                                 lcbase?.skill_data[
+                                    chardata?.equipment?.promotion - 1
+                                 ]?.desc
+                              }
+                              style="absolute top-0 left-0"
+                           />
+                        </div>
+
+                        <div className="relative inline-block px-2 py-0.5 mx-1 bg-black bg-opacity-90 rounded-md text-xs text-white">
                            Lv.{chardata?.equipment?.level}
                         </div>
                         <div className="relative mx-1 inline-block w-6 rounded-full bg-yellow-900 p-0.5 text-center text-xs text-yellow-100">
@@ -858,7 +876,7 @@ const CharacterInfo = ({
                {/* Third Column */}
                {/* ================================= */}
 
-               <div className="absolute left-[43rem] top-2 w-64">
+               <div className="absolute left-[42rem] top-2 w-64">
                   {/* Individual Relics */}
                   {rbase?.map((r: any, i: any) => {
                      const rdata = rchar[i];
@@ -868,27 +886,28 @@ const CharacterInfo = ({
 
                      return (
                         <>
-                           <div className="relative my-1 h-14 w-64 bg-gray-900 bg-opacity-30 text-left">
+                           <div className="relative my-1 h-14 w-72 bg-gray-900 bg-opacity-30 text-left">
                               {/* Relic Image */}
-                              <ItemFrameSquare mat={r} style="" />
+                              <ItemFrameSquare
+                                 mat={r}
+                                 style=""
+                                 lv={"+" + rlv}
+                              />
 
                               {/* Relic Main Stat and Level */}
 
-                              <div className="mr-1 inline-block w-12 text-right align-middle text-white">
-                                 <div className="inline-block h-5 w-5 align-middle leading-none">
+                              <div className="inline-block w-16 text-right text-white align-middle mr-1">
+                                 <div className="inline-block align-middle h-6 w-6 ">
                                     <Image
                                        alt="StatIcon"
                                        url={mainstat?.icon?.url}
                                     />
                                  </div>
-                                 <div className="align-middle text-sm font-bold leading-none">
+                                 <div className="align-middle text-md font-bold ">
                                     {formatStat(
                                        mainstat?.name,
                                        mainstat?.value
                                     )}
-                                 </div>
-                                 <div className="align-middle text-xs leading-none">
-                                    +{rlv}
                                  </div>
                               </div>
 
@@ -926,7 +945,7 @@ const CharacterInfo = ({
                                                    return (
                                                       <>
                                                          <div
-                                                            className={`mx-1 -mt-2.5 inline-flex w-full justify-center border-b border-white border-opacity-70 text-center text-sm leading-none text-white ${
+                                                            className={`inline-flex mx-1 -mt-2.5 w-full border-b border-gray-500 border-opacity-70 text-white text-sm text-center leading-none justify-center ${
                                                                st == "="
                                                                   ? "text-opacity-0"
                                                                   : ""
@@ -951,11 +970,25 @@ const CharacterInfo = ({
                   {/* Relic Set Bonuses */}
                   <div className="mt-2 w-full">
                      {rset?.map((set: any) => {
+                        var setdesc = "";
+
+                        set.effect_desc.map((e: any, i: any) => {
+                           setdesc +=
+                              e +
+                              (i < set.effect_desc.length - 1
+                                 ? "<br><br>"
+                                 : "");
+                        });
                         return (
                            <>
                               <div className="my-0.5 text-xs">
                                  <div className="relative inline-block w-3/4 rounded-md px-2 text-white">
                                     {set.name}
+                                    <NameToolTip
+                                       text={set?.name}
+                                       tooltip={setdesc}
+                                       style="absolute top-0 left-0"
+                                    />
                                  </div>
                                  <div className="relative inline-block rounded-md bg-black bg-opacity-40 px-2 text-green-400">
                                     {set.num}
@@ -974,13 +1007,13 @@ const CharacterInfo = ({
    );
 };
 
-const ItemFrameSquare = ({ mat, style }: any) => {
+const ItemFrameSquare = ({ mat, style, lv }: any) => {
    // ========================
    // Generic Item / Character Circle Frame - Light Cone
    // ========================
 
    return (
-      <a href={`/starrail/collections/relicSets/${mat?.relicset_id?.id}/c`}>
+      <a href={`/starrail/collections/relicSets/${mat?.relicset_id?.id}`}>
          <div
             className={`relative inline-block h-14 w-14 text-center align-middle align-middle ${style}`}
             key={mat?.id}
@@ -992,6 +1025,9 @@ const ItemFrameSquare = ({ mat, style }: any) => {
                } rounded-md`}
                alt={mat?.name}
             />
+            <div className="text-white font-bold absolute right-0 bottom-0 rounded-full bg-neutral-900 bg-opacity-70 text-xs px-1 py-0.5">
+               {lv}
+            </div>
          </div>
       </a>
    );
@@ -1060,6 +1096,17 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
                   (a: any) => a.point_id == node.point_id
                )?.level;
 
+               // Populate node description tooltip text
+               var detail_desc = "";
+               if (nodelv) {
+                  detail_desc =
+                     node.affected_skill?.[0]?.description_per_level?.[
+                        nodelv - 1
+                     ]?.description ?? "";
+               }
+
+               const node_desc = node?.description + detail_desc;
+
                return (
                   <>
                      <div
@@ -1072,6 +1119,11 @@ const SkillTreeDisplay = ({ data, skillTrees, path }: any) => {
                            alt="Icon"
                            url={node?.icon?.url}
                            className="object-contain opacity-20"
+                        />
+                        <NameToolTip
+                           text={node?.name}
+                           tooltip={node_desc}
+                           style={"absolute top-0 left-0 scale-[2.0]"}
                         />
                         {nodelv ? (
                            <div className="absolute top-1 w-9 text-center text-2xl font-bold text-white drop-shadow-[0_0_2px_rgba(250,0,0,0.8)]">
@@ -1103,9 +1155,7 @@ const InputUIDNote = () => {
                value={inputUID}
                onChange={(e) => setInputUID(e.target.value)}
             ></input>
-            <a
-               href={`/starrail/profile?uid=${inputUID}`}
-            >
+            <a href={`/starrail/profile?uid=${inputUID}`}>
                <div className="mx-auto my-1 w-fit cursor-pointer rounded-md border px-3 py-1 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40 dark:border-gray-700">
                   Submit
                </div>
@@ -1128,46 +1178,76 @@ const BadUIDNote = () => {
    );
 };
 
-function getScreenshotOfElement(element, posX, posY, width, height, callback) {
-   html2canvas(element, {
-      // width: width,
-      // height: height,
-      useCORS: true,
-      allowTaint: true,
-      logging: false,
-      // scrollX: 0,
-      // scrollY: 0,
-      // windowWidth: window.innerWidth,
-      // windowHeight: window.innerHeight,
-   }).then(function (canvas) {
-      // var context = canvas.getContext("2d");
-      // var imageData = context.getImageData(posX, posY, width, height).data;
-      // var outputCanvas = document.createElement("canvas");
-      // var outputContext = outputCanvas.getContext("2d");
-      // outputCanvas.width = width;
-      // outputCanvas.height = height;
-
-      // var idata = outputContext.createImageData(width, height);
-      // idata.data.set(imageData);
-      // outputContext.putImageData(idata, 0, 0);
-      // callback(outputCanvas.toDataURL("image/png"));
-      callback(canvas.toDataURL("image/png"));
-   });
-}
-
-const ScreenshotButton = () => {
+const NameToolTip = ({ text, tooltip, style = "" }: any) => {
+   const [ttip, setTtip] = useState(false);
    return (
-      <div
-         className=""
-         onClick={() => {
-            const summ = document.getElementById("hsr-char-summary");
-            getScreenshotOfElement(summ, 0, 0, 960, 512, function (data) {
-               // in the data variable there is the base64 image
-               // exmaple for displaying the image in an <img>
-            });
-         }}
-      >
-         Screenshot Test
-      </div>
+      <>
+         <div
+            className={`w-full h-full z-30 ${style}`}
+            onMouseOver={() => setTtip(true)}
+            onMouseOut={() => setTtip(false)}
+            onClick={() => setTtip(!ttip)}
+         >
+            {/* {text} */}
+
+            <div
+               className={`absolute z-40 top-6 left-6 rounded-md border w-64 bg-gray-900 bg-opacity-90 py-1 px-2 text-xs text-gray-50 border-gray-700 ${
+                  ttip ? "block" : "hidden"
+               }`}
+            >
+               <div className="text-sm font-bold text-blue-400 dark:text-blue-600">
+                  {text}
+               </div>
+               <div
+                  className="italic"
+                  dangerouslySetInnerHTML={{ __html: tooltip }}
+               ></div>
+            </div>
+         </div>
+      </>
    );
 };
+
+// function getScreenshotOfElement(element, posX, posY, width, height, callback) {
+//    html2canvas(element, {
+//       // width: width,
+//       // height: height,
+//       useCORS: true,
+//       allowTaint: true,
+//       logging: false,
+//       // scrollX: 0,
+//       // scrollY: 0,
+//       // windowWidth: window.innerWidth,
+//       // windowHeight: window.innerHeight,
+//    }).then(function (canvas) {
+//       // var context = canvas.getContext("2d");
+//       // var imageData = context.getImageData(posX, posY, width, height).data;
+//       // var outputCanvas = document.createElement("canvas");
+//       // var outputContext = outputCanvas.getContext("2d");
+//       // outputCanvas.width = width;
+//       // outputCanvas.height = height;
+
+//       // var idata = outputContext.createImageData(width, height);
+//       // idata.data.set(imageData);
+//       // outputContext.putImageData(idata, 0, 0);
+//       // callback(outputCanvas.toDataURL("image/png"));
+//       callback(canvas.toDataURL("image/png"));
+//    });
+// }
+
+// const ScreenshotButton = () => {
+//    return (
+//       <div
+//          className=""
+//          onClick={() => {
+//             const summ = document.getElementById("hsr-char-summary");
+//             getScreenshotOfElement(summ, 0, 0, 960, 512, function (data) {
+//                // in the data variable there is the base64 image
+//                // exmaple for displaying the image in an <img>
+//             });
+//          }}
+//       >
+//          Screenshot Test
+//       </div>
+//    );
+// };
