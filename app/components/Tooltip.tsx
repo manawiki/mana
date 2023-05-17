@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
+import ReactDOMServer from "react-dom/server";
 import { type PlacesType, Tooltip as TT } from "react-tooltip";
 
 type TooltipProps = {
@@ -21,11 +22,11 @@ export default function Tooltip({
 }: TooltipProps) {
    return (
       <>
-         <TT className="text-xs font-semibold rounded px-3" id={id} />
+         <TT className="rounded px-3 text-xs font-semibold" id={id} />
          <div
             className={className}
             data-tooltip-id={id}
-            data-tooltip-html={html}
+            data-tooltip-html={ReactDOMServer.renderToStaticMarkup(html)}
             data-tooltip-content={content}
             data-tooltip-place={side}
          >
