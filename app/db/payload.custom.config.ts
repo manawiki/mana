@@ -9,6 +9,7 @@ import { Logo } from "./components/Logo";
 import { Users } from "./collections/CustomUsers";
 import { CustomCollections } from "../_custom/collections";
 import { cachePlugin } from "@aengz/payload-redis-cache";
+const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
 
@@ -43,6 +44,19 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
+      webpack: (config) => ({
+         ...config,
+         resolve: {
+            ...config.resolve,
+            alias: {
+               ...config?.resolve?.alias,
+               [path.resolve(
+                  __dirname,
+                  "../../node_modules/@aengz/payload-redis-cache"
+               )]: mockModulePath,
+            },
+         },
+      }),
    },
    plugins: [
       cloudStorage({
