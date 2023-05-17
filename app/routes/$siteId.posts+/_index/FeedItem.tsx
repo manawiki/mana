@@ -9,7 +9,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
          <Link
             className="relative block py-4"
             prefetch="intent"
-            to={`${post.id}/${post.url}`}
+            to={`${post.id}/${post.slug}`}
             key={post.id}
          >
             <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">

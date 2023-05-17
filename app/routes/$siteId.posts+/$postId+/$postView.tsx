@@ -33,27 +33,32 @@ export async function loader({
       postView: z.string(),
    });
    const url = new URL(request.url).origin;
-   const post = (await (
-      await fetch(`${url}/api/posts/${postId}?depth=1`, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })
-   ).json()) as Post;
+   try {
+      const post = (await (
+         await fetch(`${url}/api/posts/${postId}?depth=2`, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as Post;
 
-   if (post._status == "draft") {
-      throw json(null, { status: 404 });
+      if (post._status == "draft") {
+         throw json(null, { status: 404 });
+      }
+      //If slug does not equal slug saved in database, redirect to the correct slug
+
+      if (post && postView != post.slug) {
+         throw redirect(`/${siteId}/posts/${postId}/${post.slug}`, 301);
+      }
+
+      return json(
+         { post, siteId },
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
+      );
+   } catch (e) {
+      console.log(e);
+      throw new Response("Internal Server Error", { status: 500 });
    }
-   //If slug does not equal slug saved in database, redirect to the correct slug
-
-   if (postView != post.url) {
-      throw redirect(`/${siteId}/posts/${postId}/${post.url}`, 301);
-   }
-
-   return json(
-      { post, siteId },
-      { headers: { "Cache-Control": "public, s-maxage=60" } }
-   );
 }
 
 export const handle = {

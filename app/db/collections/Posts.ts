@@ -11,7 +11,7 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      read: canReadPost,
+      read: () => true,
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),
@@ -27,7 +27,7 @@ export const Posts: CollectionConfig = {
          type: "text",
       },
       {
-         name: "url",
+         name: "slug",
          type: "text",
       },
       {
