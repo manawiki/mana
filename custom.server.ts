@@ -34,6 +34,11 @@ async function startCustom() {
       res.redirect("/admin");
    });
 
+   app.get("/robots.txt", function (_, res) {
+      res.type("text/plain");
+      res.send("User-agent: *\nDisallow: /");
+   });
+
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.CUSTOM_MONGO_URL, "CUSTOM_MONGO_URL is required");
 
