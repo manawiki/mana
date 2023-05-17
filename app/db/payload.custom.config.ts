@@ -29,6 +29,10 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
+   serverURL:
+      process.env.NODE_ENV == "development"
+         ? "http://localhost:4000"
+         : `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki`,
    admin: {
       components: {
          beforeNavLinks: [BackMana],
