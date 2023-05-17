@@ -179,7 +179,7 @@ export async function action({
                   id: postId,
                   data: {
                      name,
-                     url: slug,
+                     slug,
                   },
                   overrideAccess: false,
                   user,

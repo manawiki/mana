@@ -132,7 +132,7 @@ export const PostHeaderEdit = ({
          { method: "patch" }
       );
    };
-   const postFullUrl = `https://mana.wiki/${siteId}/posts/${post.id}/${post.url}`;
+   const postFullUrl = `https://mana.wiki/${siteId}/posts/${post.id}/${post.slug}`;
 
    //Image Upload
    const [dragActive, setDragActive] = useState(false);
@@ -381,7 +381,7 @@ export const PostHeaderEdit = ({
                                                 className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
                                            gap-2 rounded-xl text-sm font-bold shadow-sm"
                                                 target="_blank"
-                                                to={`/${siteId}/posts/${post.id}/${post.url}`}
+                                                to={`/${siteId}/posts/${post.id}/${post.slug}`}
                                              >
                                                 <ExternalLink
                                                    size={18}

@@ -41,6 +41,8 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useDebouncedValue } from "~/hooks";
 import type { Entry } from "payload/generated-types";
 import { nanoid } from "nanoid";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import type { Collection } from "payload-types";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -62,48 +64,60 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const collectionData = await payload.find({
-      collection: "collections",
-      where: {
-         slug: {
-            equals: collectionId,
-         },
-         "site.slug": {
-            equals: siteId,
-         },
-      },
-      user,
-   });
-   const collection = collectionData?.docs[0];
+   const url = new URL(request.url).origin;
 
-   // Get custom collection list data
-   if (collection.customDatabase) {
-      const entrylist = await (
-         await fetch(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
-               page ?? 1
-            }`
-         )
-      ).json();
-      return json({ collection, entrylist, q });
+   try {
+      const collectionDataFetchUrl = `${url}/api/collections?where[slug][equals]=${collectionId}&where[site.slug][equals]=${siteId}&depth=0`;
+
+      const collectionData = (await (
+         await fetch(collectionDataFetchUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as PaginatedDocs<Collection>;
+
+      //We want to grab the immutable id
+      const collection = collectionData?.docs[0];
+
+      // Get custom collection list data
+      if (collection.customDatabase) {
+         const entrylist = await (
+            await fetch(
+               `https://${
+                  process.env.PAYLOAD_PUBLIC_SITE_ID
+               }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
+                  page ?? 1
+               }`
+            )
+         ).json();
+
+         return json(
+            { collection, entrylist, q },
+            { headers: { "Cache-Control": "public, s-maxage=60" } }
+         );
+      }
+
+      // Get default collection list data
+      const entrylistFetchUrl = `${url}/api/entries?where[collectionEntity][equals]=${
+         collection.id
+      }&where[site.slug][equals]=${siteId}&depth=0&limit=20&page=${page ?? 1}`;
+
+      const entrylist = (await (
+         await fetch(entrylistFetchUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as PaginatedDocs<Entry>;
+
+      return json(
+         { collection, entrylist, q },
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
+      );
+   } catch (e) {
+      throw new Response("Internal Server Error", { status: 500 });
    }
-
-   // Get default collection list data
-   const entrylist = await payload.find({
-      collection: "entries",
-      where: {
-         collectionEntity: {
-            equals: collection.id,
-         },
-      },
-      user,
-      limit: 20,
-      page: page ?? 1,
-   });
-
-   return json({ collection, entrylist, q });
 }
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {

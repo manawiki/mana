@@ -13,17 +13,15 @@ const toXmlSitemap = (urls: string[]) => {
 };
 
 export async function loader({ context: { payload } }: LoaderArgs) {
-   const { docs } = await payload.find({
-      collection: "sites",
-      depth: 0,
-      limit: 500,
-   });
-
-   const sites = docs.map(
-      (item) => `https://mana.wiki/${item.slug}/sitemap.xml`
-   );
-
    try {
+      const { docs } = await payload.find({
+         collection: "sites",
+         depth: 0,
+         limit: 500,
+      });
+      const sites = docs.map(
+         (item) => `https://mana.wiki/${item.slug}/sitemap.xml`
+      );
       const sitemap = toXmlSitemap([...sites]);
       return new Response(sitemap, {
          status: 200,
