@@ -48,10 +48,8 @@ export default buildConfig({
             ...config.resolve,
             alias: {
                ...config?.resolve?.alias,
-               [path.resolve(
-                  __dirname,
-                  "../../node_modules/@aengz/payload-redis-cache"
-               )]: mockModulePath,
+               [path.resolve(__dirname, "../../node_modules/redis")]:
+                  mockModulePath,
             },
          },
       }),
