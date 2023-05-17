@@ -123,14 +123,16 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export default function Showcase() {
-   const { relics } = useLoaderData<typeof loader>();
-   const { characters } = useLoaderData<typeof loader>();
-   const { lightCones } = useLoaderData<typeof loader>();
-   const { skillTrees } = useLoaderData<typeof loader>();
-   const { statTypes } = useLoaderData<typeof loader>();
-   const { playerIcon } = useLoaderData<typeof loader>();
-   const { showcaseData } = useLoaderData<typeof loader>();
-   const { result } = useLoaderData<typeof loader>();
+   const {
+      relics,
+      characters,
+      lightCones,
+      skillTrees,
+      statTypes,
+      playerIcon,
+      showcaseData,
+      result,
+   } = useLoaderData<typeof loader>();
    // result:
    // null = No argument or UID provided, ask for UID input
    // bad_uid = UID provided but does not provide result

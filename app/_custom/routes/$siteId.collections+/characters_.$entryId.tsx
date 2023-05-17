@@ -14,9 +14,10 @@ import type { Character } from "payload/generated-types";
 import { Navigation } from "~/_custom/components/characters/Navigation";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { SkillTree } from "~/_custom/components/characters/SkillTree";
-import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
+import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
+import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterialCost";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
 import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
@@ -99,6 +100,13 @@ export default function CharacterEntry() {
             {/* Promotion Costs */}
             <H2 text="Promotion Cost" />
             <PromotionCost pageData={defaultData} />
+
+            {/* Total Materials */}
+            <H2 text="Total Material Cost" />
+            <TotalMaterialCost
+               pageData={defaultData}
+               skillTreeData={skillTreeData}
+            />
 
             <div id="gallery"></div>
             {/* Image Gallery Section showing all relevant images */}
