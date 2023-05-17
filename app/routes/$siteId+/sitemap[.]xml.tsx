@@ -69,7 +69,7 @@ export async function loader({
 
    const { docs: entries } = await payload.find({
       collection: "entries",
-      depth: 0,
+      depth: 1,
       where: {
          site: {
             equals: id,
@@ -77,6 +77,7 @@ export async function loader({
       },
       limit: 1000,
    });
+   console.log(entries);
 
    const processCustomEntries =
       isCustom &&
@@ -106,7 +107,10 @@ export async function loader({
          ...collections.map(
             ({ slug }) => `https://mana.wiki/${siteId}/${slug}`
          ),
-         ...entries,
+         ...entries.map(
+            ({ id, collectionEntity }) =>
+               `https://mana.wiki/${siteId}/collections/${collectionEntity?.slug}/${id}`
+         ),
          ...customEntries,
       ]);
       return new Response(sitemap, {
