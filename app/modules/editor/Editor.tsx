@@ -1,4 +1,4 @@
-import isHotkey from "is-hotkey";
+import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { Node } from "slate";
@@ -34,16 +34,14 @@ import {
    useRoom,
    useUpdateMyPresence,
 } from "~/liveblocks.config";
-import type { CustomElement, ParagraphElement } from "./types";
+import type { CustomElement } from "./types";
 import { BlockType } from "./types";
 import {
-   isLinkNodeAtSelection,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
    withLayout,
    withNodeId,
-   useSelection,
 } from "./utils";
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
@@ -57,7 +55,6 @@ import {
 } from "./components";
 import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
-import LinkEditor from "./blocks/BlockLinkEditor";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -92,7 +89,6 @@ export const ForgeEditor = () => {
    editor.isInline = (element) => ["link"].includes(element.type);
 
    const isEditingRef = useRef(false);
-   const editorRef = useRef(null);
 
    const updateMyPresence = useUpdateMyPresence();
 
@@ -290,17 +286,38 @@ export const ForgeEditor = () => {
       );
    }, []);
 
-   // const [previousSelection, selection, setSelection] = useSelection(editor);
+   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+      const { selection } = editor;
 
-   // let selectionForLink = null;
-   // if (isLinkNodeAtSelection(editor, selection)) {
-   //    selectionForLink = selection;
-   // } else if (
-   //    selection == null &&
-   //    isLinkNodeAtSelection(editor, previousSelection)
-   // ) {
-   //    selectionForLink = previousSelection;
-   // }
+      // Default left/right behavior is unit:'character'.
+      // This fails to distinguish between two cursor positions, such as
+      // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
+      // Here we modify the behavior to unit:'offset'.
+      // This lets the user step into and out of the inline without stepping over characters.
+      // You may wish to customize this further to only use unit:'offset' in specific cases.
+      if (selection && Range.isCollapsed(selection)) {
+         const { nativeEvent } = event;
+         if (isKeyHotkey("left", nativeEvent)) {
+            event.preventDefault();
+            Transforms.move(editor, { unit: "offset", reverse: true });
+            return;
+         }
+         if (isKeyHotkey("right", nativeEvent)) {
+            event.preventDefault();
+            Transforms.move(editor, { unit: "offset" });
+            return;
+         }
+      }
+
+      //Render mark commands
+      for (const hotkey in HOTKEYS) {
+         if (isHotkey(hotkey, event as any) && editor.selection) {
+            event.preventDefault();
+            const mark = HOTKEYS[hotkey];
+            toggleMark(editor, mark);
+         }
+      }
+   };
 
    const items = useMemo(
       () => editor.children.map((element: any) => element.id),
@@ -418,21 +435,6 @@ export const ForgeEditor = () => {
                         items={items}
                         strategy={verticalListSortingStrategy}
                      >
-                        {/* {selectionForLink != null ? (
-                           <LinkEditor
-                              editorOffsets={
-                                 editorRef.current != null
-                                    ? {
-                                         x: editorRef.current.getBoundingClientRect()
-                                            .x,
-                                         y: editorRef.current.getBoundingClientRect()
-                                            .y,
-                                      }
-                                    : null
-                              }
-                              selectionForLink={selectionForLink}
-                           />
-                        ) : null} */}
                         <Editable
                            renderElement={renderElement}
                            renderLeaf={Leaf}
@@ -459,54 +461,7 @@ export const ForgeEditor = () => {
 
                               return [];
                            }}
-                           onKeyDown={(event) => {
-                              for (const hotkey in HOTKEYS) {
-                                 if (
-                                    isHotkey(hotkey, event as any) &&
-                                    editor.selection
-                                 ) {
-                                    event.preventDefault();
-                                    const mark = HOTKEYS[hotkey];
-                                    toggleMark(editor, mark);
-                                 }
-                              }
-                              // if (event.key === "Enter") {
-                              //    if (event.shiftKey) {
-                              //       event.preventDefault();
-                              //       editor.insertText("\n");
-                              //    } else {
-                              //       const selectedElement = Node.descendant(
-                              //          editor,
-                              //          editor.selection.anchor.path.slice(0, -1)
-                              //       );
-
-                              //       if (Element.isElement(selectedElement)) {
-                              //          // Allow hard enter to "break out" of certain elements
-                              //          event.preventDefault();
-                              //          const selectedLeaf = Node.descendant(
-                              //             editor,
-                              //             editor.selection.anchor.path
-                              //          );
-
-                              //          if (
-                              //             Text.isText(selectedLeaf) &&
-                              //             String(selectedLeaf.text).length ===
-                              //                editor.selection.anchor.offset
-                              //          ) {
-                              //             const p: ParagraphElement = {
-                              //                id: nanoid(),
-                              //                type: BlockType.Paragraph,
-                              //                children: [{ text: "" }],
-                              //             };
-                              //             Transforms.insertNodes(editor, p);
-                              //          } else {
-                              //             Transforms.splitNodes(editor);
-                              //             Transforms.setNodes(editor, {});
-                              //          }
-                              //       }
-                              //    }
-                              // }
-                           }}
+                           onKeyDown={onKeyDown}
                         />
                      </SortableContext>
                      {createPortal(
