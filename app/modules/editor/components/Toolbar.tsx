@@ -251,49 +251,45 @@ export default function Toolbar() {
             </div>
          </section>
          {isLinkActive(editor) ? (
-            <section className="bg-3 mt-1.5 flex items-center gap-3 rounded-md">
-               <span className="flex-grow text-sm">
+            <section className="bg-3 mt-1.5 flex items-center gap-3 rounded-md px-2">
+               <span className="text-1 flex-grow py-2 text-xs">
                   {activeLinkUrl(editor)}
                </span>
-               <div className="flex items-center gap-4">
-                  <Tooltip
-                     className="flex items-center p-1"
-                     id="remove-link"
-                     content="Remove Link"
+               <Tooltip
+                  className="flex items-center p-1"
+                  id="remove-link"
+                  content="Remove Link"
+               >
+                  <Button
+                     ariaLabel="Remove Link"
+                     onPointerDown={(e) => e.preventDefault()}
+                     onClick={(e) => {
+                        if (isLinkActive(editor)) {
+                           unwrapLink(editor);
+                        }
+                     }}
                   >
-                     <Button
-                        ariaLabel="Remove Link"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                           if (isLinkActive(editor)) {
-                              unwrapLink(editor);
-                           }
-                        }}
-                     >
-                        <Link2Off className="text-red-400" size={16} />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip
-                     className="flex items-center p-1"
-                     id="update-link"
-                     content="Update Link"
+                     <Link2Off className="text-red-400" size={16} />
+                  </Button>
+               </Tooltip>
+               <Tooltip
+                  className="flex items-center p-1"
+                  id="update-link"
+                  content="Update Link"
+               >
+                  <Button
+                     ariaLabel="Update Link"
+                     onPointerDown={(e) => e.preventDefault()}
+                     onClick={(e) => {
+                        e.preventDefault();
+                        const url = window.prompt("Enter the URL of the link:");
+                        if (!url) return;
+                        wrapLink(editor, url);
+                     }}
                   >
-                     <Button
-                        ariaLabel="Update Link"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                           e.preventDefault();
-                           const url = window.prompt(
-                              "Enter the URL of the link:"
-                           );
-                           if (!url) return;
-                           wrapLink(editor, url);
-                        }}
-                     >
-                        <Edit className="text-blue-400" size={14} />
-                     </Button>
-                  </Tooltip>
-               </div>
+                     <Edit className="text-blue-400" size={14} />
+                  </Button>
+               </Tooltip>
             </section>
          ) : null}
       </div>,
