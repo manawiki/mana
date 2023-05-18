@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import {
    Link,
    useLoaderData,
+   useRevalidator,
    useSearchParams,
    useTransition,
 } from "@remix-run/react";
@@ -12,7 +13,7 @@ import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
 import Tooltip from "~/components/Tooltip";
-import { ArrowRight, Loader2, X } from "lucide-react";
+import { ArrowRight, Loader2, RefreshCcw, X } from "lucide-react";
 import { isLoading } from "~/utils";
 
 // Sample data, will import via API for real case
@@ -30,10 +31,12 @@ export async function loader({ params, request }: LoaderArgs) {
 
    if (showcaseData.detail)
       return json({
-         uid: "invalidUID",
+         errorMessage: showcaseData.detail,
       });
 
    const showcaseSample = showcaseData;
+
+   const refreshCooldown = showcaseData.cooldown;
 
    const charids = [
       showcaseSample?.detail_info?.assist_avatar?.avatar_id,
@@ -107,16 +110,21 @@ export async function loader({ params, request }: LoaderArgs) {
          )
       ).json(),
    ]);
-   return json({
-      uid,
-      relics,
-      characters,
-      lightCones,
-      skillTrees,
-      statTypes,
-      playerIcon,
-      showcaseData,
-   });
+
+   return json(
+      {
+         uid,
+         relics,
+         characters,
+         lightCones,
+         skillTrees,
+         statTypes,
+         playerIcon,
+         showcaseData,
+         refreshCooldown,
+      },
+      { headers: { "Cache-Control": "public, s-maxage=60" } }
+   );
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -126,7 +134,7 @@ export const meta: V2_MetaFunction = () => {
       },
       {
          name: "description",
-         content: "Build Better Wikis",
+         content: "A new kind of wiki",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -135,14 +143,19 @@ export const meta: V2_MetaFunction = () => {
 export default function Showcase() {
    const data = useLoaderData<typeof loader>();
 
-   if (!data?.uid || data?.uid == "invalidUID") {
+   if (!data?.uid || data?.errorMessage) {
       return (
          <div className="mx-auto flex max-w-[728px] justify-center px-3 pt-32">
             <div>
                <h1 className="pb-6 text-center font-header text-3xl">
-                  Character showcase viewer
+                  Character Showcase
                </h1>
                <InputUIDNote uid={data?.uid} />
+               {data?.errorMessage && (
+                  <div className="pt-4 text-center text-sm text-red-400">
+                     {data?.errorMessage}
+                  </div>
+               )}
                <div className="flex items-center justify-center pt-12">
                   <Link
                      className="shadow-1 inline-flex items-center justify-center gap-2 rounded-full border
@@ -166,6 +179,7 @@ export default function Showcase() {
       playerIcon,
       showcaseData,
       uid,
+      refreshCooldown,
    } = data as any;
 
    const pdata = showcaseData;
@@ -181,6 +195,7 @@ export default function Showcase() {
             playerIcon={playerIcon}
             pdata={pdata}
             uid={uid}
+            refreshCooldown={refreshCooldown}
          />
       </>
    );
@@ -195,14 +210,17 @@ const DisplayPlayerInfo = ({
    playerIcon,
    pdata,
    uid,
+   refreshCooldown,
 }: any) => {
    const [displayChar, setDisplayChar] = useState(-1);
+   const revalidator = useRevalidator();
 
    return (
       <main className="-mt-2 pb-20">
          {/* 1) Header with main information for Profile */}
          <PlayerHeader data={pdata} playerIcon={playerIcon} />
          {/* 2) Character selector for available characters in data */}
+
          <CharacterSelector
             data={pdata}
             characters={characters}
@@ -210,19 +228,51 @@ const DisplayPlayerInfo = ({
             setDisplayChar={(e: any) => setDisplayChar(e)}
          />
          <div
-            className="border-color bg-2 shadow-1 mx-auto -mt-9 max-w-[1100px] border-y 
-         p-3 desktop:rounded-xl desktop:border desktop:p-6 desktop:pt-14 desktop:shadow-sm"
+            className="border-color bg-2 shadow-1 relative -mt-9 border-y
+         p-3 desktop:border-y desktop:p-6 desktop:pt-14 desktop:shadow-sm"
          >
-            {/* 3) Primary Character display section */}
-            <CharacterInfo
-               data={pdata}
-               characters={characters}
-               lightCones={lightCones}
-               relics={relics}
-               skillTrees={skillTrees}
-               statTypes={statTypes}
-               displayChar={displayChar}
-            />
+            <div className="absolute right-4 top-10 z-40 flex items-center laptop:-top-14">
+               <Tooltip
+                  id="refreshUid"
+                  side="left"
+                  html={
+                     <div className="flex items-center gap-0.5">
+                        <span>Refresh in</span>
+                        <span className="font-bold text-zinc-50 underline">
+                           {refreshCooldown}
+                        </span>
+                        <span>seconds</span>
+                     </div>
+                  }
+               >
+                  <button
+                     className="shadow-1 border-color flex h-10 w-10 items-center justify-center
+                     rounded-full border bg-zinc-50 shadow dark:bg-bg2Dark"
+                     disabled={true}
+                     onClick={() => {
+                        revalidator.revalidate();
+                     }}
+                  >
+                     {revalidator.state != "idle" ? (
+                        <Loader2 size={16} className="animate-spin" />
+                     ) : (
+                        <RefreshCcw size={16} />
+                     )}
+                  </button>
+               </Tooltip>
+            </div>
+            <div className="mx-auto max-w-[1000px]">
+               {/* 3) Primary Character display section */}
+               <CharacterInfo
+                  data={pdata}
+                  characters={characters}
+                  lightCones={lightCones}
+                  relics={relics}
+                  skillTrees={skillTrees}
+                  statTypes={statTypes}
+                  displayChar={displayChar}
+               />
+            </div>
          </div>
          <div className="border-color bg-2 shadow-1 mx-auto my-16 max-w-[400px] rounded-3xl border px-12 py-9 shadow">
             <InputUIDNote uid={uid} />
@@ -765,21 +815,21 @@ const CharacterInfo = ({
                   />
                </div> */}
 
-               <section className="grid gap-4 desktop:grid-cols-3">
+               <section className="items-stretch gap-6 max-laptop:space-y-4 laptop:flex">
                   {/* ================================= */}
                   {/* First Column */}
                   {/* ================================= */}
                   {/* Eidolon Levels; if not unlocked, show 🔒 */}
-                  <div className="relative">
+                  <div className="relative flex-grow">
                      <Image
                         options="height=1200"
                         url={charbase?.image_draw?.url}
                         alt={charbase?.name}
                         className="hsr-showcase-character mx-auto w-[560px] object-contain desktop:hidden"
                      />
-                     <div className="-mt-3 truncate">
+                     <div className="-mt-1">
                         <Link
-                           className="truncate font-header text-2xl font-bold"
+                           className="font-header text-2xl font-bold leading-none hover:underline"
                            prefetch="intent"
                            to={`/starrail/collections/characters/${charbase?.id}`}
                         >
@@ -850,21 +900,22 @@ const CharacterInfo = ({
                   {/* ================================= */}
 
                   {/* Light Cone Display  */}
-                  <div className="mb-1">
+                  <div className="mb-1 desktop:w-[300px]">
                      {/* Light Cone Image + Rarity */}
                      <div className="mb-4 flex items-center gap-3 rounded-md">
                         <Link
+                           className="block"
                            prefetch="intent"
                            to={`/starrail/collections/lightCones/${lcbase?.id}`}
                         >
-                           <div className="relative h-[90px] overflow-hidden rounded">
+                           <div className="relative overflow-hidden rounded">
                               <Image
-                                 options="height=100"
+                                 options="height=140"
                                  alt={lcbase.name}
                                  url={lcbase.image_full?.url}
                                  className="z-0 mx-auto w-14"
                               />
-                              <div className="relative z-10 -mt-1 h-4 w-14  bg-zinc-500 text-center">
+                              <div className="relative z-10 -mt-4 h-4 w-14 rounded  bg-zinc-500 text-center">
                                  <Image
                                     options="width=56"
                                     alt="Rarity"
@@ -876,11 +927,9 @@ const CharacterInfo = ({
                         </Link>
 
                         {/* Level + Superimposition Levels */}
-                        <div className="flex-grow rounded-lg bg-white/70 p-2 dark:bg-bg3Dark/70">
+                        <div className="flex-grow">
                            <div className="relative pb-1.5 font-bold">
-                              <div className="truncate text-sm">
-                                 {lcbase.name}
-                              </div>
+                              <div className="text-sm">{lcbase.name}</div>
                               <NameToolTip
                                  text={lcbase?.name}
                                  tooltip={
@@ -915,7 +964,7 @@ const CharacterInfo = ({
                                        <div
                                           className={`flex items-center gap-1 rounded-full ${
                                              hoverStat.indexOf(lcstatname) > -1
-                                                ? "bg-blue-50 dark:bg-zinc-700"
+                                                ? "bg-blue-100 dark:bg-zinc-700"
                                                 : hoverStat.length > 0
                                                 ? "opacity-50"
                                                 : ""
@@ -939,7 +988,7 @@ const CharacterInfo = ({
                                                 className="object-fit"
                                              />
                                           </div>
-                                          <div className="inline-block pr-2 align-middle text-sm">
+                                          <div className="text-1 inline-block pr-2 align-middle text-xs font-bold">
                                              +
                                              {formatStat(
                                                 stattype?.name,
@@ -967,7 +1016,7 @@ const CharacterInfo = ({
                                     className={`flex cursor-default items-center justify-between border border-transparent
                                     px-2 py-0.5 odd:bg-white/70 even:bg-zinc-50/50 dark:odd:bg-bg3Dark/70 dark:even:bg-bg2Dark/50 ${
                                        hoverStat.indexOf(statname) > -1
-                                          ? "shadow-1 border-color !bg-blue-50 shadow-lg dark:!bg-zinc-700"
+                                          ? "shadow-1 border-color !bg-blue-100 shadow-lg dark:!bg-zinc-700"
                                           : hoverStat.length > 0
                                           ? "opacity-50"
                                           : ""
@@ -1031,7 +1080,7 @@ const CharacterInfo = ({
                   {/* Third Column */}
                   {/* ================================= */}
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 desktop:w-[300px]">
                      {/* Individual Relics */}
 
                      {rbase?.map((r: any, i: any) => {
@@ -1057,7 +1106,7 @@ const CharacterInfo = ({
                                     <div
                                        className={`ml-1 flex items-center gap-1.5 rounded p-1 ${
                                           hoverStat.indexOf(mainstatname) > -1
-                                             ? "bg-blue-50 dark:bg-zinc-700"
+                                             ? "bg-blue-100 dark:bg-zinc-700"
                                              : hoverStat.length > 0
                                              ? "opacity-50"
                                              : "bg-3"
@@ -1115,7 +1164,7 @@ const CharacterInfo = ({
                                                       hoverStat.indexOf(
                                                          statname
                                                       ) > -1
-                                                         ? "bg-blue-50 dark:bg-zinc-700"
+                                                         ? "bg-blue-100 dark:bg-zinc-700"
                                                          : hoverStat.length > 0
                                                          ? "opacity-50"
                                                          : ""
@@ -1209,7 +1258,7 @@ const CharacterInfo = ({
 
                            const highlightStyle =
                               intersect(sbonuses, hoverStat)?.length > 0
-                                 ? "bg-blue-50 dark:bg-zinc-700"
+                                 ? "bg-blue-100 dark:bg-zinc-700"
                                  : hoverStat.length > 0
                                  ? "opacity-50"
                                  : "";
@@ -1430,7 +1479,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    return (
       <div>
          <div className="text-1 pb-4 text-center font-bold">
-            Enter your UID to view your profile
+            Enter UID to view your profile
          </div>
          <div className="mx-auto flex max-w-[600px] items-center justify-center gap-3">
             <div className="relative">
