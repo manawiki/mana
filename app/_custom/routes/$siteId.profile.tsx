@@ -753,7 +753,7 @@ const CharacterInfo = ({
                options="height=1200"
                url={charbase?.image_draw?.url}
                alt={charbase?.name}
-               className="hsr-showcase-character absolute -left-10 -top-16 w-[560px] object-contain max-desktop:hidden"
+               className="hsr-showcase-character absolute -left-16 top-0 w-[520px] object-contain max-desktop:hidden"
             />
             <div className="relative">
                {/* Background-Div */}
