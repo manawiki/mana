@@ -819,7 +819,7 @@ const CharacterInfo = ({
                   {/* ================================= */}
                   {/* First Column */}
                   {/* ================================= */}
-                  {/* Eidolon Levels; if not unlocked, show 🔒 */}
+
                   <div className="relative flex-grow">
                      <Image
                         options="height=1200"
@@ -848,6 +848,8 @@ const CharacterInfo = ({
                            setHoverStat={setHoverStat}
                         />
                      </div>
+
+                     {/* Eidolon Levels; if not unlocked, show 🔒 */}
                      <div className="absolute left-0 top-16">
                         {charbase?.eidolons?.map((e: any, i: any) => {
                            const elv = chardata?.promotion ?? 0;
@@ -866,6 +868,7 @@ const CharacterInfo = ({
                                              text={e?.name}
                                              tooltip={e?.description}
                                              style="absolute"
+                                             styleTooltip="left-9 top-9"
                                           />
                                        </div>
                                     </>
@@ -886,6 +889,7 @@ const CharacterInfo = ({
                                        <NameToolTip
                                           text={e?.name}
                                           tooltip={e?.description}
+                                          styleTooltip="left-9 top-9"
                                        />
                                     </div>
                                  )}
@@ -964,9 +968,9 @@ const CharacterInfo = ({
                                        <div
                                           className={`flex items-center gap-1 rounded-full ${
                                              hoverStat.indexOf(lcstatname) > -1
-                                                ? "bg-blue-100 dark:bg-zinc-700"
+                                                ? "bg-blue-200 dark:bg-zinc-700"
                                                 : hoverStat.length > 0
-                                                ? "opacity-50"
+                                                ? "opacity-40"
                                                 : ""
                                           }`}
                                           onMouseOver={() =>
@@ -1016,9 +1020,9 @@ const CharacterInfo = ({
                                     className={`flex cursor-default items-center justify-between border border-transparent
                                     px-2 py-0.5 odd:bg-white/70 even:bg-zinc-50/50 dark:odd:bg-bg3Dark/70 dark:even:bg-bg2Dark/50 ${
                                        hoverStat.indexOf(statname) > -1
-                                          ? "shadow-1 border-color !bg-blue-100 shadow-lg dark:!bg-zinc-700"
+                                          ? "shadow-1 border-color !bg-blue-200 shadow-lg dark:!bg-zinc-700"
                                           : hoverStat.length > 0
-                                          ? "opacity-50"
+                                          ? "opacity-40"
                                           : ""
                                     }`}
                                     onMouseOver={() => setHoverStat([statname])}
@@ -1083,6 +1087,19 @@ const CharacterInfo = ({
                   <div className="space-y-2 desktop:w-[300px]">
                      {/* Individual Relics */}
 
+                     {/* Artifact Substat Legend (?) */}
+                     <div className="relative text-right w-full">
+                        <div className="w-4 h-4 rounded-full my-auto text-center inline-block relative border border-color cursor-default text-xs">
+                           ?
+                           <NameToolTip
+                              text={"Artifact Substats"}
+                              tooltip="Each group of dots represents an individual time the substat was rolled into. The number of dots represent the quality of substat rolls:<br>. = Lowest roll<br>.. = Medium roll<br>... = Highest roll (best)"
+                              style="absolute w-[inherit] top-0 left-0"
+                              styleTooltip="left-10"
+                           />
+                        </div>
+                     </div>
+
                      {rbase?.map((r: any, i: any) => {
                         const rdata = rchar[i];
                         const rlv = rdata.level ?? 0;
@@ -1106,9 +1123,9 @@ const CharacterInfo = ({
                                     <div
                                        className={`ml-1 flex items-center gap-1.5 rounded p-1 ${
                                           hoverStat.indexOf(mainstatname) > -1
-                                             ? "bg-blue-100 dark:bg-zinc-700"
+                                             ? "bg-blue-200 dark:bg-zinc-700"
                                              : hoverStat.length > 0
-                                             ? "opacity-50"
+                                             ? "opacity-40"
                                              : "bg-3"
                                        }`}
                                        onMouseOver={() =>
@@ -1164,9 +1181,9 @@ const CharacterInfo = ({
                                                       hoverStat.indexOf(
                                                          statname
                                                       ) > -1
-                                                         ? "bg-blue-100 dark:bg-zinc-700"
+                                                         ? "bg-blue-200 dark:bg-zinc-700"
                                                          : hoverStat.length > 0
-                                                         ? "opacity-50"
+                                                         ? "opacity-40"
                                                          : ""
                                                    }`}
                                                    onMouseOver={() =>
@@ -1258,9 +1275,9 @@ const CharacterInfo = ({
 
                            const highlightStyle =
                               intersect(sbonuses, hoverStat)?.length > 0
-                                 ? "bg-blue-100 dark:bg-zinc-700"
+                                 ? "bg-blue-200 dark:bg-zinc-700"
                                  : hoverStat.length > 0
-                                 ? "opacity-50"
+                                 ? "opacity-40"
                                  : "";
 
                            // Check if any of the set bonuses also include the currently highlighted stat
@@ -1543,7 +1560,7 @@ const BadUIDNote = () => {
    );
 };
 
-const NameToolTip = ({ text, tooltip, style = "" }: any) => {
+const NameToolTip = ({ text, tooltip, style = "", styleTooltip = "" }: any) => {
    const [ttip, setTtip] = useState(false);
    return (
       <>
@@ -1556,7 +1573,7 @@ const NameToolTip = ({ text, tooltip, style = "" }: any) => {
             {/* {text} */}
 
             <div
-               className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${
+               className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${styleTooltip} ${
                   ttip ? "block" : "hidden"
                }`}
             >
