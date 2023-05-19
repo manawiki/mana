@@ -89,7 +89,7 @@ export async function loader({ params, request }: LoaderArgs) {
          await fetch(
             `https://${
                process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/lightCones?limit=100&where[id][in]=${lcids.toString()}`
+            }-db.mana.wiki/api/lightCones?limit=101&where[id][in]=${lcids.toString()}`
          )
       ).json(),
       await (
@@ -507,6 +507,25 @@ const CharacterInfo = ({
       { name: "DEF", base: lcbase.stats[3].data[wi] },
    ];
 
+   // Total all light cone-sourced bonuses, same format as relic bonuses:
+   // ============================
+   var lightconebonuses: any = [];
+
+   lcbase?.skill_data[chardata?.equipment?.promotion - 1]?.stat_added?.map(
+      (a: any) => {
+         const tempbonus = {
+            id: a?.stat_type?.id,
+            icon: {
+               url: a?.stat_type?.icon?.url,
+            },
+            name: a?.stat_type?.name,
+            property_classify: a?.stat_type?.property_classify,
+            value: a.value,
+         };
+         lightconebonuses.push(tempbonus);
+      }
+   );
+
    // Relic data loading
    const rid = chardata?.relic_list?.map((a: any) => a.tid);
    const rbase = rid?.map((r: any) => relics.find((a: any) => a.relic_id == r));
@@ -711,11 +730,15 @@ const CharacterInfo = ({
       // BaseATK = Character's base atk @ LV
       // WATK = Light cone base atk
       // ---
-      // MODIFIER (statmod) = RelicATK + BASE*(RelicATK% + Tree% + SetATK%)
+      // MODIFIER (statmod) = RelicATK + TreeATK + lcATK + BASE*(RelicATK% + TreeATK% + SetATK% + lcATK%)
       // RelicATK = All relic Flat ATK bonuses
       // RelicATK% = All relic ATK % bonuses
       // SetATK% = All relic set ATK % bonuses
-      // Tree% = All tree ATK% bonuses
+      // TreeATK = All tree Flat ATK bonuses
+      // TreeATK% = All tree ATK% bonuses
+      // lcATK = All light cone skill Flat bonuses
+      // lcATK% = All light cone skill % bonuses
+
       const statbase =
          parseFloat(charbase.stats[i + 1].data[li]) +
          (wstats[i]?.base ? parseFloat(wstats[i]?.base) : 0);
@@ -724,6 +747,16 @@ const CharacterInfo = ({
       const relicflat = relicbonuses
          .filter((a: any) => a.name == stat)
          ?.map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
+
+      const treeflat = skilltreebonuses
+         .filter((a: any) => a.name == stat)
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
+
+      const lcflat = lightconebonuses
+         .filter((a: any) => a.name == stat)
+         .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
       // Percent Bonuses =
@@ -739,12 +772,16 @@ const CharacterInfo = ({
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
-      const treeflat = skilltreebonuses
-         .filter((a: any) => a.name == stat)
+      const lcperc = lightconebonuses
+         .filter((a: any) => a.name == stat + "%")
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
-      const statmod = relicflat + treeflat + statbase * (relicperc + treeperc);
+      const statmod =
+         relicflat +
+         treeflat +
+         lcflat +
+         statbase * (relicperc + treeperc + lcperc);
 
       return {
          name: stat,
