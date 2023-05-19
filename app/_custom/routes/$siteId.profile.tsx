@@ -838,6 +838,18 @@ const CharacterInfo = ({
       }
    });
 
+   // Light cone name highlighting if stat bonus is involved
+
+   const lcbonuses = lightconebonuses?.map((b: any) =>
+      b?.name?.replace("%", "")
+   );
+   const lcHighlightStyle =
+      intersect(lcbonuses, hoverStat)?.length > 0
+         ? "bg-blue-200 dark:bg-zinc-700"
+         : hoverStat.length > 0
+         ? "opacity-40"
+         : "";
+
    return (
       <>
          <div className="relative" id="hsr-char-summary">
@@ -975,7 +987,18 @@ const CharacterInfo = ({
                         {/* Level + Superimposition Levels */}
                         <div className="flex-grow">
                            <div className="relative pb-1.5 font-bold">
-                              <div className="text-sm">{lcbase.name}</div>
+                              <div
+                                 className={`text-sm ${lcHighlightStyle}`}
+                                 onMouseOver={() => setHoverStat(lcbonuses)}
+                                 onMouseOut={() => setHoverStat([])}
+                                 onClick={() =>
+                                    setHoverStat(
+                                       hoverStat?.length > 0 ? [] : lcbonuses
+                                    )
+                                 }
+                              >
+                                 {lcbase.name}
+                              </div>
                               <NameToolTip
                                  text={lcbase?.name}
                                  tooltip={
