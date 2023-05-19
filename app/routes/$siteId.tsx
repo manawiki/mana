@@ -57,6 +57,7 @@ import type { User, Site } from "payload-types";
 import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/gtags.client";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -76,12 +77,16 @@ export async function loader({
             cookie: request.headers.get("cookie") ?? "",
          },
       })
-   ).json()) as Site;
+   ).json()) as PaginatedDocs<Site>;
    const site = slug?.docs[0];
    if (!site) {
       throw json(null, { status: 404 });
    }
-   return json({ site });
+
+   return json(
+      { site },
+      { headers: { "Cache-Control": "public, s-maxage=60" } }
+   );
 }
 
 export const meta: V2_MetaFunction = ({ data }) => {
@@ -822,7 +827,7 @@ export const action: ActionFunction = async ({
       const sites = userCurrentSites.map(({ id }: { id }) => id);
 
       //Remove the current site from the user's sites array
-      const index = sites.indexOf(siteId);
+      const index = sites.indexOf(site.id);
       if (index > -1) {
          // only splice array when item is found
          sites.splice(index, 1); // 2nd parameter means remove one item only

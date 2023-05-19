@@ -1,5 +1,6 @@
 import type {
    ActionFunction,
+   LinksFunction,
    LoaderArgs,
    V2_MetaFunction,
 } from "@remix-run/node";
@@ -66,6 +67,10 @@ export async function loader({ context: { user }, request }: LoaderArgs) {
 
    return json({ title, email });
 }
+
+export const links: LinksFunction = () => {
+   return [{ rel: "canonical", href: "https://mana.wiki/login" }];
+};
 
 export const meta: V2_MetaFunction = ({ data }) => {
    return [

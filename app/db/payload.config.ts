@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import { cachePlugin } from "@aengz/payload-redis-cache";
+const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
 
@@ -41,6 +42,17 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
+      webpack: (config) => ({
+         ...config,
+         resolve: {
+            ...config.resolve,
+            alias: {
+               ...config?.resolve?.alias,
+               [path.resolve(__dirname, "../../node_modules/redis")]:
+                  mockModulePath,
+            },
+         },
+      }),
    },
    cors: ["mana.wiki", "starrail-static.mana.wiki"],
    plugins: [

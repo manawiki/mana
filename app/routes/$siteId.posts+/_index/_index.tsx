@@ -28,6 +28,7 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./FeedItem";
 import Tooltip from "~/components/Tooltip";
+import type { Post } from "payload-types";
 
 export const handle = {};
 
@@ -45,33 +46,41 @@ export async function loader({
       status: z.union([z.literal("draft"), z.literal("published")]).optional(),
       page: z.coerce.number().optional(),
    });
-   const myPosts = await payload.find({
-      collection: "posts",
-      user,
-      page: page ?? 1,
-      where: {
-         _status: status ? { equals: status } : {},
-         "site.slug": {
-            equals: siteId,
-         },
-      },
-      sort: "-updatedAt",
-   });
 
-   const publishedPosts = await payload.find({
-      collection: "posts",
-      user,
-      depth: 2,
-      where: {
-         name: q ? { contains: q } : {},
-         _status: { equals: "published" },
-         "site.slug": {
-            equals: siteId,
-         },
-      },
-      sort: "-publishedAt",
-   });
-   return json({ q, myPosts, publishedPosts });
+   const url = new URL(request.url).origin;
+
+   try {
+      const myPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=1&page=${
+         page ?? 1
+      }&sort=-updatedAt${status ? `&where[_status][equals]=${status}` : ""}`;
+
+      const myPosts = (await (
+         await fetch(myPostsFetchUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as Post[];
+
+      const publishedPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
+         q ? `&where[name][contains]=${q}` : ""
+      }`;
+
+      const publishedPosts = (await (
+         await fetch(publishedPostsFetchUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as [];
+
+      return json(
+         { q, myPosts, publishedPosts },
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
+      );
+   } catch (e) {
+      throw new Response("Internal Server Error", { status: 500 });
+   }
 }
 
 export default function PostsIndex() {
@@ -551,7 +560,7 @@ export const action = async ({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               url: "untitled",
+               slug: "untitled",
                name,
                author: user?.id,
                site: site.id,
@@ -567,7 +576,7 @@ export const action = async ({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               url: "untitled",
+               slug: "untitled",
                name: "Untitled",
                author: user?.id,
                site: site.id,

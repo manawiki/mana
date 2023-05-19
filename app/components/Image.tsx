@@ -19,7 +19,7 @@ export const Image = ({
          width={width}
          height={height}
          alt={alt}
-         src={`https://mana.wiki/cdn-cgi/image/${options}/${url}`}
+         src={`https://mana.wiki/cdn-cgi/image/${options ?? ""}/${url}`}
       />
    );
 };

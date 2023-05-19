@@ -1,5 +1,6 @@
 import type {
    ActionFunction,
+   LinksFunction,
    LoaderArgs,
    V2_MetaFunction,
 } from "@remix-run/node";
@@ -55,6 +56,10 @@ const JoinFormSchema = z.object({
       .max(16, "Username must be at least 16 characters long")
       .toLowerCase(),
 });
+
+export const links: LinksFunction = () => {
+   return [{ rel: "canonical", href: "https://mana.wiki/join" }];
+};
 
 export const meta: V2_MetaFunction = ({ data }) => {
    return [

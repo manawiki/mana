@@ -26,44 +26,39 @@ import { useEffect, useState } from "react";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import type { loader as siteDetailsLoader } from "../$siteId+/_route+";
+import type { loader as siteDetailsLoader } from "../$siteId";
 import { toast } from "~/components/Toaster";
 import { Image } from "~/components/Image";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import type { Collection } from "payload-types";
 
-export async function loader({
-   context: { payload, user },
-   params,
-}: LoaderArgs) {
+export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
-   const siteData = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteId,
-         },
-      },
-      user,
-   });
+   const url = new URL(request.url).origin;
 
-   const id = siteData?.docs[0].id;
+   try {
+      const collectionDataFetchUrl = `${url}/api/collections?where[hiddenCollection][equals]=false&where[site.slug][equals]=${siteId}&depth=1`;
 
-   const { docs } = await payload.find({
-      collection: "collections",
-      where: {
-         hiddenCollection: {
-            equals: false,
-         },
-         site: {
-            equals: id,
-         },
-      },
-      user,
-   });
+      const collectionData = (await (
+         await fetch(collectionDataFetchUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as PaginatedDocs<Collection>;
 
-   return json({ collections: docs });
+      const collections = collectionData.docs;
+
+      return json(
+         { collections },
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
+      );
+   } catch (e) {
+      throw new Response("Internal Server Error", { status: 500 });
+   }
 }
 
 const CollectionSchema = z.object({

@@ -14,9 +14,9 @@ module.exports = {
       v2_meta: true,
       v2_normalizeFormMethod: true,
       v2_errorBoundary: true,
-      unstable_postcss: true,
-      unstable_tailwind: true,
    },
+   tailwind: true,
+   postcss: true,
    publicPath: getPublicPath(),
    ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {
