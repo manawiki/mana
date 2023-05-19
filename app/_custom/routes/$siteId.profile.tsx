@@ -949,7 +949,7 @@ const CharacterInfo = ({
                                  Lv.{chardata?.equipment?.level}
                               </span>
                               <div
-                                 className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500 
+                                 className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-600 
                                  text-xs font-bold text-yellow-100"
                               >
                                  {superimp[chardata?.equipment?.promotion]}
@@ -1121,7 +1121,7 @@ const CharacterInfo = ({
                                  {/* Relic Main Stat and Level */}
                                  <div className="bg-3 flex h-[62px] flex-grow items-center justify-between rounded p-1">
                                     <div
-                                       className={`ml-1 flex items-center gap-1.5 rounded p-1 ${
+                                       className={`ml-1 flex items-center gap-1.5 rounded p-1 cursor-default ${
                                           hoverStat.indexOf(mainstatname) > -1
                                              ? "bg-blue-200 dark:bg-zinc-700"
                                              : hoverStat.length > 0
