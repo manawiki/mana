@@ -739,6 +739,7 @@ const CharacterInfo = ({
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
+      const treeflat = skilltreebonuses
          .filter((a: any) => a.name == stat)
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
