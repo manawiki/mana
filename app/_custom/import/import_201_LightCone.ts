@@ -35,8 +35,26 @@ const start = async () =>
    });
 start();
 
-const getData = async () =>
-   Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+var statTypes: any;
+
+const getData = async () => {
+
+	// Get _statTypes arrays to populate later relations
+	const tempStatTypes = await payload.find({
+		collection: "_statTypes",
+		where: {
+			id: {
+			exists: true
+			},
+		},
+		limit: 200,
+	});
+
+	statTypes = tempStatTypes.docs;
+
+   return Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
+
+}
 
 //Uploads an entry and custom field data; NOTE: Still need to add "check for existing entry" functionality
 const seedUploads = async (result: any) => {
@@ -147,6 +165,17 @@ const seedUploads = async (result: any) => {
 			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
 		}
 	}
+
+	// Nested relation fields
+	relationFields["skill_data"] = result.skill_data?.map((skill:any) => {
+
+		const stat_added = skill.stat_added?.map((stat:any) => {
+			const statEntry = statTypes?.find((a:any) => a.data_key == stat.stat_type?.data_key);
+			return { ...stat, stat_type: statEntry?.id }
+		});
+
+		return { ...skill, stat_added: stat_added}
+	});
 
 	// if (result.traces?.length > 0) {
 	// 	const traceEntry = await Promise.all(result.traces.map(async (t:any) => {

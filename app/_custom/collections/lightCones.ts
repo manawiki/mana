@@ -96,6 +96,22 @@ export const LightCones: CollectionConfig = {
                name: "desc",
                type: "text",
             },
+            {
+               name: "stat_added",
+               type: "array",
+               fields: [
+                  {
+                     name: "stat_type",
+                     type: "relationship",
+                     relationTo: "_statTypes",
+                     hasMany: false,
+                  },
+                  {
+                     name: "value",
+                     type: "number",
+                  },
+               ],
+            },
          ],
       },
       {
