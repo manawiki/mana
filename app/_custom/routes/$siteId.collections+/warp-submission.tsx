@@ -54,7 +54,7 @@ export const meta: V2_MetaFunction = () => {
       },
       {
          name: "description",
-         content: "Build Better Wikis",
+         content: "A new kind of wiki",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -78,10 +78,10 @@ export default function WarpSubmission() {
          <div>
             <Instructions />
 
-            <div className="text-xl mt-2 underline font-bold">
+            <div className="mt-2 text-xl font-bold underline">
                Upload data_2 file:
             </div>
-            <div className="font-bold mb-1 ">
+            <div className="mb-1 font-bold ">
                Note this will only load history pages that have been manually
                looked at in-game!
             </div>
@@ -125,7 +125,7 @@ export default function WarpSubmission() {
 const Instructions = () => {
    return (
       <>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p className="">1) Log into your game on a PC.</p>
             <div className="flex justify-center">
                <Image
@@ -137,7 +137,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>2) Go to "Warp".</p>
             <div className="flex justify-center">
                <Image
@@ -149,7 +149,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>3) On all banners with data, click on "View Details".</p>
             <div className="flex justify-center">
                <Image
@@ -161,7 +161,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>
                4) Click on "Records" and view every page of Warp History that
                needs to be uploaded.
@@ -176,7 +176,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>5) Close out of the game.</p>
             <div className="flex justify-center">
                <Image
@@ -188,7 +188,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>
                6) Navigate to your game's data folder:{" "}
                <code>
@@ -215,7 +215,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>7) Find a file named "data_2" and upload it below</p>
             <div className="flex justify-center">
                <Image
@@ -227,7 +227,7 @@ const Instructions = () => {
                />
             </div>
          </div>
-         <div className="p-2 border rounded-md my-1 dark:border-gray-700">
+         <div className="my-1 rounded-md border p-2 dark:border-gray-700">
             <p>8) Click Submit to upload!</p>
          </div>
       </>
@@ -273,7 +273,7 @@ const CorrectFile = ({ jsonlist }: any) => {
             })}
          </div>
          <div
-            className="rounded-md cursor-pointer w-fit py-1 px-3 my-1 border dark:border-gray-700 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40"
+            className="my-1 w-fit cursor-pointer rounded-md border px-3 py-1 hover:bg-gray-400 hover:bg-opacity-20 active:bg-gray-400 active:bg-opacity-40 dark:border-gray-700"
             onClick={(e) => {
                setSubmit(true);
                // getAPI(url);

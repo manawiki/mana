@@ -45,7 +45,7 @@ export const meta: V2_MetaFunction = () => {
       },
       {
          name: "description",
-         content: "Build Better Wikis",
+         content: "A new kind of wiki",
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
@@ -488,7 +488,7 @@ const SummonSimulator = (data: any) => {
                         key={banner.id}
                         value={banner}
                         className={({ active }) =>
-                           `relative m-0 cursor-default select-none py-1 px-3 ${
+                           `relative m-0 cursor-default select-none px-3 py-1 ${
                               active ? "bg-gray-300 dark:bg-gray-700" : ""
                            }`
                         }
@@ -578,7 +578,7 @@ const SummonSimulator = (data: any) => {
       return (
          <a href={`/collections/${resulttype}/${pull.id}`}>
             <div
-               className={`m-0.5 inline-block rounded-md border border-color text-left laptop:w-5/12 w-full ${customcolor}`}
+               className={`border-color m-0.5 inline-block w-full rounded-md border text-left laptop:w-5/12 ${customcolor}`}
                key={pull.id + "-" + index}
             >
                <div
@@ -589,7 +589,7 @@ const SummonSimulator = (data: any) => {
                   <Image
                      alt="Icon"
                      url={pull.icon ? pull.icon.url : "no_image_42df124128"}
-                     className="object-contain h-12 w-12"
+                     className="h-12 w-12 object-contain"
                   />
                </div>
                <div className="ml-2 inline-block align-middle">{pull.name}</div>
@@ -613,7 +613,7 @@ const SummonSimulator = (data: any) => {
       return (
          <a href={`/collections/${resulttype}/${pull.id}`}>
             <div
-               className={`m-0.5 rounded-md border border border-color text-left ${customcolor}`}
+               className={`border-color m-0.5 rounded-md border border text-left ${customcolor}`}
                key={pull.id + "-" + number}
             >
                <div
@@ -624,7 +624,7 @@ const SummonSimulator = (data: any) => {
                   <Image
                      alt="Icon"
                      url={pull.icon.url}
-                     className="object-contain h-12 w-12"
+                     className="h-12 w-12 object-contain"
                   />
                </div>
                <div className="ml-2 inline-block align-middle">
@@ -665,8 +665,8 @@ const SummonSimulator = (data: any) => {
                   return (
                      <>
                         <Disclosure.Button
-                           className="mb-1 mt-2 flex w-full
-               items-center rounded-md border bg-gray-50 dark:bg-neutral-800 px-3 py-2 font-bold shadow-sm border-color"
+                           className="border-color mb-1 mt-2 flex
+               w-full items-center rounded-md border bg-gray-50 px-3 py-2 font-bold shadow-sm dark:bg-neutral-800"
                         >
                            Banner Rate Details
                            <div
@@ -680,7 +680,7 @@ const SummonSimulator = (data: any) => {
                            </div>
                         </Disclosure.Button>
                         <Disclosure.Panel className="mb-5">
-                           <div className="rounded-md border bg-gray-50 dark:bg-neutral-900 px-4 py-3 text-center text-sm border-color">
+                           <div className="border-color rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:bg-neutral-900">
                               <div
                                  className="break-words px-2"
                                  dangerouslySetInnerHTML={{
@@ -842,11 +842,11 @@ const SummonSimulator = (data: any) => {
 
             <H2 text="Banner Info" />
             <h3 className="text-center">{currentBanner.name}</h3>
-            <div className="display-contents relative inline-block text-center h-32 w-full px-2 laptop:h-40 ">
+            <div className="display-contents relative inline-block h-32 w-full px-2 text-center laptop:h-40 ">
                {currentBanner.icon?.url && (
                   <Image
                      alt={currentBanner?.name}
-                     className="object-contain h-32 laptop:h-40 inline-block"
+                     className="inline-block h-32 object-contain laptop:h-40"
                      url={currentBanner.icon?.url}
                   />
                )}
@@ -955,8 +955,8 @@ const SummonSimulator = (data: any) => {
             <div>
                <div className="flex justify-between">
                   <button
-                     className={`rounded-full border border-gray-400 
-                         m-1 w-full px-2 py-1 dark:border-gray-600 ${
+                     className={`m-1 w-full rounded-full 
+                         border border-gray-400 px-2 py-1 dark:border-gray-600 ${
                             isBeginner
                                ? "opacity-50"
                                : "hover:bg-blue-700 hover:bg-opacity-10"
@@ -969,8 +969,8 @@ const SummonSimulator = (data: any) => {
                      Warp x1
                   </button>
                   <button
-                     className={`rounded-full border border-gray-400 
-                     m-1 w-full px-2 py-1 dark:border-gray-600 ${
+                     className={`m-1 w-full rounded-full 
+                     border border-gray-400 px-2 py-1 dark:border-gray-600 ${
                         isBeginner && beginnerPulls >= 5
                            ? "opacity-50"
                            : "hover:bg-blue-700 hover:bg-opacity-10"
@@ -984,7 +984,7 @@ const SummonSimulator = (data: any) => {
                </div>
             </div>
             <button
-               className="my-2 w-full rounded-full border border-gray-400 bg-gray-200 px-2 py-1 dark:border-gray-600 dark:bg-gray-800 hover:bg-red-900 hover:bg-opacity-10"
+               className="my-2 w-full rounded-full border border-gray-400 bg-gray-200 px-2 py-1 hover:bg-red-900 hover:bg-opacity-10 dark:border-gray-600 dark:bg-gray-800"
                onClick={() => {
                   reset();
                }}
