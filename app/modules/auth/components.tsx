@@ -21,7 +21,9 @@ export const AdminOrStaffOrOwner = ({
 //Render child components if the user is following the site
 export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
-   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
+   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
+      site: Site;
+   };
    if (site && user?.sites?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
@@ -29,7 +31,9 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
 
 //Is custom site
 export const CustomSite = ({ children }: { children: React.ReactNode }) => {
-   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
+   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
+      site: Site;
+   };
    const isCustom = site.type === "custom";
    return isCustom ? <>{children}</> : null;
 };
@@ -40,7 +44,9 @@ export const NotFollowingSite = ({
    children: React.ReactNode;
 }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
-   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
+   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
+      site: Site;
+   };
    if (!user) return null;
    if (user?.sites?.some((e: any) => e.id === site?.id)) return null;
    return <>{children}</>;

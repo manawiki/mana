@@ -65,7 +65,9 @@ export default function BlockGroup({ element }: Props) {
 
    const { siteId } = useParams();
 
-   const { site } = useRouteLoaderData("routes/$siteId") as { site: Site };
+   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
+      site: Site;
+   };
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 

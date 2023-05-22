@@ -4,7 +4,7 @@ import { useRouteLoaderData } from "@remix-run/react";
 export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
    const { user } = useRouteLoaderData("root") as { user: User };
    const { site } =
-      (useRouteLoaderData("routes/$siteId") as { site: Site }) || {};
+      (useRouteLoaderData("routes/$siteId+/_layout") as { site: Site }) || {};
 
    //always false if not logged in
    if (!user || !user?.id) return false;

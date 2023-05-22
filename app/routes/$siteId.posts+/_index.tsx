@@ -15,7 +15,6 @@ import {
    ChevronRight,
    ChevronsUpDown,
    File,
-   LayoutTemplate,
    Loader2,
    Search,
    X,
@@ -26,7 +25,7 @@ import { useDebouncedValue } from "~/hooks";
 import { isLoading, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
-import { FeedItem } from "./FeedItem";
+import { FeedItem } from "./components/FeedItem";
 import Tooltip from "~/components/Tooltip";
 import type { Post } from "payload-types";
 

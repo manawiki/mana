@@ -91,7 +91,7 @@ export default buildConfig({
                   type: "relationship",
                   relationTo: "sites",
                   hasMany: false,
-                  maxDepth: 0,
+                  maxDepth: 1,
                   admin: {
                      readOnly: true,
                   },
@@ -123,8 +123,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
-                     icon: originalDoc?.icon,
+                     site: originalDoc?.site.id,
+                     icon: originalDoc?.icon.id,
                      slug: originalDoc?.slug,
                   };
                }
@@ -132,8 +132,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
-                     icon: originalDoc?.icon,
+                     site: originalDoc?.site.id,
+                     icon: originalDoc?.icon.id,
                      slug: originalDoc?.slug,
                   };
                }
@@ -141,8 +141,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
-                     icon: originalDoc?.icon,
+                     site: originalDoc?.site.id,
+                     icon: originalDoc?.icon.id,
                      collectionEntity: originalDoc?.collectionEntity,
                   };
                }
@@ -150,7 +150,7 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
+                     site: originalDoc?.site.id,
                      icon: originalDoc?.banner,
                      slug: originalDoc?.slug,
                      postId: originalDoc?.id,
@@ -159,7 +159,7 @@ export default buildConfig({
                default:
                   return {
                      ...searchDoc,
-                     site: originalDoc?.site,
+                     site: originalDoc?.site.id,
                      name: originalDoc?.name,
                   };
             }

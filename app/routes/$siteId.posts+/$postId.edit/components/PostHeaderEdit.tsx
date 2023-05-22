@@ -21,7 +21,6 @@ import { useDebouncedValue, useIsMount } from "~/hooks";
 import type { FormResponse } from "~/utils";
 import { isProcessing } from "~/utils";
 import { isAdding } from "~/utils";
-import { postSchema } from "../../postSchema";
 import { Image as ImageIcon } from "lucide-react";
 import { Menu, Popover, Switch, Transition } from "@headlessui/react";
 import { DotLoader } from "~/components/DotLoader";
@@ -29,13 +28,14 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";
 import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
-import { PostHeader } from "../../PostHeader";
 import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "~/modules/editor/components";
 import { PostVersionModal } from "./PostVersionModal";
 import { useStorage } from "~/liveblocks.config";
 import TextareaAutosize from "react-textarea-autosize";
 import { format } from "date-fns";
+import { PostHeader } from "../../components/PostHeader";
+import { postSchema } from "../../utils/postSchema";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
