@@ -20,9 +20,46 @@ export const Sites: CollectionConfig = {
          required: true,
       },
       {
+         name: "about",
+         type: "text",
+      },
+      {
+         name: "pinned",
+         type: "array",
+         label: "Pinned",
+         maxRows: 4,
+         labels: {
+            singular: "Pinned Item",
+            plural: "Pinned Items",
+         },
+         fields: [
+            {
+               name: "relation",
+               type: "relationship",
+               relationTo: ["customPages", "entries", "posts", "collections"],
+               hasMany: false,
+            },
+            {
+               name: "label",
+               type: "select",
+               options: [
+                  {
+                     label: "New",
+                     value: "new",
+                  },
+                  {
+                     label: "Updated",
+                     value: "updated",
+                  },
+               ],
+            },
+         ],
+      },
+      {
          name: "slug",
          type: "text",
          unique: true,
+         index: true,
       },
       {
          name: "gaTagId",
@@ -59,6 +96,7 @@ export const Sites: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          hasMany: true,
+         maxDepth: 2,
       },
       {
          name: "icon",

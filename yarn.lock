@@ -2757,13 +2757,6 @@
   dependencies:
     range-parser "^1.2.1"
 
-"@payloadcms/plugin-search@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-search/-/plugin-search-1.0.0.tgz#714644fb81cdd9abb7d9e646d316a5a54f63d27f"
-  integrity sha512-0XDJGjVYvLCd0Kc90EGiZ4FvB4d+BCc8Z9jQfK2yxdgkyk2yOwlwLhtaLZWaSse7cIm8nirmfaktgbEPZ2DsxA==
-  dependencies:
-    ts-deepmerge "^2.0.1"
-
 "@pkgr/utils@^2.3.1":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@pkgr/utils/-/utils-2.4.0.tgz#b6373d2504aedaf2fc7cdf2d13ab1f48fa5f12d5"
@@ -12826,10 +12819,10 @@ truncate-utf8-bytes@^1.0.0:
   dependencies:
     utf8-byte-length "^1.0.1"
 
-ts-deepmerge@^2.0.1:
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/ts-deepmerge/-/ts-deepmerge-2.0.7.tgz#36786a9a10b5f3a6f5154007cf17bfba7251e0a7"
-  integrity sha512-3phiGcxPSSR47RBubQxPoZ+pqXsEsozLo4G4AlSrsMKTFg9TA3l+3he5BqpUi9wiuDbaHWXH/amlzQ49uEdXtg==
+ts-deepmerge@^6.0.3:
+  version "6.0.3"
+  resolved "https://registry.yarnpkg.com/ts-deepmerge/-/ts-deepmerge-6.0.3.tgz#4ca1f7f3bf38b02e44b363702b7e5ed5fbffd0a9"
+  integrity sha512-MBBJL0UK/mMnZRONMz4J1CRu5NsGtsh+gR1nkn8KLE9LXo/PCzeHhQduhNary8m5/m9ryOOyFwVKxq81cPlaow==
 
 ts-essentials@^7.0.3:
   version "7.0.3"

@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import { cachePlugin } from "@aengz/payload-redis-cache";
+import searchPlugin from "./plugins/search";
 const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
@@ -50,11 +51,17 @@ export default buildConfig({
                ...config?.resolve?.alias,
                [path.resolve(__dirname, "../../node_modules/redis")]:
                   mockModulePath,
+               react: path.join(__dirname, "../../node_modules/react"),
+               "react-dom": path.join(
+                  __dirname,
+                  "../../node_modules/react-dom"
+               ),
+               payload: path.join(__dirname, "../../node_modules/payload"),
             },
          },
       }),
    },
-   cors: ["mana.wiki", "starrail-static.mana.wiki"],
+   cors: ["mana.wiki", "starrail-static.mana.wiki", "static.mana.wiki"],
    plugins: [
       cloudStorage({
          collections: {
@@ -65,6 +72,103 @@ export default buildConfig({
                   return `https://static.mana.wiki/file/${bucketName}/${filename}`;
                },
             },
+         },
+      }),
+      searchPlugin({
+         collections: ["customPages", "entries", "posts", "collections"],
+         searchOverrides: {
+            fields: [
+               {
+                  name: "slug",
+                  label: "Slug",
+                  type: "text",
+                  admin: {
+                     readOnly: true,
+                  },
+               },
+               {
+                  name: "site",
+                  type: "relationship",
+                  relationTo: "sites",
+                  hasMany: false,
+                  maxDepth: 0,
+                  admin: {
+                     readOnly: true,
+                  },
+               },
+               {
+                  name: "icon",
+                  type: "relationship",
+                  relationTo: "images",
+                  hasMany: false,
+                  admin: {
+                     readOnly: true,
+                  },
+               },
+               {
+                  name: "collectionEntity",
+                  type: "relationship",
+                  relationTo: "collections",
+                  hasMany: false,
+                  admin: {
+                     readOnly: true,
+                  },
+               },
+            ],
+         },
+         beforeSync: ({ originalDoc, searchDoc }) => {
+            const type = searchDoc.doc.relationTo;
+            switch (type) {
+               case "customPages": {
+                  return {
+                     ...searchDoc,
+                     name: originalDoc?.name,
+                     site: originalDoc?.site,
+                     icon: originalDoc?.icon,
+                     slug: originalDoc?.slug,
+                  };
+               }
+               case "collections": {
+                  return {
+                     ...searchDoc,
+                     name: originalDoc?.name,
+                     site: originalDoc?.site,
+                     icon: originalDoc?.icon,
+                     slug: originalDoc?.slug,
+                  };
+               }
+               case "entries": {
+                  return {
+                     ...searchDoc,
+                     name: originalDoc?.name,
+                     site: originalDoc?.site,
+                     icon: originalDoc?.icon,
+                     collectionEntity: originalDoc?.collectionEntity,
+                  };
+               }
+               case "posts": {
+                  return {
+                     ...searchDoc,
+                     name: originalDoc?.name,
+                     site: originalDoc?.site,
+                     icon: originalDoc?.banner,
+                     slug: originalDoc?.slug,
+                     postId: originalDoc?.id,
+                  };
+               }
+               default:
+                  return {
+                     ...searchDoc,
+                     site: originalDoc?.site,
+                     name: originalDoc?.name,
+                  };
+            }
+         },
+         defaultPriorities: {
+            collections: 10,
+            customPages: 10,
+            entries: 9,
+            posts: 8,
          },
       }),
       //@ts-ignore

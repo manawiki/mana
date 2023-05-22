@@ -77,7 +77,6 @@ export async function loader({
       },
       limit: 1000,
    });
-   console.log(entries);
 
    const processCustomEntries =
       isCustom &&

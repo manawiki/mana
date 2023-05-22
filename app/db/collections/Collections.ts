@@ -65,12 +65,15 @@ export const Collections: CollectionConfig = {
          name: "slug",
          type: "text",
          required: true,
+         index: true,
       },
       {
          name: "site",
          type: "relationship",
          relationTo: "sites",
+         maxDepth: 0,
          hasMany: false,
+         index: true,
       },
       {
          name: "icon",
