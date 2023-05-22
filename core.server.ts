@@ -19,6 +19,7 @@ const corsOptions = {
    origin: [
       "https://mana.wiki",
       "https://starrail-static.mana.wiki",
+      "https://static.mana.wiki",
       "http://localhost:3000",
    ],
 };

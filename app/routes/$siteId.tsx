@@ -11,13 +11,19 @@ import {
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
    ChevronDown,
+   Component,
+   Dog,
    HardDrive,
+   Info,
    Loader2,
    Lock,
    LogOut,
    MoreVertical,
+   Pin,
    Search,
+   Star,
    User as UserIcon,
+   Users,
    X,
 } from "lucide-react";
 import type {
@@ -72,7 +78,7 @@ export async function loader({
 
    const url = new URL(request.url).origin;
    const slug = (await (
-      await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=1`, {
+      await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=2`, {
          headers: {
             cookie: request.headers.get("cookie") ?? "",
          },
@@ -108,6 +114,33 @@ export const handle = {
    i18n: "site",
 };
 
+const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
+   const type = item.relation?.relationTo;
+
+   switch (type) {
+      case "customPages": {
+         const slug = item.relation?.value.slug;
+         return `/${siteSlug}/${slug}`;
+      }
+      case "collections": {
+         const slug = item.relation?.value.slug;
+         return `/${siteSlug}/collections/${slug}`;
+      }
+      case "entries": {
+         const slug = item.relation?.value.slug;
+         const id = item.relation?.value.id;
+         const collection = item.relation?.value.collectionEntity.slug;
+         return `/${siteSlug}/collections/${collection}/${id}/${slug}`;
+      }
+      case "posts": {
+         const id = item.relation?.value.id;
+         return `/${siteSlug}/posts/${id}`;
+      }
+      default:
+         return "/";
+   }
+};
+
 export default function SiteIndex() {
    const { site } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
@@ -121,7 +154,6 @@ export default function SiteIndex() {
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
-
    const gaTrackingId = site?.gaTagId;
 
    useEffect(() => {
@@ -739,9 +771,159 @@ export default function SiteIndex() {
                max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <div className="flex-grow"></div>
-                  <div className="flex items-center justify-center py-4">
-                     <div className="h-[250px] w-[300px]" />
+                  <div className="divide-color flex-grow divide-y pt-14">
+                     {site.about && (
+                        <section className="p-4">
+                           <div className="flex items-center gap-1.5 pb-2.5">
+                              <Component size={14} />
+                              <span className="text-1 text-sm font-bold">
+                                 About
+                              </span>
+                           </div>
+                           <div className="text-1 text-sm">{site.about}</div>
+                        </section>
+                     )}
+                     {site.pinned && (
+                        <>
+                           <section className="p-4">
+                              <div className="flex items-center gap-1.5 pb-2.5">
+                                 <Pin size={14} />
+                                 <span className="text-1 text-sm font-bold">
+                                    Pinned
+                                 </span>
+                              </div>
+                              <ul className="grid grid-cols-2 gap-3 text-center text-xs font-bold">
+                                 {site.pinned?.map((item: any) => (
+                                    <li key={item.id}>
+                                       <Link
+                                          className="bg-3 shadow-1 relative block rounded-lg p-3 shadow-sm"
+                                          prefetch="intent"
+                                          to={pinnedLinkUrlGenerator(
+                                             item,
+                                             site.slug
+                                          )}
+                                       >
+                                          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center">
+                                             {item.relation?.value?.icon
+                                                ?.url ? (
+                                                <Image
+                                                   url={
+                                                      item.relation?.value?.icon
+                                                         ?.url
+                                                   }
+                                                   options="fit=crop,width=100,height=100,gravity=auto"
+                                                   alt="Pinned Icon"
+                                                />
+                                             ) : (
+                                                <Component
+                                                   className="text-1 mx-auto"
+                                                   size={24}
+                                                />
+                                             )}
+                                          </div>
+                                          <div className="truncate">
+                                             {item.relation.value.name}
+                                          </div>
+                                          {item?.label && (
+                                             <span
+                                                className="absolute -right-1 -top-1 flex h-4 items-center justify-center rounded-full 
+                                             bg-blue-500 px-1.5 text-[8px] uppercase text-white"
+                                             >
+                                                {item?.label}
+                                             </span>
+                                          )}
+                                       </Link>
+                                    </li>
+                                 ))}
+                              </ul>
+                           </section>
+                        </>
+                     )}
+
+                     <section className="border-color !border-b px-4 py-5">
+                        <div className="flex items-center gap-1.5 pb-3">
+                           <Users size={14} />
+                           <span className="text-1 text-sm font-bold">
+                              Contributors
+                           </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           {site.admins?.length === 0 ? null : (
+                              <>
+                                 {site.admins?.map((user: any) => (
+                                    <Tooltip
+                                       key={user.id}
+                                       id="site-contributors"
+                                       content={user.username}
+                                    >
+                                       <div
+                                          className="bg-3 shadow-1 h-10 w-10 overflow-hidden rounded-full 
+                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                       >
+                                          {user.avatar?.url ? (
+                                             <Image
+                                                url={user.avatar?.url}
+                                                options="fit=crop,width=100,height=100,gravity=auto"
+                                                alt="User Avatar"
+                                             />
+                                          ) : (
+                                             <div
+                                                className="bg-3 shadow-1 flex h-10 w-10 
+                                                items-center justify-center overflow-hidden rounded-full shadow-sm"
+                                             >
+                                                <Dog
+                                                   className="text-1"
+                                                   size={20}
+                                                />
+                                             </div>
+                                          )}
+                                       </div>
+                                    </Tooltip>
+                                 ))}
+                                 <Tooltip
+                                    key={site?.owner?.id}
+                                    id="site-creator"
+                                    content={site?.owner?.username}
+                                 >
+                                    <div
+                                       className="bg-3 shadow-1 h-9 w-9 overflow-hidden rounded-full 
+                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                    >
+                                       {site?.owner?.avatar?.url ? (
+                                          <Image
+                                             url={site?.owner?.avatar?.url}
+                                             options="fit=crop,width=100,height=100,gravity=auto"
+                                             alt="User Avatar"
+                                          />
+                                       ) : (
+                                          <div
+                                             className="bg-3 shadow-1 flex h-9 w-9 items-center
+                                                justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
+                                          >
+                                             <Dog
+                                                className="text-1"
+                                                size={20}
+                                             />
+                                          </div>
+                                       )}
+                                    </div>
+                                 </Tooltip>
+                              </>
+                           )}
+
+                           <Tooltip id="join-site" content="Coming Soon!">
+                              <div
+                                 className="shadow-1 flex h-9 items-center justify-center rounded-full
+                                 bg-zinc-500 px-4 text-sm font-semibold text-white shadow dark:bg-zinc-600"
+                              >
+                                 Join
+                              </div>
+                           </Tooltip>
+                        </div>
+                     </section>
+                  </div>
+                  <div className="border-color flex items-center justify-center border-t py-4">
+                     <div className="bg-1 h-[250px] w-[300px] rounded-lg" />
                   </div>
                </div>
             </section>

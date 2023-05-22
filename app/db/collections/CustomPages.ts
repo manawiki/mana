@@ -1,17 +1,24 @@
 import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
-export const Users: CollectionConfig = {
-   slug: "users",
-   auth: true,
+export const CustomPages: CollectionConfig = {
+   slug: "customPages",
    access: {
       read: () => true,
       create: isStaff,
       delete: isStaff,
       update: isStaff,
    },
+   admin: {
+      useAsTitle: "name",
+      defaultColumns: ["name"],
+   },
    fields: [
       {
-         name: "id",
+         name: "name",
+         type: "text",
+      },
+      {
+         name: "description",
          type: "text",
       },
       {
@@ -19,11 +26,16 @@ export const Users: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",
          required: true,
-         maxDepth: 1,
+         maxDepth: 0,
       },
    ],
 };
