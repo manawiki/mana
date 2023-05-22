@@ -6,13 +6,13 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 import { useMemo, useCallback, Fragment, useState } from "react";
-import Block from "../../../../../modules/editor/blocks/Block";
-import Leaf from "../../../../../modules/editor/blocks/Leaf";
+import Block from "../../../../modules/editor/blocks/Block";
+import Leaf from "../../../../modules/editor/blocks/Leaf";
 import { format } from "date-fns";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useMutation } from "~/liveblocks.config";
 import { Modal } from "~/components";
-import { PostHeader } from "../../PostHeader";
+import { PostHeader } from "../../components/PostHeader";
 
 export const PostVersionModal = ({
    isVersionModalOpen,

@@ -21,9 +21,8 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 import { createCustomIssues } from "react-zorm";
-import { PostHeaderEdit } from "./components";
 import { ForgeEditor } from "~/modules/editor/Editor";
-import { postSchema } from "../postSchema";
+import { postSchema } from "../utils/postSchema";
 import { toast } from "~/components";
 import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
@@ -32,6 +31,7 @@ import { nanoid } from "nanoid";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
+import { PostHeaderEdit } from "./components/PostHeaderEdit";
 
 export async function loader({
    context: { payload, user },

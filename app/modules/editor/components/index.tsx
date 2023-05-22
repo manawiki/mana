@@ -1,4 +1,4 @@
-export { default as Avatar } from "../../../routes/$siteId.posts+/$postId+/edit/components/Avatar";
+export { default as Avatar } from "./Avatar";
 export { default as BlockInlineActions } from "./BlockInlineActions";
 export { default as BlockTypeSelector } from "./BlockTypeSelector";
 export { default as Button } from "./Button";

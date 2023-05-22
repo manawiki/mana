@@ -17,7 +17,7 @@ import {
 import { createEditor, type Descendant } from "slate";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
-import { PostHeader } from "./PostHeader";
+import { PostHeader } from "./components/PostHeader";
 import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { Post } from "payload/generated-types";

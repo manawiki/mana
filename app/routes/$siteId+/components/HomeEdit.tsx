@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { DotLoader } from "~/components";
 import { useStorage } from "~/liveblocks.config";
 import { isAdding, isProcessing } from "~/utils";
-import { Tooltip } from "../../modules/editor/components";
+import { Tooltip } from "../../../modules/editor/components";
 import { Home, Loader2, Save } from "lucide-react";
 
 export const HomeEdit = ({ site }: { site: Site }) => {

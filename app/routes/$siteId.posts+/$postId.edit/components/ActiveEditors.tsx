@@ -1,5 +1,5 @@
 import { useOthers } from "~/liveblocks.config";
-import Avatar from "./Avatar";
+import Avatar from "~/modules/editor/components/Avatar";
 import { USER_COLORS } from "~/modules/editor/constants";
 
 export default function ActiveEditors() {

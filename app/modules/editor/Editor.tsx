@@ -46,13 +46,7 @@ import {
 import Leaf from "./blocks/Leaf";
 import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
 import { HOTKEYS, PROSE_CONTAINER_ID, USER_COLORS } from "./constants";
-import {
-   Avatar,
-   BlockInlineActions,
-   Button,
-   Toolbar,
-   Tooltip,
-} from "./components";
+import { BlockInlineActions, Button, Toolbar, Tooltip } from "./components";
 import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
 

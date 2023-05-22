@@ -62,8 +62,9 @@ import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { User, Site } from "payload-types";
 import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
-import * as gtag from "~/routes/$siteId+/gtags.client";
+import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import SearchComboBox from "./resource+/Search";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -155,7 +156,7 @@ export default function SiteIndex() {
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
    const gaTrackingId = site?.gaTagId;
-
+   const [searchResult, setSearchResult] = useState();
    useEffect(() => {
       if (gaTrackingId?.length) {
          gtag.pageview(location.pathname, gaTrackingId);
@@ -754,6 +755,10 @@ export default function SiteIndex() {
                               </fetcher.Form>
                            </div>
                         </NotFollowingSite>
+                        {/* <SearchComboBox
+                           searchResult={searchResult}
+                           setSearchResult={setSearchResult}
+                        /> */}
                         <div
                            className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
                            rounded-full border shadow-sm"
@@ -767,11 +772,11 @@ export default function SiteIndex() {
             </section>
             {/* Right Sidebar */}
             <section
-               className="bg-2 border-color relative z-20 hidden max-laptop:mx-auto
+               className="bg-2 border-color relative z-20 max-laptop:mx-auto
                max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <div className="divide-color flex-grow divide-y pt-14">
+                  <div className="divide-color flex-grow divide-y laptop:pt-14">
                      {site.about && (
                         <section className="p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
@@ -796,14 +801,14 @@ export default function SiteIndex() {
                                  {site.pinned?.map((item: any) => (
                                     <li key={item.id}>
                                        <Link
-                                          className="bg-3 shadow-1 relative block rounded-lg p-3 shadow-sm"
+                                          className="bg-3 shadow-1 border-color relative block rounded-lg border p-3 shadow-sm"
                                           prefetch="intent"
                                           to={pinnedLinkUrlGenerator(
                                              item,
                                              site.slug
                                           )}
                                        >
-                                          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center">
+                                          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center">
                                              {item.relation?.value?.icon
                                                 ?.url ? (
                                                 <Image
@@ -839,8 +844,7 @@ export default function SiteIndex() {
                            </section>
                         </>
                      )}
-
-                     <section className="border-color !border-b px-4 py-5">
+                     <section className="border-color px-4 py-5 laptop:!border-b">
                         <div className="flex items-center gap-1.5 pb-3">
                            <Users size={14} />
                            <span className="text-1 text-sm font-bold">
@@ -857,8 +861,8 @@ export default function SiteIndex() {
                                        content={user.username}
                                     >
                                        <div
-                                          className="bg-3 shadow-1 h-10 w-10 overflow-hidden rounded-full 
-                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                          className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
+                                          overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
                                        >
                                           {user.avatar?.url ? (
                                              <Image
@@ -867,15 +871,10 @@ export default function SiteIndex() {
                                                 alt="User Avatar"
                                              />
                                           ) : (
-                                             <div
-                                                className="bg-3 shadow-1 flex h-10 w-10 
-                                                items-center justify-center overflow-hidden rounded-full shadow-sm"
-                                             >
-                                                <Dog
-                                                   className="text-1"
-                                                   size={20}
-                                                />
-                                             </div>
+                                             <Dog
+                                                className="text-1"
+                                                size={20}
+                                             />
                                           )}
                                        </div>
                                     </Tooltip>

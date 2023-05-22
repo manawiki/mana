@@ -20,7 +20,7 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 import Block from "~/modules/editor/blocks/Block";
-import { HomeEdit } from "./HomeEdit";
+import { HomeEdit } from "./components/HomeEdit";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 import type { Site } from "payload/generated-types";
@@ -39,7 +39,7 @@ const initialValue: CustomElement[] = [
 
 export default function SiteIndexMain() {
    const { site } =
-      (useRouteLoaderData("routes/$siteId") as { site: Site }) || {};
+      (useRouteLoaderData("routes/$siteId+/_layout") as { site: Site }) || {};
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
