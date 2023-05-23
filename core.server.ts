@@ -1,3 +1,5 @@
+import * as fs from "node:fs";
+import chokidar from "chokidar";
 import path from "path";
 import express from "express";
 import compression from "compression";
@@ -9,9 +11,15 @@ import nodemailerSendgrid from "nodemailer-sendgrid";
 import coreBuildConfig from "./app/db/payload.config";
 import { initRedis } from "@aengz/payload-redis-cache";
 
+import * as build from "./build/index.js";
+import { broadcastDevReady } from "@remix-run/node";
+import { pathToFileURL } from "url";
+
+const BUILD_DIR = path.join(process.cwd(), 'build', 'index.js')
+
+
 require("dotenv").config();
 
-const BUILD_DIR = path.join(process.cwd(), "build");
 
 const cors = require("cors");
 
@@ -24,18 +32,7 @@ const corsOptions = {
    ],
 };
 
-function purgeRequireCache() {
-   // purge require cache on requests for "server side HMR" this won't let
-   // you have in-memory objects between requests in development,
-   // alternatively you can set up nodemon/pm2-dev to restart the server on
-   // file changes, but then you'll have to reconnect to databases/etc on each
-   // change. We prefer the DX of this, so we've included it for you by default
-   for (const key in require.cache) {
-      if (key.startsWith(BUILD_DIR)) {
-         delete require.cache[key];
-      }
-   }
-}
+
 if (process.env.NODE_ENV == "production")
    initRedis({
       redisUrl: process.env.REDIS_URI ?? "",
@@ -105,25 +102,9 @@ async function startCore() {
    app.all(
       "*",
       process.env.NODE_ENV === "development"
-         ? (req, res, next) => {
-              purgeRequireCache();
-
-              return createRequestHandler({
-                 build: require(BUILD_DIR),
-                 mode: process.env.NODE_ENV,
-                 getLoadContext(req, res) {
-                    return {
-                       // @ts-expect-error
-                       payload: req.payload,
-                       // @ts-expect-error
-                       user: req?.user,
-                       res,
-                    };
-                 },
-              })(req, res, next);
-           }
+         ? createDevRequestHandler()
          : createRequestHandler({
-              build: require(BUILD_DIR),
+              build,
               mode: process.env.NODE_ENV,
               getLoadContext(req, res) {
                  return {
@@ -142,5 +123,47 @@ async function startCore() {
       console.log(`Express server listening on port ${port}`);
    });
 }
+
+function createDevRequestHandler() {
+   // initial build
+   /**
+    * @type { import('@remix-run/node').ServerBuild | Promise<import('@remix-run/node').ServerBuild> }
+    */
+   let devBuild = build;
+ 
+   const watcher = chokidar.watch(BUILD_DIR, { ignoreInitial: true });
+ 
+   watcher.on("all", async () => {
+     // 1. purge require cache && load updated server build
+     const stat = fs.statSync(BUILD_DIR);
+     devBuild = import(BUILD_DIR + "?t=" + stat.mtimeMs);
+     // 2. tell dev server that this app server is now ready
+     broadcastDevReady(await devBuild);
+   });
+ 
+
+
+   return async (req, res, next) => {
+     try {
+       //
+       return createRequestHandler({
+         build: await devBuild,
+         mode: process.env.NODE_ENV,
+         getLoadContext(req, res) {
+            return {
+               // @ts-expect-error
+               payload: req.payload,
+               // @ts-expect-error
+               user: req?.user,
+               res,
+            };
+         },
+       })(req, res, next);
+     } catch (error) {
+       next(error);
+     }
+   };
+ }
+ 
 
 startCore();
