@@ -44,6 +44,9 @@ h3 {
    .divide-color {
       @apply divide-[#ededed] dark:divide-[#36393e];
    }
+   .outline-color {
+      @apply outline-[#ededed] dark:outline-[#36393e];
+   }
    .shadow-1 {
       @apply shadow-zinc-300 dark:shadow-black/30;
    }

@@ -78,8 +78,8 @@ export const handle = {
 };
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
-   const siteName = matches.find(({ id }) => id === "routes/$siteId")?.data
-      ?.site.name;
+   const siteName = matches.find(({ id }) => id === "routes/$siteId+/_layout")
+      ?.data?.site.name;
    const postTitle = data?.post?.name ?? "";
 
    return [
