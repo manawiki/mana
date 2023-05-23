@@ -156,12 +156,12 @@ export default function SiteIndex() {
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
    const gaTrackingId = site?.gaTagId;
-   const [searchResult, setSearchResult] = useState();
    useEffect(() => {
       if (gaTrackingId?.length) {
          gtag.pageview(location.pathname, gaTrackingId);
       }
    }, [location, gaTrackingId]);
+   const [searchToggle, setSearchToggle] = useState(false);
 
    return (
       <>
@@ -636,136 +636,149 @@ export default function SiteIndex() {
                max-laptop:border-b"
             >
                <section
-                  className="border-color sticky z-40 max-laptop:top-[56px] laptop:top-6 
+                  className="sticky z-40 max-laptop:top-[56px] laptop:top-6 
                laptop:z-50 laptop:px-3"
                >
                   <div
-                     className="border-color bg-2 shadow-1 mx-auto flex h-16 
-                     w-full items-center justify-between border-b pl-2 pr-3 shadow-sm
-                     laptop:max-w-[736px] laptop:rounded-xl laptop:border"
+                     className={`border-color bg-2 shadow-1 relative mx-auto flex 
+                     h-16 w-full items-center justify-between border-b pl-2 pr-3
+                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border ${
+                        searchToggle ? "laptop:rounded-b-none" : ""
+                     }`}
                   >
-                     <Link
-                        to={`/${site.slug}`}
-                        className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
-                     >
-                        <div className="h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200">
-                           <Image
-                              //@ts-expect-error
-                              url={site.icon?.url}
-                              options="fit=crop,width=60,height=60,gravity=auto"
-                              alt="Site Logo"
-                           />
-                        </div>
-                        <div className="truncate">{site.name}</div>
-                     </Link>
-                     <div className="flex items-center gap-3 pl-2">
-                        <FollowingSite>
-                           <Menu as="div" className="relative">
-                              {({ open }) => (
-                                 <>
-                                    <Menu.Button
-                                       className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
+                     {searchToggle ? (
+                        <SearchComboBox setSearchToggle={setSearchToggle} />
+                     ) : (
+                        <>
+                           <Link
+                              to={`/${site.slug}`}
+                              className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
+                           >
+                              <div className="h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200">
+                                 <Image
+                                    //@ts-expect-error
+                                    url={site.icon?.url}
+                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    alt="Site Logo"
+                                 />
+                              </div>
+                              <div className="truncate">{site.name}</div>
+                           </Link>
+                           <div className="flex items-center gap-3 pl-2">
+                              <FollowingSite>
+                                 <Menu as="div" className="relative">
+                                    {({ open }) => (
+                                       <>
+                                          <Menu.Button
+                                             className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
                                        items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
-                                    >
-                                       {open ? (
-                                          <X
-                                             size={20}
-                                             className={`${
-                                                open && "text-red-500"
-                                             } transition duration-150 ease-in-out`}
-                                          />
-                                       ) : (
-                                          <>
-                                             <ChevronDown
-                                                size={24}
-                                                className="transition duration-150 ease-in-out"
-                                             />
-                                          </>
-                                       )}
-                                    </Menu.Button>
-                                    <Transition
-                                       as={Fragment}
-                                       enter="transition ease-out duration-100"
-                                       enterFrom="transform opacity-0 scale-95"
-                                       enterTo="transform opacity-100 scale-100"
-                                       leave="transition ease-in duration-75"
-                                       leaveFrom="transform opacity-100 scale-100"
-                                       leaveTo="transform opacity-0 scale-95"
-                                    >
-                                       <Menu.Items
-                                          className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
-                                        max-w-md origin-top-right transform transition-all"
-                                       >
-                                          <div
-                                             className="border-color bg-2 shadow-1 rounded-lg border
-                                            p-1.5 shadow-sm"
                                           >
-                                             <Menu.Item>
-                                                <fetcher.Form method="post">
-                                                   <button
-                                                      name="intent"
-                                                      value="unfollow"
-                                                      className="text-1 flex w-full items-center gap-3 rounded-lg
+                                             {open ? (
+                                                <X
+                                                   size={20}
+                                                   className={`${
+                                                      open && "text-red-500"
+                                                   } transition duration-150 ease-in-out`}
+                                                />
+                                             ) : (
+                                                <>
+                                                   <ChevronDown
+                                                      size={24}
+                                                      className="transition duration-150 ease-in-out"
+                                                   />
+                                                </>
+                                             )}
+                                          </Menu.Button>
+                                          <Transition
+                                             as={Fragment}
+                                             enter="transition ease-out duration-100"
+                                             enterFrom="transform opacity-0 scale-95"
+                                             enterTo="transform opacity-100 scale-100"
+                                             leave="transition ease-in duration-75"
+                                             leaveFrom="transform opacity-100 scale-100"
+                                             leaveTo="transform opacity-0 scale-95"
+                                          >
+                                             <Menu.Items
+                                                className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
+                                        max-w-md origin-top-right transform transition-all"
+                                             >
+                                                <div
+                                                   className="border-color bg-2 shadow-1 rounded-lg border
+                                            p-1.5 shadow-sm"
+                                                >
+                                                   <Menu.Item>
+                                                      <fetcher.Form method="post">
+                                                         <button
+                                                            name="intent"
+                                                            value="unfollow"
+                                                            className="text-1 flex w-full items-center gap-3 rounded-lg
                                                       px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                                   >
-                                                      <LogOut
-                                                         className="text-red-400"
-                                                         size="18"
-                                                      />
-                                                      {t(
-                                                         "follow.actionUnfollow"
-                                                      )}
-                                                   </button>
-                                                </fetcher.Form>
-                                             </Menu.Item>
-                                          </div>
-                                       </Menu.Items>
-                                    </Transition>
-                                 </>
-                              )}
-                           </Menu>
-                        </FollowingSite>
-                        <LoggedOut>
-                           <div className="flex items-center">
-                              <Link
-                                 reloadDocument={site.type != "custom" && true}
-                                 to={`/login?redirectTo=/${site.slug}`}
-                                 className="flex h-9 items-center justify-center rounded-full bg-zinc-700
-                               px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                              >
-                                 Follow
-                              </Link>
-                           </div>
-                        </LoggedOut>
-                        <NotFollowingSite>
-                           <div className="flex items-center">
-                              <fetcher.Form className="w-full" method="post">
-                                 <button
-                                    name="intent"
-                                    value="followSite"
-                                    className="flex h-9 items-center justify-center rounded-full bg-black
-                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                                 >
-                                    {adding ? (
-                                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                    ) : (
-                                       t("follow.actionFollow")
+                                                         >
+                                                            <LogOut
+                                                               className="text-red-400"
+                                                               size="18"
+                                                            />
+                                                            {t(
+                                                               "follow.actionUnfollow"
+                                                            )}
+                                                         </button>
+                                                      </fetcher.Form>
+                                                   </Menu.Item>
+                                                </div>
+                                             </Menu.Items>
+                                          </Transition>
+                                       </>
                                     )}
-                                 </button>
-                              </fetcher.Form>
+                                 </Menu>
+                              </FollowingSite>
+                              <LoggedOut>
+                                 <div className="flex items-center">
+                                    <Link
+                                       reloadDocument={
+                                          site.type != "custom" && true
+                                       }
+                                       to={`/login?redirectTo=/${site.slug}`}
+                                       className="flex h-9 items-center justify-center rounded-full bg-zinc-700
+                               px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                    >
+                                       Follow
+                                    </Link>
+                                 </div>
+                              </LoggedOut>
+                              <NotFollowingSite>
+                                 <div className="flex items-center">
+                                    <fetcher.Form
+                                       className="w-full"
+                                       method="post"
+                                    >
+                                       <button
+                                          name="intent"
+                                          value="followSite"
+                                          className="flex h-9 items-center justify-center rounded-full bg-black
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                       >
+                                          {adding ? (
+                                             <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                          ) : (
+                                             t("follow.actionFollow")
+                                          )}
+                                       </button>
+                                    </fetcher.Form>
+                                 </div>
+                              </NotFollowingSite>
+
+                              <button
+                                 className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
+                                   rounded-full border shadow-sm"
+                                 onClick={() => {
+                                    setSearchToggle(true);
+                                 }}
+                              >
+                                 <Search size={20} />
+                              </button>
                            </div>
-                        </NotFollowingSite>
-                        {/* <SearchComboBox
-                           searchResult={searchResult}
-                           setSearchResult={setSearchResult}
-                        /> */}
-                        <div
-                           className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
-                           rounded-full border shadow-sm"
-                        >
-                           <Search size={20} />
-                        </div>
-                     </div>
+                        </>
+                     )}
                   </div>
                </section>
                <Outlet />
