@@ -95,7 +95,7 @@ export default buildConfig({
          beforeSync: ({ originalDoc, searchDoc }) => {
             return {
                ...searchDoc,
-               icon: originalDoc?.icon,
+               icon: originalDoc?.icon?.id ?? "",
                name: originalDoc?.name,
             };
          },

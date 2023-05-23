@@ -92,6 +92,7 @@ export default buildConfig({
                   relationTo: "sites",
                   hasMany: false,
                   maxDepth: 1,
+                  index: true,
                   admin: {
                      readOnly: true,
                   },
@@ -151,7 +152,7 @@ export default buildConfig({
                      ...searchDoc,
                      name: originalDoc?.name,
                      site: originalDoc?.site.id,
-                     icon: originalDoc?.banner,
+                     icon: originalDoc?.banner.id,
                      slug: originalDoc?.slug,
                      postId: originalDoc?.id,
                   };

@@ -36,7 +36,7 @@ export async function loader({
 
    if (type == "core") {
       try {
-         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1`;
+         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
          const { docs: searchResults } = (await (
             await fetch(searchUrl, {
                headers: {
@@ -54,8 +54,8 @@ export async function loader({
    }
    if (type == "custom") {
       try {
-         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1`;
-         const customSearchUrl = `https://${siteId}-db.mana.wiki/api/search?where[name][contains]=${q}&depth=1`;
+         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
+         const customSearchUrl = `https://${siteId}-db.mana.wiki/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([
