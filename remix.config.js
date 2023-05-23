@@ -14,6 +14,7 @@ module.exports = {
       v2_meta: true,
       v2_normalizeFormMethod: true,
       v2_errorBoundary: true,
+      unstable_dev: true,
    },
    tailwind: true,
    postcss: true,
