@@ -640,14 +640,15 @@ export default function SiteIndex() {
                laptop:z-50 laptop:px-3"
                >
                   <div
-                     className={`border-color bg-2 shadow-1 relative mx-auto flex 
+                     className="border-color bg-2 shadow-1 relative mx-auto flex 
                      h-16 w-full items-center justify-between border-b pl-2 pr-3
-                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border ${
-                        searchToggle ? "laptop:rounded-b-none" : ""
-                     }`}
+                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
                   >
                      {searchToggle ? (
-                        <SearchComboBox setSearchToggle={setSearchToggle} />
+                        <SearchComboBox
+                           siteType={site.type}
+                           setSearchToggle={setSearchToggle}
+                        />
                      ) : (
                         <>
                            <Link
