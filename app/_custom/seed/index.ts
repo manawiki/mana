@@ -2,10 +2,16 @@ import Payload from "payload";
 import path from "path";
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
+const filetype = "png"; // either mp3 or png or whatever filetype
+const overwriteexisting = false;
+var count = 0;
+
+//Site ID from database - unique identifier to separate images
+// const siteId = "lKJ16E5IhH"; // Honkai Star Rail
 
 let payload = null as any;
 
@@ -13,7 +19,7 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: MONGO_URL as any,
+      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -37,32 +43,69 @@ const getData = async () =>
 //Uploads image using the id from the JSON object to locate the file
 const seedUploads = async (result: any) => {
    const id = result.id; //This is the id from the JSON object
-   const createItem = await payload.create({
+
+   const existingImage = await payload.find({
       collection: "images",
-      data: {
-         id,
-      },
-      filePath: path.resolve(__dirname, `./images/${id}.png`),
+      where: {
+			id: {
+				equals: id,
+			},
+		}
    });
-   //Limit speed
-   sleep(1000);
-   console.log(`${JSON.stringify(createItem)} Import completed!`);
-};
+   
+   if (existingImage.docs.length > 0) {
+      // Check if file exists! Sometimes uploads fail even though a DB entry goes through.
+      // Will attempt reupload of image if the image doesn't exist, otherwise skips.
+      var fileurl = existingImage.docs?.[0]?.url;
+      var imgid = existingImage.docs?.[0]?.id;
 
-const seedDocument = async (result: any) => {
-   const foo = result.id;
-   const prepared = { ...result, image: foo };
-   console.log(prepared);
-   // process.exit(0);
+      if (overwriteexisting) {
+            const updateItem = await payload.update({
+               collection: "images",
+               id: imgid,
+               data: {
+                  id: imgid,
+               },
+               filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
+            });
+            sleep(1000);
+            console.log(`${JSON.stringify(updateItem)} Updated!`);
+         }
+         else {
+            console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
+         }
 
-   const createItem = await payload.create({
-      collection: "",
-      data: {
-         id: foo,
-      },
-   });
-   sleep(1000);
-   console.log(`${JSON.stringify(createItem)} Import completed!`);
+      // if (await URLExists(fileurl)) {
+      //    console.log(`Image ${id} already exists! Skipping.`);
+
+      // }
+      // else {
+      //    console.log(`!!!! => Image ${id} missing; Re-uploading! ${imgid}`);
+      //    const updateItem = await payload.create({
+      //       collection: "images",
+      //       id: imgid,
+      //       // data: {
+      //       //    id: imgid,
+      //       // },
+      //       filePath: path.resolve(__dirname, `./images/${id}.png`),
+      //    });
+      //    console.log(`${JSON.stringify(updateItem)} Updated!`);
+      // }
+   }
+   else {
+      const createItem = await payload.create({
+         collection: "images",
+         data: {
+            id: id,
+         },
+         filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
+      });
+      //Limit speed
+      sleep(1000);
+      console.log(`${JSON.stringify(createItem)} Import completed!`);
+   }
+   count++;
+   console.log(`${count} / ${data.length} Completed`);
 };
 
 //Sleep function to limit speed, can remove if not needed
@@ -74,3 +117,21 @@ const sleep = (milliseconds: any) => {
       }
    }
 };
+
+// URL Check function to confirm if image file exists. 
+// CAUTION! This is heavy on the server! Only run if absolutely necessary. It counts as a call to the image server! Doing this iteratively across all images too often can max out image requests.
+function URLExists(url: any) {
+   return fetch(url)
+   .then((res) => {
+      if (res.status == 404) {    
+         return false;
+      }
+      else {
+         return true;
+      }
+
+   })
+   .catch((err) => {
+      return false;
+   });
+}
