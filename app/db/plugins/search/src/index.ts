@@ -29,6 +29,7 @@ export const generateSearchCollection = (
             {
                name: "name",
                type: "text",
+               index: true,
                admin: {
                   readOnly: true,
                },
