@@ -7,8 +7,12 @@ import { Images } from "./collections/Images";
 import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import { Users } from "./collections/CustomUsers";
-import { CustomCollections } from "../_custom/collections";
+import {
+   CustomCollections,
+   CustomSearchCollections,
+} from "../_custom/collections";
 import { cachePlugin } from "@aengz/payload-redis-cache";
+import searchPlugin from "./plugins/search";
 const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
@@ -71,6 +75,29 @@ export default buildConfig({
                },
                prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
+         },
+      }),
+      searchPlugin({
+         collections: [...CustomSearchCollections],
+         searchOverrides: {
+            fields: [
+               {
+                  name: "icon",
+                  type: "relationship",
+                  relationTo: "images",
+                  hasMany: false,
+                  admin: {
+                     readOnly: true,
+                  },
+               },
+            ],
+         },
+         beforeSync: ({ originalDoc, searchDoc }) => {
+            return {
+               ...searchDoc,
+               icon: originalDoc?.icon,
+               name: originalDoc?.name,
+            };
          },
       }),
       //@ts-ignore
