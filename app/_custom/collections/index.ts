@@ -26,7 +26,17 @@ import { _RelicStats } from "./_relicStats";
 import { _EnemyStatusRes } from "./_enemyStatusRes";
 import { _RecipeTypes } from "./_recipeTypes";
 
-export const CustomSearchCollections = [];
+export const CustomSearchCollections = [
+   "characters",
+   "materials",
+   "recipes",
+   "blessings",
+   "banners",
+   "achievementSeries",
+   "enemies",
+   "relicSets",
+   "lightCones",
+];
 
 export const CustomCollections = [
    Characters,
