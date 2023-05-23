@@ -26,7 +26,7 @@ export async function loader({ params, request }: LoaderArgs) {
 
    if (!uid) return null;
 
-   const showcaseDataUrl = `https://starrail-profiles-prod-fwq2wjp57a-uc.a.run.app/profile/${uid}`;
+   const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
    const showcaseData = await (await fetch(showcaseDataUrl)).json();
 
    if (showcaseData.detail)
@@ -89,7 +89,7 @@ export async function loader({ params, request }: LoaderArgs) {
          await fetch(
             `https://${
                process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/lightCones?limit=101&where[id][in]=${lcids.toString()}`
+            }-db.mana.wiki/api/lightCones?limit=100&where[id][in]=${lcids.toString()}`
          )
       ).json(),
       await (
@@ -160,7 +160,7 @@ export default function Showcase() {
                   <Link
                      className="shadow-1 inline-flex items-center justify-center gap-2 rounded-full border
                   border-blue-100 bg-blue-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
-                     to="/starrail/profile?uid=700043897"
+                     to="/starrail/showcase?uid=700043897"
                   >
                      <span>Show me an example...</span>
                      <ArrowRight className="text-blue-500" size={20} />
@@ -507,25 +507,6 @@ const CharacterInfo = ({
       { name: "DEF", base: lcbase.stats[3].data[wi] },
    ];
 
-   // Total all light cone-sourced bonuses, same format as relic bonuses:
-   // ============================
-   var lightconebonuses: any = [];
-
-   lcbase?.skill_data[chardata?.equipment?.promotion - 1]?.stat_added?.map(
-      (a: any) => {
-         const tempbonus = {
-            id: a?.stat_type?.id,
-            icon: {
-               url: a?.stat_type?.icon?.url,
-            },
-            name: a?.stat_type?.name,
-            property_classify: a?.stat_type?.property_classify,
-            value: a.value,
-         };
-         lightconebonuses.push(tempbonus);
-      }
-   );
-
    // Relic data loading
    const rid = chardata?.relic_list?.map((a: any) => a.tid);
    const rbase = rid?.map((r: any) => relics.find((a: any) => a.relic_id == r));
@@ -730,15 +711,11 @@ const CharacterInfo = ({
       // BaseATK = Character's base atk @ LV
       // WATK = Light cone base atk
       // ---
-      // MODIFIER (statmod) = RelicATK + TreeATK + lcATK + BASE*(RelicATK% + TreeATK% + SetATK% + lcATK%)
+      // MODIFIER (statmod) = RelicATK + BASE*(RelicATK% + Tree% + SetATK%)
       // RelicATK = All relic Flat ATK bonuses
       // RelicATK% = All relic ATK % bonuses
       // SetATK% = All relic set ATK % bonuses
-      // TreeATK = All tree Flat ATK bonuses
-      // TreeATK% = All tree ATK% bonuses
-      // lcATK = All light cone skill Flat bonuses
-      // lcATK% = All light cone skill % bonuses
-
+      // Tree% = All tree ATK% bonuses
       const statbase =
          parseFloat(charbase.stats[i + 1].data[li]) +
          (wstats[i]?.base ? parseFloat(wstats[i]?.base) : 0);
@@ -747,16 +724,6 @@ const CharacterInfo = ({
       const relicflat = relicbonuses
          .filter((a: any) => a.name == stat)
          ?.map((a: any) => a.value)
-         ?.reduce((ps: any, a: any) => ps + a, 0);
-
-      const treeflat = skilltreebonuses
-         .filter((a: any) => a.name == stat)
-         .map((a: any) => a.value)
-         ?.reduce((ps: any, a: any) => ps + a, 0);
-
-      const lcflat = lightconebonuses
-         .filter((a: any) => a.name == stat)
-         .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
       // Percent Bonuses =
@@ -772,16 +739,12 @@ const CharacterInfo = ({
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
-      const lcperc = lightconebonuses
-         .filter((a: any) => a.name == stat + "%")
+      const treeflat = skilltreebonuses
+         .filter((a: any) => a.name == stat)
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
-      const statmod =
-         relicflat +
-         treeflat +
-         lcflat +
-         statbase * (relicperc + treeperc + lcperc);
+      const statmod = relicflat + treeflat + statbase * (relicperc + treeperc);
 
       return {
          name: stat,
@@ -837,18 +800,6 @@ const CharacterInfo = ({
          });
       }
    });
-
-   // Light cone name highlighting if stat bonus is involved
-
-   const lcbonuses = lightconebonuses?.map((b: any) =>
-      b?.name?.replace("%", "")
-   );
-   const lcHighlightStyle =
-      intersect(lcbonuses, hoverStat)?.length > 0
-         ? "bg-blue-200 dark:bg-zinc-700"
-         : hoverStat.length > 0
-         ? "opacity-40"
-         : "";
 
    return (
       <>
@@ -987,18 +938,7 @@ const CharacterInfo = ({
                         {/* Level + Superimposition Levels */}
                         <div className="flex-grow">
                            <div className="relative pb-1.5 font-bold">
-                              <div
-                                 className={`text-sm ${lcHighlightStyle}`}
-                                 onMouseOver={() => setHoverStat(lcbonuses)}
-                                 onMouseOut={() => setHoverStat([])}
-                                 onClick={() =>
-                                    setHoverStat(
-                                       hoverStat?.length > 0 ? [] : lcbonuses
-                                    )
-                                 }
-                              >
-                                 {lcbase.name}
-                              </div>
+                              <div className="text-sm">{lcbase.name}</div>
                               <NameToolTip
                                  text={lcbase?.name}
                                  tooltip={
@@ -1561,7 +1501,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    return (
       <div>
          <div className="text-1 pb-4 text-center font-bold">
-            Enter UID to view your profile
+            Enter UID to view your showcase
          </div>
          <div className="mx-auto flex max-w-[600px] items-center justify-center gap-3">
             <div className="relative">
