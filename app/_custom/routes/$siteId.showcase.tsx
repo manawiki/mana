@@ -26,7 +26,7 @@ export async function loader({ params, request }: LoaderArgs) {
 
    if (!uid) return null;
 
-   const showcaseDataUrl = `https://starrail-profiles-prod-fwq2wjp57a-uc.a.run.app/profile/${uid}`;
+   const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
    const showcaseData = await (await fetch(showcaseDataUrl)).json();
 
    if (showcaseData.detail)
@@ -160,7 +160,7 @@ export default function Showcase() {
                   <Link
                      className="shadow-1 inline-flex items-center justify-center gap-2 rounded-full border
                   border-blue-100 bg-blue-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
-                     to="/starrail/profile?uid=700043897"
+                     to="/starrail/showcase?uid=700043897"
                   >
                      <span>Show me an example...</span>
                      <ArrowRight className="text-blue-500" size={20} />
@@ -1561,7 +1561,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    return (
       <div>
          <div className="text-1 pb-4 text-center font-bold">
-            Enter UID to view your profile
+            Enter UID to view your showcase
          </div>
          <div className="mx-auto flex max-w-[600px] items-center justify-center gap-3">
             <div className="relative">
