@@ -178,6 +178,7 @@ export async function loader({
           material_qty {
             id
             materials {
+              id
               icon {
                 url
               }
