@@ -5,34 +5,64 @@ import { useState } from "react";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
-
 export async function loader({
    context: { payload },
    params,
    request,
 }: LoaderArgs) {
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=100&sort=-banner_id`;
-   const bannerRaw = await (await fetch(url)).json();
-   const banners = bannerRaw.docs;
+   const BANNERS = `
+   query Banners {
+      Banners(limit: 100) {
+        docs {
+          name
+          icon {
+            url
+          }
+          start_date
+          end_date
+          featured_characters {
+            id
+            name
+            icon {
+              url
+            }
+            rarity {
+              display_number
+            }
+          }
+          featured_light_cones {
+            id
+            name
+            icon {
+              url
+            }
+            rarity {
+              display_number
+            }
+          }
+        }
+      }
+    }
+   `;
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql?banners`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: BANNERS,
+         }),
+      }
+   ).then((res) => res.json());
 
-   return json({ banners });
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
+
+   return json({ banners: data.Banners.docs });
 }
 
 export const meta: V2_MetaFunction = () => {

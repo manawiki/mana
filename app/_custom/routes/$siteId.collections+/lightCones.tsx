@@ -1,6 +1,6 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
@@ -168,7 +168,7 @@ const LightConeList = ({ chars }: any) => {
 
    return (
       <>
-         <div className="">
+         <div className="pb-20">
             {/* Filter Options */}
             <H2 text="Light Cones" />
             <div className="divide-color bg-2 border-color divide-y rounded-md border">
@@ -176,7 +176,7 @@ const LightConeList = ({ chars }: any) => {
                   return (
                      <>
                         <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                           <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                           <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
                               {cat.name}
                            </div>
                            <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
@@ -184,7 +184,7 @@ const LightConeList = ({ chars }: any) => {
                                  return (
                                     <>
                                        <div
-                                          className={`bg-3 border-color rounded-lg border px-2.5 py-1 ${
+                                          className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
                                              filters.find(
                                                 (a: any) => a.id == opt.id
                                              )
@@ -241,10 +241,10 @@ const LightConeList = ({ chars }: any) => {
             </div>
             {/* Search Text Box */}
             <div
-               className="border-color bg-2 mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 rounded-lg border px-3"
+               className="border-color mb-2 mt-4 flex h-12
+            items-center justify-between gap-3 border-b"
             >
-               <Search className="text-yellow-500" size={24} />
+               <Search className="text-yellow-500" size={20} />
                <input
                   className="h-10 w-full flex-grow bg-transparent focus:outline-none"
                   placeholder="Search..."
@@ -261,7 +261,7 @@ const LightConeList = ({ chars }: any) => {
             {/* Sort Options */}
             <div className="flex items-center justify-between py-3">
                <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-yellow-500" />
+                  <SortDesc size={16} className="text-zinc-500" />
                   Sort
                </div>
                <div className="flex items-center gap-2">
@@ -269,8 +269,8 @@ const LightConeList = ({ chars }: any) => {
                      return (
                         <div
                            key={opt.field}
-                           className={`border-color text-1 relative cursor-pointer 
-                        rounded-full border px-4 py-1 text-center text-xs font-bold ${
+                           className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+                        border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
                               ? `bg-yellow-50 dark:bg-yellow-500/10`
                               : ``
@@ -287,17 +287,25 @@ const LightConeList = ({ chars }: any) => {
             </div>
 
             {/* Toggle Show Description */}
-            <div
-               className={`my-2 w-full cursor-pointer rounded-md border p-1 text-center dark:border-gray-600 ${
-                  showDesc ? "bg-slate-500 bg-opacity-20 font-bold" : ""
+            <button
+               type="button"
+               className={`border-color shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
+               font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
+                  showDesc ? "bg-2 bg-yellow-50" : "bg-3"
                }`}
                onClick={() => setShowDesc(!showDesc)}
             >
                Click to toggle full descriptions
-            </div>
+            </button>
 
             {/* List with applied sorting */}
-            <div className="text-center">
+            <div
+               className={` ${
+                  showDesc
+                     ? ""
+                     : "grid grid-cols-3 gap-2 text-center laptop:grid-cols-5"
+               }`}
+            >
                {cfiltered?.map((char: any) => {
                   return (
                      <>
@@ -339,64 +347,16 @@ const EntryWithDescription = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/characters/${cid}`}>
-            <div className="relative my-1 inline-block w-full rounded-md bg-slate-800 bg-opacity-10 p-2 align-middle dark:bg-slate-700 dark:bg-opacity-50">
-               <div className="relative inline-block w-32  rounded-md text-left align-middle">
-                  {/* Icon */}
-                  <div className="relative inline-block h-28 w-28">
-                     {/* Path + Path Name ? */}
-                     <div className="absolute -left-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
-                        <Image
-                           alt="Icon"
-                           className="relative inline-block object-contain"
-                           url={pathsmall}
-                        />
-                     </div>
-
-                     {/* Rarity */}
-                     <div className="absolute -bottom-4 z-20 h-4 w-28">
-                        <Image
-                           alt={raritynum}
-                           className={`z-20 h-4 w-28 rounded-full object-contain color-rarity-${
-                              raritynum ?? "1"
-                           } bg-opacity-10`}
-                           url={rarityurl}
-                        />
-                     </div>
-
-                     <Image
-                        className="object-contain"
-                        url={char.icon?.url}
-                        alt={char?.name}
-                     />
-                  </div>
-                  {/* Name */}
-                  <div className="mt-3 text-center text-xs ">{char.name}</div>
-               </div>
-               <div
-                  className="relative inline-block w-2/3 p-3 align-middle text-sm"
-                  dangerouslySetInnerHTML={{ __html: skillinfo }}
-               ></div>
-            </div>
-         </a>
-      </>
-   );
-};
-
-const EntryIconOnly = ({ char }: any) => {
-   const pathsmall = char?.path?.icon?.url;
-   const rarityurl = char?.rarity?.icon?.url;
-   const raritynum = char?.rarity?.display_number;
-   const cid = char?.id;
-
-   return (
-      <>
-         <a href={`/starrail/collections/lightCones/${cid}`}>
-            <div className="relative m-1 inline-block w-32 rounded-md bg-slate-800 bg-opacity-10 p-2 align-top dark:bg-slate-700 dark:bg-opacity-50">
+         <Link
+            className="bg-3 border-color shadow-1 relative mb-2 flex rounded-lg border-2 shadow"
+            prefetch="intent"
+            to={`/starrail/collections/characters/${cid}`}
+         >
+            <div className="relative rounded-md p-3">
                {/* Icon */}
                <div className="relative inline-block h-28 w-28">
                   {/* Path + Path Name ? */}
-                  <div className="absolute -right-1 -top-1 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
+                  <div className="absolute -left-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
                      <Image
                         alt="Icon"
                         className="relative inline-block object-contain"
@@ -405,7 +365,7 @@ const EntryIconOnly = ({ char }: any) => {
                   </div>
 
                   {/* Rarity */}
-                  <div className="absolute -bottom-5 z-20 h-4 w-28">
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
                      <Image
                         alt={raritynum}
                         className={`z-20 h-4 w-28 rounded-full object-contain color-rarity-${
@@ -422,9 +382,65 @@ const EntryIconOnly = ({ char }: any) => {
                   />
                </div>
                {/* Name */}
-               <div className="mt-4 text-center text-xs ">{char.name}</div>
+               <div className="mt-3 text-center text-xs ">{char.name}</div>
             </div>
-         </a>
+            <div
+               className="relative p-3 align-middle text-sm"
+               dangerouslySetInnerHTML={{ __html: skillinfo }}
+            ></div>
+         </Link>
+      </>
+   );
+};
+
+const EntryIconOnly = ({ char }: any) => {
+   const pathsmall = char?.path?.icon?.url;
+   const rarityurl = char?.rarity?.icon?.url;
+   const raritynum = char?.rarity?.display_number;
+   const cid = char?.id;
+
+   return (
+      <>
+         <Link
+            prefetch="intent"
+            className="shadow-1 bg-2 border-color rounded-lg border p-1 shadow-sm"
+            to={`/starrail/collections/lightCones/${cid}`}
+         >
+            {/* Icon */}
+            <div className="relative inline-block h-28 w-28">
+               {/* Path + Path Name ? */}
+               <div className="absolute -right-1 -top-1 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
+                  <Image
+                     alt="Icon"
+                     className="relative inline-block object-contain"
+                     url={pathsmall}
+                  />
+               </div>
+
+               {/* Rarity */}
+               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
+                  <Image
+                     options="fit=crop,height=20"
+                     alt={raritynum}
+                     className={`z-20 h-4 w-28 rounded-full object-contain color-rarity-${
+                        raritynum ?? "1"
+                     } bg-opacity-10`}
+                     url={rarityurl}
+                  />
+               </div>
+
+               <Image
+                  options="fit=crop,width=120,height=120"
+                  className="object-contain"
+                  url={char.icon?.url}
+                  alt={char?.name}
+               />
+            </div>
+            {/* Name */}
+            <div className="pt-1 text-center text-xs font-bold ">
+               {char.name}
+            </div>
+         </Link>
       </>
    );
 };

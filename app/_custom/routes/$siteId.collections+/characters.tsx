@@ -12,11 +12,57 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=100`;
-   const characterRaw = await (await fetch(url)).json();
-   const characters = characterRaw.docs;
+   const CHARACTERS = `
+   query Characters {
+      Characters(limit: 100, sort: "name") {
+        docs {
+          id
+          name
+          element {
+            id
+            icon {
+              url
+            }
+          }
+          path {
+            id
+            icon {
+              url
+            }
+          }
+          rarity {
+            id
+            display_number
+            icon {
+              url
+            }
+          }
+          icon {
+            url
+          }
+        }
+      }
+    }
+   `;
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql?characters`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: CHARACTERS,
+         }),
+      }
+   ).then((res) => res.json());
+
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
    return json(
-      { characters },
+      { characters: data.Characters.docs },
       {
          headers: { "Cache-Control": "public, s-maxage=60" },
       }
@@ -265,7 +311,7 @@ const CharacterList = ({ chars }: any) => {
                                              <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
                                                 <Image
                                                    alt="Icon"
-                                                   className="object-contain"
+                                                   options="fit=crop,width=40,height=40"
                                                    url={opt.icon}
                                                 />
                                              </div>
@@ -344,6 +390,7 @@ const CharacterList = ({ chars }: any) => {
                return (
                   <>
                      <Link
+                        prefetch="intent"
                         to={`/starrail/collections/characters/${cid}`}
                         className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
                      >
@@ -352,6 +399,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Element Symbol */}
                            <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
+                                 options="fit=crop,width=40,height=40"
                                  alt="Name"
                                  url={elemurl}
                                  className="object-contain"
@@ -362,6 +410,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Path + Path Name ? */}
                            <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
+                                 options="fit=crop,width=40,height=40"
                                  alt="Path"
                                  className="relative inline-block object-contain"
                                  url={pathsmall}
@@ -371,6 +420,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Rarity */}
                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
                               <Image
+                                 options="fit=crop,height=20"
                                  alt="Rarity"
                                  className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
                                     raritynum ?? "1"
@@ -379,6 +429,7 @@ const CharacterList = ({ chars }: any) => {
                               />
                            </div>
                            <Image
+                              options="fit=crop,width=120,height=120"
                               className="mx-auto object-contain"
                               url={char.icon?.url}
                               alt={char?.name}
