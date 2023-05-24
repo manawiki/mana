@@ -611,6 +611,8 @@ const CharacterInfo = ({
          const currset = setlist.find((s: any) => s.relicset_id == r);
          const numInSet = rsetids.filter((a: any) => a == r)?.length;
 
+         var show = false;
+
          // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
          var bonuses: any = [];
          var effect_desc: any = [];
@@ -619,6 +621,8 @@ const CharacterInfo = ({
 
             // If number equipped is at least the required number, return the stat bonuses in property_list
             if (numInSet >= eff?.req_no) {
+               show = true;
+               
                eff?.property_list.map((p: any) => {
                   bonuses.push(p);
                });
@@ -630,10 +634,11 @@ const CharacterInfo = ({
             id: r,
             name: currset?.name,
             num: numInSet,
+            show: show,
             bonuses: bonuses,
             effect_desc: effect_desc,
          };
-      });
+      }).filter((a: any) => a.show === true);
 
    // Total all relic-sourced bonuses:
    // ============================
