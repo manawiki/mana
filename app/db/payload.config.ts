@@ -69,7 +69,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/file/${bucketName}/${filename}`;
+                  return `https://static.mana.wiki/${filename}`;
                },
             },
          },
@@ -173,7 +173,9 @@ export default buildConfig({
          },
       }),
       //@ts-ignore
-      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
+      ...(process.env.NODE_ENV == "production"
+         ? [cachePlugin({ excludedCollections: ["users"] })]
+         : []),
    ],
    collections,
    typescript: {
