@@ -90,6 +90,7 @@ const AudioPlayer = ({ voice }: any) => {
                               className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_en?.url}
+                              preload="none"
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
@@ -97,6 +98,7 @@ const AudioPlayer = ({ voice }: any) => {
                               className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_jp?.url}
+                              preload="none"
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
@@ -104,6 +106,7 @@ const AudioPlayer = ({ voice }: any) => {
                               className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_cn?.url}
+                              preload="none"
                            ></audio>
                         </Tab.Panel>
                         <Tab.Panel>
@@ -111,6 +114,7 @@ const AudioPlayer = ({ voice }: any) => {
                               className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_kr?.url}
+                              preload="none"
                            ></audio>
                         </Tab.Panel>
                      </Tab.Panels>
