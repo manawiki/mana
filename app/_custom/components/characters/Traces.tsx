@@ -41,7 +41,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                            {/* Slider */}
                            <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
                               <div className="mr-2 inline-flex align-middle ">
-                                 Lv {skillLevel}
+                                 Lv. {skillLevel}
                               </div>
                               <input
                                  className="h-1 flex-grow appearance-none justify-end
