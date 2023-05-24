@@ -21,7 +21,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                            width={20}
                            height={20}
                            alt={post.name}
-                           options="fit=crop,height=50,width=50,gravity=auto"
+                           options="aspect_ratio=1:1&height=80&width=80"
                            className="w-full object-cover laptop:rounded"
                            //@ts-ignore
                            url={post?.author.avatar?.url}
@@ -57,7 +57,7 @@ export const FeedItem = ({ post }: { post: Post }) => {
                   <div className="w-32 flex-none overflow-hidden rounded laptop:w-40">
                      <Image
                         alt={post.name}
-                        options="fit=crop,height=200,gravity=auto"
+                        options="height=200"
                         className="w-full rounded object-cover"
                         //@ts-ignore
                         url={post?.banner?.url}

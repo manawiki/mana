@@ -45,7 +45,7 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
                {entry.icon?.url ? (
                   <Image
                      alt={entry.name}
-                     options="fit=crop,height=80,width=80,gravity=auto"
+                     options="aspect_ratio=1:1&height=80&width=80"
                      //@ts-ignore
                      url={entry?.icon?.url}
                   />

@@ -247,7 +247,7 @@ export default function CollectionIndex() {
                                        width={50}
                                        height={50}
                                        alt="List Icon"
-                                       options="fit=crop,width=60,height=60,gravity=auto"
+                                       options="aspect_ratio=1:1&height=80&width=80"
                                        //@ts-expect-error
                                        url={collection.icon?.url}
                                     />

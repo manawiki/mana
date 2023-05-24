@@ -597,7 +597,7 @@ export default function BlockGroup({ element }: Props) {
                                                       entry?.icon?.url ??
                                                       entry?.banner?.url
                                                    }
-                                                   options="fit=crop,width=60,height=60,gravity=auto"
+                                                   options="aspect_ratio=1:1&height=80&width=80"
                                                    alt={entry?.name ?? "Icon"}
                                                 />
                                              ) : (
@@ -797,7 +797,7 @@ export default function BlockGroup({ element }: Props) {
                                     {activeElement?.iconUrl ? (
                                        <Image
                                           url={activeElement?.iconUrl}
-                                          options="fit=crop,width=60,height=60,gravity=auto"
+                                          options="aspect_ratio=1:1&height=80&width=80"
                                           alt={activeElement?.name ?? "Icon"}
                                        />
                                     ) : (
@@ -831,7 +831,7 @@ export default function BlockGroup({ element }: Props) {
                               {activeElement?.iconUrl ? (
                                  <Image
                                     url={activeElement?.iconUrl}
-                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    options="aspect_ratio=1:1&height=80&width=80"
                                     alt={activeElement?.name ?? "Icon"}
                                  />
                               ) : (
@@ -914,7 +914,7 @@ const SortableListItem = ({
                   {row?.iconUrl ? (
                      <Image
                         url={row?.iconUrl}
-                        options="fit=crop,width=60,height=60,gravity=auto"
+                        options="aspect_ratio=1:1&height=80&width=80"
                         alt={row?.name ?? "Icon"}
                      />
                   ) : (
@@ -1062,7 +1062,7 @@ const SortableGridItem = ({
                {row?.iconUrl ? (
                   <Image
                      url={row?.iconUrl}
-                     options="fit=crop,width=60,height=60,gravity=auto"
+                     options="aspect_ratio=1:1&height=80&width=80"
                      alt={row?.name ?? "Icon"}
                   />
                ) : (

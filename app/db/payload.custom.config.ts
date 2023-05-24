@@ -71,7 +71,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
+                  return `https://static.mana.wiki/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
                },
                prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
@@ -101,7 +101,9 @@ export default buildConfig({
          },
       }),
       //@ts-ignore
-      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
+      ...(process.env.NODE_ENV == "production"
+         ? [cachePlugin({ excludedCollections: ["users"] })]
+         : []),
    ],
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),

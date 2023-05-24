@@ -91,7 +91,7 @@ export default function GroupView({ element }: Props) {
                         {row?.iconUrl ? (
                            <Image
                               url={row?.iconUrl}
-                              options="fit=crop,width=60,height=60,gravity=auto"
+                              options="aspect_ratio=1:1&height=80&width=80"
                               alt={row?.name ?? "Icon"}
                            />
                         ) : (
@@ -124,7 +124,7 @@ export default function GroupView({ element }: Props) {
                         {row?.iconUrl ? (
                            <Image
                               url={row?.iconUrl}
-                              options="fit=crop,width=60,height=60,gravity=auto"
+                              options="aspect_ratio=1:1&height=80&width=80"
                               alt={row?.name ?? "Icon"}
                            />
                         ) : (

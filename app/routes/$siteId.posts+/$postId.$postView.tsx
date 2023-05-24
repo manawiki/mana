@@ -21,6 +21,7 @@ import { PostHeader } from "./components/PostHeader";
 import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { Post } from "payload/generated-types";
+import { Image } from "~/components/Image";
 
 export async function loader({
    context: { payload, user },
@@ -122,11 +123,12 @@ export default function PostPage() {
                          tablet:rounded-md laptop:rounded-none laptop:border-x-0 desktop:rounded-md
                          desktop:border"
                      >
-                        <img
+                        <Image
                            alt="Post Banner"
                            className="h-full w-full object-cover"
                            //@ts-ignore
-                           src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
+                           options="height=440"
+                           url={post?.banner?.url}
                         />
                      </div>
                   </section>

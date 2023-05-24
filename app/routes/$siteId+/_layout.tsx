@@ -247,7 +247,7 @@ export default function SiteIndex() {
                                                 >
                                                    <Image
                                                       alt="Site Logo"
-                                                      options="fit=crop,width=88,height=88,gravity=auto"
+                                                      options="aspect_ratio=1:1&height=80&width=80"
                                                       url={item.icon?.url}
                                                    />
                                                 </div>
@@ -419,7 +419,7 @@ export default function SiteIndex() {
                                  >
                                     <Image
                                        alt="Site Logo"
-                                       options="fit=crop,width=88,height=88,gravity=auto"
+                                       options="aspect_ratio=1:1&height=80&width=80"
                                        url={site.icon?.url}
                                     />
                                  </div>
@@ -450,7 +450,7 @@ export default function SiteIndex() {
                                        >
                                           <Image
                                              alt="Site Logo"
-                                             options="fit=crop,width=88,height=88,gravity=auto"
+                                             options="aspect_ratio=1:1&height=80&width=80"
                                              url={site.icon?.url}
                                           />
                                        </div>
@@ -491,7 +491,7 @@ export default function SiteIndex() {
                                                    >
                                                       <Image
                                                          alt="Site Logo"
-                                                         options="fit=crop,width=88,height=88,gravity=auto"
+                                                         options="aspect_ratio=1:1&height=80&width=80"
                                                          url={item.icon?.url}
                                                       />
                                                    </div>
@@ -659,7 +659,7 @@ export default function SiteIndex() {
                                  <Image
                                     //@ts-expect-error
                                     url={site.icon?.url}
-                                    options="fit=crop,width=60,height=60,gravity=auto"
+                                    options="aspect_ratio=1:1&height=50&width=50"
                                     alt="Site Logo"
                                  />
                               </div>
@@ -830,7 +830,7 @@ export default function SiteIndex() {
                                                       item.relation?.value?.icon
                                                          ?.url
                                                    }
-                                                   options="fit=crop,width=100,height=100,gravity=auto"
+                                                   options="aspect_ratio=1:1&height=100&width=100"
                                                    alt="Pinned Icon"
                                                 />
                                              ) : (
@@ -881,7 +881,7 @@ export default function SiteIndex() {
                                           {user.avatar?.url ? (
                                              <Image
                                                 url={user.avatar?.url}
-                                                options="fit=crop,width=100,height=100,gravity=auto"
+                                                options="aspect_ratio=1:1&height=80&width=80"
                                                 alt="User Avatar"
                                              />
                                           ) : (
@@ -905,7 +905,7 @@ export default function SiteIndex() {
                                        {site?.owner?.avatar?.url ? (
                                           <Image
                                              url={site?.owner?.avatar?.url}
-                                             options="fit=crop,width=100,height=100,gravity=auto"
+                                             options="aspect_ratio=1:1&height=80&width=80"
                                              alt="User Avatar"
                                           />
                                        ) : (

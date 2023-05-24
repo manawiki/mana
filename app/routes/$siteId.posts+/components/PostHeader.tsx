@@ -11,7 +11,7 @@ export const PostHeader = ({ post }: { post: Post }) => {
                {post?.author?.avatar ? (
                   <Image /* @ts-expect-error */
                      url={post.author.avatar.url}
-                     options="fit=crop,width=80,height=80 ,gravity=auto"
+                     options="aspect_ratio=1:1&height=80&width=80"
                      /* @ts-expect-error */
                      alt={post?.author?.username}
                   />
