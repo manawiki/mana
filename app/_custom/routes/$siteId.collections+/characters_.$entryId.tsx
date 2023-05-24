@@ -49,123 +49,151 @@ export async function loader({
 
    const CharacterQuery = `
    query ($charId: String!) {
-      character: Character(id: $charId) {
-        image_draw {
+    character: Character(id: $charId) {
+      image_draw {
+        url
+      }
+      element {
+        icon {
           url
         }
-        element {
-          icon {
-            url
-          }
+      }
+      path {
+        name
+        icon {
+          url
         }
-        path {
-          name
-          icon {
-            url
-          }
-          icon_small {
-            url
-          }
-          data_key
+        icon_small {
+          url
         }
-        rarity {
-          icon {
-            url
-          }
+        data_key
+      }
+      rarity {
+        icon {
+          url
         }
-        stats {
-          label
-          data
+      }
+      stats {
+        label
+        data
+      }
+      stats_csv
+      traces {
+        name
+        desc_type
+        icon {
+          url
         }
-        traces {
-          name
-          desc_type
-          icon {
-            url
-          }
-          description_per_level {
-            description
-          }
+        description_per_level {
+          description
+        }
+      }
+      icon {
+        url
+      }
+      image_full {
+        url
+      }
+      image_full_bg {
+        url
+      }
+      image_full_front {
+        url
+      }
+      image_action {
+        url
+      }
+      image_round_icon {
+        url
+      }
+      eidolons {
+        image {
+          url
         }
         icon {
           url
         }
-        image_full {
-          url
-        }
-        image_full_bg {
-          url
-        }
-        image_full_front {
-          url
-        }
-        image_action {
-          url
-        }
-        image_round_icon {
-          url
-        }
-        eidolons {
-          image {
-            url
+        name
+        rank
+        description
+      }
+      promotion_cost {
+        max_level
+        material_qty {
+          materials {
+            id
+            icon {
+              url
+            }
+            rarity {
+              display_number
+            }
+            name
           }
-        }
-        cv_cn
-        cv_jp
-        cv_kr
-        cv_en
-        camp
-        story {
-          title
-          unlock
-          text
-        }
-        voice_lines {
-          title
-          text
-          voice_en {
-            url
-          }
-          voice_jp {
-            url
-          }
-          voice_cn {
-            url
-          }
-          voice_kr {
-            url
-          }
+          qty
         }
       }
-    
-      skillTree: SkillTrees(where: { character: { equals: $charId } }) {
-        docs {
-          anchor
-          name
-          affected_skill {
-            description_per_level {
-              description
-            }
+      cv_cn
+      cv_jp
+      cv_kr
+      cv_en
+      camp
+      story {
+        title
+        unlock
+        text
+      }
+      voice_lines {
+        title
+        text
+        voice_en {
+          url
+        }
+        voice_jp {
+          url
+        }
+        voice_cn {
+          url
+        }
+        voice_kr {
+          url
+        }
+      }
+    }
+  
+    skillTree: SkillTrees(limit: 1000, where: { character: { equals: $charId } }) {
+      docs {
+        anchor
+        icon {
+          url
+        }
+        name
+        affected_skill {
+          description_per_level {
+            description
           }
-          level_up_cost {
-            material_qty {
-              id
-              materials {
-                icon {
-                  url
-                }
-                rarity {
-                  display_number
-                }
-                name
+        }
+        description
+        level_up_cost {
+          material_qty {
+            id
+            materials {
+              icon {
+                url
               }
+              rarity {
+                display_number
+              }
+              name
             }
+            qty
           }
-          req_ascension
-          req_level
         }
+        req_ascension
+        req_level
       }
-    }    
+    }
+  }    
    `
 
    const { data, errors } = await fetch(
