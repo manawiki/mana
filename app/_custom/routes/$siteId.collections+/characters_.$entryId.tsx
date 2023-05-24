@@ -48,8 +48,8 @@ export async function loader({
    });
 
    const CharacterQuery = `
-   query ($id: String!) {
-      character: Character(id: $id) {
+   query ($charId: String!) {
+      character: Character(id: $charId) {
         image_draw {
           url
         }
@@ -138,7 +138,7 @@ export async function loader({
         }
       }
     
-      skillTree: SkillTrees(where: { character: { equals: $id } }) {
+      skillTree: SkillTrees(where: { character: { equals: $charId } }) {
         docs {
           anchor
           name
