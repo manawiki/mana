@@ -34,7 +34,7 @@ export const Eidolons = ({ pageData }: any) => {
                            </div>
                            <div>
                               <div className="font-bold">{eid.name}</div>
-                              <div className="text-1">Lv {eid.rank}</div>
+                              <div className="text-1">Lv. {eid.rank}</div>
                            </div>
                         </div>
                         {/* Description */}

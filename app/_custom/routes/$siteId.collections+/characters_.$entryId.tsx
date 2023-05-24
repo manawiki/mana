@@ -36,26 +36,160 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const entryDefault = await getDefaultEntryData({ payload, params, request });
-   const defaultData = (await getCustomEntryData({
+   /*const defaultData = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
-   })) as Character;
-
-   // ======================
-   // Pull Skill Tree data for character
-   // ======================
+   })) as Character;*/
 
    const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
    });
 
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/skillTrees?limit=20&depth=3&where[character][equals]=${entryId}`;
-   const skillTreeRaw = await (await fetch(url)).json();
-   const skillTreeData = skillTreeRaw.docs;
+   const CharacterQuery = `
+   query ($id: String!) {
+      character: Character(id: $id) {
+        image_draw {
+          url
+        }
+        element {
+          icon {
+            url
+          }
+        }
+        path {
+          name
+          icon {
+            url
+          }
+          icon_small {
+            url
+          }
+          data_key
+        }
+        rarity {
+          icon {
+            url
+          }
+        }
+        stats {
+          label
+          data
+        }
+        traces {
+          name
+          desc_type
+          icon {
+            url
+          }
+          description_per_level {
+            description
+          }
+        }
+        icon {
+          url
+        }
+        image_full {
+          url
+        }
+        image_full_bg {
+          url
+        }
+        image_full_front {
+          url
+        }
+        image_action {
+          url
+        }
+        image_round_icon {
+          url
+        }
+        eidolons {
+          image {
+            url
+          }
+        }
+        cv_cn
+        cv_jp
+        cv_kr
+        cv_en
+        camp
+        story {
+          title
+          unlock
+          text
+        }
+        voice_lines {
+          title
+          text
+          voice_en {
+            url
+          }
+          voice_jp {
+            url
+          }
+          voice_cn {
+            url
+          }
+          voice_kr {
+            url
+          }
+        }
+      }
+    
+      skillTree: SkillTrees(where: { character: { equals: $id } }) {
+        docs {
+          anchor
+          name
+          affected_skill {
+            description_per_level {
+              description
+            }
+          }
+          level_up_cost {
+            material_qty {
+              id
+              materials {
+                icon {
+                  url
+                }
+                rarity {
+                  display_number
+                }
+                name
+              }
+            }
+          }
+          req_ascension
+          req_level
+        }
+      }
+    }    
+   `
 
-   return json({ entryDefault, defaultData, skillTreeData });
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: CharacterQuery,
+            variables: {
+               charId: entryId,
+            },
+         }),
+      }
+   ).then((res) => res.json());
+
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
+
+   return json({ entryDefault, defaultData: data.character, skillTreeData: data.skillTree.docs });
 }
 
 export default function CharacterEntry() {

@@ -41,7 +41,7 @@ export const SkillTrees: CollectionConfig = {
          type: "relationship",
          relationTo: "characters",
          hasMany: false,
-         required: false,
+         required: false
       },
       {
          name: "point_type",
