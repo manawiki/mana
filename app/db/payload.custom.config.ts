@@ -66,7 +66,8 @@ export default buildConfig({
    },
    graphQL: {
       disablePlaygroundInProduction: false,
-      schemaOutputFile: path.resolve(__dirname, "../../schema.graphql"),
+      schemaOutputFile: path.resolve(__dirname, "./schema.graphql"),
+
    },
    plugins: [
       cloudStorage({
