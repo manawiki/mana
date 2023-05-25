@@ -1430,7 +1430,7 @@ const SkillTreeDisplay = ({
 }: any) => {
    var pathkey = path;
    var treelist = skillTrees.filter(
-      (a: any) => a.character?.character_id == data?.avatar_id
+      (a: any) => a.character == data?.avatar_id
    ); // pageData?.attributes?.tree; //skillTreeData;
 
    // Need to sort skill nodes in order from Point01 - 18
@@ -1813,9 +1813,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
    }
    skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 0) {
      docs {
-       character {
-         character_id
-       }
+       character
        anchor
        affected_skill {
          description_per_level {
