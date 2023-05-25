@@ -65,7 +65,7 @@ export default buildConfig({
       }),
    },
    graphQL: {
-      schemaOutputFile: path.resolve(__dirname, "../../schema.graphql"),
+      schemaOutputFile: path.resolve(__dirname, "./schema.graphql"),
    },
    plugins: [
       cloudStorage({
