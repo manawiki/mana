@@ -39,89 +39,66 @@ export async function loader({ params, request }: LoaderArgs) {
    const refreshCooldown = showcaseData.cooldown;
 
    const charids = [
-      showcaseSample?.detail_info?.assist_avatar?.avatar_id,
+      showcaseSample?.detail_info?.assist_avatar?.avatar_id.toString(),
       ...showcaseSample?.detail_info?.avatar_detail_list?.map(
-         (a: any) => a.avatar_id
+         (a: any) => a.avatar_id.toString()
       ),
    ];
    const lcids = [
-      showcaseSample?.detail_info?.assist_avatar?.equipment?.tid,
+      showcaseSample?.detail_info?.assist_avatar?.equipment?.tid.toString(),
       ...showcaseSample?.detail_info?.avatar_detail_list?.map(
-         (a: any) => a.equipment?.tid
+         (a: any) => a.equipment?.tid.toString()
       ),
    ];
    const rids = [
       ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map(
-         (a: any) => a.tid
+         (a: any) => a.tid.toString()
       ),
    ];
-   const piid = showcaseSample?.detail_info?.head_icon;
+   const piid = showcaseSample?.detail_info?.head_icon.toString();
 
    showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => {
       a.relic_list?.map((b: any) => {
-         rids.push(b.tid);
+         rids.push(b.tid.toString());
       });
    });
-   //We pull all data at the same time
-   const [
-      { docs: relics },
-      { docs: characters },
-      { docs: lightCones },
-      { docs: skillTrees },
-      { docs: statTypes },
-      playerIcon,
-   ] = await Promise.all([
-      await (
-         await fetch(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/relics?depth=3&limit=502&where[id][in]=${rids.toString()}`
-         )
-      ).json(),
-      await (
-         await fetch(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/characters?limit=100&where[id][in]=${charids.toString()}`
-         )
-      ).json(),
-      await (
-         await fetch(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/lightCones?limit=101&where[id][in]=${lcids.toString()}`
-         )
-      ).json(),
-      await (
-         await fetch(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/skillTrees?limit=500&where[character][in]=${charids.toString()}`
-         )
-      ).json(),
-      await (
-         await fetch(
-            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/_statTypes?limit=100`
-         )
-      ).json(),
-      await (
-         await fetch(
-            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/playerIcons/${piid}`
-         )
-      ).json(),
-   ]);
+
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: QUERY_SHOWCASE,
+            variables: {
+               relicIdList: rids,
+               characterIdList: charids,
+               lightconeIdList: lcids,
+               skillTreeIdList: charids,
+               playerIconId: piid
+            }
+         }),
+      }
+   ).then((res) => res.json());
+
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
 
    return json(
-      {
-         uid,
-         relics,
-         characters,
-         lightCones,
-         skillTrees,
-         statTypes,
-         playerIcon,
-         showcaseData,
-         refreshCooldown,
+      { 
+         uid: uid,
+         relics: data.relics.docs,
+         characters: data.characters.docs,
+         lightCones: data.lightcones.docs,
+         skillTrees: data.skillTrees.docs,
+         statTypes: data.statTypes.docs,
+         playerIcon: data.playerIcon,
+         showcaseData: showcaseData,
+         refreshCooldown: refreshCooldown
       },
       { headers: { "Cache-Control": "public, s-maxage=60" } }
    );
@@ -607,7 +584,7 @@ const CharacterInfo = ({
    const rset = rsetids
       .filter((v: any, i: any, a: any) => a.indexOf(v) === i)
       .map((r: any) => {
-         const currset = setlist.find((s: any) => s.relicset_id == r);
+         const currset = setlist.find((s: any) => s.id == r);
          const numInSet = rsetids.filter((a: any) => a == r)?.length;
 
          var show = false;
@@ -653,7 +630,7 @@ const CharacterInfo = ({
          relicbonuses.push(a);
       });
    }
-
+   
    for (var sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
@@ -1717,3 +1694,163 @@ function intersect(a: any, b: any) {
 //       </div>
 //    );
 // };
+
+const QUERY_SHOWCASE = `
+query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [String!], $skillTreeIdList: [String!], $playerIconId: String!) {
+   relics: Relics(where: { relic_id: {in: $relicIdList } }, limit: 0) {
+      docs {
+       relic_id
+       mainstat_group {
+         affix_id
+         stattype {
+           id
+           name
+           icon {
+             url
+           }
+         }
+         stats
+       }
+       substat_group {
+         affix_id
+         base_val
+         level_add
+         stattype {
+           id
+           name
+           icon {
+             url
+           }
+           property_classify
+         }
+       }
+       relicset_id {
+         id
+         set_effect {
+           req_no
+           property_list {
+             stattype {
+               id
+               icon {
+                 url
+               }
+               name
+               property_classify
+             }
+             value
+           }
+           description
+         }
+         name
+       }
+       icon {
+         url
+       }
+       rarity {
+         display_number
+       }
+     }  
+   }
+   characters: Characters(where: { character_id: { in: $characterIdList } }) {
+     docs {
+       character_id
+       icon {
+         url
+       }
+       rarity {
+         display_number
+       }
+       stats {
+         data
+       }
+       image_draw {
+         url
+       }
+       name
+       id
+       path {
+         data_key
+       }
+       eidolons {
+         icon {
+           url
+         }
+         name
+         description
+       }
+     }
+   }
+   lightcones: LightCones(where: { lightcone_id: { in: $lightconeIdList } }) {
+     docs {
+       lightcone_id
+       stats {
+         data
+       }
+       skill_data {
+         stat_added {
+           stat_type {
+             id
+             icon {
+               url
+             }
+             name
+             property_classify
+           }
+           value
+         }
+       }
+       id
+       name
+       image_full {
+         url
+       }
+       rarity {
+         icon {
+           url
+         }
+       }
+     }
+   }
+   skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 0) {
+     docs {
+       character {
+         character_id
+       }
+       anchor
+       affected_skill {
+         description_per_level {
+            description
+         }
+       }
+      icon {
+        url
+      }
+       stat_added {
+         stat_type {
+           id
+           icon {
+             url
+           }
+           name
+           property_classify
+         }
+         value
+       }
+       point_id
+     }
+   }
+   statTypes: _statTypes(limit: 0) {
+     docs {
+       name
+       icon {
+         url
+       }
+     }
+   } 
+   playerIcon: PlayerIcon(id: $playerIconId) {
+     icon {
+       url
+     }
+   }
+ }
+`
