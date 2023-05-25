@@ -6,7 +6,6 @@ import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
-import { cachePlugin } from "@aengz/payload-redis-cache";
 import searchPlugin from "./plugins/search";
 const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
@@ -49,8 +48,6 @@ export default buildConfig({
             ...config.resolve,
             alias: {
                ...config?.resolve?.alias,
-               [path.resolve(__dirname, "../../node_modules/redis")]:
-                  mockModulePath,
                react: path.join(__dirname, "../../node_modules/react"),
                "react-dom": path.join(
                   __dirname,
@@ -175,10 +172,6 @@ export default buildConfig({
             posts: 8,
          },
       }),
-      //@ts-ignore
-      ...(process.env.NODE_ENV == "production"
-         ? [cachePlugin({ excludedCollections: ["users"] })]
-         : []),
    ],
    collections,
    typescript: {

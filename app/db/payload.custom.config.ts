@@ -11,7 +11,6 @@ import {
    CustomCollections,
    CustomSearchCollections,
 } from "../_custom/collections";
-import { cachePlugin } from "@aengz/payload-redis-cache";
 import searchPlugin from "./plugins/search";
 const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
@@ -52,17 +51,6 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
-      webpack: (config) => ({
-         ...config,
-         resolve: {
-            ...config.resolve,
-            alias: {
-               ...config?.resolve?.alias,
-               [path.resolve(__dirname, "../../node_modules/redis")]:
-                  mockModulePath,
-            },
-         },
-      }),
    },
    graphQL: {
       disablePlaygroundInProduction: false,
@@ -105,10 +93,6 @@ export default buildConfig({
             };
          },
       }),
-      //@ts-ignore
-      // ...(process.env.NODE_ENV == "production"
-      //    ? [cachePlugin({ excludedCollections: ["users"] })]
-      //    : []),
    ],
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),

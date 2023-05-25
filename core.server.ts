@@ -7,7 +7,6 @@ import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
 import nodemailerSendgrid from "nodemailer-sendgrid";
 import coreBuildConfig from "./app/db/payload.config";
-import { initRedis } from "@aengz/payload-redis-cache";
 
 require("dotenv").config();
 
@@ -36,10 +35,6 @@ function purgeRequireCache() {
       }
    }
 }
-if (process.env.NODE_ENV == "production")
-   initRedis({
-      redisUrl: process.env.REDIS_URI ?? "",
-   });
 
 //Start core site (remix + payload instance)
 
