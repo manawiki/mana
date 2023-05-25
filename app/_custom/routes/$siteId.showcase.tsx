@@ -1813,7 +1813,9 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
    }
    skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 0) {
      docs {
-       character
+       character {
+         id
+       }
        anchor
        affected_skill {
          description_per_level {
