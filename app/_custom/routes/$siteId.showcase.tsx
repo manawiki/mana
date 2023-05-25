@@ -291,7 +291,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
             <section className="relative z-10">
                <Image
                   alt="Icon"
-                  options="height=100,width=100"
+                  options="aspect_ratio=1:1&height=100&width=100"
                   url={playerIcon?.icon?.url}
                   className="border-color shadow-1 mx-auto rounded-full border-4 shadow"
                />
@@ -440,7 +440,7 @@ const ItemFrameRound = ({
       >
          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white dark:border-bg3Dark">
             <Image
-               options="width=100,height=100"
+               options="aspect_ratio=1:1&height=100&width=100"
                url={mat?.icon?.url ?? "no_image_42df124128"}
                className={`h-16 w-16 object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
@@ -476,8 +476,7 @@ const CharacterInfo = ({
    const charbase = characters.find((a: any) => a.character_id == charid);
 
    // Character Showcase Canvas!
-   const bg_url =
-      "https://static.mana.wiki/file/mana-prod/starrail/UI_Star_Bg.png";
+   const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
 
    // Light Cone data loading
    const lcid = chardata?.equipment?.tid;
@@ -622,7 +621,7 @@ const CharacterInfo = ({
             // If number equipped is at least the required number, return the stat bonuses in property_list
             if (numInSet >= eff?.req_no) {
                show = true;
-               
+
                eff?.property_list.map((p: any) => {
                   bonuses.push(p);
                });
@@ -638,7 +637,8 @@ const CharacterInfo = ({
             bonuses: bonuses,
             effect_desc: effect_desc,
          };
-      }).filter((a: any) => a.show === true);
+      })
+      .filter((a: any) => a.show === true);
 
    // Total all relic-sourced bonuses:
    // ============================
@@ -919,6 +919,7 @@ const CharacterInfo = ({
                                     <>
                                        <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
                                           <Image
+                                             options="aspect_ratio=1:1&height=60&width=60"
                                              alt={"Eidolon Lv." + i + 1}
                                              url={e.icon?.url}
                                              className="absolute object-contain"
@@ -934,11 +935,13 @@ const CharacterInfo = ({
                                  ) : (
                                     <div className="relative my-1 flex h-10 w-10 items-center justify-center rounded-full border border-gray-700 bg-gray-900">
                                        <Image
+                                          options="aspect_ratio=1:1&height=60&width=60"
                                           alt={"Eidolon Lv." + i + 1}
                                           url={e.icon?.url}
                                           className="absolute object-contain opacity-30"
                                        />
                                        <Image
+                                          options="aspect_ratio=1:1&height=60&width=60"
                                           alt="Lock"
                                           url={
                                              "https://wiki-cdn.nalu.wiki/neuralcloud/Algorithm_Lock_Icon_ce5b2d3623.png"
@@ -1057,6 +1060,7 @@ const CharacterInfo = ({
                                        >
                                           <div className="h-5 w-5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500">
                                              <Image
+                                                options="aspect_ratio=1:1&height=30&width=30"
                                                 alt="StatIcon"
                                                 url={stattype?.icon?.url}
                                                 className="object-fit"
@@ -1111,7 +1115,7 @@ const CharacterInfo = ({
                                                 rounded-full bg-zinc-400 dark:bg-zinc-500"
                                              >
                                                 <Image
-                                                   options="height=50,width=50"
+                                                   options="aspect_ratio=1:1&height=50&width=50"
                                                    alt={"StatIcon"}
                                                    url={
                                                       stattype?.icon?.url ??
@@ -1158,8 +1162,8 @@ const CharacterInfo = ({
                      {/* Individual Relics */}
 
                      {/* Artifact Substat Legend (?) */}
-                     <div className="relative text-right w-full">
-                        <div className="w-4 h-4 rounded-full my-auto text-center inline-block relative border border-color cursor-default text-xs">
+                     <div className="relative w-full text-right">
+                        <div className="border-color relative my-auto inline-block h-4 w-4 cursor-default rounded-full border text-center text-xs">
                            ?
                            <NameToolTip
                               text={"Artifact Substats"}
@@ -1191,7 +1195,7 @@ const CharacterInfo = ({
                                  {/* Relic Main Stat and Level */}
                                  <div className="bg-3 flex h-[62px] flex-grow items-center justify-between rounded p-1">
                                     <div
-                                       className={`ml-1 flex items-center gap-1.5 rounded p-1 cursor-default ${
+                                       className={`ml-1 flex cursor-default items-center gap-1.5 rounded p-1 ${
                                           hoverStat.indexOf(mainstatname) > -1
                                              ? "bg-blue-200 dark:bg-zinc-700"
                                              : hoverStat.length > 0
@@ -1215,7 +1219,7 @@ const CharacterInfo = ({
                                                 gap-1 rounded-full bg-zinc-400 dark:bg-zinc-600"
                                        >
                                           <Image
-                                             options="height=40,width=40"
+                                             options="aspect_ratio=1:1&height=60&width=60"
                                              alt="StatIcon"
                                              url={mainstat?.icon?.url}
                                           />
@@ -1277,7 +1281,7 @@ const CharacterInfo = ({
                                                 justify-center rounded-full bg-zinc-400 dark:bg-zinc-600"
                                                          >
                                                             <Image
-                                                               options="height=20,width=20"
+                                                               options="aspect_ratio=1:1&height=20&width=20"
                                                                alt="StatIcon"
                                                                url={
                                                                   sub?.icon?.url
@@ -1405,6 +1409,7 @@ const ItemFrameSquare = ({ mat, style, lv }: any) => {
             key={mat?.id}
          >
             <Image
+               options="aspect_ratio=1:1&height=60&width=60"
                url={mat?.icon?.url ?? "no_image_42df124128"}
                className={`h-[62px] w-[62px] object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
@@ -1523,6 +1528,7 @@ const SkillTreeDisplay = ({
                         // }}
                      >
                         <Image
+                           options="aspect_ratio=1:1&height=60&width=60"
                            alt="Icon"
                            url={node?.icon?.url}
                            className={`object-contain opacity-20 `}

@@ -29,6 +29,7 @@ export const Header = ({ pageData }: any) => {
                      {/* Main Image */}
                      {iconurl ? (
                         <Image
+                           options="height=400"
                            alt="Materials Icon"
                            url={iconurl}
                            className="absolute h-96 w-full object-contain"
@@ -78,6 +79,7 @@ export const Header = ({ pageData }: any) => {
                           justify-center rounded-full bg-gray-600 align-middle"
                                     >
                                        <Image
+                                          options="aspect_ratio=1:1&height=30&width=30"
                                           alt="Background"
                                           url={
                                              stat.hash ?? "no_image_42df124128"

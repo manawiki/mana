@@ -47,6 +47,7 @@ export const ImageGallery = ({ pageData }: any) => {
                               >
                                  <div className="relative h-24 w-24 text-center">
                                     <Image
+                                       options="aspect_ratio=1:1&height=120&width=120"
                                        alt="Gallery Item"
                                        url={gimg}
                                        className="h-24 w-24 object-contain"

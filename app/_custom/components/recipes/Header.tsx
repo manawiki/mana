@@ -43,6 +43,7 @@ export const Header = ({ pageData }: any) => {
                      {/* Main Image */}
                      {imgurl ? (
                         <Image
+                           options="height=240"
                            alt="Materials Icon"
                            url={imgurl}
                            className="absolute h-56 w-full object-contain"
@@ -88,7 +89,7 @@ export const Header = ({ pageData }: any) => {
                      </div>
                      <div className="flex flex-grow items-center space-x-2">
                         {tags?.map((t: any) => (
-                           <div className="px-2 py-1 m-1 rounded-md border border-color bg-gray-500 bg-opacity-30 text-xs">
+                           <div className="border-color m-1 rounded-md border bg-gray-500 bg-opacity-30 px-2 py-1 text-xs">
                               {t}
                            </div>
                         ))}

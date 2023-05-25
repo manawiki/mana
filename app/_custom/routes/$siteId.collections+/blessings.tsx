@@ -76,54 +76,54 @@ const BlessingList = ({ chars }: any) => {
       {
          id: "Normal",
          name: "1",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars4-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "NotNormal",
          name: "2",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars4-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "Rare",
          name: "3",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars5-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
       {
          id: "1",
          name: "Preservation",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
       },
       {
          id: "2",
          name: "Remembrance",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsMemory.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsMemory.png",
       },
       {
          id: "3",
          name: "Nihility",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
       },
       {
          id: "4",
          name: "Abundance",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
       },
       {
          id: "5",
          name: "Hunt",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
       },
       {
          id: "6",
          name: "Destruction",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
       {
          id: "7",
          name: "Elation",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsJoy.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsJoy.png",
       },
    ];
 
@@ -224,6 +224,7 @@ const BlessingList = ({ chars }: any) => {
                                           <>
                                              <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
                                                 <Image
+                                                   options="aspect_ratio=1:1&height=40&width=40"
                                                    alt="Icon"
                                                    className="object-contain"
                                                    url={opt.icon}
@@ -310,7 +311,7 @@ const BlessingList = ({ chars }: any) => {
                const descsimple = char.effects?.[0]?.description_simple;
 
                const roguebgurl =
-                  "https://static.mana.wiki/file/mana-prod/starrail/DecoRogueBuffFrame.png";
+                  "https://static.mana.wiki/starrail/DecoRogueBuffFrame.png";
 
                return (
                   <>
@@ -325,6 +326,7 @@ const BlessingList = ({ chars }: any) => {
                               {/* Rarity */}
                               <div className="absolute bottom-1 z-20 h-8 w-full text-center">
                                  <Image
+                                    options="height=40"
                                     alt="Stars"
                                     className="z-20 inline-block h-8 w-20 rounded-full  object-contain"
                                     url={rarityurl}
@@ -336,6 +338,7 @@ const BlessingList = ({ chars }: any) => {
                                  <div className="inline-flex h-32 w-32">
                                     {curl ? (
                                        <Image
+                                          options="aspect_ratio=1:1&height=140&width=140"
                                           alt="Main Icon"
                                           url={curl}
                                           className="object-contain"
@@ -348,6 +351,7 @@ const BlessingList = ({ chars }: any) => {
                               <div className="inline-block flex h-40 w-full items-end justify-center">
                                  <div className="inline-flex h-auto w-auto">
                                     <Image
+                                       options="height=160"
                                        alt="Background"
                                        className="object-contain"
                                        url={roguebgurl}

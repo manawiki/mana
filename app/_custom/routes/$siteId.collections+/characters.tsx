@@ -101,87 +101,87 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "VeryRare",
          name: "4",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars4-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars5-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsnMage.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsShaman.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
    ];
    const elements = [
       {
          id: "Physical",
          name: "Physical",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributePhysical.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributePhysical.png",
       },
       {
          id: "Ice",
          name: "Ice",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeIce.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeIce.png",
       },
       {
          id: "Thunder",
          name: "Lightning",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeThunder.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeThunder.png",
       },
       {
          id: "Fire",
          name: "Fire",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeFire.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeFire.png",
       },
 
       {
          id: "Wind",
          name: "Wind",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeWind.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeWind.png",
       },
       {
          id: "Quantum",
          name: "Quantum",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeQuantum.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeQuantum.png",
       },
       {
          id: "Imaginary",
          name: "Imaginary",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAttributeImaginary.png",
+         icon: "https://static.mana.wiki/starrail/IconAttributeImaginary.png",
       },
    ];
    const campsort = [
@@ -311,7 +311,7 @@ const CharacterList = ({ chars }: any) => {
                                              <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
                                                 <Image
                                                    alt="Icon"
-                                                   options="fit=crop,width=40,height=40"
+                                                   options="aspect_ratio=1:1&height=40&width=40"
                                                    url={opt.icon}
                                                 />
                                              </div>
@@ -399,7 +399,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Element Symbol */}
                            <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
-                                 options="fit=crop,width=40,height=40"
+                                 options="aspect_ratio=1:1&height=40&width=40"
                                  alt="Name"
                                  url={elemurl}
                                  className="object-contain"
@@ -410,7 +410,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Path + Path Name ? */}
                            <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
-                                 options="fit=crop,width=40,height=40"
+                                 options="aspect_ratio=1:1&height=40&width=40"
                                  alt="Path"
                                  className="relative inline-block object-contain"
                                  url={pathsmall}
@@ -420,7 +420,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Rarity */}
                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
                               <Image
-                                 options="fit=crop,height=20"
+                                 options="height=20"
                                  alt="Rarity"
                                  className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
                                     raritynum ?? "1"
@@ -429,7 +429,7 @@ const CharacterList = ({ chars }: any) => {
                               />
                            </div>
                            <Image
-                              options="fit=crop,width=120,height=120"
+                              options="aspect_ratio=1:1&height=120&width=120"
                               className="mx-auto object-contain"
                               url={char.icon?.url}
                               alt={char?.name}

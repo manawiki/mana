@@ -130,7 +130,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_1_Open.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_1_Open.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -142,7 +142,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_2_Warp.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_2_Warp.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -154,7 +154,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_3_ViewDetail.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_3_ViewDetail.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -169,7 +169,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_4_Records.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_4_Records.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -181,7 +181,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_5_Exit.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_5_Exit.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -198,7 +198,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_6_Navigate.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_6_Navigate.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -208,7 +208,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_6-2_InstallLoc.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_6-2_InstallLoc.png"
                   }
                   className="object-contain"
                   alt={"Log in"}
@@ -220,7 +220,7 @@ const Instructions = () => {
             <div className="flex justify-center">
                <Image
                   url={
-                     "https://static.mana.wiki/file/mana-prod/starrail/ManaWiki_WarpHistoryGuide_7_data2.png"
+                     "https://static.mana.wiki/starrail/ManaWiki_WarpHistoryGuide_7_data2.png"
                   }
                   className="object-contain"
                   alt={"Log in"}

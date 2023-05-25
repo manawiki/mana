@@ -82,7 +82,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                    rounded-full "
                >
                   <Image
-                     options="width=100,height=100"
+                     options="aspect_ratio=1:1&height=100&width=100"
                      alt="Element"
                      url={elemurl}
                      className="object-contain"
@@ -96,7 +96,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                >
                   <div className="h-6 w-6">
                      <Image
-                        options="width=100,height=100"
+                        options="aspect_ratio=1:1&height=100&width=100"
                         alt="Element"
                         url={pathsmall}
                      />
@@ -105,7 +105,7 @@ export const CharacterStatBlock = ({ pageData }) => {
 
                {/* Rarity */}
                <div className="absolute bottom-4 left-4 z-20 flex h-8 items-center rounded-full bg-zinc-300 px-2 py-1 dark:bg-bg1Dark">
-                  <Image options="height=100" alt="Rarity" url={rarityurl} />
+                  <Image options="height=32" alt="Rarity" url={rarityurl} />
                </div>
                <div className="relative h-96">
                   {/* Main Image */}
@@ -132,7 +132,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                   <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
                      <Image
                         className="relative inline-block object-contain"
-                        options="height=100"
+                        options="aspect_ratio=1:1&height=40&width=40"
                         alt="Character Stat"
                         url={pathurl}
                      />
@@ -160,6 +160,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                                         justify-center rounded-full align-middle"
                                     >
                                        <Image
+                                          options="aspect_ratio=1:1&height=24&width=24"
                                           alt="Character Stat"
                                           url={
                                              stat.hash ?? "no_image_42df124128"

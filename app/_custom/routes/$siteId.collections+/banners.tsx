@@ -107,6 +107,7 @@ const BannerList = ({ banners }: any) => {
                               {/* Banner Image */}
                               <div className="h-28 w-auto">
                                  <Image
+                                    options="height=120"
                                     alt={b?.name}
                                     className="h-28 object-contain"
                                     url={b?.icon?.url}
@@ -165,6 +166,7 @@ const CharFrame = ({ char }: any) => {
          <a href={`/starrail/collections/characters/${char?.id}`}>
             <div className="relative inline-block h-20 w-20 align-middle text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=100&width=100"
                   url={char?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      char?.rarity?.display_number ?? "1"
@@ -188,6 +190,7 @@ const LightConeFrame = ({ char }: any) => {
          <a href={`/starrail/collections/lightCones/${char?.id}`}>
             <div className="relative inline-block h-20 w-20 align-top text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=100&width=100"
                   url={char?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      char?.rarity?.display_number ?? "1"

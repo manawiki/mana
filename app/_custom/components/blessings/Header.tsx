@@ -2,7 +2,7 @@ import { Image } from "~/components";
 
 export const Header = ({ pageData }: any) => {
    const roguebgurl =
-      "https://static.mana.wiki/file/mana-prod/starrail/DecoRogueBuffFrame.png";
+      "https://static.mana.wiki/starrail/DecoRogueBuffFrame.png";
 
    const rarityurl = pageData?.rarity?.icon?.url;
    const imgurl = pageData?.icon?.url;
@@ -31,17 +31,19 @@ export const Header = ({ pageData }: any) => {
                   {/* Rarity */}
                   <div className="absolute bottom-1 z-20 h-8 w-full text-center">
                      <Image
+                        options="height=40"
                         alt="Stars"
-                        className="inline-block z-20 h-8 w-20 rounded-full  object-contain"
+                        className="z-20 inline-block h-8 w-20 rounded-full  object-contain"
                         url={rarityurl}
                      />
                   </div>
 
-                  <div className="absolute flex h-96 w-full justify-center items-center">
+                  <div className="absolute flex h-96 w-full items-center justify-center">
                      {/* Main Image */}
                      <div className="inline-flex h-72 w-72">
                         {imgurl ? (
                            <Image
+                              options="aspect_ratio=1:1&height=288&width=288"
                               alt="Main Icon"
                               url={imgurl}
                               className="object-contain"
@@ -51,9 +53,10 @@ export const Header = ({ pageData }: any) => {
                   </div>
 
                   {/* RogueBgImage */}
-                  <div className="inline-block flex h-96 w-full justify-center items-end">
+                  <div className="inline-block flex h-96 w-full items-end justify-center">
                      <div className="inline-flex h-auto w-auto">
                         <Image
+                           options="height=384"
                            alt="Background"
                            className="object-contain"
                            url={roguebgurl}
@@ -71,6 +74,7 @@ export const Header = ({ pageData }: any) => {
                   <div className="flex flex-grow items-center space-x-2">
                      <div className="relative h-10 w-10 rounded-full bg-gray-800">
                         <Image
+                           options="aspect_ratio=1:1&height=40&width=40"
                            alt="Path Icon"
                            className="relative inline-block object-contain"
                            url={pathurl}

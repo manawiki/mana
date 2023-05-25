@@ -81,6 +81,7 @@ export const Stats = ({ pageData }: any) => {
                      {/* Main Image */}
                      {imgurl ? (
                         <Image
+                           options="height=400"
                            alt={"Main Image"}
                            url={imgurl}
                            className="absolute h-96 w-full object-contain"
@@ -98,6 +99,7 @@ export const Stats = ({ pageData }: any) => {
                   <div className="flex flex-grow items-center space-x-2">
                      <div className="relative h-10 w-10 rounded-full bg-gray-800">
                         <Image
+                           options="aspect_ratio=1:1&height=40&width=40"
                            alt="Path Icon"
                            className="relative inline-block object-contain"
                            url={pathurl}
@@ -131,6 +133,7 @@ export const Stats = ({ pageData }: any) => {
                           justify-center rounded-full bg-gray-600 align-middle"
                                     >
                                        <Image
+                                          options="aspect_ratio=1:1&height=40&width=40"
                                           alt="Icon"
                                           url={
                                              stat.hash ?? "no_image_42df124128"
@@ -397,9 +400,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                            Stat Graph
                            <div
                               className={`${
-                                 open
-                                    ? "font-bol rotate-180 transform "
-                                    : ""
+                                 open ? "font-bol rotate-180 transform " : ""
                               } ml-auto inline-block `}
                            >
                               <ChevronDown size={28} />
@@ -464,9 +465,7 @@ const CSVStats = ({ charData }: any) => {
                         Raw Stats for all Levels
                         <div
                            className={`${
-                              open
-                                 ? "font-bol rotate-180 transform "
-                                 : ""
+                              open ? "font-bol rotate-180 transform " : ""
                            } ml-auto inline-block `}
                         >
                            <ChevronDown size={28} />

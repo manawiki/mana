@@ -164,6 +164,7 @@ const ItemQtyFrame = ({ mat }: any) => {
             align-middle text-xs"
             >
                <Image
+                  options="aspect_ratio=1:1&height=60&width=60"
                   url={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"

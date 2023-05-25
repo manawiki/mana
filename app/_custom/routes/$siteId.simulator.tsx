@@ -885,7 +885,7 @@ const SummonSimulator = (data: any) => {
                                     <div className="relative inline-block h-6 w-6 align-middle">
                                        <Image
                                           alt="Icon"
-                                          url="https://static.mana.wiki/file/mana-prod/starrail/ItemIcon_900001.png"
+                                          url="https://static.mana.wiki/starrail/ItemIcon_900001.png"
                                        />
                                     </div>
                                     <div className="inline-block align-middle">

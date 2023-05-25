@@ -6,7 +6,7 @@ input[type="checkbox"][disabled] {
 }
 
 input[type="range"] {
-   border: 1px rgba(255,255,255,.1) solid;
+   border: 1px rgba(255, 255, 255, 0.1) solid;
 }
 
 /* Item/Material Frame */
@@ -70,26 +70,13 @@ input[type="range"] {
 
 /* HSR Character Showcase Image */
 .hsr-showcase-character {
- mask-image:
-   linear-gradient(to top, black 0%, black 100%),
-   linear-gradient(to top, transparent 0%, black 100%),
-   linear-gradient(to right, transparent 0%, black 100%);
- mask-position:
-   center,
-   top,
-   right;
- mask-size:
-   100% 100%,
-   100% 150px,
-   150px 100%;
- mask-repeat:
-   no-repeat,
-   no-repeat,
-   no-repeat;
- mask-composite:
-   subtract,
-   add,
-   add;
+   mask-image: linear-gradient(to top, black 0%, black 100%),
+      linear-gradient(to top, transparent 0%, black 100%),
+      linear-gradient(to right, transparent 0%, black 100%);
+   mask-position: center, top, right;
+   mask-size: 100% 100%, 100% 150px, 150px 100%;
+   mask-repeat: no-repeat, no-repeat, no-repeat;
+   mask-composite: subtract, add, add;
 }
 
 /* Honkai Star Rail Character Stat Block */
@@ -119,7 +106,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsKnight.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsKnight.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -131,7 +118,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsnMage.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsnMage.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -143,7 +130,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsRogue.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsRogue.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -155,7 +142,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsPirest.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsPirest.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -167,7 +154,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarlock.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsWarlock.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -179,7 +166,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsShaman.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsShaman.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -191,7 +178,7 @@ input[type="range"] {
    width: 350px;
    top: 0;
    left: 0;
-   background-image: url("https://mana.wiki/cdn-cgi/image//https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarrior.png");
+   background-image: url("https://static.mana.wiki/starrail/BgPathsWarrior.png");
    background-repeat: no-repeat;
    background-size: 300px;
    background-position: center;
@@ -210,7 +197,6 @@ input[type="range"] {
    background-repeat: no-repeat;
    background-size: contain;
    background-position: center;
-   
 }
 .connector {
    position: absolute;

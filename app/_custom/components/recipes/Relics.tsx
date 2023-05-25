@@ -10,7 +10,7 @@ export const Relics = ({ pageData }: any) => {
       return (
          <>
             <H2 text="Possible Relics" />
-            <div className="justify-between my-1 rounded-md border dark:border-gray-700 dark:bg-neutral-800 text-center">
+            <div className="my-1 justify-between rounded-md border text-center dark:border-gray-700 dark:bg-neutral-800">
                {relics?.map((r: any) => {
                   // Find the relic's entries in the relicData array
                   const rimg = r?.icon?.url;
@@ -20,17 +20,18 @@ export const Relics = ({ pageData }: any) => {
                   return (
                      <>
                         <Link to={`/starrail/collections/relicSets/${rsetid}`}>
-                           <div className="inline-block align-top m-1 overflow-x-auto">
+                           <div className="m-1 inline-block overflow-x-auto align-top">
                               <div
-                                 className={`rounded-md mb-1 border dark:border-gray-700 w-24 h-24`}
+                                 className={`mb-1 h-24 w-24 rounded-md border dark:border-gray-700`}
                               >
                                  <Image
+                                    options="aspect_ratio=1:1&height=120&width=120"
                                     alt={rname}
                                     url={rimg}
                                     className="object-contain"
                                  />
                               </div>
-                              <div className={`text-xs text-center w-24`}>
+                              <div className={`w-24 text-center text-xs`}>
                                  {rname}
                               </div>
                            </div>

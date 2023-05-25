@@ -23,6 +23,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
                            <div className="h-9 w-8 rounded-full">
                               <Image
+                                 options="aspect_ratio=1:1&height=60&width=60"
                                  className="object-contain"
                                  url={trace?.icon?.url}
                                  alt={trace.name}

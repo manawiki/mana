@@ -70,54 +70,54 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Rare",
          name: "3",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars3-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
       },
       {
          id: "VeryRare",
          name: "4",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars4-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         //icon: "https://static.mana.wiki/file/mana-prod/starrail/rarity_Stars5-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsnMage.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsShaman.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
    ];
 

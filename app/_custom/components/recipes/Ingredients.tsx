@@ -11,7 +11,7 @@ export const Ingredients = ({ pageData }: any) => {
             <>
                <H2 text="Materials Required" />
 
-               <div className="justify-between my-1 rounded-md border dark:border-gray-700 dark:bg-neutral-800 text-center p-2">
+               <div className="my-1 justify-between rounded-md border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
                   {mats?.map((mat: any) => {
                      return (
                         <>
@@ -40,6 +40,7 @@ const ItemQtyFrame = ({ mat }: any) => {
          <Link to={`/starrail/collections/materials/${mat.materials?.id}`}>
             <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
                   url={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"

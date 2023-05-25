@@ -72,27 +72,27 @@ const RecipeList = ({ chars }: any) => {
       {
          id: "2",
          name: "Consumables",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/InventoryConsumablesIcon.png",
+         icon: "https://static.mana.wiki/starrail/InventoryConsumablesIcon.png",
       },
       {
          id: "12",
          name: "Traces Activation Materials",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/InventoryFosterIcon.png",
+         icon: "https://static.mana.wiki/starrail/InventoryFosterIcon.png",
       },
       {
          id: "21",
          name: "Cavern Relic Synthesis",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAvatarRelic.png",
+         icon: "https://static.mana.wiki/starrail/IconAvatarRelic.png",
       },
       {
          id: "22",
          name: "Planar Ornament Synthesis",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/IconAvatarRelic.png",
+         icon: "https://static.mana.wiki/starrail/IconAvatarRelic.png",
       },
       {
          id: "31",
          name: "Material Exchange",
-         icon: "https://static.mana.wiki/file/mana-prod/starrail/ReplacementIcon.png",
+         icon: "https://static.mana.wiki/starrail/ReplacementIcon.png",
       },
    ];
 

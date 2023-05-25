@@ -12,7 +12,7 @@ export const SpecialMats = ({ pageData }: any) => {
             <>
                <H2 text="Special Materials Required" />
 
-               <div className="justify-between mt-1 rounded-t-md border-r border-t border-l dark:border-gray-700 dark:bg-neutral-800 text-center p-2">
+               <div className="mt-1 justify-between rounded-t-md border-l border-r border-t p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
                   {spec?.map((mat: any) => {
                      return (
                         <>
@@ -21,7 +21,7 @@ export const SpecialMats = ({ pageData }: any) => {
                      );
                   })}
                </div>
-               <div className="justify-between mb-1 rounded-b-md border dark:border-gray-700 dark:bg-neutral-800 text-center p-2">
+               <div className="mb-1 justify-between rounded-b-md border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
                   Total Required: {specnum}
                </div>
             </>
@@ -44,6 +44,7 @@ const ItemFrame = ({ mat }: any) => {
          <Link to={`/starrail/collections/materials/${mat?.id}`}>
             <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
                   url={mat?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat?.rarity?.display_number ?? "1"
@@ -70,6 +71,7 @@ const ItemQtyFrame = ({ mat }: any) => {
          <Link to={`/starrail/collections/materials/${mat.materials?.id}`}>
             <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
                   url={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"
