@@ -52,9 +52,6 @@ export default buildConfig({
          titleSuffix: "Mana",
       },
    },
-   graphQL: {
-      disable: true,
-   },
    plugins: [
       cloudStorage({
          collections: {
