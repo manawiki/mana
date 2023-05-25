@@ -64,7 +64,7 @@ export async function loader({ params, request }: LoaderArgs) {
    });
 
    const { data, errors } = await fetch(
-      `http://localhost:4000/api/graphql`,
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
       {
          method: "POST",
          headers: {
