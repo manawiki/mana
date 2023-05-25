@@ -39,6 +39,9 @@ export const SkillTrees: CollectionConfig = {
       {
          name: "character",
          type: "text",
+         /*relationTo: "characters",
+         hasMany: false,
+         required: false,*/
          index: true,
       },
       {
