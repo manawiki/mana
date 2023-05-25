@@ -105,9 +105,9 @@ export default buildConfig({
          },
       }),
       //@ts-ignore
-      ...(process.env.NODE_ENV == "production"
-         ? [cachePlugin({ excludedCollections: ["users"] })]
-         : []),
+      // ...(process.env.NODE_ENV == "production"
+      //    ? [cachePlugin({ excludedCollections: ["users"] })]
+      //    : []),
    ],
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
