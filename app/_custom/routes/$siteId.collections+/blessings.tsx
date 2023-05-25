@@ -30,11 +30,25 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/blessings?limit=1500`;
-   const blessingRaw = await (await fetch(url)).json();
-   const blessings = blessingRaw.docs;
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: QUERY_BLESSINGS
+         }),
+      }
+   ).then((res) => res.json());
 
-   return json({ blessings });
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
+
+   return json({ blessings: data.blessings.docs });
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -390,3 +404,30 @@ function removeTags(str: String) {
    // HTML tag with a null string.
    return str.replace(/(<([^>]+)>)/gi, "");
 }
+
+const QUERY_BLESSINGS = `
+query {
+   blessings: Blessings(limit: 0) {
+     docs {
+       rarity {
+         id
+         icon {
+           url
+         }
+         display_number
+       }
+       aeon {
+         id
+       }
+       id
+       icon {
+         url
+       }
+       name
+       effects {
+         description_simple
+       }
+     }
+   }
+ }
+`
