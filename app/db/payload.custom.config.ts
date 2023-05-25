@@ -52,9 +52,6 @@ export default buildConfig({
          titleSuffix: "Mana",
       },
    },
-   graphQL: {
-      schemaOutputFile: path.resolve(__dirname, "./schema.graphql"),
-   },
    plugins: [
       cloudStorage({
          collections: {
