@@ -19,7 +19,7 @@ export const Image = ({
          width={width}
          height={height}
          alt={alt}
-         src={`${url}?${options}`}
+         src={`${url}?${options ?? ""}`}
       />
    );
 };
