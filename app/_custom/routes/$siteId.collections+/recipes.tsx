@@ -30,11 +30,25 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/recipes?limit=1000`;
-   const recipeRaw = await (await fetch(url)).json();
-   const recipes = recipeRaw.docs;
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: QUERY_RECIPES
+         }),
+      }
+   ).then((res) => res.json());
 
-   return json({ recipes });
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
+
+   return json({ recipes: data.recipes.docs });
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -393,3 +407,51 @@ function removeTags(str: String) {
    // HTML tag with a null string.
    return str.replace(/(<([^>]+)>)/gi, "");
 }
+
+const QUERY_RECIPES = `
+query {
+   recipes: Recipes(limit: 0) {
+     docs {
+       recipe_type {
+         id
+         name
+       }
+       result_item {
+         rarity {
+           icon {
+             url
+           }
+           display_number
+         }
+       }
+       id
+       icon {
+         url
+       }
+       name
+       material_cost {
+         materials {
+           icon {
+             url
+           }
+           rarity {
+             display_number
+           }
+           name
+         }
+         qty
+       }
+       special_material_cost {
+         icon {
+           url
+         }
+         rarity {
+           display_number
+         }
+         name
+       }
+       special_material_cost_num
+     }
+   }
+ }
+`
