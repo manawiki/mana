@@ -33,6 +33,9 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
+   graphQL: {
+      disablePlaygroundInProduction: false
+    },
    serverURL:
       process.env.NODE_ENV == "development"
          ? "http://localhost:4000"
