@@ -28,11 +28,25 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relicSets?limit=200&sort=relicset_id`;
-   const relicSetsRaw = await (await fetch(url)).json();
-   const relicSets = relicSetsRaw.docs;
+   const { data, errors } = await fetch(
+      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query: QUERY_RELIC_SETS
+         }),
+      }
+   ).then((res) => res.json());
 
-   return json({ relicSets });
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      throw new Error();
+   }
+
+   return json({ relicSets: data.relicSets.docs });
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -309,3 +323,22 @@ const EntryWithDescription = ({ char }: any) => {
       </>
    );
 };
+
+const QUERY_RELIC_SETS = `
+query {
+   relicSets: RelicSets(limit: 0) {
+     docs {
+       relicset_id
+       name
+       id
+       icon {
+         url
+       }
+       set_effect {
+         req_no
+         description
+       }
+     }
+   }
+ }
+`
