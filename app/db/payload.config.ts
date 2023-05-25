@@ -61,6 +61,9 @@ export default buildConfig({
          },
       }),
    },
+   graphQL: {
+      schemaOutputFile: path.resolve(__dirname, "../../schema.graphql"),
+   },
    cors: ["mana.wiki", "starrail-static.mana.wiki", "static.mana.wiki"],
    plugins: [
       cloudStorage({
