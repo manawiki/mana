@@ -293,8 +293,8 @@ export default function CollectionList() {
                            className="bg-2 flex items-center gap-3 p-2 hover:underline"
                         >
                            <div
-                              className="border-color shadow-1 flex h-8 w-8 items-center
-                                    justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                              className="border-color shadow-1 flex h-8 w-8 items-center justify-between
+                                    overflow-hidden rounded-full border-2 bg-zinc-500 shadow-sm"
                            >
                               {entry.icon?.url ? (
                                  <Image /* @ts-ignore */

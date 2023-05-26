@@ -38,8 +38,8 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
          ></div>
          <div className="relative mx-auto flex max-w-[728px] items-center justify-start gap-3 pb-4 max-desktop:px-3">
             <div
-               className="border-color bg-2 flex h-12 w-12 flex-none 
-                  items-center justify-center overflow-hidden rounded-full border-2"
+               className="border-color flex h-12 w-12 flex-none items-center 
+     justify-center overflow-hidden rounded-full border-2 bg-zinc-500"
             >
                {/* @ts-ignore */}
                {entry.icon?.url ? (

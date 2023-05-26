@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 export const EntryParent = ({ children }: { children: ReactNode }) => {
    return (
-      <div className="max-laptop:pb-20 relative mx-auto min-h-screen desktop:px-0">
+      <div className="relative mx-auto pb-10 laptop:min-h-screen desktop:px-0">
          {children}
       </div>
    );
