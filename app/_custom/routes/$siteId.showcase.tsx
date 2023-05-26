@@ -1818,6 +1818,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
             description
          }
        }
+       description
       icon {
         url
       }
