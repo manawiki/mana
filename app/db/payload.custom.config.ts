@@ -11,7 +11,6 @@ import {
    CustomCollections,
    CustomSearchCollections,
 } from "../_custom/collections";
-import { cachePlugin } from "@aengz/payload-redis-cache";
 import searchPlugin from "./plugins/search";
 const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
@@ -52,17 +51,6 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
-      webpack: (config) => ({
-         ...config,
-         resolve: {
-            ...config.resolve,
-            alias: {
-               ...config?.resolve?.alias,
-               [path.resolve(__dirname, "../../node_modules/redis")]:
-                  mockModulePath,
-            },
-         },
-      }),
    },
    plugins: [
       cloudStorage({
@@ -71,7 +59,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/file/${bucketName}/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
+                  return `https://static.mana.wiki/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
                },
                prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
             },
@@ -100,8 +88,6 @@ export default buildConfig({
             };
          },
       }),
-      //@ts-ignore
-      ...(process.env.NODE_ENV == "production" ? [cachePlugin({})] : []),
    ],
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),

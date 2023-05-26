@@ -36,6 +36,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { format } from "date-fns";
 import { PostHeader } from "../../components/PostHeader";
 import { postSchema } from "../../utils/postSchema";
+import { Image } from "~/components/Image";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -533,11 +534,11 @@ export const PostHeaderEdit = ({
                          tablet:rounded-md laptop:rounded-none laptop:border-x-0 desktop:rounded-md
                          desktop:border"
                      >
-                        <img
+                        <Image
                            alt="Post Banner"
                            className="h-full w-full object-cover"
-                           //@ts-ignore
-                           src={`https://mana.wiki/cdn-cgi/image/fit=crop,height=440,gravity=auto/${post?.banner?.url}`}
+                           options="height=440"
+                           url={post?.banner?.url}
                         />
                      </div>
                      <button

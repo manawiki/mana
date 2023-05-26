@@ -218,7 +218,7 @@ export function SearchComboBox({
                                          {item?.icon?.url ? (
                                             <Image
                                                url={item.icon.url}
-                                               options="fit=crop,width=60,height=60,gravity=auto"
+                                               options="aspect_ratio=1:1&height=60&width=60"
                                                alt="Search Result Icon"
                                             />
                                          ) : (

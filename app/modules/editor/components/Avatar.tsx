@@ -24,7 +24,7 @@ export default function Avatar({ imageUrl, name, color }: Props) {
                <div className="border-color flex items-center justify-center overflow-hidden rounded-full border">
                   <Image
                      alt={name}
-                     options="fit=crop,width=88,height=88,gravity=auto"
+                     options="aspect_ratio=1:1&height=80&width=80"
                      url={imageUrl}
                   />
                </div>
