@@ -9,7 +9,6 @@ import {
 } from "@remix-run/react";
 import { useState } from "react";
 import { Image } from "~/components";
-// import html2canvas from "html2canvas";
 import { zx } from "zodix";
 import { z } from "zod";
 import Tooltip from "~/components/Tooltip";
@@ -218,6 +217,7 @@ const DisplayPlayerInfo = ({
             setDisplayChar={(e: any) => setDisplayChar(e)}
          />
          <div
+            id="showcase-canvas"
             className="border-color bg-2 shadow-1 relative -mt-9 border-y
          p-3 desktop:border-y desktop:p-6 desktop:pt-14 desktop:shadow-sm"
          >
@@ -237,7 +237,7 @@ const DisplayPlayerInfo = ({
                >
                   <button
                      className="shadow-1 border-color flex h-10 w-10 items-center justify-center
-                     rounded-full border bg-zinc-50 shadow dark:bg-bg2Dark"
+                     rounded-full border bg-zinc-50 shadow dark:bg-bg2Dark disabled:opacity-50"
                      disabled={true}
                      onClick={() => {
                         revalidator.revalidate();
@@ -288,11 +288,16 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                <div 
                   className="py-2 text-center font-header text-2xl font-bold"
                   onClick={() => {
-                     var elem = document.getElementById("hsr-char-summary");
-                     console.log(elem);
-                     DomToImage.toBlob(elem).then((blob) => {
-                        console.log(blob);
-                     });
+                     var elem = document.getElementById("showcase-canvas");
+                     DomToImage.toPng(elem)
+                     .then(function (dataUrl) {
+                           var img = document.createElement("img");
+                           img.src = dataUrl;
+               
+                           var w = window.open("",'_blank');
+                           w.document.write(img.outerHTML);
+                           w.document.close(); 
+                     })
                   }}
                >
                   {data?.detail_info?.nickname}
@@ -856,7 +861,7 @@ const CharacterInfo = ({
 
    return (
       <>
-         <div className="relative" id="hsr-char-summary">
+         <div className="relative">
             <Image
                options="height=1200"
                url={charbase?.image_draw?.url}
@@ -893,7 +898,7 @@ const CharacterInfo = ({
                         >
                            {charbase?.name}
                         </Link>
-                        <div className="text-1 text-sm">Lv.{lv}</div>
+                        <div className="text-1 text-sm">Lv. {lv}</div>
                      </div>
 
                      {/* Skill Tree ? */}
@@ -1190,7 +1195,7 @@ const CharacterInfo = ({
                                  />
 
                                  {/* Relic Main Stat and Level */}
-                                 <div className="bg-3 flex h-[62px] flex-grow items-center justify-between rounded p-1">
+                                 <div className="bg-3 flex h-[68px] flex-grow items-center justify-between rounded p-1">
                                     <div
                                        className={`ml-1 flex cursor-default items-center gap-1.5 rounded p-1 ${
                                           hoverStat.indexOf(mainstatname) > -1
@@ -1286,7 +1291,7 @@ const CharacterInfo = ({
                                                                className="object-fit"
                                                             />
                                                          </div>
-                                                         <div className="text-xs">
+                                                         <div className="text-sm">
                                                             +
                                                             {formatStat(
                                                                sub?.name,
@@ -1660,50 +1665,6 @@ function intersect(a: any, b: any) {
 
    return result;
 }
-
-// function getScreenshotOfElement(element, posX, posY, width, height, callback) {
-//    html2canvas(element, {
-//       // width: width,
-//       // height: height,
-//       useCORS: true,
-//       allowTaint: true,
-//       logging: false,
-//       // scrollX: 0,
-//       // scrollY: 0,
-//       // windowWidth: window.innerWidth,
-//       // windowHeight: window.innerHeight,
-//    }).then(function (canvas) {
-//       // var context = canvas.getContext("2d");
-//       // var imageData = context.getImageData(posX, posY, width, height).data;
-//       // var outputCanvas = document.createElement("canvas");
-//       // var outputContext = outputCanvas.getContext("2d");
-//       // outputCanvas.width = width;
-//       // outputCanvas.height = height;
-
-//       // var idata = outputContext.createImageData(width, height);
-//       // idata.data.set(imageData);
-//       // outputContext.putImageData(idata, 0, 0);
-//       // callback(outputCanvas.toDataURL("image/png"));
-//       callback(canvas.toDataURL("image/png"));
-//    });
-// }
-
-// const ScreenshotButton = () => {
-//    return (
-//       <div
-//          className=""
-//          onClick={() => {
-//             const summ = document.getElementById("hsr-char-summary");
-//             getScreenshotOfElement(summ, 0, 0, 960, 512, function (data) {
-//                // in the data variable there is the base64 image
-//                // exmaple for displaying the image in an <img>
-//             });
-//          }}
-//       >
-//          Screenshot Test
-//       </div>
-//    );
-// };
 
 const QUERY_SHOWCASE = `
 query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [String!], $skillTreeIdList: [String!], $playerIconId: String!) {
