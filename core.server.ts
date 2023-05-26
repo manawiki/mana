@@ -125,11 +125,11 @@ async function startCore() {
 
    app.listen(port, () => {
       console.log(`Express server listening on port ${port}`);
-   });
 
-   if (process.env.NODE_ENV === 'development') {
-      broadcastDevReady(require(BUILD_DIR))
-   }
+      if (process.env.NODE_ENV === 'development') {
+         broadcastDevReady(require(BUILD_DIR))
+      }
+   });
 }
 
 startCore();
