@@ -1555,7 +1555,9 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    const transition = useTransition();
    const isSearching = isLoading(transition);
    return (
-      <div>
+      <form
+         onSubmit={(e) => { e.preventDefault(); }}
+      >
          <div className="text-1 pb-4 text-center font-bold">
             Enter UID to view your showcase
          </div>
@@ -1573,6 +1575,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
             />
             {inputUID && (
                <button
+                  type="button"
                   className="shadow-1 bg-2 border-color absolute -right-1 -top-1 z-10 flex
                   h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm"
                   onClick={() => {
@@ -1589,6 +1592,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
          </div>
          <div className="flex items-center justify-center gap-2 pt-5">
             <button
+               type="submit"
                className="flex h-11 w-24 items-center justify-center rounded-full bg-blue-500
                   px-3 text-sm font-bold text-white shadow shadow-blue-300 dark:shadow-blue-800"
                onClick={() => {
@@ -1605,7 +1609,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
                )}
             </button>
          </div>
-      </div>
+      </form>
    );
 };
 
