@@ -91,8 +91,6 @@ async function startCore() {
       "*",
       process.env.NODE_ENV === "development"
          ? (req, res, next) => {
-            //   purgeRequireCache();
-
               return createRequestHandler({
                  build: require(BUILD_DIR),
                  mode: process.env.NODE_ENV,
