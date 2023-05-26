@@ -1439,7 +1439,7 @@ const SkillTreeDisplay = ({
    setHoverStat,
 }: any) => {
    var pathkey = path;
-   var treelist = skillTrees.filter((a: any) => a.character == data?.avatar_id); // pageData?.attributes?.tree; //skillTreeData;
+   var treelist = skillTrees.filter((a: any) => a.character.id == data?.avatar_id); // pageData?.attributes?.tree; //skillTreeData;
 
    // Need to sort skill nodes in order from Point01 - 18
    treelist.sort((a: any, b: any) =>
