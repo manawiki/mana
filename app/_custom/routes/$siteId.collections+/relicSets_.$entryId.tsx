@@ -9,13 +9,13 @@ import {
    getCustomEntryData,
 } from "~/modules/collections";
 import type { RelicSets } from "payload/generated-types";
-import { Image } from "~/components/Image";
 
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
 
 import { zx } from "zodix";
 import { z } from "zod";
+import { H2 } from "~/_custom/components/custom";
 
 export { meta };
 
@@ -45,9 +45,6 @@ export async function loader({
    const relicRaw = await (await fetch(url)).json();
    const relicData = relicRaw.docs;
 
-   // ======================
-   // ======================
-
    return json({ entryDefault, defaultData, relicData });
 }
 
@@ -60,9 +57,8 @@ export default function CharacterEntry() {
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
-            <h2>Set Effect</h2>
+            <H2 text="Set Effect" />
             <SetEffect pageData={defaultData} />
-
             {/* Relics in set should have a clickable information pop up (with first selected by default) */}
             {/* Need to collapse all of the same relic (which can have to 5 entries for each rarity) */}
             {/* Tabs contain info: */}
@@ -76,24 +72,3 @@ export default function CharacterEntry() {
       </EntryParent>
    );
 }
-
-const Header = () => {
-   const { defaultData } = useLoaderData<typeof loader>();
-
-   return (
-      <>
-         <div>{defaultData}</div>
-      </>
-   );
-};
-
-const Stats = () => {
-   return <div>This is stats</div>;
-};
-
-// ========================================
-// Lol manually putting stat data in for now since not sure if Strapi ready to go
-// --- Will be loaded properly from DB ---
-// ========================================
-// ========================================
-// ========================================

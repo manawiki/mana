@@ -132,7 +132,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                   <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
                      <Image
                         className="relative inline-block object-contain"
-                        options="aspect_ratio=1:1&height=40&width=40"
+                        options="aspect_ratio=1:1&height=80&width=80"
                         alt="Character Stat"
                         url={pathurl}
                      />
@@ -148,28 +148,24 @@ export const CharacterStatBlock = ({ pageData }) => {
                               stat.colormod
                                  ? "bg-2 relative block"
                                  : "bg-1 relative block"
-                           } flex items-center px-2 py-2.5`}
+                           } flex items-center px-3 py-2.5`}
                            key={index}
                         >
                            {/* 2bi) Stat Icon */}
                            <div className="flex flex-grow items-center space-x-2">
-                              <div>
-                                 {stat.hash ? (
-                                    <div
-                                       className="relative inline-flex h-6 w-6 items-center 
+                              {stat.hash ? (
+                                 <div
+                                    className="relative inline-flex h-6 w-6 items-center 
                                         justify-center rounded-full align-middle"
-                                    >
-                                       <Image
-                                          options="aspect_ratio=1:1&height=24&width=24"
-                                          alt="Character Stat"
-                                          url={
-                                             stat.hash ?? "no_image_42df124128"
-                                          }
-                                          className="h-full w-full object-contain"
-                                       />
-                                    </div>
-                                 ) : null}
-                              </div>
+                                 >
+                                    <Image
+                                       options="aspect_ratio=1:1&height=24&width=24"
+                                       alt="Character Stat"
+                                       url={stat.hash ?? "no_image_42df124128"}
+                                       className="h-full w-full object-contain"
+                                    />
+                                 </div>
+                              ) : null}
                               <div className="text-1 font-bold">
                                  {stat.stat}
                               </div>

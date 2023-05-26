@@ -58,21 +58,19 @@ export const Header = ({ pageData }: any) => {
             {/* ======================== */}
             <section>
                <div>
-                  <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
+                  <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
                      {stats?.map((stat: any, index: any) => {
                         return (
                            <>
                               <div
-                                 className={`
-                     /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
-                     ${
-                        index % 2 == 1
-                           ? "relative block bg-gray-50 dark:bg-neutral-800"
-                           : "relative block bg-gray-100 dark:bg-neutral-900"
-                     } flex items-center p-2 px-3`}
+                                 className={`${
+                                    index % 2 == 1
+                                       ? "bg-2 relative block"
+                                       : "bg-1 relative block"
+                                 } flex items-center px-3 py-2.5`}
                               >
                                  {/* 2bi) Stat Icon */}
-                                 <div className="flex flex-grow items-center space-x-2">
+                                 <div className="text-1 flex flex-grow items-center space-x-2 font-bold">
                                     <div>{stat.name}</div>
                                  </div>
                                  {/* 2biii) Stat value */}
@@ -83,13 +81,17 @@ export const Header = ({ pageData }: any) => {
                      })}
                   </div>
 
-                  <div className="mt-1.5 flex rounded-md border bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-900">
-                     <div className="flex flex-grow items-center space-x-2">
-                        Tags
-                     </div>
-                     <div className="flex flex-grow items-center space-x-2">
+                  <div
+                     className="bg-2 border-color shadow-1 mt-3 flex items-center justify-between 
+                  gap-3 rounded-md border p-2.5 pl-3 shadow-sm"
+                  >
+                     <div className="text-1 flex-none font-bold">Tags</div>
+                     <div className="flex items-center space-x-2">
                         {tags?.map((t: any) => (
-                           <div className="border-color m-1 rounded-md border bg-gray-500 bg-opacity-30 px-2 py-1 text-xs">
+                           <div
+                              key={t}
+                              className="border-color shadow-1 bg-3 m-1 rounded-md border px-2 py-1 text-xs shadow-sm"
+                           >
                               {t}
                            </div>
                         ))}

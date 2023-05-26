@@ -36,9 +36,9 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
       <>
          <div
             className="shadow-1 shadow-1 rounded-lg bg-zinc-500 px-6 text-center
-          shadow-sm dark:bg-bg4Dark"
+          shadow-sm dark:bg-bg2Dark"
          >
-            <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg4Dark">
+            <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg2Dark">
                <div className={`canvas-${pathkey}`}></div>
 
                {connectorlist?.map((con: any) => {
@@ -73,7 +73,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
          </div>
          <div className="text-center">
             {treeNode > 0 ? (
-               <div className="-mt-2 inline-block w-full rounded-b-md bg-zinc-500 p-3 dark:bg-bg4Dark">
+               <div className="-mt-2 inline-block w-full rounded-b-md bg-zinc-500 p-3 dark:bg-bg2Dark">
                   {/* Node Name */}
                   <div className="text-lg font-bold text-zinc-100">
                      {activeNode.name}

@@ -38,7 +38,7 @@ export async function loader({
             "Content-Type": "application/json",
          },
          body: JSON.stringify({
-            query: QUERY_LIGHTCONES
+            query: QUERY_LIGHTCONES,
          }),
       }
    ).then((res) => res.json());
@@ -255,8 +255,8 @@ const LightConeList = ({ chars }: any) => {
             </div>
             {/* Search Text Box */}
             <div
-               className="border-color mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 border-b"
+               className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
+                     justify-between gap-3 rounded-lg border px-3 shadow-sm"
             >
                <Search className="text-yellow-500" size={20} />
                <input
@@ -275,7 +275,7 @@ const LightConeList = ({ chars }: any) => {
             {/* Sort Options */}
             <div className="flex items-center justify-between py-3">
                <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-zinc-500" />
+                  <SortDesc size={16} className="text-yellow-500" />
                   Sort
                </div>
                <div className="flex items-center gap-2">
@@ -305,7 +305,7 @@ const LightConeList = ({ chars }: any) => {
                type="button"
                className={`border-color shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
                font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
-                  showDesc ? "bg-2 bg-yellow-50" : "bg-3"
+                  showDesc ? "bg-3 bg-yellow-50" : "bg-2"
                }`}
                onClick={() => setShowDesc(!showDesc)}
             >
@@ -362,7 +362,7 @@ const EntryWithDescription = ({ char }: any) => {
    return (
       <>
          <Link
-            className="bg-3 border-color shadow-1 relative mb-2 flex rounded-lg border-2 shadow"
+            className="bg-2 border-color shadow-1 relative mb-2.5 flex rounded-lg border-2 shadow-sm"
             prefetch="intent"
             to={`/starrail/collections/characters/${cid}`}
          >
@@ -490,4 +490,4 @@ query {
      }
    }
  }
-`
+`;

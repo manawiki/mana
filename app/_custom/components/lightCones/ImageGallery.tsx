@@ -1,4 +1,5 @@
 import { H2 } from "../custom";
+import { Image } from "~/components";
 
 export const ImageGallery = ({ pageData }: any) => {
    var galleryname = ["Icon", "Full Image"];
@@ -7,20 +8,21 @@ export const ImageGallery = ({ pageData }: any) => {
    return (
       <>
          <H2 text="Image Gallery" />
-         <div className="grid grid-cols-3 gap-2 w-full mb-3">
+         <div className="mb-3 grid w-full grid-cols-3 gap-2">
             {galleryname.map((img: any, i) => {
                return (
                   <>
                      {/* Header */}
-                     <div className="relative inline-block text-center">
-                        <div className="border-color bg-2 relative block rounded-t-lg border py-2 text-center text-sm font-bold">
+                     <div className="shadow-1 border-color relative inline-block overflow-hidden rounded-lg border text-center shadow-sm">
+                        <div className="border-color bg-2 relative block border-b py-2 text-center text-sm font-bold">
                            {img}
                         </div>
-                        <div className="border-color bg-1 relative flex w-full items-center justify-center rounded-b-lg border border-t-0 p-3">
+                        <div className=" bg-1 relative flex w-full items-center justify-center p-3">
                            <div className="relative h-24 w-24 text-center">
-                              <img
-                                 src={gallerylist[i]}
-                                 className="inline-block object-contain w-24 h-24"
+                              <Image
+                                 options="height=120"
+                                 url={gallerylist[i]}
+                                 className="h-24 w-24 object-contain"
                                  alt="Gallery Item"
                               />
                            </div>

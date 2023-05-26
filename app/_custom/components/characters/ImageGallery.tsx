@@ -36,15 +36,12 @@ export const ImageGallery = ({ pageData }: any) => {
                   <>
                      {/* Header */}
                      {gimg ? (
-                        <div className="relative inline-block text-center">
-                           <div className="border-color bg-2 relative block rounded-t-lg border py-2 text-center text-sm font-bold">
+                        <div className="shadow-1 border-color relative inline-block overflow-hidden rounded-lg border text-center shadow-sm">
+                           <div className="border-color bg-2 relative block border-b py-2 text-center text-sm font-bold">
                               {img}
                            </div>
                            <a href={gimg}>
-                              <div
-                                 className="border-color bg-1 relative flex w-full items-center
-                           justify-center rounded-b-lg border border-t-0 p-3"
-                              >
+                              <div className=" bg-1 relative flex w-full items-center justify-center p-3">
                                  <div className="relative h-24 w-24 text-center">
                                     <Image
                                        options="aspect_ratio=1:1&height=120&width=120"

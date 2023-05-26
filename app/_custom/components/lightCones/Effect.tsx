@@ -11,12 +11,12 @@ export const Effect = ({ pageData }: any) => {
       <>
          <H2 text="Effect" />
          <div
-         className="bg-2 divide-color border-color shadow-1 mb-4 
+            className="bg-2 divide-color border-color shadow-1 mb-4 
       divide-y-4 overflow-hidden rounded-lg border shadow"
-      >
+         >
             <div>
                {/* Node Name */}
-               <div className="bg-1 relative flex justify-center items-center gap-3 p-3">
+               <div className="bg-1 relative flex items-center gap-3 px-3 py-2.5">
                   <div className="font-bold">{skill?.[0]?.name}</div>
                </div>
 

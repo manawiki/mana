@@ -38,7 +38,7 @@ export async function loader({
             "Content-Type": "application/json",
          },
          body: JSON.stringify({
-            query: QUERY_RECIPES
+            query: QUERY_RECIPES,
          }),
       }
    ).then((res) => res.json());
@@ -163,15 +163,15 @@ const RecipeList = ({ chars }: any) => {
                return (
                   <>
                      <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                        <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                        <div className="w-40 text-sm font-bold max-laptop:pb-2">
                            {cat.name}
                         </div>
-                        <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                        <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
                            {cat.options.map((opt: any) => {
                               return (
                                  <>
                                     <div
-                                       className={`bg-3 border-color h-24 w-24 rounded-lg border px-2.5 py-1 ${
+                                       className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
                                           filters.find(
                                              (a: any) => a.id == opt.id
                                           )
@@ -204,8 +204,9 @@ const RecipeList = ({ chars }: any) => {
                                     >
                                        {opt.icon ? (
                                           <>
-                                             <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                             <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
                                                 <Image
+                                                   options="aspect_ratio=1:1&height=40&width=40"
                                                    alt="Icon"
                                                    className="object-contain"
                                                    url={opt.icon}
@@ -213,7 +214,7 @@ const RecipeList = ({ chars }: any) => {
                                              </div>
                                           </>
                                        ) : null}
-                                       <div className="text-1  pt-0.5 text-center text-xs">
+                                       <div className="text-1 text-xs">
                                           {opt.name}
                                        </div>
                                     </div>
@@ -229,8 +230,8 @@ const RecipeList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 rounded-lg border px-3"
+            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
             <Search className="text-yellow-500" size={24} />
             <input
@@ -275,7 +276,7 @@ const RecipeList = ({ chars }: any) => {
          </div>
 
          {/* List of items with applied sorting */}
-         <div className="grid grid-cols-1 gap-3 text-center laptop:grid-cols-1">
+         <div className="bg-2 border-color shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
             {cfiltered?.map((char: any) => {
                const rarityurl = char?.result_item?.rarity?.icon?.url;
                const rarnum = char?.result_item?.rarity?.display_number;
@@ -289,31 +290,31 @@ const RecipeList = ({ chars }: any) => {
 
                return (
                   <>
-                     <div className="bg-2 border-color shadow-1 rounded-sm border shadow-sm">
-                        <div className="align-center flex justify-between p-2">
+                     <div className="overflow-auto">
+                        <div className="flex items-center justify-between gap-3 p-2">
                            {/* Result Item */}
                            <Link
+                              prefetch="intent"
+                              className="flex min-w-[200px] items-center gap-3"
                               to={`/starrail/collections/${collectionName}/${cid}`}
-                              className="inline-flex"
                            >
-                              <div className="inline-flex items-center">
-                                 <div className="inline-flex h-16 w-16 rounded-md">
-                                    <Image
-                                       url={curl ?? "no_image_42df124128"}
-                                       className={`object-contain color-rarity-${
-                                          rarnum ?? "1"
-                                       } rounded-md`}
-                                       alt={cname}
-                                    />
-                                 </div>
-                                 <div className="ml-2 inline-flex">{cname}</div>
+                              <div className="h-12 w-12 flex-none rounded-md laptop:h-16 laptop:w-16">
+                                 <Image
+                                    options="aspect_ratio=1:1&height=100&width=100"
+                                    url={curl ?? "no_image_42df124128"}
+                                    className={`object-contain color-rarity-${
+                                       rarnum ?? "1"
+                                    } rounded-md`}
+                                    alt={cname}
+                                 />
                               </div>
+                              <div className="max-laptop:text-sm">{cname}</div>
                            </Link>
 
                            {/* Recipe Items */}
                            {ingredients?.length > 0 || spec?.length > 0 ? (
                               <>
-                                 <div className="inline-flex items-center">
+                                 <div className="flex items-center gap-1">
                                     {/* Main Fixed Ingredients */}
                                     {ingredients?.map((mat: any) => {
                                        return (
@@ -326,13 +327,19 @@ const RecipeList = ({ chars }: any) => {
                                     {/* Special Ingredients */}
                                     {spec?.length > 0 ? (
                                        <>
-                                          <div className="mx-1 inline-block">
-                                             <div className="w-full">
+                                          <div className="inline-block">
+                                             <div className="flex w-full items-center gap-1">
                                                 {spec?.map((mat: any) => (
-                                                   <ItemFrameSmall mat={mat} />
+                                                   <ItemFrameSmall
+                                                      key={mat.id}
+                                                      mat={mat}
+                                                   />
                                                 ))}
                                              </div>
-                                             <div className="w-full border-b border-gray-700 bg-bg1Dark align-middle text-xs text-white">
+                                             <div
+                                                className="mt-0.5 w-full rounded-sm bg-bg1Dark
+                                                text-center align-middle text-xs font-bold text-white"
+                                             >
                                                 {specnum}
                                              </div>
                                           </div>
@@ -354,9 +361,13 @@ const RecipeList = ({ chars }: any) => {
 const ItemFrameSmall = ({ mat }: any) => {
    return (
       <>
-         <Link to={`/starrail/collections/materials/${mat?.id}`}>
-            <div className="relative m-0.5 inline-block h-8 w-8 align-middle text-xs">
+         <Link
+            prefetch="intent"
+            to={`/starrail/collections/materials/${mat?.id}`}
+         >
+            <div className="relative h-8 w-8 align-middle text-xs">
                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
                   url={mat?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat?.rarity?.display_number ?? "1"
@@ -380,9 +391,13 @@ const ItemQtyFrame = ({ mat }: any) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <Link to={`/starrail/collections/materials/${mat.materials?.id}`}>
-            <div className="relative mr-1 mt-0.5 inline-block h-12 w-12 align-middle text-xs">
+         <Link
+            prefetch="intent"
+            to={`/starrail/collections/materials/${mat.materials?.id}`}
+         >
+            <div className="relative inline-block h-10 w-10 align-middle text-xs laptop:h-12 laptop:w-12">
                <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
                   url={mat.materials?.icon?.url ?? "no_image_42df124128"}
                   className={`object-contain color-rarity-${
                      mat.materials?.rarity?.display_number ?? "1"
@@ -390,7 +405,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                   alt={mat.materials?.name}
                />
             </div>
-            <div className="relative mr-1 w-12 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs text-white">
+            <div className="relative w-10 rounded-b-sm bg-bg1Dark align-middle text-xs text-white laptop:w-12">
                {mat?.qty}
             </div>
          </Link>
@@ -431,6 +446,7 @@ query {
        name
        material_cost {
          materials {
+            id
            icon {
              url
            }
@@ -442,6 +458,7 @@ query {
          qty
        }
        special_material_cost {
+         id
          icon {
            url
          }
@@ -454,4 +471,4 @@ query {
      }
    }
  }
-`
+`;

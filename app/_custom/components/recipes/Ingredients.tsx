@@ -10,8 +10,7 @@ export const Ingredients = ({ pageData }: any) => {
          {mats?.length > 0 ? (
             <>
                <H2 text="Materials Required" />
-
-               <div className="my-1 justify-between rounded-md border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
+               <div className="bg-2 border-color shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
                   {mats?.map((mat: any) => {
                      return (
                         <>
@@ -37,8 +36,11 @@ const ItemQtyFrame = ({ mat }: any) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <Link to={`/starrail/collections/materials/${mat.materials?.id}`}>
-            <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
+         <Link
+            prefetch="intent"
+            to={`/starrail/collections/materials/${mat.materials?.id}`}
+         >
+            <div className="relative mr-2 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"
                   url={mat.materials?.icon?.url ?? "no_image_42df124128"}

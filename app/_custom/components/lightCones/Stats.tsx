@@ -62,55 +62,44 @@ export const Stats = ({ pageData }: any) => {
 
    return (
       <>
-         <div className="grid gap-3 laptop:grid-cols-2">
+         <div className="gap-3 laptop:flex">
             {/* ======================== */}
             {/* 1) Character Image div */}
             {/* ======================== */}
-            <div>
-               <div className="bg-2 shadow-1 border-color relative w-full overflow-hidden rounded-md border text-center shadow-sm">
-                  {/* Rarity */}
-                  <div className="absolute bottom-3 left-20 z-20 h-8 w-20 laptop:left-12">
-                     <Image
-                        className="z-20 h-8 w-20 rounded-full bg-black bg-opacity-40 object-contain"
-                        url={rarityurl}
-                        alt={"Rarity"}
-                     />
-                  </div>
-
-                  <div className="relative inline-block h-96 w-full text-center">
-                     {/* Main Image */}
-                     {imgurl ? (
-                        <Image
-                           options="height=400"
-                           alt={"Main Image"}
-                           url={imgurl}
-                           className="absolute h-96 w-full object-contain"
-                        />
-                     ) : null}
-                  </div>
+            <div
+               className="bg-2 shadow-1 border-color relative flex items-center justify-center overflow-hidden rounded-md 
+                  border text-center shadow-sm max-laptop:mb-3 laptop:w-72"
+            >
+               {/* Rarity */}
+               <div className="absolute bottom-3 left-3 z-20 h-8 rounded-full bg-black bg-opacity-40 px-1">
+                  <Image className="" url={rarityurl} alt={"Rarity"} />
                </div>
+               {/* Main Image */}
+               {imgurl ? (
+                  <Image
+                     className="max-tablet:w-full laptop:w-72"
+                     options="height=500"
+                     alt="Character Primary Image"
+                     url={imgurl}
+                  />
+               ) : null}
             </div>
 
             {/* ======================== */}
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
-            <div>
+            <div className="flex-grow">
                <div className="bg-2 shadow-1 border-color mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
-                  <div className="flex flex-grow items-center space-x-2">
-                     <div className="relative h-10 w-10 rounded-full bg-gray-800">
-                        <Image
-                           options="aspect_ratio=1:1&height=40&width=40"
-                           alt="Path Icon"
-                           className="relative inline-block object-contain"
-                           url={pathurl}
-                        />
-                     </div>
+                  <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
+                     <Image
+                        className="relative inline-block object-contain"
+                        options="aspect_ratio=1:1&height=80&width=80"
+                        alt="Character Stat"
+                        url={pathurl}
+                     />
                   </div>
-                  <div className="flex flex-grow items-center space-x-2">
-                     {pathname}
-                  </div>
+                  <div className="font-bold">{pathname}</div>
                </div>
-
                <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (

@@ -24,7 +24,7 @@ export const Header = ({ pageData }: any) => {
             {/* ======================== */}
             {/* 1) Main Image div */}
             {/* ======================== */}
-            <div>
+            <section>
                <div
                   className={`relative w-full rounded-md bg-gray-100 text-center dark:bg-neutral-900 color-rarity-${rarnum}`}
                >
@@ -64,47 +64,40 @@ export const Header = ({ pageData }: any) => {
                      </div>
                   </div>
                </div>
-            </div>
+            </section>
 
             {/* ======================== */}
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
-            <div>
-               <div className="mb-3 flex rounded-md border bg-gray-50 p-3 dark:border-neutral-700 dark:bg-neutral-900">
-                  <div className="flex flex-grow items-center space-x-2">
-                     <div className="relative h-10 w-10 rounded-full bg-gray-800">
-                        <Image
-                           options="aspect_ratio=1:1&height=40&width=40"
-                           alt="Path Icon"
-                           className="relative inline-block object-contain"
-                           url={pathurl}
-                        />
-                     </div>
+            <section>
+               <div className="bg-2 border-color shadow-1 mb-3 flex items-center gap-3 rounded-md border p-2 shadow-sm">
+                  <div className="relative h-10 w-10 rounded-full bg-gray-800">
+                     <Image
+                        options="aspect_ratio=1:1&height=80&width=80"
+                        alt="Path Icon"
+                        className="relative inline-block object-contain"
+                        url={pathurl}
+                     />
                   </div>
-                  <div className="flex flex-grow items-center space-x-2">
-                     {pathname}
-                  </div>
+                  <div className="text-1 font-bold">{pathname}</div>
                </div>
 
-               <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
+               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
                   <div
                      className={`
-                      /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
-                         1
-                            ? "relative block bg-gray-50 dark:bg-neutral-800"
-                            : "relative block bg-gray-100 dark:bg-neutral-900"
-                      } flex items-center p-2`}
+                         1 ? "bg-2 relative block" : "bg-1 relative block"
+                      } flex items-center px-3 py-2.5`}
                   >
                      {/* 2bi) Stat Icon */}
-                     <div className="flex flex-grow items-center space-x-2">
+                     <div className="text-1 flex flex-grow items-center space-x-2 font-bold">
                         <div>Max Level</div>
                      </div>
                      {/* 2biii) Stat value */}
                      <div className="">{maxlv}</div>
                   </div>
                </div>
-            </div>
+            </section>
          </div>
       </>
    );

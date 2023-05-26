@@ -38,7 +38,7 @@ export async function loader({
             "Content-Type": "application/json",
          },
          body: JSON.stringify({
-            query: QUERY_BLESSINGS
+            query: QUERY_BLESSINGS,
          }),
       }
    ).then((res) => res.json());
@@ -262,8 +262,8 @@ const BlessingList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 rounded-lg border px-3"
+            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
             <Search className="text-yellow-500" size={24} />
             <input
@@ -330,8 +330,9 @@ const BlessingList = ({ chars }: any) => {
                return (
                   <>
                      <Link
+                        prefetch="intent"
                         to={`/starrail/collections/${collectionName}/${cid}`}
-                        className="bg-2 border-color shadow-1 overflow-hidden rounded-sm border shadow-sm"
+                        className="bg-2 border-color shadow-1 overflow-hidden rounded-lg border shadow-sm"
                      >
                         <div>
                            <div
@@ -374,13 +375,14 @@ const BlessingList = ({ chars }: any) => {
                               </div>
                            </div>
                            <div
-                              className="relative w-full border-b bg-gray-200 px-2 pb-1 pt-2 text-center font-bold dark:border-neutral-600 dark:bg-neutral-700"
+                              className="bg-3 border-color relative w-full border-b px-2 pb-1 pt-2 
+                              text-center text-sm font-bold"
                               dangerouslySetInnerHTML={{
                                  __html: cname,
                               }}
                            ></div>
                            <div
-                              className="relative h-full w-full rounded-b-md p-2 text-center text-sm"
+                              className="relative h-full w-full rounded-b-md p-2 text-center text-xs"
                               dangerouslySetInnerHTML={{
                                  __html: descsimple,
                               }}
@@ -430,4 +432,4 @@ query {
      }
    }
  }
-`
+`;

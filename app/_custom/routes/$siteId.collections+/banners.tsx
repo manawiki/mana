@@ -1,6 +1,6 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
@@ -93,54 +93,42 @@ const BannerList = ({ banners }: any) => {
          <div className="">
             {/* List of Characters with applied sorting */}
             <H2 text="Banners" />
-            <div className="text-center">
+            <div className="space-y-2.5 pb-10">
                {banners?.map((b: any) => {
                   return (
                      <>
-                        <div className="relative my-1 rounded-md border p-2 dark:border-gray-700">
-                           <div className="relative inline-block w-1/4 px-2 text-center align-middle">
-                              {/* Banner Name */}
-
-                              <div className="block text-sm font-bold">
-                                 {b?.name}
-                              </div>
-                              {/* Banner Image */}
-                              <div className="h-28 w-auto">
-                                 <Image
-                                    options="height=120"
-                                    alt={b?.name}
-                                    className="h-28 object-contain"
-                                    url={b?.icon?.url}
-                                 />
-                              </div>
-                              {/* Banner Period */}
-                              <div className="text-xs">
+                        <div className="border-color shadow-1 bg-1 relative overflow-hidden rounded-lg border bg-zinc-50 shadow-sm">
+                           <div
+                              className="border-color items-center justify-between border-b 
+                              bg-zinc-100 p-3 dark:bg-bg2Dark max-laptop:space-y-1 laptop:flex"
+                           >
+                              <div className="font-bold">{b?.name}</div>
+                              <div className="text-1 text-xs">
                                  {new Date(b?.start_date).toLocaleString()} -{" "}
                                  {b?.end_date
                                     ? new Date(b?.end_date).toLocaleString()
                                     : null}
                               </div>
                            </div>
-                           <div className="relative inline-block w-3/4 px-2 align-middle">
-                              {b.featured_characters?.map((c: any) => {
-                                 return (
-                                    <>
-                                       <div className="relative my-1 inline-block align-top">
-                                          <CharFrame char={c} />
-                                       </div>
-                                    </>
-                                 );
-                              })}
-
-                              {b.featured_light_cones?.map((c: any) => {
-                                 return (
-                                    <>
-                                       <div className="relative my-1 inline-block align-top">
-                                          <LightConeFrame char={c} />
-                                       </div>
-                                    </>
-                                 );
-                              })}
+                           <div className="relative items-center laptop:flex">
+                              <div className="flex w-full flex-none items-center justify-center p-3 text-center laptop:w-[240px]">
+                                 <Image
+                                    options="width=500"
+                                    className="shadow-1 rounded-lg shadow"
+                                    alt={b?.name}
+                                    url={b?.icon?.url}
+                                 />
+                              </div>
+                              <div className="text-1 grid flex-grow grid-cols-2 gap-3 p-3 text-sm font-bold">
+                                 {b.featured_characters?.map((c: any) => {
+                                    return <CharFrame key={c?.id} char={c} />;
+                                 })}
+                                 {b.featured_light_cones?.map((c: any) => {
+                                    return (
+                                       <LightConeFrame key={c?.id} char={c} />
+                                    );
+                                 })}
+                              </div>
                            </div>
                         </div>
                      </>
@@ -162,23 +150,23 @@ const CharFrame = ({ char }: any) => {
    // Matqty holds material and quantity information
 
    return (
-      <div className="relative mx-1 inline-block text-center" key={char?.id}>
-         <a href={`/starrail/collections/characters/${char?.id}`}>
-            <div className="relative inline-block h-20 w-20 align-middle text-xs">
-               <Image
-                  options="aspect_ratio=1:1&height=100&width=100"
-                  url={char?.icon?.url ?? "no_image_42df124128"}
-                  className={`object-contain color-rarity-${
-                     char?.rarity?.display_number ?? "1"
-                  } rounded-t-md`}
-                  alt={char?.name}
-               />
-            </div>
-            <div className="relative mt-2 w-20 rounded-b-md border-b border-gray-700 bg-black align-middle text-xs text-white">
-               {char?.name}
-            </div>
-         </a>
-      </div>
+      <Link
+         prefetch="intent"
+         className="flex items-center gap-2.5"
+         to={`/starrail/collections/characters/${char?.id}`}
+      >
+         <div className="h-12 w-12 flex-none">
+            <Image
+               options="aspect_ratio=1:1&height=60&width=60"
+               url={char?.icon?.url ?? "no_image_42df124128"}
+               className={`color-rarity-${
+                  char?.rarity?.display_number ?? "1"
+               } rounded-xl`}
+               alt={char?.name}
+            />
+         </div>
+         <div>{char?.name}</div>
+      </Link>
    );
 };
 
@@ -186,22 +174,22 @@ const LightConeFrame = ({ char }: any) => {
    // Matqty holds material and quantity information
 
    return (
-      <div className="relative mx-1 inline-block text-center" key={char?.id}>
-         <a href={`/starrail/collections/lightCones/${char?.id}`}>
-            <div className="relative inline-block h-20 w-20 align-top text-xs">
-               <Image
-                  options="aspect_ratio=1:1&height=100&width=100"
-                  url={char?.icon?.url ?? "no_image_42df124128"}
-                  className={`object-contain color-rarity-${
-                     char?.rarity?.display_number ?? "1"
-                  } rounded-t-md`}
-                  alt={char?.name}
-               />
-            </div>
-            <div className="relative w-20 rounded-b-md border-b border-gray-700 bg-black align-middle text-xs text-white">
-               {char?.name}
-            </div>
-         </a>
-      </div>
+      <Link
+         prefetch="intent"
+         className="flex items-center gap-2.5"
+         to={`/starrail/collections/lightCones/${char?.id}`}
+      >
+         <div className="h-12 w-12 flex-none">
+            <Image
+               className={`object-contain color-rarity-${
+                  char?.rarity?.display_number ?? "1"
+               } rounded-xl`}
+               options="aspect_ratio=1:1&height=60&width=60"
+               url={char?.icon?.url ?? "no_image_42df124128"}
+               alt={char?.name}
+            />
+         </div>
+         <div>{char?.name}</div>
+      </Link>
    );
 };

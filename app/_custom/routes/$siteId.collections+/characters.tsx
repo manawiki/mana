@@ -333,8 +333,8 @@ const CharacterList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 rounded-lg border px-3"
+            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
             <Search className="text-yellow-500" size={24} />
             <input

@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { H2 } from "../custom";
+import { Image } from "~/components";
+import { Star } from "lucide-react";
 
 export const RelicsInSet = ({ pageData, relicData }: any) => {
    // Artifact Ordering
@@ -67,9 +70,8 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
    return (
       <>
-         <h2>Relics in Set</h2>
-
-         <div className="my-1 justify-between rounded-md border text-center dark:border-gray-700 dark:bg-neutral-800">
+         <H2 text="Relics in Set" />
+         <div className="grid grid-cols-2 gap-3 pb-4 laptop:grid-cols-4">
             {urelics?.map((rname: any) => {
                // Find the relic's entries in the relicData array
                const curr = relicData.filter((r: any) => r.name == rname);
@@ -77,48 +79,44 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
                return (
                   <>
-                     <div
-                        className="m-1 inline-block cursor-pointer overflow-x-auto align-top"
+                     <button
                         onClick={(e) => {
                            setActiveRelic(rname);
                         }}
+                        className={`shadow-1 rounded-xl border p-3 shadow ${
+                           activeRelic == rname
+                              ? "border-yellow-200 bg-yellow-50 dark:border-zinc-600 dark:bg-zinc-700"
+                              : "bg-2 border-color"
+                        }`}
                      >
+                        <Image
+                           options="aspect_ratio=1:1&height=120&width=120"
+                           alt="Active Relic"
+                           className="mx-auto h-20"
+                           url={rimg}
+                        />
                         <div
-                           className={`mb-1 h-24 w-24 rounded-md border dark:border-gray-700 ${
-                              activeRelic == rname
-                                 ? "bg-blue-800 bg-opacity-20"
-                                 : ""
+                           className={`pt-1 text-center text-xs ${
+                              activeRelic == rname ? "" : "text-1"
                            }`}
-                        >
-                           <img src={rimg} className="object-contain" />
-                        </div>
-                        <div
-                           className={`w-24 text-center text-xs ${
-                              activeRelic == rname
-                                 ? "text-blue-900 dark:text-blue-200 "
-                                 : "text-gray-600 dark:text-gray-400"
-                           }}`}
                         >
                            {rname}
                         </div>
-                     </div>
+                     </button>
                   </>
                );
             })}
          </div>
 
          {/* Show information for selected Relic */}
-
-         <div className="text-center">{activeRelic}</div>
-
-         <div className="flex justify-between gap-1">
+         <div className="shadow-1 bg-2 border-color mb-3 flex w-full justify-between gap-2 rounded-xl border p-2.5 shadow-sm">
             {rarities.map((r: any) => {
                return (
                   <>
-                     <div
-                        className={`inline-flex w-full cursor-pointer justify-center rounded-md border p-2 dark:border-gray-700 ${
+                     <button
+                        className={`flex w-full items-center justify-center gap-1 rounded-lg border border-transparent p-1 font-bold ${
                            activeRarity == r.toString()
-                              ? "bg-blue-800 bg-opacity-20"
+                              ? "shadow-1 border-zinc-100 bg-white shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
                               : ""
                         }`}
                         onClick={(e) => {
@@ -136,25 +134,27 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                            }
                         }}
                      >
-                        {r}★
-                     </div>
+                        {r}
+                        <Star className="text-yellow-500" size={16} />
+                     </button>
                   </>
                );
             })}
          </div>
 
-         <div className="mt-1 rounded-t-md border bg-yellow-800 bg-opacity-10 pt-1 text-center text-lg font-bold dark:border-gray-700">
-            Main Stats
-         </div>
-         <div className="mb-1 rounded-b-md border-b border-l border-r p-2 text-center dark:border-gray-700">
+         <div className="border-color bg-2 shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
+            <div className="border-color border-b p-3 font-bold">
+               Main Stats
+            </div>
             {/* Level Slider Section */}
-            <div className="">
+            <div className="flex items-center justify-center gap-2 bg-white px-3 py-2 dark:bg-bg1Dark">
                <div className="inline-flex justify-between pr-0.5 align-middle">
                   Lv + {mainLevel}
                </div>
                {/* Level Input Box */}
                <input
-                  className="level-slider my-2 inline-flex w-4/5 justify-end rounded-lg align-middle"
+                  className="h-1 flex-grow appearance-none justify-end
+                  rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                   type="range"
                   min="0"
                   max={maxlv ?? 15}
@@ -166,66 +166,68 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             </div>
 
             {/* All tiled possible Main Stats with symbol if available */}
-            {mainStatData?.map((stat: any) => {
-               return (
-                  <>
-                     <div className="m-1 flex justify-between rounded-sm border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
-                        <div className="inline-flex">
-                           <div className="inline-block h-6 w-6 rounded-full bg-gray-800 align-middle ">
-                              <img
-                                 src={stat.stattype?.icon?.url}
-                                 className="object-contain"
-                              />
+            <div className="divide-color border-color divide-y border-t bg-white dark:bg-bg1Dark">
+               {mainStatData?.map((stat: any) => {
+                  return (
+                     <>
+                        <div className="flex justify-between p-3">
+                           <div className="flex items-center gap-2">
+                              <div className="h-6 w-6 rounded-full bg-zinc-500 ">
+                                 <Image
+                                    options="aspect_ratio=1:1&height=40&width=40"
+                                    alt="Stat"
+                                    url={stat.stattype?.icon?.url}
+                                 />
+                              </div>
+                              <div className="text-1 text-sm font-bold">
+                                 {stat.stattype?.name}
+                              </div>
                            </div>
-                           <div className="ml-2 inline-block self-center align-middle text-sm">
-                              {stat.stattype?.name}
-                           </div>
-                        </div>
-                        <div className="inline-flex">
-                           <div className="inline-block self-center align-middle">
+                           <div>
                               {formatStat(stat.stats[mainLevel], stat.stattype)}
                            </div>
                         </div>
-                     </div>
-                  </>
-               );
-            })}
+                     </>
+                  );
+               })}
+            </div>
          </div>
 
          {/* Substat Data */}
-         <div className="mt-1 rounded-t-md border bg-yellow-800 bg-opacity-10 pt-1 text-center text-lg font-bold dark:border-gray-700">
-            Sub Stats
-         </div>
-         <div className="mb-1 rounded-b-md border-b border-l border-r p-2 text-center dark:border-gray-700">
+         <div className="border-color bg-2 shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
+            <div className="border-color border-b p-3 font-bold">Sub Stats</div>
             {/* All tiled possible Substats, and their three possible rolls */}
-            {subStatData?.map((stat: any) => {
-               return (
-                  <>
-                     <div className="m-1 rounded-sm border p-2 text-center dark:border-gray-700 dark:bg-neutral-800">
-                        <div className="inline-block w-2/5 text-left">
-                           <div className="inline-block h-6 w-6 rounded-full bg-gray-800 align-middle ">
-                              <img
-                                 src={stat.stattype?.icon?.url}
-                                 className="object-contain"
-                              />
+            <div className="divide-color border-color divide-y bg-white dark:bg-bg1Dark">
+               {subStatData?.map((stat: any) => {
+                  return (
+                     <>
+                        <div className="flex justify-between p-3 pr-5">
+                           <div className="flex items-center gap-2">
+                              <div className="h-6 w-6 rounded-full bg-zinc-500 align-middle">
+                                 <Image
+                                    options="aspect_ratio=1:1&height=40&width=40"
+                                    alt="Stat"
+                                    url={stat.stattype?.icon?.url}
+                                 />
+                              </div>
+                              <div className="text-1 text-sm font-bold">
+                                 {stat.stattype?.name}
+                              </div>
                            </div>
-                           <div className="ml-2 inline-block self-center align-middle text-sm">
-                              {stat.stattype?.name}
+                           <div className="grid w-44 grid-cols-3 items-center gap-8">
+                              {stat.stats?.map((val: any) => {
+                                 return (
+                                    <span key={val}>
+                                       {formatStat(val, stat.stattype)}
+                                    </span>
+                                 );
+                              })}
                            </div>
                         </div>
-                        {stat.stats?.map((val: any) => {
-                           return (
-                              <>
-                                 <div className="inline-block w-1/6 self-center align-middle">
-                                    {formatStat(val, stat.stattype)}
-                                 </div>
-                              </>
-                           );
-                        })}
-                     </div>
-                  </>
-               );
-            })}
+                     </>
+                  );
+               })}
+            </div>
          </div>
       </>
    );

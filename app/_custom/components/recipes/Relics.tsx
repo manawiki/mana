@@ -10,7 +10,7 @@ export const Relics = ({ pageData }: any) => {
       return (
          <>
             <H2 text="Possible Relics" />
-            <div className="my-1 justify-between rounded-md border text-center dark:border-gray-700 dark:bg-neutral-800">
+            <div className="border-color divide-color shadow-1 bg-2 divide-y rounded-md border shadow-sm">
                {relics?.map((r: any) => {
                   // Find the relic's entries in the relicData array
                   const rimg = r?.icon?.url;
@@ -19,22 +19,20 @@ export const Relics = ({ pageData }: any) => {
 
                   return (
                      <>
-                        <Link to={`/starrail/collections/relicSets/${rsetid}`}>
-                           <div className="m-1 inline-block overflow-x-auto align-top">
-                              <div
-                                 className={`mb-1 h-24 w-24 rounded-md border dark:border-gray-700`}
-                              >
-                                 <Image
-                                    options="aspect_ratio=1:1&height=120&width=120"
-                                    alt={rname}
-                                    url={rimg}
-                                    className="object-contain"
-                                 />
-                              </div>
-                              <div className={`w-24 text-center text-xs`}>
-                                 {rname}
-                              </div>
+                        <Link
+                           prefetch="intent"
+                           className="flex items-center gap-3 p-2"
+                           to={`/starrail/collections/relicSets/${rsetid}`}
+                        >
+                           <div className="h-12 w-12">
+                              <Image
+                                 options="aspect_ratio=1:1&height=120&width=120"
+                                 alt={rname}
+                                 url={rimg}
+                                 className="object-contain"
+                              />
                            </div>
+                           <div className="text-1 font-semibold">{rname}</div>
                         </Link>
                      </>
                   );

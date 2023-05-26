@@ -1,6 +1,6 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Image } from "~/components";
 import { Search, SortDesc } from "lucide-react";
@@ -37,7 +37,7 @@ export async function loader({
             "Content-Type": "application/json",
          },
          body: JSON.stringify({
-            query: QUERY_RELIC_SETS
+            query: QUERY_RELIC_SETS,
          }),
       }
    ).then((res) => res.json());
@@ -146,7 +146,7 @@ const RelicSetList = ({ chars }: any) => {
 
    return (
       <>
-         <div className="">
+         <div className="pb-3 laptop:pb-20">
             {/* Filter Options */}
             <H2 text="Relic Sets" />
             <div className="divide-color bg-2 border-color divide-y rounded-md border">
@@ -220,8 +220,8 @@ const RelicSetList = ({ chars }: any) => {
 
             {/* Search Text Box */}
             <div
-               className="border-color mb-2 mt-4 flex h-12
-            items-center justify-between gap-3 border-b"
+               className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
+                      justify-between gap-3 rounded-lg border px-3 shadow-sm"
             >
                <Search className="text-yellow-500" size={20} />
                <input
@@ -240,7 +240,7 @@ const RelicSetList = ({ chars }: any) => {
             {/* Sort Options */}
             <div className="flex items-center justify-between py-3">
                <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-zinc-500" />
+                  <SortDesc size={16} className="text-yellow-500" />
                   Sort
                </div>
                <div className="flex items-center gap-2">
@@ -266,7 +266,7 @@ const RelicSetList = ({ chars }: any) => {
             </div>
 
             {/* List with applied sorting */}
-            <div className="text-center">
+            <div className="space-y-2.5 text-center">
                {cfiltered?.map((char: any) => {
                   return (
                      <>
@@ -286,41 +286,42 @@ const EntryWithDescription = ({ char }: any) => {
 
    return (
       <>
-         <a href={`/starrail/collections/relicSets/${cid}`}>
-            <div className="relative my-1 inline-block w-full rounded-md bg-opacity-10 p-2 align-middle bg-3 border-color shadow-1 mb-2 border-2 shadow">
-               <div className="relative inline-block w-28 rounded-md text-center align-middle">
-                  {/* Icon */}
-                  <div className="relative inline-block h-20 w-20">
-                     <Image
-                        className="object-contain"
-                        url={char.icon?.url}
-                        alt={char?.name}
-                     />
-                  </div>
-                  {/* Name */}
-                  <div className="text-center text-xs">{char.name}</div>
-               </div>
-               <div className="relative inline-block w-2/3 p-3 align-middle text-sm">
-                  {effect?.map((eff: any) => {
-                     return (
-                        <>
-                           <div className="bg-2 my-1 rounded-md border border-color p-2 px-3 align-top text-left">
-                              <div className="mr-2 inline-block font-bold align-top text-green-900 dark:text-green-200">
-                                 {eff.req_no}-pc
-                              </div>
-                              <div
-                                 className="inline-block w-3/4"
-                                 dangerouslySetInnerHTML={{
-                                    __html: eff.description,
-                                 }}
-                              ></div>
-                           </div>
-                        </>
-                     );
-                  })}
-               </div>
+         <Link
+            prefetch="intent"
+            className="bg-2 border-color shadow-1 flex items-start gap-3 rounded-lg border shadow-sm"
+            to={`/starrail/collections/relicSets/${cid}`}
+         >
+            <div className="w-20 flex-none p-3 laptop:w-40">
+               {/* Icon */}
+               <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
+                  className="mx-auto"
+                  url={char.icon?.url}
+                  alt={char?.name}
+               />
+               {/* Name */}
+               <div className="pt-1 text-center text-xs">{char.name}</div>
             </div>
-         </a>
+            <div className="divide-color flex-grow divide-y pr-3">
+               {effect?.map((eff: any) => {
+                  return (
+                     <>
+                        <div className="flex items-start gap-3 py-3 text-sm">
+                           <div className="flex-none font-bold text-yellow-600 dark:text-yellow-200">
+                              {eff.req_no}-pc
+                           </div>
+                           <div
+                              className="text-1 flex-grow text-left"
+                              dangerouslySetInnerHTML={{
+                                 __html: eff.description,
+                              }}
+                           ></div>
+                        </div>
+                     </>
+                  );
+               })}
+            </div>
+         </Link>
       </>
    );
 };
@@ -342,4 +343,4 @@ query {
      }
    }
  }
-`
+`;

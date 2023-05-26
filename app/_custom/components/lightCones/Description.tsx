@@ -8,20 +8,14 @@ export const Description = ({ pageData }: any) => {
       <>
          <H2 text="Description" />
          {/* Description */}
-         <div className="rounded-md bg-1 border-color rounded-b-lg border p-3 text-base"> 
-            <div
-               className=""
-               dangerouslySetInnerHTML={{ __html: description }}
-            ></div>
-         </div>
-
-         {/* Background Description */}
-         <div className="rounded-md border bg-2 border-color my-3 p-3 text-gray-600 dark:text-gray-400">
-            <div
-               className=""
-               dangerouslySetInnerHTML={{ __html: bgdescription }}
-            ></div>
-         </div>
+         <section className="border-color shadow-1 overflow-hidden rounded-lg border shadow-sm">
+            <div className="bg-1 border-color border-b p-3 text-base">
+               <div dangerouslySetInnerHTML={{ __html: description }}></div>
+            </div>
+            <div className="bg-2 text-1 p-3 text-sm">
+               <div dangerouslySetInnerHTML={{ __html: bgdescription }}></div>
+            </div>
+         </section>
       </>
    );
 };
