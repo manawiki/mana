@@ -47,7 +47,7 @@ export default function SiteIndexMain() {
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
    return (
       <>
-         {site.banner ? (
+         {/* {site.banner ? (
             <div
                style={{
                   backgroundImage: `url(https://mana.wiki/cdn-cgi/image/gravity=auto,height=500/${site.banner?.url})`,
@@ -74,11 +74,11 @@ export default function SiteIndexMain() {
                      pattern-size-6 dark:pattern-zinc-800 dark:pattern-bg-zinc-900"
                />
             </div>
-         )}
-         <main className="mx-auto max-w-[728px] pb-20">
+         )} */}
+         <main className="mx-auto max-w-[728px] pb-3">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
-                  <div className="relative min-h-screen pt-3">
+                  <div className="relative min-h-screen pt-20 laptop:pt-12">
                      <RoomProvider
                         key={site.id}
                         id={site.id}
@@ -93,9 +93,7 @@ export default function SiteIndexMain() {
                            {() => (
                               <>
                                  <HomeEdit site={site} />
-                                 <div className="pt-4">
-                                    <ForgeEditor />
-                                 </div>
+                                 <ForgeEditor />
                               </>
                            )}
                         </ClientSideSuspense>
@@ -105,7 +103,7 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {site.content && (
-                     <div className="max-desktop:px-3">
+                     <div className="pt-20 max-desktop:px-3 laptop:pt-12">
                         <Suspense fallback={<div>Loading...</div>}>
                            <Slate
                               key={site.id}
