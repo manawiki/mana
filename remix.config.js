@@ -16,6 +16,7 @@ module.exports = {
       v2_errorBoundary: true,
       unstable_dev: true,
    },
+   serverModuleFormat: "cjs",
    tailwind: true,
    postcss: true,
    publicPath: getPublicPath(),
