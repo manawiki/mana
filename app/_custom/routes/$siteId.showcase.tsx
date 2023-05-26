@@ -1195,7 +1195,7 @@ const CharacterInfo = ({
                                  />
 
                                  {/* Relic Main Stat and Level */}
-                                 <div className="bg-3 flex h-[68px] flex-grow items-center justify-between rounded p-1">
+                                 <div className="bg-3 flex h-[62px] flex-grow items-center justify-between rounded p-1">
                                     <div
                                        className={`ml-1 flex cursor-default items-center gap-1.5 rounded p-1 ${
                                           hoverStat.indexOf(mainstatname) > -1
@@ -1291,7 +1291,7 @@ const CharacterInfo = ({
                                                                className="object-fit"
                                                             />
                                                          </div>
-                                                         <div className="text-sm">
+                                                         <div className="text-xs">
                                                             +
                                                             {formatStat(
                                                                sub?.name,
