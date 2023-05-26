@@ -1115,3 +1115,86 @@ input[type="range"] {
    top: 300px;
    left: 155px;
 }
+
+/* better version */
+
+@property --r2 {
+   syntax: "<angle>";
+   inherits: false;
+   initial-value: 0deg;
+}
+
+@property --x {
+   syntax: "<length>";
+   inherits: false;
+   initial-value: 0px;
+}
+
+.rotate-input::after {
+   @apply bg-2 absolute block rounded-full;
+   content: "";
+   inset: 3px;
+   z-index: 1;
+   transition: opacity 0.3s ease;
+}
+
+.dark .rotate-input {
+   position: relative;
+   background: conic-gradient(
+      from calc(var(--r2) - 80deg) at var(--x) 28px,
+      #36393e 0%,
+      #3b81f6 20%,
+      #36393e 25%
+   );
+   animation: -0.64s rotating2 3s linear infinite, -0.64s x 3s linear infinite;
+}
+
+.rotate-input {
+   position: relative;
+   background: conic-gradient(
+      from calc(var(--r2) - 80deg) at var(--x) 28px,
+      #e4e4e7 0%,
+      #3b81f6 20%,
+      #e4e4e7 25%
+   );
+   animation: -0.64s rotating2 3s linear infinite, -0.64s x 3s linear infinite;
+}
+@keyframes x {
+   /* w:h === 6:1 */
+   /* with a 80px x-margin */
+   0% {
+      --x: 80px;
+   }
+   /* 6/(6+3.14) * 50% */
+   32.82275711% {
+      --x: 200px;
+   }
+   50% {
+      --x: 200px;
+   }
+   /* 50% + 32.8% */
+   82.82275711% {
+      --x: 80px;
+   }
+   100% {
+      --x: 80px;
+   }
+}
+
+@keyframes rotating2 {
+   0% {
+      --r2: 0deg;
+   }
+   32.82275711% {
+      --r2: 0deg;
+   }
+   50% {
+      --r2: 180deg;
+   }
+   82.82275711% {
+      --r2: 180deg;
+   }
+   100% {
+      --r2: 360deg;
+   }
+}

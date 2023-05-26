@@ -13,7 +13,7 @@ import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
 import Tooltip from "~/components/Tooltip";
-import { ArrowRight, Loader2, RefreshCcw, X } from "lucide-react";
+import { ArrowRight, Loader2, Lock, RefreshCcw, X } from "lucide-react";
 import { isLoading } from "~/utils";
 
 // Sample data, will import via API for real case
@@ -40,19 +40,19 @@ export async function loader({ params, request }: LoaderArgs) {
 
    const charids = [
       showcaseSample?.detail_info?.assist_avatar?.avatar_id.toString(),
-      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
-         (a: any) => a.avatar_id.toString()
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
+         a.avatar_id.toString()
       ),
    ];
    const lcids = [
       showcaseSample?.detail_info?.assist_avatar?.equipment?.tid.toString(),
-      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
-         (a: any) => a.equipment?.tid.toString()
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
+         a.equipment?.tid.toString()
       ),
    ];
    const rids = [
-      ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map(
-         (a: any) => a.tid.toString()
+      ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map((a: any) =>
+         a.tid.toString()
       ),
    ];
    const piid = showcaseSample?.detail_info?.head_icon.toString();
@@ -77,8 +77,8 @@ export async function loader({ params, request }: LoaderArgs) {
                characterIdList: charids,
                lightconeIdList: lcids,
                skillTreeIdList: charids,
-               playerIconId: piid
-            }
+               playerIconId: piid,
+            },
          }),
       }
    ).then((res) => res.json());
@@ -89,7 +89,7 @@ export async function loader({ params, request }: LoaderArgs) {
    }
 
    return json(
-      { 
+      {
          uid: uid,
          relics: data.relics.docs,
          characters: data.characters.docs,
@@ -98,7 +98,7 @@ export async function loader({ params, request }: LoaderArgs) {
          statTypes: data.statTypes.docs,
          playerIcon: data.playerIcon,
          showcaseData: showcaseData,
-         refreshCooldown: refreshCooldown
+         refreshCooldown: refreshCooldown,
       },
       { headers: { "Cache-Control": "public, s-maxage=60" } }
    );
@@ -122,29 +122,41 @@ export default function Showcase() {
 
    if (!data?.uid || data?.errorMessage) {
       return (
-         <div className="mx-auto flex max-w-[728px] justify-center px-3 pt-32">
-            <div>
-               <h1 className="pb-6 text-center font-header text-3xl">
-                  Character Showcase
-               </h1>
-               <InputUIDNote uid={data?.uid} />
-               {data?.errorMessage && (
-                  <div className="pt-4 text-center text-sm text-red-400">
-                     {data?.errorMessage}
+         <main className="relative min-h-screen">
+            <div className="relative z-20 mx-auto flex max-w-[728px] justify-center px-3 pt-32">
+               <div>
+                  <h1 className="pb-6 text-center font-header text-3xl">
+                     Character Showcase
+                  </h1>
+                  <InputUIDNote uid={data?.uid} />
+                  {data?.errorMessage && (
+                     <div className="pt-4 text-center text-sm text-red-400">
+                        {data?.errorMessage}
+                     </div>
+                  )}
+                  <div className="flex items-center justify-center pt-12">
+                     <Link
+                        className="shadow-1 bg-3 inline-flex items-center justify-center gap-2 rounded-full
+                  border border-blue-200 bg-zinc-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-700"
+                        to="/starrail/showcase?uid=700043897"
+                     >
+                        <span>Show me an example...</span>
+                        <ArrowRight className="text-blue-500" size={20} />
+                     </Link>
                   </div>
-               )}
-               <div className="flex items-center justify-center pt-12">
-                  <Link
-                     className="shadow-1 inline-flex items-center justify-center gap-2 rounded-full border
-                  border-blue-100 bg-blue-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
-                     to="/starrail/showcase?uid=700043897"
-                  >
-                     <span>Show me an example...</span>
-                     <ArrowRight className="text-blue-500" size={20} />
-                  </Link>
                </div>
             </div>
-         </div>
+            <div
+               className="pattern-opacity-50 pattern-boxes absolute -top-2
+                   left-0 h-full
+                     w-full pattern-bg-white pattern-zinc-100 pattern-size-4 
+                     dark:pattern-zinc-700 dark:pattern-bg-bg3Dark dark:pattern-opacity-20"
+            ></div>
+            <div
+               className="absolute -top-2 left-0 h-full w-full 
+            bg-gradient-to-bl from-gray-100/50 dark:from-gray-500/5"
+            ></div>
+         </main>
       );
    }
    const {
@@ -193,7 +205,7 @@ const DisplayPlayerInfo = ({
    const revalidator = useRevalidator();
 
    return (
-      <main className="-mt-2 pb-20">
+      <main className="-mt-2 desktop:pb-16">
          {/* 1) Header with main information for Profile */}
          <PlayerHeader data={pdata} playerIcon={playerIcon} />
          {/* 2) Character selector for available characters in data */}
@@ -630,7 +642,7 @@ const CharacterInfo = ({
          relicbonuses.push(a);
       });
    }
-   
+
    for (var sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
@@ -851,7 +863,7 @@ const CharacterInfo = ({
                   />
                </div> */}
 
-               <section className="items-stretch gap-6 max-laptop:space-y-4 laptop:flex">
+               <section className="items-stretch gap-6 max-desktop:space-y-4 desktop:flex">
                   {/* ================================= */}
                   {/* First Column */}
                   {/* ================================= */}
@@ -910,21 +922,19 @@ const CharacterInfo = ({
                                        </div>
                                     </>
                                  ) : (
-                                    <div className="relative my-1 flex h-10 w-10 items-center justify-center rounded-full border border-gray-700 bg-gray-900">
+                                    <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
                                        <Image
                                           options="aspect_ratio=1:1&height=60&width=60"
                                           alt={"Eidolon Lv." + i + 1}
                                           url={e.icon?.url}
                                           className="absolute object-contain opacity-30"
                                        />
-                                       <Image
-                                          options="aspect_ratio=1:1&height=60&width=60"
-                                          alt="Lock"
-                                          url={
-                                             "https://wiki-cdn.nalu.wiki/neuralcloud/Algorithm_Lock_Icon_ce5b2d3623.png"
-                                          }
-                                          className="absolute h-5 w-5 object-contain"
-                                       />
+                                       <div className="mt-2.5 flex items-center justify-center">
+                                          <Lock
+                                             className="text-white"
+                                             size={18}
+                                          />
+                                       </div>
                                        <NameToolTip
                                           text={e?.name}
                                           tooltip={e?.description}
@@ -1386,7 +1396,7 @@ const ItemFrameSquare = ({ mat, style, lv }: any) => {
             key={mat?.id}
          >
             <Image
-               options="aspect_ratio=1:1&height=60&width=60"
+               options="aspect_ratio=1:1&height=80&width=80"
                url={mat?.icon?.url ?? "no_image_42df124128"}
                className={`h-[62px] w-[62px] object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
@@ -1429,9 +1439,7 @@ const SkillTreeDisplay = ({
    setHoverStat,
 }: any) => {
    var pathkey = path;
-   var treelist = skillTrees.filter(
-      (a: any) => a.character == data?.avatar_id
-   ); // pageData?.attributes?.tree; //skillTreeData;
+   var treelist = skillTrees.filter((a: any) => a.character == data?.avatar_id); // pageData?.attributes?.tree; //skillTreeData;
 
    // Need to sort skill nodes in order from Point01 - 18
    treelist.sort((a: any, b: any) =>
@@ -1551,63 +1559,51 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
          <div className="text-1 pb-4 text-center font-bold">
             Enter UID to view your showcase
          </div>
-         <div className="mx-auto flex max-w-[600px] items-center justify-center gap-3">
-            <div className="relative">
-               <input
-                  required
-                  className="shadow-1 rounded border border-zinc-200 bg-zinc-50
-               shadow-sm focus:ring-0 dark:border-zinc-600 dark:bg-bg4Dark"
-                  type="text"
-                  placeholder="Enter UID..."
-                  value={inputUID}
-                  onChange={(e) => setInputUID(e.target.value)}
-               />
-               {inputUID && (
-                  <button
-                     className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center"
-                     onClick={() => {
-                        setSearchParams((searchParams) => {
-                           searchParams.delete("uid");
-                           return searchParams;
-                        });
-                        setInputUID("");
-                     }}
-                  >
-                     <X size={20} className="pt-0.5 text-red-400" />
-                  </button>
-               )}
-            </div>
-            <div className="flex items-center gap-2">
+         <div className="rotate-input relative mx-auto h-14 w-60 rounded-full shadow shadow-zinc-100 dark:shadow-zinc-800">
+            <input
+               className="absolute left-1 top-1 z-10 h-[48px] w-[232px] rounded-full border-0 bg-white p-0 text-center 
+               focus:ring-zinc-300 dark:bg-bg2Dark dark:focus:ring-zinc-600"
+               required
+               //    className="shadow-1 rounded border border-zinc-200 bg-white
+               // shadow-sm focus:ring-0 dark:border-zinc-600 dark:bg-bg4Dark"
+               type="text"
+               placeholder="Enter UID..."
+               value={inputUID}
+               onChange={(e) => setInputUID(e.target.value)}
+            />
+            {inputUID && (
                <button
-                  className="flex h-10 w-20 items-center justify-center
-                  rounded bg-blue-500 px-3 text-sm font-bold text-white"
+                  className="shadow-1 bg-2 border-color absolute -right-1 -top-1 z-10 flex
+                  h-6 w-6 items-center justify-center rounded-full border-2 shadow-sm"
                   onClick={() => {
                      setSearchParams((searchParams) => {
-                        searchParams.set("uid", inputUID);
+                        searchParams.delete("uid");
                         return searchParams;
                      });
+                     setInputUID("");
                   }}
                >
-                  {isSearching ? (
-                     <Loader2 className="h-6 w-6 animate-spin text-white" />
-                  ) : (
-                     "Submit"
-                  )}
+                  <X size={14} className="text-red-400" />
                </button>
-            </div>
+            )}
          </div>
-      </div>
-   );
-};
-
-const BadUIDNote = () => {
-   return (
-      <div className="mx-auto mb-8 max-w-[960px] max-desktop:px-3">
-         <div className="border-color rounded-md border p-3 text-xl">
-            <div>UID data not found.</div>
-            <div className="text-md italic">
-               * Note CN Server support is not yet available.
-            </div>
+         <div className="flex items-center justify-center gap-2 pt-5">
+            <button
+               className="flex h-11 w-24 items-center justify-center rounded-full bg-blue-500
+                  px-3 text-sm font-bold text-white shadow shadow-blue-300 dark:shadow-blue-800"
+               onClick={() => {
+                  setSearchParams((searchParams) => {
+                     searchParams.set("uid", inputUID);
+                     return searchParams;
+                  });
+               }}
+            >
+               {isSearching ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-white" />
+               ) : (
+                  "Submit"
+               )}
+            </button>
          </div>
       </div>
    );
@@ -1853,4 +1849,4 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
      }
    }
  }
-`
+`;
