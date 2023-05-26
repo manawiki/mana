@@ -150,7 +150,7 @@ export default function SiteIndex() {
    const location = useLocation();
    const defaultStyle = `bg-2 
    flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
-   max-desktop:h-12 max-desktop:w-12 bg-2
+   max-desktop:h-12 max-desktop:w-12 bg-2 max-laptop:shadow-sm max-laptop:shadow-1
    max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-3 desktop:justify-start`;
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
@@ -631,10 +631,7 @@ export default function SiteIndex() {
                   </NavLink> */}
                </div>
             </section>
-            <section
-               className="max-laptop:border-color bg-3 max-laptop:min-h-screen
-               max-laptop:border-b"
-            >
+            <section className="max-laptop:border-color bg-3 max-laptop:border-b">
                <section
                   className="sticky z-40 max-laptop:top-[56px] laptop:top-6 
                laptop:z-50 laptop:px-3"
@@ -935,8 +932,8 @@ export default function SiteIndex() {
                         </div>
                      </section>
                   </div>
-                  <div className="border-color flex items-center justify-center border-t py-4">
-                     <div className="bg-1 h-[250px] w-[300px] rounded-lg" />
+                  <div className="border-color flex items-center justify-center border-t">
+                     {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
                   </div>
                </div>
             </section>

@@ -133,7 +133,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto mb-8 max-w-[728px] pt-20 max-desktop:px-3 laptop:pt-14">
+         <div className="mx-auto max-w-[728px] pb-6 pt-20 max-desktop:px-3 laptop:pt-14">
             <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
                Collections
             </h1>
@@ -232,8 +232,8 @@ export default function CollectionIndex() {
                                  isActive
                                     ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
                                     : ""
-                              } border-color bg-2 flex items-center justify-between gap-2.5 overflow-hidden rounded-xl border
-                              pr-2 transition`
+                              } border-color bg-2 shadow-1 flex items-center justify-between gap-2.5 overflow-hidden rounded-xl
+                              border pr-2 shadow-sm transition`
                            }
                         >
                            <div className="flex items-center gap-3.5 truncate">
