@@ -15,6 +15,7 @@ import { z } from "zod";
 import Tooltip from "~/components/Tooltip";
 import { ArrowRight, Loader2, Lock, RefreshCcw, X } from "lucide-react";
 import { isLoading } from "~/utils";
+import DomToImage from "dom-to-image";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -284,7 +285,16 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   url={playerIcon?.icon?.url}
                   className="border-color shadow-1 mx-auto rounded-full border-4 shadow"
                />
-               <div className="py-2 text-center font-header text-2xl font-bold">
+               <div 
+                  className="py-2 text-center font-header text-2xl font-bold"
+                  onClick={() => {
+                     var elem = document.getElementById("hsr-char-summary");
+                     console.log(elem);
+                     DomToImage.toBlob(elem).then((blob) => {
+                        console.log(blob);
+                     });
+                  }}
+               >
                   {data?.detail_info?.nickname}
                </div>
                <div className="absolute -bottom-10 left-1/2 flex  -translate-x-1/2 transform cursor-default items-center justify-center gap-3">
