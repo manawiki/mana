@@ -12,7 +12,15 @@ import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
 import Tooltip from "~/components/Tooltip";
-import { ArrowRight, Loader2, Lock, RefreshCcw, X } from "lucide-react";
+import {
+   ArrowRight,
+   Info,
+   Loader2,
+   Lock,
+   RefreshCcw,
+   X,
+   CircleDot,
+} from "lucide-react";
 import { isLoading } from "~/utils";
 import DomToImage from "dom-to-image";
 
@@ -219,9 +227,9 @@ const DisplayPlayerInfo = ({
          <div
             id="showcase-canvas"
             className="border-color bg-2 shadow-1 relative -mt-9 border-y
-         p-3 desktop:border-y desktop:p-6 desktop:pt-14 desktop:shadow-sm"
+         desktop:border-y  desktop:p-6 desktop:pt-14 desktop:shadow-sm"
          >
-            <div className="absolute right-4 top-10 z-40 flex items-center laptop:-top-14">
+            {/* <div className="absolute right-4 top-10 z-40 flex items-center laptop:-top-14">
                <Tooltip
                   id="refreshUid"
                   side="left"
@@ -237,7 +245,7 @@ const DisplayPlayerInfo = ({
                >
                   <button
                      className="shadow-1 border-color flex h-10 w-10 items-center justify-center
-                     rounded-full border bg-zinc-50 shadow dark:bg-bg2Dark disabled:opacity-50"
+                     rounded-full border bg-zinc-50 shadow disabled:opacity-50 dark:bg-bg2Dark"
                      disabled={true}
                      onClick={() => {
                         revalidator.revalidate();
@@ -250,7 +258,7 @@ const DisplayPlayerInfo = ({
                      )}
                   </button>
                </Tooltip>
-            </div>
+            </div> */}
             <div className="mx-auto max-w-[1000px]">
                {/* 3) Primary Character display section */}
                <CharacterInfo
@@ -285,19 +293,18 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   url={playerIcon?.icon?.url}
                   className="border-color shadow-1 mx-auto rounded-full border-4 shadow"
                />
-               <div 
+               <div
                   className="py-2 text-center font-header text-2xl font-bold"
                   onClick={() => {
                      var elem = document.getElementById("showcase-canvas");
-                     DomToImage.toPng(elem)
-                     .then(function (dataUrl) {
-                           var img = document.createElement("img");
-                           img.src = dataUrl;
-               
-                           var w = window.open("",'_blank');
-                           w.document.write(img.outerHTML);
-                           w.document.close(); 
-                     })
+                     DomToImage.toPng(elem).then(function (dataUrl) {
+                        var img = document.createElement("img");
+                        img.src = dataUrl;
+
+                        var w = window.open("", "_blank");
+                        w.document.write(img.outerHTML);
+                        w.document.close();
+                     });
                   }}
                >
                   {data?.detail_info?.nickname}
@@ -861,13 +868,13 @@ const CharacterInfo = ({
 
    return (
       <>
-         <div className="relative">
-            <Image
+         <div className="relative max-desktop:overflow-hidden">
+            {/* <Image
                options="height=1200"
                url={charbase?.image_draw?.url}
                alt={charbase?.name}
                className="hsr-showcase-character absolute -left-16 top-0 w-[520px] object-contain max-desktop:hidden"
-            />
+            /> */}
             <div className="relative">
                {/* Background-Div */}
                {/* <div className="relative inline-block h-[32rem] w-[960px] overflow-hidden rounded-lg">
@@ -878,19 +885,13 @@ const CharacterInfo = ({
                   />
                </div> */}
 
-               <section className="items-stretch gap-6 max-desktop:space-y-4 desktop:flex">
+               <section className="items-stretch gap-4 desktop:flex desktop:justify-center">
                   {/* ================================= */}
                   {/* First Column */}
                   {/* ================================= */}
 
-                  <div className="relative flex-grow">
-                     <Image
-                        options="height=1200"
-                        url={charbase?.image_draw?.url}
-                        alt={charbase?.name}
-                        className="hsr-showcase-character mx-auto w-[560px] object-contain desktop:hidden"
-                     />
-                     <div className="-mt-1">
+                  <div className="relative max-desktop:mx-3 desktop:w-[320px]">
+                     <div className="mt-14 desktop:-mt-1">
                         <Link
                            className="font-header text-2xl font-bold leading-none hover:underline"
                            prefetch="intent"
@@ -900,9 +901,14 @@ const CharacterInfo = ({
                         </Link>
                         <div className="text-1 text-sm">Lv. {lv}</div>
                      </div>
-
+                     <Image
+                        options="height=600"
+                        url={charbase?.image_draw?.url}
+                        alt={charbase?.name}
+                        className="hsr-showcase-character mx-auto h-[400px] object-contain"
+                     />
                      {/* Skill Tree ? */}
-                     <div className="absolute max-desktop:-bottom-16 max-desktop:right-0 desktop:-bottom-28 desktop:-left-28">
+                     <div className="absolute -right-24 -top-28">
                         <SkillTreeDisplay
                            data={chardata}
                            skillTrees={skillTrees}
@@ -921,41 +927,64 @@ const CharacterInfo = ({
                               <>
                                  {elv > i ? (
                                     <>
-                                       <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
+                                       <Tooltip
+                                          id="eidolon-stat"
+                                          side="right"
+                                          html={
+                                             <div className="w-44">
+                                                <div className="pb-0.5 text-blue-500">
+                                                   {e?.name}
+                                                </div>
+                                                <div
+                                                   dangerouslySetInnerHTML={{
+                                                      __html: e?.description,
+                                                   }}
+                                                ></div>
+                                             </div>
+                                          }
+                                       >
+                                          <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
+                                             <Image
+                                                options="aspect_ratio=1:1&height=60&width=60"
+                                                alt={"Eidolon Lv." + i + 1}
+                                                url={e.icon?.url}
+                                                className="absolute object-contain"
+                                             />
+                                          </div>
+                                       </Tooltip>
+                                    </>
+                                 ) : (
+                                    <Tooltip
+                                       id="eidolon-stat"
+                                       side="right"
+                                       html={
+                                          <div className="z-40 w-44">
+                                             <div className="pb-0.5 text-blue-500">
+                                                {e?.name}
+                                             </div>
+                                             <div
+                                                dangerouslySetInnerHTML={{
+                                                   __html: e?.description,
+                                                }}
+                                             ></div>
+                                          </div>
+                                       }
+                                    >
+                                       <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
                                           <Image
                                              options="aspect_ratio=1:1&height=60&width=60"
                                              alt={"Eidolon Lv." + i + 1}
                                              url={e.icon?.url}
-                                             className="absolute object-contain"
+                                             className="absolute object-contain opacity-30"
                                           />
-                                          <NameToolTip
-                                             text={e?.name}
-                                             tooltip={e?.description}
-                                             style="absolute"
-                                             styleTooltip="left-9 top-9"
-                                          />
+                                          <div className="mt-2.5 flex items-center justify-center">
+                                             <Lock
+                                                className="text-white"
+                                                size={18}
+                                             />
+                                          </div>
                                        </div>
-                                    </>
-                                 ) : (
-                                    <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
-                                       <Image
-                                          options="aspect_ratio=1:1&height=60&width=60"
-                                          alt={"Eidolon Lv." + i + 1}
-                                          url={e.icon?.url}
-                                          className="absolute object-contain opacity-30"
-                                       />
-                                       <div className="mt-2.5 flex items-center justify-center">
-                                          <Lock
-                                             className="text-white"
-                                             size={18}
-                                          />
-                                       </div>
-                                       <NameToolTip
-                                          text={e?.name}
-                                          tooltip={e?.description}
-                                          styleTooltip="left-9 top-9"
-                                       />
-                                    </div>
+                                    </Tooltip>
                                  )}
                               </>
                            );
@@ -970,7 +999,11 @@ const CharacterInfo = ({
                   {/* Light Cone Display  */}
                   <div className="mb-1 desktop:w-[300px]">
                      {/* Light Cone Image + Rarity */}
-                     <div className="mb-4 flex items-center gap-3 rounded-md">
+                     <div
+                        className="max-desktop:border-color flex items-center 
+                        gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3 
+                        desktop:mb-4 desktop:rounded-md"
+                     >
                         <Link
                            className="block"
                            prefetch="intent"
@@ -997,7 +1030,10 @@ const CharacterInfo = ({
                         {/* Level + Superimposition Levels */}
                         <div className="flex-grow">
                            <div className="relative pb-1.5 font-bold">
-                              <div
+                              {lcbase.name}
+                              {/* <Tooltip
+                                 id="relic-set-bonus"
+                                 side="top"
                                  className={`text-sm ${lcHighlightStyle}`}
                                  onMouseOver={() => setHoverStat(lcbonuses)}
                                  onMouseOut={() => setHoverStat([])}
@@ -1006,18 +1042,25 @@ const CharacterInfo = ({
                                        hoverStat?.length > 0 ? [] : lcbonuses
                                     )
                                  }
+                                 html={
+                                    <div className="w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {lcbase?.name}
+                                       </div>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html:
+                                                lcbase?.skill_data[
+                                                   chardata?.equipment
+                                                      ?.promotion - 1
+                                                ]?.desc,
+                                          }}
+                                       ></div>
+                                    </div>
+                                 }
                               >
                                  {lcbase.name}
-                              </div>
-                              <NameToolTip
-                                 text={lcbase?.name}
-                                 tooltip={
-                                    lcbase?.skill_data[
-                                       chardata?.equipment?.promotion - 1
-                                    ]?.desc
-                                 }
-                                 style="absolute top-0 left-0"
-                              />
+                              </Tooltip> */}
                            </div>
                            <div className="flex flex-grow items-center gap-2">
                               <span className="text-sm">
@@ -1083,7 +1126,7 @@ const CharacterInfo = ({
                         </div>
                      </div>
                      {/* Stat Display */}
-                     <div className="relative">
+                     <div className="max-desktop:border-color relative max-desktop:border-b">
                         {statVal.map((s: any) => {
                            const stattype = statTypes.find(
                               (a: any) => a.name == s.name
@@ -1160,236 +1203,288 @@ const CharacterInfo = ({
                   {/* Third Column */}
                   {/* ================================= */}
 
-                  <div className="space-y-2 desktop:w-[300px]">
-                     {/* Individual Relics */}
+                  {rbase.length != 0 && (
+                     <div className="relative max-desktop:mx-3 max-desktop:pb-3 desktop:w-[300px]">
+                        {/* Individual Relics */}
 
-                     {/* Artifact Substat Legend (?) */}
-                     <div className="relative w-full text-right">
-                        <div className="border-color relative my-auto inline-block h-4 w-4 cursor-default rounded-full border text-center text-xs">
-                           ?
-                           <NameToolTip
-                              text={"Artifact Substats"}
-                              tooltip="Each group of dots represents an individual time the substat was rolled into. The number of dots represent the quality of substat rolls:<br>. = Lowest roll<br>.. = Medium roll<br>... = Highest roll (best)"
-                              style="absolute w-[inherit] top-0 left-0"
-                              styleTooltip="left-10"
-                           />
-                        </div>
-                     </div>
-
-                     {rbase?.map((r: any, i: any) => {
-                        const rdata = rchar[i];
-                        const rlv = rdata.level ?? 0;
-
-                        const mainstat = rdata.mainobj;
-
-                        const mainstatname = mainstat?.name?.replace("%", "");
-
-                        return (
-                           <>
-                              <div className="relative flex items-center justify-between gap-2">
-                                 {/* Relic Image */}
-                                 <ItemFrameSquare
-                                    mat={r}
-                                    style=""
-                                    lv={"+" + rlv}
-                                 />
-
-                                 {/* Relic Main Stat and Level */}
-                                 <div className="bg-3 flex h-[62px] flex-grow items-center justify-between rounded p-1">
-                                    <div
-                                       className={`ml-1 flex cursor-default items-center gap-1.5 rounded p-1 ${
-                                          hoverStat.indexOf(mainstatname) > -1
-                                             ? "bg-blue-200 dark:bg-zinc-700"
-                                             : hoverStat.length > 0
-                                             ? "opacity-40"
-                                             : "bg-3"
-                                       }`}
-                                       onMouseOver={() =>
-                                          setHoverStat([mainstatname])
-                                       }
-                                       onMouseOut={() => setHoverStat([])}
-                                       onClick={() =>
-                                          setHoverStat(
-                                             hoverStat.length > 0
-                                                ? []
-                                                : [mainstatname]
-                                          )
-                                       }
-                                    >
-                                       <div
-                                          className="inline-flex h-6 w-6 items-center justify-center
-                                                gap-1 rounded-full bg-zinc-400 dark:bg-zinc-600"
-                                       >
-                                          <Image
-                                             options="aspect_ratio=1:1&height=60&width=60"
-                                             alt="StatIcon"
-                                             url={mainstat?.icon?.url}
-                                          />
+                        {/* Artifact Substat Legend (?) */}
+                        <div className="relative z-[9999] h-5 w-5 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
+                           <Tooltip
+                              id="relic-help"
+                              side="right"
+                              html={
+                                 <div className="w-60 text-left font-normal">
+                                    <div className="mb-2 border-b border-zinc-700 pb-2">
+                                       Each group of dots represents an
+                                       individual time the substat was rolled
+                                       into. The number of dots represent the
+                                       quality of substat rolls
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                       <div className="flex w-8 items-center justify-center gap-1">
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
                                        </div>
-                                       <div className="text-sm font-bold">
-                                          {formatStat(
-                                             mainstat?.name,
-                                             mainstat?.value
-                                          )}
+                                       <span>Lowest roll</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                       <div className="flex w-8 items-center justify-center gap-1">
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
                                        </div>
+                                       <span>Medium roll</span>
                                     </div>
 
-                                    {/* Relic Substats */}
-                                    <div className="grid grid-cols-2 gap-0.5 text-center">
-                                       {rdata.subobj?.map((sub: any) => {
-                                          const steptext =
-                                             sub?.stepDistribution?.map(
-                                                (step: any) =>
-                                                   step == 0
-                                                      ? "."
-                                                      : step == 1
-                                                      ? ".."
-                                                      : "..."
-                                             );
-                                          const statname = sub.name?.replace(
-                                             "%",
-                                             ""
-                                          );
-                                          return (
-                                             <>
-                                                <div
-                                                   className={`flex cursor-default items-center rounded px-1 py-0.5 ${
-                                                      hoverStat.indexOf(
-                                                         statname
-                                                      ) > -1
-                                                         ? "bg-blue-200 dark:bg-zinc-700"
-                                                         : hoverStat.length > 0
-                                                         ? "opacity-40"
-                                                         : ""
-                                                   }`}
-                                                   onMouseOver={() =>
-                                                      setHoverStat([statname])
-                                                   }
-                                                   onMouseOut={() =>
-                                                      setHoverStat([])
-                                                   }
-                                                   onClick={() =>
-                                                      setHoverStat(
-                                                         hoverStat.length > 0
-                                                            ? []
-                                                            : [statname]
-                                                      )
-                                                   }
-                                                >
-                                                   <div>
-                                                      <div className="flex items-center gap-1">
-                                                         <div
-                                                            className="inline-flex h-4 w-4 items-center 
-                                                justify-center rounded-full bg-zinc-400 dark:bg-zinc-600"
-                                                         >
-                                                            <Image
-                                                               options="aspect_ratio=1:1&height=20&width=20"
-                                                               alt="StatIcon"
-                                                               url={
-                                                                  sub?.icon?.url
-                                                               }
-                                                               className="object-fit"
-                                                            />
-                                                         </div>
-                                                         <div className="text-xs">
-                                                            +
-                                                            {formatStat(
-                                                               sub?.name,
-                                                               sub?.value
-                                                            )}
-                                                         </div>
-                                                      </div>
-                                                      <div className="mt-0.5 flex w-full">
-                                                         {steptext?.map(
-                                                            (st: any) => {
-                                                               return (
-                                                                  <>
-                                                                     <div
-                                                                        className={`mx-1 -mt-2.5 inline-flex w-full justify-center text-center text-sm leading-none text-blue-500  ${
-                                                                           st ==
-                                                                           "="
-                                                                              ? "text-opacity-0"
-                                                                              : ""
-                                                                        }`}
-                                                                     >
-                                                                        {st}
-                                                                     </div>
-                                                                  </>
-                                                               );
-                                                            }
-                                                         )}
-                                                      </div>
-                                                   </div>
-                                                </div>
-                                             </>
-                                          );
-                                       })}
+                                    <div className="flex items-center gap-2">
+                                       <div className="flex w-8 items-center justify-center gap-1">
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                          <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                       </div>
+                                       <span>Highest roll (best)</span>
                                     </div>
                                  </div>
-                              </div>
-                           </>
-                        );
-                     })}
+                              }
+                           >
+                              <Info className="text-1" size={18} />
+                           </Tooltip>
+                        </div>
+                        {rbase?.map((r: any, i: any) => {
+                           const rdata = rchar[i];
+                           const rlv = rdata.level ?? 0;
 
-                     {/* Relic Set Bonuses */}
-                     <div className="!mt-3 space-y-2">
-                        {rset?.map((set: any) => {
-                           var setdesc = "";
+                           const mainstat = rdata.mainobj;
 
-                           set.effect_desc.map((e: any, i: any) => {
-                              setdesc +=
-                                 e +
-                                 (i < set.effect_desc.length - 1
-                                    ? "<br><br>"
-                                    : "");
-                           });
-
-                           // Check if any of the stat bonuses in the set apply to the currently highlighted stat.
-                           const sbonuses = set.bonuses?.map((b: any) =>
-                              b.stattype?.name?.replace("%", "")
+                           const mainstatname = mainstat?.name?.replace(
+                              "%",
+                              ""
                            );
-
-                           const highlightStyle =
-                              intersect(sbonuses, hoverStat)?.length > 0
-                                 ? "bg-blue-200 dark:bg-zinc-700"
-                                 : hoverStat.length > 0
-                                 ? "opacity-40"
-                                 : "";
-
-                           // Check if any of the set bonuses also include the currently highlighted stat
 
                            return (
                               <>
-                                 <div
-                                    className={`bg-3 flex items-center justify-between rounded-lg px-3 py-2 text-xs ${highlightStyle}`}
-                                    onMouseOver={() => setHoverStat(sbonuses)}
-                                    onMouseOut={() => setHoverStat([])}
-                                    onClick={() =>
-                                       setHoverStat(
-                                          hoverStat?.length > 0 ? [] : sbonuses
-                                       )
-                                    }
-                                 >
-                                    <div className="relative font-bold">
-                                       {set.name}
-                                       <NameToolTip
-                                          text={set?.name}
-                                          tooltip={setdesc}
-                                          style="absolute top-0 left-0"
-                                       />
-                                    </div>
-                                    <div
-                                       className="bg-2 relative flex h-6 w-6 items-center justify-center 
-                                        rounded-full font-bold text-green-400"
-                                    >
-                                       {set.num}
+                                 <div className="relative mb-2 flex items-center justify-between gap-2">
+                                    {/* Relic Image */}
+                                    <ItemFrameSquare
+                                       mat={r}
+                                       style=""
+                                       lv={"+" + rlv}
+                                    />
+
+                                    {/* Relic Main Stat and Level */}
+                                    <div className="bg-3 shadow-1 flex h-[62px] flex-grow items-center justify-between rounded px-1 shadow-sm">
+                                       <div
+                                          className={`mr-1 flex-grow cursor-default rounded p-1 ${
+                                             hoverStat.indexOf(mainstatname) >
+                                             -1
+                                                ? "bg-blue-200 dark:bg-zinc-700"
+                                                : hoverStat.length > 0
+                                                ? "opacity-40"
+                                                : "bg-3"
+                                          }`}
+                                          onMouseOver={() =>
+                                             setHoverStat([mainstatname])
+                                          }
+                                          onMouseOut={() => setHoverStat([])}
+                                          onClick={() =>
+                                             setHoverStat(
+                                                hoverStat.length > 0
+                                                   ? []
+                                                   : [mainstatname]
+                                             )
+                                          }
+                                       >
+                                          <div
+                                             className="inline-flex h-5 w-5 items-center justify-center
+                                                gap-1 rounded-full bg-zinc-400 dark:bg-zinc-600"
+                                          >
+                                             <Image
+                                                options="aspect_ratio=1:1&height=60&width=60"
+                                                alt="StatIcon"
+                                                url={mainstat?.icon?.url}
+                                             />
+                                          </div>
+                                          <div className="text-xs font-bold">
+                                             {formatStat(
+                                                mainstat?.name,
+                                                mainstat?.value
+                                             )}
+                                          </div>
+                                       </div>
+
+                                       {/* Relic Substats */}
+                                       <div className="grid w-40 grid-cols-2 gap-x-1 text-center desktop:w-[150px]">
+                                          {rdata.subobj?.map((sub: any) => {
+                                             const steptext =
+                                                sub?.stepDistribution?.map(
+                                                   (step: any) =>
+                                                      step == 0
+                                                         ? "."
+                                                         : step == 1
+                                                         ? ".."
+                                                         : "..."
+                                                );
+                                             const statname = sub.name?.replace(
+                                                "%",
+                                                ""
+                                             );
+                                             return (
+                                                <>
+                                                   <div
+                                                      className={`flex cursor-default items-center rounded px-1 py-0.5 ${
+                                                         hoverStat.indexOf(
+                                                            statname
+                                                         ) > -1
+                                                            ? "bg-blue-200 dark:bg-zinc-700"
+                                                            : hoverStat.length >
+                                                              0
+                                                            ? "opacity-40"
+                                                            : ""
+                                                      }`}
+                                                      onMouseOver={() =>
+                                                         setHoverStat([
+                                                            statname,
+                                                         ])
+                                                      }
+                                                      onMouseOut={() =>
+                                                         setHoverStat([])
+                                                      }
+                                                      onClick={() =>
+                                                         setHoverStat(
+                                                            hoverStat.length > 0
+                                                               ? []
+                                                               : [statname]
+                                                         )
+                                                      }
+                                                   >
+                                                      <div>
+                                                         <div className="flex items-center gap-1">
+                                                            <div
+                                                               className="inline-flex h-4 w-4 items-center 
+                                                justify-center rounded-full bg-zinc-400 dark:bg-zinc-600"
+                                                            >
+                                                               <Image
+                                                                  options="aspect_ratio=1:1&height=20&width=20"
+                                                                  alt="StatIcon"
+                                                                  url={
+                                                                     sub?.icon
+                                                                        ?.url
+                                                                  }
+                                                                  className="object-fit"
+                                                               />
+                                                            </div>
+                                                            <div className="text-xs">
+                                                               +
+                                                               {formatStat(
+                                                                  sub?.name,
+                                                                  sub?.value
+                                                               )}
+                                                            </div>
+                                                         </div>
+                                                         <div className="mt-0.5 flex w-full">
+                                                            {steptext?.map(
+                                                               (st: any) => {
+                                                                  return (
+                                                                     <>
+                                                                        <div
+                                                                           className={`mx-1 -mt-3 inline-flex w-full justify-center text-center text-lg leading-none text-blue-500  ${
+                                                                              st ==
+                                                                              "="
+                                                                                 ? "text-opacity-0"
+                                                                                 : ""
+                                                                           }`}
+                                                                        >
+                                                                           {st}
+                                                                        </div>
+                                                                     </>
+                                                                  );
+                                                               }
+                                                            )}
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </>
+                                             );
+                                          })}
+                                       </div>
                                     </div>
                                  </div>
                               </>
                            );
                         })}
+                        {/* Relic Set Bonuses */}
+                        <div className="!mt-3 space-y-2">
+                           {rset?.map((set: any) => {
+                              var setdesc = "";
+
+                              set.effect_desc.map((e: any, i: any) => {
+                                 setdesc +=
+                                    e +
+                                    (i < set.effect_desc.length - 1
+                                       ? "<br><br>"
+                                       : "");
+                              });
+
+                              // Check if any of the stat bonuses in the set apply to the currently highlighted stat.
+                              const sbonuses = set.bonuses?.map((b: any) =>
+                                 b.stattype?.name?.replace("%", "")
+                              );
+
+                              const highlightStyle =
+                                 intersect(sbonuses, hoverStat)?.length > 0
+                                    ? "bg-blue-200 dark:bg-zinc-700"
+                                    : hoverStat.length > 0
+                                    ? "opacity-40"
+                                    : "";
+
+                              // Check if any of the set bonuses also include the currently highlighted stat
+
+                              return (
+                                 <>
+                                    <div
+                                       className={`bg-3 shadow-1 flex items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
+                                       onMouseOver={() =>
+                                          setHoverStat(sbonuses)
+                                       }
+                                       onMouseOut={() => setHoverStat([])}
+                                       // onClick={() =>
+                                       //    setHoverStat(
+                                       //       hoverStat?.length > 0
+                                       //          ? []
+                                       //          : sbonuses
+                                       //    )
+                                       // }
+                                    >
+                                       <Tooltip
+                                          id="relic-set-bonus"
+                                          side="top"
+                                          className="relative font-bold"
+                                          html={
+                                             <div className="w-44">
+                                                <div className="pb-0.5 text-blue-500">
+                                                   {set?.name}
+                                                </div>
+                                                <div
+                                                   dangerouslySetInnerHTML={{
+                                                      __html: setdesc,
+                                                   }}
+                                                ></div>
+                                             </div>
+                                          }
+                                       >
+                                          {set.name}
+                                       </Tooltip>
+                                       <div
+                                          className="bg-2 relative flex h-6 w-6 items-center justify-center 
+                                        rounded-full font-bold text-green-400"
+                                       >
+                                          {set.num}
+                                       </div>
+                                    </div>
+                                 </>
+                              );
+                           })}
+                        </div>
                      </div>
-                  </div>
+                  )}
                </section>
             </div>
          </div>
@@ -1405,27 +1500,26 @@ const ItemFrameSquare = ({ mat, style, lv }: any) => {
    // ========================
 
    return (
-      <a href={`/starrail/collections/relicSets/${mat?.relicset_id?.id}`}>
+      <Link
+         className={`relative flex-none text-center align-middle ${style}`}
+         key={mat?.id}
+         to={`/starrail/collections/relicSets/${mat?.relicset_id?.id}`}
+      >
+         <Image
+            options="aspect_ratio=1:1&height=80&width=80"
+            url={mat?.icon?.url ?? "no_image_42df124128"}
+            className={`h-[62px] w-[62px] object-contain color-rarity-${
+               mat?.rarity?.display_number ?? "1"
+            } rounded-md`}
+            alt={mat?.name}
+         />
          <div
-            className={`relative inline-block text-center align-middle ${style}`}
-            key={mat?.id}
-         >
-            <Image
-               options="aspect_ratio=1:1&height=80&width=80"
-               url={mat?.icon?.url ?? "no_image_42df124128"}
-               className={`h-[62px] w-[62px] object-contain color-rarity-${
-                  mat?.rarity?.display_number ?? "1"
-               } rounded-md`}
-               alt={mat?.name}
-            />
-            <div
-               className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900 
+            className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900 
                bg-opacity-70 px-1 py-0.5 text-xs font-bold text-white"
-            >
-               {lv}
-            </div>
+         >
+            {lv}
          </div>
-      </a>
+      </Link>
    );
 };
 
@@ -1454,7 +1548,9 @@ const SkillTreeDisplay = ({
    setHoverStat,
 }: any) => {
    var pathkey = path;
-   var treelist = skillTrees.filter((a: any) => a.character.id == data?.avatar_id); // pageData?.attributes?.tree; //skillTreeData;
+   var treelist = skillTrees.filter(
+      (a: any) => a.character.id == data?.avatar_id
+   ); // pageData?.attributes?.tree; //skillTreeData;
 
    // Need to sort skill nodes in order from Point01 - 18
    treelist.sort((a: any, b: any) =>
@@ -1540,7 +1636,8 @@ const SkillTreeDisplay = ({
                            </div>
                         ) : null}
                      </div>
-                     <div
+
+                     <Tooltip
                         className={`absolute z-30 h-[20px] w-[20px] origin-top-left scale-[2.0] point-${
                            i + 1
                         }-${pathkey}`}
@@ -1549,13 +1646,21 @@ const SkillTreeDisplay = ({
                         onClick={() =>
                            setHoverStat(hoverStat.length > 0 ? [] : skillstats)
                         }
-                     >
-                        <NameToolTip
-                           text={node?.name}
-                           tooltip={node_desc}
-                           style={``}
-                        />
-                     </div>
+                        id="skill-tree"
+                        side="left"
+                        html={
+                           <div className="w-80 text-2xl">
+                              <div className="pb-0.5 text-blue-500">
+                                 {node?.name}
+                              </div>
+                              <div
+                                 dangerouslySetInnerHTML={{
+                                    __html: node_desc,
+                                 }}
+                              ></div>
+                           </div>
+                        }
+                     ></Tooltip>
                   </>
                );
             })}
@@ -1571,7 +1676,9 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    const isSearching = isLoading(transition);
    return (
       <form
-         onSubmit={(e) => { e.preventDefault(); }}
+         onSubmit={(e) => {
+            e.preventDefault();
+         }}
       >
          <div className="text-1 pb-4 text-center font-bold">
             Enter UID to view your showcase
