@@ -865,7 +865,7 @@ const CharacterInfo = ({
          return;
       }
 
-      toPng(ref.current, { cacheBust: true })
+      toPng(ref.current, { cacheBust: true, filter: (node) => node.id !== "relic-legend"})
          .then((dataUrl) => {
             const link = document.createElement("a");
             link.download = `${uid?.uid}-showcase`;
@@ -1234,7 +1234,7 @@ const CharacterInfo = ({
                         {/* Individual Relics */}
 
                         {/* Artifact Substat Legend (?) */}
-                        <div className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
+                        <div id="relic-legend" className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
                            <Tooltip
                               id="relic-help"
                               side="right"
