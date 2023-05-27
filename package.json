@@ -52,6 +52,7 @@
       "dom-to-image": "^2.6.0",
       "dotenv": "^16.0.3",
       "express": "^4.18.2",
+      "html-to-image": "^1.11.11",
       "i18next": "^22.4.9",
       "i18next-browser-languagedetector": "^7.0.1",
       "i18next-fs-backend": "^2.1.1",

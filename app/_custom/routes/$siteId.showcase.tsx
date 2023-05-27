@@ -7,7 +7,7 @@ import {
    useSearchParams,
    useTransition,
 } from "@remix-run/react";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -20,9 +20,11 @@ import {
    RefreshCcw,
    X,
    CircleDot,
+   Download,
 } from "lucide-react";
 import { isLoading } from "~/utils";
 import DomToImage from "dom-to-image";
+import { toPng } from "html-to-image";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -227,7 +229,7 @@ const DisplayPlayerInfo = ({
          <div
             id="showcase-canvas"
             className="border-color bg-2 shadow-1 relative -mt-9 border-y
-         desktop:border-y  desktop:p-6 desktop:pt-14 desktop:shadow-sm"
+         desktop:border-y  desktop:p-6 desktop:pt-8 desktop:shadow-sm"
          >
             {/* <div className="absolute right-4 top-10 z-40 flex items-center laptop:-top-14">
                <Tooltip
@@ -866,16 +868,52 @@ const CharacterInfo = ({
          ? "opacity-40"
          : "";
 
+   const ref = useRef<HTMLDivElement>(null);
+
+   const uid = useLoaderData<typeof loader>();
+
+   const onDownloadImage = useCallback(() => {
+      if (ref.current === null) {
+         return;
+      }
+
+      toPng(ref.current, { cacheBust: true })
+         .then((dataUrl) => {
+            const link = document.createElement("a");
+            link.download = `${uid?.uid}-showcase`;
+            link.href = dataUrl;
+            link.click();
+         })
+         .catch((err) => {
+            console.log(err);
+         });
+   }, [ref]);
+
    return (
       <>
-         <div className="relative max-desktop:overflow-hidden">
+         <div
+            ref={ref}
+            className="bg-2 relative rounded-lg max-desktop:overflow-hidden max-desktop:pt-4 desktop:py-6"
+         >
             {/* <Image
                options="height=1200"
                url={charbase?.image_draw?.url}
                alt={charbase?.name}
                className="hsr-showcase-character absolute -left-16 top-0 w-[520px] object-contain max-desktop:hidden"
             /> */}
-            <div className="relative">
+            <div
+               className={`absolute top-5 w-[440px] ${
+                  rbase.length == 0 ? "left-28" : "-left-5"
+               }`}
+            >
+               <Image
+                  options="height=900&quality=100"
+                  url={charbase?.image_draw?.url}
+                  alt={charbase?.name}
+                  className="hsr-showcase-character max-desktop:hidden"
+               />
+            </div>
+            <div>
                {/* Background-Div */}
                {/* <div className="relative inline-block h-[32rem] w-[960px] overflow-hidden rounded-lg">
                   <img
@@ -891,7 +929,13 @@ const CharacterInfo = ({
                   {/* ================================= */}
 
                   <div className="relative max-desktop:mx-3 desktop:w-[320px]">
-                     <div className="mt-14 desktop:-mt-1">
+                     <Image
+                        options="height=400&quality=100"
+                        url={charbase?.image_draw?.url}
+                        alt={charbase?.name}
+                        className="hsr-showcase-character mx-auto -mt-8 desktop:hidden"
+                     />
+                     <div className="pb-3 max-desktop:text-center">
                         <Link
                            className="font-header text-2xl font-bold leading-none hover:underline"
                            prefetch="intent"
@@ -901,14 +945,8 @@ const CharacterInfo = ({
                         </Link>
                         <div className="text-1 text-sm">Lv. {lv}</div>
                      </div>
-                     <Image
-                        options="height=600"
-                        url={charbase?.image_draw?.url}
-                        alt={charbase?.name}
-                        className="hsr-showcase-character mx-auto h-[400px] object-contain"
-                     />
                      {/* Skill Tree ? */}
-                     <div className="absolute -right-24 -top-28">
+                     <div className="absolute -right-24 -top-14">
                         <SkillTreeDisplay
                            data={chardata}
                            skillTrees={skillTrees}
@@ -1000,7 +1038,7 @@ const CharacterInfo = ({
                   <div className="mb-1 desktop:w-[300px]">
                      {/* Light Cone Image + Rarity */}
                      <div
-                        className="max-desktop:border-color flex items-center 
+                        className="max-desktop:border-color flex items-start 
                         gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3 
                         desktop:mb-4 desktop:rounded-md"
                      >
@@ -1208,7 +1246,7 @@ const CharacterInfo = ({
                         {/* Individual Relics */}
 
                         {/* Artifact Substat Legend (?) */}
-                        <div className="relative z-[9999] h-5 w-5 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
+                        <div className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
                            <Tooltip
                               id="relic-help"
                               side="right"
@@ -1245,7 +1283,7 @@ const CharacterInfo = ({
                                  </div>
                               }
                            >
-                              <Info className="text-1" size={18} />
+                              <Info className="text-1 h-5 w-5 laptop:h-4 laptop:w-4" />
                            </Tooltip>
                         </div>
                         {rbase?.map((r: any, i: any) => {
@@ -1488,6 +1526,15 @@ const CharacterInfo = ({
                </section>
             </div>
          </div>
+         <button
+            className="border-color shadow-1 absolute left-1/2 z-40 flex -translate-x-1/2 transform
+            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
+            shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
+            onClick={onDownloadImage}
+         >
+            <Download size={18} />
+            <span>Download</span>
+         </button>
 
          {/* <ScreenshotButton /> */}
       </>
