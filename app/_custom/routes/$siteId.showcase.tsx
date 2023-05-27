@@ -23,7 +23,6 @@ import {
    Download,
 } from "lucide-react";
 import { isLoading } from "~/utils";
-import DomToImage from "dom-to-image";
 import { toPng } from "html-to-image";
 
 // Sample data, will import via API for real case
@@ -297,17 +296,6 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                />
                <div
                   className="py-2 text-center font-header text-2xl font-bold"
-                  onClick={() => {
-                     var elem = document.getElementById("showcase-canvas");
-                     DomToImage.toPng(elem).then(function (dataUrl) {
-                        var img = document.createElement("img");
-                        img.src = dataUrl;
-
-                        var w = window.open("", "_blank");
-                        w.document.write(img.outerHTML);
-                        w.document.close();
-                     });
-                  }}
                >
                   {data?.detail_info?.nickname}
                </div>
