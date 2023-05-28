@@ -360,6 +360,21 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         </span>
                      </>
                   </Tooltip>
+
+                  {/* Simulated Universe */}
+                  <Tooltip
+                     className={`${dataClass}`}
+                     id="su-world"
+                     content="Simulated Universe World"
+                  >
+                     <>
+                        <span className="text-1">SU</span>
+                        <span>
+                           {data?.detail_info?.record_info?.rogue_area_progress}
+                        </span>
+                     </>
+                  </Tooltip>
+
                </div>
             </section>
             <div
