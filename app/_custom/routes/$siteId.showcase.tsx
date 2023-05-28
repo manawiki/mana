@@ -340,7 +340,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      content="Achievements Unlocked"
                   >
                      <>
-                        <span className="text-1">TA</span>
+                        <span className="text-1">Achievements</span>
                         <span>
                            {data?.detail_info?.record_info?.achievement_count}
                         </span>
@@ -351,10 +351,10 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   <Tooltip
                      className={`${dataClass}`}
                      id="owned"
-                     content="Owned"
+                     content="Characters Owned"
                   >
                      <>
-                        <span className="text-1">Owned</span>
+                        <span className="text-1">Characters</span>
                         <span>
                            {data?.detail_info?.record_info?.avatar_count}
                         </span>
