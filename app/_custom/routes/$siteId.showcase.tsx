@@ -885,7 +885,7 @@ const CharacterInfo = ({
       <>
          <div
             ref={ref}
-            className="bg-2 relative rounded-lg max-desktop:pt-4 desktop:py-6 overflow-y-hidden"
+            className="bg-2 relative rounded-lg max-desktop:pt-4 desktop:py-6 overflow-hidden"
          >
             <div 
                className="absolute top-0 left-0 right-0 bottom-0 w-[440px] overflow-y-hidden transform scale-125"
