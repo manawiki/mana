@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import type { Collection } from "payload-types";
+import type { Collection } from "payload/generated-types";
 import { z } from "zod";
 import { zx } from "zodix";
 

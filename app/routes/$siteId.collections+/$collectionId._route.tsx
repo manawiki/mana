@@ -42,7 +42,7 @@ import { useDebouncedValue } from "~/hooks";
 import type { Entry } from "payload/generated-types";
 import { nanoid } from "nanoid";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import type { Collection } from "payload-types";
+import type { Collection } from "payload/generated-types";
 
 const EntrySchema = z.object({
    name: z.string(),

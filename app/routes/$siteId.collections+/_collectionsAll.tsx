@@ -30,7 +30,7 @@ import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
 import { toast } from "~/components/Toaster";
 import { Image } from "~/components/Image";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import type { Collection } from "payload-types";
+import type { Collection } from "payload/generated-types";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {

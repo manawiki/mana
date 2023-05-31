@@ -59,7 +59,7 @@ import {
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
-import type { User, Site } from "payload-types";
+import type { User, Site } from "payload/generated-types";
 import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
