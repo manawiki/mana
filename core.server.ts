@@ -74,10 +74,27 @@ async function startCore() {
    // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
    app.disable("x-powered-by");
 
+   // no ending slashes for SEO reasons
+   app.use((req, res, next) => {
+      if (req.path.endsWith('/') && req.path.length > 1) {
+         const query = req.url.slice(req.path.length)
+         const safepath = req.path.slice(0, -1).replace(/\/+/g, '/')
+         res.redirect(301, safepath + query)
+      } else {
+         next()
+      }
+   })
+
    // Remix fingerprints its assets so we can cache forever.
    app.use(
       "/build",
       express.static("public/build", { immutable: true, maxAge: "1y" })
+   );
+
+   // Aggressively cache fonts for a year
+   app.use(
+      "/fonts",
+      express.static("public/fonts", { immutable: true, maxAge: "1y" })
    );
 
    // Everything else (like favicon.ico) is cached for an hour. You may want to be
