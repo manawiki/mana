@@ -17,7 +17,7 @@ import type { Search } from "~/db/payload-types";
 import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
-import type { Site } from "payload-types";
+import type { Site } from "payload/generated-types";
 
 export async function loader({
    context: { payload, user },

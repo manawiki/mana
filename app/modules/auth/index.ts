@@ -1,4 +1,4 @@
-import type { User, Site } from "payload-types";
+import type { User, Site } from "payload/generated-types";
 import { useRouteLoaderData } from "@remix-run/react";
 
 export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
