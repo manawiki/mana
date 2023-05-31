@@ -59,7 +59,7 @@ import {
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
-import type { User, Site } from "payload-types";
+import type { User, Site } from "payload/generated-types";
 import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
@@ -157,7 +157,7 @@ export default function SiteIndex() {
    const [isMenuOpen, setMenuOpen] = useState(false);
    const gaTrackingId = site?.gaTagId;
    useEffect(() => {
-      if (gaTrackingId?.length) {
+      if (process.env.NODE_ENV === "production" && gaTrackingId) {
          gtag.pageview(location.pathname, gaTrackingId);
       }
    }, [location, gaTrackingId]);
@@ -165,14 +165,14 @@ export default function SiteIndex() {
 
    return (
       <>
-         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+         {process.env.NODE_ENV === "production" && gaTrackingId ? (
             <>
                <script
-                  async
+                  defer
                   src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
                />
                <script
-                  async
+                  defer
                   id="gtag-init"
                   dangerouslySetInnerHTML={{
                      __html: `
@@ -187,7 +187,7 @@ export default function SiteIndex() {
                   }}
                />
             </>
-         )}
+         ) : null}
          <header
             className="bg-1 shadow-1 fixed top-0 z-50 flex
          h-14 w-full items-center justify-between border-b border-zinc-200 

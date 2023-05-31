@@ -38,7 +38,7 @@ export default function GroupView({ element }: Props) {
                         >
                            <List
                               style={{
-                                 color: checked == true ? element.color : "",
+                                 color: element?.color,
                               }}
                               size={16}
                            />
@@ -61,7 +61,7 @@ export default function GroupView({ element }: Props) {
                         >
                            <LayoutGrid
                               style={{
-                                 color: checked == true ? element.color : "",
+                                 color: element?.color,
                               }}
                               size={16}
                            />
@@ -83,7 +83,7 @@ export default function GroupView({ element }: Props) {
                   >
                      <div
                         style={{
-                           borderColor: element.color,
+                           borderColor: element?.color,
                         }}
                         className="shadow-1 flex h-8 w-8 items-center
                      justify-between overflow-hidden rounded-full border-2 shadow-sm"
@@ -116,7 +116,7 @@ export default function GroupView({ element }: Props) {
                   >
                      <div
                         style={{
-                           borderColor: element.color,
+                           borderColor: element?.color,
                         }}
                         className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
                items-center overflow-hidden rounded-full border-2 shadow-sm"
