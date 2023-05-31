@@ -16,18 +16,16 @@ export default async function handleRequest(
    responseHeaders: Headers,
    remixContext: EntryContext
 ) {
-   let callbackName = isbot(request.headers.get("user-agent"))
+   const callbackName = isbot(request.headers.get("user-agent"))
       ? "onAllReady"
       : "onShellReady";
 
+   // First, we create a new instance of i18next so every request will have a
+   // completely unique instance and not share any state
+   const instance = await createI18nextServerInstance(request, remixContext);
+
    return new Promise(async (resolve, reject) => {
-      let didError = false;
-
-      // First, we create a new instance of i18next so every request will have a
-      // completely unique instance and not share any state
-      const instance = await createI18nextServerInstance(request, remixContext);
-
-      let { pipe, abort } = renderToPipeableStream(
+      const { pipe, abort } = renderToPipeableStream(
          <I18nextProvider i18n={instance}>
             <IsBotProvider
                isBot={isbot(request.headers.get("User-Agent") ?? "")}
@@ -37,14 +35,14 @@ export default async function handleRequest(
          </I18nextProvider>,
          {
             [callbackName]: () => {
-               let body = new PassThrough();
+               const body = new PassThrough();
 
                responseHeaders.set("Content-Type", "text/html");
 
                resolve(
                   new Response(body, {
                      headers: responseHeaders,
-                     status: didError ? 500 : responseStatusCode,
+                     status: responseStatusCode,
                   })
                );
 
@@ -54,8 +52,7 @@ export default async function handleRequest(
                reject(error);
             },
             onError(error: unknown) {
-               didError = true;
-
+               responseStatusCode = 500;
                console.error(error);
             },
          }
