@@ -515,11 +515,11 @@ const CharacterInfo = ({
       wsuffix = "A";
    }
 
-   const wi = lcbase.stats[0].data?.findIndex((a: any) => a == wlv + wsuffix);
+   const wi = lcbase?.stats[0].data?.findIndex((a: any) => a == wlv + wsuffix);
    var wstats = [
-      { name: "HP", base: lcbase.stats[1].data[wi] },
-      { name: "ATK", base: lcbase.stats[2].data[wi] },
-      { name: "DEF", base: lcbase.stats[3].data[wi] },
+      { name: "HP", base: lcbase?.stats[1].data[wi] },
+      { name: "ATK", base: lcbase?.stats[2].data[wi] },
+      { name: "DEF", base: lcbase?.stats[3].data[wi] },
    ];
 
    // Total all light cone-sourced bonuses, same format as relic bonuses:
@@ -1035,7 +1035,7 @@ const CharacterInfo = ({
                   {/* Light Cone Display  */}
                   <div className="mb-1 desktop:w-[300px]">
                      {/* Light Cone Image + Rarity */}
-                     <div
+                     {lcbase !== undefined && <div
                         className="max-desktop:border-color flex items-start 
                         gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3 
                         desktop:mb-4 desktop:rounded-md"
@@ -1160,7 +1160,7 @@ const CharacterInfo = ({
                               })}
                            </div>
                         </div>
-                     </div>
+                     </div>}
                      {/* Stat Display */}
                      <div className="max-desktop:border-color relative max-desktop:border-b">
                         {statVal.map((s: any) => {
