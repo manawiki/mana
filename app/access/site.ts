@@ -37,7 +37,7 @@ export const canReadPost: Access = async ({
 };
 
 export const canMutateAsSiteAdmin =
-   (collectionSlug: "collections" | "entries" | "posts"): Access =>
+   (collectionSlug: "collections" | "entries" | "posts" | "updates"): Access =>
    async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {
          if (user.roles.includes("staff")) return true;

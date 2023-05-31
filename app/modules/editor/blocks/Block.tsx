@@ -9,9 +9,10 @@ import BlockToDo from "./BlockToDo";
 import BlockList from "./BlockList";
 import { nanoid } from "nanoid";
 import BlockLink from "./BlockLink";
-
 import BlockGroup from "./BlockGroup";
 import BlockGroupView from "./BlockGroupView";
+import { BlockUpdates } from "~/routes/$siteId+/blocks+/BlockUpdates";
+import { BlockUpdatesView } from "~/routes/$siteId+/blocks+/BlockUpdates/view";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created
@@ -48,6 +49,22 @@ export default function Block({
          <div {...attributes} contentEditable={false}>
             <BlockGroup element={element} />
             <div style={{ display: "none" }}>{children}</div>
+         </div>
+      );
+   }
+   if (element.type === BlockType.Updates) {
+      if (readOnly) return <BlockUpdatesView element={element} />;
+      return (
+         <div {...attributes} contentEditable={false}>
+            <BlockUpdates element={element} />
+            <div style={{ display: "none" }}>{children}</div>
+         </div>
+      );
+   }
+   if (element.type === BlockType.UpdatesInline) {
+      return (
+         <div className="py-2.5" {...attributes}>
+            {children}
          </div>
       );
    }

@@ -63,9 +63,8 @@ import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
+import type { Update } from "~/db/payload-types";
 import { useIsBot } from "~/utils/isBotProvider";
-
-// See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
 export async function loader({
    context: { payload, user },
@@ -77,22 +76,34 @@ export async function loader({
    });
 
    const url = new URL(request.url).origin;
-   const slug = (await (
-      await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=2`, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })
-   ).json()) as PaginatedDocs<Site>;
-   const site = slug?.docs[0];
-   if (!site) {
-      throw json(null, { status: 404 });
-   }
 
-   return json(
-      { site },
-      { headers: { "Cache-Control": "public, s-maxage=60" } }
-   );
+   try {
+      const slug = (await (
+         await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=2`, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as PaginatedDocs<Site>;
+      const site = slug?.docs[0];
+      if (!site) {
+         throw json(null, { status: 404 });
+      }
+      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
+      const { docs: updateResults } = (await (
+         await fetch(updatesUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as Update[];
+      return json(
+         { updateResults, site },
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
+      );
+   } catch (e) {
+      throw new Response("Internal Server Error", { status: 500 });
+   }
 }
 
 export const meta: V2_MetaFunction = ({ data }) => {
@@ -784,7 +795,7 @@ export default function SiteIndex() {
             {/* Right Sidebar */}
             <section
                className="bg-2 border-color relative z-20 max-laptop:mx-auto
-               max-laptop:max-w-[728px] max-laptop:pb-20 tablet:border-x laptop:block laptop:border-l laptop:border-r-0"
+               max-laptop:max-w-[728px] max-laptop:pb-20  laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color flex-grow divide-y laptop:pt-14">

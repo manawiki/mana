@@ -4,7 +4,6 @@ import { nanoid } from "nanoid";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 import Tooltip from "~/components/Tooltip";
-import { useSelf } from "~/liveblocks.config";
 import { GROUP_COLORS } from "../blocks/BlockGroup";
 import {
    CheckSquare,
@@ -24,9 +23,6 @@ type Props = {
 };
 
 export default function BlockTypeSelector({ children, onSelect }: Props) {
-   const self = useSelf();
-   const createdBy = self?.connectionId || 0;
-
    const groups = [
       {
          label: "Widgets",
@@ -37,7 +33,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Create a group of collections",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      viewMode: "list",
                      id: nanoid(),
                      color: GROUP_COLORS[0],
@@ -49,6 +44,18 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                   });
                },
             },
+            // {
+            //    label: "Updates",
+            //    icon: <LayoutList size={20} />,
+            //    description: "Create a list of Updates",
+            //    onSelect: () => {
+            //       onSelect({
+            //          id: nanoid(),
+            //          type: BlockType.Updates,
+            //          children: [{ text: "" }],
+            //       });
+            //    },
+            // },
          ],
       },
       {
@@ -60,7 +67,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Large size heading",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.H2,
                      children: [{ text: "" }],
@@ -74,7 +80,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Medium size heading",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.H3,
                      children: [{ text: "" }],
@@ -87,7 +92,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Plain text",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.Paragraph,
                      children: [{ text: "" }],
@@ -100,7 +104,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "A basic bulleted list",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.BulletedList,
                      children: [{ text: "" }],
@@ -113,7 +116,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "A basic to do list",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.ToDo,
                      checked: false,
@@ -132,7 +134,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Embed from URL",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.Image,
                      refId: null,
@@ -147,7 +148,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Embed YouTube video",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.Video,
                      url: null,
@@ -166,7 +166,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Embed CodeSandbox project",
                onSelect: () => {
                   onSelect({
-                     createdBy,
                      id: nanoid(),
                      type: BlockType.CodeSandbox,
                      url: null,
