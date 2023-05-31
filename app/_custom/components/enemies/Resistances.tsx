@@ -1,8 +1,11 @@
-export const Resistances = ({ pageData }: any) => {
-   const debuff_resist = pageData.debuff_resist;
-   const elem_resist = pageData.damage_resist;
+export const Resistances = ({ pageData, version }: any) => {
+   const debuff_resist = pageData.enemy_variations[version]?.debuff_resist;
+   const elem_resist = pageData.enemy_variations[version]?.damage_resist;
    return (
       <>
+         {!debuff_resist && !elem_resist ? (
+            <div className="px-2">N/A</div>
+         ) : null}
          {debuff_resist?.length > 0 ? (
             <>
                <div className="p-1 my-1 font-bold border-b dark:border-gray-700">
