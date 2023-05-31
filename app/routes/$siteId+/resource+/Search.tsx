@@ -76,7 +76,6 @@ export async function loader({
 }
 
 const searchLinkUrlGenerator = (item: any, siteSlug?: string) => {
-   console.log(item);
    const type = item.doc?.relationTo;
    switch (type) {
       case "customPages": {

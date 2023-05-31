@@ -130,7 +130,7 @@ export default function Toolbar() {
          }}
       >
          <section className="flex items-center gap-2">
-            {type && (
+            {/* {type && (
                <>
                   <div>
                      <Select
@@ -166,7 +166,7 @@ export default function Toolbar() {
                      />
                   </div>
                </>
-            )}
+            )} */}
             <div className="flex items-center gap-1">
                {!isLinkActive(editor) && (
                   <Tooltip id="add-link" content="Add Link">

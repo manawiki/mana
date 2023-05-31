@@ -2,7 +2,7 @@ import { LiveList } from "@liveblocks/client";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { RoomProvider } from "~/liveblocks.config";
 import { ForgeEditor } from "~/modules/editor/Editor";
-import type { ActionArgs } from "@remix-run/node";
+import { ActionArgs, LoaderArgs, json } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -23,7 +23,7 @@ import Block from "~/modules/editor/blocks/Block";
 import { HomeEdit } from "./components/HomeEdit";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
-import type { Site } from "payload/generated-types";
+import type { Site, Update } from "payload/generated-types";
 
 const initialValue: CustomElement[] = [
    {
