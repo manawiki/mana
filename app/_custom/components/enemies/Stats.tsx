@@ -24,10 +24,13 @@ ChartJS.register(
    Legend
 );
 
-export const Stats = ({ pageData }: any) => {
+export const Stats = ({ pageData, version }: any) => {
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [graphStat, setGraphStat] = useState("HP");
+
+   // Update pagedata to use the active version's data:
+   pageData = pageData.enemy_variations[version];
 
    var imgurl = pageData.image_full?.url;
 

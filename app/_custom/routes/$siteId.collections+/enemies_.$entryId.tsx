@@ -1,4 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
+import { useState } from "react";
 import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
@@ -10,11 +11,14 @@ import {
 } from "~/modules/collections";
 import type { Enemies } from "payload/generated-types";
 
+import { Selector } from "~/_custom/components/enemies/Selector";
 import { Stats } from "~/_custom/components/enemies/Stats";
 import { Resistances } from "~/_custom/components/enemies/Resistances";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Drops } from "~/_custom/components/enemies/Drops";
 import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
+
+import { H2 } from "~/_custom/components/custom";
 
 export { meta };
 
@@ -63,28 +67,37 @@ export default function CharacterEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
    const { defaultData } = useLoaderData<typeof loader>();
 
+   const [version, setVersion] = useState(0);
+
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
+            {/* Selector for Enemy Version */}
+            <Selector
+               pageData={defaultData}
+               version={version}
+               setVersion={setVersion}
+            />
+
             {/* Image */}
-            <Stats pageData={defaultData} />
+            <Stats pageData={defaultData} version={version} />
 
             {/* Skill List */}
-            <h2>Skills</h2>
-            <Skills pageData={defaultData} />
+            <H2 text="Skills" />
+            <Skills pageData={defaultData} version={version} />
 
             {/* Resistances */}
-            <h2>Resistances</h2>
-            <Resistances pageData={defaultData} />
+            <H2 text="Resistances" />
+            <Resistances pageData={defaultData} version={version} />
 
             {/* Drop Rewards */}
-            <h2>Drops</h2>
-            <Drops pageData={defaultData} />
+            <H2 text="Drops" />
+            <Drops pageData={defaultData} version={version} />
 
             {/* Additional Data */}
-            <h2>Additional Data</h2>
-            <AdditionalData pageData={defaultData} />
+            <H2 text="Additional Data" />
+            <AdditionalData pageData={defaultData} version={version} />
          </EntryContent>
       </EntryParent>
    );

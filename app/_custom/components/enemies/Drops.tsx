@@ -1,5 +1,5 @@
-export const Drops = ({ pageData }: any) => {
-   const drops = pageData.rewards;
+export const Drops = ({ pageData, version }: any) => {
+   const drops = pageData.enemy_variations[version]?.rewards;
 
    return (
       <>
@@ -37,7 +37,9 @@ export const Drops = ({ pageData }: any) => {
                   </tbody>
                </table>
             </>
-         ) : null}
+         ) : (
+            "N/A"
+         )}
       </>
    );
 };

@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 
-export const Skills = ({ pageData }: any) => {
-   var skills = pageData.skill_list;
+export const Skills = ({ pageData, version }: any) => {
+   var skills = pageData.enemy_variations[version]?.skill_list;
 
    return (
       <>
@@ -9,7 +9,7 @@ export const Skills = ({ pageData }: any) => {
             return (
                <>
                   <div
-                     className="border rounded-md dark:border-neutral-700 dark:bg-neutral-900 p-2 my-1 bg-gray-50"
+                     className="border rounded-md dark:border-neutral-700 dark:bg-neutral-900 p-2 my-3 bg-gray-50"
                      key={index}
                   >
                      {/* Header with Skill Icon and Name */}
