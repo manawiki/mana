@@ -8,6 +8,7 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 const data = require("./example.json");
 const filetype = "png"; // either mp3 or png or whatever filetype
 const overwriteexisting = false;
+const user = "644068fa51c100f909f89e1e";
 var count = 0;
 
 //Site ID from database - unique identifier to separate images
@@ -97,6 +98,7 @@ const seedUploads = async (result: any) => {
          collection: "images",
          data: {
             id: id,
+            createdBy: user,
          },
          filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
       });
