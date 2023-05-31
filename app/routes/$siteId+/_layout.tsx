@@ -157,7 +157,7 @@ export default function SiteIndex() {
    const [isMenuOpen, setMenuOpen] = useState(false);
    const gaTrackingId = site?.gaTagId;
    useEffect(() => {
-      if (gaTrackingId?.length) {
+      if (process.env.NODE_ENV === "production" && gaTrackingId) {
          gtag.pageview(location.pathname, gaTrackingId);
       }
    }, [location, gaTrackingId]);
@@ -165,7 +165,7 @@ export default function SiteIndex() {
 
    return (
       <>
-         {process.env.NODE_ENV === "development" || !gaTrackingId ? null : (
+         {process.env.NODE_ENV === "production" && gaTrackingId ? (
             <>
                <script
                   defer
@@ -187,7 +187,7 @@ export default function SiteIndex() {
                   }}
                />
             </>
-         )}
+         ) : null}
          <header
             className="bg-1 shadow-1 fixed top-0 z-50 flex
          h-14 w-full items-center justify-between border-b border-zinc-200 
