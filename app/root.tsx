@@ -74,6 +74,7 @@ export const links: LinksFunction = () => [
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "preconnect", href: "https://starrail-static.mana.wiki" },
    { rel: "preconnect", href: "https://ajax.cloudflare.com" },
    { rel: "preconnect", href: "https://p.typekit.net" },
    {
@@ -84,6 +85,7 @@ export const links: LinksFunction = () => [
 
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://starrail-static.mana.wiki" },
    { rel: "dns-prefetch", href: "https://ajax.cloudflare.com" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
    {
