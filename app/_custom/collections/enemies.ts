@@ -28,6 +28,16 @@ export const Enemies: CollectionConfig = {
          type: "text",
       },
       {
+         name: "atlas_sort",
+         type: "text",
+      },
+      {
+         name: "camp",
+         type: "relationship",
+         relationTo: "_enemyCamps",
+         hasMany: false,
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
@@ -38,80 +48,10 @@ export const Enemies: CollectionConfig = {
          relationTo: "images",
       },
       {
-         name: "hard_level_group",
-         type: "number",
-      },
-      {
-         name: "elite_group",
-         type: "number",
-      },
-      {
-         name: "rank",
-         type: "text",
-      },
-      {
-         name: "description",
-         type: "text",
-      },
-      {
-         name: "skill_list",
+         name: "enemy_variations",
          type: "relationship",
-         relationTo: "enemySkills",
+         relationTo: "enemyVariations",
          hasMany: true,
-      },
-      {
-         name: "debuff_resist",
-         type: "array",
-         fields: [
-            {
-               name: "debuff",
-               type: "relationship",
-               relationTo: "_enemyStatusRes",
-               hasMany: false,
-            },
-            {
-               name: "value",
-               type: "number",
-            },
-         ],
-      },
-      {
-         name: "elemental_weaknesses",
-         type: "relationship",
-         relationTo: "_elements",
-         hasMany: true,
-      },
-      {
-         name: "damage_resist",
-         type: "array",
-         fields: [
-            {
-               name: "element",
-               type: "relationship",
-               relationTo: "_elements",
-               hasMany: false,
-            },
-            {
-               name: "value",
-               type: "number",
-            },
-         ],
-      },
-      {
-         name: "stance_count",
-         type: "number",
-      },
-      {
-         name: "initial_delay_ratio",
-         type: "number",
-      },
-      {
-         name: "crit_damage_base",
-         type: "number",
-      },
-      {
-         name: "min_fatigue_ratio",
-         type: "number",
       },
       {
          name: "icon_name",
@@ -120,74 +60,6 @@ export const Enemies: CollectionConfig = {
       {
          name: "image_full_name",
          type: "text",
-      },
-      {
-         name: "atk_base",
-         type: "number",
-      },
-      {
-         name: "def_base",
-         type: "number",
-      },
-      {
-         name: "hp_base",
-         type: "number",
-      },
-      {
-         name: "spd_base",
-         type: "number",
-      },
-      {
-         name: "stance_base",
-         type: "number",
-      },
-      {
-         name: "atk_ratio",
-         type: "number",
-      },
-      {
-         name: "def_ratio",
-         type: "number",
-      },
-      {
-         name: "hp_ratio",
-         type: "number",
-      },
-      {
-         name: "spd_ratio",
-         type: "number",
-      },
-      {
-         name: "stance_ratio",
-         type: "number",
-      },
-      {
-         name: "stats_csv",
-         type: "text",
-      },
-      {
-         name: "stats",
-         type: "json",
-      },
-      {
-         name: "rewards",
-         type: "array",
-         fields: [
-            {
-               name: "world_level",
-               type: "number",
-            },
-            {
-               name: "exp_reward",
-               type: "number",
-            },
-            {
-               name: "drop_list",
-               type: "relationship",
-               relationTo: "materials",
-               hasMany: true,
-            },
-         ],
       },
       {
          name: "checksum",

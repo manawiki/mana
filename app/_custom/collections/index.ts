@@ -8,6 +8,7 @@ import { RelicSets } from "./relicSets";
 import { Relics } from "./relics";
 import { EnemySkills } from "./enemySkills";
 import { Enemies } from "./enemies";
+import { EnemyVariations } from "./enemyVariations";
 import { Achievements } from "./achievements";
 import { AchievementSeries } from "./achievementSeries";
 import { Aeons } from "./aeons";
@@ -24,6 +25,7 @@ import { _Paths } from "./_paths";
 import { _ItemTypes } from "./_itemTypes";
 import { _RelicStats } from "./_relicStats";
 import { _EnemyStatusRes } from "./_enemyStatusRes";
+import { _EnemyCamps } from "./_enemyCamps";
 import { _RecipeTypes } from "./_recipeTypes";
 
 export const CustomSearchCollections = [
@@ -49,6 +51,7 @@ export const CustomCollections = [
    Relics,
    EnemySkills,
    Enemies,
+   EnemyVariations,
    Achievements,
    AchievementSeries,
    Aeons,
@@ -64,5 +67,6 @@ export const CustomCollections = [
    _StatTypes,
    _RelicStats,
    _EnemyStatusRes,
+   _EnemyCamps,
    _RecipeTypes,
 ];

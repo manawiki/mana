@@ -40,27 +40,27 @@ start();
 
 const getData = async () => {
 	// Get _enemyStatusRes, _element arrays to populate later relations
-	const tempEnemyStatusRes = await payload.find({
-		collection: "_enemyStatusRes",
-		where: {
-			id: {
-			exists: true
-			},
-		},
-		limit: 100,
-	});
-	const tempElement = await payload.find({
-		collection: "_elements",
-		where: {
-			id: {
-			exists: true
-			},
-		},
-		limit: 100,
-	});
+	// const tempEnemyStatusRes = await payload.find({
+	// 	collection: "_enemyStatusRes",
+	// 	where: {
+	// 		id: {
+	// 		exists: true
+	// 		},
+	// 	},
+	// 	limit: 100,
+	// });
+	// const tempElement = await payload.find({
+	// 	collection: "_elements",
+	// 	where: {
+	// 		id: {
+	// 		exists: true
+	// 		},
+	// 	},
+	// 	limit: 100,
+	// });
 
-	enemyStatusRes = tempEnemyStatusRes.docs;
-	element = tempElement.docs;
+	// enemyStatusRes = tempEnemyStatusRes.docs;
+	// element = tempElement.docs;
 
  	return Promise.all(data.map((item: any) => seedUploads(item))); //Change this another function based on what you are uploading
 }
@@ -77,93 +77,7 @@ const seedUploads = async (result: any) => {
 		image_full: result.image_full?.name.replace(".png",""),
 	}
 
-	// =======================
-	// Unlock Materials array
-	// =======================
-	var matData: any = [];
-	var dropList: any = [];
-
-	// Get unique list of Materials in full array
-	// .split("data_key\":") -> Separate array by data key value
-	// .map(a => a.replace(/}.*/,"")) -> Removes extraneous text after value
-	// .slice(1) // Removes first element of array that has extraneous text
-	// .filter((v,i,a) => a.indexOf(v) === i) -> Gets unique values
-	const matList = JSON.stringify(result.rewards)?.split("data_key\":").map(a => a.replace(/}.*/,"")).slice(1).filter((v,i,a) => a.indexOf(v) === i);
-
 	
-
-	if (matList?.length > 0) {
-		matData = await Promise.all(matList.map(async (mat:any) => {
-			const findMat = await payload.find({
-				collection: "materials",
-				where: {
-					data_key: {
-						equals: mat.toString(),
-					}
-				}
-			});
-			if (findMat?.docs?.[0]?.id) {
-				return {
-					data_key: [mat.toString()],
-					id: findMat?.docs?.[0]?.id,
-				};
-			}
-			else {
-				return null;
-			}
-		}));
-
-		dropList = result.rewards.map((l:any) => {
-			const drops = l.drop_list?.map((mat:any) => {
-				const matId = matData.find((a:any) => a.data_key == mat.data_key)?.id;
-				return matId;
-			});
-
-			return {
-				...l,
-				drop_list: drops,
-			}
-		});
-	}
-	// =======================
-	// =======================
-
-	// =======================
-	// Resistance Value Arrays
-	// =======================
-
-	
-	var resistanceFields: any = {};
-
-	resistanceFields["debuff_resist"] = null;
-	resistanceFields["damage_resist"] = null;
-
-	if (result.debuff_resist?.length > 0) {
-		const dresEntry = result.debuff_resist.map((d:any) => {
-			const findStatus = enemyStatusRes?.find((a:any) => a.data_key == d.debuff.data_key)?.id;
-
-			return {
-				...d,
-				debuff: findStatus,
-			}
-		});
-
-		resistanceFields["debuff_resist"] = dresEntry;
-	}
-
-	if (result.damage_resist?.length > 0) {
-		const dgresEntry = result.damage_resist.map((d:any) => {
-			const findElem = element?.find((a:any) => a.data_key == d.element.data_key)?.id;
-
-			return {
-				...d,
-				element: findElem,
-			}
-		});
-
-		resistanceFields["damage_resist"] = dgresEntry;
-	}
-
 
 	// ====================================
 	// ====================================
@@ -172,70 +86,63 @@ const seedUploads = async (result: any) => {
 
 	var relationFields: any = {};
 	// Single relation fields
-	// relationFields["rarity"] = null;
+	relationFields["camp"] = null;
 
 	// Multi relation fields
-	relationFields["skill_list"] = null;
-	relationFields["elemental_weaknesses"] = null;
+	// relationFields["skill_list"] = null;
 
-	// var fieldName = "rarity";
-	// var idName = "name";
-	// var collName = "_rarity";
-	// if (result[fieldName]?.[idName]) {
-	// 	const relEntry = await payload.find({
-	// 		collection: collName,
-	// 		where: {
-	// 			[idName]: {
-	// 				equals: result[fieldName]?.[idName],
-	// 			},
+	// Manual Multi relation fields with known ID
+	relationFields["enemy_variations"] = null;
+
+	var fieldName = "camp";
+	var idName = "data_key";
+	var collName = "_enemyCamps";
+	if (result[fieldName]?.[idName]) {
+		const relEntry = await payload.find({
+			collection: collName,
+			where: {
+				[idName]: {
+					equals: result[fieldName]?.[idName],
+				},
+			}
+		});
+
+		if (relEntry?.docs?.[0]?.id) {
+			relationFields[fieldName] = relEntry?.docs?.[0]?.id;
+		}
+	}
+
+	var fieldName = "enemy_variations";
+	var idName = "data_key";
+	var varEntry = result?.enemy_variations?.map((a:any) => a[idName].toString());
+	if (varEntry.length > 0) {
+		relationFields[fieldName] = varEntry;
+	}
+
+	// if (result.skill_list?.length > 0) {
+	// 	var skillEntry = await Promise.all(result.skill_list.map(async (t:any) => {
+	// 		const findSkill = await payload.find({
+	// 			collection: "enemySkills",
+	// 			where: {
+	// 				data_key: {
+	// 					equals: t.data_key,
+	// 				},
+	// 			}
+	// 		});
+	// 		if (findSkill?.docs?.[0]?.id) {
+	// 			return findSkill?.docs?.[0]?.id;
 	// 		}
-	// 	});
+	// 		else {
+	// 			return null;
+	// 		}
+	// 	}));
 
-	// 	if (relEntry?.docs?.[0]?.id) {
-	// 		relationFields[fieldName] = relEntry?.docs?.[0]?.id;
+	// 	// NOTE Some skills have no name entry (?)
+
+	// 	if (skillEntry.length > 0) {
+	// 		relationFields["skill_list"] = skillEntry;
 	// 	}
 	// }
-
-	if (result.skill_list?.length > 0) {
-		var skillEntry = await Promise.all(result.skill_list.map(async (t:any) => {
-			const findSkill = await payload.find({
-				collection: "enemySkills",
-				where: {
-					data_key: {
-						equals: t.data_key,
-					},
-				}
-			});
-			if (findSkill?.docs?.[0]?.id) {
-				return findSkill?.docs?.[0]?.id;
-			}
-			else {
-				return null;
-			}
-		}));
-
-		// NOTE Some skills have no name entry (?)
-
-		if (skillEntry.length > 0) {
-			relationFields["skill_list"] = skillEntry;
-		}
-	}
-
-	if (result.elemental_weaknesses?.length > 0) {
-		const elementEntry = await Promise.all(result.elemental_weaknesses.map(async (t:any) => {
-			const findElement = element.find((a:any) => a.data_key == t.data_key);
-			if (findElement?.id) {
-				return findElement?.id;
-			}
-			else {
-				return null;
-			}
-		}));
-
-		if (elementEntry.length > 0) {
-			relationFields["elemental_weaknesses"] = elementEntry;
-		}
-	}
 
 	// ====================================
 	// End of Relation Fields
@@ -261,9 +168,7 @@ const seedUploads = async (result: any) => {
 		var custData = {
 			...result,
 			...relationFields,
-			...resistanceFields,
 			...iconImport,
-			rewards: dropList,
 		};
 
 		const updateItemCustom = await payload.update({
@@ -281,9 +186,7 @@ const seedUploads = async (result: any) => {
 			...result,
 			id: result?.[idField],
 			...relationFields,
-			...resistanceFields,
 			...iconImport,
-			rewards: dropList,
 		};
 
 		const createItemCustom = await payload.create({
@@ -291,7 +194,7 @@ const seedUploads = async (result: any) => {
 			data: custData,
 		});
 	   
-	   	console.log(`${JSON.stringify(createItemCustom)} Custom Data Import completed!`);
+	   	console.log(`${JSON.stringify(result?.[idField])} Custom Data Import completed!`);
 	}
 };
 
