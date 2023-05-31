@@ -40,6 +40,8 @@ export enum BlockType {
    CodeSandbox = "codesandbox",
    Link = "link",
    Group = "group",
+   Updates = "updates",
+   UpdatesInline = "updatesInline",
 }
 
 export type TextBlock =
@@ -78,6 +80,14 @@ export type ImageElement = BlockElement & {
    refId: string | null;
    url: string | null;
    children: [{ text: "" }];
+};
+
+export type UpdatesElement = BlockElement & {
+   type: BlockType.Updates;
+};
+
+export type UpdatesInlineElement = BlockElement & {
+   type: BlockType.UpdatesInline;
 };
 
 export type VideoElement = BlockElement & {
@@ -128,7 +138,9 @@ export type CustomElement =
    | VideoElement
    | CodeSandboxElement
    | LinkElement
-   | GroupElement;
+   | GroupElement
+   | UpdatesElement
+   | UpdatesInlineElement;
 
 export type CustomText = {
    text: string;
