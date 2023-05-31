@@ -14,14 +14,12 @@ import {
    Component,
    Dog,
    HardDrive,
-   Info,
    Loader2,
    Lock,
    LogOut,
    MoreVertical,
    Pin,
    Search,
-   Star,
    User as UserIcon,
    Users,
    X,
@@ -65,6 +63,7 @@ import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
+import { useIsBot } from "~/utils/isBotProvider";
 
 // See https://github.com/payloadcms/payload/discussions/1319 regarding relational typescript support
 
@@ -162,10 +161,11 @@ export default function SiteIndex() {
       }
    }, [location, gaTrackingId]);
    const [searchToggle, setSearchToggle] = useState(false);
+   let isBot = useIsBot();
 
    return (
       <>
-         {process.env.NODE_ENV === "production" && gaTrackingId ? (
+         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
             <>
                <script
                   defer
