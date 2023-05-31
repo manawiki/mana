@@ -32,6 +32,7 @@ import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
 import { useEffect } from "react";
 import { toast } from "./components/Toaster";
+import { useIsBot } from "~/utils/isBotProvider";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -104,6 +105,7 @@ function App() {
    const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
+   const isBot = useIsBot();
 
    useChangeLanguage(locale);
 
@@ -146,7 +148,7 @@ function App() {
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
-            <Scripts />
+            {isBot ? null : <Scripts />}
             <LiveReload />
          </body>
       </html>

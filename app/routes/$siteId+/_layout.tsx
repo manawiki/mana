@@ -14,14 +14,12 @@ import {
    Component,
    Dog,
    HardDrive,
-   Info,
    Loader2,
    Lock,
    LogOut,
    MoreVertical,
    Pin,
    Search,
-   Star,
    User as UserIcon,
    Users,
    X,
@@ -66,6 +64,7 @@ import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 import type { Update } from "~/db/payload-types";
+import { useIsBot } from "~/utils/isBotProvider";
 
 export async function loader({
    context: { payload, user },
@@ -173,10 +172,11 @@ export default function SiteIndex() {
       }
    }, [location, gaTrackingId]);
    const [searchToggle, setSearchToggle] = useState(false);
+   let isBot = useIsBot();
 
    return (
       <>
-         {process.env.NODE_ENV === "production" && gaTrackingId ? (
+         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
             <>
                <script
                   defer
