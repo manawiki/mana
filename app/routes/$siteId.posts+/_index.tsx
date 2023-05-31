@@ -27,7 +27,7 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./components/FeedItem";
 import Tooltip from "~/components/Tooltip";
-import type { Post } from "payload-types";
+import type { Post } from "payload/generated-types";
 
 export const handle = {};
 
