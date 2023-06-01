@@ -254,11 +254,11 @@ export default function SiteIndex() {
                                              <div className="flex items-center gap-3 truncate">
                                                 <div
                                                    className="h-8 w-8 flex-none 
-                                    overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                    overflow-hidden rounded-full laptop:h-[54px] laptop:w-[54px]"
                                                 >
                                                    <Image
                                                       alt="Site Logo"
-                                                      options="aspect_ratio=1:1&height=80&width=80"
+                                                      options="aspect_ratio=1:1&height=120&width=120"
                                                       url={item.icon?.url}
                                                    />
                                                 </div>
@@ -419,18 +419,18 @@ export default function SiteIndex() {
                   <LoggedOut>
                      <div className="relative flex items-center justify-center pb-3">
                         <NavLink
-                           className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                           className="bg-2 shadow-1 rounded-full shadow"
                            to={`/${site.slug}`}
                         >
                            {({ isActive }) => (
                               <>
                                  <div
                                     className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
                                  >
                                     <Image
                                        alt="Site Logo"
-                                       options="aspect_ratio=1:1&height=80&width=80"
+                                       options="aspect_ratio=1:1&height=120&width=120"
                                        url={site.icon?.url}
                                     />
                                  </div>
@@ -450,18 +450,18 @@ export default function SiteIndex() {
                         {following?.length === 0 ? (
                            <div className="relative flex items-center justify-center pb-3">
                               <NavLink
-                                 className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                                 className="bg-2 shadow-1 rounded-full shadow"
                                  to={`/${site.slug}`}
                               >
                                  {({ isActive }) => (
                                     <>
                                        <div
                                           className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
                                        >
                                           <Image
                                              alt="Site Logo"
-                                             options="aspect_ratio=1:1&height=80&width=80"
+                                             options="aspect_ratio=1:1&height=120&width=120"
                                              url={site.icon?.url}
                                           />
                                        </div>
@@ -491,18 +491,18 @@ export default function SiteIndex() {
                                                 site.type != "custom" &&
                                                 true
                                              }
-                                             className="bg-2 shadow-1 shadow-1 rounded-full shadow-sm"
+                                             className="bg-2 shadow-1 rounded-full shadow"
                                              to={`/${item.slug}`}
                                           >
                                              {({ isActive }) => (
                                                 <>
                                                    <div
                                                       className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
                                                    >
                                                       <Image
                                                          alt="Site Logo"
-                                                         options="aspect_ratio=1:1&height=80&width=80"
+                                                         options="aspect_ratio=1:1&height=120&width=120"
                                                          url={item.icon?.url}
                                                       />
                                                    </div>
@@ -663,11 +663,11 @@ export default function SiteIndex() {
                               to={`/${site.slug}`}
                               className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                            >
-                              <div className="h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200">
+                              <div className="shadow-1 h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200 shadow">
                                  <Image
                                     //@ts-expect-error
                                     url={site.icon?.url}
-                                    options="aspect_ratio=1:1&height=50&width=50"
+                                    options="aspect_ratio=1:1&height=80&width=80"
                                     alt="Site Logo"
                                  />
                               </div>
