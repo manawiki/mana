@@ -380,22 +380,6 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   </Tooltip>
                   <Tooltip
                      className={`${dataClass}`}
-                     id="fHallHard"
-                     content="Forgotten Hall Hard"
-                  >
-                     <>
-                        <span className="text-1 truncate">F. Hall Hard</span>
-                        <span>
-                           {
-                              data?.record_info?.challenge_info
-                                 ?.schedule_max_level
-                           }
-                        </span>
-                     </>
-                  </Tooltip>
-
-                  <Tooltip
-                     className={`${dataClass}`}
                      id="fHalldHard"
                      content="Forgotten Hall Normal"
                   >
@@ -403,8 +387,23 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         <span className="text-1 truncate">F. Hall Normal</span>
                         <span>
                            {
-                              data?.record_info?.challenge_info
+                              data?.detail_info?.record_info?.challenge_info
                                  ?.none_schedule_max_level
+                           }
+                        </span>
+                     </>
+                  </Tooltip>
+                  <Tooltip
+                     className={`${dataClass}`}
+                     id="fHallHard"
+                     content="Forgotten Hall Hard"
+                  >
+                     <>
+                        <span className="text-1 truncate">F. Hall Hard</span>
+                        <span>
+                           {
+                              data?.detail_info?.record_info?.challenge_info
+                                 ?.schedule_max_level
                            }
                         </span>
                      </>
@@ -919,7 +918,6 @@ const CharacterInfo = ({
          filter: (node) => node.id !== "relic-legend",
       })
          .then((dataUrl) => {
-            console.log("done!");
             const link = document.createElement("a");
             link.download = `${uid?.uid}-showcase`;
             link.href = dataUrl;
