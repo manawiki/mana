@@ -24,6 +24,7 @@ export default function Tooltip({
       <>
          <TT className="rounded px-3 text-xs font-semibold" id={id} />
          <div
+            {...props}
             className={className}
             data-tooltip-id={id}
             data-tooltip-html={ReactDOMServer.renderToStaticMarkup(html)}
