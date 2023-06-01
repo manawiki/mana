@@ -5,17 +5,26 @@ import morgan from "morgan";
 import payload from "payload";
 import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
-import nodemailerSendgrid from "nodemailer-sendgrid";
+import nodemailer from "nodemailer";
 import coreBuildConfig from "./app/db/payload.config";
 import chokidar from "chokidar";
 import { broadcastDevReady } from "@remix-run/node";
-
 
 require("dotenv").config();
 
 const BUILD_DIR = path.join(process.cwd(), "build");
 
 const cors = require("cors");
+
+const transport = nodemailer.createTransport({
+   host: process.env.PAYLOAD_NODEMAILER_HOST,
+   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT),
+   secure: false,
+   auth: {
+      user: process.env.PAYLOAD_NODEMAILER_USER,
+      pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
+   },
+});
 
 const corsOptions = {
    origin: [
@@ -50,12 +59,10 @@ async function startCore() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.SENDGRID_API_KEY
+      ...(process.env.PAYLOAD_NODEMAILER_HOST
          ? {
               email: {
-                 transportOptions: nodemailerSendgrid({
-                    apiKey: process.env.SENDGRID_API_KEY,
-                 }),
+                 transport,
                  fromName: "No Reply - Mana Wiki",
                  fromAddress: "dev@mana.wiki",
               },
@@ -76,14 +83,14 @@ async function startCore() {
 
    // no ending slashes for SEO reasons
    app.use((req, res, next) => {
-      if (req.path.endsWith('/') && req.path.length > 1) {
-         const query = req.url.slice(req.path.length)
-         const safepath = req.path.slice(0, -1).replace(/\/+/g, '/')
-         res.redirect(301, safepath + query)
+      if (req.path.endsWith("/") && req.path.length > 1) {
+         const query = req.url.slice(req.path.length);
+         const safepath = req.path.slice(0, -1).replace(/\/+/g, "/");
+         res.redirect(301, safepath + query);
       } else {
-         next()
+         next();
       }
-   })
+   });
 
    // Remix fingerprints its assets so we can cache forever.
    app.use(
@@ -141,27 +148,25 @@ async function startCore() {
    app.listen(port, () => {
       console.log(`Express server listening on port ${port}`);
 
-      if (process.env.NODE_ENV === 'development') {
-         broadcastDevReady(require(BUILD_DIR))
+      if (process.env.NODE_ENV === "development") {
+         broadcastDevReady(require(BUILD_DIR));
       }
    });
 }
 
 startCore();
 
-
-
 // during dev, we'll keep the build module up to date with the changes
-if (process.env.NODE_ENV === 'development') {
-	const watcher = chokidar.watch(BUILD_DIR, {
-		ignored: ['**/**.map'],
-	})
-	watcher.on('all', () => {
-		for (const key in require.cache) {
-			if (key.startsWith(BUILD_DIR)) {
-				delete require.cache[key]
-			}
-		}
-		broadcastDevReady(require(BUILD_DIR))
-	})
+if (process.env.NODE_ENV === "development") {
+   const watcher = chokidar.watch(BUILD_DIR, {
+      ignored: ["**/**.map"],
+   });
+   watcher.on("all", () => {
+      for (const key in require.cache) {
+         if (key.startsWith(BUILD_DIR)) {
+            delete require.cache[key];
+         }
+      }
+      broadcastDevReady(require(BUILD_DIR));
+   });
 }

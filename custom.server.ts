@@ -3,8 +3,8 @@ import compression from "compression";
 import morgan from "morgan";
 import payload from "payload";
 import invariant from "tiny-invariant";
-import nodemailerSendgrid from "nodemailer-sendgrid";
 import customBuildConfig from "./app/db/payload.custom.config";
+import nodemailer from "nodemailer";
 
 require("dotenv").config();
 const cors = require("cors");
@@ -17,6 +17,16 @@ const corsOptions = {
       "http://localhost:3000",
    ],
 };
+
+const transport = nodemailer.createTransport({
+   host: process.env.PAYLOAD_NODEMAILER_HOST,
+   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT),
+   secure: false,
+   auth: {
+      user: process.env.PAYLOAD_NODEMAILER_USER,
+      pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
+   },
+});
 
 //Start custom database (payload instance only)
 async function startCustom() {
@@ -45,12 +55,10 @@ async function startCustom() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.SENDGRID_API_KEY
+      ...(process.env.PAYLOAD_NODEMAILER_HOST
          ? {
               email: {
-                 transportOptions: nodemailerSendgrid({
-                    apiKey: process.env.SENDGRID_API_KEY,
-                 }),
+                 transport,
                  fromName: "No Reply - Mana Wiki",
                  fromAddress: "dev@mana.wiki",
               },

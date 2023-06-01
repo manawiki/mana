@@ -78,9 +78,16 @@ export const links: LinksFunction = () => [
    { rel: "preconnect", href: "https://starrail-static.mana.wiki" },
    { rel: "preconnect", href: "https://ajax.cloudflare.com" },
    { rel: "preconnect", href: "https://p.typekit.net" },
+
+   //fonts needs a seperate cors preconnect
    {
       rel: "preconnect",
       href: "https://use.typekit.net",
+      crossOrigin: "anonymous",
+   },
+   {
+      rel: "preconnect",
+      href: "https://static.mana.wiki",
       crossOrigin: "anonymous",
    },
 
@@ -92,6 +99,11 @@ export const links: LinksFunction = () => [
    {
       rel: "dns-prefetch",
       href: "https://use.typekit.net",
+      crossOrigin: "anonymous",
+   },
+   {
+      rel: "dns-prefetch",
+      href: "https://static.mana.wiki",
       crossOrigin: "anonymous",
    },
 ];
