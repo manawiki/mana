@@ -286,7 +286,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
 
    return (
       <>
-         <div className="border-color relative z-40 border-b p-3 pb-8 pt-24 laptop:pt-16">
+         <div className="border-color relative z-20 border-b p-3 pb-8 pt-24 laptop:pt-16">
             <section className="relative z-10">
                <Image
                   alt="Icon"
@@ -435,7 +435,7 @@ const CharacterSelector = ({
 
    return (
       <>
-         <div className="relative z-50 -mt-5 flex items-center justify-center gap-3">
+         <div className="relative z-20 -mt-5 flex items-center justify-center gap-3">
             {charids.map((c: any, i: any) => {
                const cdata = characters.find((a: any) => a.character_id == c);
 
@@ -1554,7 +1554,7 @@ const CharacterInfo = ({
             </div>
          </div>
          <button
-            className="border-color shadow-1 absolute left-1/2 z-40 flex -translate-x-1/2 transform
+            className="border-color shadow-1 absolute left-1/2 z-20 flex -translate-x-1/2 transform
             items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
             shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
             onClick={onDownloadImage}
