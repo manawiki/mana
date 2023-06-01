@@ -37,6 +37,7 @@ export async function loader({ params, request }: LoaderArgs) {
 
    const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
    const showcaseData = await (await fetch(showcaseDataUrl)).json();
+   console.log(showcaseData);
 
    if (showcaseData.detail)
       return json({
@@ -227,8 +228,8 @@ const DisplayPlayerInfo = ({
          />
          <div
             id="showcase-canvas"
-            className="border-color bg-2 shadow-1 relative -mt-9 border-y
-         desktop:border-y  desktop:p-6 desktop:pt-8 desktop:shadow-sm"
+            className="border-color bg-2 relative -mt-9 border-y
+         desktop:border-y  desktop:p-6 desktop:pt-8"
          >
             {/* <div className="absolute right-4 top-10 z-40 flex items-center laptop:-top-14">
                <Tooltip
@@ -282,11 +283,11 @@ const DisplayPlayerInfo = ({
 
 const PlayerHeader = ({ data, playerIcon }: any) => {
    const dataClass =
-      "rounded-md border font-bold border-color flex gap-1 px-2 py-1 bg-3 shadow shadow-1 text-sm";
+      "rounded-md border font-bold border-color justify-between flex gap-1 px-2 py-1.5 bg-3 shadow-sm shadow-1 text-xs";
 
    return (
       <>
-         <div className="border-color relative border-b px-8 pb-6 pt-24 laptop:pt-16">
+         <div className="border-color relative z-40 border-b p-3 pb-8 pt-24 laptop:pt-16">
             <section className="relative z-10">
                <Image
                   alt="Icon"
@@ -294,20 +295,24 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   url={playerIcon?.icon?.url}
                   className="border-color shadow-1 mx-auto rounded-full border-4 shadow"
                />
-               <div
-                  className="py-2 text-center font-header text-2xl font-bold"
-               >
+               <div className="py-2 text-center font-header text-2xl font-bold">
                   {data?.detail_info?.nickname}
                </div>
-               <div className="absolute -bottom-10 left-1/2 flex  -translate-x-1/2 transform cursor-default items-center justify-center gap-3">
+               <div
+                  className="mx-auto grid max-w-xl cursor-default
+                  grid-cols-2 gap-2 p-2 pt-2 laptop:grid-cols-4"
+               >
                   {/* UID - Will move this elsewhere in future, atm commented out due to mobile issue */}
-                  {/* <Tooltip
+                  <Tooltip
                      className={`${dataClass}`}
                      id="starrail-uid"
                      content="UID"
                   >
-                     {data?.detail_info?.uid}
-                  </Tooltip> */}
+                     <>
+                        <span className="text-1 truncate">UID</span>
+                        <span>{data?.detail_info?.uid}</span>
+                     </>
+                  </Tooltip>
 
                   {/* Level (Trailblaze Level) */}
                   <Tooltip
@@ -316,7 +321,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      content="Trailblaze Level"
                   >
                      <>
-                        <span className="text-1">TL</span>
+                        <span className="text-1">Trailblaze Lvl</span>
                         <span>{data?.detail_info?.level}</span>
                      </>
                   </Tooltip>
@@ -328,7 +333,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      content="Equilibrium Level"
                   >
                      <>
-                        <span className="text-1">EL</span>
+                        <span className="text-1">Equilibrium Lvl</span>
                         <span>{data?.detail_info?.world_level}</span>
                      </>
                   </Tooltip>
@@ -368,13 +373,43 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                      content="Simulated Universe World"
                   >
                      <>
-                        <span className="text-1">SU</span>
+                        <span className="text-1">Simulated</span>
                         <span>
                            {data?.detail_info?.record_info?.rogue_area_progress}
                         </span>
                      </>
                   </Tooltip>
+                  <Tooltip
+                     className={`${dataClass}`}
+                     id="fHallHard"
+                     content="Forgotten Hall Hard"
+                  >
+                     <>
+                        <span className="text-1 truncate">F. Hall Hard</span>
+                        <span>
+                           {
+                              data?.record_info?.challenge_info
+                                 ?.schedule_max_level
+                           }
+                        </span>
+                     </>
+                  </Tooltip>
 
+                  <Tooltip
+                     className={`${dataClass}`}
+                     id="fHalldHard"
+                     content="Forgotten Hall Normal"
+                  >
+                     <>
+                        <span className="text-1 truncate">F. Hall Normal</span>
+                        <span>
+                           {
+                              data?.record_info?.challenge_info
+                                 ?.none_schedule_max_level
+                           }
+                        </span>
+                     </>
+                  </Tooltip>
                </div>
             </section>
             <div
@@ -402,7 +437,7 @@ const CharacterSelector = ({
 
    return (
       <>
-         <div className="relative z-30 flex items-center justify-center gap-3 pt-10">
+         <div className="relative z-50 -mt-5 flex items-center justify-center gap-3">
             {charids.map((c: any, i: any) => {
                const cdata = characters.find((a: any) => a.character_id == c);
 
@@ -451,7 +486,7 @@ const ItemFrameRound = ({
 
    return (
       <div
-         className={`rounded-full border-2 border-zinc-100 text-center align-middle dark:border-bg4Dark ${className}`}
+         className={`rounded-full border-2 border-zinc-200 text-center align-middle dark:border-bg4Dark ${className}`}
          key={mat?.id}
       >
          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-4 border-white dark:border-bg3Dark">
@@ -880,7 +915,10 @@ const CharacterInfo = ({
          return;
       }
 
-      toPng(ref.current, { cacheBust: true, filter: (node) => node.id !== "relic-legend"})
+      toPng(ref.current, {
+         cacheBust: true,
+         filter: (node) => node.id !== "relic-legend",
+      })
          .then((dataUrl) => {
             console.log("done!");
             const link = document.createElement("a");
@@ -900,17 +938,17 @@ const CharacterInfo = ({
       <>
          <div
             ref={ref}
-            className="bg-2 relative rounded-lg max-desktop:pt-4 desktop:py-6 overflow-hidden"
+            className="bg-2 relative overflow-hidden rounded-lg max-desktop:pt-4 desktop:py-6"
          >
-            <div 
-               className="absolute top-0 left-0 right-0 bottom-0 w-[440px] overflow-hidden transform scale-125"
+            <div
+               className="absolute bottom-0 left-0 right-0 top-0 w-[440px] scale-125 transform overflow-hidden"
                style={{ top: `${imageTop}px` }}
             >
                <Image
-                     options="height=1200"
-                     url={charbase?.image_draw?.url}
-                     alt={charbase?.name}
-                     className="object-cover max-desktop:hidden"
+                  options="height=1200"
+                  url={charbase?.image_draw?.url}
+                  alt={charbase?.name}
+                  className="object-cover max-desktop:hidden"
                />
             </div>
             <div>
@@ -1035,39 +1073,40 @@ const CharacterInfo = ({
                   {/* Light Cone Display  */}
                   <div className="mb-1 desktop:w-[300px]">
                      {/* Light Cone Image + Rarity */}
-                     {lcbase !== undefined && <div
-                        className="max-desktop:border-color flex items-start 
+                     {lcbase !== undefined && (
+                        <div
+                           className="max-desktop:border-color flex items-start 
                         gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3 
                         desktop:mb-4 desktop:rounded-md"
-                     >
-                        <Link
-                           className="block"
-                           prefetch="intent"
-                           to={`/starrail/collections/lightCones/${lcbase?.id}`}
                         >
-                           <div className="relative overflow-hidden rounded">
-                              <Image
-                                 options="height=140"
-                                 alt={lcbase.name}
-                                 url={lcbase.image_full?.url}
-                                 className="z-0 mx-auto w-14"
-                              />
-                              <div className="relative z-10 -mt-4 h-4 w-14 rounded  bg-zinc-500 text-center">
+                           <Link
+                              className="block"
+                              prefetch="intent"
+                              to={`/starrail/collections/lightCones/${lcbase?.id}`}
+                           >
+                              <div className="relative overflow-hidden rounded">
                                  <Image
-                                    options="width=56"
-                                    alt="Rarity"
-                                    url={lcbase.rarity?.icon?.url}
-                                    className="inline-block h-4 object-contain align-top"
+                                    options="height=140"
+                                    alt={lcbase.name}
+                                    url={lcbase.image_full?.url}
+                                    className="z-0 mx-auto w-14"
                                  />
+                                 <div className="relative z-10 -mt-4 h-4 w-14 rounded  bg-zinc-500 text-center">
+                                    <Image
+                                       options="width=56"
+                                       alt="Rarity"
+                                       url={lcbase.rarity?.icon?.url}
+                                       className="inline-block h-4 object-contain align-top"
+                                    />
+                                 </div>
                               </div>
-                           </div>
-                        </Link>
+                           </Link>
 
-                        {/* Level + Superimposition Levels */}
-                        <div className="flex-grow">
-                           <div className="relative pb-1.5 font-bold">
-                              {lcbase.name}
-                              {/* <Tooltip
+                           {/* Level + Superimposition Levels */}
+                           <div className="flex-grow">
+                              <div className="relative pb-1.5 font-bold">
+                                 {lcbase.name}
+                                 {/* <Tooltip
                                  id="relic-set-bonus"
                                  side="top"
                                  className={`text-sm ${lcHighlightStyle}`}
@@ -1097,70 +1136,72 @@ const CharacterInfo = ({
                               >
                                  {lcbase.name}
                               </Tooltip> */}
-                           </div>
-                           <div className="flex flex-grow items-center gap-2">
-                              <span className="text-sm">
-                                 Lv.{chardata?.equipment?.level}
-                              </span>
-                              <div
-                                 className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-600 
+                              </div>
+                              <div className="flex flex-grow items-center gap-2">
+                                 <span className="text-sm">
+                                    Lv.{chardata?.equipment?.level}
+                                 </span>
+                                 <div
+                                    className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-600 
                                  text-xs font-bold text-yellow-100"
-                              >
-                                 {superimp[chardata?.equipment?.promotion]}
+                                 >
+                                    {superimp[chardata?.equipment?.promotion]}
+                                 </div>
+                              </div>
+
+                              {/* Light Cone Stat Values */}
+                              <div className="flex items-center gap-2 pt-2">
+                                 {wstats?.map((s: any) => {
+                                    const stattype = statTypes.find(
+                                       (a: any) => a.name == s.name
+                                    );
+                                    const lcstatname = s.name?.replace("%", "");
+                                    return (
+                                       <>
+                                          <div
+                                             className={`flex items-center gap-1 rounded-full ${
+                                                hoverStat.indexOf(lcstatname) >
+                                                -1
+                                                   ? "bg-blue-200 dark:bg-zinc-700"
+                                                   : hoverStat.length > 0
+                                                   ? "opacity-40"
+                                                   : ""
+                                             }`}
+                                             onMouseOver={() =>
+                                                setHoverStat([lcstatname])
+                                             }
+                                             onMouseOut={() => setHoverStat([])}
+                                             onClick={() =>
+                                                setHoverStat(
+                                                   hoverStat.length > 0
+                                                      ? []
+                                                      : [lcstatname]
+                                                )
+                                             }
+                                          >
+                                             <div className="h-5 w-5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500">
+                                                <Image
+                                                   options="aspect_ratio=1:1&height=30&width=30"
+                                                   alt="StatIcon"
+                                                   url={stattype?.icon?.url}
+                                                   className="object-fit"
+                                                />
+                                             </div>
+                                             <div className="text-1 inline-block pr-2 align-middle text-xs font-bold">
+                                                +
+                                                {formatStat(
+                                                   stattype?.name,
+                                                   s?.base
+                                                )}
+                                             </div>
+                                          </div>
+                                       </>
+                                    );
+                                 })}
                               </div>
                            </div>
-
-                           {/* Light Cone Stat Values */}
-                           <div className="flex items-center gap-2 pt-2">
-                              {wstats?.map((s: any) => {
-                                 const stattype = statTypes.find(
-                                    (a: any) => a.name == s.name
-                                 );
-                                 const lcstatname = s.name?.replace("%", "");
-                                 return (
-                                    <>
-                                       <div
-                                          className={`flex items-center gap-1 rounded-full ${
-                                             hoverStat.indexOf(lcstatname) > -1
-                                                ? "bg-blue-200 dark:bg-zinc-700"
-                                                : hoverStat.length > 0
-                                                ? "opacity-40"
-                                                : ""
-                                          }`}
-                                          onMouseOver={() =>
-                                             setHoverStat([lcstatname])
-                                          }
-                                          onMouseOut={() => setHoverStat([])}
-                                          onClick={() =>
-                                             setHoverStat(
-                                                hoverStat.length > 0
-                                                   ? []
-                                                   : [lcstatname]
-                                             )
-                                          }
-                                       >
-                                          <div className="h-5 w-5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500">
-                                             <Image
-                                                options="aspect_ratio=1:1&height=30&width=30"
-                                                alt="StatIcon"
-                                                url={stattype?.icon?.url}
-                                                className="object-fit"
-                                             />
-                                          </div>
-                                          <div className="text-1 inline-block pr-2 align-middle text-xs font-bold">
-                                             +
-                                             {formatStat(
-                                                stattype?.name,
-                                                s?.base
-                                             )}
-                                          </div>
-                                       </div>
-                                    </>
-                                 );
-                              })}
-                           </div>
                         </div>
-                     </div>}
+                     )}
                      {/* Stat Display */}
                      <div className="max-desktop:border-color relative max-desktop:border-b">
                         {statVal.map((s: any) => {
@@ -1243,17 +1284,20 @@ const CharacterInfo = ({
                      {/* Individual Relics */}
 
                      {/* Artifact Substat Legend (?) */}
-                     <div id="relic-legend" className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0">
+                     <div
+                        id="relic-legend"
+                        className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0"
+                     >
                         <Tooltip
                            id="relic-help"
                            side="right"
                            html={
                               <div className="w-60 text-left font-normal">
                                  <div className="mb-2 border-b border-zinc-700 pb-2">
-                                    Each group of dots represents an
-                                    individual time the substat was rolled
-                                    into. The number of dots represent the
-                                    quality of substat rolls
+                                    Each group of dots represents an individual
+                                    time the substat was rolled into. The number
+                                    of dots represent the quality of substat
+                                    rolls
                                  </div>
                                  <div className="flex items-center gap-2">
                                     <div className="flex w-8 items-center justify-center gap-1">
@@ -1289,10 +1333,7 @@ const CharacterInfo = ({
 
                         const mainstat = rdata.mainobj;
 
-                        const mainstatname = mainstat?.name?.replace(
-                           "%",
-                           ""
-                        );
+                        const mainstatname = mainstat?.name?.replace("%", "");
 
                         return (
                            <>
@@ -1308,8 +1349,7 @@ const CharacterInfo = ({
                                  <div className="bg-3 shadow-1 flex h-[62px] flex-grow items-center justify-between rounded px-1 shadow-sm">
                                     <div
                                        className={`mr-1 flex-grow cursor-default rounded p-1 ${
-                                          hoverStat.indexOf(mainstatname) >
-                                          -1
+                                          hoverStat.indexOf(mainstatname) > -1
                                              ? "bg-blue-200 dark:bg-zinc-700"
                                              : hoverStat.length > 0
                                              ? "opacity-40"
@@ -1369,15 +1409,12 @@ const CharacterInfo = ({
                                                          statname
                                                       ) > -1
                                                          ? "bg-blue-200 dark:bg-zinc-700"
-                                                         : hoverStat.length >
-                                                            0
+                                                         : hoverStat.length > 0
                                                          ? "opacity-40"
                                                          : ""
                                                    }`}
                                                    onMouseOver={() =>
-                                                      setHoverStat([
-                                                         statname,
-                                                      ])
+                                                      setHoverStat([statname])
                                                    }
                                                    onMouseOut={() =>
                                                       setHoverStat([])
@@ -1400,8 +1437,7 @@ const CharacterInfo = ({
                                                                options="aspect_ratio=1:1&height=20&width=20"
                                                                alt="StatIcon"
                                                                url={
-                                                                  sub?.icon
-                                                                     ?.url
+                                                                  sub?.icon?.url
                                                                }
                                                                className="object-fit"
                                                             />
@@ -1476,9 +1512,7 @@ const CharacterInfo = ({
                               <>
                                  <div
                                     className={`bg-3 shadow-1 flex items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
-                                    onMouseOver={() =>
-                                       setHoverStat(sbonuses)
-                                    }
+                                    onMouseOver={() => setHoverStat(sbonuses)}
                                     onMouseOut={() => setHoverStat([])}
                                     // onClick={() =>
                                     //    setHoverStat(
