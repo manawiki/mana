@@ -37,7 +37,6 @@ export async function loader({ params, request }: LoaderArgs) {
 
    const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
    const showcaseData = await (await fetch(showcaseDataUrl)).json();
-   console.log(showcaseData);
 
    if (showcaseData.detail)
       return json({
