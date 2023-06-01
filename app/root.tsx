@@ -67,8 +67,8 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: tooltipStyles, as: "style" },
    { rel: "stylesheet", href: tooltipStyles },
 
-   { rel: "preload", href: fonts, as: "style" },
-   { rel: "stylesheet", href: fonts },
+   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
 
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
