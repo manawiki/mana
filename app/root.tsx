@@ -67,29 +67,39 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: tooltipStyles, as: "style" },
    { rel: "stylesheet", href: tooltipStyles },
 
-   { rel: "preload", href: fonts, as: "style" },
-   { rel: "stylesheet", href: fonts },
+   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
 
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: "https://static.mana.wiki" },
-   { rel: "preconnect", href: "https://ajax.cloudflare.com" },
    { rel: "preconnect", href: "https://p.typekit.net" },
+
+   //fonts needs a seperate cors preconnect
    {
       rel: "preconnect",
       href: "https://use.typekit.net",
       crossOrigin: "anonymous",
    },
+   {
+      rel: "preconnect",
+      href: "https://static.mana.wiki",
+      crossOrigin: "anonymous",
+   },
 
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: "https://static.mana.wiki" },
-   { rel: "dns-prefetch", href: "https://ajax.cloudflare.com" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
    {
       rel: "dns-prefetch",
       href: "https://use.typekit.net",
+      crossOrigin: "anonymous",
+   },
+   {
+      rel: "dns-prefetch",
+      href: "https://static.mana.wiki",
       crossOrigin: "anonymous",
    },
 ];

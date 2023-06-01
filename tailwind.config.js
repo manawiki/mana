@@ -12,7 +12,12 @@ module.exports = {
             bg4Dark: "#3D4042",
          },
          fontFamily: {
-            body: ["NunitoSans", "NunitoSans Override"],
+            body: [
+               "NunitoSans",
+               "NunitoSans Override",
+               "ui-sans-serif",
+               "sans-serif",
+            ],
             logo: ["new-order", "sans-serif"],
             header: ["source-sans-pro", "sans-serif"],
          },
