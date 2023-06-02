@@ -125,6 +125,27 @@ const SearchType = ({ type }: { type: any }) => {
    }
 };
 
+const LabelType = ({ type }: { type: any }) => {
+   const labelType = type.doc?.relationTo;
+   switch (labelType) {
+      case "customPages": {
+         return null;
+      }
+      case "collections": {
+         return "List";
+      }
+      case "entries": {
+         return "Entry";
+      }
+      case "posts": {
+         return "Post";
+      }
+      //Custom site
+      default:
+         return labelType;
+   }
+};
+
 export function SearchComboBox({
    setSearchToggle,
    siteType,
@@ -227,7 +248,12 @@ export function SearchComboBox({
                                             />
                                          )}
                                       </div>
-                                      <div>{item?.name}</div>
+                                      <div>
+                                         <div>{item?.name}</div>
+                                         <div className="text-1 text-xs font-normal capitalize">
+                                            <LabelType type={item} />
+                                         </div>
+                                      </div>
                                    </div>
                                    <SearchType type={item} />
                                 </Link>

@@ -10,9 +10,9 @@ import { Users } from "./collections/CustomUsers";
 import {
    CustomCollections,
    CustomSearchCollections,
+   CustomDefaultPriorities,
 } from "../_custom/collections";
 import searchPlugin from "./plugins/search";
-const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
 
@@ -67,6 +67,7 @@ export default buildConfig({
       }),
       searchPlugin({
          collections: [...CustomSearchCollections],
+         defaultPriorities: CustomDefaultPriorities,
          searchOverrides: {
             fields: [
                {

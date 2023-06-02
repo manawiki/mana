@@ -32,7 +32,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
       });
    }
 
-   let defaultPriority = 9;
+   let defaultPriority = 50;
    if (defaultPriorities) {
       const { [collection]: priority } = defaultPriorities;
 

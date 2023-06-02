@@ -17,7 +17,6 @@ import { Recipes } from "./recipes";
 import { Banners } from "./banners";
 import { PlayerIcons } from "./playerIcons";
 import { SubmittedWarps } from "./submittedWarps";
-
 import { _Rarities } from "./_rarities";
 import { _Elements } from "./_elements";
 import { _StatTypes } from "./_statTypes";
@@ -27,6 +26,9 @@ import { _RelicStats } from "./_relicStats";
 import { _EnemyStatusRes } from "./_enemyStatusRes";
 import { _EnemyCamps } from "./_enemyCamps";
 import { _RecipeTypes } from "./_recipeTypes";
+
+
+export const CustomDefaultPriorities = {};
 
 export const CustomSearchCollections = [
    "characters",
