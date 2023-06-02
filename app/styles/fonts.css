@@ -41,8 +41,7 @@
   font-family: NunitoSans Override;
   font-style: normal;
   font-weight: 400;
-  src: local('BlinkMacSystemFont'), local('Segoe UI'), local('Helvetica Neue'),
-  local('Arial'), local('Noto Sans');
+  src: local('Arial');
   ascent-override: 102.68%;
   descent-override: 28.51%;
   line-gap-override: 0%;
@@ -52,8 +51,7 @@
   font-family: NunitoSans Override;
   font-style: italic;
   font-weight: 400;
-  src: local('BlinkMacSystemFont'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue'),
-    local('Arial'), local('Noto Sans');
+  src: local('Arial Italic');
   ascent-override: 102.68%;
   descent-override: 28.51%;
   line-gap-override: 0%;
@@ -63,21 +61,19 @@
   font-family: NunitoSans Override;
   font-style: normal;
   font-weight: 600;
-  src: local('BlinkMacSystemFont'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue'),
-    local('Arial'), local('Noto Sans');
-  ascent-override: 101.31%;
-  descent-override: 28.30%;
+  src: local('Arial Bold');
+  ascent-override: 109.61%;
+  descent-override: 30.62%;
   line-gap-override: 0.00%;
-  size-adjust: 103.33%;
+  size-adjust: 95.51%;
 }
 @font-face {
-  font-family: NunitoSans Fallback;
+  font-family: NunitoSans Override;
   font-style: normal;
   font-weight: 700;
-  src: local('BlinkMacSystemFont'), local('Segoe UI'), local('Roboto'), local('Helvetica Neue'),
-    local('Arial'), local('Noto Sans');
-  ascent-override: 99.61%;
-  descent-override: 28.19%;
+  src: local('Arial Bold');
+  ascent-override: 107.76%;
+  descent-override: 30.50%;
   line-gap-override: 0.00%;
-  size-adjust: 105.49%;
+  size-adjust: 97.51%;
 }
