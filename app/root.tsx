@@ -12,7 +12,7 @@ import {
    ScrollRestoration,
    useFetchers,
    useLoaderData,
-   useTransition,
+   useNavigation,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -143,7 +143,7 @@ function App() {
       }
    }, [toastMessage]);
 
-   const transition = useTransition();
+   const transition = useNavigation();
    let fetchers = useFetchers();
    NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
 
@@ -165,7 +165,7 @@ function App() {
       if (state === "loading") NProgress.start();
       // when the state is idle then we can to complete the progress bar
       if (state === "idle") NProgress.done();
-   }, [transition.state]);
+   }, [state]);
 
    return (
       <html

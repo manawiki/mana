@@ -13,11 +13,13 @@ export const Image = ({
    width?: number;
    height?: number;
 }) => {
+   const searchParams = new URLSearchParams(options);
+
    return (
       <img
          className={className}
-         width={width}
-         height={height}
+         width={width ?? searchParams.get("width") ?? undefined}
+         height={height ?? searchParams.get("height") ?? undefined}
          alt={alt}
          src={`${url}?${options ?? ""}`}
       />

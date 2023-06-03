@@ -85,7 +85,7 @@ export default function BlockGroup({ element }: Props) {
    ];
 
    const selectOptions = collectionData
-      ? [].concat(defaultOptions, collectionData?.docs)
+      ? [...defaultOptions, ...collectionData?.docs]
       : defaultOptions;
 
    const [selected] = useState();
@@ -142,6 +142,7 @@ export default function BlockGroup({ element }: Props) {
             at: path,
          });
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [debouncedGroupLabel]);
 
    const groupItems = element.groupItems;
@@ -263,7 +264,7 @@ export default function BlockGroup({ element }: Props) {
       editor.children,
       "id",
       activeId
-   ) as groupRow;
+   ) as unknown as groupRow;
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(
@@ -350,7 +351,7 @@ export default function BlockGroup({ element }: Props) {
    }
 
    const activeSelectItem = (item: any) =>
-      selectOptions.find((obj: Collection) => obj.slug === item)?.name;
+      selectOptions.find((obj) => obj.slug === item)?.name;
 
    const [editMode, setEditMode] = useState(false);
    const [viewMode, setViewMode] = useState(element.viewMode);
@@ -401,7 +402,6 @@ export default function BlockGroup({ element }: Props) {
                         />
                      </Switch>
                   </Tooltip> */}
-
                   <div>
                      <Listbox value={selectedCollection}>
                         <Tooltip
@@ -480,6 +480,9 @@ export default function BlockGroup({ element }: Props) {
                                  }
                                  flex h-7 w-7 items-center justify-center rounded`}
                               >
+                                 <RadioGroup.Label className="sr-only">
+                                    List View
+                                 </RadioGroup.Label>
                                  <List
                                     style={{
                                        color:
@@ -506,6 +509,9 @@ export default function BlockGroup({ element }: Props) {
                                  }
                            flex h-7 w-7 items-center justify-center rounded`}
                               >
+                                 <RadioGroup.Label className="sr-only">
+                                    Grid View
+                                 </RadioGroup.Label>
                                  <LayoutGrid
                                     style={{
                                        color:
@@ -589,14 +595,9 @@ export default function BlockGroup({ element }: Props) {
                                              className="border-color shadow-1 flex h-8 w-8 flex-none items-center
                                              justify-between overflow-hidden rounded-full border-2 shadow-sm"
                                           >
-                                             {/* @ts-expect-error */}
-                                             {entry?.icon?.url ||
-                                             entry?.banner?.url ? (
+                                             {entry?.icon?.url ? (
                                                 <Image
-                                                   url={
-                                                      entry?.icon?.url ??
-                                                      entry?.banner?.url
-                                                   }
+                                                   url={entry?.icon?.url}
                                                    options="aspect_ratio=1:1&height=80&width=80"
                                                    alt={entry?.name ?? "Icon"}
                                                 />

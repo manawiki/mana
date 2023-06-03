@@ -182,7 +182,7 @@ export default function PostsIndex() {
                </Menu>
                <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
                   <li>Changelog</li>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                  <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                   <li>Docs</li>
                </ul>
             </div>

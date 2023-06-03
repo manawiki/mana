@@ -139,7 +139,7 @@ export default function CollectionIndex() {
             </h1>
             <ul className="text-1 flex items-center gap-3 pb-5 text-xs uppercase">
                <li>Changelog</li>
-               <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+               <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
             </ul>
 
