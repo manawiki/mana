@@ -10,9 +10,7 @@ import {
    Outlet,
    Scripts,
    ScrollRestoration,
-   useFetchers,
    useLoaderData,
-   useNavigation,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -32,12 +30,9 @@ import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
-
-import NProgress from "nprogress";
-import nProgressStyles from "~/styles/nprogress.css";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -74,9 +69,6 @@ export const links: LinksFunction = () => [
 
    { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
    { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
-
-   { rel: "preload", href: nProgressStyles, as: "style" },
-   { rel: "stylesheet", href: nProgressStyles },
 
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
@@ -142,30 +134,6 @@ function App() {
             throw new Error(`${type} is not handled`);
       }
    }, [toastMessage]);
-
-   const transition = useNavigation();
-   let fetchers = useFetchers();
-   NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
-
-   let state = useMemo<"idle" | "loading">(
-      function getGlobalState() {
-         let states = [
-            transition.state,
-            ...fetchers.map((fetcher) => fetcher.state),
-         ];
-         if (states.every((state) => state === "idle")) return "idle";
-         return "loading";
-      },
-      [transition.state, fetchers]
-   );
-
-   useEffect(() => {
-      // and when it's something else it means it's either submitting a form or
-      // waiting for the loaders of the next location so we start it
-      if (state === "loading") NProgress.start();
-      // when the state is idle then we can to complete the progress bar
-      if (state === "idle") NProgress.done();
-   }, [state]);
 
    return (
       <html

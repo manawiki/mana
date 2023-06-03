@@ -4,8 +4,10 @@ import {
    NavLink,
    Outlet,
    useFetcher,
+   useFetchers,
    useLoaderData,
    useLocation,
+   useNavigation,
    useRouteLoaderData,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
@@ -42,7 +44,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -65,6 +67,8 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 import type { Update } from "~/db/payload-types";
 import { useIsBot } from "~/utils/isBotProvider";
+import NProgress from "nprogress";
+import nProgressStyles from "~/styles/nprogress.css";
 
 export async function loader({
    context: { payload, user },
@@ -123,6 +127,9 @@ export const links: LinksFunction = () => {
    return [
       { rel: "preload", href: customStylesheetUrl, as: "style" },
       { rel: "stylesheet", href: customStylesheetUrl },
+
+      { rel: "preload", href: nProgressStyles, as: "style" },
+      { rel: "stylesheet", href: nProgressStyles },
    ];
 };
 
@@ -180,6 +187,31 @@ export default function SiteIndex() {
 
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
+
+   //nprogress bar
+   const transition = useNavigation();
+   let fetchers = useFetchers();
+   NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
+
+   let state = useMemo<"idle" | "loading">(
+      function getGlobalState() {
+         let states = [
+            transition.state,
+            ...fetchers.map((fetcher) => fetcher.state),
+         ];
+         if (states.every((state) => state === "idle")) return "idle";
+         return "loading";
+      },
+      [transition.state, fetchers]
+   );
+
+   useEffect(() => {
+      // and when it's something else it means it's either submitting a form or
+      // waiting for the loaders of the next location so we start it
+      if (state === "loading") NProgress.start();
+      // when the state is idle then we can to complete the progress bar
+      if (state === "idle") NProgress.done();
+   }, [state]);
 
    return (
       <>
