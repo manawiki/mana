@@ -27,15 +27,22 @@ import { _EnemyStatusRes } from "./_enemyStatusRes";
 import { _EnemyCamps } from "./_enemyCamps";
 import { _RecipeTypes } from "./_recipeTypes";
 
-
-export const CustomDefaultPriorities = {};
+export const CustomDefaultPriorities = {
+   characters: 70,
+   lightCones: 60,
+   relicSets: 60,
+   recipes: 40,
+   blessings: 40,
+   achievementSeries: 40,
+   enemies: 30,
+   materials: 30,
+};
 
 export const CustomSearchCollections = [
    "characters",
    "materials",
    "recipes",
    "blessings",
-   "banners",
    "achievementSeries",
    "enemies",
    "relicSets",
