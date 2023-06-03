@@ -245,6 +245,7 @@ export default function SiteIndex() {
          >
             <LoggedIn>
                <Link
+                  prefetch="intent"
                   reloadDocument={site.type == "custom" && true}
                   className="relative z-10 pb-1 font-logo text-[30px] max-laptop:hidden"
                   to="/hq"
@@ -277,6 +278,7 @@ export default function SiteIndex() {
                               <menu className="space-y-3">
                                  {following?.map((item) => (
                                     <NavLink
+                                       prefetch="intent"
                                        reloadDocument={
                                           // Reload if custom site, but NOT if current site is custom
                                           item.type == "custom" &&
@@ -326,6 +328,7 @@ export default function SiteIndex() {
                   </div>
                </div>
                <Link
+                  prefetch="intent"
                   className="relative z-10 pb-1 font-logo text-[30px] laptop:hidden"
                   to="/hq"
                >
@@ -403,6 +406,7 @@ export default function SiteIndex() {
             </LoggedIn>
             <LoggedOut>
                <Link
+                  prefetch="intent"
                   reloadDocument={site.type == "custom" && true}
                   className="relative z-10 pb-1 font-logo text-[30px]"
                   to="/hq"
@@ -412,6 +416,7 @@ export default function SiteIndex() {
                <div className="relative z-10 flex items-center gap-3">
                   <DarkModeToggle />
                   <Link
+                     prefetch="intent"
                      reloadDocument={site.type != "custom" && true}
                      to="/join"
                      className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
@@ -427,6 +432,7 @@ export default function SiteIndex() {
                      </span>
                   </Link>
                   <Link
+                     prefetch="intent"
                      reloadDocument={site.type != "custom" && true}
                      className="border-color bg-3 shadow-1 flex h-8 items-center
                            justify-center rounded-lg border px-3 text-center
@@ -460,6 +466,7 @@ export default function SiteIndex() {
                   <LoggedOut>
                      <div className="relative flex items-center justify-center pb-3">
                         <NavLink
+                           prefetch="intent"
                            className="bg-2 shadow-1 rounded-full shadow"
                            to={`/${site.slug}`}
                         >
@@ -491,6 +498,7 @@ export default function SiteIndex() {
                         {following?.length === 0 ? (
                            <div className="relative flex items-center justify-center pb-3">
                               <NavLink
+                                 prefetch="intent"
                                  className="bg-2 shadow-1 rounded-full shadow"
                                  to={`/${site.slug}`}
                               >
@@ -526,6 +534,7 @@ export default function SiteIndex() {
                                     <li key={item.id}>
                                        <div className="relative flex items-center justify-center">
                                           <NavLink
+                                             prefetch="intent"
                                              reloadDocument={
                                                 // Reload if custom site, but NOT if current site is custom
                                                 item.type == "custom" &&
@@ -581,6 +590,7 @@ export default function SiteIndex() {
                         laptop:border-r laptop:py-5 desktop:w-[220px] desktop:pl-5 desktop:pr-6"
                >
                   <NavLink
+                     prefetch="intent"
                      end
                      className={({ isActive }) =>
                         `${
@@ -607,6 +617,7 @@ export default function SiteIndex() {
                      )}
                   </NavLink>
                   <NavLink
+                     prefetch="intent"
                      className={({ isActive }) =>
                         `${
                            isActive
@@ -632,6 +643,7 @@ export default function SiteIndex() {
                      )}
                   </NavLink>
                   <NavLink
+                     prefetch="intent"
                      className={({ isActive }) =>
                         `${
                            isActive
@@ -657,6 +669,7 @@ export default function SiteIndex() {
                      )}
                   </NavLink>
                   {/* <NavLink
+                  prefetch="intent"
                      className={({ isActive }) =>
                         `${
                            isActive
@@ -702,6 +715,7 @@ export default function SiteIndex() {
                         ) : (
                            <>
                               <Link
+                                 prefetch="intent"
                                  to={`/${site.slug}`}
                                  className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                               >
@@ -785,6 +799,7 @@ export default function SiteIndex() {
                                  <LoggedOut>
                                     <div className="flex items-center">
                                        <Link
+                                          prefetch="intent"
                                           reloadDocument={
                                              site.type != "custom" && true
                                           }
@@ -867,6 +882,7 @@ export default function SiteIndex() {
                                  {site.pinned?.map((item: any) => (
                                     <li key={item.id}>
                                        <Link
+                                          prefetch="intent"
                                           className="bg-3 shadow-1 border-color relative block rounded-lg border p-3 shadow-sm"
                                           prefetch="intent"
                                           to={pinnedLinkUrlGenerator(
