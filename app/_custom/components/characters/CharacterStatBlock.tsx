@@ -237,6 +237,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                      className="scale-20 level-input-box border-color bg-1 ml-1 mr-2 inline-flex
                      w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
                      type="number"
+                     aria-label="Level"
                      value={levelSliderValue}
                      onChange={(event) => {
                         const numonly = /^[0-9\b]+$/;
@@ -263,12 +264,13 @@ export const CharacterStatBlock = ({ pageData }) => {
                      className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
                      justify-between rounded-sm align-middle text-yellow-500"
                      type="checkbox"
+                     aria-label="Ascension"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
                         ["20", "30", "40", "50", "60", "70"].indexOf(
                            levelSliderValue.toString()
                         ) > -1
-                           ? null
+                           ? false
                            : true
                      }
                      checked={levelAscensionCheck}
@@ -279,6 +281,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                </div>
                {/* Slider */}
                <input
+                  aria-label="Level Slider"
                   className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
                    rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                   type="range"

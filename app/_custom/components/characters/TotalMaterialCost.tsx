@@ -145,6 +145,9 @@ const ItemQtyFrame = ({ mat }: any) => {
                      mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
+                  loading="lazy"
+                  width="44"
+                  height="44"
                />
             </div>
             <div

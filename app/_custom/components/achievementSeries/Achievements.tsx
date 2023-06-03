@@ -25,39 +25,49 @@ export const Achievements = ({ pageData }: any) => {
                      <div
                         className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center 
                         justify-center rounded-lg border-2 shadow-md hover:bg-green-50 dark:hover:bg-zinc-800 ${
-                        checked
+                           checked
                               ? "border-green-300 dark:border-green-800"
                               : "border-zinc-200 dark:border-zinc-700"
                         }`}
                         onClick={() => {
-                        localStorage.setItem(
-                           "HSR_manawiki_achievement-" + a?.data_key,
-                           JSON.stringify(!checked)
-                        );
+                           localStorage.setItem(
+                              "HSR_manawiki_achievement-" + a?.data_key,
+                              JSON.stringify(!checked)
+                           );
 
-                        setChecked(!checked);
+                           setChecked(!checked);
                         }}
                      >
                         {checked ? (
-                        <Check className="text-green-500" size={16} />
+                           <Check className="text-green-500" size={16} />
                         ) : (
-                        <></>
+                           <></>
                         )}
                      </div>
 
                      {/* Achievement Description section */}
-                     <div className="space-y-0.5 text-sm flex-grow">
+                     <div className="flex-grow space-y-0.5 text-sm">
                         <div className="font-bold">{a.name}</div>
                         <div
                            className="text-1"
                            dangerouslySetInnerHTML={{ __html: a.description }}
                         ></div>
                      </div>
-                     
+
                      {/* Achievement Reward section */}
-                     { /* TODO(dim): This pattern works for now but should use the Quest reward instead! */ }
+                     {/* TODO(dim): This pattern works for now but should use the Quest reward instead! */}
                      <div className="flex items-center gap-1">
-                        <JadeReward qty={a.rarity === "Mid" ? 10 : a.rarity === "Low" ? 5 : a.rarity === "High" ? 20 : 0} />
+                        <JadeReward
+                           qty={
+                              a.rarity === "Mid"
+                                 ? 10
+                                 : a.rarity === "Low"
+                                 ? 5
+                                 : a.rarity === "High"
+                                 ? 20
+                                 : 0
+                           }
+                        />
                      </div>
                   </div>
                </>
@@ -67,7 +77,6 @@ export const Achievements = ({ pageData }: any) => {
    );
 };
 
-
 const JadeReward = ({ qty }: { qty: number }) => {
    return (
       <div className="relative inline-block text-center" key="900001">
@@ -75,13 +84,16 @@ const JadeReward = ({ qty }: { qty: number }) => {
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src="https://static.mana.wiki/starrail/ItemIcon_900001.png"
-                  className={`object-contain color-rarity-5 material-frame`}
+                  className={`color-rarity-5 material-frame object-contain`}
                   alt="Stellar Jade"
+                  loading="lazy"
+                  width="44"
+                  height="44"
                />
             </div>
             <div
-               className={`relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-white text-xs
-               }`}
+               className={`} relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs
+               text-white`}
             >
                {qty}
             </div>

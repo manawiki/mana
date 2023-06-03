@@ -63,6 +63,9 @@ const ItemFrame = ({ mat }: any) => {
                      mat?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat?.name}
+                  loading="lazy"
+                  width="44"
+                  height="44"
                />
             </div>
          </a>

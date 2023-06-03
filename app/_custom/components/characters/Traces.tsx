@@ -27,6 +27,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                                  className="object-contain"
                                  url={trace?.icon?.url}
                                  alt={trace.name}
+                                 loading="lazy"
                               />
                            </div>
                         </div>
@@ -45,6 +46,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                                  Lv. {skillLevel}
                               </div>
                               <input
+                                 aria-label="Level Slider"
                                  className="h-1 flex-grow appearance-none justify-end
                                  rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                                  type="range"
@@ -118,6 +120,9 @@ const ItemQtyFrame = ({ mat }: any) => {
                      mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
+                  loading="lazy"
+                  width="44"
+                  height="44"
                />
             </div>
             <div className="relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs text-white">

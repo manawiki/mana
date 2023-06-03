@@ -26,6 +26,7 @@ export const Effect = ({ pageData }: any) => {
                      Lv. {skillLevel}
                   </div>
                   <input
+                     aria-label="Level Slider"
                      className="h-1 flex-grow appearance-none justify-end
                      rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                      type="range"

@@ -18,7 +18,8 @@ export const Eidolons = ({ pageData }: any) => {
                               options="aspect_ratio=1:1&height=80&width=80"
                               className="object-contain"
                               url={eid.image?.url}
-                              alt=""
+                              alt="eid.name"
+                              loading="lazy"
                            />
                         </div>
                      ) : null}
@@ -32,6 +33,7 @@ export const Eidolons = ({ pageData }: any) => {
                                  className="object-contain"
                                  url={eid.icon?.url}
                                  alt={eid.name}
+                                 loading="lazy"
                               />
                            </div>
                            <div>

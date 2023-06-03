@@ -89,6 +89,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                               Lv {skillLevel}
                            </div>
                            <input
+                              aria-label="Level Slider"
                               className="h-1 flex-grow appearance-none justify-end
                               rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
                               type="range"
@@ -170,6 +171,7 @@ const ItemQtyFrame = ({ mat }: any) => {
                      mat.materials?.rarity?.display_number ?? "1"
                   } material-frame`}
                   alt={mat.materials?.name}
+                  loading="lazy"
                />
             </div>
             <div
