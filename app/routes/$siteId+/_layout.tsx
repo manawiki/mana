@@ -170,7 +170,9 @@ export default function SiteIndex() {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
          gtag.pageview(location.pathname, gaTrackingId);
       }
+      setSearchToggle(false);
    }, [location, gaTrackingId]);
+
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
 
