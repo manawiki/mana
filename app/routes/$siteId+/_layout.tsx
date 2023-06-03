@@ -75,28 +75,33 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const url = new URL(request.url).origin;
-
    try {
-      const slug = (await (
-         await fetch(`${url}/api/sites?where[slug][equals]=${siteId}&depth=2`, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<Site>;
-      const site = slug?.docs[0];
+      const url = new URL(request.url).origin;
+      const siteUrl = `${url}/api/sites?where[slug][equals]=${siteId}&depth=2`;
+      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
+      const [{ docs: slug }, { docs: updateResults }] = await Promise.all([
+         (await (
+            await fetch(siteUrl, {
+               headers: {
+                  cookie: request.headers.get("cookie") ?? "",
+               },
+            })
+         ).json()) as PaginatedDocs<Site>,
+         (await (
+            await fetch(updatesUrl, {
+               headers: {
+                  cookie: request.headers.get("cookie") ?? "",
+               },
+            })
+         ).json()) as PaginatedDocs<Update>,
+      ]);
+
+      const site = slug[0];
+
       if (!site) {
          throw json(null, { status: 404 });
       }
-      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
-      const { docs: updateResults } = (await (
-         await fetch(updatesUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as Update[];
+
       return json(
          { updateResults, site },
          { headers: { "Cache-Control": "public, s-maxage=60" } }
