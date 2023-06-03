@@ -789,6 +789,7 @@ export default function SiteIndex() {
                                  <button
                                     className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
                                    rounded-full border shadow-sm"
+                                    aria-label="Mana Search"
                                     onClick={() => {
                                        setSearchToggle(true);
                                     }}
@@ -865,7 +866,7 @@ export default function SiteIndex() {
                                           {item?.label && (
                                              <span
                                                 className="absolute -right-1 -top-1 flex h-4 items-center justify-center rounded-full 
-                                             bg-blue-500 px-1.5 text-[8px] uppercase text-white"
+                                             bg-blue-600 px-1.5 text-[8px] uppercase text-white"
                                              >
                                                 {item?.label}
                                              </span>

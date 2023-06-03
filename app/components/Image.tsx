@@ -5,6 +5,7 @@ export const Image = ({
    className,
    width,
    height,
+   ...props
 }: {
    url: string;
    options?: string;
@@ -12,12 +13,15 @@ export const Image = ({
    className?: string;
    width?: number;
    height?: number;
-}) => {
+} & HTMLImageElement) => {
+   const searchParams = new URLSearchParams(options);
+
    return (
       <img
+         {...props}
          className={className}
-         width={width}
-         height={height}
+         width={width ?? searchParams.get("width") ?? undefined}
+         height={height ?? searchParams.get("height") ?? undefined}
          alt={alt}
          src={`${url}?${options ?? ""}`}
       />

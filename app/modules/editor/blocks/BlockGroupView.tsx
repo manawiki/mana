@@ -36,6 +36,9 @@ export default function GroupView({ element }: Props) {
                            }
                                  flex h-7 w-7 items-center justify-center rounded`}
                         >
+                           <RadioGroup.Label className="sr-only">
+                              List View
+                           </RadioGroup.Label>
                            <List
                               style={{
                                  color: element?.color,
@@ -59,6 +62,9 @@ export default function GroupView({ element }: Props) {
                            }
                            flex h-7 w-7 items-center justify-center rounded`}
                         >
+                           <RadioGroup.Label className="sr-only">
+                              Grid View
+                           </RadioGroup.Label>
                            <LayoutGrid
                               style={{
                                  color: element?.color,

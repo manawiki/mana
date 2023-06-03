@@ -18,7 +18,7 @@ module.exports = {
    },
    serverModuleFormat: "cjs",
    tailwind: true,
-   postcss: true,
+   // postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
    publicPath: getPublicPath(),
    ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {

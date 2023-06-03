@@ -139,7 +139,7 @@ export default function CollectionIndex() {
             </h1>
             <ul className="text-1 flex items-center gap-3 pb-5 text-xs uppercase">
                <li>Changelog</li>
-               <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+               <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                <li>Docs</li>
             </ul>
 
@@ -222,7 +222,7 @@ export default function CollectionIndex() {
             {collections?.length === 0 ? null : (
                <>
                   <div className="border-color grid grid-cols-2 gap-3 laptop:grid-cols-3">
-                     {collections?.map((collection) => (
+                     {collections?.map((collection, int) => (
                         <NavLink
                            key={collection.id}
                            to={`${collection.slug}`}
@@ -241,15 +241,14 @@ export default function CollectionIndex() {
                                  className="border-color flex h-11 w-11 flex-none items-center
                                     justify-between overflow-hidden rounded-full"
                               >
-                                 {/* @ts-expect-error */}
                                  {collection.icon?.url ? (
                                     <Image
                                        width={50}
                                        height={50}
-                                       alt="List Icon"
+                                       alt={collection.name ?? "List Icon"}
                                        options="aspect_ratio=1:1&height=80&width=80"
-                                       //@ts-expect-error
                                        url={collection.icon?.url}
+                                       loading={int > 10 ? "lazy" : undefined}
                                     />
                                  ) : (
                                     <Database
