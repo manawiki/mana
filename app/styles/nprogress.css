@@ -1,0 +1,46 @@
+/* Make clicks pass-through */
+#nprogress {
+   pointer-events: none;
+}
+
+#nprogress .bar {
+   background-image: linear-gradient(
+      43deg,
+      #eab308 0%,
+      #a855f7 20%,
+      #22c55e 46%,
+      #3b82f6 100%
+   );
+
+   position: fixed;
+   z-index: 1031;
+   bottom: 0;
+   left: 0;
+
+   width: 100%;
+   height: 2px;
+}
+
+/* Fancy blur effect */
+#nprogress .peg {
+   display: block;
+   position: absolute;
+   right: 0px;
+   width: 100px;
+   height: 100%;
+   box-shadow: 10 0 0px #29d, 5px 0 0px #29d;
+   opacity: 1;
+
+   -webkit-transform: rotate(3deg) translate(0px, -4px);
+   -ms-transform: rotate(3deg) translate(0px, -4px);
+   transform: rotate(3deg) translate(0px, -4px);
+}
+
+.nprogress-custom-parent {
+   overflow: hidden;
+   position: relative;
+}
+
+.nprogress-custom-parent #nprogress .bar {
+   position: absolute;
+}

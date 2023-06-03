@@ -19,8 +19,6 @@ export const BlockUpdatesView = ({ element }: Props) => {
          updateResults: Update[];
       }) || [];
 
-   console.log(updateResults);
-
    return (
       <section className="my-6">
          <h2>Updates</h2>
