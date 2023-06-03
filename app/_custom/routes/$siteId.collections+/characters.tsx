@@ -40,6 +40,7 @@ export async function loader({
           icon {
             url
           }
+          camp
         }
       }
     }
@@ -87,12 +88,18 @@ export default function HomePage() {
 }
 
 const CharacterList = ({ chars }: any) => {
-   const [filters, setFilters] = useState([]);
-   const [sort, setSort] = useState("character_id");
+   type OptionTypes = {
+      id: string;
+      name: string;
+      icon?: string;
+   };
+
+   const [filters, setFilters] = useState<OptionTypes[]>([]);
+   const [sort, setSort] = useState("name");
    const [search, setSearch] = useState("");
 
    const sortOptions = [
-      { name: "ID", field: "character_id" },
+      { name: "ID", field: "id" },
       { name: "Name", field: "name" },
    ];
 
@@ -232,12 +239,12 @@ const CharacterList = ({ chars }: any) => {
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
    // Sort entries
-   var csorted = [...chars];
+   let csorted = [...chars];
    csorted.sort((a, b) => (a[sort] > b[sort] ? 1 : b[sort] > a[sort] ? -1 : 0));
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   var cfiltered = csorted.filter((char: any) => {
+   let cfiltered = csorted.filter((char: any) => {
       var showEntry = filters
          .map((filt: any) => {
             var matches = 0;
@@ -254,7 +261,7 @@ const CharacterList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   var cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char: any) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -263,7 +270,7 @@ const CharacterList = ({ chars }: any) => {
          {/* Filter Options */}
          <H2 text="Characters" />
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
-            {filterOptions.map((cat: any) => {
+            {filterOptions.map((cat) => {
                return (
                   <>
                      <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
@@ -271,7 +278,7 @@ const CharacterList = ({ chars }: any) => {
                            {cat.name}
                         </div>
                         <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                           {cat.options.map((opt: any) => {
+                           {cat.options.map((opt) => {
                               return (
                                  <>
                                     <div
@@ -294,7 +301,6 @@ const CharacterList = ({ chars }: any) => {
                                           } else {
                                              setFilters([
                                                 // Allows only one filter per category
-                                                //@ts-expect-error
                                                 ...filters.filter(
                                                    (a) =>
                                                       //@ts-expect-error
@@ -306,13 +312,13 @@ const CharacterList = ({ chars }: any) => {
                                           }
                                        }}
                                     >
-                                       {opt.icon ? (
+                                       {opt?.icon ? (
                                           <>
                                              <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
                                                 <Image
                                                    alt="Icon"
-                                                   options="aspect_ratio=1:1&height=40&width=40"
-                                                   url={opt.icon}
+                                                   options="aspect_ratio=1:1&height=42&width=42"
+                                                   url={opt?.icon}
                                                 />
                                              </div>
                                           </>
@@ -380,7 +386,7 @@ const CharacterList = ({ chars }: any) => {
 
          {/* List of Characters with applied sorting */}
          <div className="grid grid-cols-2 gap-3 pb-16 text-center laptop:grid-cols-5">
-            {cfiltered?.map((char: any) => {
+            {cfiltered?.map((char: any, int) => {
                const elemurl = char?.element?.icon?.url;
                const pathsmall = char?.path?.icon?.url;
                const rarityurl = char?.rarity?.icon?.url;
@@ -399,7 +405,7 @@ const CharacterList = ({ chars }: any) => {
                            {/* Element Symbol */}
                            <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
-                                 options="aspect_ratio=1:1&height=40&width=40"
+                                 options="aspect_ratio=1:1&height=42&width=42"
                                  alt="Name"
                                  url={elemurl}
                                  className="object-contain"
@@ -410,10 +416,11 @@ const CharacterList = ({ chars }: any) => {
                            {/* Path + Path Name ? */}
                            <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                               <Image
-                                 options="aspect_ratio=1:1&height=40&width=40"
+                                 options="aspect_ratio=1:1&height=42&width=42"
                                  alt="Path"
                                  className="relative inline-block object-contain"
                                  url={pathsmall}
+                                 loading={int < 10 ? "lazy" : undefined}
                               />
                            </div>
 
@@ -449,9 +456,9 @@ const CharacterList = ({ chars }: any) => {
 };
 
 function filterUnique(input: any) {
-   var output: any = [];
-   for (var i = 0; i < input.length; i++) {
-      if (!output.find((a: any) => a.id == input[i].id)) {
+   let output: any = [];
+   for (let i = 0; i < input.length; i++) {
+      if (!output.find((a) => a.id == input[i].id)) {
          output.push({
             id: input[i].id,
             name: input[i].name,
