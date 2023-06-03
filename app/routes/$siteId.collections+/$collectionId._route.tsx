@@ -285,7 +285,7 @@ export default function CollectionList() {
             {entries?.length === 0 ? null : (
                <>
                   <div className="border-color divide-color bg-2 divide-y overflow-hidden rounded-lg border">
-                     {entries?.map((entry: Entry) => (
+                     {entries?.map((entry: Entry, int) => (
                         <Link
                            key={entry.id}
                            to={entry.id}
@@ -300,7 +300,8 @@ export default function CollectionList() {
                                  <Image /* @ts-ignore */
                                     url={entry.icon?.url}
                                     options="aspect_ratio=1:1&height=80&width=80"
-                                    alt="List Icon"
+                                    alt={entry.name ?? "Entry Icon"}
+                                    loading={int > 10 ? "lazy" : undefined}
                                  />
                               ) : (
                                  <Component
