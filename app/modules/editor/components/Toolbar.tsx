@@ -178,7 +178,6 @@ export default function Toolbar() {
                            const url = window.prompt(
                               "Enter the URL of the link:"
                            );
-                           console.log(url);
                            if (!url) return;
                            wrapLink(editor, url);
                         }}
