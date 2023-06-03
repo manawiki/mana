@@ -63,7 +63,10 @@ export async function loader({
                await (await fetch(customSearchUrl)).json(),
             ]);
 
-         const searchResults = [...coreSearchResults, ...customSearchResults];
+         const combineResults = [...coreSearchResults, ...customSearchResults];
+         const searchResults = combineResults.sort(
+            (a, b) => b.priority - a.priority
+         );
          return json(
             { searchResults },
             { headers: { "Cache-Control": "public, s-maxage=60" } }
