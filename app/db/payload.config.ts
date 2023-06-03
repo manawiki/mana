@@ -130,8 +130,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site.id,
-                     icon: originalDoc?.icon.id,
+                     site: originalDoc?.site,
+                     icon: originalDoc?.icon,
                      slug: originalDoc?.slug,
                   };
                }
