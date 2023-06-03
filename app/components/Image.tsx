@@ -13,7 +13,7 @@ export const Image = ({
    className?: string;
    width?: number;
    height?: number;
-} & HTMLImageElement) => {
+} & React.ImgHTMLAttributes<HTMLImageElement>) => {
    const searchParams = new URLSearchParams(options);
 
    return (
