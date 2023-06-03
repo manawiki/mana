@@ -375,6 +375,7 @@ export default function SiteIndex() {
                <div className="relative z-10 flex items-center gap-3">
                   <DarkModeToggle />
                   <Link
+                     reloadDocument={site.type != "custom" && true}
                      to="/join"
                      className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                            rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
@@ -389,6 +390,7 @@ export default function SiteIndex() {
                      </span>
                   </Link>
                   <Link
+                     reloadDocument={site.type != "custom" && true}
                      className="border-color bg-3 shadow-1 flex h-8 items-center
                            justify-center rounded-lg border px-3 text-center
                            text-xs font-bold uppercase shadow-sm shadow-zinc-300"
