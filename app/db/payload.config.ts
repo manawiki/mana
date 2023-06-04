@@ -149,7 +149,6 @@ export default buildConfig({
                      ...searchDoc,
                      name: originalDoc?.name,
                      site: originalDoc?.site.id,
-                     icon: originalDoc?.banner.id,
                      slug: originalDoc?.slug,
                      postId: originalDoc?.id,
                   };
