@@ -1,3 +1,5 @@
+const defaultTheme = require("tailwindcss/defaultTheme");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
    content: ["./app/**/*.{ts,tsx,jsx,js}"],
@@ -16,11 +18,11 @@ module.exports = {
             body: [
                "NunitoSans",
                "NunitoSans Override",
-               "ui-sans-serif",
-               "sans-serif",
+               // import default fonts from tailwind
+               ...defaultTheme.fontFamily.sans,
             ],
-            logo: ["new-order", "sans-serif"],
-            header: ["source-sans-pro", "sans-serif"],
+            logo: ["new-order", ...defaultTheme.fontFamily.sans],
+            header: ["source-sans-pro", ...defaultTheme.fontFamily.sans],
          },
          animation: {
             enter: "enter 200ms ease-out",
