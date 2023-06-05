@@ -118,7 +118,6 @@ export default function PostEditPage() {
    }, [fetcher.type]);
 
    const { post, versions } = useLoaderData<typeof loader>();
-
    return (
       <main
          className="relative min-h-screen
@@ -290,7 +289,6 @@ export async function action({
             user,
             depth: 2,
          });
-         //@ts-expect-error
          const bannerId = post?.banner?.id;
          await payload.delete({
             collection: "images",
@@ -317,7 +315,6 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         //@ts-expect-error
          const bannerId = post?.banner?.id;
          if (bannerId) {
             await payload.delete({

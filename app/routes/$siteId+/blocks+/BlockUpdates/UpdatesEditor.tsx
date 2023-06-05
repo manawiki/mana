@@ -11,7 +11,7 @@ import { useFetcher } from "@remix-run/react";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 
 const useEditor = () => useMemo(() => withReact(createEditor()), []);
-const initialValue = [
+export const initialValue = [
    {
       id: nanoid(),
       type: "updatesInline",

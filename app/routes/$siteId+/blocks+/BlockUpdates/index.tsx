@@ -1,13 +1,26 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useParams, useRouteLoaderData } from "@remix-run/react";
+import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { zx } from "zodix";
 import type { Update } from "~/db/payload-types";
-import { UpdatesEditor } from "~/routes/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
+import {
+   UpdatesEditor,
+   initialValue,
+} from "~/routes/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
 import type { UpdatesElement } from "~/modules/editor/types";
+import { Editable, Slate, withReact } from "slate-react";
+import { useMemo } from "react";
+import type { Descendant } from "slate";
+import { createEditor } from "slate";
+import { Toolbar } from "~/modules/editor/components";
+import { onKeyDown } from "~/modules/editor/editorCore";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
+import { isAdding, isProcessing } from "~/utils";
+import { Loader2, Plus, Trash } from "lucide-react";
 
 type Props = {
    element: UpdatesElement;
@@ -19,23 +32,73 @@ export const BlockUpdates = ({ element }: Props) => {
          updateResults: Update[];
       }) || [];
    const { siteId } = useParams();
+   const useEditor = () => useMemo(() => withReact(createEditor()), []);
+   const editor = useEditor();
+   editor.isInline = (element) => ["link"].includes(element.type);
+   const fetcher = useFetcher();
+   const disabled = isProcessing(fetcher.state);
+   const addingUpdate = isAdding(fetcher, "createUpdate");
+   const deletingUpdate = isAdding(fetcher, "deleteEntry");
 
    return (
-      <div className="">
+      <section className="">
          {updateResults?.length === 0 ? null : (
             <>
                <h2>Updates</h2>
                <div className="divide-color border-color divide-y border-y">
-                  <div className="flex items-center justify-between gap-2 py-2">
-                     <span className="text-1 w-20 flex-none py-2.5 text-xs font-bold uppercase">
-                        Today
+                  <div className="flex items-center justify-between gap-2 py-1">
+                     <span className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase">
+                        {format(new Date(), "MMM dd")}
                      </span>
-                     <button className="bg-4 shadow-1 rounded-full px-3.5 py-1.5 text-xs font-bold shadow-sm">
-                        Add
+                     <div className="h-full w-full text-sm">
+                        <Slate
+                           editor={editor}
+                           value={initialValue as Descendant[]}
+                        >
+                           <Toolbar />
+                           <Editable
+                              className="py-2"
+                              placeholder="Share an update..."
+                              renderElement={Block}
+                              renderLeaf={Leaf}
+                              onKeyDown={(e) => onKeyDown(e, editor)}
+                           />
+                        </Slate>
+                     </div>
+                     <button
+                        onClick={() =>
+                           fetcher.submit(
+                              {
+                                 data: JSON.stringify(editor.children),
+                                 intent: "createUpdate",
+                              },
+                              {
+                                 method: "post",
+                                 action: `/${siteId}/blocks/BlockUpdates`,
+                              }
+                           )
+                        }
+                        disabled={disabled}
+                        type="submit"
+                     >
+                        <div
+                           className="shadow-1 font-bol inline-flex h-8 w-8 items-center justify-center rounded-xl 
+                           border border-blue-200/80 bg-gradient-to-b from-blue-50
+                           to-blue-100 text-xs font-bold
+                           text-blue-500 shadow-sm transition dark:border-blue-900
+                           dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-200 
+                           dark:shadow-blue-950"
+                        >
+                           {addingUpdate ? (
+                              <Loader2 size={16} className="animate-spin" />
+                           ) : (
+                              <Plus size={18} />
+                           )}
+                        </div>
                      </button>
                   </div>
                   {updateResults?.map((row) => (
-                     <section key={row.id} className="flex items-start gap-2">
+                     <section key={row.id} className="flex items-center gap-2">
                         <time
                            className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase"
                            dateTime={row?.createdAt}
@@ -48,13 +111,47 @@ export const BlockUpdates = ({ element }: Props) => {
                            ) : (
                               <>
                                  {row.entry?.map((item) => (
-                                    <UpdatesEditor
+                                    <div
                                        key={item.id}
-                                       rowId={row.id}
-                                       entryId={item.id}
-                                       siteId={siteId}
-                                       blocks={item.content}
-                                    />
+                                       className="group/updates relative py-2.5"
+                                    >
+                                       <UpdatesEditor
+                                          rowId={row.id}
+                                          entryId={item.id}
+                                          siteId={siteId}
+                                          blocks={item.content}
+                                       />
+                                       <button
+                                          className="absolute right-1 top-3 hidden group-hover/updates:block"
+                                          onClick={() =>
+                                             fetcher.submit(
+                                                {
+                                                   entryId: item.id,
+                                                   updateId: row.id,
+                                                   intent: "deleteEntry",
+                                                },
+                                                {
+                                                   method: "DELETE",
+                                                   action: `/${siteId}/blocks/BlockUpdates`,
+                                                }
+                                             )
+                                          }
+                                          disabled={disabled}
+                                          type="submit"
+                                       >
+                                          {deletingUpdate ? (
+                                             <Loader2
+                                                size={15}
+                                                className="animate-spin"
+                                             />
+                                          ) : (
+                                             <Trash
+                                                className="text-zinc-400 hover:text-red-400"
+                                                size={15}
+                                             />
+                                          )}
+                                       </button>
+                                    </div>
                                  ))}
                               </>
                            )}
@@ -64,7 +161,7 @@ export const BlockUpdates = ({ element }: Props) => {
                </div>
             </>
          )}
-      </div>
+      </section>
    );
 };
 
@@ -85,42 +182,101 @@ export const action = async ({
 
    switch (intent) {
       case "createUpdate": {
-         const slug = await payload.find({
-            collection: "sites",
+         const { data } = await zx.parseForm(request, {
+            data: z.string(),
+         });
+
+         const newData = JSON.parse(data);
+         const currentDate = format(new Date(), "MMM-dd-yy");
+         console.log(currentDate);
+         const update = await payload.find({
+            collection: "updates",
             where: {
-               slug: {
-                  equals: siteId,
+               dateId: {
+                  equals: currentDate,
                },
             },
             user,
          });
-         const site = slug?.docs[0];
 
-         try {
+         //If no update with an existing day exists, we add as a new update
+         if (update.totalDocs == 0) {
+            const slug = await payload.find({
+               collection: "sites",
+               where: {
+                  slug: {
+                     equals: siteId,
+                  },
+               },
+               user,
+            });
+            const site = slug?.docs[0];
             return await payload.create({
                collection: "updates",
                data: {
                   site: site.id,
+                  dateId: currentDate,
                   entry: [
                      {
-                        content: [
-                           {
-                              type: "updatesInline",
-                              children: [{ text: "" }],
-                           },
-                        ],
+                        content: newData,
                      },
                   ],
                },
                overrideAccess: false,
                user,
             });
-         } catch (error) {
-            console.log(error);
-            return json({
-               error: "Something went wrong...",
+         }
+
+         //Otherwise add entry to an existing update on the same day
+         const updateId = update.docs[0].id;
+         const entryData = update.docs[0].entry;
+
+         return await payload.update({
+            collection: "updates",
+            id: updateId,
+            data: {
+               entry: [{ content: newData }, ...entryData],
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+      case "deleteEntry": {
+         const { entryId, updateId } = await zx.parseForm(request, {
+            entryId: z.string(),
+            updateId: z.string(),
+         });
+
+         const existingData = await payload.findByID({
+            collection: "updates",
+            id: updateId,
+            user,
+         });
+
+         const entryData = existingData.entry;
+
+         //Prepare new array that doesn't include deleted entry
+         const updatedData = entryData?.filter((item) => item.id !== entryId);
+
+         //If last entry, we delete the entire update instead
+         if (updatedData?.length == 0) {
+            return await payload.delete({
+               collection: "updates",
+               id: updateId,
+               overrideAccess: false,
+               user,
             });
          }
+         //Otherwise we only delete the associated sub-entry
+         return await payload.update({
+            collection: "updates",
+            id: updateId,
+            data: {
+               entry: updatedData ?? {},
+            },
+            overrideAccess: false,
+            user,
+         });
       }
       case "updateEntry": {
          const { content, rowId, entryId } = await zx.parseForm(request, {
@@ -128,7 +284,7 @@ export const action = async ({
             rowId: z.string(),
             entryId: z.string().optional(),
          });
-         console.log(rowId);
+
          const updateData = await payload.findByID({
             collection: "updates",
             id: rowId,
@@ -142,22 +298,15 @@ export const action = async ({
             x.id === entryId ? { ...x, content: JSON.parse(content) } : x
          );
 
-         try {
-            return await payload.update({
-               collection: "updates",
-               id: rowId,
-               data: {
-                  entry: updatedData ?? {},
-               },
-               overrideAccess: false,
-               user,
-            });
-         } catch (error) {
-            console.log(error);
-            return json({
-               error: "Something went wrong...unable to update title.",
-            });
-         }
+         return await payload.update({
+            collection: "updates",
+            id: rowId,
+            data: {
+               entry: updatedData ?? {},
+            },
+            overrideAccess: false,
+            user,
+         });
       }
    }
 };

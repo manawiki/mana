@@ -119,59 +119,166 @@ export default function Toolbar() {
 
    const marks = Editor.marks(editor);
 
-   return createPortal(
-      <div
-         ref={ref}
-         className="border-color shadow-1 bg-1 pointer-events-auto -mt-16
-         rounded-xl border px-3 py-2.5 opacity-0 shadow-lg transition-opacity duration-200 ease-in-out"
-         onMouseDown={(e) => {
-            // prevent toolbar from taking focus away from editor
-            e.preventDefault();
-         }}
-      >
-         <section className="flex items-center gap-2">
-            {/* {type && (
-               <>
-                  <div>
-                     <Select
-                        defaultValue={BlockType.Paragraph}
-                        value={type}
-                        items={[
-                           { label: "Normal text", value: BlockType.Paragraph },
-                           { label: "Heading 2", value: BlockType.H2 },
-                           { label: "Heading 3", value: BlockType.H3 },
-                           {
-                              label: "Bulleted list",
-                              value: BlockType.BulletedList,
-                           },
-                           { label: "To-do list", value: BlockType.ToDo },
-                        ]}
-                        onValueChange={(value: string) => {
-                           if (editor.selection == null) {
-                              return;
-                           }
-
-                           // TODO: Update Select typings to infer value type from items
-                           const type = value as TextBlock;
-                           Transforms.setNodes<CustomElement>(
-                              editor,
+   if (typeof document !== "undefined") {
+      return createPortal(
+         <div
+            ref={ref}
+            className="border-color shadow-1 bg-1 pointer-events-auto -mt-16
+            rounded-xl border px-3 py-2.5 opacity-0 shadow-lg transition-opacity duration-200 ease-in-out"
+            onMouseDown={(e) => {
+               // prevent toolbar from taking focus away from editor
+               e.preventDefault();
+            }}
+         >
+            <section className="flex items-center gap-2">
+               {/* {type && (
+                  <>
+                     <div>
+                        <Select
+                           defaultValue={BlockType.Paragraph}
+                           value={type}
+                           items={[
+                              { label: "Normal text", value: BlockType.Paragraph },
+                              { label: "Heading 2", value: BlockType.H2 },
+                              { label: "Heading 3", value: BlockType.H3 },
                               {
-                                 type,
+                                 label: "Bulleted list",
+                                 value: BlockType.BulletedList,
                               },
-                              {
-                                 at: [editor.selection.anchor.path[0]],
+                              { label: "To-do list", value: BlockType.ToDo },
+                           ]}
+                           onValueChange={(value: string) => {
+                              if (editor.selection == null) {
+                                 return;
                               }
-                           );
-                        }}
-                     />
-                  </div>
-               </>
-            )} */}
-            <div className="flex items-center gap-1">
-               {!isLinkActive(editor) && (
-                  <Tooltip id="add-link" content="Add Link">
+   
+                              // TODO: Update Select typings to infer value type from items
+                              const type = value as TextBlock;
+                              Transforms.setNodes<CustomElement>(
+                                 editor,
+                                 {
+                                    type,
+                                 },
+                                 {
+                                    at: [editor.selection.anchor.path[0]],
+                                 }
+                              );
+                           }}
+                        />
+                     </div>
+                  </>
+               )} */}
+               <div className="flex items-center gap-1">
+                  {!isLinkActive(editor) && (
+                     <Tooltip id="add-link" content="Add Link">
+                        <Button
+                           ariaLabel="Add Link"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={(e) => {
+                              e.preventDefault();
+                              const url = window.prompt(
+                                 "Enter the URL of the link:"
+                              );
+                              if (!url) return;
+                              wrapLink(editor, url);
+                           }}
+                           className={`${
+                              isLinkActive(editor) === true
+                                 ? "bg-3 border-color border"
+                                 : ""
+                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                        >
+                           <Link2 size={16} />
+                        </Button>
+                     </Tooltip>
+                  )}
+                  <Tooltip id="bold" content="Toggle Bold">
                      <Button
-                        ariaLabel="Add Link"
+                        ariaLabel="Toggle Bold"
+                        onPointerDown={(e) => e.preventDefault()}
+                        onClick={() => toggleMark(editor, "bold")}
+                        className={`${
+                           marks && marks["bold"] === true
+                              ? "bg-3 border-color border"
+                              : ""
+                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                     >
+                        <Bold size={16} />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip id="italic" content="Toggle Italic">
+                     <Button
+                        ariaLabel="Toggle Italic"
+                        onPointerDown={(e) => e.preventDefault()}
+                        onClick={() => toggleMark(editor, "italic")}
+                        className={`${
+                           marks && marks["italic"] === true
+                              ? "bg-3 border-color border"
+                              : ""
+                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                     >
+                        <Italic size={16} />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip id="underline" content="Toggle Underline">
+                     <Button
+                        ariaLabel="Toggle Underline"
+                        onPointerDown={(e) => e.preventDefault()}
+                        onClick={() => toggleMark(editor, "underline")}
+                        className={`${
+                           marks && marks["underline"] === true
+                              ? "bg-3 border-color border"
+                              : ""
+                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                     >
+                        <Underline size={16} />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip id="strikethrough" content="Toggle Strikethrough">
+                     <Button
+                        ariaLabel="Toggle Strikethrough"
+                        onPointerDown={(e) => e.preventDefault()}
+                        onClick={() => toggleMark(editor, "strikeThrough")}
+                        className={`${
+                           marks && marks["strikeThrough"] === true
+                              ? "bg-3 border-color border"
+                              : ""
+                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                     >
+                        <Strikethrough size={16} />
+                     </Button>
+                  </Tooltip>
+               </div>
+            </section>
+            {isLinkActive(editor) ? (
+               <section className="bg-3 mt-1.5 flex items-center gap-3 rounded-md px-2">
+                  <span className="text-1 flex-grow py-2 text-xs">
+                     {activeLinkUrl(editor)}
+                  </span>
+                  <Tooltip
+                     className="flex items-center p-1"
+                     id="remove-link"
+                     content="Remove Link"
+                  >
+                     <Button
+                        ariaLabel="Remove Link"
+                        onPointerDown={(e) => e.preventDefault()}
+                        onClick={(e) => {
+                           if (isLinkActive(editor)) {
+                              unwrapLink(editor);
+                           }
+                        }}
+                     >
+                        <Link2Off className="text-red-400" size={16} />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip
+                     className="flex items-center p-1"
+                     id="update-link"
+                     content="Update Link"
+                  >
+                     <Button
+                        ariaLabel="Update Link"
                         onPointerDown={(e) => e.preventDefault()}
                         onClick={(e) => {
                            e.preventDefault();
@@ -181,119 +288,16 @@ export default function Toolbar() {
                            if (!url) return;
                            wrapLink(editor, url);
                         }}
-                        className={`${
-                           isLinkActive(editor) === true
-                              ? "bg-3 border-color border"
-                              : ""
-                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                      >
-                        <Link2 size={16} />
+                        <Edit className="text-blue-400" size={14} />
                      </Button>
                   </Tooltip>
-               )}
-               <Tooltip id="bold" content="Toggle Bold">
-                  <Button
-                     ariaLabel="Toggle Bold"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={() => toggleMark(editor, "bold")}
-                     className={`${
-                        marks && marks["bold"] === true
-                           ? "bg-3 border-color border"
-                           : ""
-                     } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                  >
-                     <Bold size={16} />
-                  </Button>
-               </Tooltip>
-               <Tooltip id="italic" content="Toggle Italic">
-                  <Button
-                     ariaLabel="Toggle Italic"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={() => toggleMark(editor, "italic")}
-                     className={`${
-                        marks && marks["italic"] === true
-                           ? "bg-3 border-color border"
-                           : ""
-                     } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                  >
-                     <Italic size={16} />
-                  </Button>
-               </Tooltip>
-               <Tooltip id="underline" content="Toggle Underline">
-                  <Button
-                     ariaLabel="Toggle Underline"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={() => toggleMark(editor, "underline")}
-                     className={`${
-                        marks && marks["underline"] === true
-                           ? "bg-3 border-color border"
-                           : ""
-                     } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                  >
-                     <Underline size={16} />
-                  </Button>
-               </Tooltip>
-               <Tooltip id="strikethrough" content="Toggle Strikethrough">
-                  <Button
-                     ariaLabel="Toggle Strikethrough"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={() => toggleMark(editor, "strikeThrough")}
-                     className={`${
-                        marks && marks["strikeThrough"] === true
-                           ? "bg-3 border-color border"
-                           : ""
-                     } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                  >
-                     <Strikethrough size={16} />
-                  </Button>
-               </Tooltip>
-            </div>
-         </section>
-         {isLinkActive(editor) ? (
-            <section className="bg-3 mt-1.5 flex items-center gap-3 rounded-md px-2">
-               <span className="text-1 flex-grow py-2 text-xs">
-                  {activeLinkUrl(editor)}
-               </span>
-               <Tooltip
-                  className="flex items-center p-1"
-                  id="remove-link"
-                  content="Remove Link"
-               >
-                  <Button
-                     ariaLabel="Remove Link"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={(e) => {
-                        if (isLinkActive(editor)) {
-                           unwrapLink(editor);
-                        }
-                     }}
-                  >
-                     <Link2Off className="text-red-400" size={16} />
-                  </Button>
-               </Tooltip>
-               <Tooltip
-                  className="flex items-center p-1"
-                  id="update-link"
-                  content="Update Link"
-               >
-                  <Button
-                     ariaLabel="Update Link"
-                     onPointerDown={(e) => e.preventDefault()}
-                     onClick={(e) => {
-                        e.preventDefault();
-                        const url = window.prompt("Enter the URL of the link:");
-                        if (!url) return;
-                        wrapLink(editor, url);
-                     }}
-                  >
-                     <Edit className="text-blue-400" size={14} />
-                  </Button>
-               </Tooltip>
-            </section>
-         ) : null}
-      </div>,
-      document.body
-   );
+               </section>
+            ) : null}
+         </div>,
+         document.body
+      );
+   }
 }
 
 function getSelectedElementType(editor: Editor): TextBlock | null {
