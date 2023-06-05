@@ -31,6 +31,10 @@ export const Updates: CollectionConfig = {
          maxDepth: 1,
       },
       {
+         name: "dateId",
+         type: "text",
+      },
+      {
          name: "entry",
          type: "array",
          label: "Entry",

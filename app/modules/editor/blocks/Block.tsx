@@ -62,11 +62,7 @@ export default function Block({
       );
    }
    if (element.type === BlockType.UpdatesInline) {
-      return (
-         <div className="py-2.5" {...attributes}>
-            {children}
-         </div>
-      );
+      return <div {...attributes}>{children}</div>;
    }
    if (element.type === BlockType.Paragraph) {
       return (

@@ -69,7 +69,7 @@ h3 {
       @apply bg-zinc-50 dark:bg-bg4Dark;
    }
    .text-1 {
-      @apply text-zinc-600 dark:text-zinc-400;
+      @apply text-zinc-500 dark:text-zinc-400;
    }
 }
 

@@ -79,26 +79,20 @@ export async function loader({
       siteId: z.string(),
    });
 
+   // /api/users?where[sites][equals]=85lT19IgAr&depth=0
+
    try {
       const url = new URL(request.url).origin;
+
       const siteUrl = `${url}/api/sites?where[slug][equals]=${siteId}&depth=2`;
-      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
-      const [{ docs: slug }, { docs: updateResults }] = await Promise.all([
-         (await (
-            await fetch(siteUrl, {
-               headers: {
-                  cookie: request.headers.get("cookie") ?? "",
-               },
-            })
-         ).json()) as PaginatedDocs<Site>,
-         (await (
-            await fetch(updatesUrl, {
-               headers: {
-                  cookie: request.headers.get("cookie") ?? "",
-               },
-            })
-         ).json()) as PaginatedDocs<Update>,
-      ]);
+
+      const { docs: slug } = (await (
+         await fetch(siteUrl, {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         })
+      ).json()) as PaginatedDocs<Site>;
 
       const site = slug[0];
 
@@ -106,8 +100,30 @@ export async function loader({
          throw json(null, { status: 404 });
       }
 
+      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
+      const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
+      const [{ docs: updateResults }, { totalDocs: followers }] =
+         await Promise.all([
+            (await (
+               await fetch(updatesUrl, {
+                  headers: {
+                     cookie: request.headers.get("cookie") ?? "",
+                  },
+               })
+            ).json()) as PaginatedDocs<Update>,
+            (await (
+               await fetch(followersUrl, {
+                  headers: {
+                     cookie: request.headers.get("cookie") ?? "",
+                  },
+               })
+            ).json()) as PaginatedDocs,
+         ]);
+
+      console.log(followers);
+
       return json(
-         { updateResults, site },
+         { updateResults, site, followers },
          { headers: { "Cache-Control": "public, s-maxage=60" } }
       );
    } catch (e) {
@@ -165,7 +181,7 @@ const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
 };
 
 export default function SiteIndex() {
-   const { site } = useLoaderData<typeof loader>();
+   const { site, followers } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -867,6 +883,20 @@ export default function SiteIndex() {
                               </span>
                            </div>
                            <div className="text-1 text-sm">{site.about}</div>
+                           {/* <div className="grid grid-cols-3 gap-3">
+                           {followers ? (
+                              <div className="text-xs">
+                                 <div>{followers}</div>
+                                 <div className="text-1">members</div>
+                              </div>
+                           ) : null}
+                           {followers ? (
+                              <div className="text-xs">
+                                 <div>{followers}</div>
+                                 <div className="text-1">pages</div>
+                              </div>
+                           ) : null}
+                        </div> */}
                         </section>
                      )}
                      {site.pinned && (
@@ -884,7 +914,6 @@ export default function SiteIndex() {
                                        <Link
                                           prefetch="intent"
                                           className="bg-3 shadow-1 border-color relative block rounded-lg border p-3 shadow-sm"
-                                          prefetch="intent"
                                           to={pinnedLinkUrlGenerator(
                                              item,
                                              site.slug

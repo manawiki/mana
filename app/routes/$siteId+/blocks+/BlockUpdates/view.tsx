@@ -36,10 +36,11 @@ export const BlockUpdatesView = ({ element }: Props) => {
                         {row.entry?.length === 0 ? null : (
                            <>
                               {row.entry?.map((item) => (
-                                 <UpdatesEditorView
-                                    key={item.id}
-                                    content={item.content as Descendant[]}
-                                 />
+                                 <div key={item.id} className="py-2.5">
+                                    <UpdatesEditorView
+                                       content={item.content as Descendant[]}
+                                    />
+                                 </div>
                               ))}
                            </>
                         )}
