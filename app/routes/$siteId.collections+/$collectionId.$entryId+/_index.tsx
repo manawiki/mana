@@ -5,6 +5,8 @@ import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
 import { Popover, Transition } from "@headlessui/react";
 import { Plus, Type, Component } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { SoloEditor } from "~/modules/editor/SoloEditor";
+import { nanoid } from "nanoid";
 
 export async function loader({
    context: { payload, user },
@@ -17,6 +19,14 @@ export async function loader({
 
 export { meta };
 
+export const initialValue = [
+   {
+      id: nanoid(),
+      type: "paragraph",
+      children: [{ text: "" }],
+   },
+];
+
 export default function CollectionEntryWiki() {
    const { entryDefault } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
@@ -26,11 +36,9 @@ export default function CollectionEntryWiki() {
       <>
          <EntryHeader entry={entryDefault} />
          <AdminOrStaffOrOwner>
-            <div
-               className="bg-2 border-color sticky bottom-12 z-30 mb-12 mt-60 
-                    flex h-12 items-center justify-between
-                    border-y px-3 laptop:bottom-0 laptop:h-14"
-            ></div>
+            <div className="">
+               <SoloEditor defaultValue={initialValue} />
+            </div>
          </AdminOrStaffOrOwner>
       </>
    );

@@ -42,6 +42,9 @@ import { HOTKEYS, PROSE_CONTAINER_ID } from "./constants";
 import { BlockInlineActions, Button, Toolbar, Tooltip } from "./components";
 import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
+import { withHistory } from "slate-history";
+import { useDebouncedValue, useIsMount } from "~/hooks";
+import { useFetcher } from "@remix-run/react";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -54,7 +57,10 @@ const SHORTCUTS: Record<string, BlockType> = {
 
 const useEditor = () =>
    useMemo(
-      () => withShortcuts(withNodeId(withLayout(withReact(createEditor())))),
+      () =>
+         withShortcuts(
+            withNodeId(withLayout(withReact(withHistory(createEditor()))))
+         ),
       []
    );
 
@@ -62,7 +68,11 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export const SoloEditor = ({ value }: { value: Descendant[] }) => {
+export const SoloEditor = ({
+   defaultValue,
+}: {
+   defaultValue: Descendant[];
+}) => {
    const editor = useEditor();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -71,6 +81,24 @@ export const SoloEditor = ({ value }: { value: Descendant[] }) => {
    ) as CustomElement | undefined;
 
    editor.isInline = (element) => ["link"].includes(element.type);
+
+   const isMount = useIsMount();
+   const fetcher = useFetcher();
+   const [value, setValue] = useState("");
+
+   const debouncedValue = useDebouncedValue(value, 500);
+
+   useEffect(() => {
+      if (!isMount) {
+         fetcher.submit(
+            {
+               content: JSON.stringify(debouncedValue),
+               intent: "updateContent",
+            },
+            { method: "patch", action: "/action/editor" }
+         );
+      }
+   }, [debouncedValue]);
 
    useEffect(() => {
       const { insertBreak } = editor;
@@ -247,7 +275,11 @@ export const SoloEditor = ({ value }: { value: Descendant[] }) => {
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full pb-12">
-               <Slate editor={editor} value={value}>
+               <Slate
+                  onChange={(e) => setValue(e)}
+                  editor={editor}
+                  value={defaultValue}
+               >
                   <Toolbar />
                   <DndContext
                      onDragStart={handleDragStart}
