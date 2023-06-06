@@ -87,8 +87,8 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>Promotion</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {promotionTotal?.map((mat: any) => (
-                        <ItemQtyFrame mat={mat} />
+                     {promotionTotal?.map((mat: any, key: number) => (
+                        <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
                </tr>
@@ -98,8 +98,8 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>Skill Tree</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {skillTreeTotal?.map((mat: any) => (
-                        <ItemQtyFrame mat={mat} />
+                     {skillTreeTotal?.map((mat: any, key: number) => (
+                        <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
                </tr>
@@ -109,8 +109,8 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>All</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {allTotal?.map((mat: any) => (
-                        <ItemQtyFrame mat={mat} />
+                     {allTotal?.map((mat: any, key: number) => (
+                        <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
                </tr>
@@ -136,7 +136,7 @@ const ItemQtyFrame = ({ mat }: any) => {
          : mat?.qty;
 
    return (
-      <div className="relative inline-block text-center" key={mat?.id}>
+      <div className="relative inline-block text-center">
          <a href={`/starrail/collections/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
@@ -151,8 +151,8 @@ const ItemQtyFrame = ({ mat }: any) => {
                />
             </div>
             <div
-               className={`relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-white text-xs
-               }`}
+               className={`} relative mr-0.5 w-11 rounded-b-sm border-b border-gray-700 bg-bg1Dark align-middle text-xs
+               text-white`}
             >
                {qtydisp}
             </div>

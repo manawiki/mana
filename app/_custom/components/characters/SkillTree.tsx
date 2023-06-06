@@ -41,34 +41,28 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
             <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg2Dark">
                <div className={`canvas-${pathkey}`}></div>
 
-               {connectorlist?.map((con: any) => {
-                  return (
-                     <>
-                        <div
-                           className={`connector connector-${con}-${pathkey}`}
-                        ></div>
-                     </>
-                  );
-               })}
+               {connectorlist?.map((con: any) => (
+                  <div
+                     className={`connector connector-${con}-${pathkey}`}
+                     key={`connector-${con}-${pathkey}`}
+                  />
+               ))}
 
-               {treelist?.map((node: any, i: any) => {
-                  return (
-                     <>
-                        <div
-                           className={`point cursor-pointer point-${
-                              i + 1
-                           }-${pathkey} ${treeNode == i + 1 ? "invert" : ""}`}
-                           style={{
-                              backgroundImage: "url(" + node?.icon?.url + ")",
-                           }}
-                           onClick={() => {
-                              setTreeNode(i + 1);
-                              setSkillLevel(1);
-                           }}
-                        ></div>
-                     </>
-                  );
-               })}
+               {treelist?.map((node: any, i: any) => (
+                  <div
+                     key={i}
+                     className={`point cursor-pointer point-${
+                        i + 1
+                     }-${pathkey} ${treeNode == i + 1 ? "invert" : ""}`}
+                     style={{
+                        backgroundImage: "url(" + node?.icon?.url + ")",
+                     }}
+                     onClick={() => {
+                        setTreeNode(i + 1);
+                        setSkillLevel(1);
+                     }}
+                  ></div>
+               ))}
             </div>
          </div>
          <div className="text-center">
@@ -125,9 +119,9 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                         <div className="space-x-2 p-3">
                            {activeNode.level_up_cost[
                               skillLevel - 1
-                           ]?.material_qty?.map((matqty: any) => {
-                              return <ItemQtyFrame mat={matqty} />;
-                           })}
+                           ]?.material_qty?.map((matqty: any, key: number) => (
+                              <ItemQtyFrame mat={matqty} key={key} />
+                           ))}
                         </div>
                      </>
                   ) : null}

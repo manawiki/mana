@@ -412,11 +412,11 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                                     setGraphStat(event.target.value)
                                  }
                               >
-                                 {statlist.map((stat: any) => {
+                                 {statlist.map(stat => {
                                     return (
-                                       <>
-                                          <option value={stat}>{stat}</option>
-                                       </>
+                                       <option value={stat} key={stat}>
+                                          {stat}
+                                       </option>
                                     );
                                  })}
                               </select>

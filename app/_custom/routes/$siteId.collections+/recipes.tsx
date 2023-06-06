@@ -69,8 +69,14 @@ export default function HomePage() {
    );
 }
 
+type FilterTypes = {
+   id: string;
+   name: string;
+   icon: string;
+};
+
 const RecipeList = ({ chars }: any) => {
-   const [filters, setFilters] = useState([]);
+   const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("data_key");
    const [search, setSearch] = useState("");
 
@@ -133,7 +139,7 @@ const RecipeList = ({ chars }: any) => {
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   var cfiltered = csorted.filter((char: any) => {
+   let cfiltered = csorted.filter((char: any) => {
       var showEntry = filters
          .map((filt: any) => {
             var matches = 0;
@@ -150,7 +156,7 @@ const RecipeList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   var cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char: any) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -159,7 +165,7 @@ const RecipeList = ({ chars }: any) => {
          {/* Filter Options */}
          <H2 text="Recipes" />
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
-            {filterOptions.map((cat: any) => {
+            {filterOptions.map((cat) => {
                return (
                   <>
                      <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
@@ -167,60 +173,50 @@ const RecipeList = ({ chars }: any) => {
                            {cat.name}
                         </div>
                         <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
-                           {cat.options.map((opt: any) => {
-                              return (
-                                 <>
-                                    <div
-                                       className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
-                                          filters.find(
-                                             (a: any) => a.id == opt.id
-                                          )
-                                             ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                             : ``
-                                       }`}
-                                       onClick={(event) => {
-                                          if (
-                                             filters.find((a) => a.id == opt.id)
-                                          ) {
-                                             setFilters(
-                                                filters.filter(
-                                                   (a) => a.id != opt.id
-                                                )
-                                             );
-                                          } else {
-                                             setFilters([
-                                                // Allows only one filter per category
+                           {cat.options.map((opt) => (
+                              <div
+                                 key={opt.id}
+                                 className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
+                                    filters.find((a) => a.id == opt.id)
+                                       ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                       : ``
+                                 }`}
+                                 onClick={(event) => {
+                                    if (filters.find((a) => a.id == opt.id)) {
+                                       setFilters(
+                                          filters.filter((a) => a.id != opt.id)
+                                       );
+                                    } else {
+                                       setFilters([
+                                          // Allows only one filter per category
+                                          ...filters.filter(
+                                             (a) =>
                                                 //@ts-expect-error
-                                                ...filters.filter(
-                                                   (a) =>
-                                                      //@ts-expect-error
-                                                      a.field != cat.field
-                                                ),
-                                                //@ts-expect-error
-                                                { ...opt, field: cat.field },
-                                             ]);
-                                          }
-                                       }}
-                                    >
-                                       {opt.icon ? (
-                                          <>
-                                             <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
-                                                <Image
-                                                   options="aspect_ratio=1:1&height=40&width=40"
-                                                   alt="Icon"
-                                                   className="object-contain"
-                                                   url={opt.icon}
-                                                />
-                                             </div>
-                                          </>
-                                       ) : null}
-                                       <div className="text-1 text-xs">
-                                          {opt.name}
+                                                a.field != cat.field
+                                          ),
+                                          //@ts-expect-error
+                                          { ...opt, field: cat.field },
+                                       ]);
+                                    }
+                                 }}
+                              >
+                                 {opt.icon ? (
+                                    <>
+                                       <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
+                                          <Image
+                                             options="aspect_ratio=1:1&height=40&width=40"
+                                             alt="Icon"
+                                             className="object-contain"
+                                             url={opt.icon}
+                                          />
                                        </div>
-                                    </div>
-                                 </>
-                              );
-                           })}
+                                    </>
+                                 ) : null}
+                                 <div className="text-1 text-xs">
+                                    {opt.name}
+                                 </div>
+                              </div>
+                           ))}
                         </div>
                      </div>
                   </>
@@ -316,13 +312,9 @@ const RecipeList = ({ chars }: any) => {
                               <>
                                  <div className="flex items-center gap-1">
                                     {/* Main Fixed Ingredients */}
-                                    {ingredients?.map((mat: any) => {
-                                       return (
-                                          <>
-                                             <ItemQtyFrame mat={mat} />
-                                          </>
-                                       );
-                                    })}
+                                    {ingredients?.map((mat: any, key: number) => (
+                                       <ItemQtyFrame mat={mat} key={key} />
+                                    ))}
 
                                     {/* Special Ingredients */}
                                     {spec?.length > 0 ? (

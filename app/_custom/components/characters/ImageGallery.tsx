@@ -33,28 +33,28 @@ export const ImageGallery = ({ pageData }: any) => {
             {galleryname.map((img: any, i) => {
                const gimg = gallerylist[i];
                return (
-                  <>
-                     {/* Header */}
-                     {gimg ? (
-                        <div className="shadow-1 border-color relative inline-block overflow-hidden rounded-lg border text-center shadow-sm">
-                           <div className="border-color bg-2 relative block border-b py-2 text-center text-sm font-bold">
-                              {img}
-                           </div>
-                           <a href={gimg}>
-                              <div className=" bg-1 relative flex w-full items-center justify-center p-3">
-                                 <div className="relative h-24 w-24 text-center">
-                                    <Image
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       alt="Gallery Item"
-                                       url={gimg}
-                                       className="h-24 w-24 object-contain"
-                                    />
-                                 </div>
-                              </div>
-                           </a>
+                  gimg && (
+                     <div
+                        className="shadow-1 border-color relative inline-block overflow-hidden rounded-lg border text-center shadow-sm"
+                        key={img}
+                     >
+                        <div className="border-color bg-2 relative block border-b py-2 text-center text-sm font-bold">
+                           {img}
                         </div>
-                     ) : null}
-                  </>
+                        <a href={gimg}>
+                           <div className=" bg-1 relative flex w-full items-center justify-center p-3">
+                              <div className="relative h-24 w-24 text-center">
+                                 <Image
+                                    options="aspect_ratio=1:1&height=120&width=120"
+                                    alt="Gallery Item"
+                                    url={gimg}
+                                    className="h-24 w-24 object-contain"
+                                 />
+                              </div>
+                           </div>
+                        </a>
+                     </div>
+                  )
                );
             })}
          </div>

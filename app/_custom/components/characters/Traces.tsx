@@ -16,62 +16,60 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
             );
 
             return (
-               <>
-                  <div key={index}>
-                     {/* Header with Skill Icon and Name */}
-                     <div className="bg-1 relative flex items-center gap-3 p-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
-                           <div className="h-9 w-8 rounded-full">
-                              <Image
-                                 options="aspect_ratio=1:1&height=60&width=60"
-                                 className="object-contain"
-                                 url={trace?.icon?.url}
-                                 alt={trace.name}
-                                 loading="lazy"
-                              />
-                           </div>
-                        </div>
-                        <div className="space-y-1">
-                           <div className="font-bold">{trace.name}</div>
-                           <div className="text-sm">{trace.desc_type}</div>
+               <div key={index}>
+                  {/* Header with Skill Icon and Name */}
+                  <div className="bg-1 relative flex items-center gap-3 p-3">
+                     <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
+                        <div className="h-9 w-8 rounded-full">
+                           <Image
+                              options="aspect_ratio=1:1&height=60&width=60"
+                              className="object-contain"
+                              url={trace?.icon?.url}
+                              alt={trace.name}
+                              loading="lazy"
+                           />
                         </div>
                      </div>
-
-                     {/* Level Slider and Materials IF Skill Has Levels greater than 1*/}
-                     {trace.description_per_level?.length > 1 ? (
-                        <>
-                           {/* Slider */}
-                           <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
-                              <div className="mr-2 inline-flex align-middle ">
-                                 Lv. {skillLevel}
-                              </div>
-                              <input
-                                 aria-label="Level Slider"
-                                 className="h-1 flex-grow appearance-none justify-end
-                                 rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
-                                 type="range"
-                                 min="1"
-                                 max={trace?.description_per_level?.length}
-                                 value={skillLevel}
-                                 onChange={(event) =>
-                                    setSkillLevel(parseInt(event.target.value))
-                                 }
-                              ></input>
-                           </div>
-                        </>
-                     ) : null}
-
-                     {/* Description */}
-                     <div
-                        className="border-color border-t p-3 text-sm"
-                        dangerouslySetInnerHTML={{
-                           __html:
-                              trace?.description_per_level?.[skillLevel - 1]
-                                 ?.description ?? "",
-                        }}
-                     ></div>
+                     <div className="space-y-1">
+                        <div className="font-bold">{trace.name}</div>
+                        <div className="text-sm">{trace.desc_type}</div>
+                     </div>
                   </div>
-               </>
+
+                  {/* Level Slider and Materials IF Skill Has Levels greater than 1*/}
+                  {trace.description_per_level?.length > 1 ? (
+                     <>
+                        {/* Slider */}
+                        <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
+                           <div className="mr-2 inline-flex align-middle ">
+                              Lv. {skillLevel}
+                           </div>
+                           <input
+                              aria-label="Level Slider"
+                              className="h-1 flex-grow appearance-none justify-end
+                                 rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                              type="range"
+                              min="1"
+                              max={trace?.description_per_level?.length}
+                              value={skillLevel}
+                              onChange={(event) =>
+                                 setSkillLevel(parseInt(event.target.value))
+                              }
+                           ></input>
+                        </div>
+                     </>
+                  ) : null}
+
+                  {/* Description */}
+                  <div
+                     className="border-color border-t p-3 text-sm"
+                     dangerouslySetInnerHTML={{
+                        __html:
+                           trace?.description_per_level?.[skillLevel - 1]
+                              ?.description ?? "",
+                     }}
+                  ></div>
+               </div>
             );
          })}
       </div>
@@ -90,8 +88,8 @@ const LevelMaterials = ({ activeNode, skillLevel }: any) => {
                   <div className="mt-1 inline-block w-fit rounded-sm bg-gray-100 p-1 px-3 text-center dark:bg-neutral-800">
                      {activeNode?.level_up_cost[
                         skillLevel - 1
-                     ]?.material_qty?.map((matqty: any) => {
-                        return <ItemQtyFrame mat={matqty} />;
+                     ]?.material_qty?.map((matqty: any, key: number) => {
+                        return <ItemQtyFrame mat={matqty} key={key} />;
                      })}
                   </div>
                </div>

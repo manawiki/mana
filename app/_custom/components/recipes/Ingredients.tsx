@@ -11,11 +11,9 @@ export const Ingredients = ({ pageData }: any) => {
             <>
                <H2 text="Materials Required" />
                <div className="bg-2 border-color shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
-                  {mats?.map((mat: any) => {
+                  {mats?.map((mat: any, key: number) => {
                      return (
-                        <>
-                           <ItemQtyFrame mat={mat} />
-                        </>
+                           <ItemQtyFrame mat={mat} key={key} />
                      );
                   })}
                </div>

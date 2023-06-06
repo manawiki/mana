@@ -9,22 +9,18 @@ export const PromotionCost = ({ pageData }: any) => {
                </tr>
             </thead>
             <tbody>
-               {pageData.promotion_cost?.map((promo: any, index: any) => {
-                  return (
-                     <>
-                        <tr key={index}>
-                           <th className="px-3 py-0 text-center text-xs font-bold">
-                              <div>Lv {promo.max_level}</div>
-                           </th>
-                           <td className="px-1 py-1 pl-3">
-                              {promo.material_qty?.map((mat: any) => (
-                                 <ItemQtyFrame mat={mat} />
-                              ))}
-                           </td>
-                        </tr>
-                     </>
-                  );
-               })}
+               {pageData.promotion_cost?.map((promo: any, index: any) => (
+                  <tr key={index}>
+                     <th className="px-3 py-0 text-center text-xs font-bold">
+                        <div>Lv {promo.max_level}</div>
+                     </th>
+                     <td className="px-1 py-1 pl-3">
+                        {promo.material_qty?.map((mat: any, key: number) => (
+                           <ItemQtyFrame mat={mat} key={key} />
+                        ))}
+                     </td>
+                  </tr>
+               ))}
             </tbody>
          </table>
       </>

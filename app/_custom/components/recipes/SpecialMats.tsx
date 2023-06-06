@@ -22,13 +22,8 @@ export const SpecialMats = ({ pageData }: any) => {
                      </span>
                   </div>
                   <div className="p-3 pt-1">
-                     {spec?.map((mat: any) => {
-                        return (
-                           <>
-                              <ItemFrame mat={mat} />
-                           </>
-                        );
-                     })}
+                     {spec?.map((mat: any, key: number) =>                               <ItemFrame mat={mat} key={key} />
+                           )}
                   </div>
                </section>
             </>
