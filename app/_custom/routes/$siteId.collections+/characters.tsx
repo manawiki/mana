@@ -104,18 +104,24 @@ const CharacterList = ({ chars }: any) => {
    ];
 
    // All Filter Options listed individually atm to control order filter options appear in
+
+   type OptionType = {
+      id: string;
+      name: string;
+      icon?: string;
+   };
    const rarities = [
       {
          id: "VeryRare",
          name: "4",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
+         icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
+         icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
-   ];
+   ] as OptionType[];
    const paths = [
       {
          id: "Warlock",
@@ -152,7 +158,7 @@ const CharacterList = ({ chars }: any) => {
          name: "Destruction",
          icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
-   ];
+   ] as OptionType[];
    const elements = [
       {
          id: "Physical",
@@ -190,7 +196,7 @@ const CharacterList = ({ chars }: any) => {
          name: "Imaginary",
          icon: "https://static.mana.wiki/starrail/IconAttributeImaginary.png",
       },
-   ];
+   ] as OptionType[];
    const campsort = [
       {
          id: "Astral Express",
@@ -208,7 +214,7 @@ const CharacterList = ({ chars }: any) => {
          id: "Xianzhou: The Luofu",
          name: "Xianzhou: The Luofu",
       },
-   ];
+   ] as OptionType[];
 
    // const camps = chars.map((c) => {
    //    return c?.camp;
@@ -272,67 +278,60 @@ const CharacterList = ({ chars }: any) => {
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
             {filterOptions.map((cat) => {
                return (
-                  <>
-                     <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                        <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
-                           {cat.name}
-                        </div>
-                        <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                           {cat.options.map((opt) => {
-                              return (
-                                 <>
-                                    <div
-                                       className={`bg-3 border-color rounded-lg border px-2.5 py-1 ${
-                                          filters.find(
-                                             (a: any) => a.id == opt.id
-                                          )
-                                             ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                             : ``
-                                       }`}
-                                       onClick={(event) => {
-                                          if (
-                                             filters.find((a) => a.id == opt.id)
-                                          ) {
-                                             setFilters(
-                                                filters.filter(
-                                                   (a) => a.id != opt.id
-                                                )
-                                             );
-                                          } else {
-                                             setFilters([
-                                                // Allows only one filter per category
-                                                ...filters.filter(
-                                                   (a) =>
-                                                      //@ts-expect-error
-                                                      a.field != cat.field
-                                                ),
-                                                //@ts-expect-error
-                                                { ...opt, field: cat.field },
-                                             ]);
-                                          }
-                                       }}
-                                    >
-                                       {opt?.icon ? (
-                                          <>
-                                             <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
-                                                <Image
-                                                   alt="Icon"
-                                                   options="aspect_ratio=1:1&height=42&width=42"
-                                                   url={opt?.icon}
-                                                />
-                                             </div>
-                                          </>
-                                       ) : null}
-                                       <div className="text-1 truncate pt-0.5 text-center text-xs">
-                                          {opt.name}
-                                       </div>
-                                    </div>
-                                 </>
-                              );
-                           })}
-                        </div>
+                  <div
+                     className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+                     key={cat.name}
+                  >
+                     <div className="flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                        {cat.name}
                      </div>
-                  </>
+                     <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                        {cat.options.map((opt) => {
+                           return (
+                              <div
+                                 key={opt.id}
+                                 className={`bg-3 border-color items-center rounded-lg border  px-2.5 py-1 ${
+                                    filters.find((a: any) => a.id == opt.id)
+                                       ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                       : ``
+                                 }`}
+                                 onClick={(event) => {
+                                    if (filters.find((a) => a.id == opt.id)) {
+                                       setFilters(
+                                          filters.filter((a) => a.id != opt.id)
+                                       );
+                                    } else {
+                                       setFilters([
+                                          // Allows only one filter per category
+                                          ...filters.filter(
+                                             (a) =>
+                                                //@ts-expect-error
+                                                a.field != cat.field
+                                          ),
+                                          //@ts-expect-error
+                                          { ...opt, field: cat.field },
+                                       ]);
+                                    }
+                                 }}
+                              >
+                                 {opt?.icon && (
+                                    <div className="mx-auto h-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                       <Image
+                                          className="mx-auto"
+                                          alt="Icon"
+                                          options="height=42"
+                                          url={opt.icon}
+                                       />
+                                    </div>
+                                 )}
+                                 <div className="text-1 truncate pt-0.5 text-center text-xs">
+                                    {opt.name}
+                                 </div>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  </div>
                );
             })}
          </div>
@@ -363,7 +362,7 @@ const CharacterList = ({ chars }: any) => {
                Sort
             </div>
             <div className="flex items-center gap-2">
-               {sortOptions.map((opt: any) => {
+               {sortOptions.map((opt) => {
                   return (
                      <div
                         key={opt.field}
@@ -394,60 +393,59 @@ const CharacterList = ({ chars }: any) => {
                const cid = char?.id;
 
                return (
-                  <>
-                     <Link
-                        prefetch="intent"
-                        to={`/starrail/collections/characters/${cid}`}
-                        className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
-                     >
-                        {/* Character Icon */}
-                        <div className="relative">
-                           {/* Element Symbol */}
-                           <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
-                              <Image
-                                 options="aspect_ratio=1:1&height=42&width=42"
-                                 alt="Name"
-                                 url={elemurl}
-                                 className="object-contain"
-                              />
-                              {/* layout="fill" objectFit="contain" /> */}
-                           </div>
-
-                           {/* Path + Path Name ? */}
-                           <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
-                              <Image
-                                 options="aspect_ratio=1:1&height=42&width=42"
-                                 alt="Path"
-                                 className="relative inline-block object-contain"
-                                 url={pathsmall}
-                                 loading={int < 10 ? "lazy" : undefined}
-                              />
-                           </div>
-
-                           {/* Rarity */}
-                           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
-                              <Image
-                                 options="height=20"
-                                 alt="Rarity"
-                                 className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
-                                    raritynum ?? "1"
-                                 } bg-opacity-10`}
-                                 url={rarityurl}
-                              />
-                           </div>
+                  <Link
+                     key={cid}
+                     prefetch="intent"
+                     to={`/starrail/collections/characters/${cid}`}
+                     className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
+                  >
+                     {/* Character Icon */}
+                     <div className="relative">
+                        {/* Element Symbol */}
+                        <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
                            <Image
-                              options="aspect_ratio=1:1&height=120&width=120"
-                              className="mx-auto object-contain"
-                              url={char.icon?.url}
-                              alt={char?.name}
+                              options="aspect_ratio=1:1&height=42&width=42"
+                              alt="Name"
+                              url={elemurl}
+                              className="object-contain"
+                           />
+                           {/* layout="fill" objectFit="contain" /> */}
+                        </div>
+
+                        {/* Path + Path Name ? */}
+                        <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
+                           <Image
+                              options="aspect_ratio=1:1&height=42&width=42"
+                              alt="Path"
+                              className="relative inline-block object-contain"
+                              url={pathsmall}
+                              loading={int < 10 ? "lazy" : undefined}
                            />
                         </div>
-                        {/* Character Name */}
-                        <div className="pb-1.5 pt-2.5 text-center text-xs font-bold">
-                           {char.name}
+
+                        {/* Rarity */}
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
+                           <Image
+                              options="height=20"
+                              alt="Rarity"
+                              className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
+                                 raritynum ?? "1"
+                              } bg-opacity-10`}
+                              url={rarityurl}
+                           />
                         </div>
-                     </Link>
-                  </>
+                        <Image
+                           options="aspect_ratio=1:1&height=120&width=120"
+                           className="mx-auto object-contain"
+                           url={char.icon?.url}
+                           alt={char?.name}
+                        />
+                     </div>
+                     {/* Character Name */}
+                     <div className="pb-1.5 pt-2.5 text-center text-xs font-bold">
+                        {char.name}
+                     </div>
+                  </Link>
                );
             })}
          </div>
@@ -455,17 +453,17 @@ const CharacterList = ({ chars }: any) => {
    );
 };
 
-function filterUnique(input: any) {
-   let output: any = [];
-   for (let i = 0; i < input.length; i++) {
-      if (!output.find((a) => a.id == input[i].id)) {
-         output.push({
-            id: input[i].id,
-            name: input[i].name,
-            icon: input[i].icon?.url,
-         });
-      }
-   }
+// function filterUnique(input: any) {
+//    let output: any = [];
+//    for (let i = 0; i < input.length; i++) {
+//       if (!output.find((a) => a.id == input[i].id)) {
+//          output.push({
+//             id: input[i].id,
+//             name: input[i].name,
+//             icon: input[i].icon?.url,
+//          });
+//       }
+//    }
 
-   return output;
-}
+//    return output;
+// }
