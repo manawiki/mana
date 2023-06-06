@@ -12,15 +12,16 @@ import {
 } from "~/routes/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
 import type { UpdatesElement } from "~/modules/editor/types";
 import { Editable, Slate, withReact } from "slate-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { Descendant } from "slate";
-import { createEditor } from "slate";
+import { Editor, createEditor, Transforms } from "slate";
 import { Toolbar } from "~/modules/editor/components";
 import { onKeyDown } from "~/modules/editor/editorCore";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { isAdding, isProcessing } from "~/utils";
 import { Loader2, Plus, Trash } from "lucide-react";
+import { withHistory } from "slate-history";
 
 type Props = {
    element: UpdatesElement;
@@ -32,7 +33,8 @@ export const BlockUpdates = ({ element }: Props) => {
          updateResults: Update[];
       }) || [];
    const { siteId } = useParams();
-   const useEditor = () => useMemo(() => withReact(createEditor()), []);
+   const useEditor = () =>
+      useMemo(() => withReact(withHistory(createEditor())), []);
    const editor = useEditor();
    editor.isInline = (element) => ["link"].includes(element.type);
    const fetcher = useFetcher();
@@ -40,8 +42,20 @@ export const BlockUpdates = ({ element }: Props) => {
    const addingUpdate = isAdding(fetcher, "createUpdate");
    const deletingUpdate = isAdding(fetcher, "deleteEntry");
 
+   //Clear editor after update is added
+   useEffect(() => {
+      if (fetcher.data) {
+         Transforms.delete(editor, {
+            at: {
+               anchor: Editor.start(editor, []),
+               focus: Editor.end(editor, []),
+            },
+         });
+      }
+   }, [fetcher.data]);
+
    return (
-      <section className="">
+      <section>
          {updateResults?.length === 0 ? null : (
             <>
                <h2>Updates</h2>
@@ -66,7 +80,7 @@ export const BlockUpdates = ({ element }: Props) => {
                         </Slate>
                      </div>
                      <button
-                        onClick={() =>
+                        onClick={() => {
                            fetcher.submit(
                               {
                                  data: JSON.stringify(editor.children),
@@ -76,8 +90,8 @@ export const BlockUpdates = ({ element }: Props) => {
                                  method: "post",
                                  action: `/${siteId}/blocks/BlockUpdates`,
                               }
-                           )
-                        }
+                           );
+                        }}
                         disabled={disabled}
                         type="submit"
                      >

@@ -1,6 +1,6 @@
-import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
+import { useRouteLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -53,8 +53,10 @@ export const BlockUpdatesView = ({ element }: Props) => {
    );
 };
 
+const useEditor = () => useMemo(() => withReact(createEditor()), []);
+
 const UpdatesEditorView = ({ content }: { content: Descendant[] }) => {
-   const editor = withReact(createEditor());
+   const editor = useEditor();
    editor.isInline = (element) => ["link"].includes(element.type);
    return (
       <Slate editor={editor} value={content}>

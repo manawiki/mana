@@ -5,15 +5,15 @@ import type { CustomElement } from "../../../../modules/editor/types";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import Block from "~/modules/editor/blocks/Block";
 import { Toolbar } from "~/modules/editor/components";
-import { nanoid } from "nanoid";
 import { onKeyDown } from "~/modules/editor/editorCore";
 import { useFetcher } from "@remix-run/react";
 import { useDebouncedValue, useIsMount } from "~/hooks";
+import { withHistory } from "slate-history";
 
-const useEditor = () => useMemo(() => withReact(createEditor()), []);
+const useEditor = () =>
+   useMemo(() => withReact(withHistory(createEditor())), []);
 export const initialValue = [
    {
-      id: nanoid(),
       type: "updatesInline",
       children: [{ text: "" }],
    },
