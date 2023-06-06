@@ -80,5 +80,28 @@ export const Collections: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
+      {
+         name: "sections",
+         type: "array",
+         label: "Sections",
+         labels: {
+            singular: "Section",
+            plural: "Sections",
+         },
+         fields: [
+            {
+               name: "id",
+               type: "text",
+            },
+            {
+               name: "name",
+               type: "text",
+            },
+            {
+               name: "content",
+               type: "json",
+            },
+         ],
+      },
    ],
 };

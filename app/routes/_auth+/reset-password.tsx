@@ -43,7 +43,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    if (user) {
-      return redirect("/");
+      return redirect("/hq");
    }
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("pwReset.title");

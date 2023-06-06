@@ -30,7 +30,7 @@ import { DotLoader } from "~/components/DotLoader";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
-      return redirect("/");
+      return redirect("/hq");
    }
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("register.title");
@@ -205,7 +205,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/");
+      return redirect("/hq");
    }
    const issues = createCustomIssues(JoinFormSchema);
    const result = await parseFormSafe(request, JoinFormSchema);

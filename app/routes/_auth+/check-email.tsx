@@ -7,7 +7,7 @@ import { Logo } from "~/components/Logo";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
-      return redirect("/");
+      return redirect("/hq");
    }
    return null;
 }
