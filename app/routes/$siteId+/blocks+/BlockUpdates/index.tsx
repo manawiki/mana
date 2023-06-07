@@ -52,7 +52,7 @@ export const BlockUpdates = ({ element }: Props) => {
             },
          });
       }
-   }, [fetcher.data]);
+   }, [fetcher.data, editor]);
 
    return (
       <section>

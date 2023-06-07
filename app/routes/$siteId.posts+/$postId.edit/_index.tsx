@@ -107,7 +107,7 @@ export default function PostEditPage() {
 
    //Server response toast
    useEffect(() => {
-      if (fetcher.type === "done") {
+      if (fetcher.state === "idle" && fetcher.data != null) {
          if (fetcher.data?.success) {
             toast.success(fetcher.data?.success);
          }
@@ -115,7 +115,7 @@ export default function PostEditPage() {
             toast.error(fetcher.data?.error);
          }
       }
-   }, [fetcher.type]);
+   }, [fetcher.state, fetcher.data]);
 
    const { post, versions } = useLoaderData<typeof loader>();
    return (

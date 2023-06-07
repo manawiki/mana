@@ -5,7 +5,7 @@ import {
    Link,
    useLoaderData,
    useSearchParams,
-   useTransition,
+   useNavigation,
 } from "@remix-run/react";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -86,7 +86,7 @@ export default function PostsIndex() {
    const { myPosts, publishedPosts, q } = useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
-   const transition = useTransition();
+   const transition = useNavigation();
    const isSearching = isLoading(transition);
    const [searchParams, setSearchParams] = useSearchParams({});
    const [selectedStatus, setSelectedStatus] = useState("All");
