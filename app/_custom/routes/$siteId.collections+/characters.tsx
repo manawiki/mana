@@ -114,12 +114,12 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "VeryRare",
          name: "4",
-         icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
+         // icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
+         // icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ] as OptionType[];
    const paths = [
@@ -315,11 +315,11 @@ const CharacterList = ({ chars }: any) => {
                                  }}
                               >
                                  {opt?.icon && (
-                                    <div className="mx-auto h-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                    <div className="flex mx-auto h-10 w-10 rounded-full bg-zinc-800 bg-opacity-50">
                                        <Image
-                                          className="mx-auto"
+                                          className="mx-auto self-center"
                                           alt="Icon"
-                                          options="height=42"
+                                          options="height=40"
                                           url={opt.icon}
                                        />
                                     </div>

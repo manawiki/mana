@@ -103,9 +103,9 @@ const seedUploads = async (result: any) => {
 			}
 		}));
 
-		levelCostImport = result.level_up_cost.map((l:any) => {
+		levelCostImport = result.level_up_cost?.map((l:any) => {
 			const matQty = l.material_qty?.map((mat:any) => {
-				const matId = matData.find((a:any) => a.data_key == mat.materials?.data_key)?.id;
+				const matId = matData.find((a:any) => a?.data_key == mat?.materials?.data_key)?.id;
 
 				return {
 					...mat,
