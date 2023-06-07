@@ -74,6 +74,12 @@ type FilterTypes = {
    field: string;
 };
 
+type FilterOptionType = {
+   name: string;
+   id: string;
+   icon?: string;
+};
+
 const LightConeList = ({ chars }: any) => {
    const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("lightcone_id");
@@ -102,7 +108,7 @@ const LightConeList = ({ chars }: any) => {
          name: "5",
          //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
-   ];
+   ] as FilterOptionType[];
    const paths = [
       {
          id: "Warlock",
@@ -139,7 +145,7 @@ const LightConeList = ({ chars }: any) => {
          name: "Destruction",
          icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
-   ];
+   ] as FilterOptionType[];
 
    // const camps = chars.map((c) => {
    //    return c?.camp;
