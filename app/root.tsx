@@ -77,14 +77,12 @@ export const links: LinksFunction = () => [
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: "https://static.mana.wiki" },
-   { rel: "preconnect", href: "https://use.typekit.net" },
-   //fonts needs a seperate cors preconnect
+   //fonts needs a cors preconnect instead
    {
       rel: "preconnect",
       href: "https://use.typekit.net",
       crossOrigin: "anonymous",
    },
-
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: "https://static.mana.wiki" },
    { rel: "dns-prefetch", href: "https://use.typekit.net" },
