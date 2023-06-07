@@ -72,7 +72,7 @@ export default function HomePage() {
 type FilterTypes = {
    id: string;
    name: string;
-   icon: string;
+   field: string;
 };
 
 const RecipeList = ({ chars }: any) => {
@@ -134,15 +134,15 @@ const RecipeList = ({ chars }: any) => {
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
    // Sort entries
-   var csorted = [...chars];
+   let csorted = [...chars];
    csorted.sort((a, b) => (a[sort] > b[sort] ? 1 : b[sort] > a[sort] ? -1 : 0));
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   let cfiltered = csorted.filter((char: any) => {
-      var showEntry = filters
-         .map((filt: any) => {
-            var matches = 0;
+   let cfiltered = csorted.filter((char) => {
+      let showEntry = filters
+         .map((filt) => {
+            let matches = 0;
             if (char[filt.field]?.id) {
                matches = char[filt.field]?.id == filt.id ? 0 : 1;
             } else {
@@ -156,7 +156,7 @@ const RecipeList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -165,63 +165,57 @@ const RecipeList = ({ chars }: any) => {
          {/* Filter Options */}
          <H2 text="Recipes" />
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
-            {filterOptions.map((cat) => {
-               return (
-                  <>
-                     <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                        <div className="w-40 text-sm font-bold max-laptop:pb-2">
-                           {cat.name}
-                        </div>
-                        <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
-                           {cat.options.map((opt) => (
-                              <div
-                                 key={opt.id}
-                                 className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
-                                    filters.find((a) => a.id == opt.id)
-                                       ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                       : ``
-                                 }`}
-                                 onClick={(event) => {
-                                    if (filters.find((a) => a.id == opt.id)) {
-                                       setFilters(
-                                          filters.filter((a) => a.id != opt.id)
-                                       );
-                                    } else {
-                                       setFilters([
-                                          // Allows only one filter per category
-                                          ...filters.filter(
-                                             (a) =>
-                                                //@ts-expect-error
-                                                a.field != cat.field
-                                          ),
-                                          //@ts-expect-error
-                                          { ...opt, field: cat.field },
-                                       ]);
-                                    }
-                                 }}
-                              >
-                                 {opt.icon ? (
-                                    <>
-                                       <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
-                                          <Image
-                                             options="aspect_ratio=1:1&height=40&width=40"
-                                             alt="Icon"
-                                             className="object-contain"
-                                             url={opt.icon}
-                                          />
-                                       </div>
-                                    </>
-                                 ) : null}
-                                 <div className="text-1 text-xs">
-                                    {opt.name}
+            {filterOptions.map((cat) => (
+               <div
+                  key={cat.name}
+                  className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+               >
+                  <div className="w-40 text-sm font-bold max-laptop:pb-2">
+                     {cat.name}
+                  </div>
+                  <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
+                     {cat.options.map((opt) => (
+                        <div
+                           key={opt.id}
+                           className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
+                              filters.find((a) => a.id == opt.id)
+                                 ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                 : ``
+                           }`}
+                           onClick={(event) => {
+                              if (filters.find((a) => a.id == opt.id)) {
+                                 setFilters(
+                                    filters.filter((a) => a.id != opt.id)
+                                 );
+                              } else {
+                                 setFilters([
+                                    // Allows only one filter per category
+                                    ...filters.filter(
+                                       (a) => a.field != cat.field
+                                    ),
+                                    { ...opt, field: cat.field },
+                                 ]);
+                              }
+                           }}
+                        >
+                           {opt.icon ? (
+                              <>
+                                 <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
+                                    <Image
+                                       options="aspect_ratio=1:1&height=40&width=40"
+                                       alt="Icon"
+                                       className="object-contain"
+                                       url={opt.icon}
+                                    />
                                  </div>
-                              </div>
-                           ))}
+                              </>
+                           ) : null}
+                           <div className="text-1 text-xs">{opt.name}</div>
                         </div>
-                     </div>
-                  </>
-               );
-            })}
+                     ))}
+                  </div>
+               </div>
+            ))}
          </div>
 
          {/* Search Text Box */}
@@ -250,7 +244,7 @@ const RecipeList = ({ chars }: any) => {
                Sort
             </div>
             <div className="flex items-center gap-2">
-               {sortOptions.map((opt: any) => {
+               {sortOptions.map((opt) => {
                   return (
                      <div
                         key={opt.field}
@@ -273,8 +267,8 @@ const RecipeList = ({ chars }: any) => {
 
          {/* List of items with applied sorting */}
          <div className="bg-2 border-color shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
-            {cfiltered?.map((char: any) => {
-               const rarityurl = char?.result_item?.rarity?.icon?.url;
+            {cfiltered?.map((char) => {
+               // const rarityurl = char?.result_item?.rarity?.icon?.url;
                const rarnum = char?.result_item?.rarity?.display_number;
                const cid = char?.id;
                const curl = char.icon?.url;
@@ -285,64 +279,62 @@ const RecipeList = ({ chars }: any) => {
                const specnum = char?.special_material_cost_num;
 
                return (
-                  <>
-                     <div className="overflow-auto">
-                        <div className="flex items-center justify-between gap-3 p-2">
-                           {/* Result Item */}
-                           <Link
-                              prefetch="intent"
-                              className="flex min-w-[200px] items-center gap-3"
-                              to={`/starrail/collections/${collectionName}/${cid}`}
-                           >
-                              <div className="h-12 w-12 flex-none rounded-md laptop:h-16 laptop:w-16">
-                                 <Image
-                                    options="aspect_ratio=1:1&height=100&width=100"
-                                    url={curl ?? "no_image_42df124128"}
-                                    className={`object-contain color-rarity-${
-                                       rarnum ?? "1"
-                                    } rounded-md`}
-                                    alt={cname}
-                                 />
-                              </div>
-                              <div className="max-laptop:text-sm">{cname}</div>
-                           </Link>
+                  <div key={cid} className="overflow-auto">
+                     <div className="flex items-center justify-between gap-3 p-2">
+                        {/* Result Item */}
+                        <Link
+                           prefetch="intent"
+                           className="flex min-w-[200px] items-center gap-3"
+                           to={`/starrail/collections/${collectionName}/${cid}`}
+                        >
+                           <div className="h-12 w-12 flex-none rounded-md laptop:h-16 laptop:w-16">
+                              <Image
+                                 options="aspect_ratio=1:1&height=100&width=100"
+                                 url={curl ?? "no_image_42df124128"}
+                                 className={`object-contain color-rarity-${
+                                    rarnum ?? "1"
+                                 } rounded-md`}
+                                 alt={cname}
+                              />
+                           </div>
+                           <div className="max-laptop:text-sm">{cname}</div>
+                        </Link>
 
-                           {/* Recipe Items */}
-                           {ingredients?.length > 0 || spec?.length > 0 ? (
-                              <>
-                                 <div className="flex items-center gap-1">
-                                    {/* Main Fixed Ingredients */}
-                                    {ingredients?.map((mat: any, key: number) => (
-                                       <ItemQtyFrame mat={mat} key={key} />
-                                    ))}
+                        {/* Recipe Items */}
+                        {ingredients?.length > 0 || spec?.length > 0 ? (
+                           <>
+                              <div className="flex items-center gap-1">
+                                 {/* Main Fixed Ingredients */}
+                                 {ingredients?.map((mat: any, key: number) => (
+                                    <ItemQtyFrame mat={mat} key={key} />
+                                 ))}
 
-                                    {/* Special Ingredients */}
-                                    {spec?.length > 0 ? (
-                                       <>
-                                          <div className="inline-block">
-                                             <div className="flex w-full items-center gap-1">
-                                                {spec?.map((mat: any) => (
-                                                   <ItemFrameSmall
-                                                      key={mat.id}
-                                                      mat={mat}
-                                                   />
-                                                ))}
-                                             </div>
-                                             <div
-                                                className="mt-0.5 w-full rounded-sm bg-bg1Dark
-                                                text-center align-middle text-xs font-bold text-white"
-                                             >
-                                                {specnum}
-                                             </div>
+                                 {/* Special Ingredients */}
+                                 {spec?.length > 0 ? (
+                                    <>
+                                       <div className="inline-block">
+                                          <div className="flex w-full items-center gap-1">
+                                             {spec?.map((mat: any) => (
+                                                <ItemFrameSmall
+                                                   key={mat.id}
+                                                   mat={mat}
+                                                />
+                                             ))}
                                           </div>
-                                       </>
-                                    ) : null}
-                                 </div>
-                              </>
-                           ) : null}
-                        </div>
+                                          <div
+                                             className="mt-0.5 w-full rounded-sm bg-bg1Dark
+                                                text-center align-middle text-xs font-bold text-white"
+                                          >
+                                             {specnum}
+                                          </div>
+                                       </div>
+                                    </>
+                                 ) : null}
+                              </div>
+                           </>
+                        ) : null}
                      </div>
-                  </>
+                  </div>
                );
             })}
          </div>
@@ -405,15 +397,15 @@ const ItemQtyFrame = ({ mat }: any) => {
    );
 };
 
-function removeTags(str: String) {
-   if (str === null || str === "") return false;
-   else str = str.toString();
+// function removeTags(str: String) {
+//    if (str === null || str === "") return false;
+//    else str = str.toString();
 
-   // Regular expression to identify HTML tags in
-   // the input string. Replacing the identified
-   // HTML tag with a null string.
-   return str.replace(/(<([^>]+)>)/gi, "");
-}
+//    // Regular expression to identify HTML tags in
+//    // the input string. Replacing the identified
+//    // HTML tag with a null string.
+//    return str.replace(/(<([^>]+)>)/gi, "");
+// }
 
 const QUERY_RECIPES = `
 query {
