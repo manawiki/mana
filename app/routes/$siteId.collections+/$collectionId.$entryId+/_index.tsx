@@ -1,11 +1,8 @@
-import { Link, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { useLoaderData, useParams } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
-import { Fragment } from "react";
 import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
-import { Popover, Transition } from "@headlessui/react";
-import { Plus, Type, Component } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { SoloEditor } from "~/modules/editor/SoloEditor";
+import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { zx } from "zodix";

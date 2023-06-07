@@ -27,24 +27,32 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import type { CustomElement } from "./types";
-import { BlockType } from "./types";
+import type { CustomElement } from "~/modules/editor/types";
+import { BlockType } from "~/modules/editor/types";
 import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
    withLayout,
    withNodeId,
-} from "./utils";
-import Leaf from "./blocks/Leaf";
-import Block, { CreateNewBlockFromBlock } from "./blocks/Block";
-import { HOTKEYS, PROSE_CONTAINER_ID } from "./constants";
-import { BlockInlineActions, Button, Toolbar, Tooltip } from "./components";
+} from "~/modules/editor/utils";
+import Leaf from "~/modules/editor/blocks/Leaf";
+import Block, { CreateNewBlockFromBlock } from "~/modules/editor/blocks/Block";
+import { HOTKEYS, PROSE_CONTAINER_ID } from "~/modules/editor/constants";
+import {
+   BlockInlineActions,
+   Button,
+   Toolbar,
+   Tooltip,
+} from "~/modules/editor/components";
 import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
 import { withHistory } from "slate-history";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { useFetcher } from "@remix-run/react";
+import { z } from "zod";
+import { zx } from "zodix";
+import { type ActionArgs, redirect } from "@remix-run/node";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -73,11 +81,13 @@ export const SoloEditor = ({
    siteId,
    collectionEntity,
    pageId,
+   sectionId,
 }: {
    defaultValue: Descendant[] | undefined;
    siteId: string;
    collectionEntity: string;
    pageId: string;
+   sectionId: string;
 }) => {
    const editor = useEditor();
 
@@ -103,8 +113,9 @@ export const SoloEditor = ({
                collectionEntity,
                siteId,
                pageId,
+               sectionId,
             },
-            { method: "patch", action: "/action/editor" }
+            { method: "patch", action: "/editors/SoloEditor" }
          );
       }
    }, [debouncedValue]);
@@ -502,4 +513,135 @@ function withShortcuts(editor: Editor) {
    };
 
    return editor;
+}
+
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionArgs) {
+   console.log("asdasd");
+   const { intent, siteId, pageId, collectionEntity } = await zx.parseForm(
+      request,
+      {
+         intent: z.string(),
+         siteId: z.string(),
+         pageId: z.string(),
+         collectionEntity: z.string().optional(),
+      }
+   );
+
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
+   switch (intent) {
+      case "updateEmbed": {
+         const { content } = await zx.parseForm(request, {
+            content: z.string(),
+         });
+
+         const slug = await payload.find({
+            collection: "sites",
+            where: {
+               slug: {
+                  equals: siteId,
+               },
+            },
+            user,
+         });
+         const realSiteId = slug?.docs[0]?.id;
+
+         const collectionSlug = await payload.find({
+            collection: "collections",
+            where: {
+               slug: {
+                  equals: collectionEntity,
+               },
+               site: {
+                  equals: realSiteId,
+               },
+            },
+            user,
+         });
+
+         const realCollectionId = collectionSlug?.docs[0]?.id;
+
+         const embedId = await payload.find({
+            collection: "embeds",
+            where: {
+               site: {
+                  equals: realSiteId,
+               },
+               relationId: {
+                  equals: pageId,
+               },
+               ...(collectionEntity
+                  ? {
+                       collectionEntity: {
+                          equals: realCollectionId,
+                       },
+                    }
+                  : {}),
+            },
+            overrideAccess: false,
+            user,
+         });
+
+         //If existing embed doesn't exist, create a new one.
+         if (embedId.totalDocs == 0) {
+            return await payload.create({
+               collection: "embeds",
+               data: {
+                  content: JSON.parse(content),
+                  relationId: pageId,
+                  site: realSiteId as any,
+                  collectionEntity: realCollectionId as any,
+               },
+               draft: true,
+               overrideAccess: false,
+               user,
+            });
+         }
+
+         //Otherwise update the existing document
+         return await payload.update({
+            collection: "embeds",
+            id: embedId.docs[0].id,
+            data: {
+               content: JSON.parse(content),
+            },
+            autosave: true,
+            draft: true,
+            overrideAccess: false,
+            user,
+         });
+      }
+
+      case "publish": {
+         const embedId = await payload.find({
+            collection: "embeds",
+            where: {
+               site: {
+                  equals: siteId,
+               },
+               relationId: {
+                  equals: pageId,
+               },
+            },
+            overrideAccess: false,
+            user,
+         });
+
+         return await payload.update({
+            collection: "embeds",
+            id: embedId.docs[0].id,
+            data: {
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+
+      default:
+         return null;
+   }
 }
