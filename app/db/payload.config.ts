@@ -141,7 +141,7 @@ export default buildConfig({
                      name: originalDoc?.name,
                      site: originalDoc?.site.id,
                      icon: originalDoc?.icon.id,
-                     collectionEntity: originalDoc?.collectionEntity,
+                     collectionEntity: originalDoc?.collectionEntity.id,
                   };
                }
                case "posts": {

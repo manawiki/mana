@@ -11,7 +11,13 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      read: () => true,
+      read: () => {
+         return {
+            _status: {
+               equals: "published",
+            },
+         };
+      },
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),

@@ -119,9 +119,6 @@ export async function loader({
                })
             ).json()) as PaginatedDocs,
          ]);
-
-      console.log(followers);
-
       return json(
          { updateResults, site, followers },
          { headers: { "Cache-Control": "public, s-maxage=60" } }

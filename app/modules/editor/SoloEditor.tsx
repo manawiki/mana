@@ -70,8 +70,14 @@ function isNodeWithId(editor: Editor, id: string) {
 
 export const SoloEditor = ({
    defaultValue,
+   siteId,
+   collectionEntity,
+   pageId,
 }: {
-   defaultValue: Descendant[];
+   defaultValue: Descendant[] | undefined;
+   siteId: string;
+   collectionEntity: string;
+   pageId: string;
 }) => {
    const editor = useEditor();
 
@@ -84,7 +90,7 @@ export const SoloEditor = ({
 
    const isMount = useIsMount();
    const fetcher = useFetcher();
-   const [value, setValue] = useState("");
+   const [value, setValue] = useState(defaultValue);
 
    const debouncedValue = useDebouncedValue(value, 500);
 
@@ -93,7 +99,10 @@ export const SoloEditor = ({
          fetcher.submit(
             {
                content: JSON.stringify(debouncedValue),
-               intent: "updateContent",
+               intent: "updateEmbed",
+               collectionEntity,
+               siteId,
+               pageId,
             },
             { method: "patch", action: "/action/editor" }
          );

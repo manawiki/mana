@@ -7,6 +7,8 @@ import { Plus, Type, Component } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { SoloEditor } from "~/modules/editor/SoloEditor";
 import { nanoid } from "nanoid";
+import { z } from "zod";
+import { zx } from "zodix";
 
 export async function loader({
    context: { payload, user },
@@ -14,7 +16,27 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const entryDefault = await getDefaultEntryData({ payload, params, request });
-   return json({ entryDefault });
+   const { siteId, entryId } = zx.parseParams(params, {
+      siteId: z.string(),
+      entryId: z.string(),
+   });
+
+   const embed = await payload.find({
+      collection: "embeds",
+      where: {
+         "site.slug": {
+            equals: siteId,
+         },
+         relationId: {
+            equals: entryId,
+         },
+      },
+      draft: true,
+      overrideAccess: false,
+      user,
+   });
+
+   return json({ entryDefault, embed: embed?.docs[0]?.content });
 }
 
 export { meta };
@@ -28,8 +50,7 @@ export const initialValue = [
 ];
 
 export default function CollectionEntryWiki() {
-   const { entryDefault } = useLoaderData<typeof loader>();
-   const fetcher = useFetcher();
+   const { entryDefault, embed } = useLoaderData<typeof loader>();
    const { siteId, entryId, collectionId } = useParams();
 
    return (
@@ -37,7 +58,12 @@ export default function CollectionEntryWiki() {
          <EntryHeader entry={entryDefault} />
          <AdminOrStaffOrOwner>
             <div className="">
-               <SoloEditor defaultValue={initialValue} />
+               <SoloEditor
+                  siteId={siteId ?? ""}
+                  collectionEntity={collectionId ?? ""}
+                  pageId={entryId ?? ""}
+                  defaultValue={embed ?? initialValue}
+               />
             </div>
          </AdminOrStaffOrOwner>
       </>

@@ -202,7 +202,7 @@ export const action = async ({
 
          const newData = JSON.parse(data);
          const currentDate = format(new Date(), "MMM-dd-yy");
-         console.log(currentDate);
+
          const update = await payload.find({
             collection: "updates",
             where: {

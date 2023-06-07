@@ -6,6 +6,7 @@ import { Collections } from "./Collections";
 import { Entries } from "./Entries";
 import { CustomPages } from "./CustomPages";
 import { Updates } from "./Updates";
+import { Embeds } from "./Embeds";
 
 export const collections = [
    Sites,
@@ -16,4 +17,5 @@ export const collections = [
    Entries,
    CustomPages,
    Updates,
+   Embeds,
 ];
