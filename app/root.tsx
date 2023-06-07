@@ -58,56 +58,57 @@ export const meta: V2_MetaFunction = () => {
    ];
 };
 
-export const links: LinksFunction = () => [
-   //logo font
-   { rel: "preload", href: "https://use.typekit.net/lak0idb.css", as: "style" },
-   { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
+export const links: LinksFunction = () => {
+   const subsite = process?.env?.PAYLOAD_PUBLIC_SITE_ID;
 
-   //preload css makes it nonblocking to html renders
-   { rel: "preload", href: tooltipStyles, as: "style" },
-   { rel: "stylesheet", href: tooltipStyles },
+   return [
+      //preload css makes it nonblocking to html renders
+      { rel: "preload", href: tooltipStyles, as: "style" },
+      { rel: "preload", href: fonts, as: "style", crossorigin: "anonymous" },
+      { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
 
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+      //logo font
+      {
+         rel: "preload",
+         href: "https://use.typekit.net/lak0idb.css",
+         as: "style",
+      },
+      { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
 
-   { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
-   { rel: "stylesheet", href: tailwindStylesheetUrl },
+      { rel: "stylesheet", href: tooltipStyles },
+      { rel: "stylesheet", href: fonts, crossorigin: "anonymous" },
+      { rel: "stylesheet", href: tailwindStylesheetUrl },
 
-   //add preconnects to cdn to improve first bits
-   { rel: "preconnect", href: "https://static.mana.wiki" },
-   { rel: "preconnect", href: "https://starrail-static.mana.wiki" },
-   { rel: "preconnect", href: "https://ajax.cloudflare.com" },
-   { rel: "preconnect", href: "https://p.typekit.net" },
+      //add preconnects to cdn to improve first bits
+      { rel: "preconnect", href: "https://static.mana.wiki" },
+      { rel: "preconnect", href: "https://p.typekit.net" },
+      //fonts needs a seperate cors preconnect
+      {
+         rel: "preconnect",
+         href: "https://use.typekit.net",
+         crossOrigin: "anonymous",
+      },
+      {
+         rel: "preconnect",
+         href: subsite
+            ? `https://${subsite}-static.mana.wiki`
+            : "https://static.mana.wiki",
+         crossOrigin: "anonymous",
+      },
 
-   //fonts needs a seperate cors preconnect
-   {
-      rel: "preconnect",
-      href: "https://use.typekit.net",
-      crossOrigin: "anonymous",
-   },
-   {
-      rel: "preconnect",
-      href: "https://static.mana.wiki",
-      crossOrigin: "anonymous",
-   },
-
-   //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
-   { rel: "dns-prefetch", href: "https://starrail-static.mana.wiki" },
-   { rel: "dns-prefetch", href: "https://ajax.cloudflare.com" },
-   { rel: "dns-prefetch", href: "https://p.typekit.net" },
-   {
-      rel: "dns-prefetch",
-      href: "https://use.typekit.net",
-      crossOrigin: "anonymous",
-   },
-   {
-      rel: "dns-prefetch",
-      href: "https://static.mana.wiki",
-      crossOrigin: "anonymous",
-   },
-];
-
+      //add dns-prefetch as fallback support for older browsers
+      { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+      { rel: "dns-prefetch", href: "https://p.typekit.net" },
+      {
+         rel: "dns-prefetch",
+         href: "https://use.typekit.net",
+      },
+      {
+         rel: "dns-prefetch",
+         href: `https://${subsite}-static.mana.wiki`,
+      },
+   ];
+};
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
    i18n: "auth",
