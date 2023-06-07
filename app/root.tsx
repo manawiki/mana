@@ -64,7 +64,7 @@ export const links: LinksFunction = () => {
    return [
       //preload css makes it nonblocking to html renders
       { rel: "preload", href: tooltipStyles, as: "style" },
-      { rel: "preload", href: fonts, as: "style", crossorigin: "anonymous" },
+      { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
       { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
 
       //logo font
@@ -76,7 +76,7 @@ export const links: LinksFunction = () => {
       { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
 
       { rel: "stylesheet", href: tooltipStyles },
-      { rel: "stylesheet", href: fonts, crossorigin: "anonymous" },
+      { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
       { rel: "stylesheet", href: tailwindStylesheetUrl },
 
       //add preconnects to cdn to improve first bits
