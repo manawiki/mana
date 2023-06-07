@@ -45,77 +45,57 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
          locale,
          user,
          siteTheme: themeSession.getTheme(),
+         subsite: process?.env?.PAYLOAD_PUBLIC_SITE_ID,
       },
       { headers: { "Set-Cookie": await commitSession(session) } }
    );
 };
 
-export const meta: V2_MetaFunction = () => {
-   return [
-      { title: "Mana - A new kind of wiki" },
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
+export const meta: V2_MetaFunction = () => [
+   { title: "Mana - A new kind of wiki" },
+   { charSet: "utf-8" },
+   { name: "viewport", content: "width=device-width, initial-scale=1" },
+];
 
-export const links: LinksFunction = () => {
-   const subsite = process?.env?.PAYLOAD_PUBLIC_SITE_ID;
+export const links: LinksFunction = () => [
+   //preload css makes it nonblocking to html renders
+   { rel: "preload", href: tooltipStyles, as: "style" },
+   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
 
-   return [
-      //preload css makes it nonblocking to html renders
-      { rel: "preload", href: tooltipStyles, as: "style" },
-      { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
-      { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
+   //logo font
+   {
+      rel: "preload",
+      href: "https://use.typekit.net/lak0idb.css",
+      as: "style",
+   },
+   { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
 
-      //logo font
-      {
-         rel: "preload",
-         href: "https://use.typekit.net/lak0idb.css",
-         as: "style",
-      },
-      { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
+   { rel: "stylesheet", href: tooltipStyles },
+   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: tailwindStylesheetUrl },
 
-      { rel: "stylesheet", href: tooltipStyles },
-      { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: tailwindStylesheetUrl },
+   //add preconnects to cdn to improve first bits
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+   //fonts needs a cors preconnect instead
+   {
+      rel: "preconnect",
+      href: "https://use.typekit.net",
+      crossOrigin: "anonymous",
+   },
+   //add dns-prefetch as fallback support for older browsers
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://use.typekit.net" },
+];
 
-      //add preconnects to cdn to improve first bits
-      { rel: "preconnect", href: "https://static.mana.wiki" },
-      { rel: "preconnect", href: "https://p.typekit.net" },
-      //fonts needs a seperate cors preconnect
-      {
-         rel: "preconnect",
-         href: "https://use.typekit.net",
-         crossOrigin: "anonymous",
-      },
-      {
-         rel: "preconnect",
-         href: subsite
-            ? `https://${subsite}-static.mana.wiki`
-            : "https://static.mana.wiki",
-         crossOrigin: "anonymous",
-      },
-
-      //add dns-prefetch as fallback support for older browsers
-      { rel: "dns-prefetch", href: "https://static.mana.wiki" },
-      { rel: "dns-prefetch", href: "https://p.typekit.net" },
-      {
-         rel: "dns-prefetch",
-         href: "https://use.typekit.net",
-      },
-      {
-         rel: "dns-prefetch",
-         href: `https://${subsite}-static.mana.wiki`,
-      },
-   ];
-};
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
    i18n: "auth",
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
+   const { locale, siteTheme, toastMessage, subsite } =
+      useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
@@ -154,6 +134,22 @@ function App() {
             />
             <Meta />
             <Links />
+            <link
+               //links cannot read env variables, so we need to pass it down here
+               rel="preconnect"
+               href={
+                  subsite
+                     ? `https://${subsite}-static.mana.wiki`
+                     : "https://static.mana.wiki"
+               }
+               crossOrigin="anonymous"
+            />
+            {subsite && (
+               <link
+                  rel="dns-prefetch"
+                  href={`https://${subsite}-static.mana.wiki`}
+               />
+            )}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark ">
