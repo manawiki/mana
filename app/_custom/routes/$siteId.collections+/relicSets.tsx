@@ -68,11 +68,16 @@ export default function HomePage() {
    );
 }
 
+type FilterTypes = {
+   id: string;
+   name: string;
+   field: string;
+};
+
 const RelicSetList = ({ chars }: any) => {
-   const [filters, setFilters] = useState([]);
+   const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("relicset_id");
    const [search, setSearch] = useState("");
-   const [showDesc, setShowDesc] = useState(false);
 
    const sortOptions = [
       { name: "ID", field: "relicset_id" },
@@ -118,15 +123,15 @@ const RelicSetList = ({ chars }: any) => {
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
    // Sort entries
-   var csorted = [...chars];
+   let csorted = [...chars];
    csorted.sort((a, b) => (a[sort] > b[sort] ? 1 : b[sort] > a[sort] ? -1 : 0));
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   var cfiltered = csorted.filter((char: any) => {
-      var showEntry = filters
-         .map((filt: any) => {
-            var matches = 0;
+   let cfiltered = csorted.filter((char) => {
+      let showEntry = filters
+         .map((filt) => {
+            let matches = 0;
             if (char[filt.field]?.id) {
                matches = char[filt.field]?.id == filt.id ? 0 : 1;
             } else {
@@ -140,7 +145,7 @@ const RelicSetList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   var cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -150,72 +155,47 @@ const RelicSetList = ({ chars }: any) => {
             {/* Filter Options */}
             <H2 text="Relic Sets" />
             <div className="divide-color bg-2 border-color divide-y rounded-md border">
-               {filterOptions.map((cat: any) => {
-                  return (
-                     <>
-                        <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                           <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
-                              {cat.name}
+               {filterOptions.map((cat) => (
+                  <div
+                     key={cat.name}
+                     className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+                  >
+                     <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                        {cat.name}
+                     </div>
+                     <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                        {cat.options.map((opt) => (
+                           <div
+                              key={opt.id}
+                              className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
+                                 filters.find((a) => a.id == opt.id)
+                                    ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                    : ``
+                              }`}
+                              onClick={(event) => {
+                                 if (filters.find((a: any) => a.id == opt.id)) {
+                                    setFilters(
+                                       filters.filter((a) => a.id != opt.id)
+                                    );
+                                 } else {
+                                    setFilters([
+                                       // Allows only one filter per category
+                                       ...filters.filter(
+                                          (a) => a.field != cat.field
+                                       ),
+                                       { ...opt, field: cat.field },
+                                    ]);
+                                 }
+                              }}
+                           >
+                              <div className="text-1 truncate pt-0.5 text-center text-xs">
+                                 {opt.name}
+                              </div>
                            </div>
-                           <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                              {cat.options.map((opt: any) => {
-                                 return (
-                                    <>
-                                       <div
-                                          className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
-                                             filters.find(
-                                                (a: any) => a.id == opt.id
-                                             )
-                                                ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                                : ``
-                                          }`}
-                                          onClick={(event) => {
-                                             if (
-                                                filters.find(
-                                                   (a: any) => a.id == opt.id
-                                                )
-                                             ) {
-                                                setFilters(
-                                                   filters.filter(
-                                                      (a) => a.id != opt.id
-                                                   )
-                                                );
-                                             } else {
-                                                setFilters([
-                                                   // Allows only one filter per category
-                                                   ...filters.filter(
-                                                      (a) =>
-                                                         a.field != cat.field
-                                                   ),
-                                                   { ...opt, field: cat.field },
-                                                ]);
-                                             }
-                                          }}
-                                       >
-                                          {opt.icon ? (
-                                             <>
-                                                <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
-                                                   <Image
-                                                      alt="Icon"
-                                                      className="object-contain"
-                                                      url={opt.icon}
-                                                   />
-                                                </div>
-                                             </>
-                                          ) : null}
-
-                                          <div className="text-1 truncate pt-0.5 text-center text-xs">
-                                             {opt.name}
-                                          </div>
-                                       </div>
-                                    </>
-                                 );
-                              })}
-                           </div>
-                        </div>
-                     </>
-                  );
-               })}
+                        ))}
+                     </div>
+                  </div>
+               ))}
             </div>
 
             {/* Search Text Box */}
@@ -244,36 +224,30 @@ const RelicSetList = ({ chars }: any) => {
                   Sort
                </div>
                <div className="flex items-center gap-2">
-                  {sortOptions.map((opt: any) => {
-                     return (
-                        <div
-                           key={opt.field}
-                           className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+                  {sortOptions.map((opt: any) => (
+                     <div
+                        key={opt.field}
+                        className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
                               ? `bg-yellow-50 dark:bg-yellow-500/10`
                               : ``
                         }`}
-                           onClick={(event) => {
-                              setSort(opt.field);
-                           }}
-                        >
-                           {opt.name}
-                        </div>
-                     );
-                  })}
+                        onClick={(event) => {
+                           setSort(opt.field);
+                        }}
+                     >
+                        {opt.name}
+                     </div>
+                  ))}
                </div>
             </div>
 
             {/* List with applied sorting */}
             <div className="space-y-2.5 text-center">
-               {cfiltered?.map((char: any) => {
-                  return (
-                     <>
-                        <EntryWithDescription char={char} />
-                     </>
-                  );
-               })}
+               {cfiltered?.map((char: any) => (
+                  <EntryWithDescription char={char} key={char.id} />
+               ))}
             </div>
          </div>
       </>
@@ -303,23 +277,22 @@ const EntryWithDescription = ({ char }: any) => {
                <div className="pt-1 text-center text-xs">{char.name}</div>
             </div>
             <div className="divide-color flex-grow divide-y pr-3">
-               {effect?.map((eff: any) => {
-                  return (
-                     <>
-                        <div className="flex items-start gap-3 py-3 text-sm">
-                           <div className="flex-none font-bold text-yellow-600 dark:text-yellow-200">
-                              {eff.req_no}-pc
-                           </div>
-                           <div
-                              className="text-1 flex-grow text-left"
-                              dangerouslySetInnerHTML={{
-                                 __html: eff.description,
-                              }}
-                           ></div>
-                        </div>
-                     </>
-                  );
-               })}
+               {effect?.map((eff: any) => (
+                  <div
+                     key={eff.req_no}
+                     className="flex items-start gap-3 py-3 text-sm"
+                  >
+                     <div className="flex-none font-bold text-yellow-600 dark:text-yellow-200">
+                        {eff.req_no}-pc
+                     </div>
+                     <div
+                        className="text-1 flex-grow text-left"
+                        dangerouslySetInnerHTML={{
+                           __html: eff.description,
+                        }}
+                     ></div>
+                  </div>
+               ))}
             </div>
          </Link>
       </>

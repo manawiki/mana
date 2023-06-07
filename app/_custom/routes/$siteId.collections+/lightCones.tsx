@@ -72,7 +72,6 @@ type FilterTypes = {
    id: string;
    name: string;
    field: string;
-   icon: string;
 };
 
 const LightConeList = ({ chars }: any) => {
