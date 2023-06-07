@@ -15,6 +15,7 @@ export async function loader({
       Banners(limit: 100) {
         docs {
           name
+          banner_id
           icon {
             url
           }
@@ -61,6 +62,11 @@ export async function loader({
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console
       throw new Error();
    }
+
+   // Sort banners by banner_id
+   data.Banners.docs.sort((a, b) =>
+      a.banner_id > b.banner_id ? -1 : b.banner_id > a.banner_id ? 1 : 0
+   );
 
    return json({ banners: data.Banners.docs });
 }
