@@ -37,7 +37,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
    const [activeRelic, setActiveRelic] = useState(urelics[0]);
    const [activeRarity, setActiveRarity] = useState(maxrarity);
    const [mainLevel, setMainLevel] = useState(0);
-   const [subLevel, setSubLevel] = useState(1);
+   // const [subLevel, setSubLevel] = useState(1);
 
    // Get the list of relic data for the actively selected relics of selected rarity
    const activeData = relicData.find(
@@ -78,68 +78,64 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                const rimg = curr?.[0]?.icon?.url;
 
                return (
-                  <>
-                     <button
-                        onClick={(e) => {
-                           setActiveRelic(rname);
-                        }}
-                        className={`shadow-1 rounded-xl border p-3 shadow ${
-                           activeRelic == rname
-                              ? "border-yellow-200 bg-yellow-50 dark:border-zinc-600 dark:bg-zinc-700"
-                              : "bg-2 border-color"
+                  <button
+                     key={rname}
+                     onClick={(e) => {
+                        setActiveRelic(rname);
+                     }}
+                     className={`shadow-1 rounded-xl border p-3 shadow ${
+                        activeRelic == rname
+                           ? "border-yellow-200 bg-yellow-50 dark:border-zinc-600 dark:bg-zinc-700"
+                           : "bg-2 border-color"
+                     }`}
+                  >
+                     <Image
+                        options="aspect_ratio=1:1&height=120&width=120"
+                        alt="Active Relic"
+                        className="mx-auto h-20"
+                        url={rimg}
+                     />
+                     <div
+                        className={`pt-1 text-center text-xs ${
+                           activeRelic == rname ? "" : "text-1"
                         }`}
                      >
-                        <Image
-                           options="aspect_ratio=1:1&height=120&width=120"
-                           alt="Active Relic"
-                           className="mx-auto h-20"
-                           url={rimg}
-                        />
-                        <div
-                           className={`pt-1 text-center text-xs ${
-                              activeRelic == rname ? "" : "text-1"
-                           }`}
-                        >
-                           {rname}
-                        </div>
-                     </button>
-                  </>
+                        {rname}
+                     </div>
+                  </button>
                );
             })}
          </div>
 
          {/* Show information for selected Relic */}
          <div className="shadow-1 bg-2 border-color mb-3 flex w-full justify-between gap-2 rounded-xl border p-2.5 shadow-sm">
-            {rarities.map((r: any) => {
-               return (
-                  <>
-                     <button
-                        className={`flex w-full items-center justify-center gap-1 rounded-lg border border-transparent p-1 font-bold ${
-                           activeRarity == r.toString()
-                              ? "shadow-1 border-zinc-100 bg-white shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
-                              : ""
-                        }`}
-                        onClick={(e) => {
-                           setActiveRarity(r.toString());
-                           //    If the slider is at a value higher than is possible for the newly selected rarity, bring the slider down to the maximum for that new rarity.
-                           if (
-                              mainLevel >
-                              (maxlevels.find((rar: any) => rar.rarity == r)
-                                 ?.maxlv ?? 0)
-                           ) {
-                              setMainLevel(
-                                 maxlevels.find((rar: any) => rar.rarity == r)
-                                    ?.maxlv ?? 0
-                              );
-                           }
-                        }}
-                     >
-                        {r}
-                        <Star className="text-yellow-500" size={16} />
-                     </button>
-                  </>
-               );
-            })}
+            {rarities.map((r: any) => (
+               <button
+                  key={r}
+                  className={`flex w-full items-center justify-center gap-1 rounded-lg border border-transparent p-1 font-bold ${
+                     activeRarity == r.toString()
+                        ? "shadow-1 border-zinc-100 bg-white shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
+                        : ""
+                  }`}
+                  onClick={(e) => {
+                     setActiveRarity(r.toString());
+                     //    If the slider is at a value higher than is possible for the newly selected rarity, bring the slider down to the maximum for that new rarity.
+                     if (
+                        mainLevel >
+                        (maxlevels.find((rar: any) => rar.rarity == r)?.maxlv ??
+                           0)
+                     ) {
+                        setMainLevel(
+                           maxlevels.find((rar: any) => rar.rarity == r)
+                              ?.maxlv ?? 0
+                        );
+                     }
+                  }}
+               >
+                  {r}
+                  <Star className="text-yellow-500" size={16} />
+               </button>
+            ))}
          </div>
 
          <div className="border-color bg-2 shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
@@ -168,29 +164,28 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
             {/* All tiled possible Main Stats with symbol if available */}
             <div className="divide-color border-color divide-y border-t bg-white dark:bg-bg1Dark">
-               {mainStatData?.map((stat: any) => {
-                  return (
-                     <>
-                        <div className="flex justify-between p-3">
-                           <div className="flex items-center gap-2">
-                              <div className="h-6 w-6 rounded-full bg-zinc-500 ">
-                                 <Image
-                                    options="aspect_ratio=1:1&height=40&width=40"
-                                    alt="Stat"
-                                    url={stat.stattype?.icon?.url}
-                                 />
-                              </div>
-                              <div className="text-1 text-sm font-bold">
-                                 {stat.stattype?.name}
-                              </div>
-                           </div>
-                           <div>
-                              {formatStat(stat.stats[mainLevel], stat.stattype)}
-                           </div>
+               {mainStatData?.map((stat: any) => (
+                  <div
+                     key={stat.stattype?.name}
+                     className="flex justify-between p-3"
+                  >
+                     <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-zinc-500 ">
+                           <Image
+                              options="aspect_ratio=1:1&height=40&width=40"
+                              alt="Stat"
+                              url={stat.stattype?.icon?.url}
+                           />
                         </div>
-                     </>
-                  );
-               })}
+                        <div className="text-1 text-sm font-bold">
+                           {stat.stattype?.name}
+                        </div>
+                     </div>
+                     <div>
+                        {formatStat(stat.stats[mainLevel], stat.stattype)}
+                     </div>
+                  </div>
+               ))}
             </div>
          </div>
 
@@ -199,35 +194,34 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             <div className="border-color border-b p-3 font-bold">Sub Stats</div>
             {/* All tiled possible Substats, and their three possible rolls */}
             <div className="divide-color border-color divide-y bg-white dark:bg-bg1Dark">
-               {subStatData?.map((stat: any) => {
-                  return (
-                     <>
-                        <div className="flex justify-between p-3 pr-5">
-                           <div className="flex items-center gap-2">
-                              <div className="h-6 w-6 rounded-full bg-zinc-500 align-middle">
-                                 <Image
-                                    options="aspect_ratio=1:1&height=40&width=40"
-                                    alt="Stat"
-                                    url={stat.stattype?.icon?.url}
-                                 />
-                              </div>
-                              <div className="text-1 text-sm font-bold">
-                                 {stat.stattype?.name}
-                              </div>
-                           </div>
-                           <div className="grid w-44 grid-cols-3 items-center gap-8">
-                              {stat.stats?.map((val: any) => {
-                                 return (
-                                    <span key={val}>
-                                       {formatStat(val, stat.stattype)}
-                                    </span>
-                                 );
-                              })}
-                           </div>
+               {subStatData?.map((stat: any) => (
+                  <div
+                     key={stat.stattype?.name}
+                     className="flex justify-between p-3 pr-5"
+                  >
+                     <div className="flex items-center gap-2">
+                        <div className="h-6 w-6 rounded-full bg-zinc-500 align-middle">
+                           <Image
+                              options="aspect_ratio=1:1&height=40&width=40"
+                              alt="Stat"
+                              url={stat.stattype?.icon?.url}
+                           />
                         </div>
-                     </>
-                  );
-               })}
+                        <div className="text-1 text-sm font-bold">
+                           {stat.stattype?.name}
+                        </div>
+                     </div>
+                     <div className="grid w-44 grid-cols-3 items-center gap-8">
+                        {stat.stats?.map((val: any) => {
+                           return (
+                              <span key={val}>
+                                 {formatStat(val, stat.stattype)}
+                              </span>
+                           );
+                        })}
+                     </div>
+                  </div>
+               ))}
             </div>
          </div>
       </>
