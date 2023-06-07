@@ -69,8 +69,14 @@ export default function HomePage() {
    );
 }
 
+type FilterTypes = {
+   id: string;
+   name: string;
+   field: string;
+};
+
 const EnemyList = ({ chars }: any) => {
-   const [filters, setFilters] = useState([]);
+   const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("data_key");
    const [search, setSearch] = useState("");
 
@@ -138,15 +144,15 @@ const EnemyList = ({ chars }: any) => {
    // var pathlist = filterUnique(chars.map((c: any) => c.path));
 
    // Sort entries
-   var csorted = [...chars];
+   let csorted = [...chars];
    csorted.sort((a, b) => (a[sort] > b[sort] ? 1 : b[sort] > a[sort] ? -1 : 0));
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   var cfiltered = csorted.filter((char: any) => {
-      var showEntry = filters
-         .map((filt: any) => {
-            var matches = 0;
+   let cfiltered = csorted.filter((char) => {
+      let showEntry = filters
+         .map((filt) => {
+            let matches = 0;
             if (char[filt.field]?.id) {
                matches = char[filt.field]?.id == filt.id ? 0 : 1;
             } else {
@@ -160,7 +166,7 @@ const EnemyList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   var cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -169,73 +175,59 @@ const EnemyList = ({ chars }: any) => {
          {/* Filter Options */}
          <H2 text="Enemies" />
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
-            {filterOptions.map((cat: any) => {
-               return (
-                  <>
-                     <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                        <div className="w-40 text-sm font-bold max-laptop:pb-2">
-                           {cat.name}
-                        </div>
-                        <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
-                           {cat.options.map((opt: any) => {
-                              return (
+            {filterOptions.map((cat) => (
+               <div
+                  key={cat.name}
+                  className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+               >
+                  <div className="w-40 text-sm font-bold max-laptop:pb-2">
+                     {cat.name}
+                  </div>
+                  <div className="grid flex-grow grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-3">
+                     {cat.options.map((opt) => {
+                        return (
+                           <div
+                              key={opt.id}
+                              className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
+                                 filters.find((a) => a.id == opt.id)
+                                    ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                    : ``
+                              }`}
+                              onClick={(event) => {
+                                 if (filters.find((a) => a.id == opt.id)) {
+                                    setFilters(
+                                       filters.filter((a) => a.id != opt.id)
+                                    );
+                                 } else {
+                                    setFilters([
+                                       // Allows only one filter per category
+                                       ...filters.filter(
+                                          (a) => a.field != cat.field
+                                       ),
+                                       { ...opt, field: cat.field },
+                                    ]);
+                                 }
+                              }}
+                           >
+                              {opt.icon ? (
                                  <>
-                                    <div
-                                       className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
-                                          filters.find(
-                                             (a: any) => a.id == opt.id
-                                          )
-                                             ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                             : ``
-                                       }`}
-                                       onClick={(event) => {
-                                          if (
-                                             filters.find((a) => a.id == opt.id)
-                                          ) {
-                                             setFilters(
-                                                filters.filter(
-                                                   (a) => a.id != opt.id
-                                                )
-                                             );
-                                          } else {
-                                             setFilters([
-                                                // Allows only one filter per category
-                                                //@ts-expect-error
-                                                ...filters.filter(
-                                                   (a) =>
-                                                      //@ts-expect-error
-                                                      a.field != cat.field
-                                                ),
-                                                //@ts-expect-error
-                                                { ...opt, field: cat.field },
-                                             ]);
-                                          }
-                                       }}
-                                    >
-                                       {opt.icon ? (
-                                          <>
-                                             <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
-                                                <Image
-                                                   options="aspect_ratio=1:1&height=40&width=40"
-                                                   alt="Icon"
-                                                   className="object-contain"
-                                                   url={opt.icon}
-                                                />
-                                             </div>
-                                          </>
-                                       ) : null}
-                                       <div className="text-1 text-xs">
-                                          {opt.name}
-                                       </div>
+                                    <div className="border-color h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50">
+                                       <Image
+                                          options="aspect_ratio=1:1&height=40&width=40"
+                                          alt="Icon"
+                                          className="object-contain"
+                                          url={opt.icon}
+                                       />
                                     </div>
                                  </>
-                              );
-                           })}
-                        </div>
-                     </div>
-                  </>
-               );
-            })}
+                              ) : null}
+                              <div className="text-1 text-xs">{opt.name}</div>
+                           </div>
+                        );
+                     })}
+                  </div>
+               </div>
+            ))}
          </div>
 
          {/* Search Text Box */}
@@ -264,7 +256,7 @@ const EnemyList = ({ chars }: any) => {
                Sort
             </div>
             <div className="flex items-center gap-2">
-               {sortOptions.map((opt: any) => {
+               {sortOptions.map((opt) => {
                   return (
                      <div
                         key={opt.field}
@@ -287,34 +279,32 @@ const EnemyList = ({ chars }: any) => {
 
          {/* List of items with applied sorting */}
          <div className="bg-2 border-color shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
-            {cfiltered?.map((char: any) => {
+            {cfiltered?.map((char) => {
                const cid = char?.id;
                const curl = char.icon?.url;
                const cname = char.name;
 
                return (
-                  <>
-                     <div className="overflow-auto">
-                        <div className="flex items-center justify-between gap-3 p-2">
-                           {/* Result Item */}
-                           <Link
-                              prefetch="intent"
-                              className="flex min-w-[200px] items-center gap-3"
-                              to={`/starrail/collections/${collectionName}/${cid}`}
-                           >
-                              <div className="flex-none rounded-md ">
-                                 <Image
-                                    options="aspect_ratio=1:1&height=40&width=40"
-                                    url={curl ?? "no_image_42df124128"}
-                                    className={`object-contain rounded-md`}
-                                    alt={cname}
-                                 />
-                              </div>
-                              <div className="max-laptop:text-sm">{cname}</div>
-                           </Link>
-                        </div>
+                  <div key={cid} className="overflow-auto">
+                     <div className="flex items-center justify-between gap-3 p-2">
+                        {/* Result Item */}
+                        <Link
+                           prefetch="intent"
+                           className="flex min-w-[200px] items-center gap-3"
+                           to={`/starrail/collections/${collectionName}/${cid}`}
+                        >
+                           <div className="flex-none rounded-md ">
+                              <Image
+                                 options="aspect_ratio=1:1&height=40&width=40"
+                                 url={curl ?? "no_image_42df124128"}
+                                 className={`rounded-md object-contain`}
+                                 alt={cname}
+                              />
+                           </div>
+                           <div className="max-laptop:text-sm">{cname}</div>
+                        </Link>
                      </div>
-                  </>
+                  </div>
                );
             })}
          </div>

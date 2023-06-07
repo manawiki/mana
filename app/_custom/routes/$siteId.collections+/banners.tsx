@@ -1,7 +1,7 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { useState } from "react";
+import { ClientOnly } from "remix-utils";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
 
@@ -64,7 +64,7 @@ export async function loader({
    }
 
    // Sort banners by banner_id
-   data.Banners.docs.sort((a, b) =>
+   data.Banners.docs.sort((a: any, b: any) =>
       a.banner_id > b.banner_id ? -1 : b.banner_id > a.banner_id ? 1 : 0
    );
 
@@ -90,9 +90,9 @@ export default function HomePage() {
 }
 
 const BannerList = ({ banners }: any) => {
-   const [filters, setFilters] = useState([]);
-   const [sort, setSort] = useState("character_id");
-   const [search, setSearch] = useState("");
+   // const [filters, setFilters] = useState([]);
+   // const [sort, setSort] = useState("character_id");
+   // const [search, setSearch] = useState("");
 
    return (
       <>
@@ -100,46 +100,51 @@ const BannerList = ({ banners }: any) => {
             {/* List of Characters with applied sorting */}
             <H2 text="Banners" />
             <div className="space-y-2.5 pb-10">
-               {banners?.map((b: any) => {
-                  return (
-                     <>
-                        <div className="border-color shadow-1 bg-1 relative overflow-hidden rounded-lg border bg-zinc-50 shadow-sm">
-                           <div
-                              className="border-color items-center justify-between border-b 
+               {banners?.map((b: any) => (
+                  <div
+                     key={b?.name}
+                     className="border-color shadow-1 bg-1 relative overflow-hidden rounded-lg border bg-zinc-50 shadow-sm"
+                  >
+                     <div
+                        className="border-color items-center justify-between border-b 
                               bg-zinc-100 p-3 dark:bg-bg2Dark max-laptop:space-y-1 laptop:flex"
+                     >
+                        <div className="font-bold">{b?.name}</div>
+                        <div className="text-1 text-xs">
+                           <ClientOnly
+                           //Local date can create potential hydration mismatch when server and client timezones are different
                            >
-                              <div className="font-bold">{b?.name}</div>
-                              <div className="text-1 text-xs">
-                                 {new Date(b?.start_date).toLocaleString()} -{" "}
-                                 {b?.end_date
-                                    ? new Date(b?.end_date).toLocaleString()
-                                    : null}
-                              </div>
-                           </div>
-                           <div className="relative items-center laptop:flex">
-                              <div className="flex w-full flex-none items-center justify-center p-3 text-center laptop:w-[240px]">
-                                 <Image
-                                    options="width=500"
-                                    className="shadow-1 rounded-lg shadow"
-                                    alt={b?.name}
-                                    url={b?.icon?.url}
-                                 />
-                              </div>
-                              <div className="text-1 grid flex-grow grid-cols-2 gap-3 p-3 text-sm font-bold">
-                                 {b.featured_characters?.map((c: any) => {
-                                    return <CharFrame key={c?.id} char={c} />;
-                                 })}
-                                 {b.featured_light_cones?.map((c: any) => {
-                                    return (
-                                       <LightConeFrame key={c?.id} char={c} />
-                                    );
-                                 })}
-                              </div>
-                           </div>
+                              {() => (
+                                 <>
+                                    {new Date(b?.start_date).toLocaleString()} -{" "}
+                                    {b?.end_date
+                                       ? new Date(b?.end_date).toLocaleString()
+                                       : null}
+                                 </>
+                              )}
+                           </ClientOnly>
                         </div>
-                     </>
-                  );
-               })}
+                     </div>
+                     <div className="relative items-center laptop:flex">
+                        <div className="flex w-full flex-none items-center justify-center p-3 text-center laptop:w-[240px]">
+                           <Image
+                              options="width=500"
+                              className="shadow-1 rounded-lg shadow"
+                              alt={b?.name}
+                              url={b?.icon?.url}
+                           />
+                        </div>
+                        <div className="text-1 grid flex-grow grid-cols-2 gap-3 p-3 text-sm font-bold">
+                           {b.featured_characters?.map((c: any) => (
+                              <CharFrame key={c?.id} char={c} />
+                           ))}
+                           {b.featured_light_cones?.map((c: any) => (
+                              <LightConeFrame key={c?.id} char={c} />
+                           ))}
+                        </div>
+                     </div>
+                  </div>
+               ))}
             </div>
          </div>
       </>

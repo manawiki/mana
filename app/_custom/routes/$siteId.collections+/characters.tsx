@@ -87,14 +87,20 @@ export default function HomePage() {
    );
 }
 
-const CharacterList = ({ chars }: any) => {
-   type OptionTypes = {
-      id: string;
-      name: string;
-      icon?: string;
-   };
+type FilterTypes = {
+   id: string;
+   name: string;
+   field: string;
+};
 
-   const [filters, setFilters] = useState<OptionTypes[]>([]);
+type FilterOptionType = {
+   name: string;
+   id: string;
+   icon?: string;
+};
+
+const CharacterList = ({ chars }: any) => {
+   const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("name");
    const [search, setSearch] = useState("");
 
@@ -105,11 +111,6 @@ const CharacterList = ({ chars }: any) => {
 
    // All Filter Options listed individually atm to control order filter options appear in
 
-   type OptionType = {
-      id: string;
-      name: string;
-      icon?: string;
-   };
    const rarities = [
       {
          id: "VeryRare",
@@ -121,7 +122,7 @@ const CharacterList = ({ chars }: any) => {
          name: "5",
          // icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
-   ] as OptionType[];
+   ] as FilterOptionType[];
    const paths = [
       {
          id: "Warlock",
@@ -158,7 +159,7 @@ const CharacterList = ({ chars }: any) => {
          name: "Destruction",
          icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
       },
-   ] as OptionType[];
+   ] as FilterOptionType[];
    const elements = [
       {
          id: "Physical",
@@ -196,7 +197,7 @@ const CharacterList = ({ chars }: any) => {
          name: "Imaginary",
          icon: "https://static.mana.wiki/starrail/IconAttributeImaginary.png",
       },
-   ] as OptionType[];
+   ] as FilterOptionType[];
    const campsort = [
       {
          id: "Astral Express",
@@ -214,7 +215,7 @@ const CharacterList = ({ chars }: any) => {
          id: "Xianzhou: The Luofu",
          name: "Xianzhou: The Luofu",
       },
-   ] as OptionType[];
+   ] as FilterOptionType[];
 
    // const camps = chars.map((c) => {
    //    return c?.camp;
@@ -242,7 +243,7 @@ const CharacterList = ({ chars }: any) => {
       },
    ];
 
-   // var pathlist = filterUnique(chars.map((c: any) => c.path));
+   // var pathlist = filterUnique(chars.map((c) => c.path));
 
    // Sort entries
    let csorted = [...chars];
@@ -250,9 +251,9 @@ const CharacterList = ({ chars }: any) => {
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   let cfiltered = csorted.filter((char: any) => {
+   let cfiltered = csorted.filter((char) => {
       var showEntry = filters
-         .map((filt: any) => {
+         .map((filt) => {
             var matches = 0;
             if (char[filt.field]?.id) {
                matches = char[filt.field]?.id == filt.id ? 0 : 1;
@@ -267,7 +268,7 @@ const CharacterList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -291,7 +292,7 @@ const CharacterList = ({ chars }: any) => {
                               <div
                                  key={opt.id}
                                  className={`bg-3 border-color items-center rounded-lg border  px-2.5 py-1 ${
-                                    filters.find((a: any) => a.id == opt.id)
+                                    filters.find((a) => a.id == opt.id)
                                        ? `bg-yellow-50 dark:bg-yellow-500/10`
                                        : ``
                                  }`}
@@ -304,18 +305,15 @@ const CharacterList = ({ chars }: any) => {
                                        setFilters([
                                           // Allows only one filter per category
                                           ...filters.filter(
-                                             (a) =>
-                                                //@ts-expect-error
-                                                a.field != cat.field
+                                             (a) => a.field != cat.field
                                           ),
-                                          //@ts-expect-error
                                           { ...opt, field: cat.field },
                                        ]);
                                     }
                                  }}
                               >
                                  {opt?.icon && (
-                                    <div className="flex mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
+                                    <div className="mx-auto flex h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
                                        <Image
                                           className="mx-auto self-center"
                                           alt="Icon"
@@ -385,7 +383,7 @@ const CharacterList = ({ chars }: any) => {
 
          {/* List of Characters with applied sorting */}
          <div className="grid grid-cols-2 gap-3 pb-16 text-center laptop:grid-cols-5">
-            {cfiltered?.map((char: any, int) => {
+            {cfiltered?.map((char, int) => {
                const elemurl = char?.element?.icon?.url;
                const pathsmall = char?.path?.icon?.url;
                const rarityurl = char?.rarity?.icon?.url;
