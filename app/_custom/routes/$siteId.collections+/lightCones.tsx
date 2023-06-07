@@ -90,17 +90,17 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Rare",
          name: "3",
-         icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
       },
       {
          id: "VeryRare",
          name: "4",
-         icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
+         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
@@ -226,11 +226,11 @@ const LightConeList = ({ chars }: any) => {
                               }}
                            >
                               {opt?.icon && (
-                                 <div className="mx-auto h-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                 <div className="mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
                                     <Image
                                        className="mx-auto"
                                        alt="Icon"
-                                       options="height=42"
+                                       options="height=36"
                                        url={opt.icon}
                                     />
                                  </div>
