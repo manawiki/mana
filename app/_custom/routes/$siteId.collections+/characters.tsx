@@ -315,11 +315,11 @@ const CharacterList = ({ chars }: any) => {
                                  }}
                               >
                                  {opt?.icon && (
-                                    <div className="flex mx-auto h-10 w-10 rounded-full bg-zinc-800 bg-opacity-50">
+                                    <div className="flex mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
                                        <Image
                                           className="mx-auto self-center"
                                           alt="Icon"
-                                          options="height=40"
+                                          options="height=36"
                                           url={opt.icon}
                                        />
                                     </div>
