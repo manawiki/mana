@@ -19,7 +19,7 @@ export default function BlockImage({ element }: Props) {
    const [dragActive, setDragActive] = useState(false);
 
    useEffect(() => {
-      if (fetcher.state === "idle" && fetcher.type === "done") {
+      if (fetcher.state === "idle" && fetcher.data != null) {
          const { id, url } = fetcher.data;
          const path = ReactEditor.findPath(editor, element);
          const newProperties: Partial<CustomElement> = {
@@ -30,7 +30,7 @@ export default function BlockImage({ element }: Props) {
             at: path,
          });
       }
-   }, [fetcher.state, fetcher.type]);
+   }, [fetcher.state, fetcher.data, editor, element]);
 
    const handleDrop = function (e: any, fetcher: any) {
       e.preventDefault();
