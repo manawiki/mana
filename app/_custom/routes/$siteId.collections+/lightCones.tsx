@@ -68,8 +68,15 @@ export default function HomePage() {
    );
 }
 
+type FilterTypes = {
+   id: string;
+   name: string;
+   field: string;
+   icon: string;
+};
+
 const LightConeList = ({ chars }: any) => {
-   const [filters, setFilters] = useState([]);
+   const [filters, setFilters] = useState<FilterTypes[]>([]);
    const [sort, setSort] = useState("lightcone_id");
    const [search, setSearch] = useState("");
    const [showDesc, setShowDesc] = useState(false);
@@ -84,17 +91,17 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Rare",
          name: "3",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
+         icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
       },
       {
          id: "VeryRare",
          name: "4",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
+         icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
+         icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ];
    const paths = [
@@ -159,9 +166,9 @@ const LightConeList = ({ chars }: any) => {
 
    // Filter entries
    // Filter out by each active filter option selected, if matches filter then output 0; if sum of all filters is 0 then show entry.
-   var cfiltered = csorted.filter((char: any) => {
+   let cfiltered = csorted.filter((char) => {
       var showEntry = filters
-         .map((filt: any) => {
+         .map((filt) => {
             var matches = 0;
             if (char[filt.field]?.id) {
                matches = char[filt.field]?.id == filt.id ? 0 : 1;
@@ -176,7 +183,7 @@ const LightConeList = ({ chars }: any) => {
    });
 
    // Filter search by name
-   var cfiltered = cfiltered.filter((char: any) => {
+   cfiltered = cfiltered.filter((char) => {
       return char.name.toLowerCase().indexOf(search.toLowerCase()) > -1;
    });
 
@@ -186,72 +193,57 @@ const LightConeList = ({ chars }: any) => {
             {/* Filter Options */}
             <H2 text="Light Cones" />
             <div className="divide-color bg-2 border-color divide-y rounded-md border">
-               {filterOptions.map((cat: any) => {
-                  return (
-                     <>
-                        <div className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex">
-                           <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
-                              {cat.name}
+               {filterOptions.map((cat) => (
+                  <div
+                     className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+                     key={cat.name}
+                  >
+                     <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                        {cat.name}
+                     </div>
+                     <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                        {cat.options.map((opt) => (
+                           <div
+                              key={opt.id}
+                              className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
+                                 filters.find((a) => a.id == opt.id)
+                                    ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                    : ``
+                              }`}
+                              onClick={(event) => {
+                                 if (filters.find((a) => a.id == opt.id)) {
+                                    setFilters(
+                                       filters.filter((a) => a.id != opt.id)
+                                    );
+                                 } else {
+                                    setFilters([
+                                       // Allows only one filter per category
+                                       ...filters.filter(
+                                          (a) => a.field != cat.field
+                                       ),
+                                       { ...opt, field: cat.field },
+                                    ]);
+                                 }
+                              }}
+                           >
+                              {opt?.icon && (
+                                 <div className="mx-auto h-7 rounded-full bg-zinc-800 bg-opacity-50">
+                                    <Image
+                                       className="mx-auto"
+                                       alt="Icon"
+                                       options="height=42"
+                                       url={opt.icon}
+                                    />
+                                 </div>
+                              )}
+                              <div className="text-1 truncate pt-0.5 text-center text-xs">
+                                 {opt.name}
+                              </div>
                            </div>
-                           <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                              {cat.options.map((opt: any) => {
-                                 return (
-                                    <>
-                                       <div
-                                          className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
-                                             filters.find(
-                                                (a: any) => a.id == opt.id
-                                             )
-                                                ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                                : ``
-                                          }`}
-                                          onClick={(event) => {
-                                             if (
-                                                filters.find(
-                                                   (a: any) => a.id == opt.id
-                                                )
-                                             ) {
-                                                setFilters(
-                                                   filters.filter(
-                                                      (a) => a.id != opt.id
-                                                   )
-                                                );
-                                             } else {
-                                                setFilters([
-                                                   // Allows only one filter per category
-                                                   ...filters.filter(
-                                                      (a) =>
-                                                         a.field != cat.field
-                                                   ),
-                                                   { ...opt, field: cat.field },
-                                                ]);
-                                             }
-                                          }}
-                                       >
-                                          {opt.icon ? (
-                                             <>
-                                                <div className="mx-auto h-7 w-7 rounded-full bg-zinc-800 bg-opacity-50">
-                                                   <Image
-                                                      alt="Icon"
-                                                      className="object-contain"
-                                                      url={opt.icon}
-                                                   />
-                                                </div>
-                                             </>
-                                          ) : null}
-
-                                          <div className="text-1 truncate pt-0.5 text-center text-xs">
-                                             {opt.name}
-                                          </div>
-                                       </div>
-                                    </>
-                                 );
-                              })}
-                           </div>
-                        </div>
-                     </>
-                  );
-               })}
+                        ))}
+                     </div>
+                  </div>
+               ))}
             </div>
             {/* Search Text Box */}
             <div
@@ -279,24 +271,22 @@ const LightConeList = ({ chars }: any) => {
                   Sort
                </div>
                <div className="flex items-center gap-2">
-                  {sortOptions.map((opt: any) => {
-                     return (
-                        <div
-                           key={opt.field}
-                           className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+                  {sortOptions.map((opt) => (
+                     <div
+                        key={opt.name}
+                        className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
                               ? `bg-yellow-50 dark:bg-yellow-500/10`
                               : ``
                         }`}
-                           onClick={(event) => {
-                              setSort(opt.field);
-                           }}
-                        >
-                           {opt.name}
-                        </div>
-                     );
-                  })}
+                        onClick={(event) => {
+                           setSort(opt.field);
+                        }}
+                     >
+                        {opt.name}
+                     </div>
+                  ))}
                </div>
             </div>
 
@@ -320,37 +310,33 @@ const LightConeList = ({ chars }: any) => {
                      : "grid grid-cols-3 gap-2 text-center laptop:grid-cols-5"
                }`}
             >
-               {cfiltered?.map((char: any) => {
-                  return (
-                     <>
-                        {showDesc ? (
-                           <EntryWithDescription char={char} />
-                        ) : (
-                           <EntryIconOnly char={char} />
-                        )}
-                     </>
-                  );
-               })}
+               {cfiltered?.map((char) =>
+                  showDesc ? (
+                     <EntryWithDescription char={char} key={char.id} />
+                  ) : (
+                     <EntryIconOnly char={char} key={char.id} />
+                  )
+               )}
             </div>
          </div>
       </>
    );
 };
 
-function filterUnique(input: any) {
-   var output: any = [];
-   for (var i = 0; i < input.length; i++) {
-      if (!output.find((a: any) => a.id == input[i].id)) {
-         output.push({
-            id: input[i].id,
-            name: input[i].name,
-            icon: input[i].icon?.url,
-         });
-      }
-   }
+// function filterUnique(input: any) {
+//    var output: any = [];
+//    for (var i = 0; i < input.length; i++) {
+//       if (!output.find((a: any) => a.id == input[i].id)) {
+//          output.push({
+//             id: input[i].id,
+//             name: input[i].name,
+//             icon: input[i].icon?.url,
+//          });
+//       }
+//    }
 
-   return output;
-}
+//    return output;
+// }
 
 const EntryWithDescription = ({ char }: any) => {
    const pathsmall = char?.path?.icon?.url;
