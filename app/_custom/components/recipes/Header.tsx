@@ -59,26 +59,23 @@ export const Header = ({ pageData }: any) => {
             <section>
                <div>
                   <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
-                     {stats?.map((stat: any, index: any) => {
-                        return (
-                           <>
-                              <div
-                                 className={`${
-                                    index % 2 == 1
-                                       ? "bg-2 relative block"
-                                       : "bg-1 relative block"
-                                 } flex items-center px-3 py-2.5`}
-                              >
-                                 {/* 2bi) Stat Icon */}
-                                 <div className="text-1 flex flex-grow items-center space-x-2 font-bold">
-                                    <div>{stat.name}</div>
-                                 </div>
-                                 {/* 2biii) Stat value */}
-                                 <div className="">{stat.value}</div>
-                              </div>
-                           </>
-                        );
-                     })}
+                     {stats?.map((stat: any, index: any) => (
+                        <div
+                           key={stat.name}
+                           className={`${
+                              index % 2 == 1
+                                 ? "bg-2 relative block"
+                                 : "bg-1 relative block"
+                           } flex items-center px-3 py-2.5`}
+                        >
+                           {/* 2bi) Stat Icon */}
+                           <div className="text-1 flex flex-grow items-center space-x-2 font-bold">
+                              <div>{stat.name}</div>
+                           </div>
+                           {/* 2biii) Stat value */}
+                           <div className="">{stat.value}</div>
+                        </div>
+                     ))}
                   </div>
 
                   <div

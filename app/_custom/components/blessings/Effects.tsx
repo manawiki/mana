@@ -13,15 +13,13 @@ export const Effects = ({ pageData }: any) => {
                const descsimple = eff?.description_simple;
 
                return (
-                  <>
-                     <div className="p-3">
-                        <div className="pb-1 font-bold"> Lv. {lv}</div>
-                        <div
-                           className="text-1"
-                           dangerouslySetInnerHTML={{ __html: desc }}
-                        ></div>
-                     </div>
-                  </>
+                  <div key={i} className="p-3">
+                     <div className="pb-1 font-bold"> Lv. {lv}</div>
+                     <div
+                        className="text-1"
+                        dangerouslySetInnerHTML={{ __html: desc }}
+                     ></div>
+                  </div>
                );
             })}
          </section>

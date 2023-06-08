@@ -1,79 +1,82 @@
-import { Check, Circle } from "lucide-react";
+import { Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link } from "@remix-run/react";
-import { Image } from "~/components";
 
 export const Achievements = ({ pageData }: any) => {
    return (
       <section className="divide-color shadow-1 bg-2 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
-         {pageData?.map((a: any) => {
-            const [checked, setChecked] = useState(null);
-            useEffect(() => {
-               setChecked(
-                  JSON.parse(
-                     localStorage.getItem(
-                        "HSR_manawiki_achievement-" + a?.data_key
-                     )
-                  )
-               );
-            }, []);
-
-            return (
-               <>
-                  <div className="flex items-center justify-between gap-3 p-2">
-                     {/* Checkbox section */}
-                     <div
-                        className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center 
-                        justify-center rounded-lg border-2 shadow-md hover:bg-green-50 dark:hover:bg-zinc-800 ${
-                           checked
-                              ? "border-green-300 dark:border-green-800"
-                              : "border-zinc-200 dark:border-zinc-700"
-                        }`}
-                        onClick={() => {
-                           localStorage.setItem(
-                              "HSR_manawiki_achievement-" + a?.data_key,
-                              JSON.stringify(!checked)
-                           );
-
-                           setChecked(!checked);
-                        }}
-                     >
-                        {checked ? (
-                           <Check className="text-green-500" size={16} />
-                        ) : (
-                           <></>
-                        )}
-                     </div>
-
-                     {/* Achievement Description section */}
-                     <div className="flex-grow space-y-0.5 text-sm">
-                        <div className="font-bold">{a.name}</div>
-                        <div
-                           className="text-1"
-                           dangerouslySetInnerHTML={{ __html: a.description }}
-                        ></div>
-                     </div>
-
-                     {/* Achievement Reward section */}
-                     {/* TODO(dim): This pattern works for now but should use the Quest reward instead! */}
-                     <div className="flex items-center gap-1">
-                        <JadeReward
-                           qty={
-                              a.rarity === "Mid"
-                                 ? 10
-                                 : a.rarity === "Low"
-                                 ? 5
-                                 : a.rarity === "High"
-                                 ? 20
-                                 : 0
-                           }
-                        />
-                     </div>
-                  </div>
-               </>
-            );
-         })}
+         {pageData?.map((a: any) => (
+            <Achievement a={a} key={a?.data_key} />
+         ))}
       </section>
+   );
+};
+
+export const Achievement = ({ a }: any) => {
+   const [checked, setChecked] = useState(false);
+
+   useEffect(() => {
+      //We're saving achievement to local stage, so read initial value from local state
+      setChecked(
+         JSON.parse(
+            localStorage.getItem("HSR_manawiki_achievement-" + a?.data_key) ??
+               "false"
+         )
+      );
+   }, [a?.data_key]);
+
+   return (
+      <>
+         <div className="flex items-center justify-between gap-3 p-2">
+            {/* Checkbox section */}
+            <div
+               className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center 
+                  justify-center rounded-lg border-2 shadow-md hover:bg-green-50 dark:hover:bg-zinc-800 ${
+                     checked
+                        ? "border-green-300 dark:border-green-800"
+                        : "border-zinc-200 dark:border-zinc-700"
+                  }`}
+               onClick={() => {
+                  localStorage.setItem(
+                     "HSR_manawiki_achievement-" + a?.data_key,
+                     JSON.stringify(!checked)
+                  );
+
+                  setChecked(!checked);
+               }}
+            >
+               {checked ? (
+                  <Check className="text-green-500" size={16} />
+               ) : (
+                  <></>
+               )}
+            </div>
+
+            {/* Achievement Description section */}
+            <div className="flex-grow space-y-0.5 text-sm">
+               <div className="font-bold">{a.name}</div>
+               <div
+                  className="text-1"
+                  dangerouslySetInnerHTML={{ __html: a.description }}
+               ></div>
+            </div>
+
+            {/* Achievement Reward section */}
+            {/* TODO(dim): This pattern works for now but should use the Quest reward instead! */}
+            <div className="flex items-center gap-1">
+               <JadeReward
+                  qty={
+                     a.rarity === "Mid"
+                        ? 10
+                        : a.rarity === "Low"
+                        ? 5
+                        : a.rarity === "High"
+                        ? 20
+                        : 0
+                  }
+               />
+            </div>
+         </div>
+      </>
    );
 };
 
