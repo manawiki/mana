@@ -3,8 +3,8 @@ import { isStaffFieldLevel } from "../../access/user";
 import type { User } from "payload/generated-types";
 import { canMutateAsSiteAdmin } from "../../access/site";
 
-export const Embeds: CollectionConfig = {
-   slug: "embeds",
+export const ContentEmbeds: CollectionConfig = {
+   slug: "contentEmbeds",
    access: {
       create: canMutateAsSiteAdmin("posts"),
       read: () => true,

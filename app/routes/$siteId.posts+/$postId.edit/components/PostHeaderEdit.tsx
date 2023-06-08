@@ -28,10 +28,8 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";
 import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
-import ActiveEditors from "./ActiveEditors";
 import { Tooltip } from "~/modules/editor/components";
 import { PostVersionModal } from "./PostVersionModal";
-import { useStorage } from "~/liveblocks.config";
 import TextareaAutosize from "react-textarea-autosize";
 import { format } from "date-fns";
 import { PostHeader } from "../../components/PostHeader";
@@ -70,7 +68,7 @@ export const PostHeaderEdit = ({
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const [isVersionModalOpen, setVersionModal] = useState(false);
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
-   const [collabStatus, setCollabStatus] = useState(post?.collaboration);
+   // const [collabStatus, setCollabStatus] = useState(post?.collaboration);
 
    const { t } = useTranslation(handle?.i18n);
 
@@ -101,21 +99,19 @@ export const PostHeaderEdit = ({
 
    const [isChanged, setChanged] = useState(false);
 
-   const blocks = useStorage((root) => root.blocks);
-
    //Toggle state for publish button
-   useEffect(() => {
-      if (blocks == null) {
-         return;
-      }
-      const isDiffBlocks =
-         JSON.stringify(blocks) === JSON.stringify(post.content);
+   // useEffect(() => {
+   //    if (blocks == null) {
+   //       return;
+   //    }
+   //    const isDiffBlocks =
+   //       JSON.stringify(blocks) === JSON.stringify(post.content);
 
-      if (isDiffBlocks == false) {
-         return setChanged(true);
-      }
-      return setChanged(false);
-   }, [blocks, post]);
+   //    if (isDiffBlocks == false) {
+   //       return setChanged(true);
+   //    }
+   //    return setChanged(false);
+   // }, [blocks, post]);
 
    const handleToggleState = () => {
       if (collabStatus == true) {
@@ -212,7 +208,7 @@ export const PostHeaderEdit = ({
                                        Clone
                                     </button>
                                  </Menu.Item> */}
-                                 <Menu.Item>
+                                 {/* <Menu.Item>
                                     <div className="flex items-center justify-between">
                                        <div className="text-1 flex w-full items-center gap-3 px-2.5 py-2 text-sm font-bold">
                                           <Users
@@ -260,7 +256,7 @@ export const PostHeaderEdit = ({
                                           </Switch>
                                        </Tooltip>
                                     </div>
-                                 </Menu.Item>
+                                 </Menu.Item> */}
                                  {post._status == "published" && (
                                     <Menu.Item>
                                        <button
@@ -309,7 +305,6 @@ export const PostHeaderEdit = ({
                      </button>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                     <ActiveEditors />
                      <>
                         <Tooltip id="history" side="bottom" content="History">
                            <button

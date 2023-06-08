@@ -3,10 +3,7 @@ import type { BaseEditor, BaseRange, Operation, Path } from "slate";
 import { Range, Transforms, Editor, Element } from "slate";
 import type { Format, ParagraphElement } from "./types";
 import { BlockType } from "./types";
-import type { ReactEditor } from "slate-react";
-import { useCallback, useRef, useState } from "react";
 
-import areEqual from "deep-equal";
 export function toPx(value: number | undefined): string | undefined {
    return value ? `${Math.round(value)}px` : undefined;
 }

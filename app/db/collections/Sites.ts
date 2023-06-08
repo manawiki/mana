@@ -107,20 +107,15 @@ export const Sites: CollectionConfig = {
          },
       },
       {
-         name: "banner",
-         type: "upload",
-         relationTo: "images",
-         admin: {
-            hidden: true,
-         },
-      },
-      {
          name: "id",
          type: "text",
       },
       {
          name: "content",
-         type: "json",
+         type: "relationship",
+         relationTo: "contentEmbeds",
+         hasMany: false,
+         maxDepth: 1,
       },
    ],
 };

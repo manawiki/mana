@@ -46,13 +46,14 @@ import {
    Tooltip,
 } from "~/modules/editor/components";
 import { nanoid } from "nanoid";
-import { Trash } from "lucide-react";
+import { Loader2, MoreVertical, Save, Trash } from "lucide-react";
 import { withHistory } from "slate-history";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { type ActionArgs, redirect } from "@remix-run/node";
+import { isAdding, isProcessing } from "~/utils";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -82,12 +83,14 @@ export const SoloEditor = ({
    collectionEntity,
    pageId,
    sectionId,
+   intent,
 }: {
    defaultValue: Descendant[] | undefined;
    siteId: string;
-   collectionEntity: string;
-   pageId: string;
-   sectionId: string;
+   collectionEntity?: string;
+   pageId?: string;
+   sectionId?: string;
+   intent?: string;
 }) => {
    const editor = useEditor();
 
@@ -100,19 +103,28 @@ export const SoloEditor = ({
 
    const isMount = useIsMount();
    const fetcher = useFetcher();
-   const [value, setValue] = useState(defaultValue);
+   const [value, setValue] = useState("");
+   const isAutoSaving =
+      fetcher.state === "submitting" &&
+      fetcher.formData.get("intentType") === "update";
+   const isPublishing =
+      fetcher.state === "submitting" &&
+      fetcher.formData.get("intentType") === "publish";
 
-   const debouncedValue = useDebouncedValue(value, 500);
+   const disabled = isProcessing(fetcher.state);
+
+   const debouncedValue = useDebouncedValue(value, 1000);
 
    useEffect(() => {
       if (!isMount) {
          fetcher.submit(
             {
                content: JSON.stringify(debouncedValue),
-               intent: "updateEmbed",
-               collectionEntity,
+               intentType: "update",
                siteId,
                pageId,
+               intent,
+               collectionEntity,
                sectionId,
             },
             { method: "patch", action: "/editors/SoloEditor" }
@@ -295,6 +307,62 @@ export const SoloEditor = ({
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full pb-12">
+               <div
+                  className="shadow-1 border-color bg-2 fixed inset-x-0 bottom-40 z-40 mx-auto flex
+                  max-w-[320px] items-center justify-between rounded-full border p-2 shadow-sm"
+               >
+                  <div
+                     className="shadow-1 border-color bg-3 flex h-10
+                     w-10 items-center justify-center rounded-full border shadow-sm"
+                  >
+                     {isAutoSaving ? (
+                        <Loader2 size={18} className="animate-spin" />
+                     ) : (
+                        <MoreVertical size={18} />
+                     )}
+                  </div>
+                  {isPublishing ? (
+                     <div
+                        className="shadow-1 inline-flex items-center justify-center rounded-lg border 
+                        border-blue-200/80 bg-gradient-to-b
+                        from-blue-50 to-blue-100 p-2 text-sm font-bold text-white shadow-sm transition
+                        dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
+                        dark:shadow-blue-950"
+                     >
+                        <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                     </div>
+                  ) : (
+                     <Tooltip
+                        id="save-home-changes"
+                        side="top"
+                        content="Save Changes"
+                     >
+                        <button
+                           className="shadow-1 inline-flex items-center justify-center gap-1.5 rounded-full 
+                                    border border-blue-200/80 bg-gradient-to-b from-blue-50
+                                    to-blue-100 p-2 px-3.5 text-sm font-bold text-blue-500 shadow-sm transition
+                                    dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
+                                    dark:shadow-blue-950"
+                           disabled={disabled}
+                           onClick={() => {
+                              fetcher.submit(
+                                 {
+                                    intent: "homeContent",
+                                    intentType: "publish",
+                                    siteId,
+                                 },
+                                 {
+                                    method: "post",
+                                    action: "/editors/SoloEditor",
+                                 }
+                              );
+                           }}
+                        >
+                           Publish
+                        </button>
+                     </Tooltip>
+                  )}
+               </div>
                <Slate
                   onChange={(e) => setValue(e)}
                   editor={editor}
@@ -519,25 +587,20 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionArgs) {
-   console.log("asdasd");
-   const { intent, siteId, pageId, collectionEntity } = await zx.parseForm(
-      request,
-      {
+   const { intent, intentType, siteId, pageId, collectionEntity } =
+      await zx.parseForm(request, {
          intent: z.string(),
+         intentType: z.string(),
          siteId: z.string(),
-         pageId: z.string(),
+         pageId: z.string().optional(),
          collectionEntity: z.string().optional(),
-      }
-   );
+      });
 
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
-   switch (intent) {
-      case "updateEmbed": {
-         const { content } = await zx.parseForm(request, {
-            content: z.string(),
-         });
-
+   switch (intentType) {
+      case "update": {
+         //Group of helper functinos to get real id's from slug
          const slug = await payload.find({
             collection: "sites",
             where: {
@@ -564,84 +627,166 @@ export async function action({
 
          const realCollectionId = collectionSlug?.docs[0]?.id;
 
-         const embedId = await payload.find({
-            collection: "embeds",
-            where: {
-               site: {
-                  equals: realSiteId,
-               },
-               relationId: {
-                  equals: pageId,
-               },
-               ...(collectionEntity
-                  ? {
-                       collectionEntity: {
-                          equals: realCollectionId,
-                       },
-                    }
-                  : {}),
-            },
-            overrideAccess: false,
-            user,
-         });
+         switch (intent) {
+            case "customCollectionEmbed": {
+               const { content } = await zx.parseForm(request, {
+                  content: z.string(),
+               });
 
-         //If existing embed doesn't exist, create a new one.
-         if (embedId.totalDocs == 0) {
-            return await payload.create({
-               collection: "embeds",
-               data: {
-                  content: JSON.parse(content),
-                  relationId: pageId,
-                  site: realSiteId as any,
-                  collectionEntity: realCollectionId as any,
-               },
-               draft: true,
-               overrideAccess: false,
-               user,
-            });
+               const embedId = await payload.find({
+                  collection: "contentEmbeds",
+                  where: {
+                     site: {
+                        equals: realSiteId,
+                     },
+                     relationId: {
+                        equals: pageId,
+                     },
+                     ...(collectionEntity
+                        ? {
+                             collectionEntity: {
+                                equals: realCollectionId,
+                             },
+                          }
+                        : {}),
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+
+               //If existing embed doesn't exist, create a new one.
+               if (embedId.totalDocs == 0) {
+                  return await payload.create({
+                     collection: "contentEmbeds",
+                     data: {
+                        content: JSON.parse(content),
+                        relationId: pageId,
+                        site: realSiteId as any,
+                        collectionEntity: realCollectionId as any,
+                     },
+                     draft: true,
+                     overrideAccess: false,
+                     user,
+                  });
+               }
+
+               //Otherwise update the existing document
+               return await payload.update({
+                  collection: "contentEmbeds",
+                  id: embedId.docs[0].id,
+                  data: {
+                     content: JSON.parse(content),
+                  },
+                  autosave: true,
+                  draft: true,
+                  overrideAccess: false,
+                  user,
+               });
+            }
+
+            case "homeContent": {
+               const { content } = await zx.parseForm(request, {
+                  content: z.string(),
+               });
+
+               const homeContentId = await payload.find({
+                  collection: "homeContents",
+                  where: {
+                     site: {
+                        equals: realSiteId,
+                     },
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+
+               //If existing embed doesn't exist, create a new one.
+               if (homeContentId.totalDocs == 0) {
+                  return await payload.create({
+                     collection: "homeContents",
+                     data: {
+                        content: JSON.parse(content),
+                        site: realSiteId,
+                     },
+                     draft: true,
+                     overrideAccess: false,
+                     user,
+                  });
+               }
+
+               //Otherwise update the existing document
+               return await payload.update({
+                  collection: "homeContents",
+                  id: homeContentId.docs[0].id,
+                  data: {
+                     content: JSON.parse(content),
+                  },
+                  autosave: true,
+                  draft: true,
+                  overrideAccess: false,
+                  user,
+               });
+            }
+
+            default:
+               return null;
          }
-
-         //Otherwise update the existing document
-         return await payload.update({
-            collection: "embeds",
-            id: embedId.docs[0].id,
-            data: {
-               content: JSON.parse(content),
-            },
-            autosave: true,
-            draft: true,
-            overrideAccess: false,
-            user,
-         });
       }
-
       case "publish": {
-         const embedId = await payload.find({
-            collection: "embeds",
-            where: {
-               site: {
-                  equals: siteId,
-               },
-               relationId: {
-                  equals: pageId,
-               },
-            },
-            overrideAccess: false,
-            user,
-         });
+         switch (intent) {
+            case "homeContent": {
+               console.log("asda herere");
+               const homeContent = await payload.find({
+                  collection: "homeContents",
+                  where: {
+                     "site.slug": {
+                        equals: siteId,
+                     },
+                  },
+                  overrideAccess: false,
+                  user,
+               });
 
-         return await payload.update({
-            collection: "embeds",
-            id: embedId.docs[0].id,
-            data: {
-               _status: "published",
-            },
-            overrideAccess: false,
-            user,
-         });
+               return await payload.update({
+                  collection: "homeContents",
+                  id: homeContent.docs[0].id,
+                  data: {
+                     _status: "published",
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+
+            default:
+               return null;
+         }
       }
-
-      default:
-         return null;
    }
 }
+
+// case "publish": {
+//    const embedId = await payload.find({
+//       collection: "contentEmbeds",
+//       where: {
+//          site: {
+//             equals: siteId,
+//          },
+//          relationId: {
+//             equals: pageId,
+//          },
+//       },
+//       overrideAccess: false,
+//       user,
+//    });
+
+//    return await payload.update({
+//       collection: "contentEmbeds",
+//       id: embedId.docs[0].id,
+//       data: {
+//          _status: "published",
+//       },
+//       overrideAccess: false,
+//       user,
+//    });
+// }

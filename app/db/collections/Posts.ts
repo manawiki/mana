@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaffFieldLevel } from "../../access/user";
 import type { User } from "payload/generated-types";
-import { canMutateAsSiteAdmin, canReadPost } from "../../access/site";
+import { canMutateAsSiteAdmin } from "../../access/site";
 
 export const postsslug = "posts";
 export const Posts: CollectionConfig = {
@@ -70,12 +70,6 @@ export const Posts: CollectionConfig = {
          name: "banner",
          type: "upload",
          relationTo: "images",
-      },
-      {
-         name: "collaboration",
-         type: "checkbox",
-         label: "Enable Collaboration",
-         defaultValue: false,
       },
    ],
    versions: {

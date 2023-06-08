@@ -1,43 +1,46 @@
 import type { Site } from "payload/generated-types";
 import type { Access } from "payload/types";
 
-export const canReadPost: Access = async ({
-   req: { user, payload },
-   id: postId,
-}) => {
-   if (user && user.roles.includes("staff")) return true;
-   if (user && postId) {
-      const post = await payload.findByID({
-         collection: "posts",
-         id: postId,
-         depth: 1,
-      });
-      const siteAdmins = (post.site as Site).admins;
-      const userId = user.id;
-      const isSiteOwner = userId == (post.site as Site).owner;
-      const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-      if (isSiteOwner || isSiteAdmin) return true;
-   }
-   if (!user && postId) {
-      const post = await payload.findByID({
-         collection: "posts",
-         id: postId,
-         depth: 1,
-      });
-      if (post._status == "published") return true;
-   }
-
-   //This means its a list page request instead
-   if (!postId) {
-      return false;
-   }
-
-   // Reject everyone else
-   return false;
-};
+export const canRead =
+   (
+      collectionSlug:
+         | "collections"
+         | "entries"
+         | "posts"
+         | "updates"
+         | "homeContents"
+   ): Access =>
+   async ({ req: { user, payload }, id }) => {
+      if (user && user.roles.includes("staff")) return true;
+      if (user && collectionSlug) {
+         const content = await payload.findByID({
+            collection: collectionSlug,
+            id,
+         });
+         //show if staff or site admin
+         const siteAdmins = (content.site as Site).admins;
+         const userId = user.id;
+         const isSiteOwner = userId == (content.site as Site).owner;
+         const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+         if (isSiteOwner || isSiteAdmin) return true;
+      }
+      // otherwise only return if published
+      return {
+         _status: {
+            equals: "published",
+         },
+      };
+   };
 
 export const canMutateAsSiteAdmin =
-   (collectionSlug: "collections" | "entries" | "posts" | "updates"): Access =>
+   (
+      collectionSlug:
+         | "collections"
+         | "entries"
+         | "posts"
+         | "updates"
+         | "homeContents"
+   ): Access =>
    async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {
          if (user.roles.includes("staff")) return true;

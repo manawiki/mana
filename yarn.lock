@@ -2702,34 +2702,6 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@liveblocks/client@1.0.8", "@liveblocks/client@^1.0.1":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-1.0.8.tgz#ab4ad355702f0e761a55c3215f5d6f1bad5f506a"
-  integrity sha512-Ft6p0L9nXChdP0WOpBZKG9gduXcImlIqmHyb9qm8YRLODPDZz8Kftx93Qh6vJR6VJWzGAIHqoPIpP/17Q1qYNA==
-  dependencies:
-    "@liveblocks/core" "1.0.8"
-
-"@liveblocks/core@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@liveblocks/core/-/core-1.0.8.tgz#d77dd5efccefdf2d94735bbd22e68f97d1ae4d00"
-  integrity sha512-gqwpT2y1hMpvCnXfmJjSHaDF/ZM+qg9jvb2ZbiX4/botDq2Ke8/2PJVAtXCxIvxAkB1m32eBG9tw+5Q6/ESgjg==
-
-"@liveblocks/node@^1.0.1":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-1.0.8.tgz#72e1e90b7a216c72cdc840d26b634fa90064e288"
-  integrity sha512-B5qNZSOuPg1qRYhXKbllbhDSObEPnZHzmdA57IQ1uvr4rXknazI3Zh8QroKhqGJibMJ8s2GP7Q5+266XTEH+QA==
-  dependencies:
-    node-fetch "^2.6.1"
-
-"@liveblocks/react@^1.0.1":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@liveblocks/react/-/react-1.0.8.tgz#4b3bc39fba14c4c13352b416f404d59f96c53d05"
-  integrity sha512-V+Cdy00H/XeFCtvP0FtHp5HykfJU7XYWWiiFzXMc6+lt7XGGYtJ+2jhaG/G8q03PMoL5w/Y/MAFNRLix/3EfSQ==
-  dependencies:
-    "@liveblocks/client" "1.0.8"
-    "@liveblocks/core" "1.0.8"
-    use-sync-external-store "^1.2.0"
-
 "@monaco-editor/loader@^1.3.3":
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/@monaco-editor/loader/-/loader-1.3.3.tgz#7f1742bd3cc21c0362a46a4056317f6e5215cfca"

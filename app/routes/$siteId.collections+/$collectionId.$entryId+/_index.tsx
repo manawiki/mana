@@ -19,7 +19,7 @@ export async function loader({
    });
 
    const embed = await payload.find({
-      collection: "embeds",
+      collection: "contentEmbeds",
       where: {
          "site.slug": {
             equals: siteId,

@@ -6,11 +6,10 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 import { useMemo, useCallback, Fragment, useState } from "react";
-import Block from "../../../../modules/editor/blocks/Block";
-import Leaf from "../../../../modules/editor/blocks/Leaf";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
 import { format } from "date-fns";
 import { RadioGroup, Tab } from "@headlessui/react";
-import { useMutation } from "~/liveblocks.config";
 import { Modal } from "~/components";
 import { PostHeader } from "../../components/PostHeader";
 
@@ -35,17 +34,6 @@ export const PostVersionModal = ({
 
    const init = versions.docs[0];
    const [selectedVersion, setSelectedVersion] = useState(init);
-
-   //Clear the current list on liveblocks and push the revision
-   const updateData = useMutation(
-      ({ storage }) => {
-         const blocks = storage.get("blocks");
-         blocks.clear();
-         const data = selectedVersion?.version?.content;
-         return data.map((block: any) => blocks.push(block));
-      },
-      [selectedVersion]
-   );
 
    //Pagination
    const [, setSearchParams] = useSearchParams({});
@@ -113,7 +101,6 @@ export const PostVersionModal = ({
                            <button
                               className="h-9 rounded-md bg-emerald-500 text-sm font-bold text-white"
                               onClick={() => {
-                                 updateData();
                                  fetcher.submit(
                                     {
                                        intent: "versionUpdate",

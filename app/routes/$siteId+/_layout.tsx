@@ -67,8 +67,8 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 import type { Update } from "~/db/payload-types";
 import { useIsBot } from "~/utils/isBotProvider";
-import NProgress from "nprogress";
-import nProgressStyles from "~/styles/nprogress.css";
+// import NProgress from "nprogress";
+// import nProgressStyles from "~/styles/nprogress.css";
 
 export async function loader({
    context: { payload, user },
@@ -78,8 +78,6 @@ export async function loader({
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
-
-   // /api/users?where[sites][equals]=85lT19IgAr&depth=0
 
    try {
       const url = new URL(request.url).origin;
@@ -141,8 +139,8 @@ export const links: LinksFunction = () => {
       { rel: "preload", href: customStylesheetUrl, as: "style" },
       { rel: "stylesheet", href: customStylesheetUrl },
 
-      { rel: "preload", href: nProgressStyles, as: "style" },
-      { rel: "stylesheet", href: nProgressStyles },
+      // { rel: "preload", href: nProgressStyles, as: "style" },
+      // { rel: "stylesheet", href: nProgressStyles },
    ];
 };
 
@@ -202,29 +200,29 @@ export default function SiteIndex() {
    let isBot = useIsBot();
 
    //nprogress bar
-   const transition = useNavigation();
-   let fetchers = useFetchers();
-   NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
+   // const transition = useNavigation();
+   // let fetchers = useFetchers();
+   // NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
 
-   let state = useMemo<"idle" | "loading">(
-      function getGlobalState() {
-         let states = [
-            transition.state,
-            ...fetchers.map((fetcher) => fetcher.state),
-         ];
-         if (states.every((state) => state === "idle")) return "idle";
-         return "loading";
-      },
-      [transition.state, fetchers]
-   );
+   // let state = useMemo<"idle" | "loading">(
+   //    function getGlobalState() {
+   //       let states = [
+   //          transition.state,
+   //          ...fetchers.map((fetcher) => fetcher.state),
+   //       ];
+   //       if (states.every((state) => state === "idle")) return "idle";
+   //       return "loading";
+   //    },
+   //    [transition.state, fetchers]
+   // );
 
-   useEffect(() => {
-      // and when it's something else it means it's either submitting a form or
-      // waiting for the loaders of the next location so we start it
-      if (state === "loading") NProgress.start();
-      // when the state is idle then we can to complete the progress bar
-      if (state === "idle") NProgress.done();
-   }, [state]);
+   // useEffect(() => {
+   //    // and when it's something else it means it's either submitting a form or
+   //    // waiting for the loaders of the next location so we start it
+   //    if (state === "loading") NProgress.start();
+   //    // when the state is idle then we can to complete the progress bar
+   //    if (state === "idle") NProgress.done();
+   // }, [state]);
 
    return (
       <>
