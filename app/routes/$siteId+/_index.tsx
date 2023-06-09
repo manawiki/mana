@@ -57,6 +57,7 @@ export async function loader({
          },
       })
    ).json()) as PaginatedDocs<HomeContent>;
+   if (data.length == 0) return json({ home: "", isChanged: false });
 
    const homeData = data[0];
    //We need to append the draft paramater to the url if editing
@@ -73,6 +74,7 @@ export async function loader({
             },
          })
       ).json()) as PaginatedDocs<HomeContent>;
+      if (data.length == 0) return json({ home: "", isChanged: false });
       const home = data[0].content;
       const isChanged =
          JSON.stringify(home) != JSON.stringify(homeData.content);
@@ -80,7 +82,7 @@ export async function loader({
    }
 
    //Otherwise return json and cache
-   const home = data[0].content;
+   const home = data[0]?.content;
    return json(
       { home, isChanged: false },
       { headers: { "Cache-Control": "public, s-maxage=60" } }
