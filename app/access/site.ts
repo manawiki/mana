@@ -13,7 +13,7 @@ export const canRead =
    ): Access =>
    async ({ req: { user, payload }, id }) => {
       if (user && user.roles.includes("staff")) return true;
-      if (user && collectionSlug) {
+      if (user && collectionSlug && id) {
          const content = await payload.findByID({
             collection: collectionSlug,
             id,
