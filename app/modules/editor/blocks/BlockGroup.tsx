@@ -306,7 +306,6 @@ export default function BlockGroup({ element }: Props) {
             groupItems: updatedGroupItems,
          };
 
-
          //Now we update the local SlateJS state
          return Transforms.setNodes<CustomElement>(editor, newProperties, {
             at: path,
@@ -342,7 +341,7 @@ export default function BlockGroup({ element }: Props) {
    const [viewMode, setViewMode] = useState(element.viewMode);
 
    return (
-      <div className="my-3">
+      <div className="my-6">
          <>
             <div className="flex items-center justify-between pb-2">
                <section className="flex items-center gap-3">

@@ -46,14 +46,13 @@ import {
    Tooltip,
 } from "~/modules/editor/components";
 import { nanoid } from "nanoid";
-import { Loader2, MoreVertical, Save, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { withHistory } from "slate-history";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { type ActionArgs, redirect } from "@remix-run/node";
-import { isAdding, isProcessing } from "~/utils";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -78,6 +77,7 @@ function isNodeWithId(editor: Editor, id: string) {
 }
 
 export const SoloEditor = ({
+   fetcher,
    defaultValue,
    siteId,
    collectionEntity,
@@ -85,6 +85,7 @@ export const SoloEditor = ({
    sectionId,
    intent,
 }: {
+   fetcher: any;
    defaultValue: Descendant[] | undefined;
    siteId: string;
    collectionEntity?: string;
@@ -102,16 +103,7 @@ export const SoloEditor = ({
    editor.isInline = (element) => ["link"].includes(element.type);
 
    const isMount = useIsMount();
-   const fetcher = useFetcher();
    const [value, setValue] = useState("");
-   const isAutoSaving =
-      fetcher.state === "submitting" &&
-      fetcher.formData.get("intentType") === "update";
-   const isPublishing =
-      fetcher.state === "submitting" &&
-      fetcher.formData.get("intentType") === "publish";
-
-   const disabled = isProcessing(fetcher.state);
 
    const debouncedValue = useDebouncedValue(value, 1000);
 
@@ -307,62 +299,6 @@ export const SoloEditor = ({
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full pb-12">
-               <div
-                  className="shadow-1 border-color bg-2 fixed inset-x-0 bottom-40 z-40 mx-auto flex
-                  max-w-[320px] items-center justify-between rounded-full border p-2 shadow-sm"
-               >
-                  <div
-                     className="shadow-1 border-color bg-3 flex h-10
-                     w-10 items-center justify-center rounded-full border shadow-sm"
-                  >
-                     {isAutoSaving ? (
-                        <Loader2 size={18} className="animate-spin" />
-                     ) : (
-                        <MoreVertical size={18} />
-                     )}
-                  </div>
-                  {isPublishing ? (
-                     <div
-                        className="shadow-1 inline-flex items-center justify-center rounded-lg border 
-                        border-blue-200/80 bg-gradient-to-b
-                        from-blue-50 to-blue-100 p-2 text-sm font-bold text-white shadow-sm transition
-                        dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
-                        dark:shadow-blue-950"
-                     >
-                        <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                     </div>
-                  ) : (
-                     <Tooltip
-                        id="save-home-changes"
-                        side="top"
-                        content="Save Changes"
-                     >
-                        <button
-                           className="shadow-1 inline-flex items-center justify-center gap-1.5 rounded-full 
-                                    border border-blue-200/80 bg-gradient-to-b from-blue-50
-                                    to-blue-100 p-2 px-3.5 text-sm font-bold text-blue-500 shadow-sm transition
-                                    dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
-                                    dark:shadow-blue-950"
-                           disabled={disabled}
-                           onClick={() => {
-                              fetcher.submit(
-                                 {
-                                    intent: "homeContent",
-                                    intentType: "publish",
-                                    siteId,
-                                 },
-                                 {
-                                    method: "post",
-                                    action: "/editors/SoloEditor",
-                                 }
-                              );
-                           }}
-                        >
-                           Publish
-                        </button>
-                     </Tooltip>
-                  )}
-               </div>
                <Slate
                   onChange={(e) => setValue(e)}
                   editor={editor}
@@ -728,6 +664,25 @@ export async function action({
                });
             }
 
+            case "updatePostContent": {
+               const { content } = await zx.parseForm(request, {
+                  content: z.string(),
+               });
+
+               //update the existing post
+               return await payload.update({
+                  collection: "posts",
+                  id: pageId,
+                  data: {
+                     content: JSON.parse(content),
+                  },
+                  autosave: true,
+                  draft: true,
+                  overrideAccess: false,
+                  user,
+               });
+            }
+
             default:
                return null;
          }
@@ -735,7 +690,6 @@ export async function action({
       case "publish": {
          switch (intent) {
             case "homeContent": {
-               console.log("asda herere");
                const homeContent = await payload.find({
                   collection: "homeContents",
                   where: {

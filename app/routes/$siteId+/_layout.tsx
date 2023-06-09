@@ -870,7 +870,7 @@ export default function SiteIndex() {
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color flex-grow divide-y laptop:pt-14">
                      {site.about && (
-                        <section className="p-4">
+                        <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
                               <Component size={14} />
                               <span className="text-1 text-sm font-bold">
@@ -896,7 +896,7 @@ export default function SiteIndex() {
                      )}
                      {site.pinned && (
                         <>
-                           <section className="p-4">
+                           <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                               <div className="flex items-center gap-1.5 pb-2.5">
                                  <Pin size={14} />
                                  <span className="text-1 text-sm font-bold">
@@ -950,7 +950,7 @@ export default function SiteIndex() {
                            </section>
                         </>
                      )}
-                     <section className="border-color px-4 py-5 laptop:!border-b">
+                     <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                         <div className="flex items-center gap-1.5 pb-3">
                            <Users size={14} />
                            <span className="text-1 text-sm font-bold">
@@ -1027,7 +1027,7 @@ export default function SiteIndex() {
                         </div>
                      </section>
                   </div>
-                  <div className="border-color flex items-center justify-center border-t">
+                  <div className="border-color flex items-center justify-center">
                      {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
                   </div>
                </div>

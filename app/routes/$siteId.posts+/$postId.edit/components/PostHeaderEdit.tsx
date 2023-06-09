@@ -97,38 +97,6 @@ export const PostHeaderEdit = ({
       }
    }, [debouncedSubtitle]);
 
-   const [isChanged, setChanged] = useState(false);
-
-   //Toggle state for publish button
-   // useEffect(() => {
-   //    if (blocks == null) {
-   //       return;
-   //    }
-   //    const isDiffBlocks =
-   //       JSON.stringify(blocks) === JSON.stringify(post.content);
-
-   //    if (isDiffBlocks == false) {
-   //       return setChanged(true);
-   //    }
-   //    return setChanged(false);
-   // }, [blocks, post]);
-
-   const handleToggleState = () => {
-      if (collabStatus == true) {
-         setCollabStatus(false);
-      } else {
-         setCollabStatus(true);
-      }
-      const status = collabStatus == true ? false : true;
-      return fetcher.submit(
-         {
-            intent: "updateCollabStatus",
-            //@ts-expect-error
-            collabStatus: status,
-         },
-         { method: "patch" }
-      );
-   };
    const postFullUrl = `https://mana.wiki/${siteId}/posts/${post.id}/${post.slug}`;
 
    //Image Upload
@@ -437,61 +405,45 @@ export const PostHeaderEdit = ({
                         </div>
                      ) : (
                         <>
-                           {isChanged == true || post._status == "draft" ? (
-                              <>
-                                 <fetcher.Form method="post">
-                                    <Tooltip
-                                       id="publish-changes"
-                                       side="bottom"
-                                       content="Publish New Changes"
-                                    >
-                                       <button
-                                          disabled={disabled}
-                                          type="submit"
-                                          name="intent"
-                                          value="publish"
-                                          className="
+                           <>
+                              <fetcher.Form method="post">
+                                 <Tooltip
+                                    id="publish-changes"
+                                    side="bottom"
+                                    content="Publish New Changes"
+                                 >
+                                    <button
+                                       disabled={disabled}
+                                       type="submit"
+                                       name="intent"
+                                       value="publish"
+                                       className="
                                           shadow-1 group inline-flex h-9 cursor-pointer items-center
                                           justify-center rounded-full bg-emerald-500 px-4 text-sm font-bold text-white shadow-sm 
                                           transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                    >
+                                       Publish
+                                       <svg
+                                          className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
+                                          fill="none"
+                                          width="12"
+                                          height="12"
+                                          viewBox="0 0 12 12"
+                                          aria-hidden="true"
                                        >
-                                          Publish
-                                          <svg
-                                             className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
-                                             fill="none"
-                                             width="12"
-                                             height="12"
-                                             viewBox="0 0 12 12"
-                                             aria-hidden="true"
-                                          >
-                                             <path
-                                                className="opacity-0 transition group-hover:opacity-100"
-                                                d="M0 5h7"
-                                             ></path>
-                                             <path
-                                                className="transition group-hover:translate-x-[3px]"
-                                                d="M1 1l4 4-4 4"
-                                             ></path>
-                                          </svg>
-                                       </button>
-                                    </Tooltip>
-                                 </fetcher.Form>
-                              </>
-                           ) : (
-                              <Tooltip
-                                 id="save-updates"
-                                 side="bottom"
-                                 content="No updates to publish"
-                              >
-                                 <div
-                                    className="shadow-1 bg-5 border-color group inline-flex h-9 w-20 cursor-pointer items-center
-                                 justify-center rounded-full border px-4 text-sm font-semibold shadow-sm transition
-                                 dark:border-zinc-600 dark:text-zinc-500 dark:hover:border-emerald-800"
-                                 >
-                                    - - -
-                                 </div>
-                              </Tooltip>
-                           )}
+                                          <path
+                                             className="opacity-0 transition group-hover:opacity-100"
+                                             d="M0 5h7"
+                                          ></path>
+                                          <path
+                                             className="transition group-hover:translate-x-[3px]"
+                                             d="M1 1l4 4-4 4"
+                                          ></path>
+                                       </svg>
+                                    </button>
+                                 </Tooltip>
+                              </fetcher.Form>
+                           </>
                         </>
                      )}
                   </div>

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaffFieldLevel } from "../../access/user";
 import type { User } from "payload/generated-types";
-import { canMutateAsSiteAdmin } from "../../access/site";
+import { canMutateAsSiteAdmin, canRead } from "../../access/site";
 
 export const postsslug = "posts";
 export const Posts: CollectionConfig = {
@@ -11,13 +11,7 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      read: () => {
-         return {
-            _status: {
-               equals: "published",
-            },
-         };
-      },
+      read: canRead("posts"),
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),
@@ -73,7 +67,9 @@ export const Posts: CollectionConfig = {
       },
    ],
    versions: {
-      drafts: true,
-      maxPerDoc: 60,
+      drafts: {
+         autosave: true,
+      },
+      maxPerDoc: 20,
    },
 };

@@ -46,6 +46,7 @@ export async function loader({
       id: postId,
       overrideAccess: false,
       user,
+      draft: true,
       depth: 2,
    });
 
@@ -66,6 +67,10 @@ export async function loader({
       user,
       page: page ?? 1,
    });
+
+   // const isChanged =
+   //    JSON.stringify(post.content) != JSON.stringify(homeData.content);
+
    return { post, versions };
 }
 
@@ -115,7 +120,7 @@ export default function PostEditPage() {
 
    const { post, versions } = useLoaderData<typeof loader>();
 
-   const { siteId, postId } = useParams();
+   const { postId } = useParams();
 
    return (
       <main
@@ -124,9 +129,10 @@ export default function PostEditPage() {
       >
          <PostHeaderEdit versions={versions} post={post} />
          <SoloEditor
-            siteId={siteId ?? ""}
+            intent="updatePostContent"
+            fetcher={fetcher}
             pageId={postId ?? ""}
-            defaultValue={initialValue}
+            defaultValue={post?.content ?? initialValue}
          />
       </main>
    );
@@ -194,6 +200,7 @@ export async function action({
                   subtitle,
                },
                draft: true,
+               autosave: true,
                overrideAccess: false,
                user,
             });
@@ -231,6 +238,7 @@ export async function action({
                data: {
                   banner: upload.id,
                },
+               autosave: true,
                overrideAccess: false,
                user,
             });
@@ -271,6 +279,7 @@ export async function action({
             data: {
                banner: "",
             },
+            autosave: true,
             overrideAccess: false,
             user,
          });
@@ -317,7 +326,6 @@ export async function action({
             id: postId,
             data: {
                _status: "published",
-               content: data,
                publishedAt: new Date().toISOString(),
             },
             overrideAccess: false,

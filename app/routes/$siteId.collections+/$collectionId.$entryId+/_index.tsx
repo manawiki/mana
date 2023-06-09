@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from "@remix-run/react";
+import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
 import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
@@ -49,6 +49,7 @@ export const initialValue = [
 export default function CollectionEntryWiki() {
    const { entryDefault, embed } = useLoaderData<typeof loader>();
    const { siteId, entryId, collectionId } = useParams();
+   const fetcher = useFetcher();
 
    return (
       <>
@@ -57,6 +58,7 @@ export default function CollectionEntryWiki() {
             <div className="">
                <SoloEditor
                   siteId={siteId ?? ""}
+                  fetcher={fetcher}
                   collectionEntity={collectionId ?? ""}
                   pageId={entryId ?? ""}
                   defaultValue={embed ?? initialValue}
