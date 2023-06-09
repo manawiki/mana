@@ -105,7 +105,7 @@ export default function ResetPassword() {
                   <fieldset>
                      <FormLabel
                         htmlFor={zoPW.fields.password()}
-                        text={t("login.password")}
+                        text={t("pwReset.password")}
                         error={zoPW.errors.password((err) => err.message)}
                      />
                      <div className="mt-1">

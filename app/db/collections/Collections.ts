@@ -97,10 +97,6 @@ export const Collections: CollectionConfig = {
                name: "name",
                type: "text",
             },
-            {
-               name: "content",
-               type: "json",
-            },
          ],
       },
    ],

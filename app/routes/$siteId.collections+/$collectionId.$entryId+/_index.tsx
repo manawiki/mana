@@ -1,10 +1,11 @@
-import { Link, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
-import { Fragment } from "react";
 import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
-import { Popover, Transition } from "@headlessui/react";
-import { Plus, Type, Component } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { SoloEditor } from "~/routes/editors+/SoloEditor";
+import { nanoid } from "nanoid";
+import { z } from "zod";
+import { zx } from "zodix";
 
 export async function loader({
    context: { payload, user },
@@ -12,25 +13,57 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const entryDefault = await getDefaultEntryData({ payload, params, request });
-   return json({ entryDefault });
+   const { siteId, entryId } = zx.parseParams(params, {
+      siteId: z.string(),
+      entryId: z.string(),
+   });
+
+   const embed = await payload.find({
+      collection: "contentEmbeds",
+      where: {
+         "site.slug": {
+            equals: siteId,
+         },
+         relationId: {
+            equals: entryId,
+         },
+      },
+      draft: true,
+      overrideAccess: false,
+      user,
+   });
+
+   return json({ entryDefault, embed: embed?.docs[0]?.content });
 }
 
 export { meta };
 
+export const initialValue = [
+   {
+      id: nanoid(),
+      type: "paragraph",
+      children: [{ text: "" }],
+   },
+];
+
 export default function CollectionEntryWiki() {
-   const { entryDefault } = useLoaderData<typeof loader>();
-   const fetcher = useFetcher();
+   const { entryDefault, embed } = useLoaderData<typeof loader>();
    const { siteId, entryId, collectionId } = useParams();
+   const fetcher = useFetcher();
 
    return (
       <>
          <EntryHeader entry={entryDefault} />
          <AdminOrStaffOrOwner>
-            <div
-               className="bg-2 border-color sticky bottom-12 z-30 mb-12 mt-60 
-                    flex h-12 items-center justify-between
-                    border-y px-3 laptop:bottom-0 laptop:h-14"
-            ></div>
+            <div className="">
+               <SoloEditor
+                  siteId={siteId ?? ""}
+                  fetcher={fetcher}
+                  collectionEntity={collectionId ?? ""}
+                  pageId={entryId ?? ""}
+                  defaultValue={embed ?? initialValue}
+               />
+            </div>
          </AdminOrStaffOrOwner>
       </>
    );

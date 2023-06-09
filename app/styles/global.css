@@ -8,7 +8,7 @@ html.light {
 }
 
 html.dark {
-   @apply bg-[#242425];
+   @apply bg-bg2Dark;
 }
 table {
    @apply border-collapse;

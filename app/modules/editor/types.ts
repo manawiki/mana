@@ -1,4 +1,3 @@
-import type { LiveList } from "@liveblocks/client";
 import { type Collection } from "payload/generated-types";
 import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
@@ -12,13 +11,6 @@ declare module "slate" {
    }
 }
 
-export type Presence = {
-   selectedBlockId: string | null;
-};
-
-export type Storage = {
-   blocks: LiveList<CustomElement>;
-};
 
 export type UserMeta = {
    id: string;
