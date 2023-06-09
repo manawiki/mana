@@ -26,7 +26,7 @@ import {
 import type { Site } from "payload-types";
 import Tooltip from "~/components/Tooltip";
 import { isProcessing } from "~/utils";
-import { Check, History, Loader2, MoreVertical, RotateCcw } from "lucide-react";
+import { Check, History, Loader2, MoreVertical } from "lucide-react";
 
 const initialValue: CustomElement[] = [
    {
@@ -57,7 +57,8 @@ export async function loader({
          },
       })
    ).json()) as PaginatedDocs<HomeContent>;
-   if (data.length == 0) return json({ home: "", isChanged: false });
+
+   if (data.length == 0) return json({ home: null, isChanged: false });
 
    const homeData = data[0];
    //We need to append the draft paramater to the url if editing
@@ -66,16 +67,17 @@ export async function loader({
    const isSiteOwner = userId == (homeData.site as Site).owner;
    const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
    if (isSiteOwner || isSiteAdmin) {
-      const editHomeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=0&draft=true`;
-      const { docs: data } = (await (
+      //Note that we findbyId so permissions pass the ID
+      const editHomeContentUrl = `${url}/api/homeContents/${homeData.id}?depth=0&draft=true`;
+      const data = (await (
          await fetch(editHomeContentUrl, {
             headers: {
                cookie: request.headers.get("cookie") ?? "",
             },
          })
-      ).json()) as PaginatedDocs<HomeContent>;
-      if (data.length == 0) return json({ home: "", isChanged: false });
-      const home = data[0].content;
+      ).json()) as HomeContent;
+      if (!data) return json({ home: null, isChanged: false });
+      const home = data.content;
       const isChanged =
          JSON.stringify(home) != JSON.stringify(homeData.content);
       return json({ home, isChanged });
@@ -118,7 +120,7 @@ export default function SiteIndexMain() {
                         fetcher={fetcher}
                         siteId={siteId}
                         intent="homeContent"
-                        defaultValue={home != undefined ? home : initialValue}
+                        defaultValue={home ?? initialValue}
                      />
                      <div
                         className="shadow-1 border-color bg-2 fixed inset-x-0 bottom-20 z-40 mx-auto flex
