@@ -50,10 +50,10 @@ const JoinFormSchema = z.object({
       .string()
       .regex(
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
-         "Username contains invalide characters"
+         "Username contains invalid characters"
       )
       .min(3, "Username must be at least 3 characters long")
-      .max(16, "Username must be at least 16 characters long")
+      .max(16, "Username cannot be more than 16 characters long")
       .toLowerCase(),
 });
 

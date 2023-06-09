@@ -28,7 +28,6 @@ import {
    Plus,
    Trash,
 } from "lucide-react";
-import { useMutation } from "~/liveblocks.config";
 import { arrayMoveImmutable } from "array-move";
 import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
@@ -37,7 +36,6 @@ import useSWR from "swr";
 import { nanoid } from "nanoid";
 import { Image } from "~/components";
 import TextareaAutosize from "react-textarea-autosize";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    element: GroupElement;
@@ -153,11 +151,6 @@ export default function BlockGroup({ element }: Props) {
       [groupItems]
    );
 
-   const updateRowLb = useMutation(({ storage }, index, value) => {
-      const blocks = storage.get("blocks");
-      blocks.set(index, value);
-   }, []);
-
    function handleUpdateCollection(
       event: any,
       editor: BaseEditor & ReactEditor,
@@ -170,7 +163,6 @@ export default function BlockGroup({ element }: Props) {
          collection: event,
       };
 
-      updateRowLb(path[0], newProperties);
       setSelectedCollection(event);
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
@@ -214,7 +206,6 @@ export default function BlockGroup({ element }: Props) {
          ],
       };
 
-      updateRowLb(path[0], newProperties);
       setSelectedCollection(event);
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
@@ -232,7 +223,6 @@ export default function BlockGroup({ element }: Props) {
          color: event,
       };
 
-      updateRowLb(path[0], newProperties);
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
@@ -250,7 +240,6 @@ export default function BlockGroup({ element }: Props) {
       };
       setViewMode(event);
 
-      updateRowLb(path[0], newProperties);
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
@@ -317,9 +306,6 @@ export default function BlockGroup({ element }: Props) {
             groupItems: updatedGroupItems,
          };
 
-         //Send update to liveblocks
-         updateRowLb(path[0], newProperties);
-
          //Now we update the local SlateJS state
          return Transforms.setNodes<CustomElement>(editor, newProperties, {
             at: path,
@@ -343,8 +329,6 @@ export default function BlockGroup({ element }: Props) {
          groupItems: updatedGroupItems,
       };
 
-      updateRowLb(path[0], newProperties);
-
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
@@ -357,7 +341,7 @@ export default function BlockGroup({ element }: Props) {
    const [viewMode, setViewMode] = useState(element.viewMode);
 
    return (
-      <div className="my-3">
+      <div className="my-6">
          <>
             <div className="flex items-center justify-between pb-2">
                <section className="flex items-center gap-3">

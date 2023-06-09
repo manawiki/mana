@@ -48,38 +48,34 @@ export async function loader({
 
    const url = new URL(request.url).origin;
 
-   try {
-      const myPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=1&page=${
-         page ?? 1
-      }&sort=-updatedAt${status ? `&where[_status][equals]=${status}` : ""}`;
+   const myPostsFetchUrl = `${url}/api/posts?draft=true&where[site.slug][equals]=${siteId}&depth=1&page=${
+      page ?? 1
+   }&sort=-updatedAt${status ? `&where[_status][equals]=${status}` : ""}`;
 
-      const myPosts = (await (
-         await fetch(myPostsFetchUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as Post[];
+   const myPosts = (await (
+      await fetch(myPostsFetchUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })
+   ).json()) as Post[];
 
-      const publishedPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
-         q ? `&where[name][contains]=${q}` : ""
-      }`;
+   const publishedPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
+      q ? `&where[name][contains]=${q}` : ""
+   }`;
 
-      const publishedPosts = (await (
-         await fetch(publishedPostsFetchUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as [];
+   const publishedPosts = (await (
+      await fetch(publishedPostsFetchUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })
+   ).json()) as [];
 
-      return json(
-         { q, myPosts, publishedPosts },
-         { headers: { "Cache-Control": "public, s-maxage=60" } }
-      );
-   } catch (e) {
-      throw new Response("Internal Server Error", { status: 500 });
-   }
+   return json(
+      { q, myPosts, publishedPosts },
+      { headers: { "Cache-Control": "public, s-maxage=60" } }
+   );
 }
 
 export default function PostsIndex() {

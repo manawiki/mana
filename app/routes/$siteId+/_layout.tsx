@@ -67,8 +67,8 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 import type { Update } from "~/db/payload-types";
 import { useIsBot } from "~/utils/isBotProvider";
-import NProgress from "nprogress";
-import nProgressStyles from "~/styles/nprogress.css";
+// import NProgress from "nprogress";
+// import nProgressStyles from "~/styles/nprogress.css";
 
 export async function loader({
    context: { payload, user },
@@ -78,8 +78,6 @@ export async function loader({
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
-
-   // /api/users?where[sites][equals]=85lT19IgAr&depth=0
 
    try {
       const url = new URL(request.url).origin;
@@ -119,9 +117,6 @@ export async function loader({
                })
             ).json()) as PaginatedDocs,
          ]);
-
-      console.log(followers);
-
       return json(
          { updateResults, site, followers },
          { headers: { "Cache-Control": "public, s-maxage=60" } }
@@ -144,8 +139,8 @@ export const links: LinksFunction = () => {
       { rel: "preload", href: customStylesheetUrl, as: "style" },
       { rel: "stylesheet", href: customStylesheetUrl },
 
-      { rel: "preload", href: nProgressStyles, as: "style" },
-      { rel: "stylesheet", href: nProgressStyles },
+      // { rel: "preload", href: nProgressStyles, as: "style" },
+      // { rel: "stylesheet", href: nProgressStyles },
    ];
 };
 
@@ -205,29 +200,29 @@ export default function SiteIndex() {
    let isBot = useIsBot();
 
    //nprogress bar
-   const transition = useNavigation();
-   let fetchers = useFetchers();
-   NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
+   // const transition = useNavigation();
+   // let fetchers = useFetchers();
+   // NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
 
-   let state = useMemo<"idle" | "loading">(
-      function getGlobalState() {
-         let states = [
-            transition.state,
-            ...fetchers.map((fetcher) => fetcher.state),
-         ];
-         if (states.every((state) => state === "idle")) return "idle";
-         return "loading";
-      },
-      [transition.state, fetchers]
-   );
+   // let state = useMemo<"idle" | "loading">(
+   //    function getGlobalState() {
+   //       let states = [
+   //          transition.state,
+   //          ...fetchers.map((fetcher) => fetcher.state),
+   //       ];
+   //       if (states.every((state) => state === "idle")) return "idle";
+   //       return "loading";
+   //    },
+   //    [transition.state, fetchers]
+   // );
 
-   useEffect(() => {
-      // and when it's something else it means it's either submitting a form or
-      // waiting for the loaders of the next location so we start it
-      if (state === "loading") NProgress.start();
-      // when the state is idle then we can to complete the progress bar
-      if (state === "idle") NProgress.done();
-   }, [state]);
+   // useEffect(() => {
+   //    // and when it's something else it means it's either submitting a form or
+   //    // waiting for the loaders of the next location so we start it
+   //    if (state === "loading") NProgress.start();
+   //    // when the state is idle then we can to complete the progress bar
+   //    if (state === "idle") NProgress.done();
+   // }, [state]);
 
    return (
       <>
@@ -875,7 +870,7 @@ export default function SiteIndex() {
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color flex-grow divide-y laptop:pt-14">
                      {site.about && (
-                        <section className="p-4">
+                        <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
                               <Component size={14} />
                               <span className="text-1 text-sm font-bold">
@@ -901,7 +896,7 @@ export default function SiteIndex() {
                      )}
                      {site.pinned && (
                         <>
-                           <section className="p-4">
+                           <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                               <div className="flex items-center gap-1.5 pb-2.5">
                                  <Pin size={14} />
                                  <span className="text-1 text-sm font-bold">
@@ -955,7 +950,7 @@ export default function SiteIndex() {
                            </section>
                         </>
                      )}
-                     <section className="border-color px-4 py-5 laptop:!border-b">
+                     <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                         <div className="flex items-center gap-1.5 pb-3">
                            <Users size={14} />
                            <span className="text-1 text-sm font-bold">
@@ -1032,7 +1027,7 @@ export default function SiteIndex() {
                         </div>
                      </section>
                   </div>
-                  <div className="border-color flex items-center justify-center border-t">
+                  <div className="border-color flex items-center justify-center">
                      {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
                   </div>
                </div>

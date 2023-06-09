@@ -1,4 +1,4 @@
-import { useLoaderData, useFetcher } from "@remix-run/react";
+import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
 import { useEffect } from "react";
 import type { V2_MetaFunction } from "@remix-run/node";
 import {
@@ -21,17 +21,13 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 import { createCustomIssues } from "react-zorm";
-import { ForgeEditor } from "~/modules/editor/Editor";
 import { postSchema } from "../utils/postSchema";
 import { toast } from "~/components";
-import { LiveList } from "@liveblocks/client";
-import { ClientSideSuspense } from "@liveblocks/react";
-import { RoomProvider } from "~/liveblocks.config";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
-import { PostSkeletonLoader } from "~/components/PostSkeletonLoader";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
+import { SoloEditor } from "~/routes/editors+/SoloEditor";
 
 export async function loader({
    context: { payload, user },
@@ -50,6 +46,7 @@ export async function loader({
       id: postId,
       overrideAccess: false,
       user,
+      draft: true,
       depth: 2,
    });
 
@@ -70,6 +67,10 @@ export async function loader({
       user,
       page: page ?? 1,
    });
+
+   // const isChanged =
+   //    JSON.stringify(post.content) != JSON.stringify(homeData.content);
+
    return { post, versions };
 }
 
@@ -118,30 +119,21 @@ export default function PostEditPage() {
    }, [fetcher.state, fetcher.data]);
 
    const { post, versions } = useLoaderData<typeof loader>();
+
+   const { postId } = useParams();
+
    return (
       <main
          className="relative min-h-screen
          max-laptop:pb-20 max-laptop:pt-10 laptop:pt-14"
       >
-         <RoomProvider
-            key={post.id}
-            id={post.id}
-            initialStorage={{
-               blocks: new LiveList(initialValue as any) as any,
-            }}
-            initialPresence={{
-               selectedBlockId: null,
-            }}
-         >
-            <ClientSideSuspense fallback={<PostSkeletonLoader />}>
-               {() => (
-                  <>
-                     <PostHeaderEdit versions={versions} post={post} />
-                     <ForgeEditor />
-                  </>
-               )}
-            </ClientSideSuspense>
-         </RoomProvider>
+         <PostHeaderEdit versions={versions} post={post} />
+         <SoloEditor
+            intent="updatePostContent"
+            fetcher={fetcher}
+            pageId={postId ?? ""}
+            defaultValue={post?.content ?? initialValue}
+         />
       </main>
    );
 }
@@ -172,23 +164,17 @@ export async function action({
          if (result.success) {
             const { name } = result.data;
             const slug = slugify(name ?? "");
-            try {
-               return await payload.update({
-                  collection: "posts",
-                  id: postId,
-                  data: {
-                     name,
-                     slug,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            } catch (error) {
-               console.log(error);
-               return json({
-                  error: "Something went wrong...unable to update title.",
-               });
-            }
+            return await payload.update({
+               collection: "posts",
+               id: postId,
+               data: {
+                  name,
+                  slug,
+               },
+               draft: true,
+               overrideAccess: false,
+               user,
+            });
          }
          //If user input has problems
          if (issues.hasIssues()) {
@@ -207,22 +193,17 @@ export async function action({
          const result = await zx.parseFormSafe(request, postSchema);
          if (result.success) {
             const { subtitle } = result.data;
-            try {
-               return await payload.update({
-                  collection: "posts",
-                  id: postId,
-                  data: {
-                     subtitle,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            } catch (error) {
-               console.log(error);
-               return json({
-                  error: "Something went wrong...unable to update subtitle.",
-               });
-            }
+            return await payload.update({
+               collection: "posts",
+               id: postId,
+               data: {
+                  subtitle,
+               },
+               draft: true,
+               autosave: true,
+               overrideAccess: false,
+               user,
+            });
          }
          //If user input has problems
          if (issues.hasIssues()) {
@@ -245,27 +226,22 @@ export async function action({
          });
          if (result.success) {
             const { banner } = result.data;
-            try {
-               const upload = await uploadImage({
-                  payload,
-                  image: banner,
-                  user,
-               });
-               return await payload.update({
-                  collection: "posts",
-                  id: postId,
-                  draft: true,
-                  data: {
-                     banner: upload.id,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            } catch (error) {
-               return json({
-                  error: "Something went wrong...unable to update banner.",
-               });
-            }
+            const upload = await uploadImage({
+               payload,
+               image: banner,
+               user,
+            });
+            return await payload.update({
+               collection: "posts",
+               id: postId,
+               draft: true,
+               data: {
+                  banner: upload.id,
+               },
+               autosave: true,
+               overrideAccess: false,
+               user,
+            });
          }
          //If user input has problems
          if (issues.hasIssues()) {
@@ -303,6 +279,7 @@ export async function action({
             data: {
                banner: "",
             },
+            autosave: true,
             overrideAccess: false,
             user,
          });
@@ -343,43 +320,12 @@ export async function action({
          });
       }
 
-      case "updateCollabStatus": {
-         const { collabStatus } = await zx.parseForm(request, {
-            collabStatus: zx.BoolAsString,
-         });
-         //toggle status
-         return await payload.update({
-            collection: "posts",
-            id: postId,
-            data: {
-               collaboration: collabStatus,
-            },
-            overrideAccess: false,
-            user,
-         });
-      }
-
       case "publish": {
-         // Get data from liveblocks then save to MongoDB
-         const result = await (
-            await fetch(
-               `https://api.liveblocks.io/v2/rooms/${postId}/storage`,
-               {
-                  headers: {
-                     Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
-                  },
-               }
-            )
-         ).json();
-
-         const data = result.data.blocks.data;
-
          return await payload.update({
             collection: "posts",
             id: postId,
             data: {
                _status: "published",
-               content: data,
                publishedAt: new Date().toISOString(),
             },
             overrideAccess: false,
