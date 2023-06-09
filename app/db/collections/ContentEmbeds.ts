@@ -33,6 +33,10 @@ export const ContentEmbeds: CollectionConfig = {
          type: "text",
       },
       {
+         name: "sectionId",
+         type: "text",
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",

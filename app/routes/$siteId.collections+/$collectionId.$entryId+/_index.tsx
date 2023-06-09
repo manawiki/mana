@@ -56,13 +56,13 @@ export default function CollectionEntryWiki() {
          <EntryHeader entry={entryDefault} />
          <AdminOrStaffOrOwner>
             <div className="">
-               <SoloEditor
+               {/* <SoloEditor
                   siteId={siteId ?? ""}
                   fetcher={fetcher}
                   collectionEntity={collectionId ?? ""}
                   pageId={entryId ?? ""}
                   defaultValue={embed ?? initialValue}
-               />
+               /> */}
             </div>
          </AdminOrStaffOrOwner>
       </>

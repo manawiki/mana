@@ -1,6 +1,5 @@
 import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
 import type { Node } from "slate";
 import {
    type Descendant,
@@ -49,7 +48,6 @@ import { nanoid } from "nanoid";
 import { Trash } from "lucide-react";
 import { withHistory } from "slate-history";
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import { useFetcher } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 import { type ActionArgs, redirect } from "@remix-run/node";
