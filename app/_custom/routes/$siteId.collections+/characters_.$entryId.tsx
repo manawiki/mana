@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
 
 import {
@@ -7,10 +7,8 @@ import {
    getDefaultEntryData,
    meta,
    EntryContent,
-   getCustomEntryData,
+   getEmbeddedContent,
 } from "~/modules/collections";
-import type { Character } from "payload/generated-types";
-
 import { Navigation } from "~/_custom/components/characters/Navigation";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { SkillTree } from "~/_custom/components/characters/SkillTree";
@@ -27,175 +25,29 @@ import { Story } from "~/_custom/components/characters/Story";
 import { zx } from "zodix";
 import { z } from "zod";
 import { H2 } from "~/_custom/components/custom";
+import { EntryContentEmbed } from "~/modules/collections/components/EntryContentEmbed";
 
 export { meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
-   /*const defaultData = (await getCustomEntryData({
-      payload,
-      params,
-      request,
-      depth: 3,
-   })) as Character;*/
-
    const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
    });
 
-   const CharacterQuery = `
-   query ($charId: String!) {
-    character: Character(id: $charId) {
-      image_draw {
-        url
-      }
-      element {
-        icon {
-          url
-        }
-      }
-      path {
-        name
-        icon {
-          url
-        }
-        icon_small {
-          url
-        }
-        data_key
-      }
-      rarity {
-        icon {
-          url
-        }
-      }
-      stats {
-        label
-        data
-      }
-      stats_csv
-      traces {
-        name
-        desc_type
-        icon {
-          url
-        }
-        description_per_level {
-          description
-        }
-      }
-      icon {
-        url
-      }
-      image_full {
-        url
-      }
-      image_full_bg {
-        url
-      }
-      image_full_front {
-        url
-      }
-      image_action {
-        url
-      }
-      image_round_icon {
-        url
-      }
-      eidolons {
-        image {
-          url
-        }
-        icon {
-          url
-        }
-        name
-        rank
-        description
-      }
-      promotion_cost {
-        max_level
-        material_qty {
-          materials {
-            id
-            icon {
-              url
-            }
-            rarity {
-              display_number
-            }
-            name
-          }
-          qty
-        }
-      }
-      cv_cn
-      cv_jp
-      cv_kr
-      cv_en
-      camp
-      story {
-        title
-        unlock
-        text
-      }
-      voice_lines {
-        title
-        text
-        voice_en {
-          url
-        }
-        voice_jp {
-          url
-        }
-        voice_cn {
-          url
-        }
-        voice_kr {
-          url
-        }
-      }
-    }
-  
-    skillTree: SkillTrees(limit: 1000, where: { character: { equals: $charId } }) {
-      docs {
-        anchor
-        icon {
-          url
-        }
-        name
-        affected_skill {
-          description_per_level {
-            description
-          }
-        }
-        description
-        level_up_cost {
-          material_qty {
-            id
-            materials {
-              id
-              icon {
-                url
-              }
-              rarity {
-                display_number
-              }
-              name
-            }
-            qty
-          }
-        }
-        req_ascension
-        req_level
-      }
-    }
-  }    
-   `
+   const [entryDefault, embeddedContent] = await Promise.all([
+      await getDefaultEntryData({ payload, params, request }),
+      await getEmbeddedContent({
+         collection: "characters",
+         payload,
+         params,
+         request,
+         user,
+      }),
+   ]);
 
    const { data, errors } = await fetch(
       `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
@@ -218,13 +70,17 @@ export async function loader({
       throw new Error();
    }
 
-   return json({ entryDefault, defaultData: data.character, skillTreeData: data.skillTree.docs });
+   return json({
+      entryDefault,
+      embeddedContent,
+      defaultData: data.character,
+      skillTreeData: data.skillTree.docs,
+   });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
-   const { skillTreeData } = useLoaderData<typeof loader>();
+   const { entryDefault, defaultData, skillTreeData, embeddedContent } =
+      useLoaderData<typeof loader>();
 
    const links = [
       { name: "Traces", link: "traces" },
@@ -234,6 +90,9 @@ export default function CharacterEntry() {
       { name: "Gallery", link: "gallery" },
       { name: "Profile", link: "profile" },
    ];
+
+   const { siteId, entryId } = useParams();
+   const fetcher = useFetcher();
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
@@ -243,7 +102,15 @@ export default function CharacterEntry() {
 
             {/* Character Image with Element / Path */}
             <CharacterStatBlock pageData={defaultData} />
-
+            <EntryContentEmbed
+               title="Teams"
+               sectionId="teams"
+               collectionEntity="characters"
+               siteId={siteId}
+               fetcher={fetcher}
+               entryId={entryId}
+               defaultValue={embeddedContent}
+            />
             <div id="traces"></div>
             {/* Traces / Skills */}
             <H2 text="Traces" />
@@ -292,3 +159,153 @@ export default function CharacterEntry() {
       </EntryParent>
    );
 }
+
+const CharacterQuery = `
+query ($charId: String!) {
+ character: Character(id: $charId) {
+   image_draw {
+     url
+   }
+   element {
+     icon {
+       url
+     }
+   }
+   path {
+     name
+     icon {
+       url
+     }
+     icon_small {
+       url
+     }
+     data_key
+   }
+   rarity {
+     icon {
+       url
+     }
+   }
+   stats {
+     label
+     data
+   }
+   stats_csv
+   traces {
+     name
+     desc_type
+     icon {
+       url
+     }
+     description_per_level {
+       description
+     }
+   }
+   icon {
+     url
+   }
+   image_full {
+     url
+   }
+   image_full_bg {
+     url
+   }
+   image_full_front {
+     url
+   }
+   image_action {
+     url
+   }
+   image_round_icon {
+     url
+   }
+   eidolons {
+     image {
+       url
+     }
+     icon {
+       url
+     }
+     name
+     rank
+     description
+   }
+   promotion_cost {
+     max_level
+     material_qty {
+       materials {
+         id
+         icon {
+           url
+         }
+         rarity {
+           display_number
+         }
+         name
+       }
+       qty
+     }
+   }
+   cv_cn
+   cv_jp
+   cv_kr
+   cv_en
+   camp
+   story {
+     title
+     unlock
+     text
+   }
+   voice_lines {
+     title
+     text
+     voice_en {
+       url
+     }
+     voice_jp {
+       url
+     }
+     voice_cn {
+       url
+     }
+     voice_kr {
+       url
+     }
+   }
+ }
+
+ skillTree: SkillTrees(limit: 1000, where: { character: { equals: $charId } }) {
+   docs {
+     anchor
+     icon {
+       url
+     }
+     name
+     affected_skill {
+       description_per_level {
+         description
+       }
+     }
+     description
+     level_up_cost {
+       material_qty {
+         id
+         materials {
+           id
+           icon {
+             url
+           }
+           rarity {
+             display_number
+           }
+           name
+         }
+         qty
+       }
+     }
+     req_ascension
+     req_level
+   }
+ }
+}    
+`;
