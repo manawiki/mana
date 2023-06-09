@@ -290,7 +290,7 @@ export const SoloEditor = ({
    );
 
    return (
-      <div className="relative min-h-screen cursor-text pb-4 max-desktop:px-3">
+      <div className="relative cursor-text pb-4 max-desktop:px-3">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
@@ -521,13 +521,14 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionArgs) {
-   const { intent, intentType, siteId, pageId, collectionEntity } =
+   const { intent, intentType, siteId, pageId, collectionEntity, sectionId } =
       await zx.parseForm(request, {
          intent: z.string(),
          intentType: z.string(),
          siteId: z.string(),
          pageId: z.string().optional(),
          collectionEntity: z.string().optional(),
+         sectionId: z.string().optional(),
       });
 
    if (!user || !user.id) return redirect("/login", { status: 302 });
@@ -583,6 +584,13 @@ export async function action({
                              },
                           }
                         : {}),
+                     ...(sectionId
+                        ? {
+                             sectionId: {
+                                equals: sectionId,
+                             },
+                          }
+                        : {}),
                   },
                   overrideAccess: false,
                   user,
@@ -595,6 +603,7 @@ export async function action({
                      data: {
                         content: JSON.parse(content),
                         relationId: pageId,
+                        sectionId: sectionId,
                         site: realSiteId as any,
                         collectionEntity: realCollectionId as any,
                      },
@@ -716,29 +725,3 @@ export async function action({
       }
    }
 }
-
-// case "publish": {
-//    const embedId = await payload.find({
-//       collection: "contentEmbeds",
-//       where: {
-//          site: {
-//             equals: siteId,
-//          },
-//          relationId: {
-//             equals: pageId,
-//          },
-//       },
-//       overrideAccess: false,
-//       user,
-//    });
-
-//    return await payload.update({
-//       collection: "contentEmbeds",
-//       id: embedId.docs[0].id,
-//       data: {
-//          _status: "published",
-//       },
-//       overrideAccess: false,
-//       user,
-//    });
-// }

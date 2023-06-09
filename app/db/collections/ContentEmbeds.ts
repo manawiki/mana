@@ -1,16 +1,16 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaffFieldLevel } from "../../access/user";
 import type { User } from "payload/generated-types";
-import { canMutateAsSiteAdmin } from "../../access/site";
+import { canMutateAsSiteAdmin, canRead } from "../../access/site";
 
 export const ContentEmbeds: CollectionConfig = {
    slug: "contentEmbeds",
    access: {
-      create: canMutateAsSiteAdmin("posts"),
-      read: () => true,
-      update: canMutateAsSiteAdmin("posts"),
-      delete: canMutateAsSiteAdmin("posts"),
-      readVersions: canMutateAsSiteAdmin("posts"),
+      create: canMutateAsSiteAdmin("contentEmbeds"),
+      read: canRead("contentEmbeds"),
+      update: canMutateAsSiteAdmin("contentEmbeds"),
+      delete: canMutateAsSiteAdmin("contentEmbeds"),
+      readVersions: canMutateAsSiteAdmin("contentEmbeds"),
    },
    fields: [
       {
