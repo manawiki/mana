@@ -1,5 +1,15 @@
-import type { Site } from "payload/generated-types";
+import type { Site, User } from "payload/generated-types";
 import type { Access } from "payload/types";
+
+//Check if user is a site owner or admin?
+export const isSiteOwnerOrAdmin = (userId: string, site: Site) => {
+   const siteAdmins = site.admins;
+   const siteOwner = site.owner;
+   const isSiteOwner = userId == siteOwner;
+   const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
+   if (isSiteOwner || isSiteAdmin) return true;
+   return false;
+};
 
 export const canRead =
    (
@@ -18,12 +28,7 @@ export const canRead =
             collection: collectionSlug,
             id,
          });
-         //show if staff or site admin
-         const siteAdmins = (content.site as Site).admins;
-         const userId = user.id;
-         const isSiteOwner = userId == (content.site as Site).owner;
-         const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-         if (isSiteOwner || isSiteAdmin) return true;
+         if (content.site) return isSiteOwnerOrAdmin(user.id, content.site);
       }
       // otherwise only return if published
       return {
@@ -54,11 +59,7 @@ export const canMutateAsSiteAdmin =
                id: resultId,
                depth: 1,
             });
-            //Check if user is a site owner or admin?
-            const siteAdmins = (item.site as Site).admins;
-            const isSiteOwner = userId == (item.site as Site).owner;
-            const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-            if (isSiteOwner || isSiteAdmin) return true;
+            if (item.site) return isSiteOwnerOrAdmin(userId, item.site);
          }
          // Create
          if (data) {
@@ -67,11 +68,7 @@ export const canMutateAsSiteAdmin =
                id: data.site,
                depth: 0,
             });
-            //Check if user is a site owner or admin?
-            const siteAdmins = site.admins;
-            const isSiteOwner = userId == site.owner;
-            const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-            if (isSiteOwner || isSiteAdmin) return true;
+            return isSiteOwnerOrAdmin(userId, site);
          }
       }
       // Reject everyone else

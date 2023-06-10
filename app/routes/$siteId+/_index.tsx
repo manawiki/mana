@@ -23,10 +23,10 @@ import {
    withReact,
    type RenderElementProps,
 } from "slate-react";
-import type { Site } from "payload-types";
 import Tooltip from "~/components/Tooltip";
 import { isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
+import { isSiteOwnerOrAdmin } from "~/access/site";
 
 const initialValue: CustomElement[] = [
    {
@@ -61,12 +61,12 @@ export async function loader({
    if (data.length == 0) return json({ home: null, isChanged: false });
 
    const homeData = data[0];
-   //We need to append the draft paramater to the url if editing
-   const siteAdmins = (homeData.site as Site).admins;
+   const site = homeData.site;
    const userId = user?.id;
-   const isSiteOwner = userId == (homeData.site as Site).owner;
-   const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-   if (isSiteOwner || isSiteAdmin) {
+
+   const hasAccess = isSiteOwnerOrAdmin(userId, site);
+
+   if (hasAccess) {
       //Note that we findbyId so permissions pass the ID
       const editHomeContentUrl = `${url}/api/homeContents/${homeData.id}?depth=0&draft=true`;
       const data = (await (

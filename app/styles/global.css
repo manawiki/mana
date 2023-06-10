@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 /* Since dark/light class is set at html level, we can't declare styles inline  */
+
+html {
+   @apply overflow-y-scroll;
+}
 html.light {
    @apply bg-zinc-50;
 }
