@@ -4,6 +4,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 import type { Payload } from "payload";
 import type { ContentEmbed, Site } from "~/db/payload-types";
+import { isSiteOwnerOrAdmin } from "~/access/site";
 
 export const getDefaultEntryData = async ({
    payload,
@@ -69,6 +70,8 @@ export const getEmbeddedContent = async ({
       siteId: z.string(),
    });
    const url = new URL(request.url).origin;
+
+   //Pull published version first if exists
    const contentEmbedUrl = `${url}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1`;
    const { docs: data } = await (
       await fetch(contentEmbedUrl, {
@@ -79,21 +82,32 @@ export const getEmbeddedContent = async ({
    ).json();
    if (data.length == 0) return null;
 
-   //We need to append the draft paramater to the url if editing
+   //If editing, we check perms then use local api to pull
    const content = data[0];
-   const siteAdmins = (content?.site as Site)?.admins;
+
+   const site = content?.site;
    const userId = user?.id;
-   const isSiteOwner = userId == (content?.site as Site)?.owner;
-   const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-   if (isSiteOwner || isSiteAdmin) {
-      const editContentEmbedUrl = `${url}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1&draft=true`;
-      const { docs: data } = await (
-         await fetch(editContentEmbedUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
+   const hasAccess = isSiteOwnerOrAdmin(userId, site);
+
+   if (hasAccess) {
+      // We use local API to bypass read perms since
+      // (perms don't work if not findbyId since ID is not passed down) it's safe to query the data now
+      const { docs: data } = await payload.find({
+         collection: "contentEmbeds",
+         where: {
+            "site.slug": {
+               equals: siteId,
             },
-         })
-      ).json();
+            "collectionEntity.slug": {
+               equals: collection,
+            },
+            relationId: {
+               equals: entryId,
+            },
+         },
+         draft: true,
+         depth: 1,
+      });
       if (data.length == 0) return null;
       const embedContent = data.map((item: ContentEmbed) => ({
          content: item.content,
