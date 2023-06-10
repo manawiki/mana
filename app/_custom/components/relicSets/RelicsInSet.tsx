@@ -90,9 +90,9 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                      }`}
                   >
                      <Image
-                        options="aspect_ratio=1:1&height=120&width=120"
+                        options="aspect_ratio=1:1&height=120"
                         alt="Active Relic"
-                        className="mx-auto h-20"
+                        className="mx-auto h-16"
                         url={rimg}
                      />
                      <div

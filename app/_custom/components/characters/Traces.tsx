@@ -5,10 +5,7 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
    const traces = pageData.traces;
 
    return (
-      <div
-         className="bg-2 divide-color border-color shadow-1 mb-4 
-      divide-y-4 overflow-hidden rounded-lg border shadow"
-      >
+      <div className="grid gap-3 laptop:grid-cols-2">
          {traces.map((trace: any, index: any) => {
             const [skillLevel, setSkillLevel] = useState(1);
             const activeNode = skillTreeData.find(
@@ -16,7 +13,10 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
             );
 
             return (
-               <div key={index}>
+               <div
+                  className="border-color bg-2 shadow-1 overflow-hidden rounded-lg border shadow-sm"
+                  key={index}
+               >
                   {/* Header with Skill Icon and Name */}
                   <div className="bg-1 relative flex items-center gap-3 p-3">
                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
@@ -32,7 +32,9 @@ export const Traces = ({ pageData, skillTreeData }: any) => {
                      </div>
                      <div className="space-y-1">
                         <div className="font-bold">{trace.name}</div>
-                        <div className="text-sm">{trace.desc_type}</div>
+                        <div className="text-sm font-semibold text-yellow-500">
+                           {trace.desc_type}
+                        </div>
                      </div>
                   </div>
 
