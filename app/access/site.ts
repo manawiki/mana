@@ -5,7 +5,8 @@ import type { Access } from "payload/types";
 export const isSiteOwnerOrAdmin = (userId: string, site: Site) => {
    const siteAdmins = site.admins;
    const siteOwner = site.owner;
-   const isSiteOwner = userId == siteOwner;
+   const isSiteOwner = userId == (siteOwner as any);
+   //@ts-ignore
    const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
    if (isSiteOwner || isSiteAdmin) return true;
    return false;
