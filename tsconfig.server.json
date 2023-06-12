@@ -11,12 +11,9 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
-         "payload/generated-types": ["./app/db/payload-types.ts"]
-      }
+         "payload/generated-types": ["./app/db/payload-types.ts"],
+         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]      
+      },
    },
-   "include": ["core.server.ts", "payload.config.ts"],
-   "ts-node": {
-      "swc": true,
-      "transpileOnly": true
-   }
+   "include": ["core.server.ts", "payload.config.ts"]
 }

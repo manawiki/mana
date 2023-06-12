@@ -91,7 +91,7 @@ export default buildConfig({
       }),
    ],
    typescript: {
-      outputFile: path.resolve(__dirname, "./payload-types.ts"),
+      outputFile: path.resolve(__dirname, "./payload-custom-types.ts"),
    },
    collections: [Users, Images, ...CustomCollections],
 });
