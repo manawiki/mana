@@ -13,13 +13,13 @@
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
-         "payload/generated-types": ["./app/db/payload-types.ts"]
+         "payload/generated-types": ["./app/db/payload-types.ts"],
+         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]      
       },
       "noEmit": true,
       "target": "ES2019"
    },
    "ts-node": {
       "swc": true,
-      "transpileOnly": true
    }
 }
