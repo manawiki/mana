@@ -12,5 +12,4 @@ app/styles/tailwind.css
 yarn-error.log
 app/_custom/seed/images
 payload-types.ts
-payload-custom-types.ts
 schema.graphql
