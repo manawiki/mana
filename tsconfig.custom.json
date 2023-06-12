@@ -14,5 +14,9 @@
          "payload/generated-types": ["./app/db/payload-custom-types.ts"]
       }
    },
-   "include": ["custom.server.ts", "payload.custom.config.ts"]
+   "include": ["custom.server.ts", "payload.custom.config.ts"],
+   "ts-node": {
+      "swc": true,
+      "transpileOnly": true
+   }
 }
