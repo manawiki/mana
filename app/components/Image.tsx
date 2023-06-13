@@ -7,12 +7,8 @@ export const Image = ({
    height,
    ...props
 }: {
-   url: string;
+   url?: string;
    options?: string;
-   alt: string;
-   className?: string;
-   width?: number;
-   height?: number;
 } & React.ImgHTMLAttributes<HTMLImageElement>) => {
    const searchParams = new URLSearchParams(options);
 
@@ -23,7 +19,7 @@ export const Image = ({
          width={width ?? searchParams.get("width") ?? undefined}
          height={height ?? searchParams.get("height") ?? undefined}
          alt={alt}
-         src={`${url}?${options ?? ""}`}
+         src={`${url}?${options ?? ""}` ?? "/favicon.ico"}
       />
    );
 };
