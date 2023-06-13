@@ -2,7 +2,7 @@
    "private": true,
    "sideEffects": false,
    "scripts": {
-      "build": "run-p \"build:*\"",
+      "build": "yarn run generate:types && run-p \"build:*\"",
       "build:remix": "remix build",
       "build:payload": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts payload build",
       "build:server": "tsc -p tsconfig.server.json",
