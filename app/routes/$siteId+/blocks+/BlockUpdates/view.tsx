@@ -1,5 +1,4 @@
 import { useRouteLoaderData } from "@remix-run/react";
-import { format } from "date-fns";
 import { useMemo } from "react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
@@ -12,6 +11,13 @@ import type { UpdatesElement } from "~/modules/editor/types";
 type Props = {
    element: UpdatesElement;
 };
+
+const dateFormat = (dateString: string) =>
+   new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Los_Angeles",
+   }).format(new Date(dateString));
 
 export const BlockUpdatesView = ({ element }: Props) => {
    const { updateResults } =
@@ -30,7 +36,7 @@ export const BlockUpdatesView = ({ element }: Props) => {
                         className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase"
                         dateTime={row?.createdAt}
                      >
-                        {format(new Date(row?.createdAt), "MMM dd")}
+                        {dateFormat(row?.createdAt)}
                      </time>
                      <span className="divide-color flex-grow divide-y text-sm">
                         {row.entry?.length === 0 ? null : (
