@@ -145,7 +145,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/");
+      return redirect("/hq");
    }
 
    const result = await zx.parseFormSafe(request, PasswordResetSchema);
