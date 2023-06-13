@@ -9,7 +9,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Enemies } from "payload/generated-types";
+import type { Enemies } from "payload/generated-custom-types";
 
 import { Selector } from "~/_custom/components/enemies/Selector";
 import { Stats } from "~/_custom/components/enemies/Stats";

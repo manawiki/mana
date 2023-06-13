@@ -8,7 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Blessings } from "payload/generated-types";
+import type { Blessings } from "payload/generated-custom-types";
 
 import { Header } from "~/_custom/components/blessings/Header";
 import { Effects } from "~/_custom/components/blessings/Effects";

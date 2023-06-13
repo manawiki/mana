@@ -8,7 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { AchievementSeries } from "payload/generated-types";
+import type { AchievementSery } from "payload/generated-custom-types";
 
 import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
 import { Header } from "~/_custom/components/achievementSeries/Header";
@@ -29,7 +29,7 @@ export async function loader({
       params,
       request,
       depth: 3,
-   })) as AchievementSeries;
+   })) as AchievementSery;
 
    //Feel free to query for more data here
 

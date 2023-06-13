@@ -8,7 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Materials } from "payload/generated-types";
+import type { Material } from "payload/generated-custom-types";
 
 import { Header } from "~/_custom/components/materials/Header";
 
@@ -25,7 +25,7 @@ export async function loader({
       params,
       request,
       depth: 3,
-   })) as Materials;
+   })) as Material;
 
    //Feel free to query for more data here
 

@@ -1,9 +1,9 @@
-export const Traces = ({ pageData }) => {
+import type { LightCone } from "payload/generated-custom-types";
 
-
-	return (
-		<>
-			<h2>Traces</h2>
-		</>
-	);
+export const Traces = ({ pageData }: { pageData: LightCone }) => {
+   return (
+      <>
+         <h2>Traces</h2>
+      </>
+   );
 };

@@ -1,7 +1,8 @@
 import { H2 } from "../custom";
 import { Image } from "~/components";
+import type { LightCone } from "payload/generated-custom-types";
 
-export const ImageGallery = ({ pageData }: any) => {
+export const ImageGallery = ({ pageData }: { pageData: LightCone }) => {
    var galleryname = ["Icon", "Full Image"];
    var gallerylist = [pageData?.icon?.url, pageData.image_full?.url];
 
@@ -23,7 +24,7 @@ export const ImageGallery = ({ pageData }: any) => {
                            options="height=120"
                            url={gallerylist[i]}
                            className="h-24 w-24 object-contain"
-                           alt="Gallery Item"
+                           alt={galleryname[i]}
                         />
                      </div>
                   </div>

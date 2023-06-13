@@ -8,7 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { RelicSets } from "payload/generated-types";
+import type { RelicSet } from "payload/generated-custom-types";
 
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
@@ -30,7 +30,7 @@ export async function loader({
       params,
       request,
       depth: 3,
-   })) as RelicSets;
+   })) as RelicSet;
 
    //Feel free to query for more data here
 

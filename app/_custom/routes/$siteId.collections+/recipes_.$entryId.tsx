@@ -8,7 +8,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Recipes } from "payload/generated-types";
+import type { Recipes } from "payload/generated-custom-types";
 
 import { Header } from "~/_custom/components/recipes/Header";
 import { Relics } from "~/_custom/components/recipes/Relics";

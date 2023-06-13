@@ -1,8 +1,9 @@
 import { useState } from "react";
+import type { LightCone } from "payload/generated-custom-types";
 
 import { H2 } from "~/_custom/components/custom";
 
-export const Effect = ({ pageData }: any) => {
+export const Effect = ({ pageData }: { pageData: LightCone }) => {
    const [skillLevel, setSkillLevel] = useState(1);
 
    const skill = pageData.skill_data;
@@ -43,7 +44,7 @@ export const Effect = ({ pageData }: any) => {
                <div
                   className="border-color border-t p-3 text-sm"
                   dangerouslySetInnerHTML={{
-                     __html: skill?.[skillLevel - 1]?.desc,
+                     __html: skill?.[skillLevel - 1]?.desc ?? "",
                   }}
                ></div>
             </div>

@@ -1,5 +1,5 @@
-import { Disclosure, Popover, Tab } from "@headlessui/react";
-import React, { useMemo, useState } from "react";
+import { Disclosure } from "@headlessui/react";
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Image } from "~/components";
 
@@ -14,6 +14,7 @@ import {
    Legend,
 } from "chart.js";
 import { BarChart2, ChevronDown, Binary } from "lucide-react";
+import type { LightCone } from "payload/generated-custom-types";
 
 ChartJS.register(
    CategoryScale,
@@ -25,40 +26,52 @@ ChartJS.register(
    Legend
 );
 
-export const Stats = ({ pageData }: any) => {
+export const Stats = ({ pageData }: { pageData: LightCone }) => {
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
    const [graphStat, setGraphStat] = useState("HP");
 
-   var imgurl = pageData.image_full?.url;
-   var pathurl = pageData.path?.icon?.url;
-   var pathsmall = pageData.path?.icon_small?.url;
-   var rarityurl = pageData.rarity?.icon?.url;
-   var pathname = pageData.path?.name;
+   let imgurl = pageData.image_full?.url;
+   let pathurl = pageData.path?.icon?.url;
+   let pathsmall = pageData.path?.icon_small?.url;
+   let rarityurl = pageData.rarity?.icon?.url;
+   let pathname = pageData.path?.name;
 
-   var statlist = ["HP", "ATK", "DEF"];
+   let statlist = ["HP", "ATK", "DEF"];
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   var statobj = [];
-   for (var i = 0; i < statlist.length; i++) {
-      statobj[i] = {};
-      statobj[i].stat = statlist[i];
 
-      // Pull Stat's Icon image hash
-      // var currstat = statData.statTypes.find((a) => a.name == statlist[i]);
-      // if (currstat?.icon) {
-      //   statobj[i].hash = currstat.icon?.hash ?? "no_image_42df124128";
-      // }
+   // Alternate coloring every other stat.
 
-      // Alternate coloring every other stat.
-      statobj[i].colormod = i % 2;
-   }
+   let statobj = statlist.map((stat, i) => ({ stat: stat, colormod: i % 2 }));
 
    // =====================================
    // End Preprocessing for Stat Block, Output HTML Start
    // =====================================
+
+   // Display value of a stat at a given level
+   function getStatValue(stat: string) {
+      let statTable = pageData?.stats?.find((a) => a?.label == stat)
+         ?.data as number[];
+
+      let levels = pageData?.stats?.find((a) => a?.label == "Lv")
+         ?.data as string[];
+
+      // If the level is 20, 40, 60, 70, 80, or 90, then we need to add an "A" to the end of the level to get the correct stat value.
+      let statIndex = levels.indexOf(
+         levelSliderValue +
+            (levelAscensionCheck &&
+            ["20", "30", "40", "50", "60", "70"].indexOf(
+               levelSliderValue.toString()
+            ) > -1
+               ? "A"
+               : "")
+      );
+
+      return statTable ? formatStat(stat, statTable[statIndex]) : "";
+   }
 
    return (
       <>
@@ -135,36 +148,7 @@ export const Stats = ({ pageData }: any) => {
                               <div>{stat.stat}</div>
                            </div>
                            {/* 2biii) Stat value */}
-                           <div className="">
-                              {pageData?.stats.find((a) => a.label == stat.stat)
-                                 ? formatStat(
-                                      stat.stat,
-                                      pageData?.stats.find(
-                                         (a) => a.label == stat.stat
-                                      ).data[
-                                         pageData?.stats
-                                            .find((a) => a.label == "Lv")
-                                            .data.indexOf(
-                                               "" +
-                                                  levelSliderValue.toString() +
-                                                  (levelAscensionCheck &&
-                                                  [
-                                                     "20",
-                                                     "30",
-                                                     "40",
-                                                     "50",
-                                                     "60",
-                                                     "70",
-                                                  ].indexOf(
-                                                     levelSliderValue.toString()
-                                                  ) > -1
-                                                     ? "A"
-                                                     : "")
-                                            )
-                                      ]
-                                   )
-                                 : ""}
-                           </div>
+                           <div className="">{getStatValue(stat.stat)}</div>
                         </div>
                      );
                   })}
@@ -271,7 +255,15 @@ export const Stats = ({ pageData }: any) => {
 // =====================================
 // 2ci) Character Stat Graph
 // =====================================
-const StatGraph = ({ charData, graphStat, setGraphStat }) => {
+const StatGraph = ({
+   charData,
+   graphStat,
+   setGraphStat,
+}: {
+   charData: LightCone;
+   graphStat: string;
+   setGraphStat: React.Dispatch<React.SetStateAction<string>>;
+}) => {
    var data = charData;
    var statlist = ["HP", "ATK", "DEF"];
 
@@ -279,7 +271,8 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
 
    // Processing Graph Data for display
 
-   const rawdata = data.stats.find((a) => a.label == graphStat).data;
+   const rawdata = data?.stats?.find((a) => a?.label == graphStat)
+      ?.data as number[];
    var processdata = [];
    for (var j = 0; j < rawdata.length; j++) {
       processdata[j] = formatStat(graphStat, rawdata[j]);
@@ -304,7 +297,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
       "80",
       "90",
    ];
-   const labels = data.stats.find((a) => a.label == "Lv").data;
+   const labels = data?.stats?.find((a) => a.label == "Lv")?.data as number[];
 
    const options = {
       responsive: true,
@@ -318,7 +311,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
          // },
          tooltip: {
             callbacks: {
-               label: function (context) {
+               label: function (context: any) {
                   return context.parsed.y + tooltipsuffix;
                },
             },
@@ -332,7 +325,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             },
             ticks: {
                // Show % tooltip suffix in Y axis if applicable to the stat
-               callback: function (value, index, values) {
+               callback: function (value: any) {
                   return value + tooltipsuffix;
                },
             },
@@ -341,7 +334,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             grid: {
                tickLength: 2,
                // Only show vertical grid where a showlabel value is
-               color: function (context) {
+               color: function (context: any) {
                   if (context.tick.label != "") {
                      return "rgba(150,150,150,0.5)";
                   } else {
@@ -352,7 +345,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             ticks: {
                autoSkip: false,
                // For a category axis, only show label if the value matches the "showlabels" array
-               callback: function (val, index) {
+               callback: function (val: any) {
                   // Hide every non-10th tick label
                   return showlabels.indexOf(this.getLabelForValue(val)) > -1
                      ? this.getLabelForValue(val)
@@ -412,7 +405,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                                     setGraphStat(event.target.value)
                                  }
                               >
-                                 {statlist.map(stat => {
+                                 {statlist.map((stat) => {
                                     return (
                                        <option value={stat} key={stat}>
                                           {stat}
@@ -485,18 +478,18 @@ const CSVStats = ({ charData }: any) => {
 // =====================================
 // Performs Rounding for Stats as Integers or as Percentages as necessary
 // =====================================
-function formatStat(type: any, stat: any) {
+function formatStat(type: string, stat: number) {
    // These are stats that should be formatted as an Integer.
-   var intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro"];
+   const intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
-      stat = "" + Math.floor(Math.round(stat * 100) / 100);
+      return "" + Math.floor(Math.round(stat * 100) / 100);
    } else {
-      stat =
-         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%";
+      return (
+         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%"
+      );
    }
-   return stat;
 }
 
 // =====================================

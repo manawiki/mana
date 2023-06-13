@@ -1,6 +1,7 @@
 import { H2 } from "~/_custom/components/custom";
+import type { LightCone, Material } from "payload/generated-custom-types";
 
-export const PromotionCost = ({ pageData }: any) => {
+export const PromotionCost = ({ pageData }: { pageData: LightCone }) => {
    return (
       <>
          <H2 text="Promotion Cost" />
@@ -12,13 +13,13 @@ export const PromotionCost = ({ pageData }: any) => {
                </tr>
             </thead>
             <tbody>
-               {pageData.promotion_cost?.map((promo: any, index: any) => (
+               {pageData.promotion_cost?.map((promo, index) => (
                   <tr key={index}>
                      <th className="px-3 py-0 text-center text-xs font-bold">
                         <div>Lv. {index + 1}</div>
                      </th>
                      <td className="px-1 py-1 pl-3">
-                        {promo.material_qty?.map((mat: any, key: number) => (
+                        {promo.material_qty?.map((mat, key) => (
                            <ItemQtyFrame mat={mat} key={key} />
                         ))}
                      </td>
@@ -30,13 +31,19 @@ export const PromotionCost = ({ pageData }: any) => {
    );
 };
 
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
+
 // ====================================
 // 0a) GENERIC: Item Icon and Quantity Frame
 // ------------------------------------
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemQtyFrame = ({ mat }: any) => {
+const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
 
    return (

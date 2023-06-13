@@ -1,6 +1,7 @@
+import type { LightCone } from "payload/generated-custom-types";
 import { H2 } from "../custom";
 
-export const AdditionalData = ({ pageData }: any) => {
+export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
    const adata = [
       { name: "Max Promotion", value: pageData.max_promotion },
       { name: "EXP Provided", value: pageData.exp_provide },
@@ -11,7 +12,7 @@ export const AdditionalData = ({ pageData }: any) => {
       <>
          <H2 text="Additional Data" />
          <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
-            {adata.map((stat: any, index: any) => {
+            {adata.map((stat, index) => {
                return (
                   <div
                      className={`
