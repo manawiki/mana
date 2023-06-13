@@ -1,4 +1,6 @@
-export const Header = ({ pageData }: any) => {
+import type { Achievement } from "payload/generated-custom-types";
+
+export const Header = ({ pageData }: { pageData: Achievement }) => {
    return (
       <>
          <div className="space-y-1 pb-3 pl-1">

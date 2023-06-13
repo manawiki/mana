@@ -1,7 +1,9 @@
 import { Check } from "lucide-react";
 import { useState, useEffect } from "react";
 
-export const Achievements = ({ pageData }: any) => {
+import type { Achievement as AchievementType } from "payload/generated-custom-types";
+
+export const Achievements = ({ pageData }: { pageData: AchievementType[] }) => {
    return (
       <section className="divide-color shadow-1 bg-2 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
          {pageData?.map((a: any) => (
@@ -11,7 +13,7 @@ export const Achievements = ({ pageData }: any) => {
    );
 };
 
-export const Achievement = ({ a }: any) => {
+export const Achievement = ({ a }: { a: AchievementType }) => {
    const [checked, setChecked] = useState(false);
 
    useEffect(() => {
@@ -56,7 +58,7 @@ export const Achievement = ({ a }: any) => {
                <div className="font-bold">{a.name}</div>
                <div
                   className="text-1"
-                  dangerouslySetInnerHTML={{ __html: a.description }}
+                  dangerouslySetInnerHTML={{ __html: a?.description ?? "" }}
                ></div>
             </div>
 

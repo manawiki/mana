@@ -8,13 +8,17 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { AchievementSery } from "payload/generated-custom-types";
+import type {
+   Achievement,
+   AchievementSery,
+} from "payload/generated-custom-types";
 
 import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
 import { Header } from "~/_custom/components/achievementSeries/Header";
 
 import { zx } from "zodix";
 import { z } from "zod";
+import type { Entry } from "payload/generated-types";
 
 export { meta };
 
@@ -23,7 +27,11 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
+   const entryDefault = (await getDefaultEntryData({
+      payload,
+      params,
+      request,
+   })) as Entry;
    const defaultData = (await getCustomEntryData({
       payload,
       params,
@@ -42,7 +50,7 @@ export async function loader({
 
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entryId}`;
    const achievementRaw = await (await fetch(url)).json();
-   const achievementData = achievementRaw.docs;
+   const achievementData = achievementRaw.docs as Achievement[];
 
    // ======================
    // ======================
@@ -51,9 +59,8 @@ export async function loader({
 }
 
 export default function CharacterEntry() {
-   const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
-   const { achievementData } = useLoaderData<typeof loader>();
+   const { entryDefault, defaultData, achievementData } =
+      useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
