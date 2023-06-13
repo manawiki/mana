@@ -1,6 +1,13 @@
-import { formatDistanceStrict, format } from "date-fns";
+import { formatDistanceStrict } from "date-fns";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
+
+const dateFormat = (dateString: string) =>
+   new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Los_Angeles",
+   }).format(new Date(dateString));
 
 export const PostHeader = ({ post }: { post: Post }) => {
    return (
@@ -40,7 +47,7 @@ export const PostHeader = ({ post }: { post: Post }) => {
                            className="text-1 flex items-center gap-1.5 text-sm"
                            dateTime={post?.publishedAt}
                         >
-                           {format(new Date(post?.publishedAt), "MMM dd")}
+                           {dateFormat(post?.publishedAt)}
                         </time>
                      </>
                   )}

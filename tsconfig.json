@@ -20,6 +20,6 @@
       "target": "ES2019"
    },
    "ts-node": {
-      "swc": true,
+      "swc": true
    }
 }

@@ -1,19 +1,24 @@
 {
+   "include": ["core.server.ts", "payload.config.ts"],
    "compilerOptions": {
-      "target": "es5",
-      "lib": ["dom", "dom.iterable", "esnext"],
-      "allowJs": true,
-      "strict": false,
+      "lib": ["DOM", "DOM.Iterable", "ES2019"],
+      "isolatedModules": true,
       "esModuleInterop": true,
+      "jsx": "react-jsx",
+      "module": "CommonJS",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "strict": false,
+      "allowJs": true,
+      "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
       "outDir": "./dist",
-      "jsx": "react-jsx",
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-types.ts"],
          "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]      
       },
+      "target": "ES2019",
    },
-   "include": ["core.server.ts", "payload.config.ts"]
 }

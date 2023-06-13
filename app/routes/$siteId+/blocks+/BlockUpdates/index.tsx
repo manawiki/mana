@@ -27,6 +27,13 @@ type Props = {
    element: UpdatesElement;
 };
 
+const dateFormat = (dateString: string) =>
+   new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      timeZone: "America/Los_Angeles",
+   }).format(new Date(dateString));
+
 export const BlockUpdates = ({ element }: Props) => {
    const { updateResults } =
       (useRouteLoaderData("routes/$siteId+/_layout") as {
@@ -62,7 +69,10 @@ export const BlockUpdates = ({ element }: Props) => {
                <div className="divide-color border-color divide-y border-y">
                   <div className="flex items-center justify-between gap-2 py-1">
                      <span className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase">
-                        {format(new Date(), "MMM dd")}
+                        {Intl.DateTimeFormat("en-US", {
+                           month: "short",
+                           day: "numeric",
+                        }).format(new Date())}
                      </span>
                      <div className="h-full w-full text-sm">
                         <Slate
@@ -117,7 +127,7 @@ export const BlockUpdates = ({ element }: Props) => {
                            className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase"
                            dateTime={row?.createdAt}
                         >
-                           {format(new Date(row?.createdAt), "MMM dd")}
+                           {dateFormat(row?.createdAt)}
                         </time>
                         <span className="divide-color flex-grow divide-y text-sm">
                            {row.entry?.length === 0 ? (
