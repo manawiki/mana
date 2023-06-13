@@ -2,7 +2,8 @@
    "private": true,
    "sideEffects": false,
    "scripts": {
-      "build": "yarn run generate:types && remix build && run-s \"build:*\"",
+      "build": "run-p \"build:*\"",
+      "build:remix": "remix build",
       "build:payload": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts payload build",
       "build:server": "tsc -p tsconfig.server.json",
       "start:core": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/core.server.js",
