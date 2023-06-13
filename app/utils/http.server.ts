@@ -8,7 +8,7 @@ export function makeRedirectToFromHere(request: Request) {
    return new URLSearchParams([["redirectTo", getCurrentPath(request)]]);
 }
 
-export function getRedirectTo(request: Request, defaultRedirectTo = "/") {
+export function getRedirectTo(request: Request, defaultRedirectTo = "/hq") {
    const url = new URL(request.url);
    return safeRedirect(url.searchParams.get("redirectTo"), defaultRedirectTo);
 }
@@ -90,7 +90,7 @@ export function toastResponse({
  */
 export function safeRedirect(
    to: FormDataEntryValue | string | null | undefined,
-   defaultRedirect = "/"
+   defaultRedirect = "/hq"
 ) {
    if (
       !to ||
