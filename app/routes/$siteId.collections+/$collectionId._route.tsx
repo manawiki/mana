@@ -43,6 +43,7 @@ import type { Entry } from "payload/generated-types";
 import { nanoid } from "nanoid";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import type { Collection } from "payload/generated-types";
+import { H2 } from "~/modules/collections/components/H2";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -205,7 +206,7 @@ export default function CollectionList() {
       <>
          <Outlet />
          <div className="mx-auto max-w-[728px] pb-3 max-desktop:px-3 laptop:pb-12">
-            <h2 className="border-0 pb-0">{collection.name}</h2>
+            <H2 text={collection.name} />
             <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}

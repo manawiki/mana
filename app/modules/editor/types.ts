@@ -11,7 +11,6 @@ declare module "slate" {
    }
 }
 
-
 export type UserMeta = {
    id: string;
    info: {
@@ -100,25 +99,24 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-export interface groupRow {
+export interface groupItem {
    id: string;
    isCustomSite?: boolean;
    refId: string;
-   tag?: string;
-   tagColor?: string;
+   label?: string;
    name: string;
+   labelColor?: string;
    iconUrl?: string;
    path?: string;
 }
 
 export type GroupElement = BlockElement & {
    type: BlockType.Group;
-   groupLabel: string;
-   color: string;
-   viewMode: "list" | "grid";
+   viewMode: "1-col" | "2-col";
+   itemsViewMode: "list" | "grid";
    collection?: Collection["id"];
-   groupItems: groupRow[];
-   children: [{ text: "" }];
+   groupItems: groupItem[];
+   content?: [];
 };
 
 export type CustomElement =

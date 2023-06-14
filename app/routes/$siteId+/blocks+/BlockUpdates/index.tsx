@@ -65,10 +65,23 @@ export const BlockUpdates = ({ element }: Props) => {
       <section>
          {updateResults?.length === 0 ? null : (
             <>
-               <h2>Updates</h2>
-               <div className="divide-color border-color divide-y border-y">
-                  <div className="flex items-center justify-between gap-2 py-1">
-                     <span className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase">
+               <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
+                  <div className="relative px-3 py-2.5">
+                     <div className="relative z-10 font-header text-lg font-bold">
+                        Updates
+                     </div>
+                     <div
+                        className="pattern-dots absolute left-0 top-0 h-full
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
+                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+                     ></div>
+                     <div
+                        className="absolute left-0 top-0 h-full w-full 
+               bg-gradient-to-r from-zinc-50/20 to-white/50 dark:from-zinc-800/30"
+                     ></div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 py-1 pr-2">
+                     <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                         {Intl.DateTimeFormat("en-US", {
                            month: "short",
                            day: "numeric",
@@ -122,9 +135,9 @@ export const BlockUpdates = ({ element }: Props) => {
                      </button>
                   </div>
                   {updateResults?.map((row) => (
-                     <section key={row.id} className="flex items-center gap-2">
+                     <section key={row.id} className="flex items-start gap-2">
                         <time
-                           className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase"
+                           className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
                            dateTime={row?.createdAt}
                         >
                            {dateFormat(row?.createdAt)}
@@ -137,7 +150,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                  {row.entry?.map((item) => (
                                     <div
                                        key={item.id}
-                                       className="group/updates relative py-2.5"
+                                       className="group/updates relative py-3"
                                     >
                                        <UpdatesEditor
                                           rowId={row.id}
@@ -146,7 +159,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                           blocks={item.content}
                                        />
                                        <button
-                                          className="absolute right-1 top-3 hidden group-hover/updates:block"
+                                          className="absolute right-3 top-3.5 hidden group-hover/updates:block"
                                           onClick={() =>
                                              fetcher.submit(
                                                 {

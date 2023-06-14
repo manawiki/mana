@@ -58,7 +58,7 @@
       "is-hotkey": "^0.2.0",
       "is-url": "^1.2.4",
       "isbot": "^3.6.5",
-      "lucide-react": "^0.105.0",
+      "lucide-react": "^0.244.0",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
       "nodemailer-sendgrid": "^1.0.3",

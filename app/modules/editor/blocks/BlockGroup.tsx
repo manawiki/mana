@@ -1,9 +1,8 @@
-import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, GroupElement, groupRow } from "../types";
+import { Editable, ReactEditor, Slate, useSlate, withReact } from "slate-react";
+import type { CustomElement, GroupElement, groupItem } from "../types";
 import type { BaseEditor } from "slate";
-import { Transforms } from "slate";
-import { useDebouncedValue, useIsMount } from "~/hooks";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Transforms, createEditor } from "slate";
+import { Fragment, useMemo, useState } from "react";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DragOverlay } from "@dnd-kit/core";
 import { DndContext } from "@dnd-kit/core";
@@ -17,7 +16,9 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import Tooltip from "~/components/Tooltip";
 import {
+   Rows,
    ChevronDown,
+   Columns,
    Component,
    Database,
    GripVertical,
@@ -35,7 +36,10 @@ import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
 import { nanoid } from "nanoid";
 import { Image } from "~/components";
-import TextareaAutosize from "react-textarea-autosize";
+import Toolbar from "../components/Toolbar";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
+import { onKeyDown } from "~/modules/editor/editorCore";
 
 type Props = {
    element: GroupElement;
@@ -56,10 +60,6 @@ export const GROUP_COLORS = [
 
 export default function BlockGroup({ element }: Props) {
    const editor = useSlate();
-
-   const isMount = useIsMount();
-
-   const [groupLabel, setGroupLabel] = useState(element.groupLabel);
 
    const { siteId } = useParams();
 
@@ -128,21 +128,6 @@ export default function BlockGroup({ element }: Props) {
                  .includes(groupSelectQuery.toLowerCase().replace(/\s+/g, ""))
            );
 
-   const debouncedGroupLabel = useDebouncedValue(groupLabel, 500);
-
-   useEffect(() => {
-      if (!isMount) {
-         const path = ReactEditor.findPath(editor, element);
-         const newProperties: Partial<CustomElement> = {
-            groupLabel: groupLabel,
-         };
-         return Transforms.setNodes<CustomElement>(editor, newProperties, {
-            at: path,
-         });
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [debouncedGroupLabel]);
-
    const groupItems = element.groupItems;
 
    //DND kit needs array of strings
@@ -197,6 +182,7 @@ export default function BlockGroup({ element }: Props) {
             ...element.groupItems,
             {
                id: nanoid(),
+               labelColor: GROUP_COLORS["0"],
                isCustomSite,
                refId: event.id,
                name: event.name,
@@ -207,22 +193,6 @@ export default function BlockGroup({ element }: Props) {
       };
 
       setSelectedCollection(event);
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   }
-
-   function handleUpdateGroupBlock(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         color: event,
-      };
-
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
@@ -245,6 +215,23 @@ export default function BlockGroup({ element }: Props) {
       });
    }
 
+   function handleUpdateItemsViewMode(
+      event: any,
+      editor: BaseEditor & ReactEditor,
+      element: GroupElement
+   ) {
+      const path = ReactEditor.findPath(editor, element);
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         itemsViewMode: event,
+      };
+      setItemsViewMode(event);
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   }
+
    // DND Functions
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -253,7 +240,7 @@ export default function BlockGroup({ element }: Props) {
       editor.children,
       "id",
       activeId
-   ) as unknown as groupRow;
+   ) as unknown as groupItem;
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(
@@ -334,185 +321,39 @@ export default function BlockGroup({ element }: Props) {
       });
    }
 
+   function updateItemLabel(
+      id: string,
+      editor: BaseEditor & ReactEditor,
+      element: GroupElement
+   ) {
+      const groupItems = element.groupItems;
+
+      const path = ReactEditor.findPath(editor, element);
+
+      const updatedGroupItems = groupItems.filter((item) => item.id !== id);
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         groupItems: updatedGroupItems,
+      };
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   }
+
    const activeSelectItem = (item: any) =>
       selectOptions.find((obj) => obj.slug === item)?.name;
 
-   const [editMode, setEditMode] = useState(false);
    const [viewMode, setViewMode] = useState(element.viewMode);
+   const [itemsViewMode, setItemsViewMode] = useState(element.itemsViewMode);
 
    return (
-      <div className="my-6">
-         <>
-            <div className="flex items-center justify-between pb-2">
-               <section className="flex items-center gap-3">
-                  <input
-                     className="bg-3 border-0 p-0 font-header text-[22px] font-bold focus:ring-0 dark:text-zinc-200"
-                     type="text"
-                     placeholder="Group name..."
-                     defaultValue={element.groupLabel}
-                     onChange={(event) => setGroupLabel(event.target.value)}
-                  />
-               </section>
-               <section className="flex flex-none items-center gap-2.5">
-                  {/* <Tooltip
-                     id="edit-mode-group-list"
-                     side="left"
-                     className="flex items-center"
-                     content={`${
-                        editMode ? "Disable edit mode" : "Enable edit mode"
-                     }`}
-                  >
-                     <Switch
-                        checked={editMode}
-                        onChange={setEditMode}
-                        className={`${
-                           editMode
-                              ? "bg-emerald-500 dark:bg-emerald-900"
-                              : "bg-zinc-300 dark:bg-zinc-700"
-                        }
-                        relative mr-1 inline-flex h-6 w-10 shrink-0 cursor-pointer 
-                        rounded-full border-2 border-transparent transition-colors 
-                        duration-200 ease-in-out focus:outline-none focus-visible:ring-2  
-                     focus-visible:ring-white focus-visible:ring-opacity-75`}
-                     >
-                        <span className="sr-only">Toggle Edit Mode</span>
-                        <span
-                           aria-hidden="true"
-                           className={`${
-                              editMode ? "translate-x-4" : "translate-x-0"
-                           }
-                                          pointer-events-none inline-block h-5 w-5 transform rounded-full
-                                          bg-white ring-0 transition duration-200 ease-in-out dark:bg-zinc-300`}
-                        />
-                     </Switch>
-                  </Tooltip> */}
-                  <div>
-                     <Listbox value={selectedCollection}>
-                        <Tooltip
-                           id="group-color"
-                           side="top"
-                           content="Switch Color"
-                        >
-                           <Listbox.Button
-                              className="bg-2 flex h-7 w-7 items-center 
-                              justify-center rounded-full focus:outline-none"
-                           >
-                              <div
-                                 style={{
-                                    backgroundColor: element.color,
-                                 }}
-                                 className="h-3 w-3 rounded-full"
-                              />
-                           </Listbox.Button>
-                        </Tooltip>
-                        <Transition
-                           enter="transition duration-100 ease-out"
-                           enterFrom="transform scale-95 opacity-0"
-                           enterTo="transform scale-100 opacity-100"
-                           leave="transition duration-75 ease-out"
-                           leaveFrom="transform scale-100 opacity-100"
-                           leaveTo="transform scale-95 opacity-0"
-                        >
-                           <Listbox.Options
-                              className="border-color text-1 bg-2 shadow-1 absolute -top-9 right-8 z-30 mr-0.5
-                                flex h-10 items-center gap-3 rounded-full border px-4"
-                           >
-                              {GROUP_COLORS?.map(
-                                 (color: string, rowIdx: number) => (
-                                    <Listbox.Option key={rowIdx} value={color}>
-                                       <button
-                                          type="button"
-                                          onClick={() =>
-                                             handleUpdateGroupBlock(
-                                                color,
-                                                editor,
-                                                element
-                                             )
-                                          }
-                                          className="h-3.5 w-3.5 rounded-full"
-                                          key={color}
-                                          style={{
-                                             backgroundColor: color,
-                                          }}
-                                       ></button>
-                                    </Listbox.Option>
-                                 )
-                              )}
-                           </Listbox.Options>
-                        </Transition>
-                     </Listbox>
-                  </div>
-                  <RadioGroup
-                     className="flex cursor-pointer items-center gap-1"
-                     value={viewMode}
-                     onChange={(event) =>
-                        handleUpdateViewMode(event, editor, element)
-                     }
-                  >
-                     <RadioGroup.Option value="list">
-                        {({ checked }) => (
-                           <Tooltip
-                              id="group-list-view"
-                              side="top"
-                              content="List View"
-                           >
-                              <div
-                                 className={`${
-                                    checked
-                                       ? "bg-zinc-100 dark:bg-zinc-700"
-                                       : ""
-                                 }
-                                 flex h-7 w-7 items-center justify-center rounded`}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    List View
-                                 </RadioGroup.Label>
-                                 <List
-                                    style={{
-                                       color:
-                                          checked == true ? element.color : "",
-                                    }}
-                                    size={16}
-                                 />
-                              </div>
-                           </Tooltip>
-                        )}
-                     </RadioGroup.Option>
-                     <RadioGroup.Option value="grid">
-                        {({ checked }) => (
-                           <Tooltip
-                              id="group-grid-view"
-                              side="top"
-                              content="Gird View"
-                           >
-                              <div
-                                 className={`${
-                                    checked
-                                       ? "bg-zinc-100 dark:bg-zinc-700"
-                                       : ""
-                                 }
-                           flex h-7 w-7 items-center justify-center rounded`}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    Grid View
-                                 </RadioGroup.Label>
-                                 <LayoutGrid
-                                    style={{
-                                       color:
-                                          checked == true ? element.color : "",
-                                    }}
-                                    size={16}
-                                 />
-                              </div>
-                           </Tooltip>
-                        )}
-                     </RadioGroup.Option>
-                  </RadioGroup>
-               </section>
-            </div>
+      <div className="my-2">
+         <section className="mb-3 flex items-center justify-between gap-3">
             <div
-               className="text-1 bg-2 border-color relative mb-2.5 flex
-                  items-center justify-between rounded-xl border px-2 py-1.5"
+               className="text-1 bg-2 border-color shadow-1 relative flex
+                  h-14 flex-grow items-center justify-between rounded-xl border px-2 shadow-sm"
             >
                <div className="flex w-full items-center gap-3">
                   <Combobox
@@ -529,12 +370,7 @@ export default function BlockGroup({ element }: Props) {
                                  items-center justify-center rounded-full border bg-white
                                  shadow-sm group-hover:bg-zinc-50 dark:bg-bg3Dark dark:group-hover:bg-zinc-700/50"
                               >
-                                 <Plus
-                                    style={{
-                                       color: element.color,
-                                    }}
-                                    size={20}
-                                 />
+                                 <Plus size={20} />
                               </div>
                            </Combobox.Button>
                            <Combobox.Input
@@ -612,7 +448,7 @@ export default function BlockGroup({ element }: Props) {
                >
                   <div className="relative z-10 flex-none">
                      <Listbox.Button
-                        className="text-1 z-20 flex items-center gap-1.5
+                        className="text-1 flex items-center gap-1.5
                         p-2 text-sm font-bold hover:underline"
                      >
                         {({ value }) => (
@@ -637,7 +473,7 @@ export default function BlockGroup({ element }: Props) {
                      >
                         <Listbox.Options
                            className="border-color bg-2 shadow-1 absolute right-0
-                           z-30 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                           z-20 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
                         >
                            {collectionData?.docs?.map(
                               (row: Collection, rowIdx: number) => (
@@ -649,13 +485,7 @@ export default function BlockGroup({ element }: Props) {
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                           >
                                              {selected ? (
-                                                <span
-                                                   style={{
-                                                      backgroundColor:
-                                                         element.color,
-                                                   }}
-                                                   className="absolute right-2 h-1.5 w-1.5 rounded-full"
-                                                />
+                                                <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
                                              ) : null}
                                              <Database
                                                 className="text-1"
@@ -676,12 +506,7 @@ export default function BlockGroup({ element }: Props) {
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                     >
                                        {selected ? (
-                                          <span
-                                             style={{
-                                                backgroundColor: element.color,
-                                             }}
-                                             className="absolute right-2 h-1.5 w-1.5 rounded-full"
-                                          />
+                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
                                        ) : null}
                                        <Pencil className="text-1" size={14} />
                                        Post
@@ -697,12 +522,7 @@ export default function BlockGroup({ element }: Props) {
                                      rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                     >
                                        {selected ? (
-                                          <span
-                                             style={{
-                                                backgroundColor: element.color,
-                                             }}
-                                             className="absolute right-2 h-1.5 w-1.5 rounded-full"
-                                          />
+                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
                                        ) : null}
                                        <Component
                                           className="text-1"
@@ -717,138 +537,365 @@ export default function BlockGroup({ element }: Props) {
                      </Transition>
                   </div>
                </Listbox>
-            </div>
-            <section>
-               <DndContext
-                  onDragStart={handleDragStart}
-                  onDragEnd={(event) => handleDragEnd(event, editor, element)}
+               <RadioGroup
+                  className="flex cursor-pointer items-center gap-1"
+                  value={itemsViewMode}
+                  onChange={(event) =>
+                     handleUpdateItemsViewMode(event, editor, element)
+                  }
                >
-                  <SortableContext
-                     items={itemIds}
-                     strategy={
-                        viewMode == "list"
-                           ? verticalListSortingStrategy
-                           : rectSortingStrategy
-                     }
-                  >
-                     {groupItems?.length === 0 ? null : viewMode == "list" ? (
-                        <div
-                           className="border-color divide-color shadow-1 relative
-                        divide-y overflow-hidden rounded-lg border shadow-sm"
+                  <RadioGroup.Option value="list">
+                     {({ checked }) => (
+                        <Tooltip
+                           id="group-list-view"
+                           side="top"
+                           content="List View"
                         >
-                           {groupItems?.map((row) => (
-                              <SortableListItem
-                                 editMode={editMode}
-                                 key={row.id}
-                                 rowId={row.id}
-                                 element={element}
-                                 deleteRow={() =>
-                                    deleteRow(row.id, editor, element)
-                                 }
+                           <div
+                              className={`${
+                                 checked
+                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                    : ""
+                              }
+                                 flex h-7 w-7 items-center justify-center rounded`}
+                           >
+                              <RadioGroup.Label className="sr-only">
+                                 List View
+                              </RadioGroup.Label>
+                              <List
+                                 className={`${checked ? "text-zinc-500" : ""}`}
+                                 size={16}
                               />
-                           ))}
-                        </div>
-                     ) : (
-                        <div className="grid grid-cols-2 gap-3 tablet:grid-cols-3 desktop:grid-cols-4">
-                           {groupItems?.map((row) => (
-                              <SortableGridItem
-                                 editMode={editMode}
-                                 key={row.id}
-                                 rowId={row.id}
-                                 element={element}
-                                 deleteRow={() =>
-                                    deleteRow(row.id, editor, element)
-                                 }
-                              />
-                           ))}
-                        </div>
+                           </div>
+                        </Tooltip>
                      )}
-                  </SortableContext>
-                  <DragOverlay modifiers={[restrictToParentElement]}>
-                     {activeElement && viewMode == "list" ? (
-                        <div className="p-1.5">
+                  </RadioGroup.Option>
+                  <RadioGroup.Option value="grid">
+                     {({ checked }) => (
+                        <Tooltip
+                           id="group-grid-view"
+                           side="top"
+                           content="Gird View"
+                        >
                            <div
-                              className="bg-1 shadow-1 border-color flex items-center
-                               justify-between gap-3 rounded-lg border p-1.5 shadow"
+                              className={`${
+                                 checked
+                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                    : ""
+                              }
+                           flex h-7 w-7 items-center justify-center rounded`}
                            >
-                              <div className="flex items-center gap-3">
+                              <RadioGroup.Label className="sr-only">
+                                 Grid View
+                              </RadioGroup.Label>
+                              <LayoutGrid
+                                 className={`${checked ? "text-zinc-500" : ""}`}
+                                 size={16}
+                              />
+                           </div>
+                        </Tooltip>
+                     )}
+                  </RadioGroup.Option>
+               </RadioGroup>
+            </div>
+
+            <RadioGroup
+               className="bg-2 shadow-1 border-color flex h-14 
+                  cursor-pointer items-center gap-1 rounded-lg border px-2.5 shadow-sm"
+               value={viewMode}
+               onChange={(event) =>
+                  handleUpdateViewMode(event, editor, element)
+               }
+            >
+               <RadioGroup.Option value="1-col">
+                  {({ checked }) => (
+                     <Tooltip
+                        id="1-column-list-view"
+                        side="top"
+                        content="1-Column"
+                     >
+                        <div
+                           className={`${
+                              checked
+                                 ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                 : ""
+                           }
+                                 flex h-8 w-8 items-center justify-center rounded`}
+                        >
+                           <RadioGroup.Label className="sr-only">
+                              List View
+                           </RadioGroup.Label>
+                           <Rows
+                              className={`${checked ? "text-zinc-500" : ""}`}
+                              size={16}
+                           />
+                        </div>
+                     </Tooltip>
+                  )}
+               </RadioGroup.Option>
+               <RadioGroup.Option value="2-col">
+                  {({ checked }) => (
+                     <Tooltip
+                        id="2-columns-view"
+                        side="top"
+                        content="2-Columns"
+                     >
+                        <div
+                           className={`${
+                              checked
+                                 ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                 : ""
+                           }
+                           flex h-8 w-8 items-center justify-center rounded`}
+                        >
+                           <RadioGroup.Label className="sr-only">
+                              2-Columns
+                           </RadioGroup.Label>
+                           <Columns
+                              className={`${checked ? "text-zinc-500" : ""}`}
+                              size={16}
+                           />
+                        </div>
+                     </Tooltip>
+                  )}
+               </RadioGroup.Option>
+            </RadioGroup>
+         </section>
+         <section>
+            <DndContext
+               onDragStart={handleDragStart}
+               onDragEnd={(event) => handleDragEnd(event, editor, element)}
+            >
+               <SortableContext
+                  items={itemIds}
+                  strategy={
+                     itemsViewMode == "list"
+                        ? verticalListSortingStrategy
+                        : rectSortingStrategy
+                  }
+               >
+                  {groupItems?.length === 0 ? null : itemsViewMode == "list" ? (
+                     <>
+                        {viewMode == "1-col" && (
+                           <>
+                              <div
+                                 className="border-color divide-color shadow-1 relative
+                                 mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm"
+                              >
+                                 {groupItems?.map((row) => (
+                                    <SortableListItem
+                                       editor={editor}
+                                       key={row.id}
+                                       rowId={row.id}
+                                       element={element}
+                                       deleteRow={() =>
+                                          deleteRow(row.id, editor, element)
+                                       }
+                                    />
+                                 ))}
+                              </div>
+                           </>
+                        )}
+                        {viewMode == "2-col" && (
+                           <div className="grid laptop:grid-cols-2 laptop:gap-4">
+                              <div>
                                  <div
-                                    style={{
-                                       borderColor: element.color,
-                                    }}
-                                    className="shadow-1 flex h-8 w-8 items-center
-                                justify-between overflow-hidden rounded-full border shadow-sm"
+                                    className="border-color divide-color shadow-1 relative
+                                    mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm"
                                  >
-                                    {activeElement?.iconUrl ? (
-                                       <Image
-                                          url={activeElement?.iconUrl}
-                                          options="aspect_ratio=1:1&height=80&width=80"
-                                          alt={activeElement?.name ?? "Icon"}
+                                    {groupItems?.map((row) => (
+                                       <SortableListItem
+                                          editor={editor}
+                                          key={row.id}
+                                          rowId={row.id}
+                                          element={element}
+                                          deleteRow={() =>
+                                             deleteRow(row.id, editor, element)
+                                          }
                                        />
-                                    ) : (
-                                       <Component
-                                          className="text-1 mx-auto"
-                                          size={18}
-                                       />
-                                    )}
-                                 </div>
-                                 <div className="truncate">
-                                    {activeElement?.name}
+                                    ))}
                                  </div>
                               </div>
-                              <div className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow">
-                                 <GripVertical className="text-1" size={16} />
+                              <div>
+                                 <InlineEditor
+                                    editor={editor}
+                                    element={element}
+                                 />
                               </div>
+                           </div>
+                        )}
+                     </>
+                  ) : (
+                     <>
+                        {viewMode == "1-col" && (
+                           <>
+                              <div className="grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4">
+                                 {groupItems?.map((row) => (
+                                    <SortableGridItem
+                                       editor={editor}
+                                       key={row.id}
+                                       rowId={row.id}
+                                       element={element}
+                                       deleteRow={() =>
+                                          deleteRow(row.id, editor, element)
+                                       }
+                                    />
+                                 ))}
+                              </div>
+                           </>
+                        )}
+                        {viewMode == "2-col" && (
+                           <div className="grid laptop:grid-cols-2 laptop:gap-4">
+                              <div>
+                                 <div className="grid grid-cols-2 gap-3 pb-2.5">
+                                    {groupItems?.map((row) => (
+                                       <SortableGridItem
+                                          editor={editor}
+                                          key={row.id}
+                                          rowId={row.id}
+                                          element={element}
+                                          deleteRow={() =>
+                                             deleteRow(row.id, editor, element)
+                                          }
+                                       />
+                                    ))}
+                                 </div>
+                              </div>
+                              <div>
+                                 <InlineEditor
+                                    editor={editor}
+                                    element={element}
+                                 />
+                              </div>
+                           </div>
+                        )}
+                     </>
+                  )}
+               </SortableContext>
+               <DragOverlay modifiers={[restrictToParentElement]}>
+                  {activeElement && itemsViewMode == "list" ? (
+                     <div className="p-1.5">
+                        <div
+                           className="bg-1 shadow-1 border-color flex items-center
+                               justify-between gap-3 rounded-lg border p-1.5 shadow"
+                        >
+                           <div className="flex items-center gap-3">
+                              <div
+                                 className="shadow-1 flex h-8 w-8 items-center
+                                justify-between overflow-hidden rounded-full border shadow-sm"
+                              >
+                                 {activeElement?.iconUrl ? (
+                                    <Image
+                                       url={activeElement?.iconUrl}
+                                       options="aspect_ratio=1:1&height=80&width=80"
+                                       alt={activeElement?.name ?? "Icon"}
+                                    />
+                                 ) : (
+                                    <Component
+                                       className="text-1 mx-auto"
+                                       size={18}
+                                    />
+                                 )}
+                              </div>
+                              <div className="truncate">
+                                 {activeElement?.name}
+                              </div>
+                           </div>
+                           <div className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow">
+                              <GripVertical className="text-1" size={16} />
                            </div>
                         </div>
-                     ) : viewMode == "grid" ? (
-                        <div className="bg-1 border-color shadow-1 relative rounded-md border p-3 shadow">
-                           <div className="bg-3 shadow-1 absolute right-1 top-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow">
-                              <Move className="text-1" size={16} />
-                           </div>
-                           <div
-                              style={{
-                                 borderColor: element.color,
-                              }}
-                              className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
+                     </div>
+                  ) : itemsViewMode == "grid" ? (
+                     <div className="bg-1 border-color shadow-1 relative rounded-md border p-3 shadow">
+                        <div className="bg-3 shadow-1 absolute right-1 top-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow">
+                           <Move className="text-1" size={16} />
+                        </div>
+                        <div
+                           className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
                            items-center overflow-hidden rounded-full border-2 shadow-sm"
-                           >
-                              {activeElement?.iconUrl ? (
-                                 <Image
-                                    url={activeElement?.iconUrl}
-                                    options="aspect_ratio=1:1&height=80&width=80"
-                                    alt={activeElement?.name ?? "Icon"}
-                                 />
-                              ) : (
-                                 <Component
-                                    className="text-1 mx-auto"
-                                    size={18}
-                                 />
-                              )}
-                           </div>
-                           <div className="text-1 truncate text-center text-xs font-bold">
-                              {activeElement?.name}
-                           </div>
+                        >
+                           {activeElement?.iconUrl ? (
+                              <Image
+                                 url={activeElement?.iconUrl}
+                                 options="aspect_ratio=1:1&height=80&width=80"
+                                 alt={activeElement?.name ?? "Icon"}
+                              />
+                           ) : (
+                              <Component className="text-1 mx-auto" size={18} />
+                           )}
                         </div>
-                     ) : null}
-                  </DragOverlay>
-               </DndContext>
-            </section>
-         </>
+                        <div className="text-1 truncate text-center text-xs font-bold">
+                           {activeElement?.name}
+                        </div>
+                     </div>
+                  ) : null}
+               </DragOverlay>
+            </DndContext>
+         </section>
       </div>
    );
 }
 
+const InlineEditor = ({
+   editor,
+   element,
+}: {
+   editor: BaseEditor & ReactEditor;
+   element: GroupElement;
+}) => {
+   const inlineEditor = useMemo(() => withReact(createEditor()), []);
+   inlineEditor.isInline = (element) => ["link"].includes(element.type);
+
+   const updateContentValue = (event: any) => {
+      const path = ReactEditor.findPath(editor, element);
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         content: event,
+      };
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   };
+
+   return (
+      <div>
+         <Slate
+            onChange={(e) => updateContentValue(e)}
+            editor={inlineEditor}
+            // @ts-ignore
+            value={
+               element.content ?? [
+                  {
+                     type: "paragraph",
+                     children: [{ text: "" }],
+                  },
+               ]
+            }
+         >
+            {/* @ts-ignore */}
+            <Toolbar />
+            <Editable
+               placeholder="Start writing..."
+               renderElement={Block}
+               renderLeaf={Leaf}
+               onKeyDown={(e) => onKeyDown(e, inlineEditor)}
+            />
+         </Slate>
+      </div>
+   );
+};
+
 const SortableListItem = ({
+   editor,
    rowId,
    element,
    deleteRow,
-   editMode,
 }: {
+   editor: BaseEditor & ReactEditor;
    rowId: string;
    element: GroupElement;
    deleteRow: () => void;
-   editMode: boolean;
 }) => {
    const {
       transition,
@@ -866,6 +913,43 @@ const SortableListItem = ({
    const row = element.groupItems.find((obj) => {
       return obj.id === rowId;
    });
+
+   const updateLabelColor = (event: any) => {
+      const path = ReactEditor.findPath(editor, element);
+      const currentGroupItems = element.groupItems;
+      const groupItems = currentGroupItems.map((x) =>
+         x.id === rowId ? { ...x, labelColor: event } : x
+      );
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         groupItems,
+      };
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   };
+
+   const updateLabelValue = (event: any) => {
+      const path = ReactEditor.findPath(editor, element);
+      const currentGroupItems = element.groupItems;
+      const groupItems = currentGroupItems.map((x) =>
+         x.id === rowId ? { ...x, label: event } : x
+      );
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         groupItems,
+      };
+      setLabelValue(event);
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   };
+
+   const [labelValue, setLabelValue] = useState(row?.label);
 
    return (
       <div
@@ -882,18 +966,9 @@ const SortableListItem = ({
          className="bg-2 relative"
       >
          <div className="flex items-center justify-between gap-2 p-2.5">
-            <Link
-               reloadDocument={row?.isCustomSite ?? false}
-               key={row?.id}
-               to={row?.path ?? ""}
-               prefetch="intent"
-               className="bg-2 flex flex-grow items-center gap-3 hover:underline"
-            >
+            <div className="bg-2 flex flex-grow items-center gap-3 hover:underline">
                <div
-                  style={{
-                     borderColor: element.color,
-                  }}
-                  className="shadow-1 flex h-8 w-8 items-center
+                  className="shadow-1 border-color flex h-8 w-8 items-center
                justify-between overflow-hidden rounded-full border-2 shadow-sm"
                >
                   {row?.iconUrl ? (
@@ -909,24 +984,8 @@ const SortableListItem = ({
                <span className="text-1 truncate text-sm font-bold">
                   {row?.name}
                </span>
-            </Link>
-            {/* <input
-               type="text"
-               className="bg-1 h-6 w-10 rounded-full border-0 px-3 text-center text-sm font-bold"
-            /> */}
-            <div className="flex select-none items-center gap-1 opacity-0 group-hover:opacity-100">
-               <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
-                  <button
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
-                     onClick={deleteRow}
-                     aria-label="Delete"
-                  >
-                     <Trash
-                        className="text-zinc-400 dark:text-zinc-500"
-                        size={16}
-                     />
-                  </button>
-               </Tooltip>
+            </div>
+            <div className="absolute left-0 opacity-0 group-hover:opacity-100">
                <Tooltip
                   side="left"
                   id={`drag-${rowId}`}
@@ -942,19 +1001,75 @@ const SortableListItem = ({
                      <GripVertical className="text-1" size={16} />
                   </button>
                </Tooltip>
+               <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
+                  <button
+                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
+                     onClick={deleteRow}
+                     aria-label="Delete"
+                  >
+                     <Trash
+                        className="text-zinc-400 dark:text-zinc-500"
+                        size={16}
+                     />
+                  </button>
+               </Tooltip>
+            </div>
+            <div className="flex items-center justify-center">
+               <Listbox value={row?.labelColor}>
+                  <Listbox.Button
+                     className="bg-2 hidden h-7 w-7 items-center justify-center
+                              rounded-full focus:outline-none group-hover:flex"
+                  >
+                     <div
+                        style={{
+                           backgroundColor: row?.labelColor,
+                        }}
+                        className="h-3 w-3 rounded-full"
+                     />
+                  </Listbox.Button>
+                  <Transition
+                     enter="transition duration-100 ease-out"
+                     enterFrom="transform scale-95 opacity-0"
+                     enterTo="transform scale-100 opacity-100"
+                     leave="transition duration-75 ease-out"
+                     leaveFrom="transform scale-100 opacity-100"
+                     leaveTo="transform scale-95 opacity-0"
+                  >
+                     <Listbox.Options
+                        className="border-color text-1 bg-2 shadow-1 absolute -top-4 right-7 z-30 flex
+                              min-w-[100px] items-center justify-center gap-2 rounded-full border p-2"
+                     >
+                        {GROUP_COLORS?.map((color: string, rowIdx: number) => (
+                           <Listbox.Option
+                              className="flex items-center justify-center"
+                              key={rowIdx}
+                              value={color}
+                           >
+                              <button
+                                 type="button"
+                                 onClick={() => updateLabelColor(color)}
+                                 className="h-3.5 w-3.5 rounded-full"
+                                 key={color}
+                                 style={{
+                                    backgroundColor: color,
+                                 }}
+                              ></button>
+                           </Listbox.Option>
+                        ))}
+                     </Listbox.Options>
+                  </Transition>
+               </Listbox>
+               <input
+                  style={{
+                     backgroundColor: `${row?.labelColor}33`,
+                  }}
+                  onChange={(event) => updateLabelValue(event.target.value)}
+                  value={labelValue}
+                  type="text"
+                  className="h-6 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
+               />
             </div>
          </div>
-         {editMode && (
-            <TextareaAutosize
-               className="border-color -mb-[9px] w-full resize-none overflow-hidden border-x-0 border-y bg-transparent bg-white 
-          p-0 px-3 py-3 placeholder-zinc-300 focus:outline-none
-          focus:ring-transparent dark:bg-bg1Dark dark:placeholder-zinc-700"
-               // name={zo.fields.title()}
-               // defaultValue={post.name}
-               // onChange={(event) => setTitleValue(event.target.value)}
-               placeholder="Add a description..."
-            />
-         )}
       </div>
    );
 };
@@ -963,12 +1078,12 @@ const SortableGridItem = ({
    rowId,
    element,
    deleteRow,
-   editMode,
+   editor,
 }: {
    rowId: string;
+   editor: BaseEditor & ReactEditor;
    element: GroupElement;
    deleteRow: () => void;
-   editMode: boolean;
 }) => {
    const {
       transition,
@@ -987,6 +1102,43 @@ const SortableGridItem = ({
       return obj.id === rowId;
    });
 
+   const updateLabelColor = (event: any) => {
+      const path = ReactEditor.findPath(editor, element);
+      const currentGroupItems = element.groupItems;
+      const groupItems = currentGroupItems.map((x) =>
+         x.id === rowId ? { ...x, labelColor: event } : x
+      );
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         groupItems,
+      };
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   };
+
+   const updateLabelValue = (event: any) => {
+      const path = ReactEditor.findPath(editor, element);
+      const currentGroupItems = element.groupItems;
+      const groupItems = currentGroupItems.map((x) =>
+         x.id === rowId ? { ...x, label: event } : x
+      );
+
+      const newProperties: Partial<CustomElement> = {
+         ...element,
+         groupItems,
+      };
+      setLabelValue(event);
+
+      return Transforms.setNodes<CustomElement>(editor, newProperties, {
+         at: path,
+      });
+   };
+
+   const [labelValue, setLabelValue] = useState(row?.label);
+
    return (
       <div
          {...attributes}
@@ -999,7 +1151,7 @@ const SortableGridItem = ({
                opacity: isDragging ? 0 : 1,
             } as React.CSSProperties /* cast because of css variable */
          }
-         className="bg-2 border-color shadow-1 relative rounded-md border p-3 shadow-sm"
+         className="bg-2 border-color shadow-1 relative rounded-lg border p-3 shadow-sm"
       >
          <div
             className="absolute left-0 top-0 flex w-full select-none 
@@ -1029,35 +1181,82 @@ const SortableGridItem = ({
                </button>
             </Tooltip>
          </div>
-         {/* Can't use client routing if site is custom */}
-         <Link
-            reloadDocument={row?.isCustomSite}
-            key={row?.id}
-            to={row?.path ?? ""}
-            prefetch="intent"
-            className="block"
-         >
+         <div className="block truncate">
+            <div className="relative z-20 flex items-center justify-center pt-0.5">
+               <input
+                  style={{
+                     backgroundColor: `${row?.labelColor}33`,
+                  }}
+                  onChange={(event) => updateLabelValue(event.target.value)}
+                  value={labelValue}
+                  type="text"
+                  className="h-5 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
+               />
+            </div>
             <div
-               style={{
-                  borderColor: element.color,
-               }}
-               className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
-               items-center overflow-hidden rounded-full border-2 shadow-sm"
+               className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
+               items-center overflow-hidden rounded-full border-2 shadow"
             >
                {row?.iconUrl ? (
                   <Image
                      url={row?.iconUrl}
-                     options="aspect_ratio=1:1&height=80&width=80"
+                     options="aspect_ratio=1:1&height=120&width=120"
                      alt={row?.name ?? "Icon"}
                   />
                ) : (
                   <Component className="text-1 mx-auto" size={18} />
                )}
             </div>
-            <div className="text-1 truncate text-center text-xs font-bold">
+            <div className="text-1 truncate pt-1 text-center text-sm font-bold">
                {row?.name}
             </div>
-         </Link>
+         </div>
+         <div className="absolute bottom-2 left-1 hidden group-hover:block">
+            <Listbox value={row?.labelColor}>
+               <Listbox.Button
+                  className="bg-2 flex h-7 w-7 items-center 
+                              justify-center rounded-full focus:outline-none"
+               >
+                  <div
+                     style={{
+                        backgroundColor: row?.labelColor,
+                     }}
+                     className="h-3 w-3 rounded-full"
+                  />
+               </Listbox.Button>
+               <Transition
+                  enter="transition duration-100 ease-out"
+                  enterFrom="transform scale-95 opacity-0"
+                  enterTo="transform scale-100 opacity-100"
+                  leave="transition duration-75 ease-out"
+                  leaveFrom="transform scale-100 opacity-100"
+                  leaveTo="transform scale-95 opacity-0"
+               >
+                  <Listbox.Options
+                     className="border-color text-1 bg-2 shadow-1 absolute -top-20 left-2 z-30 grid
+                              min-w-[100px] grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2"
+                  >
+                     {GROUP_COLORS?.map((color: string, rowIdx: number) => (
+                        <Listbox.Option
+                           className="flex items-center justify-center"
+                           key={rowIdx}
+                           value={color}
+                        >
+                           <button
+                              type="button"
+                              onClick={() => updateLabelColor(color)}
+                              className="h-3.5 w-3.5 rounded-full"
+                              key={color}
+                              style={{
+                                 backgroundColor: color,
+                              }}
+                           ></button>
+                        </Listbox.Option>
+                     ))}
+                  </Listbox.Options>
+               </Transition>
+            </Listbox>
+         </div>
       </div>
    );
 };
