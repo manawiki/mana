@@ -4,6 +4,7 @@ import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 import type { Update } from "~/db/payload-types";
+import { H2Default } from "~/modules/collections/components/H2";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import type { UpdatesElement } from "~/modules/editor/types";
@@ -27,13 +28,29 @@ export const BlockUpdatesView = ({ element }: Props) => {
 
    return (
       <section className="my-6">
-         <h2>Updates</h2>
          {updateResults?.length === 0 ? null : (
-            <div className="divide-color border-color divide-y border-y">
+            <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
+               <div className="relative px-3 py-2.5">
+                  <div className="relative z-10 font-header text-lg font-bold">
+                     Updates
+                  </div>
+                  <div
+                     className="pattern-dots absolute left-0 top-0 h-full
+                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
+                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+                  ></div>
+                  <div
+                     className="absolute left-0 top-0 h-full w-full 
+               bg-gradient-to-r from-zinc-50/20 to-white/50 dark:from-zinc-800/30"
+                  ></div>
+               </div>
                {updateResults?.map((row) => (
-                  <section key={row.id} className="flex items-start gap-2">
+                  <section
+                     key={row.id}
+                     className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                  >
                      <time
-                        className="text-1 w-20 flex-none py-3 text-xs font-semibold uppercase"
+                        className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
                         dateTime={row?.createdAt}
                      >
                         {dateFormat(row?.createdAt)}
@@ -42,7 +59,7 @@ export const BlockUpdatesView = ({ element }: Props) => {
                         {row.entry?.length === 0 ? null : (
                            <>
                               {row.entry?.map((item) => (
-                                 <div key={item.id} className="py-2.5">
+                                 <div key={item.id} className="py-3">
                                     <UpdatesEditorView
                                        content={item.content as Descendant[]}
                                     />

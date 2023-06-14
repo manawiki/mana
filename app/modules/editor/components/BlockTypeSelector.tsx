@@ -33,11 +33,10 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                description: "Create a group of collections",
                onSelect: () => {
                   onSelect({
-                     viewMode: "list",
                      id: nanoid(),
-                     color: GROUP_COLORS[0],
+                     viewMode: "2-col",
+                     itemsViewMode: "grid",
                      type: BlockType.Group,
-                     groupLabel: "",
                      collection: "",
                      groupItems: [],
                      children: [{ text: "" }],
