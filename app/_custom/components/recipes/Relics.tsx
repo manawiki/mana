@@ -20,7 +20,7 @@ export const Relics = ({ pageData }: { pageData: Recipe }) => {
 
                   return (
                      <Link
-                        key={rsetid}
+                        key={rname}
                         prefetch="intent"
                         className="flex items-center gap-3 p-2"
                         to={`/starrail/collections/relicSets/${rsetid}`}
