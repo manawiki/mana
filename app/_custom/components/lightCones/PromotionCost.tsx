@@ -31,18 +31,17 @@ export const PromotionCost = ({ pageData }: { pageData: LightCone }) => {
    );
 };
 
-type ItemQtyFrameProps = {
-   materials?: Material;
-   qty?: number;
-   id?: string;
-};
-
 // ====================================
 // 0a) GENERIC: Item Icon and Quantity Frame
 // ------------------------------------
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
 const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
 

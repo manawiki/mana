@@ -7,6 +7,8 @@ import { Search, SortDesc } from "lucide-react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
 
+import type { Material } from "payload/generated-custom-types";
+
 // export async function loader({
 //    context: { payload },
 //    request,
@@ -312,7 +314,7 @@ const EnemyList = ({ chars }: any) => {
    );
 };
 
-const ItemFrameSmall = ({ mat }: any) => {
+const ItemFrameSmall = ({ mat }: { mat: Material }) => {
    return (
       <>
          <Link
@@ -340,7 +342,12 @@ const ItemFrameSmall = ({ mat }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemQtyFrame = ({ mat }: any) => {
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
+const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
 
    return (

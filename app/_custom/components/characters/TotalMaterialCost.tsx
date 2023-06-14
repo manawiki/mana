@@ -1,3 +1,5 @@
+import type { Material } from "payload/generated-custom-types";
+
 export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
    // Three totals:
    // 1) Promotion total
@@ -126,7 +128,12 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemQtyFrame = ({ mat }: any) => {
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
+const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
    const qtydisp =
       mat?.qty > 999999

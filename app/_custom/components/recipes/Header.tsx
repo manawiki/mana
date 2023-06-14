@@ -1,10 +1,11 @@
 import { Image } from "~/components";
+import type { Recipe } from "payload/generated-custom-types";
 
-export const Header = ({ pageData }: any) => {
+export const Header = ({ pageData }: { pageData: Recipe }) => {
    const resultitem = pageData?.result_item;
 
    const rarityurl = resultitem?.rarity?.icon?.url;
-   const rarnum = resultitem?.rarity?.display_number;
+   // const rarnum = resultitem?.rarity?.display_number;
    const imgurl = resultitem?.icon?.url;
 
    const ftypes: any = {
@@ -14,13 +15,16 @@ export const Header = ({ pageData }: any) => {
    };
 
    const stats = [
-      { name: "Recipe Type", value: ftypes[pageData?.formula_type] },
+      {
+         name: "Recipe Type",
+         value: pageData?.formula_type ? ftypes[pageData?.formula_type] : "",
+      },
       { name: "Credit Cost", value: pageData?.coin_cost },
       { name: "Equilibrium Lv. Req", value: pageData?.world_level_require },
       { name: "Max Count", value: pageData?.max_count },
    ];
 
-   const tags = pageData?.item_compose_tag;
+   const tags = (pageData?.item_compose_tag ?? []) as string[];
 
    return (
       <>

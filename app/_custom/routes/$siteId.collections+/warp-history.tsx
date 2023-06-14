@@ -17,6 +17,9 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
+import type { Material } from "payload/generated-custom-types";
+
+
 ChartJS.register(
    CategoryScale,
    LinearScale,
@@ -345,7 +348,7 @@ const ResultFrame = ({ entry, type }: any) => {
 // - mat: Any that contains a rarity, icon, and name field.
 // - type: string denoting type of item for link
 // ====================================
-const ItemFrame = ({ mat, type }: any) => {
+const ItemFrame = ({ mat, type }: {mat: Material, type: string}) => {
    // mat holds material information
 
    return (

@@ -8,12 +8,15 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Recipes } from "payload/generated-custom-types";
 
 import { Header } from "~/_custom/components/recipes/Header";
 import { Relics } from "~/_custom/components/recipes/Relics";
 import { Ingredients } from "~/_custom/components/recipes/Ingredients";
 import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
+
+import type { Entry } from "payload/generated-types";
+import type { Recipe } from "payload/generated-custom-types";
+
 // import { Header } from "~/_custom/components/blessings/Header";
 
 export { meta };
@@ -23,13 +26,17 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
+   const entryDefault = (await getDefaultEntryData({
+      payload,
+      params,
+      request,
+   })) as Entry;
    const defaultData = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
-   })) as Recipes;
+   })) as Recipe;
 
    //Feel free to query for more data here
 

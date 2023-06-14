@@ -1,14 +1,15 @@
 import { Link } from "@remix-run/react";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
+import type { Material, Recipe } from "payload/generated-custom-types";
 
-export const SpecialMats = ({ pageData }: any) => {
+export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
    const spec = pageData?.special_material_cost;
    const specnum = pageData?.special_material_cost_num;
 
    return (
       <>
-         {spec?.length > 0 ? (
+         {spec && spec?.length > 0 ? (
             <>
                <H2 text="Special Materials Required" />
                <section className="border-color bg-2 shadow-1 rounded-lg border shadow-sm">
@@ -22,8 +23,9 @@ export const SpecialMats = ({ pageData }: any) => {
                      </span>
                   </div>
                   <div className="p-3 pt-1">
-                     {spec?.map((mat: any, key: number) =>                               <ItemFrame mat={mat} key={key} />
-                           )}
+                     {spec?.map((mat, key) => (
+                        <ItemFrame mat={mat} key={key} />
+                     ))}
                   </div>
                </section>
             </>
@@ -38,7 +40,7 @@ export const SpecialMats = ({ pageData }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object with the material structure
 // ====================================
-const ItemFrame = ({ mat }: any) => {
+const ItemFrame = ({ mat }: { mat: Material }) => {
    // Matqty holds material and quantity information
 
    return (
@@ -68,7 +70,12 @@ const ItemFrame = ({ mat }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemQtyFrame = ({ mat }: any) => {
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
+const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
 
    return (

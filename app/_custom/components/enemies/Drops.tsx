@@ -1,3 +1,6 @@
+
+import type { Material } from "payload/generated-custom-types";
+
 export const Drops = ({ pageData, version }: any) => {
    const drops = pageData.enemy_variations[version]?.rewards;
 
@@ -50,7 +53,7 @@ export const Drops = ({ pageData, version }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemFrame = ({ mat }: any) => {
+const ItemFrame = ({ mat }: { mat: Material }) => {
    // mat holds material information
 
    return (

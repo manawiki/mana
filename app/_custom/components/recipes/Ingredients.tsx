@@ -1,20 +1,19 @@
 import { Link } from "@remix-run/react";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
+import type { Material, Recipe } from "payload/generated-custom-types";
 
-export const Ingredients = ({ pageData }: any) => {
+export const Ingredients = ({ pageData }: { pageData: Recipe }) => {
    const mats = pageData?.material_cost;
 
    return (
       <>
-         {mats?.length > 0 ? (
+         {mats && mats?.length > 0 ? (
             <>
                <H2 text="Materials Required" />
                <div className="bg-2 border-color shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
-                  {mats?.map((mat: any, key: number) => {
-                     return (
-                           <ItemQtyFrame mat={mat} key={key} />
-                     );
+                  {mats?.map((mat, key) => {
+                     return <ItemQtyFrame mat={mat} key={key} />;
                   })}
                </div>
             </>
@@ -29,7 +28,12 @@ export const Ingredients = ({ pageData }: any) => {
 // * PROPS (Arguments) accepted:
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
-const ItemQtyFrame = ({ mat }: any) => {
+type ItemQtyFrameProps = {
+   materials?: Material;
+   qty?: number;
+   id?: string;
+};
+const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information
 
    return (

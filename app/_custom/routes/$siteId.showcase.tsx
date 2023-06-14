@@ -25,6 +25,9 @@ import {
 import { isLoading } from "~/utils";
 import { toPng } from "html-to-image";
 
+import type { Material } from "payload/generated-custom-types";
+
+
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
 
@@ -475,7 +478,7 @@ const ItemFrameRound = ({
    mat,
    className,
 }: {
-   mat: any;
+   mat: Material;
    className: string;
 }) => {
    // ========================
@@ -1568,7 +1571,7 @@ const CharacterInfo = ({
    );
 };
 
-const ItemFrameSquare = ({ mat, style, lv }: any) => {
+const ItemFrameSquare = ({ mat, style, lv }: {mat: Material, style?: string, lv: number}) => {
    // ========================
    // Generic Item / Character Circle Frame - Light Cone
    // ========================
