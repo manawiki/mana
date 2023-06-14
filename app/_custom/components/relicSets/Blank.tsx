@@ -1,9 +1,9 @@
-export const Traces = ({ pageData }) => {
+import type { RelicSet } from "payload/generated-custom-types";
 
-
-	return (
-		<>
-			<h2>Traces</h2>
-		</>
-	);
+export const Traces = ({ pageData }: { pageData: RelicSet }) => {
+   return (
+      <>
+         <h2>Traces</h2>
+      </>
+   );
 };

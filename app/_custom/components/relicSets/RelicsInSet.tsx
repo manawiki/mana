@@ -2,17 +2,22 @@ import { useState } from "react";
 import { H2 } from "../custom";
 import { Image } from "~/components";
 import { Star } from "lucide-react";
+import type { RelicSet, Relic } from "payload/generated-custom-types";
 
-export const RelicsInSet = ({ pageData, relicData }: any) => {
+export const RelicsInSet = ({
+   pageData,
+   relicData,
+}: {
+   pageData: RelicSet;
+   relicData: Relic[];
+}) => {
    // Artifact Ordering
    const art_order = ["HEAD", "HAND", "BODY", "FOOT", "NECK", "OBJECT"];
 
    // Get a unique list of each type of relic, in the order of the artifact ordering, since relics have one entry per rarity
    const urelics = art_order
-      .map(
-         (type: any) => relicData?.find((r: any) => r.relic_type == type)?.name
-      )
-      .filter((n: any) => n);
+      .map((type) => relicData?.find((r) => r.relic_type == type)?.name)
+      .filter((n) => n);
 
    //    const urelics = relicData
    //       ?.map((r: any) => r.name)
@@ -20,9 +25,9 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
    // Get max rarity for relic set
    const rarities = relicData
-      .map((r: any) => parseInt(r.rarity?.display_number))
-      .filter((v: any, i: any, a: any) => a.indexOf(v) == i)
-      .sort((a: any, b: any) => a - b);
+      .map((r) => parseInt(r.rarity?.display_number ?? ""))
+      .filter((v, i, a) => a.indexOf(v) == i)
+      .sort((a, b) => a - b);
    const maxrarity = Math.max(...rarities);
 
    // Define max level per rarity, gonna do manually for now.
@@ -41,40 +46,47 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
    // Get the list of relic data for the actively selected relics of selected rarity
    const activeData = relicData.find(
-      (r: any) =>
-         r.name == activeRelic && r.rarity?.display_number == activeRarity
+      (r) =>
+         r.name == activeRelic &&
+         r.rarity?.display_number == activeRarity.toString()
    );
 
    // Sort mainstats
-   const mainStatData = activeData?.mainstat_group?.sort((a: any, b: any) =>
+   const mainStatData = activeData?.mainstat_group?.sort((a, b) =>
+      a.stattype?.stat_id &&
+      b.stattype?.stat_id &&
       a.stattype?.stat_id > b.stattype?.stat_id
          ? 1
-         : b.stattype?.stat_id > a.stattype?.stat_id
+         : a.stattype?.stat_id &&
+           b.stattype?.stat_id &&
+           b.stattype?.stat_id > a.stattype?.stat_id
          ? -1
          : 0
    );
 
    // Sort substats
-   const subStatData = activeData?.substat_group?.sort((a: any, b: any) =>
+   const subStatData = activeData?.substat_group?.sort((a, b) =>
+      a.stattype?.stat_id &&
+      b.stattype?.stat_id &&
       a.stattype?.stat_id > b.stattype?.stat_id
          ? 1
-         : b.stattype?.stat_id > a.stattype?.stat_id
+         : a.stattype?.stat_id &&
+           b.stattype?.stat_id &&
+           b.stattype?.stat_id > a.stattype?.stat_id
          ? -1
          : 0
    );
 
    // Get currently selected rarity's maxlv
-   const maxlv = maxlevels.find(
-      (rar: any) => rar.rarity == activeRarity
-   )?.maxlv;
+   const maxlv = maxlevels.find((rar) => rar.rarity == activeRarity)?.maxlv;
 
    return (
       <>
          <H2 text="Relics in Set" />
          <div className="grid grid-cols-2 gap-3 pb-4 laptop:grid-cols-4">
-            {urelics?.map((rname: any) => {
+            {urelics?.map((rname) => {
                // Find the relic's entries in the relicData array
-               const curr = relicData.filter((r: any) => r.name == rname);
+               const curr = relicData.filter((r) => r.name == rname);
                const rimg = curr?.[0]?.icon?.url;
 
                return (
@@ -109,25 +121,23 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
          {/* Show information for selected Relic */}
          <div className="shadow-1 bg-2 border-color mb-3 flex w-full justify-between gap-2 rounded-xl border p-2.5 shadow-sm">
-            {rarities.map((r: any) => (
+            {rarities.map((r) => (
                <button
                   key={r}
                   className={`flex w-full items-center justify-center gap-1 rounded-lg border border-transparent p-1 font-bold ${
-                     activeRarity == r.toString()
+                     activeRarity == r
                         ? "shadow-1 border-zinc-100 bg-white shadow-sm dark:border-zinc-600 dark:bg-zinc-700"
                         : ""
                   }`}
                   onClick={(e) => {
-                     setActiveRarity(r.toString());
+                     setActiveRarity(r);
                      //    If the slider is at a value higher than is possible for the newly selected rarity, bring the slider down to the maximum for that new rarity.
                      if (
                         mainLevel >
-                        (maxlevels.find((rar: any) => rar.rarity == r)?.maxlv ??
-                           0)
+                        (maxlevels.find((rar) => rar.rarity == r)?.maxlv ?? 0)
                      ) {
                         setMainLevel(
-                           maxlevels.find((rar: any) => rar.rarity == r)
-                              ?.maxlv ?? 0
+                           maxlevels.find((rar) => rar.rarity == r)?.maxlv ?? 0
                         );
                      }
                   }}
@@ -164,7 +174,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
 
             {/* All tiled possible Main Stats with symbol if available */}
             <div className="divide-color border-color divide-y border-t bg-white dark:bg-bg1Dark">
-               {mainStatData?.map((stat: any) => (
+               {mainStatData?.map((stat) => (
                   <div
                      key={stat.stattype?.name}
                      className="flex justify-between p-3"
@@ -182,7 +192,10 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                         </div>
                      </div>
                      <div>
-                        {formatStat(stat.stats[mainLevel], stat.stattype)}
+                        {formatStat(
+                           (stat?.stats as number[])[mainLevel],
+                           stat.stattype
+                        )}
                      </div>
                   </div>
                ))}
@@ -194,7 +207,7 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
             <div className="border-color border-b p-3 font-bold">Sub Stats</div>
             {/* All tiled possible Substats, and their three possible rolls */}
             <div className="divide-color border-color divide-y bg-white dark:bg-bg1Dark">
-               {subStatData?.map((stat: any) => (
+               {subStatData?.map((stat) => (
                   <div
                      key={stat.stattype?.name}
                      className="flex justify-between p-3 pr-5"
@@ -212,10 +225,10 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
                         </div>
                      </div>
                      <div className="grid w-44 grid-cols-3 items-center gap-8">
-                        {stat.stats?.map((val: any) => {
+                        {(stat?.stats as number[]).map((val: number) => {
                            return (
                               <span key={val}>
-                                 {formatStat(val, stat.stattype)}
+                                 {formatStat(val, stat?.stattype)}
                               </span>
                            );
                         })}
@@ -228,15 +241,15 @@ export const RelicsInSet = ({ pageData, relicData }: any) => {
    );
 };
 
-function formatStat(stat: any, stattype: any) {
-   const classify = stattype.property_classify;
+function formatStat(
+   stat: number,
+   stattype?: { name?: string; property_classify?: number }
+) {
+   const classify = stattype?.property_classify;
 
-   var fstat = stat;
-   if (classify || stattype.name.indexOf("%") >= 0) {
-      fstat = Math.floor(Math.round(fstat * 10000) / 10) / 10 + "%";
+   if (classify || (stattype?.name && stattype?.name?.indexOf("%") >= 0)) {
+      return Math.floor(Math.round(stat * 10000) / 10) / 10 + "%";
    } else {
-      fstat = Math.floor(Math.round(fstat * 10000) / 1000) / 10;
+      return (Math.floor(Math.round(stat * 10000) / 1000) / 10).toString();
    }
-
-   return fstat;
 }

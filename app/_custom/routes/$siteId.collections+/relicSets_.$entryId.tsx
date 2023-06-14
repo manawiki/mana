@@ -8,7 +8,6 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { RelicSet } from "payload/generated-custom-types";
 
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
@@ -17,6 +16,9 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { H2 } from "~/_custom/components/custom";
 
+import type { Entry } from "payload/generated-types";
+import type { RelicSet, Relic } from "payload/generated-custom-types";
+
 export { meta };
 
 export async function loader({
@@ -24,7 +26,11 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
+   const entryDefault = (await getDefaultEntryData({
+      payload,
+      params,
+      request,
+   })) as Entry;
    const defaultData = (await getCustomEntryData({
       payload,
       params,
@@ -43,7 +49,7 @@ export async function loader({
 
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entryId}`;
    const relicRaw = await (await fetch(url)).json();
-   const relicData = relicRaw.docs;
+   const relicData = relicRaw.docs as Relic[];
 
    return json({ entryDefault, defaultData, relicData });
 }
