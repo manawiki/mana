@@ -27,6 +27,12 @@ import { z } from "zod";
 import { H2 } from "~/_custom/components/custom";
 import { EntryContentEmbed } from "~/modules/collections/components/EntryContentEmbed";
 
+import type { Entry } from "payload/generated-types";
+import type {
+   Character,
+   SkillTree as SkillTreeType,
+} from "payload/generated-custom-types";
+
 export { meta };
 
 export async function loader({
@@ -38,32 +44,40 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const [entryDefault, embeddedContent] = await Promise.all([
-      await getDefaultEntryData({ payload, params, request }),
-      await getEmbeddedContent({
-         collection: "characters",
-         payload,
-         params,
-         request,
-         user,
-      }),
-   ]);
-
-   const { data, errors } = await fetch(
-      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: CharacterQuery,
-            variables: {
-               charId: entryId,
-            },
+   const [entryDefault, embeddedContent, { data, errors }] = (await Promise.all(
+      [
+         getDefaultEntryData({ payload, params, request }),
+         getEmbeddedContent({
+            collection: "characters",
+            payload,
+            params,
+            request,
+            user,
          }),
+         fetch(
+            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+               },
+               body: JSON.stringify({
+                  query: CharacterQuery,
+                  variables: {
+                     charId: entryId,
+                  },
+               }),
+            }
+         ).then((res) => res.json()),
+      ]
+   )) as [
+      Entry,
+      Character,
+      {
+         data: { character: Character; skillTree: { docs: SkillTreeType[] } };
+         errors: Error;
       }
-   ).then((res) => res.json());
+   ];
 
    if (errors) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console

@@ -1,19 +1,33 @@
 import { useState } from "react";
 import { Image } from "~/components";
-import type { Material } from "payload/generated-custom-types";
+import type {
+   Material,
+   Character,
+   SkillTree as SkillTreeType,
+} from "payload/generated-custom-types";
 
-export const SkillTree = ({ pageData, skillTreeData }: any) => {
+export const SkillTree = ({
+   pageData,
+   skillTreeData,
+}: {
+   pageData: Character;
+   skillTreeData: SkillTreeType[];
+}) => {
    // UseState variable settings
    const [treeNode, setTreeNode] = useState(0);
    const [skillLevel, setSkillLevel] = useState(1);
 
-   var pathkey = pageData?.path?.data_key;
-   var treelist = skillTreeData; // pageData?.attributes?.tree; //skillTreeData;
-   var traces = pageData?.traces;
+   let pathkey = pageData?.path?.data_key;
+   let treelist = skillTreeData; // pageData?.attributes?.tree; //skillTreeData;
+   let traces = pageData?.traces;
 
    // Need to sort skill nodes in order from Point01 - 18
-   treelist.sort((a: any, b: any) =>
-      a.anchor > b.anchor ? 1 : b.anchor > a.anchor ? -1 : 0
+   treelist.sort((a, b) =>
+      a?.anchor && b?.anchor && a.anchor > b.anchor
+         ? 1
+         : a?.anchor && b?.anchor && b.anchor > a.anchor
+         ? -1
+         : 0
    );
 
    const connectorcount = {
@@ -43,7 +57,7 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
             <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg2Dark">
                <div className={`canvas-${pathkey}`}></div>
 
-               {connectorlist?.map((con: any) => (
+               {connectorlist?.map((con) => (
                   <div
                      className={`connector connector-${con}-${pathkey}`}
                      key={`connector-${con}-${pathkey}`}
@@ -76,8 +90,9 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                   </div>
 
                   {/* Level Slider and Materials IF Skill Has Levels greater than 1*/}
-                  {activeNode.affected_skill[0]?.description_per_level?.length >
-                  1 ? (
+                  {activeNode.affected_skill?.[0]?.description_per_level &&
+                  activeNode.affected_skill[0]?.description_per_level?.length >
+                     1 ? (
                      <>
                         {/* Slider */}
                         <div className="my-2 flex items-center gap-2 px-10">
@@ -115,7 +130,8 @@ export const SkillTree = ({ pageData, skillTreeData }: any) => {
                      }}
                   ></div>
 
-                  {activeNode.level_up_cost?.length > 0 ? (
+                  {activeNode.level_up_cost &&
+                  activeNode.level_up_cost?.length > 0 ? (
                      <>
                         {/* Material Upgrade List if applicable */}
                         <div className="space-x-2 p-3">

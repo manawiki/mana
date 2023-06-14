@@ -264,17 +264,17 @@ const StatGraph = ({
    graphStat: string;
    setGraphStat: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-   var data = charData;
-   var statlist = ["HP", "ATK", "DEF"];
+   let data = charData;
+   let statlist = ["HP", "ATK", "DEF"];
 
-   var tooltipsuffix = "";
+   let tooltipsuffix = "";
 
    // Processing Graph Data for display
 
    const rawdata = data?.stats?.find((a) => a?.label == graphStat)
       ?.data as number[];
-   var processdata = [];
-   for (var j = 0; j < rawdata.length; j++) {
+   let processdata = [];
+   for (let j = 0; j < rawdata.length; j++) {
       processdata[j] = formatStat(graphStat, rawdata[j]);
       // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
       if (processdata[j].indexOf("%") > -1) {

@@ -1,4 +1,8 @@
-export const Navigation = ({ links }: any) => {
+export const Navigation = ({
+   links,
+}: {
+   links: { name: string; link: string }[];
+}) => {
    return (
       <>
          <div className="mb-3 grid grid-cols-2 items-center justify-between gap-2 laptop:grid-cols-6">

@@ -1,6 +1,7 @@
 import { Image } from "~/components";
+import type { Character } from "payload/generated-custom-types";
 
-export const ImageGallery = ({ pageData }: any) => {
+export const ImageGallery = ({ pageData }: { pageData: Character }) => {
    var galleryname = [
       "Icon",
       "Full",
@@ -24,13 +25,13 @@ export const ImageGallery = ({ pageData }: any) => {
       pageData?.image_full_front?.url,
       pageData?.image_action?.url,
       pageData?.image_round_icon?.url,
-      ...pageData?.eidolons?.map((e: any) => e.image?.url),
+      ...(pageData?.eidolons?.map((e) => e.image?.url) ?? []),
    ];
 
    return (
       <>
          <div className="mb-3 grid w-full grid-cols-3 gap-3">
-            {galleryname.map((img: any, i) => {
+            {galleryname.map((img, i) => {
                const gimg = gallerylist[i];
                return (
                   gimg && (

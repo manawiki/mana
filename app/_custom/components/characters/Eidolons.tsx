@@ -1,6 +1,7 @@
 import { Image } from "~/components";
+import type { Character } from "payload/generated-custom-types";
 
-export const Eidolons = ({ pageData }: any) => {
+export const Eidolons = ({ pageData }: { pageData: Character }) => {
    const eidolons = pageData.eidolons;
 
    return (
@@ -8,7 +9,7 @@ export const Eidolons = ({ pageData }: any) => {
          className="bg-2 divide-color border-color shadow-1 mb-4 
       divide-y overflow-hidden rounded-lg border shadow"
       >
-         {eidolons.map((eid: any, index: any) => {
+         {eidolons?.map((eid, index) => {
             return (
                <div className="p-3" key={index}>
                   {eid.image?.url ? (
@@ -44,7 +45,7 @@ export const Eidolons = ({ pageData }: any) => {
                      <div
                         className="pt-2 text-sm"
                         dangerouslySetInnerHTML={{
-                           __html: eid?.description,
+                           __html: eid?.description ?? "",
                         }}
                      ></div>
                   </div>

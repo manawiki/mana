@@ -1,6 +1,7 @@
 import { H2 } from "../custom";
+import type { Character } from "payload/generated-custom-types";
 
-export const Profile = ({ pageData }: any) => {
+export const Profile = ({ pageData }: { pageData: Character }) => {
    const adata = [
       { name: "CN CV", value: pageData.cv_cn },
       { name: "JP CV", value: pageData.cv_jp },
@@ -15,7 +16,7 @@ export const Profile = ({ pageData }: any) => {
             <>
                <H2 text="Profile" />
                <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
-                  {adata.map((stat: any, index: any) => {
+                  {adata.map((stat, index) => {
                      return (
                         <div
                            className={`${

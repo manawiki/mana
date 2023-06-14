@@ -1,10 +1,11 @@
 import { H2 } from "~/_custom/components/custom";
+import type { Character } from "payload/generated-custom-types";
 
-export const Videos = ({ pageData }: any) => {
+export const Videos = ({ pageData }: { pageData: Character }) => {
    const vids = pageData?.videos;
    return (
       <>
-         {vids?.length > 0 ? (
+         {vids && vids?.length > 0 ? (
             <>
                <H2 text="Videos" />
                {vids.map((v: any) => {
@@ -15,7 +16,7 @@ export const Videos = ({ pageData }: any) => {
                   return (
                      <>
                         <div className="text-center">
-                           <div className="font-bold text-lg ">{v.title}</div>
+                           <div className="text-lg font-bold ">{v.title}</div>
 
                            <div className="hidden">
                               <iframe
@@ -30,7 +31,7 @@ export const Videos = ({ pageData }: any) => {
                            </div>
                            {/* I have no idea why, but I have to load it at least once first and hide it for the second video player to appear. */}
 
-                           <div className="inline-block px-3 w-full h-64 laptop:h-80">
+                           <div className="inline-block h-64 w-full px-3 laptop:h-80">
                               <iframe
                                  width="100%"
                                  height="100%"

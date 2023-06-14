@@ -1,6 +1,6 @@
-import type { Material } from "payload/generated-custom-types";
+import type { Material, Character } from "payload/generated-custom-types";
 
-export const PromotionCost = ({ pageData }: any) => {
+export const PromotionCost = ({ pageData }: { pageData: Character }) => {
    return (
       <>
          <table className="talent-table w-full overflow-auto text-sm">
@@ -11,13 +11,13 @@ export const PromotionCost = ({ pageData }: any) => {
                </tr>
             </thead>
             <tbody>
-               {pageData.promotion_cost?.map((promo: any, index: any) => (
+               {pageData.promotion_cost?.map((promo, index) => (
                   <tr key={index}>
                      <th className="px-3 py-0 text-center text-xs font-bold">
                         <div>Lv {promo.max_level}</div>
                      </th>
                      <td className="px-1 py-1 pl-3">
-                        {promo.material_qty?.map((mat: any, key: number) => (
+                        {promo.material_qty?.map((mat, key) => (
                            <ItemQtyFrame mat={mat} key={key} />
                         ))}
                      </td>

@@ -1,15 +1,16 @@
 import { Disclosure } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
 import { H2 } from "../custom";
+import type { Character } from "payload/generated-custom-types";
 
-export const Story = ({ pageData }: any) => {
+export const Story = ({ pageData }: {pageData: Character}) => {
    const stories = pageData.story;
    return (
       <>
-         {stories?.length > 0 ? (
+         {stories && stories?.length > 0 ? (
             <>
                <H2 text="Story" />
-               {stories?.map((story: any, index: any) => (
+               {stories?.map((story, index) => (
                   <div key={index}>
                      <Disclosure>
                         {({ open }) => (
@@ -52,7 +53,7 @@ export const Story = ({ pageData }: any) => {
                                  <div
                                     className="bg-1 border-color rounded-b-lg border p-3 text-base"
                                     dangerouslySetInnerHTML={{
-                                       __html: story.text,
+                                       __html: story.text ?? "",
                                     }}
                                  ></div>
                               </Disclosure.Panel>

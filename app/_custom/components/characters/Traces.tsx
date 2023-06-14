@@ -1,83 +1,100 @@
 import { useState } from "react";
 import { Image } from "~/components";
-import type { Material } from "payload/generated-custom-types";
+import type {
+   Material,
+   Character,
+   SkillTree,
+   Trace as TraceType,
+} from "payload/generated-custom-types";
 
-export const Traces = ({ pageData, skillTreeData }: any) => {
+export const Traces = ({
+   pageData,
+   skillTreeData,
+}: {
+   pageData: Character;
+   skillTreeData: SkillTree[];
+}) => {
    const traces = pageData.traces;
 
    return (
       <div className="grid gap-3 laptop:grid-cols-2">
-         {traces.map((trace: any, index: any) => {
-            const [skillLevel, setSkillLevel] = useState(1);
-            const activeNode = skillTreeData.find(
-               (a: any) => a.name == trace.name
-            );
-
-            return (
-               <div
-                  className="border-color bg-2 shadow-1 overflow-hidden rounded-lg border shadow-sm"
-                  key={index}
-               >
-                  {/* Header with Skill Icon and Name */}
-                  <div className="bg-1 relative flex items-center gap-3 p-3">
-                     <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
-                        <div className="h-9 w-8 rounded-full">
-                           <Image
-                              options="aspect_ratio=1:1&height=60&width=60"
-                              className="object-contain"
-                              url={trace?.icon?.url}
-                              alt={trace.name}
-                              loading="lazy"
-                           />
-                        </div>
-                     </div>
-                     <div className="space-y-1">
-                        <div className="font-bold">{trace.name}</div>
-                        <div className="text-sm font-semibold text-yellow-500">
-                           {trace.desc_type}
-                        </div>
-                     </div>
-                  </div>
-
-                  {/* Level Slider and Materials IF Skill Has Levels greater than 1*/}
-                  {trace.description_per_level?.length > 1 ? (
-                     <>
-                        {/* Slider */}
-                        <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
-                           <div className="mr-2 inline-flex align-middle ">
-                              Lv. {skillLevel}
-                           </div>
-                           <input
-                              aria-label="Level Slider"
-                              className="h-1 flex-grow appearance-none justify-end
-                                 rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
-                              type="range"
-                              min="1"
-                              max={trace?.description_per_level?.length}
-                              value={skillLevel}
-                              onChange={(event) =>
-                                 setSkillLevel(parseInt(event.target.value))
-                              }
-                           ></input>
-                        </div>
-                     </>
-                  ) : null}
-
-                  {/* Description */}
-                  <div
-                     className="border-color border-t p-3 text-sm"
-                     dangerouslySetInnerHTML={{
-                        __html:
-                           trace?.description_per_level?.[skillLevel - 1]
-                              ?.description ?? "",
-                     }}
-                  ></div>
-               </div>
-            );
-         })}
+         {traces?.map((trace, index) => (
+            <Trace trace={trace} skillTreeData={skillTreeData} key={index} />
+         ))}
       </div>
    );
 };
+
+function Trace({
+   trace,
+   skillTreeData,
+}: {
+   trace: TraceType;
+   skillTreeData: SkillTree[];
+}) {
+   const [skillLevel, setSkillLevel] = useState(1);
+   const activeNode = skillTreeData.find((a) => a.name == trace.name);
+
+   return (
+      <div className="border-color bg-2 shadow-1 overflow-hidden rounded-lg border shadow-sm">
+         {/* Header with Skill Icon and Name */}
+         <div className="bg-1 relative flex items-center gap-3 p-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
+               <div className="h-9 w-8 rounded-full">
+                  <Image
+                     options="aspect_ratio=1:1&height=60&width=60"
+                     className="object-contain"
+                     url={trace?.icon?.url}
+                     alt={trace.name}
+                     loading="lazy"
+                  />
+               </div>
+            </div>
+            <div className="space-y-1">
+               <div className="font-bold">{trace.name}</div>
+               <div className="text-sm font-semibold text-yellow-500">
+                  {trace.desc_type}
+               </div>
+            </div>
+         </div>
+
+         {/* Level Slider and Materials IF Skill Has Levels greater than 1*/}
+         {trace.description_per_level &&
+         trace.description_per_level?.length > 1 ? (
+            <>
+               {/* Slider */}
+               <div className="border-color flex w-full items-center gap-2 border-y px-3 py-2.5">
+                  <div className="mr-2 inline-flex align-middle ">
+                     Lv. {skillLevel}
+                  </div>
+                  <input
+                     aria-label="Level Slider"
+                     className="h-1 flex-grow appearance-none justify-end
+                           rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                     type="range"
+                     min="1"
+                     max={trace?.description_per_level?.length}
+                     value={skillLevel}
+                     onChange={(event) =>
+                        setSkillLevel(parseInt(event.target.value))
+                     }
+                  ></input>
+               </div>
+            </>
+         ) : null}
+
+         {/* Description */}
+         <div
+            className="border-color border-t p-3 text-sm"
+            dangerouslySetInnerHTML={{
+               __html:
+                  trace?.description_per_level?.[skillLevel - 1]?.description ??
+                  "",
+            }}
+         ></div>
+      </div>
+   );
+}
 
 const LevelMaterials = ({ activeNode, skillLevel }: any) => {
    return (

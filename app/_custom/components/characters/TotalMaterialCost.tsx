@@ -1,6 +1,16 @@
-import type { Material } from "payload/generated-custom-types";
+import type {
+   Material,
+   Character,
+   SkillTree,
+} from "payload/generated-custom-types";
 
-export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
+export const TotalMaterialCost = ({
+   pageData,
+   skillTreeData,
+}: {
+   pageData: Character;
+   skillTreeData: SkillTree[];
+}) => {
    // Three totals:
    // 1) Promotion total
    // 2) Skill tree total
@@ -8,40 +18,46 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
 
    // 1) Calculate Promotion total
    // ======================
-   var promotionTotal = [];
+   let promotionTotal = [] as ItemQtyFrameProps[];
    const promData = pageData?.promotion_cost;
-   for (var i = 0; i < promData?.length; i++) {
-      for (var j = 0; j < promData[i].material_qty?.length; j++) {
-         const currMat = { ...promData[i].material_qty[j] };
-         const existIndex = promotionTotal.findIndex(
-            (a: any) => a.materials?.id == currMat.materials?.id
-         );
-         if (existIndex == -1) {
-            promotionTotal.push(currMat);
-         } else {
-            promotionTotal[existIndex].qty += currMat.qty;
+   if (promData && promData?.length > 0) {
+      for (let i = 0; i < promData?.length; i++) {
+         const material_qty = promData?.[i]?.material_qty;
+         if (!material_qty) break;
+         for (let j = 0; j < material_qty.length; j++) {
+            const currMat = { ...material_qty?.[j] } as ItemQtyFrameProps;
+            const existIndex = promotionTotal.findIndex(
+               (a) => a.materials?.id == currMat.materials?.id
+            );
+            if (existIndex == -1) {
+               promotionTotal.push(currMat);
+            } else {
+               promotionTotal[existIndex].qty += currMat.qty;
+            }
          }
       }
    }
 
    // 2) Calculate Skill Tree total
    // ======================
-   var skillTreeTotal = [];
-   for (var s = 0; s < skillTreeData.length; s++) {
-      if (skillTreeData[s].level_up_cost?.length > 0) {
-         const treeData = skillTreeData[s]?.level_up_cost;
+   let skillTreeTotal = [] as ItemQtyFrameProps[];
+   for (let s = 0; s < skillTreeData?.length; s++) {
+      const treeData = skillTreeData?.[s]?.level_up_cost;
+      if (!treeData) break;
 
-         for (var i = 0; i < treeData?.length; i++) {
-            for (var j = 0; j < treeData[i].material_qty?.length; j++) {
-               const currMat = { ...treeData[i].material_qty[j] };
-               const existIndex = skillTreeTotal.findIndex(
-                  (a: any) => a.materials?.id == currMat.materials?.id
-               );
-               if (existIndex == -1) {
-                  skillTreeTotal.push(currMat);
-               } else {
-                  skillTreeTotal[existIndex].qty += currMat.qty;
-               }
+      for (let i = 0; i < treeData?.length; i++) {
+         const material_qty = treeData[i].material_qty;
+         if (!material_qty) break;
+
+         for (let j = 0; j < material_qty?.length; j++) {
+            const currMat = { ...material_qty[j] } as ItemQtyFrameProps;
+            const existIndex = skillTreeTotal.findIndex(
+               (a: any) => a.materials?.id == currMat.materials?.id
+            );
+            if (existIndex == -1) {
+               skillTreeTotal.push(currMat);
+            } else {
+               skillTreeTotal[existIndex].qty += currMat.qty;
             }
          }
       }
@@ -49,11 +65,11 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
 
    // 3) Calculate All total
    // ======================
-   var allTotal = [];
-   for (var i = 0; i < promotionTotal.length; i++) {
-      const currMat = { ...promotionTotal[i] };
+   let allTotal = [] as ItemQtyFrameProps[];
+   for (let i = 0; i < promotionTotal.length; i++) {
+      const currMat = { ...promotionTotal[i] } as ItemQtyFrameProps;
       const existIndex = allTotal.findIndex(
-         (a: any) => a.materials?.id == currMat.materials?.id
+         (a) => a.materials?.id == currMat.materials?.id
       );
       if (existIndex == -1) {
          allTotal.push(currMat);
@@ -61,7 +77,7 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
          allTotal[existIndex].qty += currMat.qty;
       }
    }
-   for (var i = 0; i < skillTreeTotal.length; i++) {
+   for (let i = 0; i < skillTreeTotal.length; i++) {
       const currMat = { ...skillTreeTotal[i] };
       const existIndex = allTotal.findIndex(
          (a: any) => a.materials?.id == currMat.materials?.id
@@ -89,7 +105,7 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>Promotion</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {promotionTotal?.map((mat: any, key: number) => (
+                     {promotionTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
@@ -100,7 +116,7 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>Skill Tree</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {skillTreeTotal?.map((mat: any, key: number) => (
+                     {skillTreeTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
@@ -111,7 +127,7 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
                      <div>All</div>
                   </th>
                   <td className="px-1 py-1 pl-3">
-                     {allTotal?.map((mat: any, key: number) => (
+                     {allTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
                   </td>
@@ -129,9 +145,9 @@ export const TotalMaterialCost = ({ pageData, skillTreeData }: any) => {
 // - item: An object from the material_qty structure, with an id, item{}, and qty field.
 // ====================================
 type ItemQtyFrameProps = {
-   materials?: Material;
-   qty?: number;
-   id?: string;
+   materials: Material;
+   qty: number;
+   id: string;
 };
 const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
    // Matqty holds material and quantity information

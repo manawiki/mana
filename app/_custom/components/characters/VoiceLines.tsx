@@ -1,18 +1,19 @@
 import { Tab } from "@headlessui/react";
 import { H2 } from "../custom";
+import type { Character, Image } from "payload/generated-custom-types";
 
-export const VoiceLines = ({ pageData }: any) => {
+export const VoiceLines = ({ pageData }: { pageData: Character }) => {
    const lines = pageData.voice_lines;
    return (
       <>
-         {lines?.length > 0 ? (
+         {lines && lines?.length > 0 ? (
             <>
                <H2 text="Voice Lines" />
                <table className="mb-3 w-full">
                   <thead></thead>
                   <tbody>
                      {/* One row per voice line */}
-                     {lines.map((voice: any, index: any) => (
+                     {lines.map((voice, index) => (
                         <tr key={index}>
                            <th className="px-3 py-2 text-sm">
                               <div className="font-bold">{voice.title}</div>
@@ -30,7 +31,7 @@ export const VoiceLines = ({ pageData }: any) => {
                            <td className="talent-text px-3 py-4 text-sm">
                               <div
                                  dangerouslySetInnerHTML={{
-                                    __html: voice.text,
+                                    __html: voice.text ?? "",
                                  }}
                               ></div>
                               {/* Voice line player, if voices available, see AudioPlayer code */}
@@ -46,18 +47,28 @@ export const VoiceLines = ({ pageData }: any) => {
    );
 };
 
-const AudioPlayer = ({ voice }: any) => {
+type VoiceType = {
+   title?: string | undefined;
+   text?: string | undefined;
+   voice_en?: Image | undefined;
+   voice_jp?: Image | undefined;
+   voice_cn?: Image | undefined;
+   voice_kr?: Image | undefined;
+   id?: string | undefined;
+};
+
+const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
    const lang = ["en", "jp", "cn", "kr"];
 
    return (
       <>
          <div className="w-full">
-            {voice.voice_jp ? (
+            {voice?.voice_jp ? (
                <>
                   <Tab.Group>
                      {/* Create one tab per language of EN, JP, CN, KR */}
                      <Tab.List className="grid grid-cols-4 gap-3 rounded-lg py-3">
-                        {lang.map((l: any) => (
+                        {lang.map((l) => (
                            <Tab className="focus:outline-none" key={l}>
                               {({ selected }) => (
                                  <div

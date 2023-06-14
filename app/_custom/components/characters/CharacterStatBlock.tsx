@@ -1,5 +1,5 @@
-import { Disclosure, Popover, Tab } from "@headlessui/react";
-import React, { useMemo, useState } from "react";
+import { Disclosure } from "@headlessui/react";
+import React, { useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import {
@@ -14,6 +14,7 @@ import {
 } from "chart.js";
 import { Image } from "~/components";
 import { BarChart2, Binary, ChevronDown } from "lucide-react";
+import type { Character } from "payload/generated-custom-types";
 
 ChartJS.register(
    CategoryScale,
@@ -25,7 +26,7 @@ ChartJS.register(
    Legend
 );
 
-export const CharacterStatBlock = ({ pageData }) => {
+export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
@@ -38,7 +39,7 @@ export const CharacterStatBlock = ({ pageData }) => {
    const rarityurl = pageData.rarity?.icon?.url;
    const pathname = pageData.path?.name;
 
-   var statlist = [
+   let statlist = [
       "HP",
       "ATK",
       "DEF",
@@ -50,24 +51,33 @@ export const CharacterStatBlock = ({ pageData }) => {
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   let statobj = [];
-   for (let i = 0; i < statlist.length; i++) {
-      statobj[i] = {};
-      statobj[i].stat = statlist[i];
-
-      // Pull Stat's Icon image hash
-      // var currstat = statData.statTypes.find((a) => a.name == statlist[i]);
-      // if (currstat?.icon) {
-      //   statobj[i].hash = currstat.icon?.hash ?? "no_image_42df124128";
-      // }
-
-      // Alternate coloring every other stat.
-      statobj[i].colormod = i % 2;
-   }
+   let statobj = statlist.map((stat, i) => ({ stat: stat, colormod: i % 2 }));
 
    // =====================================
    // End Preprocessing for Stat Block, Output HTML Start
    // =====================================
+
+   // Display value of a stat at a given level
+   function getStatValue(stat: string) {
+      let statTable = pageData?.stats?.find((a) => a?.label == stat)
+         ?.data as number[];
+
+      let levels = pageData?.stats?.find((a) => a?.label == "Lv")
+         ?.data as string[];
+
+      // If the level is 20, 40, 60, 70, 80, or 90, then we need to add an "A" to the end of the level to get the correct stat value.
+      let statIndex = levels.indexOf(
+         levelSliderValue +
+            (levelAscensionCheck &&
+            ["20", "30", "40", "50", "60", "70"].indexOf(
+               levelSliderValue.toString()
+            ) > -1
+               ? "A"
+               : "")
+      );
+
+      return statTable ? formatStat(stat, statTable[statIndex]) : "";
+   }
 
    return (
       <>
@@ -171,36 +181,7 @@ export const CharacterStatBlock = ({ pageData }) => {
                               </div>
                            </div>
                            {/* 2biii) Stat value */}
-                           <div className="">
-                              {pageData?.stats.find((a) => a.label == stat.stat)
-                                 ? formatStat(
-                                      stat.stat,
-                                      pageData?.stats.find(
-                                         (a) => a.label == stat.stat
-                                      ).data[
-                                         pageData?.stats
-                                            .find((a) => a.label == "Lv")
-                                            .data.indexOf(
-                                               "" +
-                                                  levelSliderValue.toString() +
-                                                  (levelAscensionCheck &&
-                                                  [
-                                                     "20",
-                                                     "30",
-                                                     "40",
-                                                     "50",
-                                                     "60",
-                                                     "70",
-                                                  ].indexOf(
-                                                     levelSliderValue.toString()
-                                                  ) > -1
-                                                     ? "A"
-                                                     : "")
-                                            )
-                                      ]
-                                   )
-                                 : ""}
-                           </div>
+                           <div className="">{getStatValue(stat.stat)}</div>
 
                            {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
                            {/* 
@@ -320,9 +301,17 @@ export const CharacterStatBlock = ({ pageData }) => {
 // =====================================
 // 2ci) Character Stat Graph
 // =====================================
-const StatGraph = ({ charData, graphStat, setGraphStat }) => {
-   var data = charData;
-   var statlist = [
+const StatGraph = ({
+   charData,
+   graphStat,
+   setGraphStat,
+}: {
+   charData: Character;
+   graphStat: string;
+   setGraphStat: React.Dispatch<React.SetStateAction<string>>;
+}) => {
+   let data = charData;
+   let statlist = [
       "HP",
       "ATK",
       "DEF",
@@ -332,13 +321,14 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
       "BaseAggro",
    ];
 
-   var tooltipsuffix = "";
+   let tooltipsuffix = "";
 
    // Processing Graph Data for display
 
-   const rawdata = data.stats.find((a) => a.label == graphStat).data;
-   var processdata = [];
-   for (var j = 0; j < rawdata.length; j++) {
+   const rawdata = data?.stats?.find((a) => a.label == graphStat)
+      ?.data as number[];
+   let processdata = [];
+   for (let j = 0; j < rawdata.length; j++) {
       processdata[j] = formatStat(graphStat, rawdata[j]);
       // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
       if (processdata[j].indexOf("%") > -1) {
@@ -361,7 +351,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
       "80",
       "90",
    ];
-   const labels = data.stats.find((a) => a.label == "Lv").data;
+   const labels = data?.stats?.find((a) => a.label == "Lv")?.data as number[];
 
    const options = {
       responsive: true,
@@ -375,7 +365,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
          // },
          tooltip: {
             callbacks: {
-               label: function (context) {
+               label: function (context: any) {
                   return context.parsed.y + tooltipsuffix;
                },
             },
@@ -389,7 +379,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             },
             ticks: {
                // Show % tooltip suffix in Y axis if applicable to the stat
-               callback: function (value, index, values) {
+               callback: function (value: any) {
                   return value + tooltipsuffix;
                },
             },
@@ -398,7 +388,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             grid: {
                tickLength: 2,
                // Only show vertical grid where a showlabel value is
-               color: function (context) {
+               color: function (context: any) {
                   if (context.tick.label != "") {
                      return "rgba(150,150,150,0.5)";
                   } else {
@@ -409,7 +399,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
             ticks: {
                autoSkip: false,
                // For a category axis, only show label if the value matches the "showlabels" array
-               callback: function (val, index) {
+               callback: function (val: any) {
                   // Hide every non-10th tick label
                   return showlabels.indexOf(this.getLabelForValue(val)) > -1
                      ? this.getLabelForValue(val)
@@ -469,7 +459,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
                                     setGraphStat(event.target.value)
                                  }
                               >
-                                 {statlist.map(stat => {
+                                 {statlist.map((stat) => {
                                     return (
                                        <option value={stat} key={stat}>
                                           {stat}
@@ -498,7 +488,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }) => {
 // =====================================
 // Collapsible CSV Stat Text box
 // =====================================
-const CSVStats = ({ charData }) => {
+const CSVStats = ({ charData }: { charData: Character }) => {
    const data = charData;
    if (data.stats != undefined && data.stats.length != 0) {
       return (
@@ -524,7 +514,7 @@ const CSVStats = ({ charData }) => {
                         <div
                            contentEditable="true"
                            dangerouslySetInnerHTML={{
-                              __html: data.stats_csv,
+                              __html: data.stats_csv ?? "",
                            }}
                            className="border-color bg-2 h-24 overflow-y-scroll rounded-md border px-4 py-3 font-mono"
                         ></div>
@@ -542,18 +532,18 @@ const CSVStats = ({ charData }) => {
 // =====================================
 // Performs Rounding for Stats as Integers or as Percentages as necessary
 // =====================================
-function formatStat(type: any, stat: any) {
+function formatStat(type: string, stat: number) {
    // These are stats that should be formatted as an Integer.
-   var intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro"];
+   const intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
-      stat = "" + Math.floor(Math.round(stat * 100) / 100);
+      return "" + Math.floor(Math.round(stat * 100) / 100);
    } else {
-      stat =
-         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%";
+      return (
+         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%"
+      );
    }
-   return stat;
 }
 
 // =====================================
