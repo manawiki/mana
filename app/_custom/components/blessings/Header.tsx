@@ -1,6 +1,7 @@
 import { Image } from "~/components";
+import type { Blessing } from "payload/generated-custom-types";
 
-export const Header = ({ pageData }: any) => {
+export const Header = ({ pageData }: { pageData: Blessing }) => {
    const roguebgurl =
       "https://static.mana.wiki/starrail/DecoRogueBuffFrame.png";
 
@@ -12,9 +13,9 @@ export const Header = ({ pageData }: any) => {
    const maxlv = pageData?.max_level;
 
    const rarnum =
-      pageData?.rarity?.display_number == 3
+      pageData?.rarity?.display_number == "3"
          ? 5
-         : pageData?.rarity?.display_number == 2
+         : pageData?.rarity?.display_number == "2"
          ? 3
          : pageData?.rarity?.display_number;
 
@@ -53,7 +54,7 @@ export const Header = ({ pageData }: any) => {
                   </div>
 
                   {/* RogueBgImage */}
-                  <div className="inline-block flex h-96 w-full items-end justify-center">
+                  <div className="flex h-96 w-full items-end justify-center">
                      <div className="inline-flex h-auto w-auto">
                         <Image
                            options="height=384"

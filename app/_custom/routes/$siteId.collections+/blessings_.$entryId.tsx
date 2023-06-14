@@ -8,7 +8,8 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Blessings } from "payload/generated-custom-types";
+import type { Blessing } from "payload/generated-custom-types";
+import type { Entry } from "payload/generated-types";
 
 import { Header } from "~/_custom/components/blessings/Header";
 import { Effects } from "~/_custom/components/blessings/Effects";
@@ -22,13 +23,21 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
+   const entryDefault = (await getDefaultEntryData({
+      payload,
+      params,
+      request,
+   })) as Entry;
    const defaultData = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 2,
-   })) as Blessings;
+   })) as Blessing;
+
+   // Remove html tags from entry name
+   // `<i><unbreak>12</unbreak> Monkeys and Angry Men</i>` to `12 Monkeys and Angry Men`
+   entryDefault.name = entryDefault.name.replace(/(<([^>]+)>)/gi, "");
 
    //Feel free to query for more data here
 
