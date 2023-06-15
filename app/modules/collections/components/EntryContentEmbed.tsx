@@ -36,7 +36,7 @@ export const EntryContentEmbed = ({
       return <Block {...props} />;
    }, []);
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px]">
          {hasAccess ? (
             <>
                <H2 text={title} />
