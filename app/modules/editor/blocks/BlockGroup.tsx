@@ -191,8 +191,6 @@ export default function BlockGroup({ element }: Props) {
             },
          ],
       };
-
-      setSelectedCollection(event);
       return Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
@@ -301,27 +299,6 @@ export default function BlockGroup({ element }: Props) {
    }
 
    function deleteRow(
-      id: string,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const groupItems = element.groupItems;
-
-      const path = ReactEditor.findPath(editor, element);
-
-      const updatedGroupItems = groupItems.filter((item) => item.id !== id);
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems: updatedGroupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   }
-
-   function updateItemLabel(
       id: string,
       editor: BaseEditor & ReactEditor,
       element: GroupElement
@@ -454,12 +431,7 @@ export default function BlockGroup({ element }: Props) {
                         {({ value }) => (
                            <>
                               {activeSelectItem(value) ?? "Select a Collection"}
-                              <ChevronDown
-                                 style={{
-                                    color: element.color,
-                                 }}
-                                 size={20}
-                              />
+                              <ChevronDown size={20} />
                            </>
                         )}
                      </Listbox.Button>
@@ -966,7 +938,7 @@ const SortableListItem = ({
          className="bg-2 relative"
       >
          <div className="flex items-center justify-between gap-2 p-2.5">
-            <div className="bg-2 flex flex-grow items-center gap-3 hover:underline">
+            <div className="bg-2 flex flex-grow items-center gap-3 truncate hover:underline">
                <div
                   className="shadow-1 border-color flex h-8 w-8 items-center
                justify-between overflow-hidden rounded-full border-2 shadow-sm"
@@ -985,7 +957,7 @@ const SortableListItem = ({
                   {row?.name}
                </span>
             </div>
-            <div className="absolute left-0 opacity-0 group-hover:opacity-100">
+            <div className="absolute left-2 flex items-center gap-3 opacity-0 group-hover:opacity-100">
                <Tooltip
                   side="left"
                   id={`drag-${rowId}`}
@@ -996,14 +968,14 @@ const SortableListItem = ({
                      aria-label="Drag to reorder"
                      ref={setActivatorNodeRef}
                      {...listeners}
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+                     className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
                   >
                      <GripVertical className="text-1" size={16} />
                   </button>
                </Tooltip>
                <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
                   <button
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md hover:shadow"
+                     className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
                      onClick={deleteRow}
                      aria-label="Delete"
                   >
@@ -1014,7 +986,7 @@ const SortableListItem = ({
                   </button>
                </Tooltip>
             </div>
-            <div className="flex items-center justify-center">
+            <div className="flex flex-none items-center justify-center">
                <Listbox value={row?.labelColor}>
                   <Listbox.Button
                      className="bg-2 hidden h-7 w-7 items-center justify-center
@@ -1182,7 +1154,7 @@ const SortableGridItem = ({
             </Tooltip>
          </div>
          <div className="block truncate">
-            <div className="relative z-20 flex items-center justify-center pt-0.5">
+            <div className="relative z-20 mx-auto flex w-20 items-center justify-center pt-0.5">
                <input
                   style={{
                      backgroundColor: `${row?.labelColor}33`,
