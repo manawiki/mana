@@ -1,5 +1,5 @@
 import { Image } from "~/components/Image";
-import type { Collection, Entry } from "payload/generated-types";
+import type { Collection } from "payload/generated-types";
 import {
    NavLink,
    useLocation,
@@ -8,7 +8,14 @@ import {
 } from "@remix-run/react";
 import { Component, Layout, Users } from "lucide-react";
 
-export const EntryHeader = ({ entry }: { entry: Entry }) => {
+type HeaderType = {
+   name?: string;
+   icon?: {
+      url?: string;
+   };
+};
+
+export const EntryHeader = ({ entry }: { entry: HeaderType }) => {
    const params = useParams();
    const siteId = params.siteId;
    const entryId = params.entryId;
@@ -42,9 +49,9 @@ export const EntryHeader = ({ entry }: { entry: Entry }) => {
      justify-center overflow-hidden rounded-full border-2 bg-zinc-500"
             >
                {/* @ts-ignore */}
-               {entry.icon?.url ? (
+               {entry?.icon?.url ? (
                   <Image
-                     alt={entry.name}
+                     alt={entry?.name}
                      options="aspect_ratio=1:1&height=80&width=80"
                      //@ts-ignore
                      url={entry?.icon?.url}

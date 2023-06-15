@@ -3,9 +3,15 @@ import type { V2_MetaFunction } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 import type { Payload } from "payload";
-import type { ContentEmbed, Site } from "~/db/payload-types";
+import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 
+type HeaderType = {
+   name?: string;
+   icon?: {
+      url?: string;
+   };
+};
 export const getDefaultEntryData = async ({
    payload,
    params,
@@ -34,20 +40,22 @@ export const getDefaultEntryData = async ({
 
    const collection = collectionData?.docs[0];
 
+   let data = {} as HeaderType;
+
    if (collection.customEntryTemplate) {
       const entry = await (
          await fetch(
             `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=1`
          )
       ).json();
-      const data = { name: entry.name, icon: { url: entry?.icon?.url } };
+      data = { name: entry?.name, icon: { url: entry?.icon?.url } };
       return data;
    }
    const entry = await payload.findByID({
       collection: "entries",
       id: entryId,
    });
-   const data = { name: entry.name, icon: { url: entry?.icon?.url } };
+   data = { name: entry.name, icon: { url: entry?.icon?.url } };
 
    return data;
 };
@@ -89,6 +97,8 @@ export const getEmbeddedContent = async ({
    const userId = user?.id;
    const hasAccess = isSiteOwnerOrAdmin(userId, site);
 
+   let embedContent = [] as { content?: any; sectionId?: string }[];
+
    if (hasAccess) {
       // We use local API to bypass read perms since
       // (perms don't work if not findbyId since ID is not passed down) it's safe to query the data now
@@ -109,14 +119,14 @@ export const getEmbeddedContent = async ({
          depth: 1,
       });
       if (data.length == 0) return null;
-      const embedContent = data.map((item: ContentEmbed) => ({
+       embedContent = data.map((item: ContentEmbed) => ({
          content: item.content,
          sectionId: item.sectionId,
       }));
       return embedContent;
    }
 
-   const embedContent = data.map((item: ContentEmbed) => ({
+    embedContent = data.map((item: ContentEmbed) => ({
       content: item.content,
       sectionId: item.sectionId,
    }));
@@ -142,20 +152,20 @@ export const getCustomEntryData = async ({
       entryId: z.string(),
    });
 
-   const entry = await (
+   return (
       await fetch(
          `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${depth}`
       )
    ).json();
-   return entry;
+   
 };
 
 export const meta: V2_MetaFunction = ({ matches, data }) => {
    const siteName = matches.find(({ id }) => id === "routes/$siteId+/_layout")
-      ?.data?.site.name;
+      ?.data?.site?.name;
    return [
       {
-         title: `${data.entryDefault.name} - ${siteName}`,
+         title: `${data?.entryDefault?.name} - ${siteName}`,
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
