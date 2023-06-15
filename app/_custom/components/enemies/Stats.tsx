@@ -1,5 +1,5 @@
-import { Disclosure, Popover, Tab } from "@headlessui/react";
-import React, { useMemo, useState } from "react";
+import { Disclosure } from "@headlessui/react";
+import { useState } from "react";
 import { Line } from "react-chartjs-2";
 
 import {
@@ -13,6 +13,7 @@ import {
    Legend,
 } from "chart.js";
 import { ChevronDown } from "lucide-react";
+import type { Enemy } from "payload/generated-custom-types";
 
 ChartJS.register(
    CategoryScale,
@@ -24,50 +25,57 @@ ChartJS.register(
    Legend
 );
 
-export const Stats = ({ pageData, version }: any) => {
+export const Stats = ({
+   pageData,
+   version,
+}: {
+   pageData: Enemy;
+   version: number;
+}) => {
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
-   const [graphStat, setGraphStat] = useState("HP");
 
    // Update pagedata to use the active version's data:
-   pageData = pageData.enemy_variations[version];
+   const enemyData = pageData?.enemy_variations?.[version];
 
-   var imgurl = pageData.image_full?.url;
+   const stats = enemyData?.stats as StatsType;
 
-   var weaknesses = pageData.elemental_weaknesses?.map((elem: any) => {
-      return {
-         name: elem.name,
-         icon: elem?.icon?.url,
-      };
-   });
-   // var imgurl = pageData.image_full?.url;
-   // var pathurl = pageData.path?.icon?.url;
-   // var pathsmall = pageData.path?.icon_small?.url;
-   // var rarityurl = pageData.rarity?.icon?.url;
-   // var pathname = pageData.path?.name;
+   let imgurl = pageData.image_full?.url;
 
-   var statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
+   // let imgurl = pageData.image_full?.url;
+   // let pathurl = pageData.path?.icon?.url;
+   // let pathsmall = pageData.path?.icon_small?.url;
+   // let rarityurl = pageData.rarity?.icon?.url;
+   // let pathname = pageData.path?.name;
+
+   let statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   var statobj = [];
-   for (var i = 0; i < statlist.length; i++) {
-      statobj[i] = {};
-      statobj[i].stat = statlist[i];
-
-      // Pull Stat's Icon image hash
-      // var currstat = statData.statTypes.find((a) => a.name == statlist[i]);
-      // if (currstat?.icon) {
-      //   statobj[i].hash = currstat.icon?.hash ?? "no_image_42df124128";
-      // }
-
+   let statobj = statlist.map((stat, i) => ({
+      stat: stat,
+      // Add stat icons eventually
+      hash: null,
       // Alternate coloring every other stat.
-      statobj[i].colormod = i % 2;
-   }
+      colormod: i % 2,
+   }));
 
    // =====================================
    // End Preprocessing for Stat Block, Output HTML Start
    // =====================================
+
+   // Display value of a stat at a given level
+   function getStatValue(stat: string) {
+      let statTable = stats.find((a) => a?.label == stat)?.data;
+
+      let levels = stats.find((a) => a?.label == "Lv")?.data;
+
+      let statIndex = levels?.indexOf(levelSliderValue.toString());
+
+      if (!statTable || !statIndex || !levels) return "";
+
+      return formatStat(stat, parseFloat(statTable[statIndex]));
+   }
 
    return (
       <>
@@ -82,6 +90,7 @@ export const Stats = ({ pageData, version }: any) => {
                      {imgurl ? (
                         <img
                            src={imgurl}
+                           alt={pageData.name}
                            className="absolute h-96 w-full object-contain"
                         />
                      ) : null}
@@ -98,14 +107,14 @@ export const Stats = ({ pageData, version }: any) => {
                      Weaknesses
                   </div>
                   <div className="flex flex-grow items-center space-x-2">
-                     {weaknesses.map((elem: any) => {
+                     {enemyData?.elemental_weaknesses?.map((elem) => {
                         return (
                            <>
                               <div className="relative h-10 w-10 rounded-full bg-gray-800">
                                  <img
                                     className="relative inline-block object-contain text-white"
-                                    src={elem.icon}
-                                    alt={elem.name}
+                                    src={elem?.icon?.url}
+                                    alt={elem?.name}
                                  />
                               </div>
                            </>
@@ -115,7 +124,7 @@ export const Stats = ({ pageData, version }: any) => {
                </div>
 
                <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
-                  {statobj.map((stat: any, index) => {
+                  {statobj.map((stat, index) => {
                      return (
                         <div
                            className={`
@@ -139,6 +148,7 @@ export const Stats = ({ pageData, version }: any) => {
                                           src={
                                              stat.hash ?? "no_image_42df124128"
                                           }
+                                          alt={stat.stat}
                                           className="h-full w-full object-contain"
                                        />
                                     </div>
@@ -147,22 +157,7 @@ export const Stats = ({ pageData, version }: any) => {
                               <div>{stat.stat}</div>
                            </div>
                            {/* 2biii) Stat value */}
-                           <div className="">
-                              {pageData?.stats.find((a) => a.label == stat.stat)
-                                 ? formatStat(
-                                      stat.stat,
-                                      pageData?.stats.find(
-                                         (a) => a.label == stat.stat
-                                      ).data[
-                                         pageData?.stats
-                                            .find((a) => a.label == "Lv")
-                                            .data.indexOf(
-                                               "" + levelSliderValue.toString()
-                                            )
-                                      ]
-                                   )
-                                 : ""}
-                           </div>
+                           <div className="">{getStatValue(stat.stat)}</div>
 
                            {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
                            {/* 
@@ -206,7 +201,7 @@ export const Stats = ({ pageData, version }: any) => {
 
                         // Only set the level slider value if the entered value is not blank or a Number. Parseint as well so leading 0s are removed.
                         if (numonly.test(event.target.value)) {
-                           var input = parseInt(event.target.value);
+                           let input = parseInt(event.target.value);
                            if (input > maxval) {
                               input = maxval;
                            } else if (input < 1) {
@@ -236,16 +231,12 @@ export const Stats = ({ pageData, version }: any) => {
 
             {/* 2ci) Character Stat Graph */}
             {/* - Should include a drop down stat selector, shading between pre-post ascension breakpoints */}
-            <StatGraph
-               charData={pageData}
-               graphStat={graphStat}
-               setGraphStat={setGraphStat}
-            />
+            <StatGraph stats={stats} />
 
             {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
         UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
             {/* <Stats charData={charData} /> */}
-            <CSVStats charData={pageData} />
+            <CSVStats charData={enemyData} />
 
             {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
             {/* <BinOutputLink charData={charData} /> */}
@@ -257,22 +248,26 @@ export const Stats = ({ pageData, version }: any) => {
 // =====================================
 // 2ci) Character Stat Graph
 // =====================================
-const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
-   var data = charData;
+type StatsType = Array<{ label: string; data: string[] }>;
+const StatGraph = ({ stats }: { stats: StatsType }) => {
+   const [graphStat, setGraphStat] = useState("HP");
+
    var statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
 
    var tooltipsuffix = "";
 
    // Processing Graph Data for display
+   const rawdata = stats.find((a) => a.label == graphStat)?.data;
 
-   const rawdata = data.stats.find((a) => a.label == graphStat).data;
-   var processdata = [];
-   for (var j = 0; j < rawdata.length; j++) {
-      processdata[j] = formatStat(graphStat, rawdata[j]);
-      // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
-      if (processdata[j].indexOf("%") > -1) {
-         processdata[j] = processdata[j].replace("%", "");
-         tooltipsuffix = "%";
+   let processdata = [];
+   if (rawdata) {
+      for (let j = 0; j < rawdata.length; j++) {
+         processdata[j] = formatStat(graphStat, parseFloat(rawdata[j]));
+         // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
+         if (processdata[j].indexOf("%") > -1) {
+            processdata[j] = processdata[j].replace("%", "");
+            tooltipsuffix = "%";
+         }
       }
    }
 
@@ -290,8 +285,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
       "80",
       "90",
    ];
-   const labels = data.stats.find((a) => a.label == "Lv").data;
-
+   const labels = stats?.find((a) => a.label == "Lv")?.data;
    const options = {
       responsive: true,
       plugins: {
@@ -304,7 +298,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
          // },
          tooltip: {
             callbacks: {
-               label: function (context) {
+               label: function (context: any) {
                   return context.parsed.y + tooltipsuffix;
                },
             },
@@ -318,7 +312,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
             },
             ticks: {
                // Show % tooltip suffix in Y axis if applicable to the stat
-               callback: function (value, index, values) {
+               callback: function (value: any) {
                   return value + tooltipsuffix;
                },
             },
@@ -327,7 +321,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
             grid: {
                tickLength: 2,
                // Only show vertical grid where a showlabel value is
-               color: function (context) {
+               color: function (context: any) {
                   if (context.tick.label != "") {
                      return "rgba(150,150,150,0.5)";
                   } else {
@@ -338,7 +332,7 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
             ticks: {
                autoSkip: false,
                // For a category axis, only show label if the value matches the "showlabels" array
-               callback: function (val, index) {
+               callback: function (val: any) {
                   // Hide every non-10th tick label
                   return showlabels.indexOf(this.getLabelForValue(val)) > -1
                      ? this.getLabelForValue(val)
@@ -363,70 +357,62 @@ const StatGraph = ({ charData, graphStat, setGraphStat }: any) => {
       ],
    };
 
-   if (data.stats != undefined && data.stats.length != 0) {
-      return (
-         <>
-            <div className="my-1">
-               <Disclosure>
-                  {({ open }) => (
-                     <>
-                        <Disclosure.Button
-                           className="mb-2 flex  w-full items-center 
+   return (
+      <>
+         <div className="my-1">
+            <Disclosure>
+               {({ open }) => (
+                  <>
+                     <Disclosure.Button
+                        className="mb-2 flex  w-full items-center 
 				   rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
+                     >
+                        Stat Graph
+                        <div
+                           className={`${
+                              open
+                                 ? "rotate-180 transform font-bold text-gray-600 "
+                                 : "text-gray-400"
+                           } ml-auto inline-block `}
                         >
-                           Stat Graph
-                           <div
-                              className={`${
-                                 open
-                                    ? "rotate-180 transform font-bold text-gray-600 "
-                                    : "text-gray-400"
-                              } ml-auto inline-block `}
+                           <CaretDownIcon class="text-brand_1" w={28} h={28} />
+                        </div>
+                     </Disclosure.Button>
+                     <Disclosure.Panel className="mb-5">
+                        <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-neutral-700 dark:bg-neutral-900">
+                           <div className="inline-block px-2 font-bold">
+                              Display Stat:{" "}
+                           </div>
+                           {/* Stat Select Drop Down */}
+                           <select
+                              className="inline-block bg-white dark:bg-neutral-700"
+                              name="stats"
+                              value={graphStat}
+                              onChange={(event) =>
+                                 setGraphStat(event.target.value)
+                              }
                            >
-                              <CaretDownIcon
-                                 class="text-brand_1"
-                                 w={28}
-                                 h={28}
-                              />
-                           </div>
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="mb-5">
-                           <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-neutral-700 dark:bg-neutral-900">
-                              <div className="inline-block px-2 font-bold">
-                                 Display Stat:{" "}
-                              </div>
-                              {/* Stat Select Drop Down */}
-                              <select
-                                 className="inline-block bg-white dark:bg-neutral-700"
-                                 name="stats"
-                                 value={graphStat}
-                                 onChange={(event) =>
-                                    setGraphStat(event.target.value)
-                                 }
-                              >
-                                 {statlist.map(stat  => {
-                                    return (
-                                       <option value={stat} key={stat}>
-                                          {stat}
-                                       </option>
-                                    );
-                                 })}
-                              </select>
-                              <Line
-                                 options={options}
-                                 data={graphdata}
-                                 height={"auto"}
-                              />
-                           </div>
-                        </Disclosure.Panel>
-                     </>
-                  )}
-               </Disclosure>
-            </div>
-         </>
-      );
-   } else {
-      return <></>;
-   }
+                              {statlist.map((stat) => {
+                                 return (
+                                    <option value={stat} key={stat}>
+                                       {stat}
+                                    </option>
+                                 );
+                              })}
+                           </select>
+                           <Line
+                              options={options}
+                              data={graphdata}
+                              height={"auto"}
+                           />
+                        </div>
+                     </Disclosure.Panel>
+                  </>
+               )}
+            </Disclosure>
+         </div>
+      </>
+   );
 };
 
 // =====================================
@@ -477,17 +463,18 @@ const CSVStats = ({ charData }: any) => {
 // =====================================
 // Performs Rounding for Stats as Integers or as Percentages as necessary
 // =====================================
-function formatStat(type: any, stat: any) {
+function formatStat(type: string, stat: number) {
    // These are stats that should be formatted as an Integer.
    var intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro", "Break"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
-      stat = "" + Math.round(stat);
+      return "" + Math.floor(Math.round(stat * 100) / 100);
    } else {
-      stat = (Math.round(stat * 1000) / 10).toFixed(1) + "%";
+      return (
+         (Math.floor(Math.round(stat * 100000) / 10) / 100).toFixed(1) + "%"
+      );
    }
-   return stat;
 }
 
 // =====================================

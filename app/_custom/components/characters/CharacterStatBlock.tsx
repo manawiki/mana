@@ -27,10 +27,12 @@ ChartJS.register(
 );
 
 export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
+   // Cast stats to the correct type
+   const stats = pageData.stats as StatsType;
+
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
-   const [graphStat, setGraphStat] = useState("HP");
 
    const mainurl = pageData.image_draw?.url;
    const elemurl = pageData.element?.icon?.url;
@@ -51,7 +53,13 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   let statobj = statlist.map((stat, i) => ({ stat: stat, colormod: i % 2 }));
+   let statobj = statlist.map((stat, i) => ({
+      stat: stat,
+      // Add stat icons eventually
+      hash: null,
+      // Alternate coloring every other stat.
+      colormod: i % 2,
+   }));
 
    // =====================================
    // End Preprocessing for Stat Block, Output HTML Start
@@ -59,14 +67,12 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
 
    // Display value of a stat at a given level
    function getStatValue(stat: string) {
-      let statTable = pageData?.stats?.find((a) => a?.label == stat)
-         ?.data as number[];
+      let statTable = stats.find((a) => a?.label == stat)?.data;
 
-      let levels = pageData?.stats?.find((a) => a?.label == "Lv")
-         ?.data as string[];
+      let levels = stats.find((a) => a?.label == "Lv")?.data;
 
       // If the level is 20, 40, 60, 70, 80, or 90, then we need to add an "A" to the end of the level to get the correct stat value.
-      let statIndex = levels.indexOf(
+      let statIndex = levels?.indexOf(
          levelSliderValue +
             (levelAscensionCheck &&
             ["20", "30", "40", "50", "60", "70"].indexOf(
@@ -76,7 +82,9 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                : "")
       );
 
-      return statTable ? formatStat(stat, statTable[statIndex]) : "";
+      if (!statTable || !statIndex || !levels) return "";
+
+      return formatStat(stat, parseFloat(statTable[statIndex]));
    }
 
    return (
@@ -151,7 +159,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                </div>
 
                <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
-                  {statobj.map((stat: any, index) => {
+                  {statobj.map((stat, index) => {
                      return (
                         <div
                            className={`${
@@ -163,7 +171,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                         >
                            {/* 2bi) Stat Icon */}
                            <div className="flex flex-grow items-center space-x-2">
-                              {stat.hash ? (
+                              {stat.hash && (
                                  <div
                                     className="relative inline-flex h-6 w-6 items-center 
                                         justify-center rounded-full align-middle"
@@ -175,7 +183,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                                        className="h-full w-full object-contain"
                                     />
                                  </div>
-                              ) : null}
+                              )}
                               <div className="text-1 font-bold">
                                  {stat.stat}
                               </div>
@@ -226,7 +234,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
 
                         // Only set the level slider value if the entered value is not blank or a Number. Parseint as well so leading 0s are removed.
                         if (numonly.test(event.target.value)) {
-                           var input = parseInt(event.target.value);
+                           let input = parseInt(event.target.value);
                            if (input > maxval) {
                               input = maxval;
                            } else if (input < 1) {
@@ -281,11 +289,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
 
          {/* 2ci) Character Stat Graph */}
          {/* - Should include a drop down stat selector, shading between pre-post ascension breakpoints */}
-         <StatGraph
-            charData={pageData}
-            graphStat={graphStat}
-            setGraphStat={setGraphStat}
-         />
+         <StatGraph stats={stats} />
 
          {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
         UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
@@ -301,16 +305,10 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
 // =====================================
 // 2ci) Character Stat Graph
 // =====================================
-const StatGraph = ({
-   charData,
-   graphStat,
-   setGraphStat,
-}: {
-   charData: Character;
-   graphStat: string;
-   setGraphStat: React.Dispatch<React.SetStateAction<string>>;
-}) => {
-   let data = charData;
+type StatsType = Array<{ label: string; data: string[] }>;
+const StatGraph = ({ stats }: { stats: StatsType }) => {
+   const [graphStat, setGraphStat] = useState("HP");
+
    let statlist = [
       "HP",
       "ATK",
@@ -324,16 +322,17 @@ const StatGraph = ({
    let tooltipsuffix = "";
 
    // Processing Graph Data for display
+   const rawdata = stats.find((a) => a.label == graphStat)?.data;
 
-   const rawdata = data?.stats?.find((a) => a.label == graphStat)
-      ?.data as number[];
    let processdata = [];
-   for (let j = 0; j < rawdata.length; j++) {
-      processdata[j] = formatStat(graphStat, rawdata[j]);
-      // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
-      if (processdata[j].indexOf("%") > -1) {
-         processdata[j] = processdata[j].replace("%", "");
-         tooltipsuffix = "%";
+   if (rawdata) {
+      for (let j = 0; j < rawdata.length; j++) {
+         processdata[j] = formatStat(graphStat, parseFloat(rawdata[j]));
+         // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
+         if (processdata[j].indexOf("%") > -1) {
+            processdata[j] = processdata[j].replace("%", "");
+            tooltipsuffix = "%";
+         }
       }
    }
 
@@ -351,7 +350,7 @@ const StatGraph = ({
       "80",
       "90",
    ];
-   const labels = data?.stats?.find((a) => a.label == "Lv")?.data as number[];
+   const labels = stats?.find((a) => a.label == "Lv")?.data;
 
    const options = {
       responsive: true,
@@ -424,65 +423,59 @@ const StatGraph = ({
       ],
    };
 
-   if (data.stats != undefined && data.stats.length != 0) {
-      return (
-         <>
-            <div className="my-1">
-               <Disclosure>
-                  {({ open }) => (
-                     <>
-                        <Disclosure.Button
-                           className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+   return (
+      <div className="my-1">
+         <Disclosure>
+            {({ open }) => (
+               <>
+                  <Disclosure.Button
+                     className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
                            gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
+                  >
+                     <BarChart2 size={20} className="text-yellow-500" />
+                     Stat Graph
+                     <div
+                        className={`${
+                           open ? "font-bol rotate-180 transform" : ""
+                        } ml-auto inline-block `}
+                     >
+                        <ChevronDown size={28} />
+                     </div>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className="mb-5">
+                     <div className="bg-2 border-color rounded-md border px-4 py-3 text-center text-sm">
+                        <div className="inline-block px-2 font-bold">
+                           Display Stat:{" "}
+                        </div>
+                        {/* Stat Select Drop Down */}
+                        <select
+                           className="bg-1 border-color inline-block rounded-lg border"
+                           name="stats"
+                           value={graphStat}
+                           onChange={(event) =>
+                              setGraphStat(event.target.value)
+                           }
                         >
-                           <BarChart2 size={20} className="text-yellow-500" />
-                           Stat Graph
-                           <div
-                              className={`${
-                                 open ? "font-bol rotate-180 transform" : ""
-                              } ml-auto inline-block `}
-                           >
-                              <ChevronDown size={28} />
-                           </div>
-                        </Disclosure.Button>
-                        <Disclosure.Panel className="mb-5">
-                           <div className="bg-2 border-color rounded-md border px-4 py-3 text-center text-sm">
-                              <div className="inline-block px-2 font-bold">
-                                 Display Stat:{" "}
-                              </div>
-                              {/* Stat Select Drop Down */}
-                              <select
-                                 className="bg-1 border-color inline-block rounded-lg border"
-                                 name="stats"
-                                 value={graphStat}
-                                 onChange={(event) =>
-                                    setGraphStat(event.target.value)
-                                 }
-                              >
-                                 {statlist.map((stat) => {
-                                    return (
-                                       <option value={stat} key={stat}>
-                                          {stat}
-                                       </option>
-                                    );
-                                 })}
-                              </select>
-                              <Line
-                                 options={options}
-                                 data={graphdata}
-                                 height={"auto"}
-                              />
-                           </div>
-                        </Disclosure.Panel>
-                     </>
-                  )}
-               </Disclosure>
-            </div>
-         </>
-      );
-   } else {
-      return <></>;
-   }
+                           {statlist.map((stat) => {
+                              return (
+                                 <option value={stat} key={stat}>
+                                    {stat}
+                                 </option>
+                              );
+                           })}
+                        </select>
+                        <Line
+                           options={options}
+                           data={graphdata}
+                           height={"auto"}
+                        />
+                     </div>
+                  </Disclosure.Panel>
+               </>
+            )}
+         </Disclosure>
+      </div>
+   );
 };
 
 // =====================================
