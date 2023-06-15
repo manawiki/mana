@@ -290,7 +290,7 @@ export const SoloEditor = ({
    );
 
    return (
-      <div className="relative cursor-text pb-4 max-desktop:px-3">
+      <div className="relative cursor-text pb-4">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
