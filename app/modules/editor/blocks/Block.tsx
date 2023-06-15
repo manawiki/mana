@@ -97,7 +97,15 @@ export default function Block({
    }
 
    if (element.type === BlockType.H3) {
-      return <h3 {...attributes}>{children}</h3>;
+      return (
+         <h3 className="flex items-center gap-3" {...attributes}>
+            <div className="min-w-[100px] flex-none">{children}</div>
+            <div
+               contentEditable={false}
+               className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-bg4Dark"
+            ></div>
+         </h3>
+      );
    }
 
    if (element.type === BlockType.BulletedList) {
