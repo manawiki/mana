@@ -296,7 +296,7 @@ export const SoloEditor = ({
             id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
-            <div className="mx-auto w-full pb-12">
+            <div className="mx-auto w-full">
                <Slate
                   onChange={(e) => setValue(e)}
                   editor={editor}
