@@ -18,7 +18,6 @@ type Props = {
 };
 
 export default function GroupView({ element }: Props) {
-   console.log(element);
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const groupItems = element.groupItems;
