@@ -147,20 +147,12 @@ export default function Block({
       }
       default:
          //Check if any custom blocks to render
-         const isCustomBlock = CustomBlocks({ element, children, attributes });
-         if (isCustomBlock) {
-            return (
-               <CustomBlocks
-                  element={element}
-                  children={children}
-                  attributes={attributes}
-               />
-            );
-         }
          return (
-            <DefaultElement element={element} attributes={attributes}>
-               {children}
-            </DefaultElement>
+            <CustomBlocks
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
          );
    }
 }

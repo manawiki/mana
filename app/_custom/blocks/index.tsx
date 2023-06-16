@@ -1,4 +1,4 @@
-import { useReadOnly } from "slate-react";
+import { DefaultElement, useReadOnly } from "slate-react";
 import { ExampleBlock } from "./Example";
 import { nanoid } from "nanoid";
 import { Component } from "lucide-react";
@@ -21,7 +21,12 @@ export const CustomBlocks = ({ element, children, attributes }: any) => {
          return <ExampleBlock element={element} children={children} />;
       }
       default:
-         return null;
+         //Render default element if no custom blocks match
+         return (
+            <DefaultElement element={element} attributes={attributes}>
+               {children}
+            </DefaultElement>
+         );
    }
 };
 
