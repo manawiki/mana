@@ -107,60 +107,56 @@ export const Stats = ({
                      Weaknesses
                   </div>
                   <div className="flex flex-grow items-center space-x-2">
-                     {enemyData?.elemental_weaknesses?.map((elem) => {
-                        return (
-                           <>
-                              <div className="relative h-10 w-10 rounded-full bg-gray-800">
-                                 <img
-                                    className="relative inline-block object-contain text-white"
-                                    src={elem?.icon?.url}
-                                    alt={elem?.name}
-                                 />
-                              </div>
-                           </>
-                        );
-                     })}
+                     {enemyData?.elemental_weaknesses?.map((elem) => (
+                        <div
+                           key={elem?.name}
+                           className="relative h-10 w-10 rounded-full bg-gray-800"
+                        >
+                           <img
+                              className="relative inline-block object-contain text-white"
+                              src={elem?.icon?.url}
+                              alt={elem?.name}
+                           />
+                        </div>
+                     ))}
                   </div>
                </div>
 
                <div className="divide-y overflow-hidden rounded-md border dark:divide-neutral-700 dark:border-neutral-700">
-                  {statobj.map((stat, index) => {
-                     return (
-                        <div
-                           className={`
+                  {statobj.map((stat, index) => (
+                     <div
+                        className={`
                       /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
                          stat.colormod
                             ? "relative block bg-gray-50 dark:bg-neutral-800"
                             : "relative block bg-gray-100 dark:bg-neutral-900"
                       } flex items-center p-2`}
-                           key={index}
-                        >
-                           {/* 2bi) Stat Icon */}
-                           <div className="flex flex-grow items-center space-x-2">
-                              <div>
-                                 {stat.hash ? (
-                                    <div
-                                       className="relative inline-flex h-6 w-6 items-center 
+                        key={index}
+                     >
+                        {/* 2bi) Stat Icon */}
+                        <div className="flex flex-grow items-center space-x-2">
+                           <div>
+                              {stat.hash ? (
+                                 <div
+                                    className="relative inline-flex h-6 w-6 items-center 
                           justify-center rounded-full bg-gray-600 align-middle"
-                                    >
-                                       <img
-                                          src={
-                                             stat.hash ?? "no_image_42df124128"
-                                          }
-                                          alt={stat.stat}
-                                          className="h-full w-full object-contain"
-                                       />
-                                    </div>
-                                 ) : null}
-                              </div>
-                              <div>{stat.stat}</div>
+                                 >
+                                    <img
+                                       src={stat.hash ?? "no_image_42df124128"}
+                                       alt={stat.stat}
+                                       className="h-full w-full object-contain"
+                                    />
+                                 </div>
+                              ) : null}
                            </div>
-                           {/* 2biii) Stat value */}
-                           <div className="">{getStatValue(stat.stat)}</div>
+                           <div>{stat.stat}</div>
+                        </div>
+                        {/* 2biii) Stat value */}
+                        <div className="">{getStatValue(stat.stat)}</div>
 
-                           {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
-                           {/* 
+                        {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
+                        {/* 
                     {stat.bonus ? (
                       <div className="inline-flex absolute items-center align-middle justify-center rounded-full h-4 w-4 mt-1 right-2/3 bg-gray-400 text-center">
                         <img
@@ -171,9 +167,8 @@ export const Stats = ({
                       </div>
                     ) : null}
                      */}
-                        </div>
-                     );
-                  })}
+                     </div>
+                  ))}
                </div>
             </div>
          </div>
@@ -392,13 +387,11 @@ const StatGraph = ({ stats }: { stats: StatsType }) => {
                                  setGraphStat(event.target.value)
                               }
                            >
-                              {statlist.map((stat) => {
-                                 return (
-                                    <option value={stat} key={stat}>
-                                       {stat}
-                                    </option>
-                                 );
-                              })}
+                              {statlist.map((stat) => (
+                                 <option value={stat} key={stat}>
+                                    {stat}
+                                 </option>
+                              ))}
                            </select>
                            <Line
                               options={options}
