@@ -18,7 +18,7 @@ import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
 
 import { H2 } from "~/_custom/components/custom";
 
-import type { EnemyVariation } from "payload/generated-custom-types";
+import type { Enemy } from "payload/generated-custom-types";
 
 export { meta };
 
@@ -32,7 +32,7 @@ export async function loader({
       params,
       request,
       depth: 3,
-   })) as EnemyVariation;
+   })) as Enemy;
 
    //Feel free to query for more data here
 

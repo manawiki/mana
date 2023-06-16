@@ -26,7 +26,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -49,18 +49,18 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ defaultData, achievementData });
+   return json({ entryDefault, achievementData });
 }
 
 export default function CharacterEntry() {
-   const { defaultData, achievementData } = useLoaderData<typeof loader>();
+   const { entryDefault, achievementData } = useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
-         <EntryHeader entry={defaultData} />
+         <EntryHeader entry={entryDefault} />
          <EntryContent>
             {/* Header */}
-            <Header pageData={defaultData} />
+            <Header pageData={entryDefault} />
 
             {/* Achievement List with Checkbox */}
             <Achievements pageData={achievementData} />

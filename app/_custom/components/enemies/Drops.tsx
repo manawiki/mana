@@ -1,12 +1,17 @@
+import type { Material, Enemy } from "payload/generated-custom-types";
 
-import type { Material } from "payload/generated-custom-types";
-
-export const Drops = ({ pageData, version }: any) => {
-   const drops = pageData.enemy_variations[version]?.rewards;
+export const Drops = ({
+   pageData,
+   version,
+}: {
+   pageData: Enemy;
+   version: number;
+}) => {
+   const drops = pageData?.enemy_variations?.[version]?.rewards;
 
    return (
       <>
-         {drops?.length > 0 ? (
+         {drops && drops?.length > 0 ? (
             <>
                <table className="w-full">
                   <thead>
@@ -18,25 +23,21 @@ export const Drops = ({ pageData, version }: any) => {
                   </thead>
 
                   <tbody>
-                     {drops?.map((d: any) => {
-                        return (
-                           <>
-                              <tr>
-                                 <td className="px-2 py-1 text-center">
-                                    {d.world_level ?? 0}
-                                 </td>
-                                 <td className="px-2 py-1 text-center">
-                                    {d.exp_reward ?? 0}
-                                 </td>
-                                 <td className="px-2 py-1">
-                                    {d.drop_list?.map((mat: any) => {
-                                       return <ItemFrame mat={mat} />;
-                                    })}
-                                 </td>
-                              </tr>
-                           </>
-                        );
-                     })}
+                     {drops?.map((d, key) => (
+                        <tr key={key}>
+                           <td className="px-2 py-1 text-center">
+                              {d?.world_level ?? 0}
+                           </td>
+                           <td className="px-2 py-1 text-center">
+                              {d?.exp_reward ?? 0}
+                           </td>
+                           <td className="px-2 py-1">
+                              {d?.drop_list?.map((mat) => {
+                                 return <ItemFrame mat={mat} key={mat?.id} />;
+                              })}
+                           </td>
+                        </tr>
+                     ))}
                   </tbody>
                </table>
             </>
