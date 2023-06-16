@@ -16,6 +16,7 @@ import {
    Type,
    Youtube,
 } from "lucide-react";
+import { CustomBlocksAddConfig } from "~/_custom/blocks";
 
 type Props = {
    children: ReactNode;
@@ -72,7 +73,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                   });
                },
             },
-
             {
                label: "Heading 3",
                icon: <Heading3 size={20} />,
@@ -176,6 +176,12 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
       },
    ];
 
+   //If custom site has blocks, add to select options
+   const customBlocks = CustomBlocksAddConfig(onSelect);
+   if (customBlocks) {
+      groups.push(customBlocks);
+   }
+
    return (
       <DropdownMenuPrimitive.Root>
          <Tooltip id="insert-block" content="Insert block below">
@@ -196,36 +202,38 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
                            className="text-1 bg-2 sticky top-0 px-2.5 pb-1.5 pt-2.5 text-xs
                         font-bold"
                         >
-                           {group.label}
+                           {group?.label}
                         </DropdownMenuPrimitive.Label>
                         <div className="border-color divide-color divide-y border-y">
-                           {groups[indexGroup].items.map((item, indexItem) => {
-                              return (
-                                 <DropdownMenuPrimitive.DropdownMenuItem
-                                    className="bg-3 flex cursor-pointer items-center gap-3 space-y-1 p-3
+                           {groups[indexGroup]?.items?.map(
+                              (item, indexItem) => {
+                                 return (
+                                    <DropdownMenuPrimitive.DropdownMenuItem
+                                       className="bg-3 flex cursor-pointer items-center gap-3 space-y-1 p-3
                                     text-xs outline-none hover:bg-zinc-50 dark:hover:bg-bg2Dark"
-                                    key={indexItem}
-                                    onSelect={item.onSelect}
-                                 >
-                                    {item.icon && (
-                                       <div
-                                          className="flex h-8 w-8 items-center justify-center
+                                       key={indexItem}
+                                       onSelect={item.onSelect}
+                                    >
+                                       {item.icon && (
+                                          <div
+                                             className="flex h-8 w-8 items-center justify-center
                                      rounded-lg bg-zinc-100 dark:bg-bg4Dark"
-                                       >
-                                          {item.icon}
+                                          >
+                                             {item.icon}
+                                          </div>
+                                       )}
+                                       <div>
+                                          <div className="font-bold text-zinc-500 dark:text-zinc-300">
+                                             {item.label}
+                                          </div>
+                                          <div className="text-1 text-xs">
+                                             {item.description}
+                                          </div>
                                        </div>
-                                    )}
-                                    <div>
-                                       <div className="font-bold text-zinc-500 dark:text-zinc-300">
-                                          {item.label}
-                                       </div>
-                                       <div className="text-1 text-xs">
-                                          {item.description}
-                                       </div>
-                                    </div>
-                                 </DropdownMenuPrimitive.DropdownMenuItem>
-                              );
-                           })}
+                                    </DropdownMenuPrimitive.DropdownMenuItem>
+                                 );
+                              }
+                           )}
                         </div>
                      </DropdownMenuPrimitive.Group>
                   );

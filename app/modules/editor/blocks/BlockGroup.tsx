@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { arrayMoveImmutable } from "array-move";
 import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { Link, useParams, useRouteLoaderData } from "@remix-run/react";
+import { useParams, useRouteLoaderData } from "@remix-run/react";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import useSWR from "swr";
 import { nanoid } from "nanoid";
