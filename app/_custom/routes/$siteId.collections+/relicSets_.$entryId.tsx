@@ -3,7 +3,6 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
@@ -16,7 +15,6 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { H2 } from "~/_custom/components/custom";
 
-import type { Entry } from "payload/generated-types";
 import type { RelicSet, Relic } from "payload/generated-custom-types";
 
 export { meta };
@@ -26,12 +24,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = (await getDefaultEntryData({
-      payload,
-      params,
-      request,
-   })) as Entry;
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -51,12 +44,11 @@ export async function loader({
    const relicRaw = await (await fetch(url)).json();
    const relicData = relicRaw.docs as Relic[];
 
-   return json({ entryDefault, defaultData, relicData });
+   return json({ entryDefault, relicData });
 }
 
 export default function CharacterEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
    const { relicData } = useLoaderData<typeof loader>();
 
    return (
@@ -64,14 +56,14 @@ export default function CharacterEntry() {
          <EntryHeader entry={entryDefault} />
          <EntryContent>
             <H2 text="Set Effect" />
-            <SetEffect pageData={defaultData} />
+            <SetEffect pageData={entryDefault} />
             {/* Relics in set should have a clickable information pop up (with first selected by default) */}
             {/* Need to collapse all of the same relic (which can have to 5 entries for each rarity) */}
             {/* Tabs contain info: */}
             {/* - Name + Image */}
             {/* - Possible Main and Sub stat distributions per level */}
             {/* - Additional Lore / etc. for that relic */}
-            <RelicsInSet pageData={defaultData} relicData={relicData} />
+            <RelicsInSet pageData={entryDefault} relicData={relicData} />
 
             {/* Relic set's flavor text */}
          </EntryContent>

@@ -3,22 +3,21 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type {
-   Achievement,
-   AchievementSery,
-} from "payload/generated-custom-types";
 
 import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
 import { Header } from "~/_custom/components/achievementSeries/Header";
 
 import { zx } from "zodix";
 import { z } from "zod";
-import type { Entry } from "payload/generated-types";
+
+import type {
+   Achievement,
+   AchievementSery,
+} from "payload/generated-custom-types";
 
 export { meta };
 
@@ -27,11 +26,6 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = (await getDefaultEntryData({
-      payload,
-      params,
-      request,
-   })) as Entry;
    const defaultData = (await getCustomEntryData({
       payload,
       params,
@@ -55,16 +49,15 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ entryDefault, defaultData, achievementData });
+   return json({ defaultData, achievementData });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, defaultData, achievementData } =
-      useLoaderData<typeof loader>();
+   const { defaultData, achievementData } = useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
-         <EntryHeader entry={entryDefault} />
+         <EntryHeader entry={defaultData} />
          <EntryContent>
             {/* Header */}
             <Header pageData={defaultData} />

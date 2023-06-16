@@ -3,7 +3,6 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
@@ -19,8 +18,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -29,18 +27,17 @@ export async function loader({
 
    //Feel free to query for more data here
 
-   return json({ entryDefault, defaultData });
+   return json({ entryDefault });
 }
 
 export default function MaterialsEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
-            <Header pageData={defaultData} />
+            <Header pageData={entryDefault} />
          </EntryContent>
       </EntryParent>
    );

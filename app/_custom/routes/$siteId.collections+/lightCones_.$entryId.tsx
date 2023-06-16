@@ -3,13 +3,10 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { LightCone } from "payload/generated-custom-types";
-import type { Entry } from "payload/generated-types";
 
 import { Stats } from "~/_custom/components/lightCones/Stats";
 import { Effect } from "~/_custom/components/lightCones/Effect";
@@ -18,6 +15,8 @@ import { PromotionCost } from "~/_custom/components/lightCones/PromotionCost";
 import { ImageGallery } from "~/_custom/components/lightCones/ImageGallery";
 import { AdditionalData } from "~/_custom/components/lightCones/AdditionalData";
 
+import type { LightCone } from "payload/generated-custom-types";
+
 export { meta };
 
 export async function loader({
@@ -25,12 +24,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = (await getDefaultEntryData({
-      payload,
-      params,
-      request,
-   })) as Entry;
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -62,33 +56,33 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ entryDefault, defaultData });
+   return json({ entryDefault });
 }
 
 export default function LightConeEntry() {
-   const { entryDefault, defaultData } = useLoaderData<typeof loader>();
+   const { entryDefault } = useLoaderData<typeof loader>();
    // const { relicData } = useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
-            <Stats pageData={defaultData} />
+            <Stats pageData={entryDefault} />
 
             {/* Effects for Light Cone */}
-            <Effect pageData={defaultData} />
+            <Effect pageData={entryDefault} />
 
             {/* Promotion Cost for Weapon */}
-            <PromotionCost pageData={defaultData} />
+            <PromotionCost pageData={entryDefault} />
 
             {/* Description and Flavor Text */}
-            <Description pageData={defaultData} />
+            <Description pageData={entryDefault} />
 
             {/* Additional Data */}
-            <AdditionalData pageData={defaultData} />
+            <AdditionalData pageData={entryDefault} />
 
             {/* Image Gallery */}
-            <ImageGallery pageData={defaultData} />
+            <ImageGallery pageData={entryDefault} />
          </EntryContent>
       </EntryParent>
    );

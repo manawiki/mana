@@ -3,18 +3,17 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Blessing } from "payload/generated-custom-types";
-import type { Entry } from "payload/generated-types";
 
 import { Header } from "~/_custom/components/blessings/Header";
 import { Effects } from "~/_custom/components/blessings/Effects";
 // import { Header } from "~/_custom/components/blessings/Header";
 // import { Header } from "~/_custom/components/blessings/Header";
+
+import type { Blessing } from "payload/generated-custom-types";
 
 export { meta };
 
@@ -23,12 +22,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = (await getDefaultEntryData({
-      payload,
-      params,
-      request,
-   })) as Entry;
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -37,7 +31,8 @@ export async function loader({
 
    // Remove html tags from entry name
    // `<i><unbreak>12</unbreak> Monkeys and Angry Men</i>` to `12 Monkeys and Angry Men`
-   entryDefault.name = entryDefault.name.replace(/(<([^>]+)>)/gi, "");
+   if (entryDefault?.name)
+      entryDefault.name = entryDefault?.name?.replace(/(<([^>]+)>)/gi, "");
 
    //Feel free to query for more data here
 
@@ -64,22 +59,21 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ entryDefault, defaultData });
+   return json({ entryDefault });
 }
 
 export default function BlessingEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
             {/* Image */}
-            <Header pageData={defaultData} />
+            <Header pageData={entryDefault} />
 
             {/* Effect List - Various Levels */}
-            <Effects pageData={defaultData} />
+            <Effects pageData={entryDefault} />
          </EntryContent>
       </EntryParent>
    );

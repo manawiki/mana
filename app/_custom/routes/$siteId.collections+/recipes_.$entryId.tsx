@@ -3,7 +3,6 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
@@ -14,7 +13,6 @@ import { Relics } from "~/_custom/components/recipes/Relics";
 import { Ingredients } from "~/_custom/components/recipes/Ingredients";
 import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
 
-import type { Entry } from "payload/generated-types";
 import type { Recipe } from "payload/generated-custom-types";
 
 // import { Header } from "~/_custom/components/blessings/Header";
@@ -26,12 +24,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = (await getDefaultEntryData({
-      payload,
-      params,
-      request,
-   })) as Entry;
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
@@ -63,27 +56,26 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ entryDefault, defaultData });
+   return json({ entryDefault });
 }
 
 export default function RecipeEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
    return (
       <EntryParent>
          <EntryHeader entry={entryDefault} />
          <EntryContent>
             {/* Image */}
-            <Header pageData={defaultData} />
+            <Header pageData={entryDefault} />
 
             {/* Relic Results */}
-            <Relics pageData={defaultData} />
+            <Relics pageData={entryDefault} />
 
             {/* Ingredients */}
-            <Ingredients pageData={defaultData} />
+            <Ingredients pageData={entryDefault} />
 
             {/* Special Ingredients */}
-            <SpecialMats pageData={defaultData} />
+            <SpecialMats pageData={entryDefault} />
          </EntryContent>
       </EntryParent>
    );

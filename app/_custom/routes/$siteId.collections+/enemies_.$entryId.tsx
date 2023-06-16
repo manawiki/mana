@@ -4,12 +4,10 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Enemies } from "payload/generated-custom-types";
 
 import { Selector } from "~/_custom/components/enemies/Selector";
 import { Stats } from "~/_custom/components/enemies/Stats";
@@ -20,6 +18,8 @@ import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
 
 import { H2 } from "~/_custom/components/custom";
 
+import type { EnemyVariation } from "payload/generated-custom-types";
+
 export { meta };
 
 export async function loader({
@@ -27,13 +27,12 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const entryDefault = await getDefaultEntryData({ payload, params, request });
-   const defaultData = (await getCustomEntryData({
+   const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
-   })) as Enemies;
+   })) as EnemyVariation;
 
    //Feel free to query for more data here
 
@@ -60,12 +59,11 @@ export async function loader({
    // ======================
    // ======================
 
-   return json({ entryDefault, defaultData });
+   return json({ entryDefault });
 }
 
 export default function CharacterEntry() {
    const { entryDefault } = useLoaderData<typeof loader>();
-   const { defaultData } = useLoaderData<typeof loader>();
 
    const [version, setVersion] = useState(0);
 
@@ -75,29 +73,29 @@ export default function CharacterEntry() {
          <EntryContent>
             {/* Selector for Enemy Version */}
             <Selector
-               pageData={defaultData}
+               pageData={entryDefault}
                version={version}
                setVersion={setVersion}
             />
 
             {/* Image */}
-            <Stats pageData={defaultData} version={version} />
+            <Stats pageData={entryDefault} version={version} />
 
             {/* Skill List */}
             <H2 text="Skills" />
-            <Skills pageData={defaultData} version={version} />
+            <Skills pageData={entryDefault} version={version} />
 
             {/* Resistances */}
             <H2 text="Resistances" />
-            <Resistances pageData={defaultData} version={version} />
+            <Resistances pageData={entryDefault} version={version} />
 
             {/* Drop Rewards */}
             <H2 text="Drops" />
-            <Drops pageData={defaultData} version={version} />
+            <Drops pageData={entryDefault} version={version} />
 
             {/* Additional Data */}
             <H2 text="Additional Data" />
-            <AdditionalData pageData={defaultData} version={version} />
+            <AdditionalData pageData={entryDefault} version={version} />
          </EntryContent>
       </EntryParent>
    );

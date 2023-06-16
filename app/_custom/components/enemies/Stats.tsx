@@ -252,9 +252,9 @@ type StatsType = Array<{ label: string; data: string[] }>;
 const StatGraph = ({ stats }: { stats: StatsType }) => {
    const [graphStat, setGraphStat] = useState("HP");
 
-   var statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
+   let statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
 
-   var tooltipsuffix = "";
+   let tooltipsuffix = "";
 
    // Processing Graph Data for display
    const rawdata = stats.find((a) => a.label == graphStat)?.data;
@@ -419,7 +419,7 @@ const StatGraph = ({ stats }: { stats: StatsType }) => {
 // Collapsible CSV Stat Text box
 // =====================================
 const CSVStats = ({ charData }: any) => {
-   var data = charData;
+   let data = charData;
    if (data.stats != undefined && data.stats.length != 0) {
       return (
          <>
@@ -465,7 +465,7 @@ const CSVStats = ({ charData }: any) => {
 // =====================================
 function formatStat(type: string, stat: number) {
    // These are stats that should be formatted as an Integer.
-   var intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro", "Break"];
+   let intlist = ["HP", "ATK", "DEF", "Speed", "BaseAggro", "Break"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {

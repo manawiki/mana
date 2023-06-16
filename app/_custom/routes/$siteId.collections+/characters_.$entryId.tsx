@@ -4,7 +4,6 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import {
    EntryParent,
    EntryHeader,
-   getDefaultEntryData,
    meta,
    EntryContent,
    getEmbeddedContent,
@@ -27,7 +26,6 @@ import { z } from "zod";
 import { H2 } from "~/_custom/components/custom";
 import { EntryContentEmbed } from "~/modules/collections/components/EntryContentEmbed";
 
-import type { Entry } from "payload/generated-types";
 import type {
    Character,
    SkillTree as SkillTreeType,
@@ -44,40 +42,30 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const [entryDefault, embeddedContent, { data, errors }] = (await Promise.all(
-      [
-         getDefaultEntryData({ payload, params, request }),
-         getEmbeddedContent({
-            collection: "characters",
-            payload,
-            params,
-            request,
-            user,
-         }),
-         fetch(
-            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
-            {
-               method: "POST",
-               headers: {
-                  "Content-Type": "application/json",
+   const [embeddedContent, { data, errors }] = await Promise.all([
+      getEmbeddedContent({
+         collection: "characters",
+         payload,
+         params,
+         request,
+         user,
+      }),
+      fetch(
+         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               query: CharacterQuery,
+               variables: {
+                  charId: entryId,
                },
-               body: JSON.stringify({
-                  query: CharacterQuery,
-                  variables: {
-                     charId: entryId,
-                  },
-               }),
-            }
-         ).then((res) => res.json()),
-      ]
-   )) as [
-      Entry,
-      Character,
-      {
-         data: { character: Character; skillTree: { docs: SkillTreeType[] } };
-         errors: Error;
-      }
-   ];
+            }),
+         }
+      ).then((res) => res.json()),
+   ]);
 
    if (errors) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console
@@ -85,15 +73,14 @@ export async function loader({
    }
 
    return json({
-      entryDefault,
+      entryDefault: data.character as Character,
+      skillTreeData: data.skillTree.docs as SkillTreeType[],
       embeddedContent,
-      defaultData: data.character,
-      skillTreeData: data.skillTree.docs,
    });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, defaultData, skillTreeData, embeddedContent } =
+   const { entryDefault, skillTreeData, embeddedContent } =
       useLoaderData<typeof loader>();
 
    const links = [
@@ -115,7 +102,7 @@ export default function CharacterEntry() {
             <Navigation links={links} />
 
             {/* Character Image with Element / Path */}
-            <CharacterStatBlock pageData={defaultData} />
+            <CharacterStatBlock pageData={entryDefault} />
             <EntryContentEmbed
                title="Teams"
                sectionId="teams"
@@ -137,47 +124,47 @@ export default function CharacterEntry() {
             <div id="traces"></div>
             {/* Traces / Skills */}
             <H2 text="Traces" />
-            <Traces pageData={defaultData} skillTreeData={skillTreeData} />
+            <Traces pageData={entryDefault} skillTreeData={skillTreeData} />
 
             <div id="tree"></div>
             {/* Skill Tree */}
             <H2 text="Tree" />
-            <SkillTree pageData={defaultData} skillTreeData={skillTreeData} />
+            <SkillTree pageData={entryDefault} skillTreeData={skillTreeData} />
 
             <div id="eidolons"></div>
             {/* Eidolons */}
             <H2 text="Eidolons" />
-            <Eidolons pageData={defaultData} />
+            <Eidolons pageData={entryDefault} />
 
             <div id="promotion"></div>
             {/* Promotion Costs */}
             <H2 text="Promotion Cost" />
-            <PromotionCost pageData={defaultData} />
+            <PromotionCost pageData={entryDefault} />
 
             {/* Total Materials */}
             <H2 text="Total Material Cost" />
             <TotalMaterialCost
-               pageData={defaultData}
+               pageData={entryDefault}
                skillTreeData={skillTreeData}
             />
 
             <div id="gallery"></div>
             {/* Image Gallery Section showing all relevant images */}
             <H2 text="Image Gallery" />
-            <ImageGallery pageData={defaultData} />
+            <ImageGallery pageData={entryDefault} />
 
             {/* Video Section */}
-            <Videos pageData={defaultData} />
+            <Videos pageData={entryDefault} />
 
             <div id="profile"></div>
             {/* Profile Data/CV */}
-            <Profile pageData={defaultData} />
+            <Profile pageData={entryDefault} />
 
             {/* Story Section with drop downs */}
-            <Story pageData={defaultData} />
+            <Story pageData={entryDefault} />
 
             {/* Voice Line Section */}
-            <VoiceLines pageData={defaultData} />
+            <VoiceLines pageData={entryDefault} />
          </EntryContent>
       </EntryParent>
    );
@@ -186,6 +173,8 @@ export default function CharacterEntry() {
 const CharacterQuery = `
 query ($charId: String!) {
  character: Character(id: $charId) {
+   id
+   name
    image_draw {
      url
    }
