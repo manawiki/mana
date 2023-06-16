@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import searchPlugin from "./plugins/search";
-const mockModulePath = path.resolve(__dirname, "./emptyObject.js");
 
 dotenv.config();
 
