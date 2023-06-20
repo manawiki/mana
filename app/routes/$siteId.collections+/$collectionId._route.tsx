@@ -95,7 +95,7 @@ export async function loader({
 
          return json(
             { collection, entrylist, q },
-            { headers: { "Cache-Control": "public, s-maxage=60" } }
+            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
          );
       }
 
@@ -114,7 +114,7 @@ export async function loader({
 
       return json(
          { collection, entrylist, q },
-         { headers: { "Cache-Control": "public, s-maxage=60" } }
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
       );
    } catch (e) {
       throw new Response("Internal Server Error", { status: 500 });

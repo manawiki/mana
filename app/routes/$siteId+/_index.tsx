@@ -87,7 +87,7 @@ export async function loader({
    const home = data[0]?.content;
    return json(
       { home, isChanged: false },
-      { headers: { "Cache-Control": "public, s-maxage=60" } }
+      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
    );
 }
 

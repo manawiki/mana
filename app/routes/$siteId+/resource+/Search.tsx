@@ -46,7 +46,7 @@ export async function loader({
          ).json()) as Search[];
          return json(
             { searchResults },
-            { headers: { "Cache-Control": "public, s-maxage=60" } }
+            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
          );
       } catch (e) {
          throw new Response("Internal Server Error", { status: 500 });
@@ -69,7 +69,7 @@ export async function loader({
          );
          return json(
             { searchResults },
-            { headers: { "Cache-Control": "public, s-maxage=60" } }
+            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
          );
       } catch (e) {
          throw new Response("Internal Server Error", { status: 500 });
