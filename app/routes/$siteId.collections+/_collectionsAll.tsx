@@ -54,7 +54,7 @@ export async function loader({ params, request }: LoaderArgs) {
 
       return json(
          { collections },
-         { headers: { "Cache-Control": "public, s-maxage=60" } }
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
       );
    } catch (e) {
       throw new Response("Internal Server Error", { status: 500 });

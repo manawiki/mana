@@ -4,10 +4,8 @@ import {
    NavLink,
    Outlet,
    useFetcher,
-   useFetchers,
    useLoaderData,
    useLocation,
-   useNavigation,
    useRouteLoaderData,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
@@ -44,7 +42,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -59,16 +57,39 @@ import {
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
-import type { User, Site } from "payload/generated-types";
+import type { User, Site, Update } from "payload/generated-types";
 import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
-import type { Update } from "~/db/payload-types";
+
 import { useIsBot } from "~/utils/isBotProvider";
+import { remember } from "scripts/remember";
+import { LRUCache } from "lru-cache";
 // import NProgress from "nprogress";
 // import nProgressStyles from "~/styles/nprogress.css";
+
+const layoutCache = remember(
+   "layoutCache",
+   new LRUCache({
+      max: 100, // maximum number of items to store in the cache
+      ttl: 5 * 60 * 1000, // how long to live in ms
+   })
+);
+
+// Setup a lru-cache for layout data, so we don't have to fetch it every time
+async function fetchWithCache(url: string, init?: RequestInit) {
+   const cached = layoutCache.get(url);
+   if (cached) {
+      return cached;
+   }
+   return fetch(url, init).then((res) => {
+      const response = res.json();
+      layoutCache.set(url, response);
+      return response;
+   });
+}
 
 export async function loader({
    context: { payload, user },
@@ -84,13 +105,11 @@ export async function loader({
 
       const siteUrl = `${url}/api/sites?where[slug][equals]=${siteId}&depth=2`;
 
-      const { docs: slug } = (await (
-         await fetch(siteUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<Site>;
+      const { docs: slug } = (await fetchWithCache(siteUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<Site>;
 
       const site = slug[0];
 
@@ -99,27 +118,26 @@ export async function loader({
       }
 
       const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
-      const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
-      const [{ docs: updateResults }, { totalDocs: followers }] =
-         await Promise.all([
-            (await (
-               await fetch(updatesUrl, {
-                  headers: {
-                     cookie: request.headers.get("cookie") ?? "",
-                  },
-               })
-            ).json()) as PaginatedDocs<Update>,
-            (await (
-               await fetch(followersUrl, {
-                  headers: {
-                     cookie: request.headers.get("cookie") ?? "",
-                  },
-               })
-            ).json()) as PaginatedDocs,
-         ]);
+
+      const { docs: updateResults } = (await fetchWithCache(updatesUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<Update>;
+
+      // const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
+
+      // (await (
+      //    await fetch(followersUrl, {
+      //       headers: {
+      //          cookie: request.headers.get("cookie") ?? "",
+      //       },
+      //    })
+      // ).json()) as PaginatedDocs,
+
       return json(
-         { updateResults, site, followers },
-         { headers: { "Cache-Control": "public, s-maxage=60" } }
+         { updateResults, site },
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
       );
    } catch (e) {
       throw new Response("Internal Server Error", { status: 500 });
@@ -176,7 +194,7 @@ const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
 };
 
 export default function SiteIndex() {
-   const { site, followers } = useLoaderData<typeof loader>();
+   const { site } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -732,7 +750,6 @@ export default function SiteIndex() {
                               >
                                  <div className="shadow-1 h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200 shadow">
                                     <Image
-                                       //@ts-expect-error
                                        url={site.icon?.url}
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        alt="Site Logo"
@@ -911,7 +928,7 @@ export default function SiteIndex() {
                                           className="bg-3 shadow-1 border-color relative block rounded-lg border p-3 shadow-sm"
                                           to={pinnedLinkUrlGenerator(
                                              item,
-                                             site.slug
+                                             site?.slug ?? ""
                                           )}
                                        >
                                           <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center">
