@@ -65,31 +65,7 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 
 import { useIsBot } from "~/utils/isBotProvider";
-import { remember } from "scripts/remember";
-import { LRUCache } from "lru-cache";
-// import NProgress from "nprogress";
-// import nProgressStyles from "~/styles/nprogress.css";
-
-const layoutCache = remember(
-   "layoutCache",
-   new LRUCache({
-      max: 100, // maximum number of items to store in the cache
-      ttl: 5 * 60 * 1000, // how long to live in ms
-   })
-);
-
-// Setup a lru-cache for layout data, so we don't have to fetch it every time
-async function fetchWithCache(url: string, init?: RequestInit) {
-   const cached = layoutCache.get(url);
-   if (cached) {
-      return cached;
-   }
-   return fetch(url, init).then((res) => {
-      const response = res.json();
-      layoutCache.set(url, response);
-      return response;
-   });
-}
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload, user },

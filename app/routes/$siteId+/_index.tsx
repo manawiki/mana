@@ -27,6 +27,7 @@ import Tooltip from "~/components/Tooltip";
 import { isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { isSiteOwnerOrAdmin } from "~/access/site";
+import { fetchWithCache } from "~/utils/cache.server";
 
 const initialValue: CustomElement[] = [
    {
@@ -50,13 +51,11 @@ export async function loader({
    });
    const url = new URL(request.url).origin;
    const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
-   const { docs: data } = (await (
-      await fetch(homeContentUrl, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })
-   ).json()) as PaginatedDocs<HomeContent>;
+   const { docs: data } = (await fetchWithCache(homeContentUrl, {
+      headers: {
+         cookie: request.headers.get("cookie") ?? "",
+      },
+   })) as PaginatedDocs<HomeContent>;
 
    if (data.length == 0) return json({ home: null, isChanged: false });
 
