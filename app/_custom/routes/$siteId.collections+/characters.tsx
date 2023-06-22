@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Search, SortDesc } from "lucide-react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload },
@@ -45,7 +46,7 @@ export async function loader({
       }
     }
    `;
-   const { data, errors } = await fetch(
+   const { data, errors } = await fetchWithCache(
       `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql?characters`,
       {
          method: "POST",
@@ -56,7 +57,7 @@ export async function loader({
             query: CHARACTERS,
          }),
       }
-   ).then((res) => res.json());
+   );
 
    if (errors) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console

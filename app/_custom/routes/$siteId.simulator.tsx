@@ -17,22 +17,23 @@ import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload },
    params,
    request,
 }: LoaderArgs) {
-   var url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=500&sort=id`;
-   const bannerRaw = await (await fetch(url)).json();
+   let url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=500&sort=id`;
+   const bannerRaw = await fetchWithCache(url);
    const banners = bannerRaw.docs;
 
    url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=500`;
-   const characterRaw = await (await fetch(url)).json();
+   const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
 
    url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/lightCones?limit=500`;
-   const lightConeRaw = await (await fetch(url)).json();
+   const lightConeRaw = await fetchWithCache(url);
    const lightCones = lightConeRaw.docs;
 
    return json({ banners, characters, lightCones });
@@ -613,7 +614,7 @@ const SummonSimulator = (data: any) => {
       return (
          <a href={`/collections/${resulttype}/${pull.id}`}>
             <div
-               className={`border-color m-0.5 rounded-md border border text-left ${customcolor}`}
+               className={`border-color m-0.5 rounded-md border text-left ${customcolor}`}
                key={pull.id + "-" + number}
             >
                <div

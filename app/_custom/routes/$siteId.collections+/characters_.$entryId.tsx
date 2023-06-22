@@ -30,6 +30,7 @@ import type {
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export { meta };
 
@@ -50,7 +51,7 @@ export async function loader({
          request,
          user,
       }),
-      fetch(
+      fetchWithCache(
          `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
          {
             method: "POST",
@@ -64,7 +65,7 @@ export async function loader({
                },
             }),
          }
-      ).then((res) => res.json()),
+      ),
    ]);
 
    if (errors) {

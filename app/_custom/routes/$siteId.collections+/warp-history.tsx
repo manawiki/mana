@@ -3,9 +3,8 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import React from "react";
 import {
    Chart as ChartJS,
    CategoryScale,
@@ -18,7 +17,7 @@ import {
 import { Bar } from "react-chartjs-2";
 
 import type { Material } from "payload/generated-custom-types";
-
+import { fetchWithCache } from "~/utils/cache.server";
 
 ChartJS.register(
    CategoryScale,
@@ -35,19 +34,19 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=100`;
-   const characterRaw = await (await fetch(url)).json();
+   const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
 
    const url2 = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/lightCones?limit=200&sort=lightcone_id`;
-   const lightConesRaw = await (await fetch(url2)).json();
+   const lightConesRaw = await fetchWithCache(url2);
    const lightCones = lightConesRaw.docs;
 
    const url3 = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=100&sort=-banner_id`;
-   const bannerRaw = await (await fetch(url3)).json();
+   const bannerRaw = await fetchWithCache(url3);
    const banners = bannerRaw.docs;
 
    const url4 = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/submittedWarps?limit=1000&sort=id`;
-   const warpRaw = await (await fetch(url4)).json();
+   const warpRaw = await fetchWithCache(url4);
    const warps = warpRaw.docs;
 
    return json({ characters, lightCones, banners, warps });
@@ -348,7 +347,7 @@ const ResultFrame = ({ entry, type }: any) => {
 // - mat: Any that contains a rarity, icon, and name field.
 // - type: string denoting type of item for link
 // ====================================
-const ItemFrame = ({ mat, type }: {mat: Material, type: string}) => {
+const ItemFrame = ({ mat, type }: { mat: Material; type: string }) => {
    // mat holds material information
 
    return (

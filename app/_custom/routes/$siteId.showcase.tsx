@@ -26,7 +26,7 @@ import { isLoading } from "~/utils";
 import { toPng } from "html-to-image";
 
 import type { Material } from "payload/generated-custom-types";
-
+import { fetchWithCache } from "~/utils/cache.server";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -39,7 +39,7 @@ export async function loader({ params, request }: LoaderArgs) {
    if (!uid) return null;
 
    const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
-   const showcaseData = await (await fetch(showcaseDataUrl)).json();
+   const showcaseData = await fetchWithCache(showcaseDataUrl);
 
    if (showcaseData.detail)
       return json({
@@ -75,7 +75,7 @@ export async function loader({ params, request }: LoaderArgs) {
       });
    });
 
-   const { data, errors } = await fetch(
+   const { data, errors } = await fetchWithCache(
       `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
       {
          method: "POST",
@@ -93,7 +93,7 @@ export async function loader({ params, request }: LoaderArgs) {
             },
          }),
       }
-   ).then((res) => res.json());
+   );
 
    if (errors) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console
@@ -1571,7 +1571,15 @@ const CharacterInfo = ({
    );
 };
 
-const ItemFrameSquare = ({ mat, style, lv }: {mat: Material, style?: string, lv: number}) => {
+const ItemFrameSquare = ({
+   mat,
+   style,
+   lv,
+}: {
+   mat: Material;
+   style?: string;
+   lv: number;
+}) => {
    // ========================
    // Generic Item / Character Circle Frame - Light Cone
    // ========================

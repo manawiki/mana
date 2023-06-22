@@ -18,6 +18,7 @@ import type {
    Achievement,
    AchievementSery,
 } from "payload/generated-custom-types";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export { meta };
 
@@ -43,7 +44,7 @@ export async function loader({
    });
 
    const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entryId}`;
-   const achievementRaw = await (await fetch(url)).json();
+   const achievementRaw = await fetchWithCache(url);
    const achievementData = achievementRaw.docs as Achievement[];
 
    // ======================
