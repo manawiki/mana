@@ -31,6 +31,7 @@ import { toast } from "~/components/Toaster";
 import { Image } from "~/components/Image";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import type { Collection } from "payload/generated-types";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
@@ -42,13 +43,11 @@ export async function loader({ params, request }: LoaderArgs) {
    try {
       const collectionDataFetchUrl = `${url}/api/collections?where[hiddenCollection][equals]=false&where[site.slug][equals]=${siteId}&depth=1`;
 
-      const collectionData = (await (
-         await fetch(collectionDataFetchUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<Collection>;
+      const collectionData = (await fetchWithCache(collectionDataFetchUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<Collection>;
 
       const collections = collectionData.docs;
 

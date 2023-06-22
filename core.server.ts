@@ -18,7 +18,7 @@ const cors = require("cors");
 
 const transport = nodemailer.createTransport({
    host: process.env.PAYLOAD_NODEMAILER_HOST,
-   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT),
+   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT ?? "587"),
    secure: false,
    auth: {
       user: process.env.PAYLOAD_NODEMAILER_USER,
@@ -149,7 +149,15 @@ async function startCore() {
       console.log(`Express server listening on port ${port}`);
 
       if (process.env.NODE_ENV === "development") {
-         broadcastDevReady(require(BUILD_DIR));
+         const build = require(BUILD_DIR);
+
+         if (build.assets === undefined) {
+            console.log(build.assets);
+            debugger;
+          }
+
+
+         broadcastDevReady(build);
       }
    });
 }
@@ -167,6 +175,14 @@ if (process.env.NODE_ENV === "development") {
             delete require.cache[key];
          }
       }
-      broadcastDevReady(require(BUILD_DIR));
+      const build = require(BUILD_DIR);
+
+      if (build.assets === undefined) {
+         console.log(build.assets);
+         debugger;
+       }
+
+
+      broadcastDevReady(build);
    });
 }

@@ -39,11 +39,11 @@ import {
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useDebouncedValue } from "~/hooks";
-import type { Entry } from "payload/generated-types";
+import type { Entry, Collection } from "payload/generated-types";
 import { nanoid } from "nanoid";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import type { Collection } from "payload/generated-types";
 import { H2 } from "~/modules/collections/components/H2";
+import { fetchWithCache } from "~/utils/cache.server";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -70,28 +70,24 @@ export async function loader({
    try {
       const collectionDataFetchUrl = `${url}/api/collections?where[slug][equals]=${collectionId}&where[site.slug][equals]=${siteId}&depth=0`;
 
-      const collectionData = (await (
-         await fetch(collectionDataFetchUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<Collection>;
+      const collectionData = (await fetchWithCache(collectionDataFetchUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<Collection>;
 
       //We want to grab the immutable id
       const collection = collectionData?.docs[0];
 
       // Get custom collection list data
       if (collection.customDatabase) {
-         const entrylist = await (
-            await fetch(
-               `https://${
-                  process.env.PAYLOAD_PUBLIC_SITE_ID
-               }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
-                  page ?? 1
-               }`
-            )
-         ).json();
+         const entrylist = await fetchWithCache(
+            `https://${
+               process.env.PAYLOAD_PUBLIC_SITE_ID
+            }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
+               page ?? 1
+            }`
+         );
 
          return json(
             { collection, entrylist, q },
@@ -104,13 +100,11 @@ export async function loader({
          collection.id
       }&where[site.slug][equals]=${siteId}&depth=0&limit=20&page=${page ?? 1}`;
 
-      const entrylist = (await (
-         await fetch(entrylistFetchUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<Entry>;
+      const entrylist = (await fetchWithCache(entrylistFetchUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<Entry>;
 
       return json(
          { collection, entrylist, q },

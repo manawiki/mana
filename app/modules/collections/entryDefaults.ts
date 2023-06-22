@@ -5,6 +5,7 @@ import { zx } from "zodix";
 import type { Payload } from "payload";
 import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
+import { fetchWithCache } from "~/utils/cache.server";
 
 type HeaderType = {
    name?: string;
@@ -43,11 +44,7 @@ export const getDefaultEntryData = async ({
    let data = {} as HeaderType;
 
    if (collection.customEntryTemplate) {
-      const entry = await (
-         await fetch(
-            `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=1`
-         )
-      ).json();
+      const entry = await fetchWithCache(`https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=1`);
       data = { name: entry?.name, icon: { url: entry?.icon?.url } };
       return data;
    }
@@ -82,12 +79,12 @@ export const getEmbeddedContent = async ({
    //Pull published version first if exists
    const contentEmbedUrl = `${url}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1`;
    const { docs: data } = await (
-      await fetch(contentEmbedUrl, {
+      await fetchWithCache(contentEmbedUrl, {
          headers: {
             cookie: request.headers.get("cookie") ?? "",
          },
       })
-   ).json();
+   );
    if (data.length == 0) return null;
 
    //If editing, we check perms then use local api to pull
@@ -152,11 +149,7 @@ export const getCustomEntryData = async ({
       entryId: z.string(),
    });
 
-   return (
-      await fetch(
-         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${depth}`
-      )
-   ).json();
+   return fetchWithCache(`https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${depth}`);
    
 };
 

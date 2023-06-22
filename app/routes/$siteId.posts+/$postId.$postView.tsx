@@ -22,6 +22,7 @@ import { ArrowLeft } from "lucide-react";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload, user },
@@ -35,13 +36,11 @@ export async function loader({
    });
    const url = new URL(request.url).origin;
    try {
-      const post = (await (
-         await fetch(`${url}/api/posts/${postId}?depth=2`, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as Post;
+      const post = (await fetchWithCache(`${url}/api/posts/${postId}?depth=2`, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as Post;
 
       if (post._status == "draft") {
          throw json(null, { status: 404 });
