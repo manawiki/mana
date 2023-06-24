@@ -19,22 +19,20 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const embed = await cacheThis(() =>
-      payload.find({
-         collection: "contentEmbeds",
-         where: {
-            "site.slug": {
-               equals: siteId,
-            },
-            relationId: {
-               equals: entryId,
-            },
+   const embed = await payload.find({
+      collection: "contentEmbeds",
+      where: {
+         "site.slug": {
+            equals: siteId,
          },
-         draft: true,
-         overrideAccess: false,
-         user,
-      })
-   );
+         relationId: {
+            equals: entryId,
+         },
+      },
+      draft: true,
+      overrideAccess: false,
+      user,
+   });
 
    return json({ entryDefault, embed: embed?.docs[0]?.content });
 }
