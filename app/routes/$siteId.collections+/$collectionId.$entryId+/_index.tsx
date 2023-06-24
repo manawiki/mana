@@ -6,7 +6,6 @@ import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { zx } from "zodix";
-import { cacheThis } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload, user },
