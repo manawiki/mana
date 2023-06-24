@@ -6,6 +6,7 @@ import type { Payload } from "payload";
 import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { cacheThis, fetchWithCache } from "~/utils/cache.server";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
 
 type HeaderType = {
    name?: string;
@@ -84,11 +85,11 @@ export const getEmbeddedContent = async ({
 
    //Pull published version first if exists
    const contentEmbedUrl = `${url}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1`;
-   const { docs: data } = await await fetchWithCache(contentEmbedUrl, {
+   const { docs: data } = (await fetchWithCache(contentEmbedUrl, {
       headers: {
          cookie: request.headers.get("cookie") ?? "",
       },
-   });
+   })) as PaginatedDocs<ContentEmbed>;
    if (data.length == 0) return null;
 
    //If editing, we check perms then use local api to pull
@@ -120,14 +121,14 @@ export const getEmbeddedContent = async ({
          depth: 1,
       });
       if (data.length == 0) return null;
-      embedContent = data.map((item: ContentEmbed) => ({
+      embedContent = data.map((item) => ({
          content: item.content,
          sectionId: item.sectionId,
       }));
       return embedContent;
    }
 
-   embedContent = data.map((item: ContentEmbed) => ({
+   embedContent = data.map((item) => ({
       content: item.content,
       sectionId: item.sectionId,
    }));
