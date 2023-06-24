@@ -6,6 +6,7 @@ import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import { nanoid } from "nanoid";
 import { z } from "zod";
 import { zx } from "zodix";
+import { cacheThis } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload, user },
@@ -18,20 +19,22 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const embed = await payload.find({
-      collection: "contentEmbeds",
-      where: {
-         "site.slug": {
-            equals: siteId,
+   const embed = await cacheThis(() =>
+      payload.find({
+         collection: "contentEmbeds",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+            relationId: {
+               equals: entryId,
+            },
          },
-         relationId: {
-            equals: entryId,
-         },
-      },
-      draft: true,
-      overrideAccess: false,
-      user,
-   });
+         draft: true,
+         overrideAccess: false,
+         user,
+      })
+   );
 
    return json({ entryDefault, embed: embed?.docs[0]?.content });
 }

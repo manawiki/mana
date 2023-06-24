@@ -5,7 +5,7 @@ import { zx } from "zodix";
 import type { Payload } from "payload";
 import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { fetchWithCache } from "~/utils/cache.server";
+import { cacheThis, fetchWithCache } from "~/utils/cache.server";
 
 type HeaderType = {
    name?: string;
@@ -30,14 +30,14 @@ export const getDefaultEntryData = async ({
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
-   const collectionData = await payload.find({
+   const collectionData = await cacheThis(() => payload.find({
       collection: "collections",
       where: {
          slug: {
             equals: collectionId,
          },
       },
-   });
+   }));
 
    const collection = collectionData?.docs[0];
 

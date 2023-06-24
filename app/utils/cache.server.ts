@@ -30,3 +30,22 @@ export async function fetchWithCache(url: string, init?: RequestInit) {
         return response;
     });
 }
+
+//Write a function that take a async function and check if we have the return cached, if not, return the result of the function and cache it
+export async function cacheThis<T>(func: () => Promise<T>) {
+
+    //the key is the function stringified
+    const key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
+
+    const cached = lruCache.get(key);
+    if (cached) {
+        return cached as T;
+    }
+    const result = await func();
+    lruCache.set(key, result);
+
+    
+    //log cache size, trim length to terminal width
+    console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
+    return result;
+}
