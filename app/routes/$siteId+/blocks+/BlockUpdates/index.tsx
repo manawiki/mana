@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import { z } from "zod";
@@ -22,6 +21,7 @@ import Leaf from "~/modules/editor/blocks/Leaf";
 import { isAdding, isProcessing } from "~/utils";
 import { Loader2, Plus, Trash } from "lucide-react";
 import { withHistory } from "slate-history";
+import { H2Default } from "~/modules/collections/components/H2";
 
 type Props = {
    element: UpdatesElement;
@@ -65,21 +65,8 @@ export const BlockUpdates = ({ element }: Props) => {
       <section>
          {updateResults?.length === 0 ? null : (
             <>
+               <H2Default text="Updates" />
                <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
-                  <div className="relative px-3 py-2.5">
-                     <div className="relative z-10 font-header text-lg font-bold">
-                        Updates
-                     </div>
-                     <div
-                        className="pattern-dots absolute left-0 top-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
-                     ></div>
-                     <div
-                        className="absolute left-0 top-0 h-full w-full 
-               bg-gradient-to-r from-zinc-50/20 to-white/50 dark:from-zinc-800/30"
-                     ></div>
-                  </div>
                   <div className="flex items-center justify-between gap-2 py-1 pr-2">
                      <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                         {Intl.DateTimeFormat("en-US", {
@@ -135,7 +122,10 @@ export const BlockUpdates = ({ element }: Props) => {
                      </button>
                   </div>
                   {updateResults?.map((row) => (
-                     <section key={row.id} className="flex items-start gap-2">
+                     <section
+                        key={row.id}
+                        className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                     >
                         <time
                            className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
                            dateTime={row?.createdAt}

@@ -29,8 +29,13 @@ export const BlockUpdatesView = ({ element }: Props) => {
    return (
       <section className="my-6">
          {updateResults?.length === 0 ? null : (
-            <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="relative px-3 py-2.5">
+            <>
+               <H2Default text="Updates" />
+               <div
+                  className="divide-color border-color bg-2 shadow-1 divide-y 
+               overflow-hidden rounded-lg border shadow-sm"
+               >
+                  {/* <div className="relative px-3 py-2.5">
                   <div className="relative z-10 font-header text-lg font-bold">
                      Updates
                   </div>
@@ -43,34 +48,35 @@ export const BlockUpdatesView = ({ element }: Props) => {
                      className="absolute left-0 top-0 h-full w-full 
                bg-gradient-to-r from-zinc-50/20 to-white/50 dark:from-zinc-800/30"
                   ></div>
-               </div>
-               {updateResults?.map((row) => (
-                  <section
-                     key={row.id}
-                     className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
-                  >
-                     <time
-                        className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
-                        dateTime={row?.createdAt}
+               </div> */}
+                  {updateResults?.map((row) => (
+                     <section
+                        key={row.id}
+                        className="flex items-start gap-2 p-0.5 even:bg-white dark:even:bg-neutral-800/50"
                      >
-                        {dateFormat(row?.createdAt)}
-                     </time>
-                     <span className="divide-color flex-grow divide-y text-sm">
-                        {row.entry?.length === 0 ? null : (
-                           <>
-                              {row.entry?.map((item) => (
-                                 <div key={item.id} className="py-3">
-                                    <UpdatesEditorView
-                                       content={item.content as Descendant[]}
-                                    />
-                                 </div>
-                              ))}
-                           </>
-                        )}
-                     </span>
-                  </section>
-               ))}
-            </div>
+                        <time
+                           className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
+                           dateTime={row?.createdAt}
+                        >
+                           {dateFormat(row?.createdAt)}
+                        </time>
+                        <span className="divide-color flex-grow divide-y text-sm">
+                           {row.entry?.length === 0 ? null : (
+                              <>
+                                 {row.entry?.map((item) => (
+                                    <div key={item.id} className="py-3">
+                                       <UpdatesEditorView
+                                          content={item.content as Descendant[]}
+                                       />
+                                    </div>
+                                 ))}
+                              </>
+                           )}
+                        </span>
+                     </section>
+                  ))}
+               </div>
+            </>
          )}
       </section>
    );

@@ -43,7 +43,7 @@ export default function GroupView({ element }: Props) {
                               key={row?.id}
                               to={row?.path ?? ""}
                               prefetch="intent"
-                              className="bg-2 relative flex items-center gap-2 p-2.5"
+                              className="bg-2 group relative flex items-center gap-2 p-2.5"
                            >
                               <div
                                  className="shadow-1 border-color flex h-8 w-8 items-center
@@ -64,7 +64,7 @@ export default function GroupView({ element }: Props) {
                                     />
                                  )}
                               </div>
-                              <span className="text-1 flex-grow truncate text-sm font-bold">
+                              <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
                                  {row?.name}
                               </span>
                               {row.label && (
@@ -95,7 +95,7 @@ export default function GroupView({ element }: Props) {
                                  key={row?.id}
                                  to={row?.path ?? ""}
                                  prefetch="intent"
-                                 className="bg-2 relative flex items-center gap-2 p-2.5"
+                                 className="bg-2 group relative flex items-center gap-2 p-2.5"
                               >
                                  <div
                                     className="shadow-1 border-color flex h-8 w-8 items-center
@@ -116,7 +116,7 @@ export default function GroupView({ element }: Props) {
                                        />
                                     )}
                                  </div>
-                                 <span className="text-1 flex-grow truncate text-sm font-bold">
+                                 <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
                                     {row?.name}
                                  </span>
                                  {row.label && (
@@ -159,7 +159,7 @@ export default function GroupView({ element }: Props) {
                               key={row?.id}
                               to={row?.path ?? ""}
                               prefetch="intent"
-                              className="bg-2 border-color shadow-1 relative flex items-center justify-center rounded-lg border p-3 shadow-sm"
+                              className="bg-2 border-color shadow-1 group relative flex items-center justify-center rounded-lg border p-3 shadow-sm"
                            >
                               <div className="block truncate">
                                  {row.label && (
@@ -194,7 +194,7 @@ export default function GroupView({ element }: Props) {
                                        />
                                     )}
                                  </div>
-                                 <div className="text-1 truncate pt-1 text-center text-sm font-bold">
+                                 <div className="text-1 truncate pt-1 text-center text-sm font-bold group-hover:underline">
                                     {row?.name}
                                  </div>
                               </div>
@@ -213,7 +213,7 @@ export default function GroupView({ element }: Props) {
                                  key={row?.id}
                                  to={row?.path ?? ""}
                                  prefetch="intent"
-                                 className="bg-2 border-color shadow-1 relative flex items-center justify-center rounded-lg border p-3 shadow-sm"
+                                 className="bg-2 border-color shadow-1 group relative flex items-center justify-center rounded-lg border p-3 shadow-sm"
                               >
                                  <div className="block truncate">
                                     {row.label && (
@@ -248,7 +248,7 @@ export default function GroupView({ element }: Props) {
                                           />
                                        )}
                                     </div>
-                                    <div className="text-1 truncate pt-1 text-center text-sm font-bold">
+                                    <div className="text-1  truncate pt-1 text-center text-sm font-bold group-hover:underline">
                                        {row?.name}
                                     </div>
                                  </div>
