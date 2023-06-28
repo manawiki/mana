@@ -1,13 +1,13 @@
-import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import { initialValue } from "~/routes/$siteId.collections+/$collectionId.$entryId+/_index";
 import { H2 } from "./H2";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import type { RenderElementProps } from "slate-react";
-import { Editable, Slate, withReact } from "slate-react";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { useMemo, useCallback } from "react";
-import { createEditor } from "slate";
+
+// import { SoloEditor } from "~/routes/editors+/SoloEditor";
+// import { EntryViewer } from "./EntryViewer";
+// we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
+import { lazily } from "react-lazily";
+const { SoloEditor } = lazily(() => import("~/routes/editors+/SoloEditor.tsx"));
+const { EntryViewer } = lazily(() => import("./EntryViewer.tsx"));
 
 export const EntryContentEmbed = ({
    title,
@@ -31,10 +31,6 @@ export const EntryContentEmbed = ({
       defaultValue &&
       defaultValue.find((item: any) => item.sectionId === sectionId)?.content;
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-   const editor = useMemo(() => withReact(createEditor()), []);
-   const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
-   }, []);
    return (
       <div className="mx-auto max-w-[728px]">
          {hasAccess ? (
@@ -55,13 +51,7 @@ export const EntryContentEmbed = ({
                {content && (
                   <>
                      <H2 text={title} />
-                     <Slate editor={editor} value={content}>
-                        <Editable
-                           renderElement={renderElement}
-                           renderLeaf={Leaf}
-                           readOnly={true}
-                        />
-                     </Slate>
+                     <EntryViewer content={content} />
                   </>
                )}
             </>
