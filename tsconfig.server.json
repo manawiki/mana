@@ -1,24 +1,25 @@
 {
    "include": ["core.server.ts", "payload.config.ts"],
    "compilerOptions": {
-      "lib": ["DOM", "DOM.Iterable", "ES2019"],
+      "lib": ["DOM", "DOM.Iterable", "ES2022"],
       "isolatedModules": true,
       "esModuleInterop": true,
       "jsx": "react-jsx",
-      "module": "CommonJS",
-      "moduleResolution": "node",
+      "module": "nodenext",
+      "moduleResolution": "nodenext",
       "resolveJsonModule": true,
       "strict": false,
+      //      "noImplicitAny": true,
       "allowJs": true,
       "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true,
-      "outDir": "./dist",
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-types.ts"],
-         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]      
+         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]
       },
-      "target": "ES2019",
-   },
+      "skipLibCheck": true,
+      "outDir": "./dist",
+      "target": "ES2022"
+   }
 }
