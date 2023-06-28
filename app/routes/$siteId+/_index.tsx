@@ -50,44 +50,68 @@ export async function loader({
       siteId: z.string(),
    });
    const url = new URL(request.url).origin;
-   const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
-   const { docs: data } = (await fetchWithCache(homeContentUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
-      },
-   })) as PaginatedDocs<HomeContent>;
 
-   if (data.length == 0) return json({ home: null, isChanged: false });
+   //Don't cache if logged in
+   if (!user) {
+      const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
 
-   const homeData = data[0];
-   const site = homeData.site;
-   const userId = user?.id;
-
-   const hasAccess = isSiteOwnerOrAdmin(userId, site);
-
-   if (hasAccess) {
-      //Note that we findbyId so permissions pass the ID
-      const editHomeContentUrl = `${url}/api/homeContents/${homeData.id}?depth=0&draft=true`;
-      const data = (await (
-         await fetch(editHomeContentUrl, {
+      const { docs: data } = (await (
+         await fetch(homeContentUrl, {
             headers: {
                cookie: request.headers.get("cookie") ?? "",
             },
          })
-      ).json()) as HomeContent;
-      if (!data) return json({ home: null, isChanged: false });
-      const home = data.content;
-      const isChanged =
-         JSON.stringify(home) != JSON.stringify(homeData.content);
-      return json({ home, isChanged });
+      ).json()) as PaginatedDocs<HomeContent>;
+
+      if (data.length == 0) return json({ home: null, isChanged: false });
+      const home = data[0]?.content;
+      //Otherwise return json and cache
+      return json(
+         { home, isChanged: false },
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+      );
    }
 
-   //Otherwise return json and cache
-   const home = data[0]?.content;
-   return json(
-      { home, isChanged: false },
-      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-   );
+   //Use cache if anon
+   if (user) {
+      const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
+      const { docs: data } = (await fetchWithCache(homeContentUrl, {
+         headers: {
+            cookie: request.headers.get("cookie") ?? "",
+         },
+      })) as PaginatedDocs<HomeContent>;
+
+      if (data.length == 0) return json({ home: null, isChanged: false });
+
+      const homeData = data[0];
+      const site = homeData.site;
+      const userId = user?.id;
+
+      const hasAccess = isSiteOwnerOrAdmin(userId, site);
+
+      if (hasAccess) {
+         //Note that we findbyId so permissions pass the ID
+         const editHomeContentUrl = `${url}/api/homeContents/${homeData.id}?depth=0&draft=true`;
+         const data = (await (
+            await fetch(editHomeContentUrl, {
+               headers: {
+                  cookie: request.headers.get("cookie") ?? "",
+               },
+            })
+         ).json()) as HomeContent;
+         if (!data) return json({ home: null, isChanged: false });
+         const home = data.content;
+         const isChanged =
+            JSON.stringify(home) != JSON.stringify(homeData.content);
+         return json({ home, isChanged });
+      }
+      const home = data[0]?.content;
+      //Otherwise return json and cache
+      return json(
+         { home, isChanged: false },
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+      );
+   }
 }
 
 export default function SiteIndexMain() {

@@ -861,7 +861,7 @@ export default function SiteIndex() {
                max-laptop:max-w-[728px] max-laptop:pb-20  laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <div className="divide-color flex-grow divide-y laptop:pt-14">
+                  <div className="divide-color border-color divide-y border-b laptop:pt-14">
                      {site.about && (
                         <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
@@ -887,6 +887,16 @@ export default function SiteIndex() {
                         </div> */}
                         </section>
                      )}
+                     {/* {site.about && (
+                        <section className="p-4 px-4 tablet:px-0 laptop:p-4">
+                           <div className="flex items-center gap-1.5 pb-2.5">
+                              <span className="text-1 text-sm font-bold">
+                                 Level 1
+                              </span>
+                           </div>
+                           <div className="text-1 h-2 rounded-full bg-blue-400 text-sm"></div>
+                        </section>
+                     )} */}
                      {site.pinned && (
                         <>
                            <section className="p-4 px-4 tablet:px-0 laptop:p-4">
