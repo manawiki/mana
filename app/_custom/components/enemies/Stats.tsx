@@ -1,29 +1,8 @@
-import { Disclosure } from "@headlessui/react";
 import { useState } from "react";
-import { Line } from "react-chartjs-2";
 
-import {
-   Chart as ChartJS,
-   CategoryScale,
-   LinearScale,
-   PointElement,
-   LineElement,
-   Title,
-   Tooltip,
-   Legend,
-} from "chart.js";
-import { ChevronDown } from "lucide-react";
 import type { Enemy } from "payload/generated-custom-types";
-
-ChartJS.register(
-   CategoryScale,
-   LinearScale,
-   PointElement,
-   LineElement,
-   Title,
-   Tooltip,
-   Legend
-);
+import { CSVStats } from "../CSVStats";
+import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph";
 
 export const Stats = ({
    pageData,
@@ -48,11 +27,11 @@ export const Stats = ({
    // let rarityurl = pageData.rarity?.icon?.url;
    // let pathname = pageData.path?.name;
 
-   let statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
+   const statsList = ["HP", "ATK", "DEF", "Speed", "Break"];
    // =====================================
    // PREPROCESSING STEPS
    // Create an object that can be iterated through to generate data rows of stat data
-   let statobj = statlist.map((stat, i) => ({
+   let statobj = statsList.map((stat, i) => ({
       stat: stat,
       // Add stat icons eventually
       hash: null,
@@ -226,231 +205,18 @@ export const Stats = ({
 
             {/* 2ci) Character Stat Graph */}
             {/* - Should include a drop down stat selector, shading between pre-post ascension breakpoints */}
-            <StatGraph stats={stats} />
+            <LazyStatsGraph stats={stats} statsList={statsList} />
 
             {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
         UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
             {/* <Stats charData={charData} /> */}
-            <CSVStats charData={enemyData} />
+            {enemyData?.stats && <CSVStats statsCSV={enemyData?.stats_csv} />}
 
             {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
             {/* <BinOutputLink charData={charData} /> */}
          </div>
       </>
    );
-};
-
-// =====================================
-// 2ci) Character Stat Graph
-// =====================================
-type StatsType = Array<{ label: string; data: string[] }>;
-const StatGraph = ({ stats }: { stats: StatsType }) => {
-   const [graphStat, setGraphStat] = useState("HP");
-
-   let statlist = ["HP", "ATK", "DEF", "Speed", "Break"];
-
-   let tooltipsuffix = "";
-
-   // Processing Graph Data for display
-   const rawdata = stats.find((a) => a.label == graphStat)?.data;
-
-   let processdata = [];
-   if (rawdata) {
-      for (let j = 0; j < rawdata.length; j++) {
-         processdata[j] = formatStat(graphStat, parseFloat(rawdata[j]));
-         // If a % exists in the output, remove it but set up the tooltipsuffix so a % displays.
-         if (processdata[j].indexOf("%") > -1) {
-            processdata[j] = processdata[j].replace("%", "");
-            tooltipsuffix = "%";
-         }
-      }
-   }
-
-   // Graph configuration start!
-   // ==========================
-   const showlabels = [
-      "1",
-      "10",
-      "20",
-      "30",
-      "40",
-      "50",
-      "60",
-      "70",
-      "80",
-      "90",
-   ];
-   const labels = stats?.find((a) => a.label == "Lv")?.data;
-   const options = {
-      responsive: true,
-      plugins: {
-         legend: {
-            display: false,
-         },
-         // title: {
-         //   display: true,
-         //   text: "Chart.js Line Chart",
-         // },
-         tooltip: {
-            callbacks: {
-               label: function (context: any) {
-                  return context.parsed.y + tooltipsuffix;
-               },
-            },
-         },
-      },
-
-      scales: {
-         y: {
-            grid: {
-               color: "rgba(150,150,150,0.5)",
-            },
-            ticks: {
-               // Show % tooltip suffix in Y axis if applicable to the stat
-               callback: function (value: any) {
-                  return value + tooltipsuffix;
-               },
-            },
-         },
-         x: {
-            grid: {
-               tickLength: 2,
-               // Only show vertical grid where a showlabel value is
-               color: function (context: any) {
-                  if (context.tick.label != "") {
-                     return "rgba(150,150,150,0.5)";
-                  } else {
-                     return "rgba(0,0,0,0)"; //transparent
-                  }
-               },
-            },
-            ticks: {
-               autoSkip: false,
-               // For a category axis, only show label if the value matches the "showlabels" array
-               callback: function (val: any) {
-                  // Hide every non-10th tick label
-                  return showlabels.indexOf(this.getLabelForValue(val)) > -1
-                     ? this.getLabelForValue(val)
-                     : "";
-               },
-            },
-         },
-      },
-   };
-
-   // END of Graph Configuration
-
-   const graphdata = {
-      labels,
-      datasets: [
-         {
-            //label: graphStat,
-            data: processdata,
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-         },
-      ],
-   };
-
-   return (
-      <>
-         <div className="my-1">
-            <Disclosure>
-               {({ open }) => (
-                  <>
-                     <Disclosure.Button
-                        className="mb-2 flex  w-full items-center 
-				   rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
-                     >
-                        Stat Graph
-                        <div
-                           className={`${
-                              open
-                                 ? "rotate-180 transform font-bold text-gray-600 "
-                                 : "text-gray-400"
-                           } ml-auto inline-block `}
-                        >
-                           <CaretDownIcon class="text-brand_1" w={28} h={28} />
-                        </div>
-                     </Disclosure.Button>
-                     <Disclosure.Panel className="mb-5">
-                        <div className="rounded-md border bg-gray-50 px-4 py-3 text-center text-sm dark:border-neutral-700 dark:bg-neutral-900">
-                           <div className="inline-block px-2 font-bold">
-                              Display Stat:{" "}
-                           </div>
-                           {/* Stat Select Drop Down */}
-                           <select
-                              className="inline-block bg-white dark:bg-neutral-700"
-                              name="stats"
-                              value={graphStat}
-                              onChange={(event) =>
-                                 setGraphStat(event.target.value)
-                              }
-                           >
-                              {statlist.map((stat) => (
-                                 <option value={stat} key={stat}>
-                                    {stat}
-                                 </option>
-                              ))}
-                           </select>
-                           <Line
-                              options={options}
-                              data={graphdata}
-                              height={"auto"}
-                           />
-                        </div>
-                     </Disclosure.Panel>
-                  </>
-               )}
-            </Disclosure>
-         </div>
-      </>
-   );
-};
-
-// =====================================
-// Collapsible CSV Stat Text box
-// =====================================
-const CSVStats = ({ charData }: any) => {
-   let data = charData;
-   if (data.stats != undefined && data.stats.length != 0) {
-      return (
-         <>
-            <Disclosure>
-               {({ open }) => (
-                  <>
-                     <Disclosure.Button
-                        className="mb-2 flex w-full items-center
-				rounded-md border bg-gray-50 px-3 py-2 font-bold dark:border-neutral-700 dark:bg-neutral-900"
-                     >
-                        Raw Stats for all Levels
-                        <div
-                           className={`${
-                              open
-                                 ? "rotate-180 transform font-bold text-gray-600 "
-                                 : "text-gray-400"
-                           } ml-auto inline-block `}
-                        >
-                           <ChevronDown size={28} />
-                        </div>
-                     </Disclosure.Button>
-                     <Disclosure.Panel className="">
-                        <div
-                           contentEditable="true"
-                           dangerouslySetInnerHTML={{
-                              __html: data.stats_csv,
-                           }}
-                           className="h-24 overflow-y-scroll rounded-md border bg-gray-100 px-4 py-3 font-mono text-base dark:border-neutral-700 dark:bg-neutral-800"
-                        ></div>
-                     </Disclosure.Panel>
-                  </>
-               )}
-            </Disclosure>
-         </>
-      );
-   } else {
-      return <></>;
-   }
 };
 
 // =====================================
