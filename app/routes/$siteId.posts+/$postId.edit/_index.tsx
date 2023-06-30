@@ -1,9 +1,9 @@
 import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
 import { useEffect } from "react";
-import type { V2_MetaFunction } from "@remix-run/node";
 import {
    type ActionArgs,
    type LoaderArgs,
+   type V2_MetaFunction,
    json,
    redirect,
 } from "@remix-run/node";

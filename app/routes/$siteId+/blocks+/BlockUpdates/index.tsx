@@ -4,7 +4,7 @@ import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { zx } from "zodix";
-import type { Update } from "~/db/payload-types";
+import type { Update } from "payload/generated-types";
 import {
    UpdatesEditor,
    initialValue,

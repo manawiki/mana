@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
-import type { Update } from "~/db/payload-types";
+import type { Update } from "payload/generated-types";
 import { H2Default } from "~/modules/collections/components/H2";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";

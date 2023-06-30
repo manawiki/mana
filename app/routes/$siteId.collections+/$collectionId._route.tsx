@@ -161,7 +161,7 @@ export default function CollectionList() {
             return searchParams;
          });
       }
-   }, [debouncedValue]);
+   }, [debouncedValue, setSearchParams]);
 
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);

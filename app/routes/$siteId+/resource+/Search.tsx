@@ -13,11 +13,10 @@ import {
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
-import type { Search } from "~/db/payload-types";
+import type { Search, Site } from "payload/generated-types";
 import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
-import type { Site } from "payload/generated-types";
 
 export async function loader({
    context: { payload, user },
