@@ -48,7 +48,7 @@ module.exports = {
          mobile: "320px",
          tablet: "768px",
          laptop: "1200px",
-         desktop: "1382px",
+         desktop: "1400px",
       },
    },
    plugins: [require("@tailwindcss/forms"), require("tailwindcss-bg-patterns")],

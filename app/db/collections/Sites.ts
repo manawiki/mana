@@ -39,20 +39,6 @@ export const Sites: CollectionConfig = {
                relationTo: ["customPages", "entries", "posts", "collections"],
                hasMany: false,
             },
-            {
-               name: "label",
-               type: "select",
-               options: [
-                  {
-                     label: "New",
-                     value: "new",
-                  },
-                  {
-                     label: "Updated",
-                     value: "updated",
-                  },
-               ],
-            },
          ],
       },
       {
