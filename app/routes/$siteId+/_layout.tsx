@@ -14,6 +14,7 @@ import {
    Component,
    Dog,
    HardDrive,
+   LayoutGrid,
    Loader2,
    Lock,
    LogOut,
@@ -312,7 +313,7 @@ export default function SiteIndex() {
                </menu>
             </div>
          </Modal>
-         <header className="bg-2 border-color shadow-1 fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3 shadow-sm">
+         <header className="bg-2 border-color shadow-1 fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm">
             <LoggedIn>
                <div className="z-10 flex items-center gap-3">
                   <div className="laptop:hidden">
@@ -381,21 +382,13 @@ export default function SiteIndex() {
                         </div>
                      </Modal>
                      <div className="flex items-center gap-3">
-                        <button
-                           className="bg-3 shadow-1 border-color flex items-center justify-center
-                  gap-3 rounded-full border py-1.5 pl-4 pr-3 text-sm font-bold shadow-sm"
-                           onClick={() => setMenuOpen(true)}
-                        >
-                           Following
-                           <ChevronDown className="dark:text-white" size={18} />
-                        </button>
                         <NotFollowingSite>
                            <div className="flex items-center">
                               <fetcher.Form className="w-full" method="post">
                                  <button
                                     name="intent"
                                     value="followSite"
-                                    className="flex h-9 items-center justify-center rounded-full bg-black
+                                    className="flex h-8 items-center justify-center rounded-full bg-black
                                   px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
                                  >
                                     {adding ? (
@@ -407,6 +400,19 @@ export default function SiteIndex() {
                               </fetcher.Form>
                            </div>
                         </NotFollowingSite>
+                        <button
+                           className="bg-3 shadow-1 border-color flex items-center justify-center
+                  gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
+                           onClick={() => setMenuOpen(true)}
+                        >
+                           <div className="pr-2 text-xs">My Follows</div>
+                           <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
+                              <ChevronDown
+                                 className="dark:text-white"
+                                 size={14}
+                              />
+                           </div>
+                        </button>
                      </div>
                   </div>
                </div>
@@ -666,8 +672,10 @@ export default function SiteIndex() {
                                  to={`/${site.slug}`}
                                  className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                               >
-                                 <div className="shadow-1 h-8 w-8 flex-none overflow-hidden rounded-full bg-zinc-200 shadow">
+                                 <div className="border-color h-8 w-8 flex-none overflow-hidden rounded-full border bg-zinc-200">
                                     <Image
+                                       width={30}
+                                       height={30}
                                        url={site.icon?.url}
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        alt="Site Logo"
@@ -811,6 +819,78 @@ export default function SiteIndex() {
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color border-color divide-y border-b laptop:pt-14">
+                     <section className="p-4 px-4 tablet:px-0 laptop:hidden laptop:p-4">
+                        <div className="grid grid-cols-2 gap-3">
+                           <Link
+                              onClick={() => setMainMenuOpen(false)}
+                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                              prefetch="intent"
+                              to={`/${site.slug}/posts`}
+                           >
+                              <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                              <span>Posts</span>
+                           </Link>
+                           <Link
+                              onClick={() => setMainMenuOpen(false)}
+                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                              prefetch="intent"
+                              to={`/${site.slug}/collections`}
+                           >
+                              <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                              <span>Collections</span>
+                           </Link>
+                        </div>
+                        {site?.pinned && site?.pinned?.length > 1 && (
+                           <>
+                              <div className="flex items-center gap-1.5 pb-3 pt-4">
+                                 <Pin size={14} />
+                                 <span className="text-1 text-sm font-bold">
+                                    Pinned
+                                 </span>
+                              </div>
+                              <ul className="space-y-2">
+                                 {site.pinned?.map((item: any) => (
+                                    <li key={item.id}>
+                                       <Link
+                                          onClick={() => setMainMenuOpen(false)}
+                                          className="shadow-1 bg-3 relative flex items-center 
+                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                          prefetch="intent"
+                                          to={pinnedLinkUrlGenerator(
+                                             item,
+                                             site?.slug ?? ""
+                                          )}
+                                       >
+                                          <div className="h-5 w-5">
+                                             {item.relation?.value?.icon
+                                                ?.url ? (
+                                                <Image
+                                                   width={80}
+                                                   height={80}
+                                                   url={
+                                                      item.relation?.value?.icon
+                                                         ?.url
+                                                   }
+                                                   options="aspect_ratio=1:1&height=80&width=80"
+                                                   alt="Pinned Icon"
+                                                />
+                                             ) : (
+                                                <Component
+                                                   className="text-1 mx-auto"
+                                                   size={24}
+                                                />
+                                             )}
+                                          </div>
+                                          <div className="truncate">
+                                             {item.relation.value.name}
+                                          </div>
+                                       </Link>
+                                    </li>
+                                 ))}
+                              </ul>
+                           </>
+                        )}
+                     </section>
                      {site.about && (
                         <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
@@ -922,78 +1002,6 @@ export default function SiteIndex() {
                               </div>
                            </Tooltip>
                         </div>
-                     </section>
-                     <section className="p-4 px-4 tablet:px-0 laptop:hidden laptop:p-4">
-                        <div className="grid grid-cols-2 gap-3 pb-4">
-                           <Link
-                              onClick={() => setMainMenuOpen(false)}
-                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                              prefetch="intent"
-                              to={`/${site.slug}/posts`}
-                           >
-                              <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
-                              <span>Posts</span>
-                           </Link>
-                           <Link
-                              onClick={() => setMainMenuOpen(false)}
-                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                              prefetch="intent"
-                              to={`/${site.slug}/collections`}
-                           >
-                              <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
-                              <span>Collections</span>
-                           </Link>
-                        </div>
-                        {site?.pinned && site?.pinned?.length > 1 && (
-                           <>
-                              <div className="flex items-center gap-1.5 pb-3">
-                                 <Pin size={14} />
-                                 <span className="text-1 text-sm font-bold">
-                                    Pinned
-                                 </span>
-                              </div>
-                              <ul className="space-y-2">
-                                 {site.pinned?.map((item: any) => (
-                                    <li key={item.id}>
-                                       <Link
-                                          onClick={() => setMainMenuOpen(false)}
-                                          className="shadow-1 bg-3 relative flex items-center 
-                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                                          prefetch="intent"
-                                          to={pinnedLinkUrlGenerator(
-                                             item,
-                                             site?.slug ?? ""
-                                          )}
-                                       >
-                                          <div className="h-5 w-5">
-                                             {item.relation?.value?.icon
-                                                ?.url ? (
-                                                <Image
-                                                   width={80}
-                                                   height={80}
-                                                   url={
-                                                      item.relation?.value?.icon
-                                                         ?.url
-                                                   }
-                                                   options="aspect_ratio=1:1&height=80&width=80"
-                                                   alt="Pinned Icon"
-                                                />
-                                             ) : (
-                                                <Component
-                                                   className="text-1 mx-auto"
-                                                   size={24}
-                                                />
-                                             )}
-                                          </div>
-                                          <div className="truncate">
-                                             {item.relation.value.name}
-                                          </div>
-                                       </Link>
-                                    </li>
-                                 ))}
-                              </ul>
-                           </>
-                        )}
                      </section>
                   </div>
                   <div className="border-color flex items-center justify-center">
