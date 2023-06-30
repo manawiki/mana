@@ -31,7 +31,7 @@ export const StatsGraph = ({
    statsList = ["HP", "ATK", "DEF"],
 }: {
    stats: StatsType;
-   statsList: string[]; // List of stats to display in the dropdown
+   statsList?: string[]; // List of stats to display in the dropdown
 }) => {
    const [graphStat, setGraphStat] = useState("HP");
 
