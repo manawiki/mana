@@ -27,7 +27,7 @@ export const Sites: CollectionConfig = {
          name: "pinned",
          type: "array",
          label: "Pinned",
-         maxRows: 4,
+         maxRows: 10,
          labels: {
             singular: "Pinned Item",
             plural: "Pinned Items",

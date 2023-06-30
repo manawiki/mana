@@ -312,7 +312,7 @@ export default function SiteIndex() {
                </menu>
             </div>
          </Modal>
-         <header className="bg-2 border-color fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3">
+         <header className="bg-2 border-color shadow-1 fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3 shadow-sm">
             <LoggedIn>
                <div className="z-10 flex items-center gap-3">
                   <div className="laptop:hidden">
@@ -382,11 +382,12 @@ export default function SiteIndex() {
                      </Modal>
                      <div className="flex items-center gap-3">
                         <button
-                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
-                  justify-center rounded-full border shadow-sm"
+                           className="bg-3 shadow-1 border-color flex items-center justify-center
+                  gap-3 rounded-full border py-1.5 pl-4 pr-3 text-sm font-bold shadow-sm"
                            onClick={() => setMenuOpen(true)}
                         >
-                           <MoreVertical size={20} />
+                           Following
+                           <ChevronDown className="dark:text-white" size={18} />
                         </button>
                         <NotFollowingSite>
                            <div className="flex items-center">
@@ -635,7 +636,10 @@ export default function SiteIndex() {
                </div>
             </section>
             <section>
-               <div className="bg-1 bg-2 border-color fixed bottom-0 top-0 z-50 mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 desktop:block">
+               <div
+                  className="bg-1 bg-2 border-color shadow-1 fixed bottom-0 top-0 z-50 
+                  mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 shadow-sm desktop:block"
+               >
                   <SideMenu site={site} user={user} />
                </div>
             </section>
@@ -645,11 +649,11 @@ export default function SiteIndex() {
                laptop:z-50 laptop:px-3"
                >
                   <div
-                     className=" border-color bg-2 shadow-1 relative mx-auto h-16 w-full border-b pl-2 pr-3 
+                     className=" border-color bg-2 shadow-1 relative mx-auto h-16 w-full border-b 
                      shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
                      id="spinner-container"
                   >
-                     <div className="relative mx-auto flex h-full max-w-[728px] items-center justify-between">
+                     <div className="relative mx-auto flex h-full items-center justify-between px-3">
                         {searchToggle ? (
                            <SearchComboBox
                               siteType={site.type}
@@ -1102,10 +1106,10 @@ const PinnedMenu = ({ site }: { site: Site }) => {
       <>
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
-               <div className="space-y-0.5 pl-3 pt-5">
-                  <div className="flex items-center gap-3 pb-2 pl-3">
+               <div className="space-y-0.5 pl-3 pt-6">
+                  <div className="flex items-center gap-2.5 pb-2 pl-2.5">
                      <div className="text-1 flex items-center gap-3 text-sm font-bold">
-                        <Pin className="text-red-400" size={15} />
+                        <Pin className="text-red-400" size={16} />
                         <span>Pinned</span>
                      </div>
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
@@ -1118,7 +1122,7 @@ const PinnedMenu = ({ site }: { site: Site }) => {
                               className={({ isActive }) =>
                                  `${
                                     isActive ? activeStyle : ""
-                                 } ${defaultStyle} relative text-xs`
+                                 } ${defaultStyle} relative font-normal`
                               }
                               to={pinnedLinkUrlGenerator(
                                  item,
