@@ -649,7 +649,7 @@ export default function SiteIndex() {
                      shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
                      id="spinner-container"
                   >
-                     <div className="flex h-full items-center justify-between">
+                     <div className="relative mx-auto flex h-full max-w-[728px] items-center justify-between">
                         {searchToggle ? (
                            <SearchComboBox
                               siteType={site.type}

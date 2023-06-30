@@ -199,7 +199,7 @@ export default function CollectionList() {
    return (
       <>
          <Outlet />
-         <div className="mx-auto max-w-[728px] pb-3 max-desktop:px-3 laptop:pb-12">
+         <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:pb-12">
             <H2 text={collection.name} />
             <AdminOrStaffOrOwner>
                <Form
