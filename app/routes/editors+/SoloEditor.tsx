@@ -1,5 +1,5 @@
 import isHotkey, { isKeyHotkey } from "is-hotkey";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import {
    type Node,
    type Descendant,
@@ -297,61 +297,65 @@ export const SoloEditor = ({
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full">
-               <Slate
-                  onChange={(e) => setValue(e)}
-                  editor={editor}
-                  value={defaultValue}
-               >
-                  <Toolbar />
-                  <DndContext
-                     onDragStart={handleDragStart}
-                     onDragEnd={handleDragEnd}
-                     onDragCancel={handleDragCancel}
-                     modifiers={[restrictToVerticalAxis]}
+               <Suspense fallback={<div>Loading...</div>}>
+                  <Slate
+                     onChange={(e) => setValue(e)}
+                     editor={editor}
+                     value={defaultValue}
                   >
-                     <SortableContext
-                        items={items}
-                        strategy={verticalListSortingStrategy}
+                     <Toolbar />
+                     <DndContext
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onDragCancel={handleDragCancel}
+                        modifiers={[restrictToVerticalAxis]}
                      >
-                        <Editable
-                           renderElement={renderElement}
-                           renderLeaf={Leaf}
-                           /**
-                            * Inspired by this great article from https://twitter.com/_jkrsp
-                            * https://jkrsp.com/slate-js-placeholder-per-line/
-                            **/
-                           decorate={([node, path]) => {
-                              if (editor.selection != null) {
-                                 if (
-                                    !Editor.isEditor(node) &&
-                                    Editor.string(editor, [path[0]]) === "" &&
-                                    Range.includes(editor.selection, path) &&
-                                    Range.isCollapsed(editor.selection)
-                                 ) {
-                                    return [
-                                       {
-                                          ...editor.selection,
-                                          placeholder: "Type something here…",
-                                       },
-                                    ];
-                                 }
-                              }
-
-                              return [];
-                           }}
-                           onKeyDown={onKeyDown}
-                        />
-                     </SortableContext>
-                     <DragOverlay adjustScale={false}>
-                        {activeElement && (
-                           <DragOverlayContent
-                              element={activeElement}
+                        <SortableContext
+                           items={items}
+                           strategy={verticalListSortingStrategy}
+                        >
+                           <Editable
                               renderElement={renderElement}
+                              renderLeaf={Leaf}
+                              /**
+                               * Inspired by this great article from https://twitter.com/_jkrsp
+                               * https://jkrsp.com/slate-js-placeholder-per-line/
+                               **/
+                              decorate={([node, path]) => {
+                                 if (editor.selection != null) {
+                                    if (
+                                       !Editor.isEditor(node) &&
+                                       Editor.string(editor, [path[0]]) ===
+                                          "" &&
+                                       Range.includes(editor.selection, path) &&
+                                       Range.isCollapsed(editor.selection)
+                                    ) {
+                                       return [
+                                          {
+                                             ...editor.selection,
+                                             placeholder:
+                                                "Type something here…",
+                                          },
+                                       ];
+                                    }
+                                 }
+
+                                 return [];
+                              }}
+                              onKeyDown={onKeyDown}
                            />
-                        )}
-                     </DragOverlay>
-                  </DndContext>
-               </Slate>
+                        </SortableContext>
+                        <DragOverlay adjustScale={false}>
+                           {activeElement && (
+                              <DragOverlayContent
+                                 element={activeElement}
+                                 renderElement={renderElement}
+                              />
+                           )}
+                        </DragOverlay>
+                     </DndContext>
+                  </Slate>
+               </Suspense>
             </div>
          </div>
       </div>
