@@ -9,20 +9,17 @@ import {
    ChevronUp,
    ExternalLink,
    History,
-   Users,
    Copy,
    Share2,
+   Image as ImageIcon,
 } from "lucide-react";
 import type { Post } from "payload/generated-types";
 import type { FormEvent } from "react";
 import { useState, useEffect, Fragment } from "react";
 import { useZorm } from "react-zorm";
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import type { FormResponse } from "~/utils";
-import { isProcessing } from "~/utils";
-import { isAdding } from "~/utils";
-import { Image as ImageIcon } from "lucide-react";
-import { Menu, Popover, Switch, Transition } from "@headlessui/react";
+import { isProcessing, isAdding, type FormResponse } from "~/utils";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { DotLoader } from "~/components/DotLoader";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";

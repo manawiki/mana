@@ -3,9 +3,12 @@ import type { CustomElement, GroupElement, groupItem } from "../types";
 import type { BaseEditor } from "slate";
 import { Transforms, createEditor } from "slate";
 import { Fragment, useMemo, useState } from "react";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { DragOverlay } from "@dnd-kit/core";
-import { DndContext } from "@dnd-kit/core";
+import {
+   DragOverlay,
+   DndContext,
+   type DragEndEvent,
+   type DragStartEvent,
+} from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
    SortableContext,

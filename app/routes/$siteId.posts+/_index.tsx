@@ -97,7 +97,7 @@ export default function PostsIndex() {
             return searchParams;
          });
       }
-   }, [debouncedValue]);
+   }, [debouncedValue, setSearchParams]);
 
    return (
       <>

@@ -6,8 +6,7 @@ import {
    unstable_parseMultipartFormData,
 } from "@remix-run/server-runtime";
 import { nanoid } from "nanoid";
-import { extname } from "path";
-import path from "path";
+import path, { extname } from "path";
 import { parseFormAny } from "react-zorm";
 import type { ZodRawShape, ZodTypeAny } from "zod";
 import { ZodType, z } from "zod";
