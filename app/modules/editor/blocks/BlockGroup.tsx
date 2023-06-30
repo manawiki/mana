@@ -370,7 +370,7 @@ export default function BlockGroup({ element }: Props) {
                            afterLeave={() => setGroupSelectQuery("")}
                         >
                            <Combobox.Options
-                              className="bg-2 border-color shadow-1 absolute left-0 z-20 mt-3 max-h-60
+                              className="bg-2 border-color shadow-1 absolute left-0 z-30 mt-3 max-h-60
                               w-full overflow-auto rounded-lg border p-2 shadow-xl focus:outline-none"
                            >
                               {filteredEntries?.length === 0 ? (
@@ -426,7 +426,7 @@ export default function BlockGroup({ element }: Props) {
                      handleUpdateCollection(event, editor, element)
                   }
                >
-                  <div className="relative z-10 flex-none">
+                  <div className="relative z-30 flex-none">
                      <Listbox.Button
                         className="text-1 flex items-center gap-1.5
                         p-2 text-sm font-bold hover:underline"

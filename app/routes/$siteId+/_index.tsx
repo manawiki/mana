@@ -236,7 +236,7 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {home && (
-                     <div className="pt-20 max-desktop:px-3 laptop:pt-12">
+                     <div className="pt-20 max-tablet:px-3 laptop:pt-12">
                         <Slate key={siteId} editor={editor} value={home}>
                            <Editable
                               renderElement={renderElement}

@@ -17,6 +17,7 @@ import {
    Loader2,
    Lock,
    LogOut,
+   MenuIcon,
    MoreVertical,
    Pin,
    Search,
@@ -141,7 +142,6 @@ export const links: LinksFunction = () => {
 export const handle = {
    i18n: "site",
 };
-
 const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
    const type = item.relation?.relationTo;
 
@@ -175,13 +175,12 @@ export default function SiteIndex() {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
-   const defaultStyle = `bg-2 
-   flex items-center justify-center gap-3 rounded-full font-bold max-desktop:mx-auto
-   max-desktop:h-12 max-desktop:w-12 bg-2 max-laptop:shadow-sm max-laptop:shadow-1
-   max-laptop:-mt-6 laptop:rounded-xl desktop:px-3.5 desktop:py-3 desktop:justify-start`;
+
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
+   const [isMainMenuOpen, setMainMenuOpen] = useState(false);
+
    const gaTrackingId = site?.gaTagId;
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
@@ -192,31 +191,6 @@ export default function SiteIndex() {
 
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
-
-   //nprogress bar
-   // const transition = useNavigation();
-   // let fetchers = useFetchers();
-   // NProgress.configure({ showSpinner: false, parent: "#spinner-container" });
-
-   // let state = useMemo<"idle" | "loading">(
-   //    function getGlobalState() {
-   //       let states = [
-   //          transition.state,
-   //          ...fetchers.map((fetcher) => fetcher.state),
-   //       ];
-   //       if (states.every((state) => state === "idle")) return "idle";
-   //       return "loading";
-   //    },
-   //    [transition.state, fetchers]
-   // );
-
-   // useEffect(() => {
-   //    // and when it's something else it means it's either submitting a form or
-   //    // waiting for the loaders of the next location so we start it
-   //    if (state === "loading") NProgress.start();
-   //    // when the state is idle then we can to complete the progress bar
-   //    if (state === "idle") NProgress.done();
-   // }, [state]);
 
    return (
       <>
@@ -243,20 +217,103 @@ export default function SiteIndex() {
                />
             </>
          ) : null}
-         <header
-            className="bg-1 shadow-1 fixed top-0 z-50 flex
-         h-14 w-full items-center justify-between border-b border-zinc-200 
-         px-3 shadow-sm dark:border-zinc-800"
+         {/* Mobile main menu modal (pins) */}
+         <Modal
+            onClose={() => {
+               setMainMenuOpen(false);
+            }}
+            show={isMainMenuOpen}
          >
-            <LoggedIn>
-               <Link
-                  prefetch="intent"
-                  reloadDocument={site.type == "custom" && true}
-                  className="relative z-10 pb-1 font-logo text-[30px] max-laptop:hidden"
-                  to="/hq"
+            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all laptop:w-[50vw]">
+               <button
+                  name="intent"
+                  value="addSite"
+                  type="button"
+                  className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                  onClick={() => setMainMenuOpen(false)}
                >
-                  mana
-               </Link>
+                  <X size={28} className="text-red-400" />
+               </button>
+               <menu className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                     <Link
+                        onClick={() => setMainMenuOpen(false)}
+                        className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                        prefetch="intent"
+                        to={`/${site.slug}/posts`}
+                     >
+                        <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                        <span>Posts</span>
+                     </Link>
+                     <Link
+                        onClick={() => setMainMenuOpen(false)}
+                        className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                        prefetch="intent"
+                        to={`/${site.slug}/collections`}
+                     >
+                        <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                        <span>Collections</span>
+                     </Link>
+                  </div>
+                  {site?.pinned && site?.pinned?.length > 1 && (
+                     <>
+                        <div className="space-y-0.5 pt-2">
+                           <div className="flex items-center gap-3 pb-2 pl-2">
+                              <div className="flex items-center gap-2 text-sm font-bold">
+                                 <Pin className="text-red-400" size={15} />
+                                 <span>Pinned</span>
+                              </div>
+                           </div>
+                           <ul className="space-y-2">
+                              {site.pinned?.map((item: any) => (
+                                 <li key={item.id}>
+                                    <Link
+                                       onClick={() => setMainMenuOpen(false)}
+                                       className="shadow-1 bg-3 relative flex items-center 
+                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                       prefetch="intent"
+                                       to={pinnedLinkUrlGenerator(
+                                          item,
+                                          site?.slug ?? ""
+                                       )}
+                                    >
+                                       <div className="h-5 w-5">
+                                          {item.relation?.value?.icon?.url ? (
+                                             <Image
+                                                width={80}
+                                                height={80}
+                                                url={
+                                                   item.relation?.value?.icon
+                                                      ?.url
+                                                }
+                                                options="aspect_ratio=1:1&height=80&width=80"
+                                                alt="Pinned Icon"
+                                             />
+                                          ) : (
+                                             <Component
+                                                className="text-1 mx-auto"
+                                                size={24}
+                                             />
+                                          )}
+                                       </div>
+                                       <div className="truncate">
+                                          {item.relation.value.name}
+                                       </div>
+                                    </Link>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
+                     </>
+                  )}
+               </menu>
+            </div>
+         </Modal>
+         <header className="bg-2 border-color fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3">
+            <LoggedIn>
                <div className="z-10 flex items-center gap-3">
                   <div className="laptop:hidden">
                      {/* Mobile site menu modal */}
@@ -300,7 +357,7 @@ export default function SiteIndex() {
                                              <div className="flex items-center gap-3 truncate">
                                                 <div
                                                    className="h-8 w-8 flex-none 
-                                    overflow-hidden rounded-full laptop:h-[54px] laptop:w-[54px]"
+                                    overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]"
                                                 >
                                                    <Image
                                                       alt="Site Logo"
@@ -323,48 +380,37 @@ export default function SiteIndex() {
                            )}
                         </div>
                      </Modal>
-                     <button
-                        className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                     <div className="flex items-center gap-3">
+                        <button
+                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
                   justify-center rounded-full border shadow-sm"
-                        onClick={() => setMenuOpen(true)}
-                     >
-                        <MoreVertical size={20} />
-                     </button>
+                           onClick={() => setMenuOpen(true)}
+                        >
+                           <MoreVertical size={20} />
+                        </button>
+                        <NotFollowingSite>
+                           <div className="flex items-center">
+                              <fetcher.Form className="w-full" method="post">
+                                 <button
+                                    name="intent"
+                                    value="followSite"
+                                    className="flex h-9 items-center justify-center rounded-full bg-black
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                 >
+                                    {adding ? (
+                                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                    ) : (
+                                       t("follow.actionFollow")
+                                    )}
+                                 </button>
+                              </fetcher.Form>
+                           </div>
+                        </NotFollowingSite>
+                     </div>
                   </div>
                </div>
-               <Link
-                  prefetch="intent"
-                  className="relative z-10 pb-1 font-logo text-[30px] laptop:hidden"
-                  to="/hq"
-               >
-                  mana
-               </Link>
                <section className="z-50 flex h-14 items-center justify-end gap-2.5">
                   <DarkModeToggle />
-                  <AdminOrStaffOrOwner>
-                     {site.type == "custom" && (
-                        <Tooltip id="site-dashboard" content="Site Dashboard">
-                           <a
-                              className="bg-3 shadow-1 border-color flex h-8 w-8 items-center
-                         justify-center rounded-xl border shadow-sm"
-                              href={`https://${site.slug}-db.mana.wiki/admin`}
-                           >
-                              <HardDrive className="text-1" size={16} />
-                           </a>
-                        </Tooltip>
-                     )}
-                  </AdminOrStaffOrOwner>
-                  {user?.roles?.includes("staff") && (
-                     <Tooltip id="staff-dashboard" content="Staff Dashboard">
-                        <a
-                           className="bg-3 shadow-1 border-color flex h-8 w-8 items-center
-                           justify-center rounded-xl border shadow-sm"
-                           href="/admin"
-                        >
-                           <Lock className="text-1" size={16} />
-                        </a>
-                     </Tooltip>
-                  )}
                   <Menu as="div" className="relative">
                      <Menu.Button
                         className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
@@ -412,13 +458,15 @@ export default function SiteIndex() {
             <LoggedOut>
                <Link
                   prefetch="intent"
-                  reloadDocument={site.type == "custom" && true}
-                  className="relative z-10 pb-1 font-logo text-[30px]"
-                  to="/hq"
+                  reloadDocument={site.type != "custom" && true}
+                  to={`/login?redirectTo=/${site.slug}`}
+                  className="z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5
+                               text-sm font-bold text-white dark:bg-white dark:text-black laptop:hidden"
                >
-                  mana
+                  Follow
                </Link>
-               <div className="relative z-10 flex items-center gap-3">
+
+               <div className="relative z-10 flex w-full items-center justify-end gap-3">
                   <DarkModeToggle />
                   <Link
                      prefetch="intent"
@@ -457,16 +505,16 @@ export default function SiteIndex() {
          </header>
          <div
             className="laptop:grid laptop:min-h-screen
-                laptop:auto-cols-[86px_86px_1fr_334px] laptop:grid-flow-col
-                desktop:auto-cols-[86px_220px_1fr_334px]"
+                laptop:auto-cols-[82px_0px_1fr_334px] laptop:grid-flow-col
+                desktop:auto-cols-[82px_220px_1fr_334px]"
          >
             <section
-               className="bg-1 border-color relative top-0 z-10
+               className="bg-1 border-color relative top-0 z-50
                max-laptop:fixed max-laptop:w-full laptop:border-r"
             >
                <div
-                  className="top-14 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
-               laptop:h-full laptop:w-[86px] laptop:overflow-y-auto laptop:pt-4"
+                  className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
+               laptop:h-full laptop:w-[82px] laptop:overflow-y-auto laptop:pt-4"
                >
                   <LoggedOut>
                      <div className="relative flex items-center justify-center pb-3">
@@ -479,7 +527,7 @@ export default function SiteIndex() {
                               <>
                                  <div
                                     className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
                                  >
                                     <Image
                                        alt="Site Logo"
@@ -511,7 +559,7 @@ export default function SiteIndex() {
                                     <>
                                        <div
                                           className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
                                        >
                                           <Image
                                              alt="Site Logo"
@@ -553,7 +601,7 @@ export default function SiteIndex() {
                                                 <>
                                                    <div
                                                       className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[54px] laptop:w-[54px]"
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
                                                    >
                                                       <Image
                                                          alt="Site Logo"
@@ -587,118 +635,8 @@ export default function SiteIndex() {
                </div>
             </section>
             <section>
-               <div
-                  className="bg-1 laptop:bg-2 border-color fixed
-                        bottom-0 mx-auto w-full px-4 max-laptop:z-40
-                        max-laptop:flex max-laptop:h-12 max-laptop:border-t laptop:top-14
-                        laptop:h-full laptop:w-[86px] laptop:space-y-1 laptop:overflow-y-auto
-                        laptop:border-r laptop:py-5 desktop:w-[220px] desktop:pl-5 desktop:pr-6"
-               >
-                  <NavLink
-                     prefetch="intent"
-                     end
-                     className={({ isActive }) =>
-                        `${
-                           isActive
-                              ? `border border-blue-100 bg-blue-50 text-zinc-600 
-                               dark:border-blue-900/50 dark:bg-[#1d2b52] dark:text-white 
-                            `
-                              : "text-1 border-color border laptop:!border-transparent"
-                        } ${defaultStyle}`
-                     }
-                     to={`/${site.slug}`}
-                  >
-                     {({ isActive }) => (
-                        <>
-                           {isActive ? (
-                              <HomeIconBold className="h-5 w-5 text-blue-500" />
-                           ) : (
-                              <HomeIcon className="h-5 w-5 text-blue-500" />
-                           )}
-                           <span className="max-desktop:absolute max-desktop:bottom-1.5 max-desktop:text-xs laptop:hidden desktop:block">
-                              Home
-                           </span>
-                        </>
-                     )}
-                  </NavLink>
-                  <NavLink
-                     prefetch="intent"
-                     className={({ isActive }) =>
-                        `${
-                           isActive
-                              ? `border border-emerald-200/50 bg-emerald-50 text-zinc-600 
-                            dark:border-emerald-900/50 dark:bg-[#0b372b] dark:text-white 
-                         `
-                              : "text-1 border-color border laptop:!border-transparent"
-                        } ${defaultStyle}`
-                     }
-                     to={`/${site.slug}/posts`}
-                  >
-                     {({ isActive }) => (
-                        <>
-                           {isActive ? (
-                              <PencilSquareIconBold className="h-5 w-5 text-emerald-500" />
-                           ) : (
-                              <PencilSquareIcon className="h-5 w-5 text-emerald-500" />
-                           )}
-                           <span className="max-desktop:absolute max-desktop:bottom-1.5 max-desktop:text-xs laptop:hidden desktop:block">
-                              Posts
-                           </span>
-                        </>
-                     )}
-                  </NavLink>
-                  <NavLink
-                     prefetch="intent"
-                     className={({ isActive }) =>
-                        `${
-                           isActive
-                              ? `border border-yellow-200/50 bg-yellow-50 text-zinc-600 
-                         dark:border-yellow-900/50 dark:bg-[#48311d] dark:text-white 
-                      `
-                              : "text-1 border-color border laptop:!border-transparent"
-                        } ${defaultStyle}`
-                     }
-                     to={`/${site.slug}/collections`}
-                  >
-                     {({ isActive }) => (
-                        <>
-                           {isActive ? (
-                              <CircleStackIconBold className="h-5 w-5 text-yellow-500" />
-                           ) : (
-                              <CircleStackIcon className="h-5 w-5 text-yellow-500" />
-                           )}
-                           <span className="max-desktop:absolute max-desktop:bottom-1.5 max-desktop:text-xs laptop:hidden desktop:block">
-                              Collections
-                           </span>
-                        </>
-                     )}
-                  </NavLink>
-                  {/* <NavLink
-                  prefetch="intent"
-                     className={({ isActive }) =>
-                        `${
-                           isActive
-                              ? `border border-violet-100 bg-violet-50 text-zinc-600 
-                               dark:border-violet-900/50 dark:bg-[#352b46] dark:text-white 
-                                 `
-                              : "text-1 border-color border laptop:!border-transparent"
-                        } ${defaultStyle}`
-                     }
-                     to={`/${site.slug}/questions`}
-                  >
-                     {({ isActive }) => (
-                        <>
-                           {isActive ? (
-                              <ChatBubbleLeftIconBold className="h-5 w-5 text-violet-500" />
-                           ) : (
-                              <ChatBubbleLeftIcon className="h-5 w-5 text-violet-500" />
-                           )}
-                           <span className="max-desktop:absolute max-desktop:bottom-1.5 max-desktop:text-xs laptop:hidden desktop:block">
-                              Discussions
-                           </span>
-                        </>
-                     )}
-                  </NavLink> */}
+               <div className="bg-1 bg-2 border-color fixed bottom-0 top-0 z-50 mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 desktop:block">
+                  <SideMenu site={site} user={user} />
                </div>
             </section>
             <section className="max-laptop:border-color bg-3 max-laptop:border-b">
@@ -808,8 +746,8 @@ export default function SiteIndex() {
                                              site.type != "custom" && true
                                           }
                                           to={`/login?redirectTo=/${site.slug}`}
-                                          className="flex h-9 items-center justify-center rounded-full bg-zinc-700
-                               px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                          className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
+                               text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
                                        >
                                           Follow
                                        </Link>
@@ -825,7 +763,7 @@ export default function SiteIndex() {
                                              name="intent"
                                              value="followSite"
                                              className="flex h-9 items-center justify-center rounded-full bg-black
-                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
                                           >
                                              {adding ? (
                                                 <Loader2 className="mx-auto h-5 w-5 animate-spin" />
@@ -836,16 +774,23 @@ export default function SiteIndex() {
                                        </fetcher.Form>
                                     </div>
                                  </NotFollowingSite>
-
                                  <button
                                     className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
                                    rounded-full border shadow-sm"
-                                    aria-label="Mana Search"
+                                    aria-label="Search"
                                     onClick={() => {
                                        setSearchToggle(true);
                                     }}
                                  >
                                     <Search size={20} />
+                                 </button>
+                                 <button
+                                    className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
+                                   border shadow-sm desktop:hidden"
+                                    aria-label="Menu"
+                                    onClick={() => setMainMenuOpen(true)}
+                                 >
+                                    <MenuIcon size={20} />
                                  </button>
                               </div>
                            </>
@@ -858,7 +803,7 @@ export default function SiteIndex() {
             {/* Right Sidebar */}
             <section
                className="bg-2 border-color relative z-20 max-laptop:mx-auto
-               max-laptop:max-w-[728px] max-laptop:pb-20  laptop:block laptop:border-l laptop:border-r-0"
+               max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color border-color divide-y border-b laptop:pt-14">
@@ -897,62 +842,7 @@ export default function SiteIndex() {
                            <div className="text-1 h-2 rounded-full bg-blue-400 text-sm"></div>
                         </section>
                      )} */}
-                     {site.pinned && (
-                        <>
-                           <section className="p-4 px-4 tablet:px-0 laptop:p-4">
-                              <div className="flex items-center gap-1.5 pb-2.5">
-                                 <Pin size={14} />
-                                 <span className="text-1 text-sm font-bold">
-                                    Pinned
-                                 </span>
-                              </div>
-                              <ul className="grid grid-cols-2 gap-3 text-center text-xs font-bold">
-                                 {site.pinned?.map((item: any) => (
-                                    <li key={item.id}>
-                                       <Link
-                                          prefetch="intent"
-                                          className="bg-3 shadow-1 border-color relative block rounded-lg border p-3 shadow-sm"
-                                          to={pinnedLinkUrlGenerator(
-                                             item,
-                                             site?.slug ?? ""
-                                          )}
-                                       >
-                                          <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center">
-                                             {item.relation?.value?.icon
-                                                ?.url ? (
-                                                <Image
-                                                   url={
-                                                      item.relation?.value?.icon
-                                                         ?.url
-                                                   }
-                                                   options="aspect_ratio=1:1&height=100&width=100"
-                                                   alt="Pinned Icon"
-                                                />
-                                             ) : (
-                                                <Component
-                                                   className="text-1 mx-auto"
-                                                   size={24}
-                                                />
-                                             )}
-                                          </div>
-                                          <div className="truncate">
-                                             {item.relation.value.name}
-                                          </div>
-                                          {item?.label && (
-                                             <span
-                                                className="absolute -right-1 -top-1 flex h-4 items-center justify-center rounded-full 
-                                             bg-blue-600 px-1.5 text-[8px] uppercase text-white"
-                                             >
-                                                {item?.label}
-                                             </span>
-                                          )}
-                                       </Link>
-                                    </li>
-                                 ))}
-                              </ul>
-                           </section>
-                        </>
-                     )}
+
                      <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                         <div className="flex items-center gap-1.5 pb-3">
                            <Users size={14} />
@@ -1028,6 +918,78 @@ export default function SiteIndex() {
                               </div>
                            </Tooltip>
                         </div>
+                     </section>
+                     <section className="p-4 px-4 tablet:px-0 laptop:hidden laptop:p-4">
+                        <div className="grid grid-cols-2 gap-3 pb-4">
+                           <Link
+                              onClick={() => setMainMenuOpen(false)}
+                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                              prefetch="intent"
+                              to={`/${site.slug}/posts`}
+                           >
+                              <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                              <span>Posts</span>
+                           </Link>
+                           <Link
+                              onClick={() => setMainMenuOpen(false)}
+                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                              prefetch="intent"
+                              to={`/${site.slug}/collections`}
+                           >
+                              <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                              <span>Collections</span>
+                           </Link>
+                        </div>
+                        {site?.pinned && site?.pinned?.length > 1 && (
+                           <>
+                              <div className="flex items-center gap-1.5 pb-3">
+                                 <Pin size={14} />
+                                 <span className="text-1 text-sm font-bold">
+                                    Pinned
+                                 </span>
+                              </div>
+                              <ul className="space-y-2">
+                                 {site.pinned?.map((item: any) => (
+                                    <li key={item.id}>
+                                       <Link
+                                          onClick={() => setMainMenuOpen(false)}
+                                          className="shadow-1 bg-3 relative flex items-center 
+                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                          prefetch="intent"
+                                          to={pinnedLinkUrlGenerator(
+                                             item,
+                                             site?.slug ?? ""
+                                          )}
+                                       >
+                                          <div className="h-5 w-5">
+                                             {item.relation?.value?.icon
+                                                ?.url ? (
+                                                <Image
+                                                   width={80}
+                                                   height={80}
+                                                   url={
+                                                      item.relation?.value?.icon
+                                                         ?.url
+                                                   }
+                                                   options="aspect_ratio=1:1&height=80&width=80"
+                                                   alt="Pinned Icon"
+                                                />
+                                             ) : (
+                                                <Component
+                                                   className="text-1 mx-auto"
+                                                   size={24}
+                                                />
+                                             )}
+                                          </div>
+                                          <div className="truncate">
+                                             {item.relation.value.name}
+                                          </div>
+                                       </Link>
+                                    </li>
+                                 ))}
+                              </ul>
+                           </>
+                        )}
                      </section>
                   </div>
                   <div className="border-color flex items-center justify-center">
@@ -1130,4 +1092,163 @@ export const action: ActionFunction = async ({
          user,
       });
    }
+};
+
+const activeStyle = `bg-white shadow-sm shadow-1 text-light dark:bg-bg3Dark dark:text-dark`;
+const defaultStyle = `bg-2 hover:bg-white flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
+
+const PinnedMenu = ({ site }: { site: Site }) => {
+   return (
+      <>
+         {site?.pinned && site?.pinned?.length > 1 && (
+            <>
+               <div className="space-y-0.5 pl-3 pt-5">
+                  <div className="flex items-center gap-3 pb-2 pl-3">
+                     <div className="text-1 flex items-center gap-3 text-sm font-bold">
+                        <Pin className="text-red-400" size={15} />
+                        <span>Pinned</span>
+                     </div>
+                     <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
+                  </div>
+                  <ul className="space-y-0.5 pr-3">
+                     {site.pinned?.map((item: any) => (
+                        <li key={item.id}>
+                           <NavLink
+                              prefetch="intent"
+                              className={({ isActive }) =>
+                                 `${
+                                    isActive ? activeStyle : ""
+                                 } ${defaultStyle} relative text-xs`
+                              }
+                              to={pinnedLinkUrlGenerator(
+                                 item,
+                                 site?.slug ?? ""
+                              )}
+                           >
+                              <div className="h-5 w-5">
+                                 {item.relation?.value?.icon?.url ? (
+                                    <Image
+                                       width={80}
+                                       height={80}
+                                       url={item.relation?.value?.icon?.url}
+                                       options="aspect_ratio=1:1&height=80&width=80"
+                                       alt="Pinned Icon"
+                                    />
+                                 ) : (
+                                    <Component
+                                       className="text-1 mx-auto"
+                                       size={24}
+                                    />
+                                 )}
+                              </div>
+                              <div className="truncate">
+                                 {item.relation.value.name}
+                              </div>
+                           </NavLink>
+                        </li>
+                     ))}
+                  </ul>
+               </div>
+               <div className="ml-6 mt-3 block h-0.5 rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
+            </>
+         )}
+      </>
+   );
+};
+
+const SideMenu = ({ site, user }: { site: Site; user: User }) => {
+   return (
+      <>
+         <div className="space-y-1 px-3">
+            <NavLink
+               prefetch="intent"
+               end
+               className={({ isActive }) =>
+                  `${isActive ? activeStyle : ""} ${defaultStyle}`
+               }
+               to={`/${site.slug}`}
+            >
+               {({ isActive }) => (
+                  <>
+                     {isActive ? (
+                        <HomeIconBold className="h-[17px] w-[17px] text-blue-500" />
+                     ) : (
+                        <HomeIcon className="h-[17px] w-[17px] text-blue-500" />
+                     )}
+                     <span>Home</span>
+                  </>
+               )}
+            </NavLink>
+            <NavLink
+               prefetch="intent"
+               className={({ isActive }) =>
+                  `${isActive ? activeStyle : ""} ${defaultStyle}`
+               }
+               to={`/${site.slug}/posts`}
+            >
+               {({ isActive }) => (
+                  <>
+                     {isActive ? (
+                        <PencilSquareIconBold className="h-[17px] w-[17px] text-emerald-500" />
+                     ) : (
+                        <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                     )}
+                     <span>Posts</span>
+                  </>
+               )}
+            </NavLink>
+            <NavLink
+               prefetch="intent"
+               className={({ isActive }) =>
+                  `${isActive ? activeStyle : ""} ${defaultStyle}`
+               }
+               to={`/${site.slug}/collections`}
+            >
+               {({ isActive }) => (
+                  <>
+                     {isActive ? (
+                        <CircleStackIconBold className="h-[17px] w-[17px] text-yellow-500" />
+                     ) : (
+                        <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                     )}
+                     <span>Collections</span>
+                  </>
+               )}
+            </NavLink>
+         </div>
+         <PinnedMenu site={site} />
+         <div className="text-1 space-y-0.5 p-3">
+            <AdminOrStaffOrOwner>
+               {site.type == "custom" && (
+                  <a
+                     className="flex items-center gap-3.5 px-3 py-2 font-bold"
+                     href={`https://${site.slug}-db.mana.wiki/admin`}
+                  >
+                     <>
+                        <HardDrive
+                           className="text-slate-400 dark:text-slate-500"
+                           size={15}
+                        />
+                        <span className="text-xs">Site</span>
+                     </>
+                  </a>
+               )}
+            </AdminOrStaffOrOwner>
+            {user?.roles?.includes("staff") && (
+               <a
+                  className="flex items-center gap-3.5 px-3 py-2 font-bold"
+                  href="/admin"
+               >
+                  <>
+                     <Lock
+                        className="text-slate-400 dark:text-slate-500"
+                        size={15}
+                     />
+                     <span className="text-xs">Staff</span>
+                  </>
+               </a>
+            )}
+         </div>
+      </>
+   );
 };
