@@ -101,12 +101,12 @@ export const SoloEditor = ({
    editor.isInline = (element) => ["link"].includes(element.type);
 
    const isMount = useIsMount();
-   const [value, setValue] = useState("");
+   const [value, setValue] = useState();
 
    const debouncedValue = useDebouncedValue(value, 1000);
 
    useEffect(() => {
-      if (!isMount) {
+      if (!isMount && value != null) {
          fetcher.submit(
             {
                content: JSON.stringify(debouncedValue),

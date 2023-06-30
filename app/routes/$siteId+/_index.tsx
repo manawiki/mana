@@ -134,7 +134,7 @@ export default function SiteIndexMain() {
    const disabled = isProcessing(fetcher.state);
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-3">
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen pt-20 laptop:pt-12">
@@ -236,7 +236,7 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {home && (
-                     <div className="pt-20 max-tablet:px-3 laptop:pt-12">
+                     <div className="pt-20 laptop:pt-12">
                         <Slate key={siteId} editor={editor} value={home}>
                            <Editable
                               renderElement={renderElement}

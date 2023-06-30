@@ -191,7 +191,7 @@ export function SearchComboBox({
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
-                  className="bg-2 h-full w-full border-0 pl-3  outline-none !ring-transparent"
+                  className="bg-2 h-full w-full border-0 pl-1 outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}

@@ -77,13 +77,13 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center">
             <button
-               className="bg-3 shadow-1 text-1 flex h-8 w-8 items-center justify-center
-               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 laptop:h-14 laptop:w-14"
+               className="bg-2 shadow-1 text-1 flex h-8 w-8 items-center justify-center
+               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 laptop:h-[52px] laptop:w-[52px]"
                type="button"
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}
             >
-               <Plus className="h-6 w-6 " />
+               <Plus size={20} />
             </button>
          </div>
          <Modal
@@ -102,15 +102,15 @@ export function NewSiteModal() {
                         Login to create a new wiki on Mana!
                      </div>
                      <div className="text-1 text-center">
-                        Mana is currently in its early stages of development.
-                        Learn more{" "}
+                        Mana is currently in its early stages of development and
+                        has yet to reach a stable release!
+                        {/* Learn more{" "}
                         <a
                            className="text-blue-500"
                            href="https://mana.wiki/hq"
                         >
                            here
-                        </a>
-                        .
+                        </a> */}
                      </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
