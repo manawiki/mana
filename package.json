@@ -31,7 +31,7 @@
       "@dnd-kit/modifiers": "^6.0.1",
       "@dnd-kit/sortable": "^7.0.2",
       "@dnd-kit/utilities": "^3.2.1",
-      "@headlessui/react": "^1.7.7",
+      "@headlessui/react": "^1.7.15",
       "@heroicons/react": "^2.0.15",
       "@payloadcms/plugin-cloud-storage": "^1.0.12",
       "@radix-ui/react-checkbox": "^1.0.3",
