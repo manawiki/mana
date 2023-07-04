@@ -21,9 +21,13 @@ module.exports = {
    tailwind: true,
    // postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
    publicPath: getPublicPath(),
-   ignoredRouteFiles: ["**/.*"],
+   // ignore all files in routes folder to prevent
+   // default remix convention from picking up routes
+   ignoredRouteFiles: ["**/*"],
    routes: async (defineRoutes) => {
-      return flatRoutes(["routes", "_custom/routes"], defineRoutes);
+      return flatRoutes(["routes", "_custom/routes"], defineRoutes, {
+         ignoredRouteFiles: [".*"],
+      });
    },
    serverDependenciesToBundle: ["nanoid", "array-move"],
 };
