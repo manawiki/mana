@@ -23,11 +23,9 @@ module.exports = {
    publicPath: getPublicPath(),
    // ignore all files in routes folder to prevent
    // default remix convention from picking up routes
-   ignoredRouteFiles: ["**/*"],
+   ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {
-      return flatRoutes(["routes", "_custom/routes"], defineRoutes, {
-         ignoredRouteFiles: [".*"],
-      });
+      return flatRoutes(["routes", "_custom/routes"], defineRoutes);
    },
    serverDependenciesToBundle: ["nanoid", "array-move"],
 };
