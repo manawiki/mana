@@ -30,9 +30,10 @@ import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
+import { ArrowUp } from "lucide-react";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -122,6 +123,17 @@ function App() {
       }
    }, [toastMessage]);
 
+   const [visible, setVisible] = useState(false);
+
+   useEffect(() => {
+      const onScroll = () => {
+         setVisible(document.documentElement.scrollTop >= 200);
+      };
+      onScroll();
+      document.addEventListener("scroll", onScroll);
+      return () => document.removeEventListener("scroll", onScroll);
+   }, []);
+
    return (
       <html
          lang={locale}
@@ -161,6 +173,24 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
+            {visible && (
+               <button
+                  className="fixed bottom-14 right-12 z-50 flex
+                  h-12 w-12 items-center justify-center rounded-full border-2 border-zinc-200
+                  bg-white shadow-xl shadow-gray-200 transition duration-200 active:translate-y-0.5
+                  dark:border-zinc-600 dark:bg-bg4Dark dark:shadow-zinc-900 
+                  laptop:hidden"
+                  onClick={() =>
+                     window.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                     })
+                  }
+                  aria-label="Scroll to top"
+               >
+                  <ArrowUp className="text-black dark:text-white" size={20} />
+               </button>
+            )}
          </body>
       </html>
    );

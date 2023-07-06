@@ -14,12 +14,10 @@ import {
    Component,
    Dog,
    HardDrive,
-   LayoutGrid,
    Loader2,
    Lock,
    LogOut,
    MenuIcon,
-   MoreVertical,
    Pin,
    Search,
    User as UserIcon,
@@ -672,12 +670,12 @@ export default function SiteIndex() {
                                  to={`/${site.slug}`}
                                  className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
                               >
-                                 <div className="border-color h-8 w-8 flex-none overflow-hidden rounded-full border bg-zinc-200">
+                                 <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
                                     <Image
-                                       width={30}
-                                       height={30}
+                                       width={36}
+                                       height={36}
                                        url={site.icon?.url}
-                                       options="aspect_ratio=1:1&height=80&width=80"
+                                       options="aspect_ratio=1:1&height=120&width=120"
                                        alt="Site Logo"
                                     />
                                  </div>
@@ -818,8 +816,8 @@ export default function SiteIndex() {
                max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <div className="divide-color border-color divide-y border-b laptop:pt-14">
-                     <section className="p-3 laptop:hidden">
+                  <div className="border-color border-b laptop:pt-14">
+                     <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                         <div className="grid grid-cols-2 gap-3">
                            <Link
                               onClick={() => setMainMenuOpen(false)}
@@ -842,8 +840,8 @@ export default function SiteIndex() {
                         </div>
                         {site?.pinned && site?.pinned?.length > 1 && (
                            <>
-                              <div className="flex items-center gap-1.5 pb-3 pt-4">
-                                 <Pin size={14} />
+                              <div className="flex items-center gap-2 pb-2.5 pl-2 pt-5">
+                                 <Pin className="text-red-400" size={14} />
                                  <span className="text-1 text-sm font-bold">
                                     Pinned
                                  </span>
@@ -892,7 +890,7 @@ export default function SiteIndex() {
                         )}
                      </section>
                      {site.about && (
-                        <section className="p-4 px-4 tablet:px-0 laptop:p-4">
+                        <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
                            <div className="flex items-center gap-1.5 pb-2.5">
                               <Component size={14} />
                               <span className="text-1 text-sm font-bold">
