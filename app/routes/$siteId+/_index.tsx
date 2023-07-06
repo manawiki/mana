@@ -68,7 +68,7 @@ export async function loader({
       //Otherwise return json and cache
       return json(
          { home, isChanged: false },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+         { headers: { "Cache-Control": "public, s-maxage=60" } }
       );
    }
 
