@@ -819,7 +819,7 @@ export default function SiteIndex() {
             >
                <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
                   <div className="divide-color border-color divide-y border-b laptop:pt-14">
-                     <section className="p-4 px-4 tablet:px-0 laptop:hidden laptop:p-4">
+                     <section className="p-3 laptop:hidden">
                         <div className="grid grid-cols-2 gap-3">
                            <Link
                               onClick={() => setMainMenuOpen(false)}

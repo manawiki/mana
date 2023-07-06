@@ -52,7 +52,7 @@ export const BlockUpdatesView = ({ element }: Props) => {
                   {updateResults?.map((row) => (
                      <section
                         key={row.id}
-                        className="flex items-start gap-2 p-0.5 even:bg-white dark:even:bg-neutral-800/50"
+                        className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
                      >
                         <time
                            className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
