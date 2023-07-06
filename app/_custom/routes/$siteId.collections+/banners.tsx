@@ -66,7 +66,11 @@ export async function loader({
 
    // Sort banners by banner_id
    data.Banners.docs.sort((a: any, b: any) =>
-      a.banner_id > b.banner_id ? -1 : b.banner_id > a.banner_id ? 1 : 0
+      parseInt(a.banner_id) > parseInt(b.banner_id)
+         ? -1
+         : parseInt(b.banner_id) > parseInt(a.banner_id)
+         ? 1
+         : 0
    );
 
    return json({ banners: data.Banners.docs });

@@ -55,6 +55,15 @@ export const meta: V2_MetaFunction = () => {
 const SummonSimulator = (data: any) => {
    //need banners, weapons, characters
    const { banners, characters, lightCones } = useLoaderData<typeof loader>();
+
+   // Resort banner by ID numeric
+   banners.sort((a: any, b: any) =>
+      parseInt(a.banner_id) > parseInt(b.banner_id)
+         ? 1
+         : parseInt(b.banner_id) > parseInt(a.banner_id)
+         ? -1
+         : 0
+   );
    /*
       ========================================================================
       STATE VARIABLES
