@@ -52,7 +52,7 @@ export async function loader({
    const url = new URL(request.url).origin;
 
    //Don't cache if logged in
-   if (!user) {
+   if (user) {
       const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
 
       const { docs: data } = (await (
@@ -73,7 +73,7 @@ export async function loader({
    }
 
    //Use cache if anon
-   if (user) {
+   if (!user) {
       const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
       const { docs: data } = (await fetchWithCache(homeContentUrl, {
          headers: {
