@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
    webDir: "public/build",
    bundledWebRuntime: false,
    server: {
-      url: "http://localhost:3000",
+      url: "https://mana.wiki/hq",
       cleartext: true,
    },
 };
