@@ -1679,6 +1679,11 @@
     call-me-maybe "^1.0.1"
     js-yaml "^4.1.0"
 
+"@capacitor/android@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-5.1.1.tgz#a53fdf0ac3525a6dd7f0294e7025786eebca0027"
+  integrity sha512-FaDg+Igjiz6ohH7yu5TpLHGCQbsjMMy+0a+idsyadTnz/IzRZwqlCyj4Jbqsb5J39j0hE8kqD3o1e5O5Ukbm2g==
+
 "@capacitor/cli@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/cli/-/cli-5.1.1.tgz#58430b33947cb1c6279dc0219420a59a88efdb57"

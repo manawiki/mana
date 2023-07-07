@@ -98,7 +98,7 @@ export async function loader({
       // Get default collection list data
       const entrylistFetchUrl = `${url}/api/entries?where[collectionEntity][equals]=${
          collection.id
-      }&where[site.slug][equals]=${siteId}&depth=0&limit=20&page=${page ?? 1}`;
+      }&where[site.slug][equals]=${siteId}&depth=1&limit=20&page=${page ?? 1}`;
 
       const entrylist = (await fetchWithCache(entrylistFetchUrl, {
          headers: {

@@ -104,55 +104,58 @@ export default function PostsIndex() {
          <div className="mx-auto max-w-[728px] px-3 pb-6 pt-20 tablet:px-0 laptop:px-3 laptop:pt-14 desktop:px-0">
             <div className="border-color relative mb-16 border-b-2 pb-2">
                <h1 className="font-header text-3xl font-bold">Posts</h1>
-               <Menu as="div" className="relative">
-                  <Menu.Button className="border-color absolute -top-5 right-0 rounded-full border-8">
-                     {({ open }) => (
-                        <div
-                           className=" flex h-10 items-center 
+               <AdminOrStaffOrOwner>
+                  <Menu as="div" className="relative">
+                     <Menu.Button className="border-color absolute -top-5 right-0 rounded-full border-8">
+                        {({ open }) => (
+                           <div
+                              className=" flex h-10 items-center 
                               gap-2 rounded-full bg-emerald-500 pl-5 pr-4 text-white"
-                        >
-                           <span className="text-sm font-bold">New Post</span>
-                           <ChevronDown
-                              size={18}
-                              className={`${
-                                 open ? "rotate-180" : ""
-                              } transform transition  duration-300 ease-in-out`}
-                           />
-                        </div>
-                     )}
-                  </Menu.Button>
-                  <Transition
-                     as={Fragment}
-                     enter="transition ease-out duration-100"
-                     enterFrom="transform opacity-0 scale-95"
-                     enterTo="transform opacity-100 scale-100"
-                     leave="transition ease-in duration-75"
-                     leaveFrom="transform opacity-100 scale-100"
-                     leaveTo="transform opacity-0 scale-95"
-                  >
-                     <Menu.Items
-                        className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
-                                 max-w-[220px] origin-top-right transform transition-all"
+                           >
+                              <span className="text-sm font-bold">
+                                 New Post
+                              </span>
+                              <ChevronDown
+                                 size={18}
+                                 className={`${
+                                    open ? "rotate-180" : ""
+                                 } transform transition  duration-300 ease-in-out`}
+                              />
+                           </div>
+                        )}
+                     </Menu.Button>
+                     <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
                      >
-                        <div className="border-color bg-2 shadow-1 rounded-lg border p-1.5 shadow">
-                           <Menu.Item>
-                              <Form method="post">
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
+                        <Menu.Items
+                           className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
+                                 max-w-[220px] origin-top-right transform transition-all"
+                        >
+                           <div className="border-color bg-2 shadow-1 rounded-lg border p-1.5 shadow">
+                              <Menu.Item>
+                                 <Form method="post">
+                                    <button
+                                       className="text-1 flex w-full items-center gap-3 rounded-lg
                                  p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    name="intent"
-                                    value="createPost"
-                                    type="submit"
-                                 >
-                                    <File
-                                       size="18"
-                                       className="text-emerald-500"
-                                    />
-                                    <span>Blank Post</span>
-                                 </button>
-                              </Form>
-                           </Menu.Item>
-                           {/* <Menu.Item>
+                                       name="intent"
+                                       value="createPost"
+                                       type="submit"
+                                    >
+                                       <File
+                                          size="18"
+                                          className="text-emerald-500"
+                                       />
+                                       <span>Blank Post</span>
+                                    </button>
+                                 </Form>
+                              </Menu.Item>
+                              {/* <Menu.Item>
                               <Form method="post">
                                  <button
                                     className="text-1 flex w-full items-center gap-3 rounded-lg
@@ -169,10 +172,11 @@ export default function PostsIndex() {
                                  </button>
                               </Form>
                            </Menu.Item> */}
-                        </div>
-                     </Menu.Items>
-                  </Transition>
-               </Menu>
+                           </div>
+                        </Menu.Items>
+                     </Transition>
+                  </Menu>
+               </AdminOrStaffOrOwner>
                <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
                   <li>Changelog</li>
                   <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
