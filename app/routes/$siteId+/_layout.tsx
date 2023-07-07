@@ -11,6 +11,7 @@ import {
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
    ChevronDown,
+   ChevronLeft,
    Component,
    Dog,
    HardDrive,
@@ -33,7 +34,13 @@ import type {
 import { json } from "@remix-run/node";
 import { zx } from "zodix";
 import { z } from "zod";
-import { assertIsPost, isAdding } from "~/utils";
+import {
+   IsMobileNative,
+   assertIsPost,
+   isAdding,
+   isIOS,
+   isNative,
+} from "~/utils";
 import {
    AdminOrStaffOrOwner,
    FollowingSite,
@@ -58,7 +65,7 @@ import {
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { User, Site, Update } from "payload/generated-types";
-import { Modal } from "~/components";
+import { Logo, Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
@@ -100,16 +107,6 @@ export async function loader({
             cookie: request.headers.get("cookie") ?? "",
          },
       })) as PaginatedDocs<Update>;
-
-      // const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
-
-      // (await (
-      //    await fetch(followersUrl, {
-      //       headers: {
-      //          cookie: request.headers.get("cookie") ?? "",
-      //       },
-      //    })
-      // ).json()) as PaginatedDocs,
 
       return json(
          { updateResults, site },
@@ -179,7 +176,6 @@ export default function SiteIndex() {
    const following = user?.sites as Site[];
    const [isMenuOpen, setMenuOpen] = useState(false);
    const [isMainMenuOpen, setMainMenuOpen] = useState(false);
-
    const gaTrackingId = site?.gaTagId;
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
@@ -311,7 +307,11 @@ export default function SiteIndex() {
                </menu>
             </div>
          </Modal>
-         <header className="bg-2 border-color shadow-1 fixed top-0 z-50 flex h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm">
+         <header
+            className={`${isNative ? "hidden" : ""} 
+            bg-2 border-color shadow-1 fixed top-0 z-50 flex w-full 
+            items-center justify-between border-b p-3 laptop:shadow-sm`}
+         >
             <LoggedIn>
                <div className="z-10 flex items-center gap-3">
                   <div className="laptop:hidden">
@@ -509,9 +509,10 @@ export default function SiteIndex() {
             />
          </header>
          <div
-            className="laptop:grid laptop:min-h-screen
+            className={`${isNative ? "pb-20" : ""} 
+                laptop:grid laptop:min-h-screen
                 laptop:auto-cols-[82px_0px_1fr_334px] laptop:grid-flow-col
-                desktop:auto-cols-[82px_220px_1fr_334px]"
+                desktop:auto-cols-[82px_220px_1fr_334px]`}
          >
             <section
                className="bg-1 border-color relative top-0 z-50
@@ -649,12 +650,17 @@ export default function SiteIndex() {
             </section>
             <section className="max-laptop:border-color bg-3 max-laptop:border-b">
                <section
-                  className="sticky z-40 max-laptop:top-[56px] laptop:top-6 
-               laptop:z-50 laptop:px-3"
+                  className={`${
+                     isNative
+                        ? "max-laptop:top-0"
+                        : "max-laptop:top-[56px] laptop:top-6"
+                  }  sticky z-40 laptop:z-50 laptop:px-3
+                  `}
                >
                   <div
-                     className=" border-color bg-2 shadow-1 relative mx-auto h-16 w-full border-b 
-                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
+                     className={`${isIOS ? "pb-2 pt-16" : "h-16"} 
+                     border-color bg-2 shadow-1 relative mx-auto w-full border-b 
+                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border`}
                      id="spinner-container"
                   >
                      <div className="relative mx-auto flex h-full items-center justify-between px-3">
@@ -1008,6 +1014,24 @@ export default function SiteIndex() {
                </div>
             </section>
          </div>
+         <IsMobileNative>
+            <div className="border-color fixed bottom-0 z-50 h-20 w-full border-t bg-white">
+               <div className="grid grid-cols-2 gap-2">
+                  <Link to={`/${site.slug}`} className="space-y-1 p-3">
+                     <Logo className="mx-auto h-5 w-5" />
+                     <div className="text-center text-[8px] font-bold uppercase">
+                        Home
+                     </div>
+                  </Link>
+                  <div className="space-y-1 p-3">
+                     <Logo className="mx-auto h-5 w-5" />
+                     <div className="text-center text-[8px] font-bold uppercase">
+                        User
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </IsMobileNative>
       </>
    );
 }
@@ -1262,3 +1286,13 @@ const SideMenu = ({ site, user }: { site: Site; user: User }) => {
       </>
    );
 };
+
+// const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
+
+// (await (
+//    await fetch(followersUrl, {
+//       headers: {
+//          cookie: request.headers.get("cookie") ?? "",
+//       },
+//    })
+// ).json()) as PaginatedDocs,

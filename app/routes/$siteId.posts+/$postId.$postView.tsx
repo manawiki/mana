@@ -70,10 +70,12 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(({ id }) => id === "routes/$siteId+/_layout")
       ?.data?.site.name;
    const postTitle = data.post.name;
+   const postDescription = data.post.subtitle;
 
    return [
       {
          title: `${postTitle} - ${siteName}`,
+         description: postDescription,
       },
    ];
 };

@@ -16,7 +16,7 @@ import { zx } from "zodix";
 import type { Search, Site } from "payload/generated-types";
 import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
-import { isAdding } from "~/utils";
+import { isAdding, isIOS } from "~/utils";
 
 export async function loader({
    context: { payload, user },
@@ -266,7 +266,8 @@ export function SearchComboBox({
             </Transition>
          </Combobox>
          <button
-            className="absolute right-4 top-5"
+            className={`${isIOS ? "right-5 top-1.5" : "top-5"} 
+            absolute right-4 `}
             onClick={() => {
                setSearchToggle(false);
             }}

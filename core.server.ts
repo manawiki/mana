@@ -36,7 +36,6 @@ const corsOptions = {
 };
 
 //Start core site (remix + payload instance)
-
 async function startCore() {
    const app = express();
 
@@ -154,8 +153,7 @@ async function startCore() {
          if (build.assets === undefined) {
             console.log(build.assets);
             debugger;
-          }
-
+         }
 
          broadcastDevReady(build);
       }
@@ -165,24 +163,26 @@ async function startCore() {
 startCore();
 
 // during dev, we'll keep the build module up to date with the changes
+async function updateServer() {
+   for (const key in require.cache) {
+      if (key.startsWith(BUILD_DIR)) {
+         delete require.cache[key];
+      }
+   }
+   const build = require(BUILD_DIR);
+
+   if (build.assets === undefined) {
+      console.log(build.assets);
+      debugger;
+   }
+
+   broadcastDevReady(build);
+}
+
 if (process.env.NODE_ENV === "development") {
    const watcher = chokidar.watch(BUILD_DIR, {
       ignored: ["**/**.map"],
    });
-   watcher.on("all", () => {
-      for (const key in require.cache) {
-         if (key.startsWith(BUILD_DIR)) {
-            delete require.cache[key];
-         }
-      }
-      const build = require(BUILD_DIR);
-
-      if (build.assets === undefined) {
-         console.log(build.assets);
-         debugger;
-       }
-
-
-      broadcastDevReady(build);
-   });
+   watcher.on("add", updateServer);
+   watcher.on("change", updateServer);
 }

@@ -24,7 +24,7 @@ import {
    type RenderElementProps,
 } from "slate-react";
 import Tooltip from "~/components/Tooltip";
-import { isProcessing } from "~/utils";
+import { isNative, isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -132,9 +132,13 @@ export default function SiteIndexMain() {
       fetcher.formData.get("intentType") === "publish";
 
    const disabled = isProcessing(fetcher.state);
+
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
+         <main
+            className={`${isNative ? "pt-6" : "pt-20 laptop:pt-12"} 
+            mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
+         >
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen pt-20 laptop:pt-12">
@@ -236,15 +240,13 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {home && (
-                     <div className="pt-20 laptop:pt-12">
-                        <Slate key={siteId} editor={editor} value={home}>
-                           <Editable
-                              renderElement={renderElement}
-                              renderLeaf={Leaf}
-                              readOnly={true}
-                           />
-                        </Slate>
-                     </div>
+                     <Slate key={siteId} editor={editor} value={home}>
+                        <Editable
+                           renderElement={renderElement}
+                           renderLeaf={Leaf}
+                           readOnly={true}
+                        />
+                     </Slate>
                   )}
                </>
             )}
