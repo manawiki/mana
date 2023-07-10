@@ -18,6 +18,7 @@ import {
    uploadImage,
    isAdding,
    type FormResponse,
+   isNative,
 } from "~/utils";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -132,7 +133,10 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] pb-6 pt-20 max-tablet:px-3 laptop:pt-14">
+         <main
+            className={`${isNative ? "pt-6" : "pt-20 laptop:pt-12"} 
+            mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
+         >
             <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
                Collections
             </h1>
@@ -269,7 +273,7 @@ export default function CollectionIndex() {
                   </div>
                </>
             )}
-         </div>
+         </main>
          <Outlet />
       </>
    );

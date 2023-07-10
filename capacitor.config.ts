@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
    server: {
       url: "https://mana.wiki/",
       // url: "http://localhost:3000/starrail",
-      cleartext: true,
+      // cleartext: true,
    },
 };
 

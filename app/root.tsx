@@ -34,6 +34,7 @@ import { useEffect, useState } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
 import { ArrowUp } from "lucide-react";
+import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -134,6 +135,7 @@ function App() {
       return () => document.removeEventListener("scroll", onScroll);
    }, []);
 
+   setBackForwardNavigationGestures(true);
    return (
       <html
          lang={locale}
@@ -173,7 +175,7 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
-            {visible && (
+            {/* {visible && (
                <button
                   className="fixed bottom-14 right-12 z-50 flex
                   h-12 w-12 items-center justify-center rounded-full border-2 border-zinc-200
@@ -190,7 +192,7 @@ function App() {
                >
                   <ArrowUp className="text-black dark:text-white" size={20} />
                </button>
-            )}
+            )} */}
          </body>
       </html>
    );

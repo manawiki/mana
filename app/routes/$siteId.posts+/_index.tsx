@@ -22,7 +22,7 @@ import {
 import { format } from "date-fns";
 import { useState, useEffect, Fragment } from "react";
 import { useDebouncedValue } from "~/hooks";
-import { isLoading, safeNanoID } from "~/utils";
+import { isLoading, isNative, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./components/FeedItem";
@@ -101,7 +101,10 @@ export default function PostsIndex() {
 
    return (
       <>
-         <div className="mx-auto max-w-[728px] px-3 pb-6 pt-20 tablet:px-0 laptop:px-3 laptop:pt-14 desktop:px-0">
+         <main
+            className={`${isNative ? "pt-6" : "pt-20 laptop:pt-12"} 
+            mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
+         >
             <div className="border-color relative mb-16 border-b-2 pb-2">
                <h1 className="font-header text-3xl font-bold">Posts</h1>
                <AdminOrStaffOrOwner>
@@ -515,7 +518,7 @@ export default function PostsIndex() {
                   ))
                )}
             </section>
-         </div>
+         </main>
       </>
    );
 }

@@ -27,5 +27,5 @@ module.exports = {
    routes: async (defineRoutes) => {
       return flatRoutes(["routes", "_custom/routes"], defineRoutes);
    },
-   serverDependenciesToBundle: ["nanoid", "array-move"],
+   serverDependenciesToBundle: ["nanoid", "array-move", "capacitor-plugin-ios-webview-configurator"],
 };
