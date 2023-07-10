@@ -93,6 +93,7 @@
       "zodix": "^0.4.1"
    },
    "devDependencies": {
+      "@capacitor/assets": "^2.0.4",
       "@capacitor/cli": "^5.1.1",
       "@remix-run/dev": "^1.18.1",
       "@remix-run/eslint-config": "^1.18.1",
