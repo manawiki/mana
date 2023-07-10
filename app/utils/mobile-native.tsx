@@ -7,3 +7,11 @@ export const isNative = Capacitor.isNativePlatform();
 export const IsMobileNative = ({ children }: { children: React.ReactNode }) => {
    return isNative ? <>{children}</> : null;
 };
+
+export const NotMobileNative = ({
+   children,
+}: {
+   children: React.ReactNode;
+}) => {
+   return isNative ? null : <>{children}</>;
+};

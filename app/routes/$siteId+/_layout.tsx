@@ -10,8 +10,8 @@ import {
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
+   Bookmark,
    ChevronDown,
-   ChevronLeft,
    Component,
    Dog,
    HardDrive,
@@ -21,7 +21,7 @@ import {
    MenuIcon,
    Pin,
    Search,
-   User as UserIcon,
+   User as UserLucideIcon,
    Users,
    X,
 } from "lucide-react";
@@ -36,8 +36,10 @@ import { zx } from "zodix";
 import { z } from "zod";
 import {
    IsMobileNative,
+   NotMobileNative,
    assertIsPost,
    isAdding,
+   isAndroid,
    isIOS,
    isNative,
 } from "~/utils";
@@ -56,6 +58,8 @@ import {
    CircleStackIcon,
    HomeIcon,
    PencilSquareIcon,
+   Squares2X2Icon,
+   UserIcon,
 } from "@heroicons/react/24/outline";
 import {
    HomeIcon as HomeIconBold,
@@ -64,8 +68,8 @@ import {
 } from "@heroicons/react/24/solid";
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
-import type { User, Site, Update } from "payload/generated-types";
-import { Logo, Modal } from "~/components";
+import type { Site, Update, User } from "payload/generated-types";
+import { Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
@@ -129,9 +133,6 @@ export const links: LinksFunction = () => {
    return [
       { rel: "preload", href: customStylesheetUrl, as: "style" },
       { rel: "stylesheet", href: customStylesheetUrl },
-
-      // { rel: "preload", href: nProgressStyles, as: "style" },
-      // { rel: "stylesheet", href: nProgressStyles },
    ];
 };
 
@@ -174,8 +175,11 @@ export default function SiteIndex() {
 
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
+
    const [isMenuOpen, setMenuOpen] = useState(false);
    const [isMainMenuOpen, setMainMenuOpen] = useState(false);
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+
    const gaTrackingId = site?.gaTagId;
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
@@ -189,29 +193,8 @@ export default function SiteIndex() {
 
    return (
       <>
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
-            <>
-               <script
-                  defer
-                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-               />
-               <script
-                  defer
-                  id="gtag-init"
-                  dangerouslySetInnerHTML={{
-                     __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
+         {/* ==== Modals ==== */}
 
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
-              `,
-                  }}
-               />
-            </>
-         ) : null}
          {/* Mobile main menu modal (pins) */}
          <Modal
             onClose={() => {
@@ -221,8 +204,6 @@ export default function SiteIndex() {
          >
             <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all laptop:w-[50vw]">
                <button
-                  name="intent"
-                  value="addSite"
                   type="button"
                   className="bg-1 shadow-1 absolute bottom-7
                               left-1/2 flex h-14 w-14 -translate-x-1/2
@@ -307,207 +288,297 @@ export default function SiteIndex() {
                </menu>
             </div>
          </Modal>
-         <header
-            className={`${isNative ? "hidden" : ""} 
-            bg-2 border-color shadow-1 fixed top-0 z-50 flex w-full 
-            items-center justify-between border-b p-3 laptop:shadow-sm`}
+         <Modal
+            onClose={() => {
+               setMenuOpen(false);
+            }}
+            show={isMenuOpen}
          >
-            <LoggedIn>
-               <div className="z-10 flex items-center gap-3">
-                  <div className="laptop:hidden">
-                     {/* Mobile site menu modal */}
-                     <Modal
-                        onClose={() => {
-                           setMenuOpen(false);
-                        }}
-                        show={isMenuOpen}
-                     >
-                        <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
-                           <button
-                              name="intent"
-                              value="addSite"
-                              type="button"
-                              className="bg-1 shadow-1 absolute bottom-7
+            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
+               <button
+                  type="button"
+                  className="bg-1 shadow-1 absolute bottom-7
                               left-1/2 flex h-14 w-14 -translate-x-1/2
                               transform items-center justify-center rounded-full shadow
                             hover:bg-red-50 dark:hover:bg-zinc-700"
-                              onClick={() => setMenuOpen(false)}
-                           >
-                              <X size={28} className="text-red-400" />
-                           </button>
-                           {following?.length === 0 ? null : (
-                              <menu className="space-y-3">
-                                 {following?.map((item) => (
-                                    <NavLink
-                                       prefetch="intent"
-                                       reloadDocument={
-                                          // Reload if custom site, but NOT if current site is custom
-                                          item.type == "custom" &&
-                                          site.type != "custom" &&
-                                          true
-                                       }
-                                       key={item.id}
-                                       onClick={() => setMenuOpen(false)}
-                                       className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-2 pr-4 shadow-sm"
-                                       to={`/${item.slug}`}
-                                    >
-                                       {({ isActive }) => (
-                                          <>
-                                             <div className="flex items-center gap-3 truncate">
-                                                <div
-                                                   className="h-8 w-8 flex-none 
-                                    overflow-hidden rounded-full laptop:h-[50px] laptop:w-[50px]"
-                                                >
-                                                   <Image
-                                                      alt="Site Logo"
-                                                      options="aspect_ratio=1:1&height=120&width=120"
-                                                      url={item.icon?.url}
-                                                   />
-                                                </div>
-                                                <div className="text-1 truncate text-sm font-bold">
-                                                   {item.name}
-                                                </div>
-                                             </div>
-                                             {isActive && (
-                                                <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                                             )}
-                                          </>
-                                       )}
-                                    </NavLink>
-                                 ))}
-                              </menu>
-                           )}
-                        </div>
-                     </Modal>
-                     <div className="flex items-center gap-3">
-                        <NotFollowingSite>
-                           <div className="flex items-center">
-                              <fetcher.Form className="w-full" method="post">
-                                 <button
-                                    name="intent"
-                                    value="followSite"
-                                    className="flex h-8 items-center justify-center rounded-full bg-black
-                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                                 >
-                                    {adding ? (
-                                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                    ) : (
-                                       t("follow.actionFollow")
-                                    )}
-                                 </button>
-                              </fetcher.Form>
-                           </div>
-                        </NotFollowingSite>
-                        <button
-                           className="bg-3 shadow-1 border-color flex items-center justify-center
-                  gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
-                           onClick={() => setMenuOpen(true)}
+                  onClick={() => setMenuOpen(false)}
+               >
+                  <X size={28} className="text-red-400" />
+               </button>
+               <LoggedOut>
+                  <div className="m-4 space-y-3">
+                     <Link
+                        to="/join"
+                        className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
+                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
+                     >
+                        <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                        <span
+                           className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                        ></span>
+                        <span className="relative text-sm font-bold text-white">
+                           {t("login.signUp", { ns: "auth" })}
+                        </span>
+                     </Link>
+                     <Link
+                        className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
+                        to={`/login?redirectTo=${location.pathname}`}
+                     >
+                        {t("login.action", { ns: "auth" })}
+                     </Link>
+                  </div>
+               </LoggedOut>
+               {following?.length === 0 ? null : (
+                  <menu className="space-y-3">
+                     {following?.map((item) => (
+                        <NavLink
+                           prefetch="intent"
+                           reloadDocument={
+                              // Reload if custom site, but NOT if current site is custom
+                              item.type == "custom" &&
+                              site.type != "custom" &&
+                              true
+                           }
+                           key={item.id}
+                           onClick={() => setMenuOpen(false)}
+                           className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-3 pr-4 shadow-sm"
+                           to={`/${item.slug}`}
                         >
-                           <div className="pr-2 text-xs">My Follows</div>
-                           <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
-                              <ChevronDown
-                                 className="dark:text-white"
-                                 size={14}
-                              />
-                           </div>
-                        </button>
+                           {({ isActive }) => (
+                              <>
+                                 <div className="flex items-center gap-3 truncate">
+                                    <div className="h-8 w-8 flex-none overflow-hidden rounded-full">
+                                       <Image
+                                          alt="Site Logo"
+                                          options="aspect_ratio=1:1&height=120&width=120"
+                                          url={item.icon?.url}
+                                       />
+                                    </div>
+                                    <div className="text-1 truncate text-sm font-bold">
+                                       {item.name}
+                                    </div>
+                                 </div>
+                                 {isActive && (
+                                    <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
+                                 )}
+                              </>
+                           )}
+                        </NavLink>
+                     ))}
+                  </menu>
+               )}
+            </div>
+         </Modal>
+         {/* User Native Mobile Menu */}
+         <Modal
+            onClose={() => {
+               setUserMenuOpen(false);
+            }}
+            show={isUserMenuOpen}
+         >
+            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
+               <button
+                  type="button"
+                  className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                  onClick={() => setUserMenuOpen(false)}
+               >
+                  <X size={28} className="text-red-400" />
+               </button>
+               <section>
+                  <LoggedOut>
+                     <div className="m-4 space-y-3">
+                        <Link
+                           to="/join"
+                           className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
+                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
+                        >
+                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                           <span
+                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                           ></span>
+                           <span className="relative text-sm font-bold text-white">
+                              {t("login.signUp", { ns: "auth" })}
+                           </span>
+                        </Link>
+                        <Link
+                           className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
+                           to={`/login?redirectTo=${location.pathname}`}
+                        >
+                           {t("login.action", { ns: "auth" })}
+                        </Link>
                      </div>
+                  </LoggedOut>
+                  <LoggedIn>
+                     <Form action="/logout" method="post">
+                        <button
+                           type="submit"
+                           className="shadow-1 bg-3 border-color relative flex w-full items-center
+               justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
+                        >
+                           <div className="font-bold">Logout</div>
+                           <LogOut
+                              size={18}
+                              className="text-red-400 dark:text-red-300"
+                           />
+                        </button>
+                     </Form>
+                  </LoggedIn>
+               </section>
+               <div className="border-color mx-40 mt-6 flex items-center justify-center border-t-2 pt-4">
+                  <DarkModeToggle />
+               </div>
+            </div>
+         </Modal>
+         <NotMobileNative>
+            <header
+               className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
+            h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
+            >
+               <div className="z-10 flex items-center gap-3">
+                  <div className="laptop:hidden">
+                     {/* Following menu modal */}
+                     <LoggedIn>
+                        <div className="flex items-center gap-3">
+                           <NotFollowingSite>
+                              <div className="flex items-center">
+                                 <fetcher.Form className="w-full" method="post">
+                                    <button
+                                       name="intent"
+                                       value="followSite"
+                                       className="flex h-8 items-center justify-center rounded-full bg-black
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                    >
+                                       {adding ? (
+                                          <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                       ) : (
+                                          t("follow.actionFollow")
+                                       )}
+                                    </button>
+                                 </fetcher.Form>
+                              </div>
+                           </NotFollowingSite>
+                           <button
+                              className="bg-3 shadow-1 border-color flex items-center justify-center
+                              gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
+                              onClick={() => setMenuOpen(true)}
+                           >
+                              <div className="pr-2 text-xs">My Follows</div>
+                              <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
+                                 <ChevronDown
+                                    className="dark:text-white"
+                                    size={14}
+                                 />
+                              </div>
+                           </button>
+                        </div>
+                     </LoggedIn>
                   </div>
                </div>
-               <section className="z-50 flex h-14 items-center justify-end gap-2.5">
-                  <DarkModeToggle />
-                  <Menu as="div" className="relative">
-                     <Menu.Button
-                        className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+               <LoggedIn>
+                  <section className="z-50 flex h-14 items-center justify-end gap-2.5">
+                     <DarkModeToggle />
+                     <Menu as="div" className="relative">
+                        <Menu.Button
+                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
                          justify-center rounded-full border shadow-sm"
-                     >
-                        <UserIcon size={20} />
-                     </Menu.Button>
-                     <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                     >
-                        <Menu.Items
-                           className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
-                                   max-w-md origin-top-right transform transition-all"
                         >
-                           <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
-                              <Menu.Item>
-                                 <Form action="/logout" method="post">
-                                    <button
-                                       type="submit"
-                                       className="text-1 flex w-full items-center gap-3 rounded-lg
+                           <UserLucideIcon size={20} />
+                        </Menu.Button>
+                        <Transition
+                           as={Fragment}
+                           enter="transition ease-out duration-100"
+                           enterFrom="transform opacity-0 scale-95"
+                           enterTo="transform opacity-100 scale-100"
+                           leave="transition ease-in duration-75"
+                           leaveFrom="transform opacity-100 scale-100"
+                           leaveTo="transform opacity-0 scale-95"
+                        >
+                           <Menu.Items
+                              className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
+                                   max-w-md origin-top-right transform transition-all"
+                           >
+                              <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
+                                 <Menu.Item>
+                                    <Form action="/logout" method="post">
+                                       <button
+                                          type="submit"
+                                          className="text-1 flex w-full items-center gap-3 rounded-lg
                                              p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    >
-                                       <div className="flex-grow text-left">
-                                          Logout
-                                       </div>
-                                       <LogOut
-                                          size={18}
-                                          className="text-red-400 dark:text-red-300"
-                                       />
-                                    </button>
-                                 </Form>
-                              </Menu.Item>
-                           </div>
-                        </Menu.Items>
-                     </Transition>
-                  </Menu>
-               </section>
-            </LoggedIn>
-            <LoggedOut>
-               <Link
-                  prefetch="intent"
-                  reloadDocument={site.type != "custom" && true}
-                  to={`/login?redirectTo=/${site.slug}`}
-                  className="z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5
-                               text-sm font-bold text-white dark:bg-white dark:text-black laptop:hidden"
-               >
-                  Follow
-               </Link>
-
-               <div className="relative z-10 flex w-full items-center justify-end gap-3">
-                  <DarkModeToggle />
+                                       >
+                                          <div className="flex-grow text-left">
+                                             Logout
+                                          </div>
+                                          <LogOut
+                                             size={18}
+                                             className="text-red-400 dark:text-red-300"
+                                          />
+                                       </button>
+                                    </Form>
+                                 </Menu.Item>
+                              </div>
+                           </Menu.Items>
+                        </Transition>
+                     </Menu>
+                  </section>
+               </LoggedIn>
+               <LoggedOut>
                   <Link
                      prefetch="intent"
                      reloadDocument={site.type != "custom" && true}
-                     to="/join"
-                     className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
-                           rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
+                     to={`/login?redirectTo=/${site.slug}`}
+                     className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
+                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                   >
-                     <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                     <span
-                        className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                     ></span>
-                     <span className="relative text-xs font-bold uppercase text-white">
-                        {t("login.signUp", { ns: "auth" })}
-                     </span>
+                     Follow
                   </Link>
-                  <Link
-                     prefetch="intent"
-                     reloadDocument={site.type != "custom" && true}
-                     className="border-color bg-3 shadow-1 flex h-8 items-center
+
+                  <div className="relative z-10 flex w-full items-center justify-end gap-3">
+                     <DarkModeToggle />
+                     <Link
+                        prefetch="intent"
+                        reloadDocument={site.type != "custom" && true}
+                        to="/join"
+                        className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
+                           rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
+                     >
+                        <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                        <span
+                           className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                        ></span>
+                        <span className="relative text-xs font-bold uppercase text-white">
+                           {t("login.signUp", { ns: "auth" })}
+                        </span>
+                     </Link>
+                     <Link
+                        prefetch="intent"
+                        reloadDocument={site.type != "custom" && true}
+                        className="border-color bg-3 shadow-1 flex h-8 items-center
                            justify-center rounded-lg border px-3 text-center
                            text-xs font-bold uppercase shadow-sm shadow-zinc-300"
-                     to={`/login?redirectTo=${location.pathname}`}
-                  >
-                     {t("login.action", { ns: "auth" })}
-                  </Link>
-               </div>
-            </LoggedOut>
-            <div
-               className="pattern-opacity-50 pattern-dots absolute
+                        to={`/login?redirectTo=${location.pathname}`}
+                     >
+                        {t("login.action", { ns: "auth" })}
+                     </Link>
+                  </div>
+               </LoggedOut>
+               <div
+                  className="pattern-opacity-50 pattern-dots absolute
                    left-0 top-0
                      h-full w-full pattern-bg-white pattern-zinc-300 
                      pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
-            />
-         </header>
+               />
+            </header>
+         </NotMobileNative>
          <div
             className={`${isNative ? "pb-20" : ""} 
                 laptop:grid laptop:min-h-screen
@@ -1015,23 +1086,62 @@ export default function SiteIndex() {
             </section>
          </div>
          <IsMobileNative>
-            <div className="border-color fixed bottom-0 z-50 h-20 w-full border-t bg-white">
-               <div className="grid grid-cols-2 gap-2">
-                  <Link to={`/${site.slug}`} className="space-y-1 p-3">
-                     <Logo className="mx-auto h-5 w-5" />
-                     <div className="text-center text-[8px] font-bold uppercase">
-                        Home
+            <div
+               className={`${isAndroid ? "h-16" : "h-20"} 
+               border-color fixed bottom-0 z-50 h-20 w-full 
+               border-t border-gray-100 bg-white/90 backdrop-blur-xl dark:bg-bg3Dark/90`}
+            >
+               <div className="grid grid-cols-3 gap-2">
+                  <button
+                     className="space-y-1 p-3"
+                     onClick={() => setMenuOpen(true)}
+                  >
+                     <Squares2X2Icon className="mx-auto h-5 w-5 text-blue-500" />
+                     <div className="text-center text-[9px] font-bold">
+                        Following
                      </div>
-                  </Link>
+                  </button>
                   <div className="space-y-1 p-3">
-                     <Logo className="mx-auto h-5 w-5" />
-                     <div className="text-center text-[8px] font-bold uppercase">
-                        User
+                     <Bookmark size={18} className="mx-auto text-blue-500" />
+                     <div className="text-center text-[9px] font-bold">
+                        Bookmarks
                      </div>
                   </div>
+                  <button
+                     className="space-y-1 p-3"
+                     onClick={() => setUserMenuOpen(true)}
+                  >
+                     <UserIcon className="mx-auto h-5 w-5 text-blue-500" />
+                     <div className="text-center text-[9px] font-bold">
+                        User
+                     </div>
+                  </button>
                </div>
             </div>
          </IsMobileNative>
+         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
+            <>
+               <script
+                  defer
+                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+               />
+               <script
+                  defer
+                  id="gtag-init"
+                  dangerouslySetInnerHTML={{
+                     __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+
+                gtag('config', '${gaTrackingId}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+                  }}
+               />
+            </>
+         ) : null}
       </>
    );
 }

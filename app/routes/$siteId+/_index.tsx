@@ -141,7 +141,7 @@ export default function SiteIndexMain() {
          >
             {hasAccess ? (
                <AdminOrStaffOrOwner>
-                  <div className="relative min-h-screen pt-20 laptop:pt-12">
+                  <div className="relative min-h-screen">
                      <SoloEditor
                         key={siteId}
                         fetcher={fetcher}

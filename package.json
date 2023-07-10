@@ -45,6 +45,7 @@
       "@remix-run/react": "^1.18.1",
       "@remix-run/server-runtime": "^1.18.1",
       "array-move": "^4.0.0",
+      "capacitor-plugin-ios-webview-configurator": "^0.4.0",
       "chart.js": "^3.9.1",
       "chokidar": "^3.5.3",
       "compression": "^1.7.4",

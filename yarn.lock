@@ -1679,6 +1679,11 @@
     call-me-maybe "^1.0.1"
     js-yaml "^4.1.0"
 
+"@capacitor/android@^2.4.1":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-2.5.0.tgz#143d7b3b0131af221b4a1fca778fc207f3d235a6"
+  integrity sha512-W25F9GRuqNAN9D6Sd5Lj21ibGqzd8006Tf3mfai6MJj8DB3a1TMp+hueRwt+WhDJAS+T2pnljuR3FD/jd4u2Rw==
+
 "@capacitor/android@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-5.1.1.tgz#a53fdf0ac3525a6dd7f0294e7025786eebca0027"
@@ -1707,12 +1712,24 @@
     tslib "^2.4.0"
     xml2js "^0.5.0"
 
+"@capacitor/core@^2.4.1":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-2.5.0.tgz#86b202ed950846427f710fafbdbbd844b1d0cc56"
+  integrity sha512-WUkUnqqLtlEYn6tly8t6VR0ABlSVbXdlD/gBbYxx0P+gEqMF9b46uYb2YqyH+8HBDANzTweEySpLfhiSUvYS7w==
+  dependencies:
+    tslib "^1.9.0"
+
 "@capacitor/core@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-5.1.1.tgz#5c161ef54928ae257b26692c2a9758738166637f"
   integrity sha512-17rZMGpZYQgBAmUS1uAS1GrRkPAQiUfpTfvd2wWS9z87GoTL/5vtpPAtI0/XLtr4eve2TsATY2r8BaW2NfEO6Q==
   dependencies:
     tslib "^2.1.0"
+
+"@capacitor/ios@^2.4.1":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-2.5.0.tgz#867b155c4a827631ab0884319e33f8dad15bc781"
+  integrity sha512-KVgSxKCUllbDJg+hJxZrZy81Xy1rv9T/d0sXcdP0a6uLOf+QceAqxmSnuRIw7dqehC0WLChWvOKrgzIevMarRA==
 
 "@capacitor/ios@^5.1.1":
   version "5.1.1"
@@ -5097,6 +5114,15 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001464, caniuse-lite@^1.0.30001503:
   version "1.0.30001512"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001512.tgz#7450843fb581c39f290305a83523c7a9ef0d4cb4"
   integrity sha512-2S9nK0G/mE+jasCUsMPlARhRCts1ebcp2Ji8Y8PWi4NDE1iRdLCnEPHkEfeBrGC45L4isBx5ur3IQ6yTE2mRZw==
+
+capacitor-plugin-ios-webview-configurator@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/capacitor-plugin-ios-webview-configurator/-/capacitor-plugin-ios-webview-configurator-0.4.0.tgz#712de2f55622367c6daf72f28a2e32cc02b0707d"
+  integrity sha512-uyDdT59Z5wl/rsAF7E71G5z19rnzXH17ZRnfTqJdw8LGMDjeroFvykc7d9M78m0bZfa9kewpzct8fIPS0H06+A==
+  dependencies:
+    "@capacitor/android" "^2.4.1"
+    "@capacitor/core" "^2.4.1"
+    "@capacitor/ios" "^2.4.1"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -13385,7 +13411,7 @@ tsconfig-paths@^4.0.0:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.11.1, tslib@^1.8.1:
+tslib@^1.11.1, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
