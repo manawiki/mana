@@ -1088,7 +1088,7 @@ export default function SiteIndex() {
          <IsMobileNative>
             <div
                className={`${isAndroid ? "h-16" : "h-20"} 
-               border-color fixed bottom-0 z-50 h-20 w-full 
+               border-color fixed bottom-0 z-50 w-full 
                border-t border-gray-100 bg-white/90 backdrop-blur-xl dark:bg-bg3Dark/90`}
             >
                <div className="grid grid-cols-3 gap-2">
