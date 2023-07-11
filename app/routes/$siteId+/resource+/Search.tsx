@@ -1,7 +1,13 @@
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useFetcher, useNavigate, useParams } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useNavigate,
+   useParams,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import {
    Component,
    Database,
@@ -16,7 +22,7 @@ import { zx } from "zodix";
 import type { Search, Site } from "payload/generated-types";
 import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
-import { isAdding, isIOS } from "~/utils";
+import { isAdding } from "~/utils";
 
 export async function loader({
    context: { payload, user },
@@ -160,6 +166,7 @@ export function SearchComboBox({
    const [query, setQuery] = useState("");
    const debouncedValue = useDebouncedValue(query, 100);
    const { siteId } = useParams();
+   const { isIOS } = useRouteLoaderData("routes/$siteId+/_layout");
 
    //leave searchListItems as an empty array until fetcher is loaded
    const searchListItems = useMemo(

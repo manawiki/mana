@@ -5,7 +5,12 @@ import { zx } from "zodix";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
-import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import {
+   useFetcher,
+   useLoaderData,
+   useParams,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import { useCallback, useMemo } from "react";
 import { createEditor } from "slate";
 import Block from "~/modules/editor/blocks/Block";
@@ -24,7 +29,7 @@ import {
    type RenderElementProps,
 } from "slate-react";
 import Tooltip from "~/components/Tooltip";
-import { isNative, isProcessing } from "~/utils";
+import { isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -133,10 +138,12 @@ export default function SiteIndexMain() {
 
    const disabled = isProcessing(fetcher.state);
 
+   const { isMobileApp } = useRouteLoaderData("routes/$siteId+/_layout");
+
    return (
       <>
          <main
-            className={`${isNative ? "pt-6" : "pt-20 laptop:pt-12"} 
+            className={`${isMobileApp ? "pt-6" : "pt-20 laptop:pt-12"} 
             mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
          >
             {hasAccess ? (
