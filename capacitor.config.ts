@@ -8,6 +8,12 @@ const config: CapacitorConfig = {
       // url: "http://localhost:3000/starrail",
       // cleartext: true,
    },
+   ios:{
+      appendUserAgent:"isIOS",
+   },
+   android:{
+      appendUserAgent:"isAndroid",
+   }
 };
 
 export default config;

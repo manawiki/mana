@@ -34,15 +34,7 @@ import type {
 import { json } from "@remix-run/node";
 import { zx } from "zodix";
 import { z } from "zod";
-import {
-   IsMobileNative,
-   NotMobileNative,
-   assertIsPost,
-   isAdding,
-   isAndroid,
-   isIOS,
-   isNative,
-} from "~/utils";
+import { assertIsPost, isAdding, isNativeSSR } from "~/utils";
 import {
    AdminOrStaffOrOwner,
    FollowingSite,
@@ -87,6 +79,8 @@ export async function loader({
       siteId: z.string(),
    });
 
+   const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
+
    try {
       const url = new URL(request.url).origin;
 
@@ -113,7 +107,7 @@ export async function loader({
       })) as PaginatedDocs<Update>;
 
       return json(
-         { updateResults, site },
+         { updateResults, site, isMobileApp, isIOS, isAndroid },
          { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
       );
    } catch (e) {
@@ -167,7 +161,8 @@ const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
 };
 
 export default function SiteIndex() {
-   const { site } = useLoaderData<typeof loader>();
+   const { site, isMobileApp, isIOS, isAndroid } =
+      useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -438,7 +433,7 @@ export default function SiteIndex() {
                </div>
             </div>
          </Modal>
-         <NotMobileNative>
+         {!isMobileApp && (
             <header
                className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
             h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
@@ -578,9 +573,9 @@ export default function SiteIndex() {
                      pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
                />
             </header>
-         </NotMobileNative>
+         )}
          <div
-            className={`${isNative ? "pb-20" : ""} 
+            className={`${isMobileApp ? "pb-20" : ""} 
                 laptop:grid laptop:min-h-screen
                 laptop:auto-cols-[82px_0px_1fr_334px] laptop:grid-flow-col
                 desktop:auto-cols-[82px_220px_1fr_334px]`}
@@ -722,7 +717,7 @@ export default function SiteIndex() {
             <section className="max-laptop:border-color bg-3 max-laptop:border-b">
                <section
                   className={`${
-                     isNative
+                     isMobileApp
                         ? "max-laptop:top-0"
                         : "max-laptop:top-[56px] laptop:top-6"
                   }  sticky z-40 laptop:z-50 laptop:px-3
@@ -1085,7 +1080,7 @@ export default function SiteIndex() {
                </div>
             </section>
          </div>
-         <IsMobileNative>
+         {isMobileApp && (
             <div
                className={`${isAndroid ? "h-16" : "h-20"} 
                border-color fixed bottom-0 z-50 w-full 
@@ -1118,7 +1113,7 @@ export default function SiteIndex() {
                   </button>
                </div>
             </div>
-         </IsMobileNative>
+         )}
          {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
             <>
                <script

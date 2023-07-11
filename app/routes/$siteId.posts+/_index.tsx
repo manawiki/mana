@@ -6,6 +6,7 @@ import {
    useLoaderData,
    useSearchParams,
    useNavigation,
+   useRouteLoaderData,
 } from "@remix-run/react";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -22,7 +23,7 @@ import {
 import { format } from "date-fns";
 import { useState, useEffect, Fragment } from "react";
 import { useDebouncedValue } from "~/hooks";
-import { isLoading, isNative, safeNanoID } from "~/utils";
+import { isLoading, safeNanoID } from "~/utils";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { FeedItem } from "./components/FeedItem";
@@ -84,6 +85,7 @@ export default function PostsIndex() {
    const [searchParams, setSearchParams] = useSearchParams({});
    const [selectedStatus, setSelectedStatus] = useState("All");
    const [searchToggle, setSearchToggle] = useState(false);
+   const { isMobileApp } = useRouteLoaderData("routes/$siteId+/_layout");
 
    useEffect(() => {
       if (debouncedValue) {
@@ -102,7 +104,7 @@ export default function PostsIndex() {
    return (
       <>
          <main
-            className={`${isNative ? "pt-6" : "pt-20 laptop:pt-12"} 
+            className={`${isMobileApp ? "pt-6" : "pt-20 laptop:pt-12"} 
             mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
          >
             <div className="border-color relative mb-16 border-b-2 pb-2">
