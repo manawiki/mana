@@ -33,7 +33,7 @@ export const EntryHeader = ({ entry }: { entry: HeaderType }) => {
    const isCustomWikiPage = coreCollectionData?.collection?.customEntryTemplate;
 
    return (
-      <section className="border-color relative mb-5 overflow-hidden border-y pt-9">
+      <section className="border-color relative my-5 overflow-hidden border-y pt-9">
          <div
             className="pattern-dots absolute left-0
                    top-0 h-full
@@ -45,12 +45,14 @@ export const EntryHeader = ({ entry }: { entry: HeaderType }) => {
          ></div>
          <div className="relative mx-auto flex max-w-[728px] items-center justify-start gap-3 pb-4 max-desktop:px-3">
             <div
-               className="border-color flex h-12 w-12 flex-none items-center 
-     justify-center overflow-hidden rounded-full border-2 bg-zinc-500"
+               className="border-color flex h-14 w-14 flex-none items-center 
+               justify-center overflow-hidden rounded-full border-2 bg-zinc-500"
             >
                {/* @ts-ignore */}
                {entry?.icon?.url ? (
                   <Image
+                     width={50}
+                     height={50}
                      alt={entry?.name}
                      options="aspect_ratio=1:1&height=80&width=80"
                      //@ts-ignore

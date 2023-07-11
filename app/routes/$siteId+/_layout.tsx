@@ -1,4 +1,5 @@
 import {
+   Await,
    Form,
    Link,
    NavLink,
@@ -43,7 +44,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -66,9 +67,12 @@ import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
+import { deferIf } from "defer-if";
+import clsx from "clsx";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
+import invariant from "tiny-invariant";
 
 export async function loader({
    context: { payload, user },
@@ -79,40 +83,34 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
+   const { isMobileApp } = isNativeSSR(request);
 
-   try {
-      const url = new URL(request.url).origin;
+   const url = new URL(request.url).origin;
 
-      const siteUrl = `${url}/api/sites?where[slug][equals]=${siteId}&depth=2`;
+   const siteUrl = `${url}/api/sites?where[slug][equals]=${siteId}&depth=2`;
 
-      const { docs: slug } = (await fetchWithCache(siteUrl, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })) as PaginatedDocs<Site>;
+   const { docs: slug } = (await fetchWithCache(siteUrl, {
+      headers: {
+         cookie: request.headers.get("cookie") ?? "",
+      },
+   })) as PaginatedDocs<Site>;
 
-      const site = slug[0];
+   const site = slug[0];
+   invariant(site, "Site doesn't exist...");
 
-      if (!site) {
-         throw json(null, { status: 404 });
-      }
+   const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
 
-      const updatesUrl = `${url}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
+   const { docs: updateResults } = (await fetchWithCache(updatesUrl, {
+      headers: {
+         cookie: request.headers.get("cookie") ?? "",
+      },
+   })) as PaginatedDocs<Update>;
 
-      const { docs: updateResults } = (await fetchWithCache(updatesUrl, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })) as PaginatedDocs<Update>;
-
-      return json(
-         { updateResults, site, isMobileApp, isIOS, isAndroid },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-      );
-   } catch (e) {
-      throw new Response("Internal Server Error", { status: 500 });
-   }
+   return await deferIf({ updateResults, site }, isMobileApp, {
+      init: {
+         headers: { "Cache-Control": "public, s-maxage=60, max-age=60" },
+      },
+   });
 }
 
 export const meta: V2_MetaFunction = ({ data }) => {
@@ -133,36 +131,9 @@ export const links: LinksFunction = () => {
 export const handle = {
    i18n: "site",
 };
-const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
-   const type = item.relation?.relationTo;
-
-   switch (type) {
-      case "customPages": {
-         const slug = item.relation?.value.slug;
-         return `/${siteSlug}/${slug}`;
-      }
-      case "collections": {
-         const slug = item.relation?.value.slug;
-         return `/${siteSlug}/collections/${slug}`;
-      }
-      case "entries": {
-         const slug = item.relation?.value.slug;
-         const id = item.relation?.value.id;
-         const collection = item.relation?.value.collectionEntity.slug;
-         return `/${siteSlug}/collections/${collection}/${id}/${slug}`;
-      }
-      case "posts": {
-         const id = item.relation?.value.id;
-         return `/${siteSlug}/posts/${id}`;
-      }
-      default:
-         return "/";
-   }
-};
 
 export default function SiteIndex() {
-   const { site, isMobileApp, isIOS, isAndroid } =
-      useLoaderData<typeof loader>();
+   const { site } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -185,959 +156,1003 @@ export default function SiteIndex() {
 
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
+   const { isMobileApp, isIOS } = useRouteLoaderData("root") as any;
 
    return (
-      <>
-         {/* ==== Modals ==== */}
-
-         {/* Mobile main menu modal (pins) */}
-         <Modal
-            onClose={() => {
-               setMainMenuOpen(false);
-            }}
-            show={isMainMenuOpen}
-         >
-            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all laptop:w-[50vw]">
-               <button
-                  type="button"
-                  className="bg-1 shadow-1 absolute bottom-7
-                              left-1/2 flex h-14 w-14 -translate-x-1/2
-                              transform items-center justify-center rounded-full shadow
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
-                  onClick={() => setMainMenuOpen(false)}
-               >
-                  <X size={28} className="text-red-400" />
-               </button>
-               <menu className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                     <Link
-                        onClick={() => setMainMenuOpen(false)}
-                        className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                        prefetch="intent"
-                        to={`/${site.slug}/posts`}
+      <Suspense fallback="Loading...">
+         <Await resolve={{ site }}>
+            {({ site }) => (
+               <div className={clsx({ "pb-[76px]": isMobileApp })}>
+                  {!isMobileApp && (
+                     <header
+                        className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
+                        h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
                      >
-                        <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
-                        <span>Posts</span>
-                     </Link>
-                     <Link
-                        onClick={() => setMainMenuOpen(false)}
-                        className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                        prefetch="intent"
-                        to={`/${site.slug}/collections`}
-                     >
-                        <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
-                        <span>Collections</span>
-                     </Link>
-                  </div>
-                  {site?.pinned && site?.pinned?.length > 1 && (
-                     <>
-                        <div className="space-y-0.5 pt-2">
-                           <div className="flex items-center gap-3 pb-2 pl-2">
-                              <div className="flex items-center gap-2 text-sm font-bold">
-                                 <Pin className="text-red-400" size={15} />
-                                 <span>Pinned</span>
-                              </div>
-                           </div>
-                           <ul className="space-y-2">
-                              {site.pinned?.map((item: any) => (
-                                 <li key={item.id}>
-                                    <Link
-                                       onClick={() => setMainMenuOpen(false)}
-                                       className="shadow-1 bg-3 relative flex items-center 
-                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                                       prefetch="intent"
-                                       to={pinnedLinkUrlGenerator(
-                                          item,
-                                          site?.slug ?? ""
-                                       )}
+                        <div className="z-10 flex items-center gap-3">
+                           <div className="laptop:hidden">
+                              {/* Following menu modal */}
+                              <LoggedIn>
+                                 <div className="flex items-center gap-3">
+                                    <NotFollowingSite>
+                                       <div className="flex items-center">
+                                          <fetcher.Form
+                                             className="w-full"
+                                             method="post"
+                                          >
+                                             <button
+                                                name="intent"
+                                                value="followSite"
+                                                className="flex h-8 items-center justify-center rounded-full bg-black
+                                                px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                             >
+                                                {adding ? (
+                                                   <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                                ) : (
+                                                   t("follow.actionFollow")
+                                                )}
+                                             </button>
+                                          </fetcher.Form>
+                                       </div>
+                                    </NotFollowingSite>
+                                    <button
+                                       className="bg-3 shadow-1 border-color flex items-center justify-center
+                                       gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
+                                       onClick={() => setMenuOpen(true)}
                                     >
-                                       <div className="h-5 w-5">
-                                          {item.relation?.value?.icon?.url ? (
+                                       <div className="pr-2 text-xs">
+                                          My Follows
+                                       </div>
+                                       <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
+                                          <ChevronDown
+                                             className="dark:text-white"
+                                             size={14}
+                                          />
+                                       </div>
+                                    </button>
+                                 </div>
+                              </LoggedIn>
+                           </div>
+                        </div>
+                        <LoggedIn>
+                           <section className="z-50 flex h-14 items-center justify-end gap-2.5">
+                              <DarkModeToggle />
+                              <Menu as="div" className="relative">
+                                 <Menu.Button
+                                    className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                                    justify-center rounded-full border shadow-sm"
+                                 >
+                                    <UserLucideIcon size={20} />
+                                 </Menu.Button>
+                                 <Transition
+                                    as={Fragment}
+                                    enter="transition ease-out duration-100"
+                                    enterFrom="transform opacity-0 scale-95"
+                                    enterTo="transform opacity-100 scale-100"
+                                    leave="transition ease-in duration-75"
+                                    leaveFrom="transform opacity-100 scale-100"
+                                    leaveTo="transform opacity-0 scale-95"
+                                 >
+                                    <Menu.Items
+                                       className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
+                                       max-w-md origin-top-right transform transition-all"
+                                    >
+                                       <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
+                                          <Menu.Item>
+                                             <Form
+                                                action="/logout"
+                                                method="post"
+                                             >
+                                                <button
+                                                   type="submit"
+                                                   className="text-1 flex w-full items-center gap-3 rounded-lg
+                                                   p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                >
+                                                   <div className="flex-grow text-left">
+                                                      Logout
+                                                   </div>
+                                                   <LogOut
+                                                      size={18}
+                                                      className="text-red-400 dark:text-red-300"
+                                                   />
+                                                </button>
+                                             </Form>
+                                          </Menu.Item>
+                                       </div>
+                                    </Menu.Items>
+                                 </Transition>
+                              </Menu>
+                           </section>
+                        </LoggedIn>
+                        <LoggedOut>
+                           <Link
+                              prefetch="intent"
+                              reloadDocument={site.type != "custom" && true}
+                              to={`/login?redirectTo=/${site.slug}`}
+                              className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
+                              font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
+                           >
+                              Follow
+                           </Link>
+
+                           <div className="relative z-10 flex w-full items-center justify-end gap-3">
+                              <DarkModeToggle />
+                              <Link
+                                 prefetch="intent"
+                                 reloadDocument={site.type != "custom" && true}
+                                 to="/join"
+                                 className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
+                                 rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
+                              >
+                                 <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                                 <span
+                                    className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                                    rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                                 ></span>
+                                 <span className="relative text-xs font-bold uppercase text-white">
+                                    {t("login.signUp", { ns: "auth" })}
+                                 </span>
+                              </Link>
+                              <Link
+                                 prefetch="intent"
+                                 reloadDocument={site.type != "custom" && true}
+                                 className="border-color bg-3 shadow-1 flex h-8 items-center
+                                 justify-center rounded-lg border px-3 text-center
+                                 text-xs font-bold uppercase shadow-sm shadow-zinc-300"
+                                 to={`/login?redirectTo=${location.pathname}`}
+                              >
+                                 {t("login.action", { ns: "auth" })}
+                              </Link>
+                           </div>
+                        </LoggedOut>
+                        <div
+                           className="pattern-opacity-50 pattern-dots absolute left-0 top-0
+                           h-full w-full pattern-bg-white pattern-zinc-300 
+                           pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
+                        />
+                     </header>
+                  )}
+                  <div className="laptop:grid laptop:min-h-screen laptop:auto-cols-[82px_0px_1fr_334px] laptop:grid-flow-col desktop:auto-cols-[82px_220px_1fr_334px]">
+                     {/* ==== Left Sidebar ==== */}
+                     <section
+                        className="bg-1 border-color relative top-0 z-50
+                        max-laptop:fixed max-laptop:w-full laptop:border-r"
+                     >
+                        <div
+                           className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
+                           laptop:h-full laptop:w-[82px] laptop:overflow-y-auto laptop:pt-4"
+                        >
+                           <LoggedOut>
+                              <div className="relative flex items-center justify-center pb-3">
+                                 <NavLink
+                                    prefetch="intent"
+                                    className="bg-2 shadow-1 rounded-full shadow"
+                                    to={`/${site.slug}`}
+                                 >
+                                    {({ isActive }) => (
+                                       <>
+                                          <div
+                                             className="h-8 w-8 overflow-hidden 
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                          >
                                              <Image
-                                                width={80}
-                                                height={80}
-                                                url={
-                                                   item.relation?.value?.icon
-                                                      ?.url
-                                                }
-                                                options="aspect_ratio=1:1&height=80&width=80"
-                                                alt="Pinned Icon"
+                                                alt="Site Logo"
+                                                options="aspect_ratio=1:1&height=120&width=120"
+                                                url={site.icon?.url}
                                              />
-                                          ) : (
-                                             <Component
-                                                className="text-1 mx-auto"
-                                                size={24}
+                                          </div>
+                                          {isActive && (
+                                             <span
+                                                className="absolute -left-1 top-2 h-9 w-2.5 
+                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
                                              />
                                           )}
-                                       </div>
-                                       <div className="truncate">
-                                          {item.relation.value.name}
-                                       </div>
-                                    </Link>
-                                 </li>
-                              ))}
-                           </ul>
-                        </div>
-                     </>
-                  )}
-               </menu>
-            </div>
-         </Modal>
-         <Modal
-            onClose={() => {
-               setMenuOpen(false);
-            }}
-            show={isMenuOpen}
-         >
-            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
-               <button
-                  type="button"
-                  className="bg-1 shadow-1 absolute bottom-7
-                              left-1/2 flex h-14 w-14 -translate-x-1/2
-                              transform items-center justify-center rounded-full shadow
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
-                  onClick={() => setMenuOpen(false)}
-               >
-                  <X size={28} className="text-red-400" />
-               </button>
-               <LoggedOut>
-                  <div className="m-4 space-y-3">
-                     <Link
-                        to="/join"
-                        className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
-                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
-                     >
-                        <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                        <span
-                           className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                        ></span>
-                        <span className="relative text-sm font-bold text-white">
-                           {t("login.signUp", { ns: "auth" })}
-                        </span>
-                     </Link>
-                     <Link
-                        className="border-color bg-3 shadow-1 flex h-10 items-center
-                           justify-center rounded-full border text-center text-sm
-                           font-bold shadow-sm"
-                        to={`/login?redirectTo=${location.pathname}`}
-                     >
-                        {t("login.action", { ns: "auth" })}
-                     </Link>
-                  </div>
-               </LoggedOut>
-               {following?.length === 0 ? null : (
-                  <menu className="space-y-3">
-                     {following?.map((item) => (
-                        <NavLink
-                           prefetch="intent"
-                           reloadDocument={
-                              // Reload if custom site, but NOT if current site is custom
-                              item.type == "custom" &&
-                              site.type != "custom" &&
-                              true
-                           }
-                           key={item.id}
-                           onClick={() => setMenuOpen(false)}
-                           className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-3 pr-4 shadow-sm"
-                           to={`/${item.slug}`}
-                        >
-                           {({ isActive }) => (
-                              <>
-                                 <div className="flex items-center gap-3 truncate">
-                                    <div className="h-8 w-8 flex-none overflow-hidden rounded-full">
-                                       <Image
-                                          alt="Site Logo"
-                                          options="aspect_ratio=1:1&height=120&width=120"
-                                          url={item.icon?.url}
-                                       />
-                                    </div>
-                                    <div className="text-1 truncate text-sm font-bold">
-                                       {item.name}
-                                    </div>
-                                 </div>
-                                 {isActive && (
-                                    <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                                 )}
-                              </>
-                           )}
-                        </NavLink>
-                     ))}
-                  </menu>
-               )}
-            </div>
-         </Modal>
-         {/* User Native Mobile Menu */}
-         <Modal
-            onClose={() => {
-               setUserMenuOpen(false);
-            }}
-            show={isUserMenuOpen}
-         >
-            <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
-               <button
-                  type="button"
-                  className="bg-1 shadow-1 absolute bottom-7
-                              left-1/2 flex h-14 w-14 -translate-x-1/2
-                              transform items-center justify-center rounded-full shadow
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
-                  onClick={() => setUserMenuOpen(false)}
-               >
-                  <X size={28} className="text-red-400" />
-               </button>
-               <section>
-                  <LoggedOut>
-                     <div className="m-4 space-y-3">
-                        <Link
-                           to="/join"
-                           className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
-                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
-                        >
-                           <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                           <span
-                              className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                           ></span>
-                           <span className="relative text-sm font-bold text-white">
-                              {t("login.signUp", { ns: "auth" })}
-                           </span>
-                        </Link>
-                        <Link
-                           className="border-color bg-3 shadow-1 flex h-10 items-center
-                           justify-center rounded-full border text-center text-sm
-                           font-bold shadow-sm"
-                           to={`/login?redirectTo=${location.pathname}`}
-                        >
-                           {t("login.action", { ns: "auth" })}
-                        </Link>
-                     </div>
-                  </LoggedOut>
-                  <LoggedIn>
-                     <Form action="/logout" method="post">
-                        <button
-                           type="submit"
-                           className="shadow-1 bg-3 border-color relative flex w-full items-center
-               justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
-                        >
-                           <div className="font-bold">Logout</div>
-                           <LogOut
-                              size={18}
-                              className="text-red-400 dark:text-red-300"
-                           />
-                        </button>
-                     </Form>
-                  </LoggedIn>
-               </section>
-               <div className="border-color mx-40 mt-6 flex items-center justify-center border-t-2 pt-4">
-                  <DarkModeToggle />
-               </div>
-            </div>
-         </Modal>
-         {!isMobileApp && (
-            <header
-               className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
-            h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
-            >
-               <div className="z-10 flex items-center gap-3">
-                  <div className="laptop:hidden">
-                     {/* Following menu modal */}
-                     <LoggedIn>
-                        <div className="flex items-center gap-3">
-                           <NotFollowingSite>
-                              <div className="flex items-center">
-                                 <fetcher.Form className="w-full" method="post">
-                                    <button
-                                       name="intent"
-                                       value="followSite"
-                                       className="flex h-8 items-center justify-center rounded-full bg-black
-                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                                    >
-                                       {adding ? (
-                                          <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                       ) : (
-                                          t("follow.actionFollow")
-                                       )}
-                                    </button>
-                                 </fetcher.Form>
+                                       </>
+                                    )}
+                                 </NavLink>
                               </div>
-                           </NotFollowingSite>
+                           </LoggedOut>
+                           <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3">
+                              <LoggedIn>
+                                 {following?.length === 0 ? (
+                                    <div className="relative flex items-center justify-center pb-3">
+                                       <NavLink
+                                          prefetch="intent"
+                                          className="bg-2 shadow-1 rounded-full shadow"
+                                          to={`/${site.slug}`}
+                                       >
+                                          {({ isActive }) => (
+                                             <>
+                                                <div
+                                                   className="h-8 w-8 overflow-hidden 
+                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                                >
+                                                   <Image
+                                                      alt="Site Logo"
+                                                      options="aspect_ratio=1:1&height=120&width=120"
+                                                      url={site.icon?.url}
+                                                   />
+                                                </div>
+                                                {isActive && (
+                                                   <span
+                                                      className="absolute -left-1 top-2 h-9 w-2.5 
+                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                                   />
+                                                )}
+                                             </>
+                                          )}
+                                       </NavLink>
+                                    </div>
+                                 ) : (
+                                    <div className="w-full max-laptop:flex max-laptop:items-center max-laptop:gap-3">
+                                       <ul
+                                          className="text-center max-laptop:flex max-laptop:flex-grow
+                                          max-laptop:gap-3 laptop:mb-4 laptop:space-y-3"
+                                       >
+                                          {following?.map((item) => (
+                                             <li key={item.id}>
+                                                <div className="relative flex items-center justify-center">
+                                                   <NavLink
+                                                      prefetch="intent"
+                                                      reloadDocument={
+                                                         // Reload if custom site, but NOT if current site is custom
+                                                         item.type ==
+                                                            "custom" &&
+                                                         site.type !=
+                                                            "custom" &&
+                                                         true
+                                                      }
+                                                      className="bg-2 shadow-1 rounded-full shadow"
+                                                      to={`/${item.slug}`}
+                                                   >
+                                                      {({ isActive }) => (
+                                                         <>
+                                                            <div
+                                                               className="h-8 w-8 overflow-hidden 
+                                                               rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                                            >
+                                                               <Image
+                                                                  alt="Site Logo"
+                                                                  options="aspect_ratio=1:1&height=120&width=120"
+                                                                  url={
+                                                                     item.icon
+                                                                        ?.url
+                                                                  }
+                                                               />
+                                                            </div>
+                                                            {isActive && (
+                                                               <span
+                                                                  className="absolute -left-1 top-2 h-9 w-2.5 
+                                                                  rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                                               />
+                                                            )}
+                                                         </>
+                                                      )}
+                                                   </NavLink>
+                                                </div>
+                                             </li>
+                                          ))}
+                                       </ul>
+                                       <NewSiteModal />
+                                    </div>
+                                 )}
+                              </LoggedIn>
+                              <LoggedOut>
+                                 <div className="items-center justify-center">
+                                    <NewSiteModal />
+                                 </div>
+                              </LoggedOut>
+                           </menu>
+                        </div>
+                     </section>
+                     {/* ==== Main Section ==== */}
+                     <section>
+                        <div className="bg-1 bg-2 border-color shadow-1 fixed bottom-0 top-0 z-50 mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 shadow-sm desktop:block">
+                           <SideMenu site={site} user={user} />
+                        </div>
+                     </section>
+                     <section className="max-laptop:border-color bg-3 max-laptop:border-b">
+                        <section
+                           className={clsx(
+                              isMobileApp
+                                 ? "fixed w-full max-laptop:top-0"
+                                 : "sticky max-laptop:top-[56px] laptop:top-6",
+                              "z-40 laptop:z-50"
+                           )}
+                        >
+                           <div
+                              className={clsx(
+                                 { "pt-14": isIOS },
+                                 "border-color bg-2 shadow-1 relative mx-auto w-full border-b shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
+                              )}
+                              id="spinner-container"
+                           >
+                              <div className="relative mx-auto flex h-[58px] items-center justify-between px-2">
+                                 {searchToggle ? (
+                                    <SearchComboBox
+                                       siteType={site.type}
+                                       setSearchToggle={setSearchToggle}
+                                    />
+                                 ) : (
+                                    <>
+                                       <Link
+                                          prefetch="intent"
+                                          to={`/${site.slug}`}
+                                          className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
+                                       >
+                                          <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
+                                             <Image
+                                                width={36}
+                                                height={36}
+                                                url={site.icon?.url}
+                                                options="aspect_ratio=1:1&height=120&width=120"
+                                                alt="Site Logo"
+                                             />
+                                          </div>
+                                          <div className="truncate">
+                                             {site.name}
+                                          </div>
+                                       </Link>
+                                       <div className="flex items-center gap-3 pl-2">
+                                          <FollowingSite>
+                                             <Menu
+                                                as="div"
+                                                className="relative"
+                                             >
+                                                {({ open }) => (
+                                                   <>
+                                                      <Menu.Button
+                                                         className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
+                                       items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
+                                                      >
+                                                         {open ? (
+                                                            <X
+                                                               size={20}
+                                                               className={`${
+                                                                  open &&
+                                                                  "text-red-500"
+                                                               } transition duration-150 ease-in-out`}
+                                                            />
+                                                         ) : (
+                                                            <>
+                                                               <ChevronDown
+                                                                  size={24}
+                                                                  className="transition duration-150 ease-in-out"
+                                                               />
+                                                            </>
+                                                         )}
+                                                      </Menu.Button>
+                                                      <Transition
+                                                         as={Fragment}
+                                                         enter="transition ease-out duration-100"
+                                                         enterFrom="transform opacity-0 scale-95"
+                                                         enterTo="transform opacity-100 scale-100"
+                                                         leave="transition ease-in duration-75"
+                                                         leaveFrom="transform opacity-100 scale-100"
+                                                         leaveTo="transform opacity-0 scale-95"
+                                                      >
+                                                         <Menu.Items
+                                                            className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
+                                        max-w-md origin-top-right transform transition-all"
+                                                         >
+                                                            <div
+                                                               className="border-color bg-2 shadow-1 rounded-lg border
+                                            p-1.5 shadow-sm"
+                                                            >
+                                                               <Menu.Item>
+                                                                  <fetcher.Form method="post">
+                                                                     <button
+                                                                        name="intent"
+                                                                        value="unfollow"
+                                                                        className="text-1 flex w-full items-center gap-3 rounded-lg
+                                                      px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                                     >
+                                                                        <LogOut
+                                                                           className="text-red-400"
+                                                                           size="18"
+                                                                        />
+                                                                        {t(
+                                                                           "follow.actionUnfollow"
+                                                                        )}
+                                                                     </button>
+                                                                  </fetcher.Form>
+                                                               </Menu.Item>
+                                                            </div>
+                                                         </Menu.Items>
+                                                      </Transition>
+                                                   </>
+                                                )}
+                                             </Menu>
+                                          </FollowingSite>
+                                          <LoggedOut>
+                                             <div className="flex items-center">
+                                                <Link
+                                                   prefetch="intent"
+                                                   reloadDocument={
+                                                      site.type != "custom" &&
+                                                      true
+                                                   }
+                                                   to={`/login?redirectTo=/${site.slug}`}
+                                                   className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
+                               text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
+                                                >
+                                                   Follow
+                                                </Link>
+                                             </div>
+                                          </LoggedOut>
+                                          <NotFollowingSite>
+                                             <div className="flex items-center">
+                                                <fetcher.Form
+                                                   className="w-full"
+                                                   method="post"
+                                                >
+                                                   <button
+                                                      name="intent"
+                                                      value="followSite"
+                                                      className="flex h-9 items-center justify-center rounded-full bg-black
+                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
+                                                   >
+                                                      {adding ? (
+                                                         <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                                      ) : (
+                                                         t(
+                                                            "follow.actionFollow"
+                                                         )
+                                                      )}
+                                                   </button>
+                                                </fetcher.Form>
+                                             </div>
+                                          </NotFollowingSite>
+                                          <button
+                                             className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
+                                   rounded-full border shadow-sm"
+                                             aria-label="Search"
+                                             onClick={() => {
+                                                setSearchToggle(true);
+                                             }}
+                                          >
+                                             <Search size={20} />
+                                          </button>
+                                          <button
+                                             className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
+                                   border shadow-sm desktop:hidden"
+                                             aria-label="Menu"
+                                             onClick={() =>
+                                                setMainMenuOpen(true)
+                                             }
+                                          >
+                                             <MenuIcon size={20} />
+                                          </button>
+                                       </div>
+                                    </>
+                                 )}
+                              </div>
+                           </div>
+                        </section>
+                        <div
+                           className={clsx(
+                              isMobileApp
+                                 ? "pt-[134px]"
+                                 : "pt-[76px] laptop:pt-12"
+                           )}
+                        >
+                           <Outlet />
+                        </div>
+                     </section>
+                     {/* ==== Right Sidebar ==== */}
+                     <section
+                        className="bg-2 border-color relative z-20 max-laptop:mx-auto
+               max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
+                     >
+                        <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+                           <div className="border-color border-b laptop:pt-14">
+                              <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
+                                 <div className="grid grid-cols-2 gap-3">
+                                    <Link
+                                       onClick={() => setMainMenuOpen(false)}
+                                       className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                       prefetch="intent"
+                                       to={`/${site.slug}/posts`}
+                                    >
+                                       <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                                       <span>Posts</span>
+                                    </Link>
+                                    <Link
+                                       onClick={() => setMainMenuOpen(false)}
+                                       className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                       prefetch="intent"
+                                       to={`/${site.slug}/collections`}
+                                    >
+                                       <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                                       <span>Collections</span>
+                                    </Link>
+                                 </div>
+                                 {site?.pinned && site?.pinned?.length > 1 && (
+                                    <>
+                                       <div className="flex items-center gap-2 pb-2.5 pl-2 pt-5">
+                                          <Pin
+                                             className="text-red-400"
+                                             size={14}
+                                          />
+                                          <span className="text-1 text-sm font-bold">
+                                             Pinned
+                                          </span>
+                                       </div>
+                                       <ul className="space-y-2">
+                                          {site.pinned?.map((item: any) => (
+                                             <li key={item.id}>
+                                                <Link
+                                                   onClick={() =>
+                                                      setMainMenuOpen(false)
+                                                   }
+                                                   className="shadow-1 bg-3 relative flex items-center 
+                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                                   prefetch="intent"
+                                                   to={pinnedLinkUrlGenerator(
+                                                      item,
+                                                      site?.slug ?? ""
+                                                   )}
+                                                >
+                                                   <div className="h-5 w-5">
+                                                      {item.relation?.value
+                                                         ?.icon?.url ? (
+                                                         <Image
+                                                            width={80}
+                                                            height={80}
+                                                            url={
+                                                               item.relation
+                                                                  ?.value?.icon
+                                                                  ?.url
+                                                            }
+                                                            options="aspect_ratio=1:1&height=80&width=80"
+                                                            alt="Pinned Icon"
+                                                         />
+                                                      ) : (
+                                                         <Component
+                                                            className="text-1 mx-auto"
+                                                            size={24}
+                                                         />
+                                                      )}
+                                                   </div>
+                                                   <div className="truncate">
+                                                      {item.relation.value.name}
+                                                   </div>
+                                                </Link>
+                                             </li>
+                                          ))}
+                                       </ul>
+                                    </>
+                                 )}
+                              </section>
+                              {site.about && (
+                                 <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
+                                    <div className="flex items-center gap-1.5 pb-2.5">
+                                       <Component size={14} />
+                                       <span className="text-1 text-sm font-bold">
+                                          About
+                                       </span>
+                                    </div>
+                                    <div className="text-1 text-sm">
+                                       {site.about}
+                                    </div>
+                                 </section>
+                              )}
+                              <section className="p-4 px-4 tablet:px-0 laptop:p-4">
+                                 <div className="flex items-center gap-1.5 pb-3">
+                                    <Users size={14} />
+                                    <span className="text-1 text-sm font-bold">
+                                       Contributors
+                                    </span>
+                                 </div>
+                                 <div className="flex items-center gap-2">
+                                    {site.admins?.length === 0 ? null : (
+                                       <>
+                                          {site.admins?.map((user: any) => (
+                                             <Tooltip
+                                                key={user.id}
+                                                id="site-contributors"
+                                                content={user.username}
+                                             >
+                                                <div
+                                                   className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
+                                          overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                                >
+                                                   {user.avatar?.url ? (
+                                                      <Image
+                                                         url={user.avatar?.url}
+                                                         options="aspect_ratio=1:1&height=80&width=80"
+                                                         alt="User Avatar"
+                                                      />
+                                                   ) : (
+                                                      <Dog
+                                                         className="text-1"
+                                                         size={20}
+                                                      />
+                                                   )}
+                                                </div>
+                                             </Tooltip>
+                                          ))}
+                                          <Tooltip
+                                             key={site?.owner?.id}
+                                             id="site-creator"
+                                             content={site?.owner?.username}
+                                          >
+                                             <div
+                                                className="bg-3 shadow-1 h-9 w-9 overflow-hidden rounded-full 
+                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                             >
+                                                {site?.owner?.avatar?.url ? (
+                                                   <Image
+                                                      url={
+                                                         site?.owner?.avatar
+                                                            ?.url
+                                                      }
+                                                      options="aspect_ratio=1:1&height=80&width=80"
+                                                      alt="User Avatar"
+                                                   />
+                                                ) : (
+                                                   <div
+                                                      className="bg-3 shadow-1 flex h-9 w-9 items-center
+                                                justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
+                                                   >
+                                                      <Dog
+                                                         className="text-1"
+                                                         size={20}
+                                                      />
+                                                   </div>
+                                                )}
+                                             </div>
+                                          </Tooltip>
+                                       </>
+                                    )}
+                                    <Tooltip
+                                       id="join-site"
+                                       content="Coming Soon!"
+                                    >
+                                       <div
+                                          className="shadow-1 flex h-9 items-center justify-center rounded-full
+                                 bg-zinc-500 px-4 text-sm font-semibold text-white shadow dark:bg-zinc-600"
+                                       >
+                                          Join
+                                       </div>
+                                    </Tooltip>
+                                 </div>
+                              </section>
+                           </div>
+                           <div className="border-color flex items-center justify-center">
+                              {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
+                           </div>
+                        </div>
+                     </section>
+                  </div>
+
+                  {/* ==== Mobile App Nav ==== */}
+                  {isMobileApp && (
+                     <nav
+                        className={clsx(
+                           { "pb-4": isIOS },
+                           "border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100 bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
+                        )}
+                     >
+                        <div className="grid grid-cols-3 gap-2">
                            <button
-                              className="bg-3 shadow-1 border-color flex items-center justify-center
-                              gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
+                              className="touch-manipulation space-y-1 p-3"
                               onClick={() => setMenuOpen(true)}
                            >
-                              <div className="pr-2 text-xs">My Follows</div>
-                              <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
-                                 <ChevronDown
-                                    className="dark:text-white"
-                                    size={14}
-                                 />
+                              <Squares2X2Icon
+                                 className="mx-auto h-5 w-5 text-blue-500"
+                                 aria-hidden="true"
+                              />
+                              <div className="text-center text-[9px] font-bold">
+                                 Following
+                              </div>
+                           </button>
+                           <div className="space-y-1 p-3">
+                              <Bookmark
+                                 size={18}
+                                 className="mx-auto text-blue-500"
+                                 aria-hidden="true"
+                              />
+                              <div className="text-center text-[9px] font-bold">
+                                 Bookmarks
+                              </div>
+                           </div>
+                           <button
+                              className="touch-manipulation space-y-1 p-3"
+                              onClick={() => setUserMenuOpen(true)}
+                           >
+                              <UserIcon
+                                 className="mx-auto h-5 w-5 text-blue-500"
+                                 aria-hidden="true"
+                              />
+                              <div className="text-center text-[9px] font-bold">
+                                 User
                               </div>
                            </button>
                         </div>
-                     </LoggedIn>
-                  </div>
-               </div>
-               <LoggedIn>
-                  <section className="z-50 flex h-14 items-center justify-end gap-2.5">
-                     <DarkModeToggle />
-                     <Menu as="div" className="relative">
-                        <Menu.Button
-                           className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
-                         justify-center rounded-full border shadow-sm"
-                        >
-                           <UserLucideIcon size={20} />
-                        </Menu.Button>
-                        <Transition
-                           as={Fragment}
-                           enter="transition ease-out duration-100"
-                           enterFrom="transform opacity-0 scale-95"
-                           enterTo="transform opacity-100 scale-100"
-                           leave="transition ease-in duration-75"
-                           leaveFrom="transform opacity-100 scale-100"
-                           leaveTo="transform opacity-0 scale-95"
-                        >
-                           <Menu.Items
-                              className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
-                                   max-w-md origin-top-right transform transition-all"
-                           >
-                              <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
-                                 <Menu.Item>
-                                    <Form action="/logout" method="post">
-                                       <button
-                                          type="submit"
-                                          className="text-1 flex w-full items-center gap-3 rounded-lg
-                                             p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                       >
-                                          <div className="flex-grow text-left">
-                                             Logout
-                                          </div>
-                                          <LogOut
-                                             size={18}
-                                             className="text-red-400 dark:text-red-300"
-                                          />
-                                       </button>
-                                    </Form>
-                                 </Menu.Item>
-                              </div>
-                           </Menu.Items>
-                        </Transition>
-                     </Menu>
-                  </section>
-               </LoggedIn>
-               <LoggedOut>
-                  <Link
-                     prefetch="intent"
-                     reloadDocument={site.type != "custom" && true}
-                     to={`/login?redirectTo=/${site.slug}`}
-                     className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
-                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
-                  >
-                     Follow
-                  </Link>
+                     </nav>
+                  )}
 
-                  <div className="relative z-10 flex w-full items-center justify-end gap-3">
-                     <DarkModeToggle />
-                     <Link
-                        prefetch="intent"
-                        reloadDocument={site.type != "custom" && true}
-                        to="/join"
-                        className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
-                           rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
-                     >
-                        <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                        <span
-                           className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                        ></span>
-                        <span className="relative text-xs font-bold uppercase text-white">
-                           {t("login.signUp", { ns: "auth" })}
-                        </span>
-                     </Link>
-                     <Link
-                        prefetch="intent"
-                        reloadDocument={site.type != "custom" && true}
-                        className="border-color bg-3 shadow-1 flex h-8 items-center
-                           justify-center rounded-lg border px-3 text-center
-                           text-xs font-bold uppercase shadow-sm shadow-zinc-300"
-                        to={`/login?redirectTo=${location.pathname}`}
-                     >
-                        {t("login.action", { ns: "auth" })}
-                     </Link>
-                  </div>
-               </LoggedOut>
-               <div
-                  className="pattern-opacity-50 pattern-dots absolute
-                   left-0 top-0
-                     h-full w-full pattern-bg-white pattern-zinc-300 
-                     pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
-               />
-            </header>
-         )}
-         <div
-            className={`${isMobileApp ? "pb-20" : ""} 
-                laptop:grid laptop:min-h-screen
-                laptop:auto-cols-[82px_0px_1fr_334px] laptop:grid-flow-col
-                desktop:auto-cols-[82px_220px_1fr_334px]`}
-         >
-            <section
-               className="bg-1 border-color relative top-0 z-50
-               max-laptop:fixed max-laptop:w-full laptop:border-r"
-            >
-               <div
-                  className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
-               laptop:h-full laptop:w-[82px] laptop:overflow-y-auto laptop:pt-4"
-               >
-                  <LoggedOut>
-                     <div className="relative flex items-center justify-center pb-3">
-                        <NavLink
-                           prefetch="intent"
-                           className="bg-2 shadow-1 rounded-full shadow"
-                           to={`/${site.slug}`}
+                  {/* ==== Google Analytics ==== */}
+                  {process.env.NODE_ENV === "production" &&
+                  gaTrackingId &&
+                  !isBot ? (
+                     <>
+                        <script
+                           defer
+                           src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+                        />
+                        <script
+                           defer
+                           id="gtag-init"
+                           dangerouslySetInnerHTML={{
+                              __html: `
+                              window.dataLayer = window.dataLayer || [];
+                              function gtag(){dataLayer.push(arguments);}
+                              gtag('js', new Date());
+
+                              gtag('config', '${gaTrackingId}', {
+                                 page_path: window.location.pathname,
+                              });
+                           `,
+                           }}
+                        />
+                     </>
+                  ) : null}
+
+                  {/* ==== Mobile main menu modal (pins) ==== */}
+                  <Modal
+                     onClose={() => {
+                        setMainMenuOpen(false);
+                     }}
+                     show={isMainMenuOpen}
+                  >
+                     <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all laptop:w-[50vw]">
+                        <button
+                           type="button"
+                           className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                           onClick={() => setMainMenuOpen(false)}
                         >
-                           {({ isActive }) => (
-                              <>
-                                 <div
-                                    className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
-                                 >
-                                    <Image
-                                       alt="Site Logo"
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       url={site.icon?.url}
-                                    />
-                                 </div>
-                                 {isActive && (
-                                    <span
-                                       className="absolute -left-1 top-2 h-9 w-2.5 
-                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
-                                    />
-                                 )}
-                              </>
-                           )}
-                        </NavLink>
-                     </div>
-                  </LoggedOut>
-                  <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3">
-                     <LoggedIn>
-                        {following?.length === 0 ? (
-                           <div className="relative flex items-center justify-center pb-3">
-                              <NavLink
+                           <X size={28} className="text-red-400" />
+                        </button>
+                        <menu className="space-y-3">
+                           <div className="grid grid-cols-2 gap-3">
+                              <Link
+                                 onClick={() => setMainMenuOpen(false)}
+                                 className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
                                  prefetch="intent"
-                                 className="bg-2 shadow-1 rounded-full shadow"
-                                 to={`/${site.slug}`}
+                                 to={`/${site.slug}/posts`}
                               >
-                                 {({ isActive }) => (
-                                    <>
-                                       <div
-                                          className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
-                                       >
-                                          <Image
-                                             alt="Site Logo"
-                                             options="aspect_ratio=1:1&height=120&width=120"
-                                             url={site.icon?.url}
-                                          />
-                                       </div>
-                                       {isActive && (
-                                          <span
-                                             className="absolute -left-1 top-2 h-9 w-2.5 
-                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
-                                          />
-                                       )}
-                                    </>
-                                 )}
-                              </NavLink>
+                                 <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+                                 <span>Posts</span>
+                              </Link>
+                              <Link
+                                 onClick={() => setMainMenuOpen(false)}
+                                 className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                 prefetch="intent"
+                                 to={`/${site.slug}/collections`}
+                              >
+                                 <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+                                 <span>Collections</span>
+                              </Link>
                            </div>
-                        ) : (
-                           <div className="w-full max-laptop:flex max-laptop:items-center max-laptop:gap-3">
-                              <ul
-                                 className="text-center max-laptop:flex max-laptop:flex-grow
-                   max-laptop:gap-3  laptop:mb-4 laptop:space-y-3"
-                              >
-                                 {following?.map((item) => (
-                                    <li key={item.id}>
-                                       <div className="relative flex items-center justify-center">
-                                          <NavLink
-                                             prefetch="intent"
-                                             reloadDocument={
-                                                // Reload if custom site, but NOT if current site is custom
-                                                item.type == "custom" &&
-                                                site.type != "custom" &&
-                                                true
-                                             }
-                                             className="bg-2 shadow-1 rounded-full shadow"
-                                             to={`/${item.slug}`}
-                                          >
-                                             {({ isActive }) => (
-                                                <>
-                                                   <div
-                                                      className="h-8 w-8 overflow-hidden 
-                                    rounded-full laptop:h-[50px] laptop:w-[50px]"
-                                                   >
+                           {site?.pinned && site?.pinned?.length > 1 && (
+                              <>
+                                 <div className="space-y-0.5 pt-2">
+                                    <div className="flex items-center gap-3 pb-2 pl-2">
+                                       <div className="flex items-center gap-2 text-sm font-bold">
+                                          <Pin
+                                             className="text-red-400"
+                                             size={15}
+                                          />
+                                          <span>Pinned</span>
+                                       </div>
+                                    </div>
+                                    <ul className="space-y-2">
+                                       {site.pinned?.map((item: any) => (
+                                          <li key={item.id}>
+                                             <Link
+                                                onClick={() =>
+                                                   setMainMenuOpen(false)
+                                                }
+                                                className="shadow-1 bg-3 relative flex items-center 
+                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                                                prefetch="intent"
+                                                to={pinnedLinkUrlGenerator(
+                                                   item,
+                                                   site?.slug ?? ""
+                                                )}
+                                             >
+                                                <div className="h-5 w-5">
+                                                   {item.relation?.value?.icon
+                                                      ?.url ? (
                                                       <Image
-                                                         alt="Site Logo"
-                                                         options="aspect_ratio=1:1&height=120&width=120"
-                                                         url={item.icon?.url}
+                                                         width={80}
+                                                         height={80}
+                                                         url={
+                                                            item.relation?.value
+                                                               ?.icon?.url
+                                                         }
+                                                         options="aspect_ratio=1:1&height=80&width=80"
+                                                         alt="Pinned Icon"
                                                       />
-                                                   </div>
-                                                   {isActive && (
-                                                      <span
-                                                         className="absolute -left-1 top-2 h-9 w-2.5 
-                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
+                                                   ) : (
+                                                      <Component
+                                                         className="text-1 mx-auto"
+                                                         size={24}
                                                       />
                                                    )}
-                                                </>
-                                             )}
-                                          </NavLink>
-                                       </div>
-                                    </li>
-                                 ))}
-                              </ul>
-                              <NewSiteModal />
-                           </div>
-                        )}
-                     </LoggedIn>
-                     <LoggedOut>
-                        <div className="items-center justify-center">
-                           <NewSiteModal />
-                        </div>
-                     </LoggedOut>
-                  </menu>
-               </div>
-            </section>
-            <section>
-               <div
-                  className="bg-1 bg-2 border-color shadow-1 fixed bottom-0 top-0 z-50 
-                  mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 shadow-sm desktop:block"
-               >
-                  <SideMenu site={site} user={user} />
-               </div>
-            </section>
-            <section className="max-laptop:border-color bg-3 max-laptop:border-b">
-               <section
-                  className={`${
-                     isMobileApp
-                        ? "max-laptop:top-0"
-                        : "max-laptop:top-[56px] laptop:top-6"
-                  }  sticky z-40 laptop:z-50 laptop:px-3
-                  `}
-               >
-                  <div
-                     className={`${isIOS ? "pb-2 pt-16" : "h-16"} 
-                     border-color bg-2 shadow-1 relative mx-auto w-full border-b 
-                     shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border`}
-                     id="spinner-container"
-                  >
-                     <div className="relative mx-auto flex h-full items-center justify-between px-3">
-                        {searchToggle ? (
-                           <SearchComboBox
-                              siteType={site.type}
-                              setSearchToggle={setSearchToggle}
-                           />
-                        ) : (
-                           <>
-                              <Link
-                                 prefetch="intent"
-                                 to={`/${site.slug}`}
-                                 className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
-                              >
-                                 <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
-                                    <Image
-                                       width={36}
-                                       height={36}
-                                       url={site.icon?.url}
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       alt="Site Logo"
-                                    />
+                                                </div>
+                                                <div className="truncate">
+                                                   {item.relation.value.name}
+                                                </div>
+                                             </Link>
+                                          </li>
+                                       ))}
+                                    </ul>
                                  </div>
-                                 <div className="truncate">{site.name}</div>
-                              </Link>
-                              <div className="flex items-center gap-3 pl-2">
-                                 <FollowingSite>
-                                    <Menu as="div" className="relative">
-                                       {({ open }) => (
-                                          <>
-                                             <Menu.Button
-                                                className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
-                                       items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
-                                             >
-                                                {open ? (
-                                                   <X
-                                                      size={20}
-                                                      className={`${
-                                                         open && "text-red-500"
-                                                      } transition duration-150 ease-in-out`}
-                                                   />
-                                                ) : (
-                                                   <>
-                                                      <ChevronDown
-                                                         size={24}
-                                                         className="transition duration-150 ease-in-out"
-                                                      />
-                                                   </>
-                                                )}
-                                             </Menu.Button>
-                                             <Transition
-                                                as={Fragment}
-                                                enter="transition ease-out duration-100"
-                                                enterFrom="transform opacity-0 scale-95"
-                                                enterTo="transform opacity-100 scale-100"
-                                                leave="transition ease-in duration-75"
-                                                leaveFrom="transform opacity-100 scale-100"
-                                                leaveTo="transform opacity-0 scale-95"
-                                             >
-                                                <Menu.Items
-                                                   className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
-                                        max-w-md origin-top-right transform transition-all"
-                                                >
-                                                   <div
-                                                      className="border-color bg-2 shadow-1 rounded-lg border
-                                            p-1.5 shadow-sm"
-                                                   >
-                                                      <Menu.Item>
-                                                         <fetcher.Form method="post">
-                                                            <button
-                                                               name="intent"
-                                                               value="unfollow"
-                                                               className="text-1 flex w-full items-center gap-3 rounded-lg
-                                                      px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                                            >
-                                                               <LogOut
-                                                                  className="text-red-400"
-                                                                  size="18"
-                                                               />
-                                                               {t(
-                                                                  "follow.actionUnfollow"
-                                                               )}
-                                                            </button>
-                                                         </fetcher.Form>
-                                                      </Menu.Item>
-                                                   </div>
-                                                </Menu.Items>
-                                             </Transition>
-                                          </>
-                                       )}
-                                    </Menu>
-                                 </FollowingSite>
-                                 <LoggedOut>
-                                    <div className="flex items-center">
-                                       <Link
-                                          prefetch="intent"
-                                          reloadDocument={
-                                             site.type != "custom" && true
-                                          }
-                                          to={`/login?redirectTo=/${site.slug}`}
-                                          className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
-                               text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
-                                       >
-                                          Follow
-                                       </Link>
-                                    </div>
-                                 </LoggedOut>
-                                 <NotFollowingSite>
-                                    <div className="flex items-center">
-                                       <fetcher.Form
-                                          className="w-full"
-                                          method="post"
-                                       >
-                                          <button
-                                             name="intent"
-                                             value="followSite"
-                                             className="flex h-9 items-center justify-center rounded-full bg-black
-                                  px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
-                                          >
-                                             {adding ? (
-                                                <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                             ) : (
-                                                t("follow.actionFollow")
-                                             )}
-                                          </button>
-                                       </fetcher.Form>
-                                    </div>
-                                 </NotFollowingSite>
-                                 <button
-                                    className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
-                                   rounded-full border shadow-sm"
-                                    aria-label="Search"
-                                    onClick={() => {
-                                       setSearchToggle(true);
-                                    }}
-                                 >
-                                    <Search size={20} />
-                                 </button>
-                                 <button
-                                    className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
-                                   border shadow-sm desktop:hidden"
-                                    aria-label="Menu"
-                                    onClick={() => setMainMenuOpen(true)}
-                                 >
-                                    <MenuIcon size={20} />
-                                 </button>
-                              </div>
-                           </>
-                        )}
-                     </div>
-                  </div>
-               </section>
-               <Outlet />
-            </section>
-            {/* Right Sidebar */}
-            <section
-               className="bg-2 border-color relative z-20 max-laptop:mx-auto
-               max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
-            >
-               <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-                  <div className="border-color border-b laptop:pt-14">
-                     <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
-                        <div className="grid grid-cols-2 gap-3">
-                           <Link
-                              onClick={() => setMainMenuOpen(false)}
-                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                              prefetch="intent"
-                              to={`/${site.slug}/posts`}
-                           >
-                              <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
-                              <span>Posts</span>
-                           </Link>
-                           <Link
-                              onClick={() => setMainMenuOpen(false)}
-                              className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                              prefetch="intent"
-                              to={`/${site.slug}/collections`}
-                           >
-                              <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
-                              <span>Collections</span>
-                           </Link>
-                        </div>
-                        {site?.pinned && site?.pinned?.length > 1 && (
-                           <>
-                              <div className="flex items-center gap-2 pb-2.5 pl-2 pt-5">
-                                 <Pin className="text-red-400" size={14} />
-                                 <span className="text-1 text-sm font-bold">
-                                    Pinned
-                                 </span>
-                              </div>
-                              <ul className="space-y-2">
-                                 {site.pinned?.map((item: any) => (
-                                    <li key={item.id}>
-                                       <Link
-                                          onClick={() => setMainMenuOpen(false)}
-                                          className="shadow-1 bg-3 relative flex items-center 
-                                                      gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
-                                          prefetch="intent"
-                                          to={pinnedLinkUrlGenerator(
-                                             item,
-                                             site?.slug ?? ""
-                                          )}
-                                       >
-                                          <div className="h-5 w-5">
-                                             {item.relation?.value?.icon
-                                                ?.url ? (
-                                                <Image
-                                                   width={80}
-                                                   height={80}
-                                                   url={
-                                                      item.relation?.value?.icon
-                                                         ?.url
-                                                   }
-                                                   options="aspect_ratio=1:1&height=80&width=80"
-                                                   alt="Pinned Icon"
-                                                />
-                                             ) : (
-                                                <Component
-                                                   className="text-1 mx-auto"
-                                                   size={24}
-                                                />
-                                             )}
-                                          </div>
-                                          <div className="truncate">
-                                             {item.relation.value.name}
-                                          </div>
-                                       </Link>
-                                    </li>
-                                 ))}
-                              </ul>
-                           </>
-                        )}
-                     </section>
-                     {site.about && (
-                        <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
-                           <div className="flex items-center gap-1.5 pb-2.5">
-                              <Component size={14} />
-                              <span className="text-1 text-sm font-bold">
-                                 About
-                              </span>
-                           </div>
-                           <div className="text-1 text-sm">{site.about}</div>
-                           {/* <div className="grid grid-cols-3 gap-3">
-                           {followers ? (
-                              <div className="text-xs">
-                                 <div>{followers}</div>
-                                 <div className="text-1">members</div>
-                              </div>
-                           ) : null}
-                           {followers ? (
-                              <div className="text-xs">
-                                 <div>{followers}</div>
-                                 <div className="text-1">pages</div>
-                              </div>
-                           ) : null}
-                        </div> */}
-                        </section>
-                     )}
-                     {/* {site.about && (
-                        <section className="p-4 px-4 tablet:px-0 laptop:p-4">
-                           <div className="flex items-center gap-1.5 pb-2.5">
-                              <span className="text-1 text-sm font-bold">
-                                 Level 1
-                              </span>
-                           </div>
-                           <div className="text-1 h-2 rounded-full bg-blue-400 text-sm"></div>
-                        </section>
-                     )} */}
-
-                     <section className="p-4 px-4 tablet:px-0 laptop:p-4">
-                        <div className="flex items-center gap-1.5 pb-3">
-                           <Users size={14} />
-                           <span className="text-1 text-sm font-bold">
-                              Contributors
-                           </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           {site.admins?.length === 0 ? null : (
-                              <>
-                                 {site.admins?.map((user: any) => (
-                                    <Tooltip
-                                       key={user.id}
-                                       id="site-contributors"
-                                       content={user.username}
-                                    >
-                                       <div
-                                          className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
-                                          overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
-                                       >
-                                          {user.avatar?.url ? (
-                                             <Image
-                                                url={user.avatar?.url}
-                                                options="aspect_ratio=1:1&height=80&width=80"
-                                                alt="User Avatar"
-                                             />
-                                          ) : (
-                                             <Dog
-                                                className="text-1"
-                                                size={20}
-                                             />
-                                          )}
-                                       </div>
-                                    </Tooltip>
-                                 ))}
-                                 <Tooltip
-                                    key={site?.owner?.id}
-                                    id="site-creator"
-                                    content={site?.owner?.username}
-                                 >
-                                    <div
-                                       className="bg-3 shadow-1 h-9 w-9 overflow-hidden rounded-full 
-                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
-                                    >
-                                       {site?.owner?.avatar?.url ? (
-                                          <Image
-                                             url={site?.owner?.avatar?.url}
-                                             options="aspect_ratio=1:1&height=80&width=80"
-                                             alt="User Avatar"
-                                          />
-                                       ) : (
-                                          <div
-                                             className="bg-3 shadow-1 flex h-9 w-9 items-center
-                                                justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
-                                          >
-                                             <Dog
-                                                className="text-1"
-                                                size={20}
-                                             />
-                                          </div>
-                                       )}
-                                    </div>
-                                 </Tooltip>
                               </>
                            )}
-
-                           <Tooltip id="join-site" content="Coming Soon!">
-                              <div
-                                 className="shadow-1 flex h-9 items-center justify-center rounded-full
-                                 bg-zinc-500 px-4 text-sm font-semibold text-white shadow dark:bg-zinc-600"
+                        </menu>
+                     </div>
+                  </Modal>
+                  <Modal
+                     onClose={() => {
+                        setMenuOpen(false);
+                     }}
+                     show={isMenuOpen}
+                  >
+                     <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
+                        <button
+                           type="button"
+                           className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                           onClick={() => setMenuOpen(false)}
+                        >
+                           <X size={28} className="text-red-400" />
+                        </button>
+                        <LoggedOut>
+                           <div className="m-4 space-y-3">
+                              <Link
+                                 to="/join"
+                                 className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
+                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
                               >
-                                 Join
-                              </div>
-                           </Tooltip>
-                        </div>
-                     </section>
-                  </div>
-                  <div className="border-color flex items-center justify-center">
-                     {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
-                  </div>
-               </div>
-            </section>
-         </div>
-         {isMobileApp && (
-            <div
-               className={`${isAndroid ? "h-16" : "h-20"} 
-               border-color fixed bottom-0 z-50 w-full 
-               border-t border-gray-100 bg-white/90 backdrop-blur-xl dark:bg-bg3Dark/90`}
-            >
-               <div className="grid grid-cols-3 gap-2">
-                  <button
-                     className="space-y-1 p-3"
-                     onClick={() => setMenuOpen(true)}
-                  >
-                     <Squares2X2Icon className="mx-auto h-5 w-5 text-blue-500" />
-                     <div className="text-center text-[9px] font-bold">
-                        Following
+                                 <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                                 <span
+                                    className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                                 ></span>
+                                 <span className="relative text-sm font-bold text-white">
+                                    {t("login.signUp", { ns: "auth" })}
+                                 </span>
+                              </Link>
+                              <Link
+                                 className="border-color bg-3 shadow-1 flex h-10 items-center
+                           justify-center rounded-full border text-center text-sm
+                           font-bold shadow-sm"
+                                 to={`/login?redirectTo=${location.pathname}`}
+                              >
+                                 {t("login.action", { ns: "auth" })}
+                              </Link>
+                           </div>
+                        </LoggedOut>
+                        {following?.length === 0 ? null : (
+                           <menu className="space-y-3">
+                              {following?.map((item) => (
+                                 <NavLink
+                                    prefetch="intent"
+                                    reloadDocument={
+                                       // Reload if custom site, but NOT if current site is custom
+                                       item.type == "custom" &&
+                                       site.type != "custom" &&
+                                       true
+                                    }
+                                    key={item.id}
+                                    onClick={() => setMenuOpen(false)}
+                                    className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-3 pr-4 shadow-sm"
+                                    to={`/${item.slug}`}
+                                 >
+                                    {({ isActive }) => (
+                                       <>
+                                          <div className="flex items-center gap-3 truncate">
+                                             <div className="h-8 w-8 flex-none overflow-hidden rounded-full">
+                                                <Image
+                                                   alt="Site Logo"
+                                                   options="aspect_ratio=1:1&height=120&width=120"
+                                                   url={item.icon?.url}
+                                                />
+                                             </div>
+                                             <div className="text-1 truncate text-sm font-bold">
+                                                {item.name}
+                                             </div>
+                                          </div>
+                                          {isActive && (
+                                             <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
+                                          )}
+                                       </>
+                                    )}
+                                 </NavLink>
+                              ))}
+                           </menu>
+                        )}
                      </div>
-                  </button>
-                  <div className="space-y-1 p-3">
-                     <Bookmark size={18} className="mx-auto text-blue-500" />
-                     <div className="text-center text-[9px] font-bold">
-                        Bookmarks
-                     </div>
-                  </div>
-                  <button
-                     className="space-y-1 p-3"
-                     onClick={() => setUserMenuOpen(true)}
-                  >
-                     <UserIcon className="mx-auto h-5 w-5 text-blue-500" />
-                     <div className="text-center text-[9px] font-bold">
-                        User
-                     </div>
-                  </button>
-               </div>
-            </div>
-         )}
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
-            <>
-               <script
-                  defer
-                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-               />
-               <script
-                  defer
-                  id="gtag-init"
-                  dangerouslySetInnerHTML={{
-                     __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
+                  </Modal>
 
-                gtag('config', '${gaTrackingId}', {
-                  page_path: window.location.pathname,
-                });
-              `,
-                  }}
-               />
-            </>
-         ) : null}
-      </>
+                  {/* ==== User Native Mobile Menu ==== */}
+                  <Modal
+                     onClose={() => {
+                        setUserMenuOpen(false);
+                     }}
+                     show={isUserMenuOpen}
+                  >
+                     <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
+                        <button
+                           type="button"
+                           className="bg-1 shadow-1 absolute bottom-7
+                              left-1/2 flex h-14 w-14 -translate-x-1/2
+                              transform items-center justify-center rounded-full shadow
+                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                           onClick={() => setUserMenuOpen(false)}
+                        >
+                           <X size={28} className="text-red-400" />
+                        </button>
+                        <section>
+                           <LoggedOut>
+                              <div className="m-4 space-y-3">
+                                 <Link
+                                    to="/join"
+                                    className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
+                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
+                                 >
+                                    <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                                    <span
+                                       className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                                    ></span>
+                                    <span className="relative text-sm font-bold text-white">
+                                       {t("login.signUp", { ns: "auth" })}
+                                    </span>
+                                 </Link>
+                                 <Link
+                                    className="border-color bg-3 shadow-1 flex h-10 items-center
+                                    justify-center rounded-full border text-center text-sm
+                                    font-bold shadow-sm"
+                                    to={`/login?redirectTo=${location.pathname}`}
+                                 >
+                                    {t("login.action", { ns: "auth" })}
+                                 </Link>
+                              </div>
+                           </LoggedOut>
+                           <LoggedIn>
+                              <Form action="/logout" method="post">
+                                 <button
+                                    type="submit"
+                                    className="shadow-1 bg-3 border-color relative flex w-full items-center
+               justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
+                                 >
+                                    <div className="font-bold">Logout</div>
+                                    <LogOut
+                                       size={18}
+                                       className="text-red-400 dark:text-red-300"
+                                    />
+                                 </button>
+                              </Form>
+                           </LoggedIn>
+                        </section>
+                        <div className="border-color mx-40 mt-6 flex items-center justify-center border-t-2 pt-4">
+                           <DarkModeToggle />
+                        </div>
+                     </div>
+                  </Modal>
+               </div>
+            )}
+         </Await>
+      </Suspense>
    );
 }
 
@@ -1390,6 +1405,33 @@ const SideMenu = ({ site, user }: { site: Site; user: User }) => {
          </div>
       </>
    );
+};
+
+const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
+   const type = item.relation?.relationTo;
+
+   switch (type) {
+      case "customPages": {
+         const slug = item.relation?.value.slug;
+         return `/${siteSlug}/${slug}`;
+      }
+      case "collections": {
+         const slug = item.relation?.value.slug;
+         return `/${siteSlug}/collections/${slug}`;
+      }
+      case "entries": {
+         const slug = item.relation?.value.slug;
+         const id = item.relation?.value.id;
+         const collection = item.relation?.value.collectionEntity.slug;
+         return `/${siteSlug}/collections/${collection}/${id}/${slug}`;
+      }
+      case "posts": {
+         const id = item.relation?.value.id;
+         return `/${siteSlug}/posts/${id}`;
+      }
+      default:
+         return "/";
+   }
 };
 
 // const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;

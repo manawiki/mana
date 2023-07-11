@@ -33,6 +33,7 @@ import { Image } from "~/components/Image";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import type { Collection } from "payload/generated-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import clsx from "clsx";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
@@ -91,7 +92,6 @@ export default function CollectionIndex() {
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
    const adding = isAdding(fetcher, "addCollection");
-   const { isMobileApp } = useRouteLoaderData("routes/$siteId+/_layout");
 
    //Image preview after upload
    const [, setPicture] = useState(null);
@@ -134,10 +134,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <main
-            className={`${isMobileApp ? "pt-6" : "pt-20 laptop:pt-12"} 
-            mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
-         >
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
             <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
                Collections
             </h1>
@@ -232,18 +229,19 @@ export default function CollectionIndex() {
                            to={`${collection.slug}`}
                            prefetch="intent"
                            className={({ isActive }) =>
-                              `${
-                                 isActive
-                                    ? "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20"
-                                    : ""
-                              } border-color bg-2 shadow-1 flex items-center justify-between gap-2.5 overflow-hidden rounded-xl
-                              border pr-2 shadow-sm transition`
+                              clsx(
+                                 {
+                                    "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20":
+                                       isActive,
+                                 },
+                                 "border-color bg-2 shadow-1 flex items-center justify-between gap-2 overflow-hidden rounded-xl border pr-2 shadow-sm transition"
+                              )
                            }
                         >
-                           <div className="flex items-center gap-3.5 truncate">
+                           <div className="flex items-center gap-2 truncate">
                               <div
-                                 className="border-color flex h-11 w-11 flex-none items-center
-                                    justify-between overflow-hidden rounded-full"
+                                 className="border-color flex h-10 w-10 flex-none items-center
+                                    justify-between overflow-hidden rounded-full p-1"
                               >
                                  {collection.icon?.url ? (
                                     <Image
@@ -261,12 +259,12 @@ export default function CollectionIndex() {
                                     />
                                  )}
                               </div>
-                              <span className="text-1 truncate font-bold">
+                              <span className="text-1 truncate text-sm font-bold">
                                  {collection.name}
                               </span>
                            </div>
                            <ChevronRight
-                              size={24}
+                              size={20}
                               className="flex-none text-yellow-500"
                            />
                         </NavLink>

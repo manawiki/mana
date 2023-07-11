@@ -35,14 +35,20 @@ import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
 import { ArrowUp } from "lucide-react";
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
+import { isNativeSSR } from "./utils";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
+   const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
+
    return json(
       {
+         isMobileApp,
+         isIOS,
+         isAndroid,
          toastMessage,
          locale,
          user,
@@ -56,7 +62,6 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
    { charSet: "utf-8" },
-   { name: "viewport", content: "width=device-width, initial-scale=1" },
 ];
 
 export const links: LinksFunction = () => [
@@ -98,13 +103,15 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, subsite } =
+   const { locale, siteTheme, toastMessage, subsite, isMobileApp } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
 
    useChangeLanguage(locale);
+
+   isMobileApp && setBackForwardNavigationGestures(true);
 
    useEffect(() => {
       if (!toastMessage) {
@@ -124,29 +131,30 @@ function App() {
       }
    }, [toastMessage]);
 
-   const [visible, setVisible] = useState(false);
+   // const [visible, setVisible] = useState(false);
 
-   useEffect(() => {
-      const onScroll = () => {
-         setVisible(document.documentElement.scrollTop >= 200);
-      };
-      onScroll();
-      document.addEventListener("scroll", onScroll);
-      return () => document.removeEventListener("scroll", onScroll);
-   }, []);
+   // useEffect(() => {
+   //    const onScroll = () => {
+   //       setVisible(document.documentElement.scrollTop >= 200);
+   //    };
+   //    onScroll();
+   //    document.addEventListener("scroll", onScroll);
+   //    return () => document.removeEventListener("scroll", onScroll);
+   // }, []);
 
-   setBackForwardNavigationGestures(true);
    return (
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body ${theme ?? ""}`}
+         className={`relative min-h-full overflow-x-hidden font-body ${
+            theme ?? ""
+         }`}
       >
          <head>
             <meta charSet="utf-8" />
             <meta
                name="viewport"
-               content="width=device-width,initial-scale=1"
+               content="initial-scale=1, width=device-width"
             />
             <meta
                name="format-detection"
@@ -172,7 +180,7 @@ function App() {
             )}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
-         <body className="text-light dark:text-dark ">
+         <body className="text-light dark:text-dark">
             <Outlet />
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
