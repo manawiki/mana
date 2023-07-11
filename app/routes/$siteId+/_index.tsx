@@ -138,14 +138,9 @@ export default function SiteIndexMain() {
 
    const disabled = isProcessing(fetcher.state);
 
-   const { isMobileApp } = useRouteLoaderData("routes/$siteId+/_layout");
-
    return (
       <>
-         <main
-            className={`${isMobileApp ? "pt-6" : "pt-20 laptop:pt-12"} 
-            mx-auto max-w-[728px] pb-3 max-tablet:px-3`}
-         >
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen">

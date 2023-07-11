@@ -1,13 +1,7 @@
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-   Link,
-   useFetcher,
-   useNavigate,
-   useParams,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, useFetcher, useNavigate, useParams } from "@remix-run/react";
 import {
    Component,
    Database,
@@ -166,7 +160,6 @@ export function SearchComboBox({
    const [query, setQuery] = useState("");
    const debouncedValue = useDebouncedValue(query, 100);
    const { siteId } = useParams();
-   const { isIOS } = useRouteLoaderData("routes/$siteId+/_layout");
 
    //leave searchListItems as an empty array until fetcher is loaded
    const searchListItems = useMemo(
@@ -273,8 +266,7 @@ export function SearchComboBox({
             </Transition>
          </Combobox>
          <button
-            className={`${isIOS ? "right-5 top-1.5" : "top-5"} 
-            absolute right-4 `}
+            className="absolute right-4 top-[18px]"
             onClick={() => {
                setSearchToggle(false);
             }}
