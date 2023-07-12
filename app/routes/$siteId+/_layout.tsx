@@ -72,6 +72,8 @@ import SearchComboBox from "./resource+/Search";
 import { deferIf } from "defer-if";
 import clsx from "clsx";
 import { SafeArea } from "capacitor-plugin-safe-area";
+import { StatusBar } from "@capacitor/status-bar";
+import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
