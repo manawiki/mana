@@ -23,6 +23,7 @@ td {
 
 @layer base {
    html {
+      -webkit-tap-highlight-color: transparent;
       @apply overflow-y-scroll;
     }
    .border-color {

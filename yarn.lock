@@ -1776,6 +1776,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-5.1.1.tgz#1f6c7761620fc3b354d895a6235bebee40856b9c"
   integrity sha512-Vk76qa1TDckcPNcUgEIgNdgFo4SqTDBNYqKaYVDMOgkZxg4aKe6PzZaqw1e9T3e4NKFSrDHnCDanA5UFB9tQ3w==
 
+"@capacitor/status-bar@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@capacitor/status-bar/-/status-bar-5.0.6.tgz#281568a7f7aeacf80777702cb9947c29dc32685c"
+  integrity sha512-7od8CxsBnot1XMK3IeOkproFL4hgoKoWAc3pwUvmDOkQsXoxwQm4SR9mLwQavv1XfxtHbFV9Ukd7FwMxOPSViw==
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"
