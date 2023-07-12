@@ -33,9 +33,9 @@ import { commitSession, getSession } from "./utils/message.server";
 import { useEffect } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
-import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 import { isNativeSSR } from "./utils";
 import { StatusBar } from "@capacitor/status-bar";
+import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -111,9 +111,6 @@ function App() {
 
    useChangeLanguage(locale);
 
-   isMobileApp && setBackForwardNavigationGestures(true);
-   isMobileApp && StatusBar.setOverlaysWebView({ overlay: true });
-
    useEffect(() => {
       if (!toastMessage) {
          return;
@@ -131,6 +128,13 @@ function App() {
             throw new Error(`${type} is not handled`);
       }
    }, [toastMessage]);
+
+   useEffect(() => {
+      if (isMobileApp) {
+         setBackForwardNavigationGestures(true);
+         StatusBar.setOverlaysWebView({ overlay: true });
+      }
+   }, []);
 
    return (
       <html
