@@ -13,6 +13,7 @@ import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
    Bookmark,
    ChevronDown,
+   ChevronLeft,
    Component,
    Dog,
    HardDrive,
@@ -22,6 +23,7 @@ import {
    MenuIcon,
    Pin,
    Search,
+   Settings2,
    User as UserLucideIcon,
    Users,
    X,
@@ -69,6 +71,7 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import SearchComboBox from "./resource+/Search";
 import { deferIf } from "defer-if";
 import clsx from "clsx";
+import { SafeArea } from "capacitor-plugin-safe-area";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -105,7 +108,6 @@ export async function loader({
          cookie: request.headers.get("cookie") ?? "",
       },
    })) as PaginatedDocs<Update>;
-
    return await deferIf({ updateResults, site }, isMobileApp, {
       init: {
          headers: { "Cache-Control": "public, s-maxage=60, max-age=60" },
@@ -139,6 +141,8 @@ export default function SiteIndex() {
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
 
+   const isSiteHome = location.pathname == `/${site.slug}`;
+
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
 
@@ -156,13 +160,33 @@ export default function SiteIndex() {
 
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
-   const { isMobileApp, isIOS } = useRouteLoaderData("root") as any;
+   const { isMobileApp } = useRouteLoaderData("root") as any;
+
+   //On native mobile, get the safe area padding
+   const [safeArea, setSetArea] = useState() as any;
+
+   useEffect(() => {
+      if (isMobileApp) {
+         SafeArea.getSafeAreaInsets().then(({ insets }) => {
+            setSetArea(insets);
+         });
+      }
+   }, []);
+
+   const bottomSafeArea = isMobileApp
+      ? safeArea?.bottom
+         ? safeArea?.bottom + 60
+         : 60
+      : 0;
+
+   //Prevent layout shift on native. Don't paint screen yet.
+   if (isMobileApp && !safeArea) return null;
 
    return (
       <Suspense fallback="Loading...">
          <Await resolve={{ site }}>
             {({ site }) => (
-               <div className={clsx({ "pb-[76px]": isMobileApp })}>
+               <div>
                   {!isMobileApp && (
                      <header
                         className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
@@ -454,19 +478,24 @@ export default function SiteIndex() {
                         <section
                            className={clsx(
                               isMobileApp
-                                 ? "fixed w-full max-laptop:top-0"
+                                 ? "sticky top-0 w-full "
                                  : "sticky max-laptop:top-[56px] laptop:top-6",
                               "z-40 laptop:z-50"
                            )}
                         >
                            <div
+                              style={{
+                                 paddingTop: safeArea?.top ?? "",
+                              }}
                               className={clsx(
-                                 { "pt-14": isIOS },
-                                 "border-color bg-2 shadow-1 relative mx-auto w-full border-b shadow-sm laptop:max-w-[736px] laptop:rounded-xl laptop:border"
+                                 isMobileApp
+                                    ? "bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
+                                    : "border-color bg-2 shadow-1 border-b shadow-sm",
+                                 " relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-xl laptop:border"
                               )}
                               id="spinner-container"
                            >
-                              <div className="relative mx-auto flex h-[58px] items-center justify-between px-2">
+                              <div className="relative mx-auto flex h-[58px] items-center justify-between pl-2 pr-3">
                                  {searchToggle ? (
                                     <SearchComboBox
                                        siteType={site.type}
@@ -474,24 +503,90 @@ export default function SiteIndex() {
                                     />
                                  ) : (
                                     <>
-                                       <Link
-                                          prefetch="intent"
-                                          to={`/${site.slug}`}
-                                          className="hover:bg-3 flex items-center gap-3 truncate rounded-full p-1 pr-4 font-bold"
-                                       >
-                                          <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
-                                             <Image
-                                                width={36}
-                                                height={36}
-                                                url={site.icon?.url}
-                                                options="aspect_ratio=1:1&height=120&width=120"
-                                                alt="Site Logo"
-                                             />
-                                          </div>
-                                          <div className="truncate">
-                                             {site.name}
-                                          </div>
-                                       </Link>
+                                       <div className="flex items-center truncate">
+                                          <Link
+                                             prefetch="intent"
+                                             to={`/${site.slug}`}
+                                             className={clsx(
+                                                isMobileApp
+                                                   ? "mr-3"
+                                                   : "hover:bg-3 truncate p-1 pr-4 font-bold",
+                                                "flex items-center rounded-full"
+                                             )}
+                                          >
+                                             {!isSiteHome && isMobileApp && (
+                                                <ChevronLeft
+                                                   className="mr-1"
+                                                   size={24}
+                                                />
+                                             )}
+                                             <div
+                                                className={clsx(
+                                                   isMobileApp
+                                                      ? "border-color h-9 w-9 border"
+                                                      : "",
+                                                   "shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow"
+                                                )}
+                                             >
+                                                <Image
+                                                   width={40}
+                                                   height={40}
+                                                   url={site.icon?.url}
+                                                   options="aspect_ratio=1:1&height=120&width=120"
+                                                   alt="Site Logo"
+                                                />
+                                             </div>
+                                             <div
+                                                className={clsx(
+                                                   { hidden: isMobileApp },
+                                                   "truncate pl-3"
+                                                )}
+                                             >
+                                                {site.name}
+                                             </div>
+                                          </Link>
+                                          {isMobileApp && (
+                                             <>
+                                                <LoggedOut>
+                                                   <Link
+                                                      prefetch="intent"
+                                                      reloadDocument={
+                                                         site.type !=
+                                                            "custom" && true
+                                                      }
+                                                      to={`/login?redirectTo=/${site.slug}`}
+                                                      className="flex h-8 w-[70px] items-center justify-center rounded-full bg-black
+                                                      text-xs font-bold text-white dark:bg-white dark:text-black"
+                                                   >
+                                                      Follow
+                                                   </Link>
+                                                </LoggedOut>
+                                                <NotFollowingSite>
+                                                   <div className="flex items-center">
+                                                      <fetcher.Form
+                                                         className="w-full"
+                                                         method="post"
+                                                      >
+                                                         <button
+                                                            name="intent"
+                                                            value="followSite"
+                                                            className="flex h-8 w-[70px] items-center justify-center rounded-full bg-black
+                                                            text-xs font-bold text-white dark:bg-white dark:text-black"
+                                                         >
+                                                            {adding ? (
+                                                               <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                                            ) : (
+                                                               t(
+                                                                  "follow.actionFollow"
+                                                               )
+                                                            )}
+                                                         </button>
+                                                      </fetcher.Form>
+                                                   </div>
+                                                </NotFollowingSite>
+                                             </>
+                                          )}
+                                       </div>
                                        <div className="flex items-center gap-3 pl-2">
                                           <FollowingSite>
                                              <Menu
@@ -501,7 +596,7 @@ export default function SiteIndex() {
                                                 {({ open }) => (
                                                    <>
                                                       <Menu.Button
-                                                         className="bg-2 text-1 hover:bg-3 flex h-9 w-9 
+                                                         className="text-1 hover:bg-3 flex h-9 w-9 
                                        items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
                                                       >
                                                          {open ? (
@@ -514,8 +609,8 @@ export default function SiteIndex() {
                                                             />
                                                          ) : (
                                                             <>
-                                                               <ChevronDown
-                                                                  size={24}
+                                                               <Settings2
+                                                                  size={20}
                                                                   className="transition duration-150 ease-in-out"
                                                                />
                                                             </>
@@ -630,9 +725,7 @@ export default function SiteIndex() {
                         </section>
                         <div
                            className={clsx(
-                              isMobileApp
-                                 ? "pt-[134px]"
-                                 : "pt-[76px] laptop:pt-12"
+                              isMobileApp ? "pt-3" : "pt-20 laptop:pt-12"
                            )}
                         >
                            <Outlet />
@@ -643,7 +736,12 @@ export default function SiteIndex() {
                         className="bg-2 border-color relative z-20 max-laptop:mx-auto
                max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
                      >
-                        <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+                        <div
+                           style={{
+                              paddingBottom: bottomSafeArea,
+                           }}
+                           className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto"
+                        >
                            <div className="border-color border-b laptop:pt-14">
                               <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                                  <div className="grid grid-cols-2 gap-3">
@@ -828,10 +926,11 @@ export default function SiteIndex() {
                   {/* ==== Mobile App Nav ==== */}
                   {isMobileApp && (
                      <nav
-                        className={clsx(
-                           { "pb-4": isIOS },
-                           "border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100 bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
-                        )}
+                        style={{
+                           paddingBottom: safeArea?.bottom ?? "",
+                        }}
+                        className="border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100
+                        bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
                      >
                         <div className="grid grid-cols-3 gap-2">
                            <button
@@ -998,6 +1097,7 @@ export default function SiteIndex() {
                         </menu>
                      </div>
                   </Modal>
+                  {/* ==== Following Modal ==== */}
                   <Modal
                      onClose={() => {
                         setMenuOpen(false);
@@ -1054,20 +1154,23 @@ export default function SiteIndex() {
                                     }
                                     key={item.id}
                                     onClick={() => setMenuOpen(false)}
-                                    className="shadow-1 bg-3 relative flex items-center justify-between gap-3 rounded-xl p-3 pr-4 shadow-sm"
+                                    className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
                                     to={`/${item.slug}`}
                                  >
                                     {({ isActive }) => (
                                        <>
-                                          <div className="flex items-center gap-3 truncate">
-                                             <div className="h-8 w-8 flex-none overflow-hidden rounded-full">
+                                          <div className="flex w-full items-center gap-3 truncate p-2">
+                                             <div className="h-7 w-7 flex-none ">
                                                 <Image
+                                                   className="border-color overflow-hidden rounded-full border shadow-sm"
+                                                   width={32}
+                                                   height={32}
                                                    alt="Site Logo"
                                                    options="aspect_ratio=1:1&height=120&width=120"
                                                    url={item.icon?.url}
                                                 />
                                              </div>
-                                             <div className="text-1 truncate text-sm font-bold">
+                                             <div className="truncate text-sm font-bold">
                                                 {item.name}
                                              </div>
                                           </div>
