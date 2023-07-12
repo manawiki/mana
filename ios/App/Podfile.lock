@@ -4,11 +4,14 @@ PODS:
   - CapacitorCordova (5.1.1)
   - CapacitorPluginIosWebviewConfigurator (0.0.1):
     - Capacitor
+  - CapacitorPluginSafeArea (2.0.5):
+    - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorPluginIosWebviewConfigurator (from `../../node_modules/capacitor-plugin-ios-webview-configurator`)
+  - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
 
 EXTERNAL SOURCES:
   Capacitor:
@@ -17,12 +20,15 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorPluginIosWebviewConfigurator:
     :path: "../../node_modules/capacitor-plugin-ios-webview-configurator"
+  CapacitorPluginSafeArea:
+    :path: "../../node_modules/capacitor-plugin-safe-area"
 
 SPEC CHECKSUMS:
   Capacitor: 55956e1199b63efcd7f2dedffa5c6b9129c45aae
   CapacitorCordova: b31a46ad379c93a5c04e0598a6164e8cb90c2bb2
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
+  CapacitorPluginSafeArea: bfdd714827dbd89fb44fea286beec996e1b0c5c4
 
-PODFILE CHECKSUM: d8c2f40fd5c679911d895f7560a43fbd586e6e3d
+PODFILE CHECKSUM: f94869707fc0102745753fb8eda5ac06515fd0d1
 
 COCOAPODS: 1.12.1

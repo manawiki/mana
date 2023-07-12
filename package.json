@@ -46,6 +46,7 @@
       "@remix-run/server-runtime": "^1.18.1",
       "array-move": "^4.0.0",
       "capacitor-plugin-ios-webview-configurator": "^0.4.0",
+      "capacitor-plugin-safe-area": "^2.0.5",
       "chart.js": "^3.9.1",
       "chokidar": "^3.5.3",
       "clsx": "^1.2.1",

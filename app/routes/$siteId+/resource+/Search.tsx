@@ -1,7 +1,13 @@
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useFetcher, useNavigate, useParams } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useNavigate,
+   useParams,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import {
    Component,
    Database,
@@ -17,6 +23,7 @@ import type { Search, Site } from "payload/generated-types";
 import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
+import { clsx } from "clsx";
 
 export async function loader({
    context: { payload, user },
@@ -184,6 +191,7 @@ export function SearchComboBox({
       return setSearchToggle(false);
    };
    const isSearching = isAdding(fetcher, "search");
+   const { isMobileApp } = useRouteLoaderData("root") as any;
 
    return (
       <div className="h-full w-full">
@@ -191,7 +199,10 @@ export function SearchComboBox({
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
-                  className="bg-2 h-full w-full border-0 pl-1 outline-none !ring-transparent"
+                  className={clsx(
+                     isMobileApp ? "bg-3" : "bg-2",
+                     "h-full w-full border-0 pl-1 outline-none !ring-transparent"
+                  )}
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}

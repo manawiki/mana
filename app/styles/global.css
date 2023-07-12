@@ -4,9 +4,6 @@
 
 /* Since dark/light class is set at html level, we can't declare styles inline  */
 
-html {
-   @apply overflow-y-scroll;
-}
 html.light {
    @apply bg-zinc-50;
 }
@@ -25,6 +22,9 @@ td {
 }
 
 @layer base {
+   html {
+      @apply overflow-y-scroll;
+    }
    .border-color {
       @apply border-[#ededed] dark:border-[#36393e];
    }
@@ -35,6 +35,8 @@ h2 {
 h3 {
    @apply mb-1.5 pt-3 font-header text-[18px] font-bold dark:text-zinc-200;
 }
+
+
 @layer components {
    .input-text {
       @apply border-color
