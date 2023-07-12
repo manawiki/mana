@@ -160,7 +160,7 @@ export default function SiteIndex() {
 
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
-   const { isMobileApp } = useRouteLoaderData("root") as any;
+   const { isMobileApp, isIOS } = useRouteLoaderData("root") as any;
 
    //On native mobile, get the safe area padding
    const [safeArea, setSetArea] = useState() as any;
@@ -927,40 +927,40 @@ export default function SiteIndex() {
                   {isMobileApp && (
                      <nav
                         style={{
-                           paddingBottom: safeArea?.bottom ?? "",
+                           paddingBottom: (isIOS && safeArea?.bottom) ?? "",
                         }}
                         className="border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100
                         bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
                      >
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                            <button
-                              className="touch-manipulation space-y-1 p-3"
+                              className="group touch-manipulation space-y-1 p-3"
                               onClick={() => setMenuOpen(true)}
                            >
                               <Squares2X2Icon
-                                 className="mx-auto h-5 w-5 text-blue-500"
+                                 className="mx-auto h-5 w-5 text-blue-500 transition duration-300 group-active:translate-y-0.5"
                                  aria-hidden="true"
                               />
                               <div className="text-center text-[9px] font-bold">
                                  Following
                               </div>
                            </button>
-                           <div className="space-y-1 p-3">
+                           {/* <div className="space-y-1 p-3">
                               <Bookmark
                                  size={18}
-                                 className="mx-auto text-blue-500"
+                                 className="mx-auto text-blue-500 transition duration-300 active:translate-y-0.5"
                                  aria-hidden="true"
                               />
                               <div className="text-center text-[9px] font-bold">
                                  Bookmarks
                               </div>
-                           </div>
+                           </div> */}
                            <button
-                              className="touch-manipulation space-y-1 p-3"
+                              className="group touch-manipulation space-y-1 p-3"
                               onClick={() => setUserMenuOpen(true)}
                            >
                               <UserIcon
-                                 className="mx-auto h-5 w-5 text-blue-500"
+                                 className="mx-auto h-5 w-5 text-blue-500 transition duration-300 group-active:translate-y-0.5"
                                  aria-hidden="true"
                               />
                               <div className="text-center text-[9px] font-bold">

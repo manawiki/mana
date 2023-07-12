@@ -35,6 +35,7 @@ import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 import { isNativeSSR } from "./utils";
+import { StatusBar } from "@capacitor/status-bar";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -111,6 +112,7 @@ function App() {
    useChangeLanguage(locale);
 
    isMobileApp && setBackForwardNavigationGestures(true);
+   isMobileApp && StatusBar.setOverlaysWebView({ overlay: true });
 
    useEffect(() => {
       if (!toastMessage) {

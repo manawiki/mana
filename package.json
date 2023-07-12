@@ -30,6 +30,7 @@
       "@capacitor/android": "^5.1.1",
       "@capacitor/core": "^5.1.1",
       "@capacitor/ios": "^5.1.1",
+      "@capacitor/status-bar": "^5.0.6",
       "@dnd-kit/core": "^6.0.8",
       "@dnd-kit/modifiers": "^6.0.1",
       "@dnd-kit/sortable": "^7.0.2",
