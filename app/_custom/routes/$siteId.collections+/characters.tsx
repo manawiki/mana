@@ -82,7 +82,7 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { characters } = useLoaderData<typeof loader>();
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <CharacterList chars={characters} />
       </div>
    );
@@ -292,7 +292,7 @@ const CharacterList = ({ chars }: any) => {
                            return (
                               <div
                                  key={opt.id}
-                                 className={`bg-3 border-color items-center rounded-lg border  px-2.5 py-1 ${
+                                 className={`bg-3 border-color shadow-1 items-center rounded-lg border px-2.5 py-1 shadow-sm ${
                                     filters.find((a) => a.id == opt.id)
                                        ? `bg-yellow-50 dark:bg-yellow-500/10`
                                        : ``
@@ -314,16 +314,18 @@ const CharacterList = ({ chars }: any) => {
                                  }}
                               >
                                  {opt?.icon && (
-                                    <div className="mx-auto flex h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
+                                    <div className="shadow-1 border-color mx-auto flex h-7 w-7 rounded-full border bg-zinc-800 bg-opacity-50 shadow-sm">
                                        <Image
+                                          width={30}
+                                          height={30}
                                           className="mx-auto self-center"
                                           alt="Icon"
-                                          options="height=36"
+                                          options="height=50"
                                           url={opt.icon}
                                        />
                                     </div>
                                  )}
-                                 <div className="text-1 truncate pt-0.5 text-center text-xs">
+                                 <div className="text-1 truncate pt-0.5 text-center text-[10px] font-semibold">
                                     {opt.name}
                                  </div>
                               </div>
@@ -383,7 +385,7 @@ const CharacterList = ({ chars }: any) => {
          </div>
 
          {/* List of Characters with applied sorting */}
-         <div className="grid grid-cols-2 gap-3 pb-16 text-center laptop:grid-cols-5">
+         <div className="grid grid-cols-3 gap-3 pb-4 text-center laptop:grid-cols-5">
             {cfiltered?.map((char, int) => {
                const elemurl = char?.element?.icon?.url;
                const pathsmall = char?.path?.icon?.url;
@@ -396,12 +398,15 @@ const CharacterList = ({ chars }: any) => {
                      key={cid}
                      prefetch="intent"
                      to={`/starrail/collections/characters/${cid}`}
-                     className="bg-2 border-color shadow-1 rounded-md border shadow-sm"
+                     className="bg-2 border-color shadow-1 flex items-center justify-center rounded-md border p-2 shadow-sm"
                   >
                      {/* Character Icon */}
-                     <div className="relative">
+                     <div className="relative w-full">
                         {/* Element Symbol */}
-                        <div className="absolute left-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
+                        <div
+                           className="border-color shadow-1 absolute left-1 top-0 z-20 flex 
+                        h-7 w-7 items-center justify-center rounded-full border bg-zinc-800 shadow"
+                        >
                            <Image
                               options="aspect_ratio=1:1&height=42&width=42"
                               alt="Name"
@@ -412,7 +417,7 @@ const CharacterList = ({ chars }: any) => {
                         </div>
 
                         {/* Path + Path Name ? */}
-                        <div className="absolute right-2 top-2 z-20 h-7 w-7 rounded-full bg-zinc-800">
+                        <div className="border-color shadow-1 absolute right-1 top-0 z-20 h-7 w-7 rounded-full border bg-zinc-800 shadow">
                            <Image
                               options="aspect_ratio=1:1&height=42&width=42"
                               alt="Path"
@@ -422,27 +427,33 @@ const CharacterList = ({ chars }: any) => {
                            />
                         </div>
 
-                        {/* Rarity */}
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 transform">
-                           <Image
-                              options="height=20"
-                              alt="Rarity"
-                              className={`z-20 h-4 rounded-full object-contain px-1 color-rarity-${
+                        <div className="relative flex w-full items-center justify-center">
+                           {/* Rarity */}
+                           <div
+                              className={`z-20 rounded-full object-contain px-1 color-rarity-${
                                  raritynum ?? "1"
-                              } bg-opacity-10`}
-                              url={rarityurl}
-                           />
+                              } absolute -bottom-2 left-1/2 flex h-4 w-12 -translate-x-1/2 transform items-center bg-opacity-10`}
+                           >
+                              <Image
+                                 options="height=16"
+                                 alt="Rarity"
+                                 url={rarityurl}
+                              />
+                           </div>
+                           <div className="border-color shadow-1 overflow-hidden rounded-full border-2 shadow-sm">
+                              <Image
+                                 width={80}
+                                 height={80}
+                                 options="aspect_ratio=1:1"
+                                 url={char.icon?.url}
+                                 alt={char?.name}
+                              />
+                           </div>
                         </div>
-                        <Image
-                           options="aspect_ratio=1:1&height=120&width=120"
-                           className="mx-auto object-contain"
-                           url={char.icon?.url}
-                           alt={char?.name}
-                        />
-                     </div>
-                     {/* Character Name */}
-                     <div className="pb-1.5 pt-2.5 text-center text-xs font-bold">
-                        {char.name}
+                        {/* Character Name */}
+                        <div className="pt-3 text-center text-xs font-bold">
+                           {char.name}
+                        </div>
                      </div>
                   </Link>
                );

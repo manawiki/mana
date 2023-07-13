@@ -73,7 +73,7 @@ export default function HomePage() {
    }, []);
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <H2 text="Warp History" />
          <div className="justify-left flex items-center gap-x-1">
             <input

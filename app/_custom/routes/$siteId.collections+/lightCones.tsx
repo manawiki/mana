@@ -63,7 +63,7 @@ export const meta: V2_MetaFunction = () => {
 export default function HomePage() {
    const { lightCones } = useLoaderData<typeof loader>();
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <LightConeList chars={lightCones} />
       </div>
    );
@@ -195,135 +195,133 @@ const LightConeList = ({ chars }: any) => {
 
    return (
       <>
-         <div className="pb-20">
-            {/* Filter Options */}
-            <H2 text="Light Cones" />
-            <div className="divide-color bg-2 border-color divide-y rounded-md border">
-               {filterOptions.map((cat) => (
-                  <div
-                     className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
-                     key={cat.name}
-                  >
-                     <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
-                        {cat.name}
-                     </div>
-                     <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                        {cat.options.map((opt) => (
-                           <div
-                              key={opt.id}
-                              className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
-                                 filters.find((a) => a.id == opt.id)
-                                    ? `bg-yellow-50 dark:bg-yellow-500/10`
-                                    : ``
-                              }`}
-                              onClick={(event) => {
-                                 if (filters.find((a) => a.id == opt.id)) {
-                                    setFilters(
-                                       filters.filter((a) => a.id != opt.id)
-                                    );
-                                 } else {
-                                    setFilters([
-                                       // Allows only one filter per category
-                                       ...filters.filter(
-                                          (a) => a.field != cat.field
-                                       ),
-                                       { ...opt, field: cat.field },
-                                    ]);
-                                 }
-                              }}
-                           >
-                              {opt?.icon && (
-                                 <div className="mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
-                                    <Image
-                                       className="mx-auto"
-                                       alt="Icon"
-                                       options="height=36"
-                                       url={opt.icon}
-                                    />
-                                 </div>
-                              )}
-                              <div className="text-1 truncate pt-0.5 text-center text-xs">
-                                 {opt.name}
-                              </div>
-                           </div>
-                        ))}
-                     </div>
+         {/* Filter Options */}
+         <H2 text="Light Cones" />
+         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+            {filterOptions.map((cat) => (
+               <div
+                  className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+                  key={cat.name}
+               >
+                  <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                     {cat.name}
                   </div>
-               ))}
-            </div>
-            {/* Search Text Box */}
-            <div
-               className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
+                  <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                     {cat.options.map((opt) => (
+                        <div
+                           key={opt.id}
+                           className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
+                              filters.find((a) => a.id == opt.id)
+                                 ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                 : ``
+                           }`}
+                           onClick={(event) => {
+                              if (filters.find((a) => a.id == opt.id)) {
+                                 setFilters(
+                                    filters.filter((a) => a.id != opt.id)
+                                 );
+                              } else {
+                                 setFilters([
+                                    // Allows only one filter per category
+                                    ...filters.filter(
+                                       (a) => a.field != cat.field
+                                    ),
+                                    { ...opt, field: cat.field },
+                                 ]);
+                              }
+                           }}
+                        >
+                           {opt?.icon && (
+                              <div className="mx-auto h-9 w-9 rounded-full bg-zinc-800 bg-opacity-50">
+                                 <Image
+                                    className="mx-auto"
+                                    alt="Icon"
+                                    options="height=60"
+                                    url={opt.icon}
+                                 />
+                              </div>
+                           )}
+                           <div className="text-1 truncate pt-0.5 text-center text-xs">
+                              {opt.name}
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+            ))}
+         </div>
+         {/* Search Text Box */}
+         <div
+            className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
                      justify-between gap-3 rounded-lg border px-3 shadow-sm"
-            >
-               <Search className="text-yellow-500" size={20} />
-               <input
-                  className="h-10 w-full flex-grow bg-transparent focus:outline-none"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(event) => {
-                     setSearch(event.target.value);
-                  }}
-               />
-               <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
-                  <span>{cfiltered.length}</span> <span>entries</span>
-               </div>
+         >
+            <Search className="text-yellow-500" size={20} />
+            <input
+               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               placeholder="Search..."
+               value={search}
+               onChange={(event) => {
+                  setSearch(event.target.value);
+               }}
+            />
+            <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
+               <span>{cfiltered.length}</span> <span>entries</span>
             </div>
+         </div>
 
-            {/* Sort Options */}
-            <div className="flex items-center justify-between py-3">
-               <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-yellow-500" />
-                  Sort
-               </div>
-               <div className="flex items-center gap-2">
-                  {sortOptions.map((opt) => (
-                     <div
-                        key={opt.name}
-                        className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+         {/* Sort Options */}
+         <div className="flex items-center justify-between py-3">
+            <div className="text-1 flex items-center gap-2 text-sm font-bold">
+               <SortDesc size={16} className="text-yellow-500" />
+               Sort
+            </div>
+            <div className="flex items-center gap-2">
+               {sortOptions.map((opt) => (
+                  <div
+                     key={opt.name}
+                     className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
                               ? `bg-yellow-50 dark:bg-yellow-500/10`
                               : ``
                         }`}
-                        onClick={(event) => {
-                           setSort(opt.field);
-                        }}
-                     >
-                        {opt.name}
-                     </div>
-                  ))}
-               </div>
+                     onClick={(event) => {
+                        setSort(opt.field);
+                     }}
+                  >
+                     {opt.name}
+                  </div>
+               ))}
             </div>
+         </div>
 
-            {/* Toggle Show Description */}
-            <button
-               type="button"
-               className={`border-color shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
+         {/* Toggle Show Description */}
+         <button
+            type="button"
+            className={`border-color shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
                font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
                   showDesc ? "bg-3 bg-yellow-50" : "bg-2"
                }`}
-               onClick={() => setShowDesc(!showDesc)}
-            >
-               Click to toggle full descriptions
-            </button>
+            onClick={() => setShowDesc(!showDesc)}
+         >
+            Click to toggle full descriptions
+         </button>
 
-            {/* List with applied sorting */}
-            <div
-               className={` ${
-                  showDesc
-                     ? ""
-                     : "grid grid-cols-3 gap-2 text-center laptop:grid-cols-5"
-               }`}
-            >
-               {cfiltered?.map((char) =>
-                  showDesc ? (
-                     <EntryWithDescription char={char} key={char.id} />
-                  ) : (
-                     <EntryIconOnly char={char} key={char.id} />
-                  )
-               )}
-            </div>
+         {/* List with applied sorting */}
+         <div
+            className={` ${
+               showDesc
+                  ? ""
+                  : "grid grid-cols-3 gap-2 text-center laptop:grid-cols-5"
+            }`}
+         >
+            {cfiltered?.map((char) =>
+               showDesc ? (
+                  <EntryWithDescription char={char} key={char.id} />
+               ) : (
+                  <EntryIconOnly char={char} key={char.id} />
+               )
+            )}
          </div>
       </>
    );
@@ -360,7 +358,7 @@ const EntryWithDescription = ({ char }: any) => {
          >
             <div className="relative rounded-md p-3">
                {/* Icon */}
-               <div className="relative inline-block h-28 w-28">
+               <div className="relative inline-block h-24 w-24">
                   {/* Path + Path Name ? */}
                   <div className="absolute -left-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
                      <Image
@@ -436,7 +434,7 @@ const EntryIconOnly = ({ char }: any) => {
                </div>
 
                <Image
-                  options="fit=crop,width=120,height=120"
+                  options="height=150"
                   className="object-contain"
                   url={char.icon?.url}
                   alt={char?.name}

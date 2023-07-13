@@ -846,7 +846,7 @@ const SummonSimulator = (data: any) => {
    const tableStyle = "p-1";
    return (
       <>
-         <div className="mx-auto max-w-[728px] max-laptop:px-3">
+         <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
             <h2>Select Banner</h2>
             <BannerCombobox />
 

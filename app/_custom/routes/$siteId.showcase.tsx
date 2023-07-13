@@ -134,41 +134,29 @@ export default function Showcase() {
 
    if (!data?.uid || data?.errorMessage) {
       return (
-         <main className="relative min-h-screen">
-            <div className="relative z-20 mx-auto flex max-w-[728px] justify-center px-3 pt-32">
-               <div>
-                  <h1 className="pb-6 text-center font-header text-3xl">
-                     Character Showcase
-                  </h1>
-                  <InputUIDNote uid={data?.uid} />
-                  {data?.errorMessage && (
-                     <div className="pt-4 text-center text-sm text-red-400">
-                        {data?.errorMessage}
-                     </div>
-                  )}
-                  <div className="flex items-center justify-center pt-12">
-                     <Link
-                        className="shadow-1 bg-3 inline-flex items-center justify-center gap-2 rounded-full
-                  border border-blue-200 bg-zinc-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-700"
-                        to="/starrail/showcase?uid=700043897"
-                     >
-                        <span>Show me an example...</span>
-                        <ArrowRight className="text-blue-500" size={20} />
-                     </Link>
+         <div className="relative z-20 mx-auto flex max-w-[728px] justify-center px-3 pb-36 pt-24">
+            <div>
+               <h1 className="pb-6 text-center font-header text-3xl">
+                  Character Showcase
+               </h1>
+               <InputUIDNote uid={data?.uid} />
+               {data?.errorMessage && (
+                  <div className="pt-4 text-center text-sm text-red-400">
+                     {data?.errorMessage}
                   </div>
+               )}
+               <div className="flex items-center justify-center pt-12">
+                  <Link
+                     className="shadow-1 bg-3 inline-flex items-center justify-center gap-2 rounded-full
+                  border border-blue-200 bg-zinc-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-700"
+                     to="/starrail/showcase?uid=700043897"
+                  >
+                     <span>Show me an example...</span>
+                     <ArrowRight className="text-blue-500" size={20} />
+                  </Link>
                </div>
             </div>
-            <div
-               className="pattern-opacity-50 pattern-boxes absolute -top-2
-                   left-0 h-full
-                     w-full pattern-bg-white pattern-zinc-100 pattern-size-4 
-                     dark:pattern-zinc-700 dark:pattern-bg-bg3Dark dark:pattern-opacity-20"
-            ></div>
-            <div
-               className="absolute -top-2 left-0 h-full w-full 
-            bg-gradient-to-bl from-gray-100/50 dark:from-gray-500/5"
-            ></div>
-         </main>
+         </div>
       );
    }
    const {
@@ -217,7 +205,7 @@ const DisplayPlayerInfo = ({
    const revalidator = useRevalidator();
 
    return (
-      <main className="-mt-2 desktop:pb-16">
+      <main className="-mt-6 laptop:-mt-14 desktop:pb-16">
          {/* 1) Header with main information for Profile */}
          <PlayerHeader data={pdata} playerIcon={playerIcon} />
          {/* 2) Character selector for available characters in data */}
@@ -276,7 +264,10 @@ const DisplayPlayerInfo = ({
                />
             </div>
          </div>
-         <div className="border-color bg-2 shadow-1 mx-auto my-16 max-w-[400px] rounded-3xl border px-12 py-9 shadow">
+         <div
+            className="border-color bg-2 shadow-1 mx-auto my-16 max-w-[360px] border-y px-12 
+            py-9 shadow mobile:rounded-3xl mobile:border"
+         >
             <InputUIDNote uid={uid} />
          </div>
       </main>
@@ -289,7 +280,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
 
    return (
       <>
-         <div className="border-color relative z-20 border-b p-3 pb-8 pt-24 laptop:pt-16">
+         <div className="border-color relative z-20 border-b p-3 pb-8 pt-16">
             <section className="relative z-10">
                <Image
                   alt="Icon"
@@ -1286,7 +1277,7 @@ const CharacterInfo = ({
                      {/* Artifact Substat Legend (?) */}
                      <div
                         id="relic-legend"
-                        className="relative z-[9999] h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0"
+                        className="relative z-30 h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0"
                      >
                         <Tooltip
                            id="relic-help"

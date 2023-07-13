@@ -88,7 +88,7 @@ export default function HomePage() {
    const { banners } = useLoaderData<typeof loader>();
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <BannerList banners={banners} />
       </div>
    );

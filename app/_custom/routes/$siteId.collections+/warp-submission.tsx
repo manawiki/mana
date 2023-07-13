@@ -73,7 +73,7 @@ export default function WarpSubmission() {
    console.log(jsonlist);
 
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:px-3">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <H2 text="How to upload Warp History information" />
          <div>
             <Instructions />

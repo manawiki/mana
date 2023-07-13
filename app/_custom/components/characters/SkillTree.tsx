@@ -51,10 +51,10 @@ export const SkillTree = ({
    return (
       <>
          <div
-            className="shadow-1 shadow-1 rounded-lg bg-zinc-500 px-6 text-center
+            className="shadow-1 shadow-1 rounded-lg bg-zinc-500 text-center
           shadow-sm dark:bg-bg2Dark"
          >
-            <div className="canvas mx-auto flex items-center justify-center bg-zinc-500 dark:bg-bg2Dark">
+            <div className="canvas mx-auto flex items-center justify-center">
                <div className={`canvas-${pathkey}`}></div>
 
                {connectorlist?.map((con) => (
