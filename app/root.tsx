@@ -67,15 +67,18 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
       console.log(url);
       console.log(CoreMetaQuery);
 
-      const { data, errors } = await fetchWithCache(`${url}/api/graphql`, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: CoreMetaQuery,
-         }),
-      });
+      const { data, errors } = await fetchWithCache(
+         "https://mana.wiki/api/graphql",
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               query: CoreMetaQuery,
+            }),
+         }
+      );
       console.log(data);
 
       const coreMeta = data?.coreMeta as CoreMeta;
