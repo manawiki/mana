@@ -275,7 +275,7 @@ export function useChangeLanguage(locale: string) {
 }
 
 const CoreMetaQuery = `
-query CoreMeta{
+query {
    coreMeta: CoreMeta{
      featuredSites{
        site{
