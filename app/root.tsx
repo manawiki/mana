@@ -64,6 +64,9 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 
    if (isMobileApp) {
       const url = new URL(request.url).origin;
+      console.log(url);
+      console.log(CoreMetaQuery);
+
       const { data, errors } = await fetchWithCache(`${url}/api/graphql`, {
          method: "POST",
          headers: {
@@ -73,12 +76,18 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
             query: CoreMetaQuery,
          }),
       });
+      console.log(data);
+
       const coreMeta = data?.coreMeta as CoreMeta;
       console.log(coreMeta);
       if (errors) {
+         console.log("before error");
          console.error(JSON.stringify(errors)); // eslint-disable-line no-console
          throw new Error();
       }
+      console.log("outside error");
+      console.log(coreMeta);
+
       return json(
          { ...sharedData, coreMeta },
          { headers: { "Set-Cookie": await commitSession(session) } }
