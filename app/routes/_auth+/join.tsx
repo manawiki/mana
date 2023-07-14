@@ -10,6 +10,7 @@ import {
    Link,
    useActionData,
    useNavigation,
+   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { i18nextServer } from "~/utils/i18n";
@@ -27,6 +28,7 @@ import { parseFormSafe } from "zodix";
 import { FormLabel } from "~/components/Forms";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { DotLoader } from "~/components/DotLoader";
+import clsx from "clsx";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
@@ -81,6 +83,7 @@ export default function Signup() {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
+   const { isMobileApp } = useRouteLoaderData("root") || ({} as any);
 
    return (
       <>
@@ -95,15 +98,17 @@ export default function Signup() {
             h-full w-full bg-gradient-to-b
             from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
             ></div>
-            <Link
-               to="/hq"
-               className="absolute left-5 top-5 flex items-center gap-2.5"
-            >
-               <Logo className="h-7 w-7" />
-               <span className="pb-1 font-logo text-3xl">mana</span>
-            </Link>
-            <div className="absolute right-5 top-5 flex items-center gap-5">
-               <DarkModeToggle />
+            <div className={clsx(isMobileApp ? "hidden " : "")}>
+               <Link
+                  to="/hq"
+                  className="absolute left-5 top-5 flex items-center gap-2.5"
+               >
+                  <Logo className="h-7 w-7" />
+                  <span className="pb-1 font-logo text-3xl">mana</span>
+               </Link>
+               <div className="absolute right-5 top-5 flex items-center gap-5">
+                  <DarkModeToggle />
+               </div>
             </div>
             <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
                <div

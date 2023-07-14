@@ -7,7 +7,6 @@ import {
    useFetcher,
    useLoaderData,
    useLocation,
-   useOutlet,
    useRouteLoaderData,
 } from "@remix-run/react";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
@@ -47,7 +46,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, Suspense, useEffect, useRef, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -65,7 +64,7 @@ import {
 import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { Site, Update, User } from "payload/generated-types";
-import { Modal } from "~/components";
+import { DotLoader, Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
@@ -73,7 +72,6 @@ import SearchComboBox from "./resource+/Search";
 import { deferIf } from "defer-if";
 import clsx from "clsx";
 import { SafeArea } from "capacitor-plugin-safe-area";
-import { SplashScreen } from "@capacitor/splash-screen";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -172,7 +170,6 @@ export default function SiteIndex() {
          SafeArea.getSafeAreaInsets().then(({ insets }) => {
             setSetArea(insets);
          });
-         SplashScreen.hide();
       }
    }, []);
 
@@ -181,6 +178,14 @@ export default function SiteIndex() {
          ? safeArea?.bottom + 60
          : 60
       : 0;
+
+   //Prevent layout shift on native. Don't paint screen yet.
+   if (isMobileApp && !safeArea)
+      return (
+         <div className="bg-3 flex min-h-[100vh] min-w-full items-center justify-start">
+            <DotLoader />
+         </div>
+      );
 
    return (
       <Suspense fallback="Loading...">
@@ -495,7 +500,7 @@ export default function SiteIndex() {
                               )}
                               id="spinner-container"
                            >
-                              <div className="relative mx-auto flex h-[58px] items-center justify-between pl-2 pr-3">
+                              <div className="relative mx-auto flex h-[58px] items-center justify-between px-3">
                                  {searchToggle ? (
                                     <SearchComboBox
                                        siteType={site.type}
@@ -503,13 +508,18 @@ export default function SiteIndex() {
                                     />
                                  ) : (
                                     <>
-                                       <div className="flex items-center truncate">
+                                       <div
+                                          className={clsx(
+                                             { truncate: !isMobileApp },
+                                             "flex items-center"
+                                          )}
+                                       >
                                           <Link
                                              prefetch="intent"
                                              to={`/${site.slug}`}
                                              className={clsx(
                                                 isMobileApp
-                                                   ? "mr-3"
+                                                   ? "group mr-3"
                                                    : "hover:bg-3 truncate p-1 pr-4 font-bold",
                                                 "flex items-center rounded-full"
                                              )}
@@ -523,7 +533,7 @@ export default function SiteIndex() {
                                              <div
                                                 className={clsx(
                                                    isMobileApp
-                                                      ? "border-color h-9 w-9 border"
+                                                      ? "border-color border transition duration-300 group-active:translate-y-0.5"
                                                       : "",
                                                    "shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow"
                                                 )}
@@ -709,7 +719,7 @@ export default function SiteIndex() {
                                           </button>
                                           <button
                                              className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
-                                   border shadow-sm desktop:hidden"
+                                             border shadow-sm transition duration-300 active:translate-y-0.5 desktop:hidden"
                                              aria-label="Menu"
                                              onClick={() =>
                                                 setMainMenuOpen(true)
@@ -938,7 +948,7 @@ export default function SiteIndex() {
                               onClick={() => setMenuOpen(true)}
                            >
                               <Squares2X2Icon
-                                 className="mx-auto h-5 w-5 text-blue-500 transition duration-300 group-active:translate-y-0.5"
+                                 className="mx-auto h-6 w-6 text-blue-500 transition duration-300 group-active:translate-y-0.5"
                                  aria-hidden="true"
                               />
                               <div className="text-center text-[9px] font-bold">
@@ -960,7 +970,7 @@ export default function SiteIndex() {
                               onClick={() => setUserMenuOpen(true)}
                            >
                               <UserIcon
-                                 className="mx-auto h-5 w-5 text-blue-500 transition duration-300 group-active:translate-y-0.5"
+                                 className="mx-auto h-6 w-6 text-blue-500 transition duration-300 group-active:translate-y-0.5"
                                  aria-hidden="true"
                               />
                               <div className="text-center text-[9px] font-bold">

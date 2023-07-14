@@ -8,9 +8,11 @@ import { redirect, json } from "@remix-run/node";
 import {
    Form,
    Link,
+   NavLink,
    useActionData,
    useLoaderData,
    useNavigation,
+   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { i18nextServer } from "~/utils/i18n";
@@ -35,8 +37,12 @@ import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { FormLabel } from "~/components/Forms";
 import { DotLoader } from "~/components/DotLoader";
 import { zx } from "zodix";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import clsx from "clsx";
+import { Image } from "~/components/Image";
+import type { CoreMeta } from "~/db/payload-types";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 const LoginFormSchema = z.object({
    email: z
@@ -106,6 +112,10 @@ export default function Login() {
    });
 
    const [isReset, setIsReset] = useState(false);
+   const { isMobileApp, coreMeta } = useRouteLoaderData("root") as {
+      isMobileApp: Boolean;
+      coreMeta: CoreMeta;
+   };
 
    return (
       <main>
@@ -119,15 +129,18 @@ export default function Login() {
             h-full w-full bg-gradient-to-b
             from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
          ></div>
-         <Link
-            to="/hq"
-            className="absolute left-5 top-5 flex items-center gap-2.5"
-         >
-            <Logo className="h-7 w-7" />
-            <span className="pb-1 font-logo text-3xl">mana</span>
-         </Link>
-         <div className="absolute right-5 top-5 flex items-center gap-5">
-            <DarkModeToggle />
+
+         <div className={clsx(isMobileApp ? "hidden " : "")}>
+            <Link
+               to="/hq"
+               className="absolute left-5 top-5 flex items-center gap-2.5"
+            >
+               <Logo className="h-7 w-7" />
+               <span className="pb-1 font-logo text-3xl">mana</span>
+            </Link>
+            <div className="absolute right-5 top-5 flex items-center gap-5">
+               <DarkModeToggle />
+            </div>
          </div>
          <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
             <div
@@ -274,6 +287,44 @@ export default function Login() {
                   </>
                )}
             </div>
+            {isMobileApp && (
+               <section className="relative z-10 p-3 pt-8">
+                  <div className="text-1 pb-2.5 pl-1 text-sm font-bold">
+                     Featured
+                  </div>
+                  {coreMeta.featuredSites?.length === 0 ? null : (
+                     <menu className="space-y-3">
+                        {coreMeta.featuredSites?.map(({ site }) => (
+                           <Link
+                              prefetch="render"
+                              reloadDocument={site.type == "custom" && true}
+                              key={site.id}
+                              className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
+                              to={`/${site.slug}`}
+                           >
+                              <>
+                                 <div className="flex w-full items-center gap-3 truncate p-2">
+                                    <div className="h-7 w-7">
+                                       <Image
+                                          className="border-color overflow-hidden rounded-full border shadow-sm"
+                                          width={32}
+                                          height={32}
+                                          alt="Site Logo"
+                                          options="aspect_ratio=1:1&height=120&width=120"
+                                          url={site.icon?.url}
+                                       />
+                                    </div>
+                                    <div className="truncate text-sm font-bold">
+                                       {site.name}
+                                    </div>
+                                 </div>
+                              </>
+                           </Link>
+                        ))}
+                     </menu>
+                  )}
+               </section>
+            )}
          </div>
       </main>
    );

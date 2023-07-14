@@ -11,6 +11,8 @@ import {
    Scripts,
    ScrollRestoration,
    useLoaderData,
+   useLocation,
+   useNavigate,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -36,6 +38,11 @@ import { useIsBot } from "~/utils/isBotProvider";
 import { isNativeSSR } from "./utils";
 import { StatusBar } from "@capacitor/status-bar";
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
+import type { CoreMeta } from "payload/generated-types";
+import { fetchWithCache } from "./utils/cache.server";
+import { SplashScreen } from "@capacitor/splash-screen";
+import { Preferences } from "@capacitor/preferences";
+import { App as CapApp } from "@capacitor/app";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -44,17 +51,45 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
    const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
 
+   const sharedData = {
+      isMobileApp,
+      isIOS,
+      isAndroid,
+      toastMessage,
+      locale,
+      user,
+      siteTheme: themeSession.getTheme(),
+      subsite: process?.env?.PAYLOAD_PUBLIC_SITE_ID,
+   };
+
+   if (isMobileApp) {
+      const url = new URL(request.url).origin;
+      const { data, errors } = await fetchWithCache(
+         `${url}/api/graphql?core-meta`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               cookie: request.headers.get("cookie") ?? "",
+            },
+            body: JSON.stringify({
+               query: CoreMetaQuery,
+            }),
+         }
+      );
+      const coreMeta = data.coreMeta as CoreMeta;
+      if (errors) {
+         console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+         throw new Error();
+      }
+      return json(
+         { ...sharedData, coreMeta },
+         { headers: { "Set-Cookie": await commitSession(session) } }
+      );
+   }
+
    return json(
-      {
-         isMobileApp,
-         isIOS,
-         isAndroid,
-         toastMessage,
-         locale,
-         user,
-         siteTheme: themeSession.getTheme(),
-         subsite: process?.env?.PAYLOAD_PUBLIC_SITE_ID,
-      },
+      { ...sharedData },
       { headers: { "Set-Cookie": await commitSession(session) } }
    );
 };
@@ -103,13 +138,14 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, subsite, isMobileApp } =
+   const { locale, siteTheme, toastMessage, subsite, isMobileApp, user } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
-
    useChangeLanguage(locale);
+   const navigate = useNavigate();
+   const location = useLocation();
 
    useEffect(() => {
       if (!toastMessage) {
@@ -129,10 +165,49 @@ function App() {
       }
    }, [toastMessage]);
 
+   //We only want to run this on initial mount
+
+   useEffect(() => {
+      if (isMobileApp) {
+         //When the app closes or loses focus, save the last active url so we can revisit it later
+         CapApp.addListener("appStateChange", ({ isActive }) => {
+            if (!isActive) {
+               Preferences.set({
+                  key: "activeUrl",
+                  value: location.pathname,
+               });
+               SplashScreen.hide();
+            }
+         });
+      }
+   }, [location]);
+
    useEffect(() => {
       if (isMobileApp) {
          setBackForwardNavigationGestures(true);
          StatusBar.setOverlaysWebView({ overlay: true });
+         //If first time loading the app, send user to the login page
+         Preferences.get({ key: "initialSetup" }).then(({ value }) => {
+            if (!user && !value) {
+               Preferences.set({
+                  key: "initialSetup",
+                  value: "complete",
+               });
+               navigate("/login");
+               SplashScreen.hide();
+            }
+         });
+         //On initial load, check if activeUrl exists, then delete it and redirect the user to the url
+         Preferences.get({ key: "activeUrl" }).then(({ value }) => {
+            if (value) {
+               Preferences.set({
+                  key: "activeUrl",
+                  value: "",
+               });
+               navigate(value);
+               SplashScreen.hide();
+            }
+         });
       }
    }, []);
 
@@ -201,6 +276,24 @@ export function useChangeLanguage(locale: string) {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
 }
+
+const CoreMetaQuery = `
+query CoreMeta{
+   coreMeta: CoreMeta{
+     featuredSites{
+       site{
+         id
+         type
+         name
+         slug
+         icon{
+           url
+         }
+       }
+     }
+   }
+ }
+`;
 
 // const [visible, setVisible] = useState(false);
 
