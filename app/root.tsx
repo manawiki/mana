@@ -64,20 +64,17 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 
    if (isMobileApp) {
       const url = new URL(request.url).origin;
-      const { data, errors } = await fetchWithCache(
-         `${url}/api/graphql?core-meta`,
-         {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               cookie: request.headers.get("cookie") ?? "",
-            },
-            body: JSON.stringify({
-               query: CoreMetaQuery,
-            }),
-         }
-      );
-      const coreMeta = data.coreMeta as CoreMeta;
+      const { data, errors } = await fetchWithCache(`${url}/api/graphql`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            cookie: request.headers.get("cookie") ?? "",
+         },
+         body: JSON.stringify({
+            query: CoreMetaQuery,
+         }),
+      });
+      const coreMeta = data?.coreMeta as CoreMeta;
       if (errors) {
          console.error(JSON.stringify(errors)); // eslint-disable-line no-console
          throw new Error();
