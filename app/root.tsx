@@ -63,18 +63,19 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    };
 
    if (isMobileApp) {
-      const url = new URL(request.url).origin;
-      const { data, errors } = await fetchWithCache(`${url}/api/graphql`, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: CoreMetaQuery,
-         }),
-      });
+      const { data, errors } = await fetchWithCache(
+         "https://mana.wiki/api/graphql",
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               query: CoreMetaQuery,
+            }),
+         }
+      );
       const coreMeta = data?.coreMeta as CoreMeta;
-      console.log(coreMeta);
       if (errors) {
          console.error(JSON.stringify(errors)); // eslint-disable-line no-console
          throw new Error();
@@ -275,7 +276,7 @@ export function useChangeLanguage(locale: string) {
 }
 
 const CoreMetaQuery = `
-query CoreMeta{
+query {
    coreMeta: CoreMeta{
      featuredSites{
        site{
