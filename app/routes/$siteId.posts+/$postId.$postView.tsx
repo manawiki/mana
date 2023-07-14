@@ -82,7 +82,7 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
 
 export default function PostPage() {
    const editor = useMemo(() => withReact(createEditor()), []);
-   const { post, siteId } = useLoaderData<typeof loader>();
+   const { post, siteId } = useLoaderData<typeof loader>() || {};
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
    }, []);

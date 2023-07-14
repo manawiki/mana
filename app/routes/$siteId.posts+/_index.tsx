@@ -76,7 +76,7 @@ export async function loader({
 }
 
 export default function PostsIndex() {
-   const { myPosts, publishedPosts, q } = useLoaderData<typeof loader>();
+   const { myPosts, publishedPosts, q } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const transition = useNavigation();
@@ -311,7 +311,7 @@ export default function PostsIndex() {
                      {myPosts?.docs.length === 0 ? (
                         <div className="py-3 text-sm ">No drafts...</div>
                      ) : (
-                        myPosts.docs.map((post) => (
+                        myPosts?.docs.map((post) => (
                            <Link
                               prefetch="intent"
                               to={`${post.id}/edit`}
@@ -360,20 +360,22 @@ export default function PostsIndex() {
                         <div>
                            Showing{" "}
                            <span className="font-bold">
-                              {myPosts.pagingCounter}
+                              {myPosts?.pagingCounter}
                            </span>{" "}
                            to{" "}
                            <span className="font-bold">
-                              {myPosts.docs.length + myPosts.pagingCounter - 1}
+                              {myPosts?.docs?.length +
+                                 myPosts.pagingCounter -
+                                 1}
                            </span>{" "}
                            of{" "}
                            <span className="font-bold">
-                              {myPosts.totalDocs}
+                              {myPosts?.totalDocs}
                            </span>{" "}
                            results
                         </div>
                         <div className="flex items-center gap-3 text-xs">
-                           {myPosts.hasPrevPage ? (
+                           {myPosts?.hasPrevPage ? (
                               <button
                                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
                                  onClick={() =>
@@ -471,7 +473,7 @@ export default function PostsIndex() {
                )}
             </div>
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
-               {publishedPosts?.docs.length === 0 ? (
+               {publishedPosts?.docs?.length === 0 ? (
                   <div className="flex items-center justify-between py-3 text-sm">
                      <div className="flex items-center gap-1">
                         {searchParams.get("q") ? (

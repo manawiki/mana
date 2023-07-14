@@ -47,7 +47,7 @@ export const initialValue = [
 ];
 
 export default function CollectionEntryWiki() {
-   const { entryDefault, embed } = useLoaderData<typeof loader>();
+   const { entryDefault, embed } = useLoaderData<typeof loader>() || {};
    const { siteId, entryId, collectionId } = useParams();
    const fetcher = useFetcher();
 

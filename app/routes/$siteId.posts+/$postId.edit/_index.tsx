@@ -118,7 +118,7 @@ export default function PostEditPage() {
       }
    }, [fetcher.state, fetcher.data]);
 
-   const { post, versions } = useLoaderData<typeof loader>();
+   const { post, versions } = useLoaderData<typeof loader>() || {};
 
    const { postId } = useParams();
 

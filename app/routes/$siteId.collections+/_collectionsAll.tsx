@@ -87,7 +87,7 @@ export const handle = {
 };
 
 export default function CollectionIndex() {
-   const { collections } = useLoaderData<typeof loader>();
+   const { collections } = useLoaderData<typeof loader>() || {};
    const { t } = useTranslation(handle?.i18n);
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);

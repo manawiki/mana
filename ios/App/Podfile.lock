@@ -1,4 +1,6 @@
 PODS:
+  - AparajitaCapacitorDarkMode (4.0.0):
+    - Capacitor
   - Capacitor (5.1.1):
     - CapacitorCordova
   - CapacitorApp (5.0.6):
@@ -8,18 +10,24 @@ PODS:
     - Capacitor
   - CapacitorPluginSafeArea (2.0.5):
     - Capacitor
+  - CapacitorSplashScreen (5.0.6):
+    - Capacitor
   - CapacitorStatusBar (5.0.6):
     - Capacitor
 
 DEPENDENCIES:
+  - "AparajitaCapacitorDarkMode (from `../../node_modules/@aparajita/capacitor-dark-mode`)"
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorPluginIosWebviewConfigurator (from `../../node_modules/capacitor-plugin-ios-webview-configurator`)
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
+  - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
 
 EXTERNAL SOURCES:
+  AparajitaCapacitorDarkMode:
+    :path: "../../node_modules/@aparajita/capacitor-dark-mode"
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
@@ -30,17 +38,21 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-plugin-ios-webview-configurator"
   CapacitorPluginSafeArea:
     :path: "../../node_modules/capacitor-plugin-safe-area"
+  CapacitorSplashScreen:
+    :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
 
 SPEC CHECKSUMS:
+  AparajitaCapacitorDarkMode: 376e1718e5c110c747d3a18622beb73e5dfb8246
   Capacitor: 55956e1199b63efcd7f2dedffa5c6b9129c45aae
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorCordova: b31a46ad379c93a5c04e0598a6164e8cb90c2bb2
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
   CapacitorPluginSafeArea: bfdd714827dbd89fb44fea286beec996e1b0c5c4
+  CapacitorSplashScreen: 5fa2ab5e46cf5cc530cf16a51c80c7a986579ccd
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
 
-PODFILE CHECKSUM: ff8206d7f5078870747b4cb6092890f676250af6
+PODFILE CHECKSUM: e608da3e0b22aaaefda910e0f3af01b8800ceb28
 
 COCOAPODS: 1.12.1

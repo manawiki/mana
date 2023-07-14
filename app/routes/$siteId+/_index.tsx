@@ -120,7 +120,7 @@ export async function loader({
 }
 
 export default function SiteIndexMain() {
-   const { home, isChanged } = useLoaderData<typeof loader>();
+   const { home, isChanged } = useLoaderData<typeof loader>() || {};
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
