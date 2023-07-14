@@ -64,7 +64,7 @@ export const BlockUpdatesView = ({ element }: Props) => {
                            {row.entry?.length === 0 ? null : (
                               <>
                                  {row.entry?.map((item) => (
-                                    <div key={item.id} className="py-3">
+                                    <div key={item.id} className="py-3 pr-3">
                                        <UpdatesEditorView
                                           content={item.content as Descendant[]}
                                        />

@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import searchPlugin from "./plugins/search";
+import { globals } from "./globals";
 
 dotenv.config();
 
@@ -168,6 +169,7 @@ export default buildConfig({
          },
       }),
    ],
+   globals,
    collections,
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
