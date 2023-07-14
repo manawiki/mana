@@ -20,6 +20,16 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
+"@aparajita/capacitor-dark-mode@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@aparajita/capacitor-dark-mode/-/capacitor-dark-mode-4.0.0.tgz#e98ce1cf190baa3ac2d8c2993c3c98b3995f53e5"
+  integrity sha512-0nN2JzQQWhWualsbGsmcaD7dbmOrYeGUGFA4IZmflNGJEi9ymWMbr4SbnbDebjTswf7UxvQT+y00tJgDw7SedQ==
+  dependencies:
+    "@capacitor/android" "^5.0.5"
+    "@capacitor/core" "^5.0.5"
+    "@capacitor/ios" "^5.0.5"
+    "@capacitor/status-bar" "^5.0.4"
+
 "@aws-crypto/crc32@3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@aws-crypto/crc32/-/crc32-3.0.0.tgz#07300eca214409c33e3ff769cd5697b57fdd38fa"
@@ -1684,6 +1694,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-2.5.0.tgz#143d7b3b0131af221b4a1fca778fc207f3d235a6"
   integrity sha512-W25F9GRuqNAN9D6Sd5Lj21ibGqzd8006Tf3mfai6MJj8DB3a1TMp+hueRwt+WhDJAS+T2pnljuR3FD/jd4u2Rw==
 
+"@capacitor/android@^5.0.5":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-5.2.1.tgz#3e3d7a848017b0f62b53ad13367c140954efde77"
+  integrity sha512-KtalBSaWCLSubqp78TrLiodLhlunTnzgydz/5HanioVQ8RR81pjdlYhckW0AiA0mVVLhA1/bFCCGsynksFkTfQ==
+
 "@capacitor/android@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-5.1.1.tgz#a53fdf0ac3525a6dd7f0294e7025786eebca0027"
@@ -1764,6 +1779,13 @@
   dependencies:
     tslib "^1.9.0"
 
+"@capacitor/core@^5.0.5":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-5.2.1.tgz#f8b49d8a313fc49b3cada26d4f9ccad6e4d39d65"
+  integrity sha512-v7nzTQZj9l99Sp0v8C7Zq8QX6Cg5ljq7ASneWk/Hc5nBR5LOj/k3a+yEx/RoclWtkxJfs89Y5k+KJTFFQ6cLoA==
+  dependencies:
+    tslib "^2.1.0"
+
 "@capacitor/core@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-5.1.1.tgz#5c161ef54928ae257b26692c2a9758738166637f"
@@ -1776,12 +1798,22 @@
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-2.5.0.tgz#867b155c4a827631ab0884319e33f8dad15bc781"
   integrity sha512-KVgSxKCUllbDJg+hJxZrZy81Xy1rv9T/d0sXcdP0a6uLOf+QceAqxmSnuRIw7dqehC0WLChWvOKrgzIevMarRA==
 
+"@capacitor/ios@^5.0.5":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-5.2.1.tgz#68153da05b9c9ae4b6a0bb5d7d43071170b6154b"
+  integrity sha512-a69zJt4woD642BHqvIoD4cLgJoSYgy2AEaBw11Hi/hW/t8dZ/TzPv3wtj/lk6RLj0zPq9rn7bI7qaFQzLxPVHQ==
+
 "@capacitor/ios@^5.1.1":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-5.1.1.tgz#1f6c7761620fc3b354d895a6235bebee40856b9c"
   integrity sha512-Vk76qa1TDckcPNcUgEIgNdgFo4SqTDBNYqKaYVDMOgkZxg4aKe6PzZaqw1e9T3e4NKFSrDHnCDanA5UFB9tQ3w==
 
-"@capacitor/status-bar@^5.0.6":
+"@capacitor/splash-screen@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@capacitor/splash-screen/-/splash-screen-5.0.6.tgz#d29320de49cc68add59e17fecb64aa2f1a08447f"
+  integrity sha512-9B8wSm89D+LlshFw8B+mjPU8pJNf1WOx2mkMjMvcH0/EqxNaE+ZaO8lPCX+9WvWSEZs3O3l11qiSnOFHeK0t9A==
+
+"@capacitor/status-bar@^5.0.4", "@capacitor/status-bar@^5.0.6":
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/@capacitor/status-bar/-/status-bar-5.0.6.tgz#281568a7f7aeacf80777702cb9947c29dc32685c"
   integrity sha512-7od8CxsBnot1XMK3IeOkproFL4hgoKoWAc3pwUvmDOkQsXoxwQm4SR9mLwQavv1XfxtHbFV9Ukd7FwMxOPSViw==
@@ -12604,7 +12636,7 @@ react-tooltip@^5.10.5:
     "@floating-ui/dom" "^1.0.0"
     classnames "^2.3.0"
 
-react-transition-group@^4.3.0, react-transition-group@^4.4.2:
+react-transition-group@^4.3.0, react-transition-group@^4.4.2, react-transition-group@^4.4.5:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
   integrity sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==

@@ -133,7 +133,7 @@ export const handle = {
 };
 
 export default function CollectionList() {
-   const { collection, entrylist, q } = useLoaderData<typeof loader>();
+   const { collection, entrylist, q } = useLoaderData<typeof loader>() || {};
 
    const entries = entrylist?.docs;
 

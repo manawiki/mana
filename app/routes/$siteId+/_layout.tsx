@@ -7,8 +7,10 @@ import {
    useFetcher,
    useLoaderData,
    useLocation,
+   useOutlet,
    useRouteLoaderData,
 } from "@remix-run/react";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
    Bookmark,
@@ -46,7 +48,7 @@ import {
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, Suspense, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
@@ -72,8 +74,7 @@ import SearchComboBox from "./resource+/Search";
 import { deferIf } from "defer-if";
 import clsx from "clsx";
 import { SafeArea } from "capacitor-plugin-safe-area";
-import { StatusBar } from "@capacitor/status-bar";
-import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -136,13 +137,18 @@ export const handle = {
    i18n: "site",
 };
 
+function AnimatedOutlet() {
+   const [outlet] = useState(useOutlet());
+   return outlet;
+}
+
 export default function SiteIndex() {
-   const { site } = useLoaderData<typeof loader>();
+   const { site } = useLoaderData<typeof loader>() || {};
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
-
+   const nodeRef = useRef(null);
    const isSiteHome = location.pathname == `/${site.slug}`;
 
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -172,6 +178,7 @@ export default function SiteIndex() {
          SafeArea.getSafeAreaInsets().then(({ insets }) => {
             setSetArea(insets);
          });
+         SplashScreen.hide();
       }
    }, []);
 
@@ -180,9 +187,6 @@ export default function SiteIndex() {
          ? safeArea?.bottom + 60
          : 60
       : 0;
-
-   //Prevent layout shift on native. Don't paint screen yet.
-   if (isMobileApp && !safeArea) return null;
 
    return (
       <Suspense fallback="Loading...">
@@ -730,7 +734,29 @@ export default function SiteIndex() {
                               isMobileApp ? "pt-3" : "pt-20 laptop:pt-12"
                            )}
                         >
-                           <Outlet />
+                           {isMobileApp ? (
+                              <SwitchTransition>
+                                 <CSSTransition
+                                    key={location.pathname}
+                                    timeout={500}
+                                    nodeRef={nodeRef}
+                                    classNames={{
+                                       enter: "opacity-50",
+                                       enterActive: "opacity-100",
+                                       exitActive: "opacity-0",
+                                    }}
+                                 >
+                                    <div
+                                       ref={nodeRef}
+                                       className="transition-all duration-500"
+                                    >
+                                       <AnimatedOutlet />
+                                    </div>
+                                 </CSSTransition>
+                              </SwitchTransition>
+                           ) : (
+                              <Outlet />
+                           )}
                         </div>
                      </section>
                      {/* ==== Right Sidebar ==== */}

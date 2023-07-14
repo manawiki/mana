@@ -93,7 +93,7 @@ export default function Login() {
    const { t } = useTranslation("auth");
    const adding = isAdding(transition, "login");
    const addingPasswordRest = isAdding(transition, "reset-password");
-   const { email } = useLoaderData<typeof loader>();
+   const { email } = useLoaderData<typeof loader>() || {};
    const formResponse = useActionData<FormResponse>();
    const zo = useZorm("login", LoginFormSchema, {
       //@ts-ignore
