@@ -72,6 +72,7 @@ import SearchComboBox from "./resource+/Search";
 import { deferIf } from "defer-if";
 import clsx from "clsx";
 import { SafeArea } from "capacitor-plugin-safe-area";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -170,6 +171,7 @@ export default function SiteIndex() {
          SafeArea.getSafeAreaInsets().then(({ insets }) => {
             setSetArea(insets);
          });
+         SplashScreen.hide();
       }
    }, []);
 
