@@ -10,7 +10,6 @@ import {
    useOutlet,
    useRouteLoaderData,
 } from "@remix-run/react";
-import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import {
    Bookmark,
@@ -137,18 +136,13 @@ export const handle = {
    i18n: "site",
 };
 
-function AnimatedOutlet() {
-   const [outlet] = useState(useOutlet());
-   return outlet;
-}
-
 export default function SiteIndex() {
    const { site } = useLoaderData<typeof loader>() || {};
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const location = useLocation();
-   const nodeRef = useRef(null);
+
    const isSiteHome = location.pathname == `/${site.slug}`;
 
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -734,29 +728,7 @@ export default function SiteIndex() {
                               isMobileApp ? "pt-3" : "pt-20 laptop:pt-12"
                            )}
                         >
-                           {isMobileApp ? (
-                              <SwitchTransition>
-                                 <CSSTransition
-                                    key={location.pathname}
-                                    timeout={500}
-                                    nodeRef={nodeRef}
-                                    classNames={{
-                                       enter: "opacity-50",
-                                       enterActive: "opacity-100",
-                                       exitActive: "opacity-0",
-                                    }}
-                                 >
-                                    <div
-                                       ref={nodeRef}
-                                       className="transition-all duration-500"
-                                    >
-                                       <AnimatedOutlet />
-                                    </div>
-                                 </CSSTransition>
-                              </SwitchTransition>
-                           ) : (
-                              <Outlet />
-                           )}
+                           <Outlet />
                         </div>
                      </section>
                      {/* ==== Right Sidebar ==== */}
