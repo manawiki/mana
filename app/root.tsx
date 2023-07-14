@@ -68,13 +68,13 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
          method: "POST",
          headers: {
             "Content-Type": "application/json",
-            cookie: request.headers.get("cookie") ?? "",
          },
          body: JSON.stringify({
             query: CoreMetaQuery,
          }),
       });
       const coreMeta = data?.coreMeta as CoreMeta;
+      console.log(coreMeta);
       if (errors) {
          console.error(JSON.stringify(errors)); // eslint-disable-line no-console
          throw new Error();
