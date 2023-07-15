@@ -12,7 +12,6 @@ import {
    ScrollRestoration,
    useLoaderData,
    useLocation,
-   useNavigate,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -142,7 +141,6 @@ function App() {
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    useChangeLanguage(locale);
-   const navigate = useNavigate();
    const location = useLocation();
 
    useEffect(() => {
@@ -172,7 +170,7 @@ function App() {
             if (!isActive) {
                Preferences.set({
                   key: "activeUrl",
-                  value: location.pathname,
+                  value: location.pathname + location.search,
                });
                SplashScreen.hide();
             }
@@ -191,7 +189,7 @@ function App() {
                   key: "initialSetup",
                   value: "complete",
                });
-               navigate("/login");
+               window.location.href = "https://mana.wiki/login";
                SplashScreen.hide();
             }
          });
@@ -202,7 +200,7 @@ function App() {
                   key: "activeUrl",
                   value: "",
                });
-               navigate(value);
+               window.location.href = `https://mana.wiki${value}`;
                SplashScreen.hide();
             }
          });
