@@ -31,6 +31,7 @@ import type {
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export { meta };
 
@@ -52,7 +53,7 @@ export async function loader({
          user,
       }),
       fetchWithCache(
-         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+         `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
          {
             method: "POST",
             headers: {

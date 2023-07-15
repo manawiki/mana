@@ -17,6 +17,7 @@ import { H2 } from "~/_custom/components/custom";
 
 import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export { meta };
 
@@ -41,7 +42,7 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entryId}`;
+   const url = `https://${settings.siteId}-db.${settings.domain}/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entryId}`;
    const relicRaw = await fetchWithCache(url);
    const relicData = relicRaw.docs as Relic[];
 

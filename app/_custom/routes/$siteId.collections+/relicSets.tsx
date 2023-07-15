@@ -6,6 +6,7 @@ import { Image } from "~/components";
 import { Search, SortDesc } from "lucide-react";
 import { H2 } from "~/_custom/components/custom";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 // export async function loader({
 //    context: { payload },
@@ -31,7 +32,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    const { data, errors } = await fetchWithCache(
-      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
       {
          method: "POST",
          headers: {

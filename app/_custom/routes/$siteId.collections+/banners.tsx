@@ -1,6 +1,7 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { settings } from "mana-config";
 import { ClientOnly } from "remix-utils";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
@@ -47,7 +48,7 @@ export async function loader({
     }
    `;
    const { data, errors } = await fetchWithCache(
-      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql?banners`,
+      `https://${settings.siteId}-db.${settings.domain}/api/graphql?banners`,
       {
          method: "POST",
          headers: {

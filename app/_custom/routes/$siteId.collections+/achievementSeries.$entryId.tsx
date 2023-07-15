@@ -19,6 +19,7 @@ import type {
    AchievementSery,
 } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export { meta };
 
@@ -43,7 +44,7 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entryId}`;
+   const url = `https://${settings.siteId}-db.${settings.domain}/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entryId}`;
    const achievementRaw = await fetchWithCache(url);
    const achievementData = achievementRaw.docs as Achievement[];
 

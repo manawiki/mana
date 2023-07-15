@@ -8,31 +8,30 @@
     1. Implement select for switching banners in a better way
 */
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Disclosure, Combobox } from "@headlessui/react";
-
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useState } from "react";
 import { Image } from "~/components";
 import { H2 } from "~/_custom/components/custom";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export async function loader({
    context: { payload },
    params,
    request,
 }: LoaderArgs) {
-   let url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/banners?limit=500&sort=id`;
+   let url = `https://${settings.siteId}-db.${settings.domain}/api/banners?limit=500&sort=id`;
    const bannerRaw = await fetchWithCache(url);
    const banners = bannerRaw.docs;
 
-   url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/characters?limit=500`;
+   url = `https://${settings.siteId}-db.${settings.domain}/api/characters?limit=500`;
    const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
 
-   url = `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/lightCones?limit=500`;
+   url = `https://${settings.siteId}-db.${settings.domain}/api/lightCones?limit=500`;
    const lightConeRaw = await fetchWithCache(url);
    const lightCones = lightConeRaw.docs;
 

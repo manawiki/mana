@@ -27,6 +27,7 @@ import { toPng } from "html-to-image";
 
 import type { Material } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -76,7 +77,7 @@ export async function loader({ params, request }: LoaderArgs) {
    });
 
    const { data, errors } = await fetchWithCache(
-      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/graphql`,
+      `https://${settings.siteId}-db.mana.wiki/api/graphql`,
       {
          method: "POST",
          headers: {
