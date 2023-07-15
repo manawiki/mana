@@ -6,9 +6,8 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
-const filetype = "png"; // either mp3 or png or whatever filetype
+const filetype = "mp3"; // either mp3 or png or whatever filetype
 const overwriteexisting = false;
-const user = "644068fa51c100f909f89e1e";
 var count = 0;
 
 //Site ID from database - unique identifier to separate images
@@ -61,53 +60,54 @@ const seedUploads = async (result: any) => {
       var imgid = existingImage.docs?.[0]?.id;
 
       if (overwriteexisting) {
-            const updateItem = await payload.update({
-               collection: "images",
-               id: imgid,
-               data: {
-                  id: imgid,
-               },
-               filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
-            });
-            sleep(1000);
-            console.log(`${JSON.stringify(updateItem)} Updated!`);
+            // const updateItem = await payload.update({
+            //    collection: "images",
+            //    id: imgid,
+            //    data: {
+            //       id: imgid,
+            //    },
+            //    filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
+            // });
+            // sleep(1000);
+            // console.log(`${JSON.stringify(updateItem)} Updated!`);
          }
          else {
-            console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
+            // console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
          }
 
-      // if (await URLExists(fileurl)) {
-      //    console.log(`Image ${id} already exists! Skipping.`);
+      if (await URLExists(fileurl)) {
+         // console.log(`Image ${id} already exists! Skipping.`);
 
-      // }
-      // else {
-      //    console.log(`!!!! => Image ${id} missing; Re-uploading! ${imgid}`);
-      //    const updateItem = await payload.create({
-      //       collection: "images",
-      //       id: imgid,
-      //       // data: {
-      //       //    id: imgid,
-      //       // },
-      //       filePath: path.resolve(__dirname, `./images/${id}.png`),
-      //    });
-      //    console.log(`${JSON.stringify(updateItem)} Updated!`);
-      // }
+      }
+      else {
+         console.log(`!!!! => Image ${id} missing; Re-uploading! ${imgid}`);
+         const updateItem = await payload.update({
+            collection: "images",
+            id: imgid,
+            data: {
+               id: imgid,
+            },
+            filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
+         });
+         console.log(`${id}`);
+         //console.log(`${JSON.stringify(updateItem)} Updated!`);
+         sleep(1000);
+      }
    }
    else {
       const createItem = await payload.create({
          collection: "images",
          data: {
             id: id,
-            createdBy: user,
          },
          filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
       });
       //Limit speed
       sleep(1000);
-      console.log(`${JSON.stringify(createItem)} Import completed!`);
+      // console.log(`${JSON.stringify(createItem)} Import completed!`);
    }
    count++;
-   console.log(`${count} / ${data.length} Completed`);
+   // console.log(`${count} / ${data.length} Completed`);
 };
 
 //Sleep function to limit speed, can remove if not needed
