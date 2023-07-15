@@ -2,6 +2,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import type { Collection } from "payload/generated-types";
 import { z } from "zod";
 import { zx } from "zodix";
+import { settings } from "mana-config";
 
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
@@ -82,11 +83,11 @@ export async function loader({
       isCustom &&
       (await Promise.all(
          collections.map(async (collection: Collection) => {
-            const url = `https://${siteId}-db.mana.wiki/api/${collection.slug}?depth=0&limit=1000`;
+            const url = `https://${siteId}-db.${settings.domain}/api/${collection.slug}?depth=0&limit=1000`;
             const { docs } = await (await fetch(url)).json();
             return docs.map(
                ({ id }: { id: string }) =>
-                  `https://mana.wiki/${siteId}/collections/${collection.slug}/${id}`
+                  `${settings.domainFull}/${siteId}/collections/${collection.slug}/${id}`
             );
          })
       ));
@@ -97,18 +98,19 @@ export async function loader({
 
    try {
       const sitemap = toXmlSitemap([
-         `https://mana.wiki/${siteId}`,
-         `https://mana.wiki/${siteId}/collections`,
-         `https://mana.wiki/${siteId}/posts`,
+         `${settings.domainFull}/${siteId}`,
+         `${settings.domainFull}${siteId}/collections`,
+         `${settings.domainFull}/${siteId}/posts`,
          ...posts.map(
-            ({ url, id }) => `https://mana.wiki/${siteId}/posts/${id}/${url}`
+            ({ url, id }) =>
+               `${settings.domainFull}/${siteId}/posts/${id}/${url}`
          ),
          ...collections.map(
-            ({ slug }) => `https://mana.wiki/${siteId}/${slug}`
+            ({ slug }) => `${settings.domainFull}/${siteId}/${slug}`
          ),
          ...entries.map(
             ({ id, collectionEntity }) =>
-               `https://mana.wiki/${siteId}/collections/${collectionEntity?.slug}/${id}`
+               `${settings.domainFull}/${siteId}/collections/${collectionEntity?.slug}/${id}`
          ),
          ...customEntries,
       ]);

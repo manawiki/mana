@@ -34,16 +34,15 @@ import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import type { Collection } from "payload/generated-types";
 import { fetchWithCache } from "~/utils/cache.server";
 import clsx from "clsx";
+import { settings } from "mana-config";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
-   const url = new URL(request.url).origin;
-
    try {
-      const collectionDataFetchUrl = `${url}/api/collections?where[hiddenCollection][equals]=false&where[site.slug][equals]=${siteId}&depth=1`;
+      const collectionDataFetchUrl = `${settings.domainFull}/api/collections?where[hiddenCollection][equals]=false&where[site.slug][equals]=${siteId}&depth=1`;
 
       const collectionData = (await fetchWithCache(collectionDataFetchUrl, {
          headers: {

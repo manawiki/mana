@@ -42,6 +42,7 @@ import { fetchWithCache } from "./utils/cache.server";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Preferences } from "@capacitor/preferences";
 import { App as CapApp } from "@capacitor/app";
+import { settings } from "mana-config";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -58,12 +59,11 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
       locale,
       user,
       siteTheme: themeSession.getTheme(),
-      subsite: process?.env?.PAYLOAD_PUBLIC_SITE_ID,
    };
 
    if (isMobileApp) {
       const { data, errors } = await fetchWithCache(
-         "https://mana.wiki/api/graphql",
+         `${settings.domainFull}/api/graphql`,
          {
             method: "POST",
             headers: {
@@ -92,7 +92,7 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => [
-   { title: "Mana - A new kind of wiki" },
+   { title: settings.title },
    { charSet: "utf-8" },
 ];
 
@@ -115,7 +115,7 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: tailwindStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
-   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "preconnect", href: `https://static.${settings.domain}` },
    { rel: "preconnect", href: "https://p.typekit.net" },
    //fonts needs a cors preconnect instead
    {
@@ -124,7 +124,7 @@ export const links: LinksFunction = () => [
       crossOrigin: "anonymous",
    },
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
    { rel: "dns-prefetch", href: "https://use.typekit.net" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
 ];
@@ -135,7 +135,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, subsite, isMobileApp, user } =
+   const { locale, siteTheme, toastMessage, isMobileApp, user } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
@@ -189,7 +189,7 @@ function App() {
                   key: "initialSetup",
                   value: "complete",
                });
-               window.location.href = "https://mana.wiki/login";
+               window.location.href = `${settings.domainFull}/login`;
                SplashScreen.hide();
             }
          });
@@ -200,7 +200,7 @@ function App() {
                   key: "activeUrl",
                   value: "",
                });
-               window.location.href = `https://mana.wiki${value}`;
+               window.location.href = `${settings.domainFull}${value}`;
                SplashScreen.hide();
             }
          });
@@ -230,16 +230,16 @@ function App() {
                //links cannot read env variables, so we need to pass it down here
                rel="preconnect"
                href={
-                  subsite
-                     ? `https://${subsite}-static.mana.wiki`
-                     : "https://static.mana.wiki"
+                  settings.siteId
+                     ? `https://${settings.siteId}-static.${settings.domain}`
+                     : `https://static.${settings.domain}`
                }
                crossOrigin="anonymous"
             />
-            {subsite && (
+            {settings.siteId && (
                <link
                   rel="dns-prefetch"
-                  href={`https://${subsite}-static.mana.wiki`}
+                  href={`https://${settings.siteId}-static.${settings.domain}`}
                />
             )}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />

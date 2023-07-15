@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from "@remix-run/node";
-
+import { settings } from "mana-config";
 import { isTheme } from "./theme-provider";
 import type { Theme } from "./theme-provider";
 
@@ -11,7 +11,7 @@ const themeStorage = createCookieSessionStorage({
       name: "theme",
       secure: isDev ? false : true,
       path: "/",
-      domain: isDev ? "localhost" : ".mana.wiki",
+      domain: isDev ? "localhost" : `.${settings.domain}`,
       secrets: [sessionSecret],
       httpOnly: isDev ? false : true,
       sameSite: isDev ? "lax" : "none",

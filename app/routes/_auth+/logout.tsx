@@ -1,10 +1,11 @@
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
+import { settings } from "mana-config";
 
 export const action: ActionFunction = async ({ context: { res } }) => {
    const isDev = process.env.NODE_ENV == "development";
    const cookieOptions = {
-      domain: isDev ? "localhost" : ".mana.wiki",
+      domain: isDev ? "localhost" : `.${settings.domain}`,
       secure: isDev ? false : true,
       path: "/",
       httpOnly: isDev ? false : true,

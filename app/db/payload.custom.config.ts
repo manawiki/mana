@@ -13,6 +13,7 @@ import {
    CustomDefaultPriorities,
 } from "../_custom/collections";
 import searchPlugin from "./plugins/search";
+import { settings } from "../../mana.config";
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ export default buildConfig({
    serverURL:
       process.env.NODE_ENV == "development"
          ? "http://localhost:4000"
-         : `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki`,
+         : `https://${settings.siteId}-db.${settings.domain}`,
    admin: {
       components: {
          beforeNavLinks: [BackMana],
@@ -59,9 +60,9 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/${process.env.PAYLOAD_PUBLIC_SITE_ID}/${filename}`;
+                  return `https://static.${settings.domain}/${settings.siteId}/${filename}`;
                },
-               prefix: process.env.PAYLOAD_PUBLIC_SITE_ID,
+               prefix: settings.siteId,
             },
          },
       }),

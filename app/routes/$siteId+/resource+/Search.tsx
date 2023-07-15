@@ -24,6 +24,7 @@ import { useDebouncedValue } from "~/hooks";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
 import { clsx } from "clsx";
+import { settings } from "mana-config";
 
 export async function loader({
    context: { payload, user },
@@ -38,11 +39,9 @@ export async function loader({
       type: z.string(),
    });
 
-   const url = new URL(request.url).origin;
-
    if (type == "core") {
       try {
-         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
+         const searchUrl = `${settings.domainFull}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
          const { docs: searchResults } = (await (
             await fetch(searchUrl, {
                headers: {
@@ -60,8 +59,8 @@ export async function loader({
    }
    if (type == "custom") {
       try {
-         const searchUrl = `${url}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
-         const customSearchUrl = `https://${siteId}-db.mana.wiki/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
+         const searchUrl = `${settings.domainFull}/api/search?where[site.slug][equals]=${siteId}&where[name][contains]=${q}&depth=1&sort=-priority`;
+         const customSearchUrl = `https://${siteId}-db.${settings.domain}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([

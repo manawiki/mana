@@ -16,7 +16,8 @@
       "paths": {
          "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-types.ts"],
-         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]
+         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"],
+         "mana-config": ["./mana.config.ts"]
       },
       "skipLibCheck": true,
       "allowImportingTsExtensions": true,

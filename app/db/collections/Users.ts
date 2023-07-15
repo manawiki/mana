@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
+import { settings } from "../../../mana.config";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
@@ -12,7 +13,7 @@ export const Users: CollectionConfig = {
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
-                  : `https://mana.wiki/verify?token=${token}`;
+                  : `${settings.domainFull}/verify?token=${token}`;
 
             return `
             <span>Hey ${user.email}, thanks for registering at Mana.</span>
@@ -41,7 +42,7 @@ export const Users: CollectionConfig = {
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
-                  : `https://mana.wiki/reset-password?token=${token}`;
+                  : `${settings.domainFull}/reset-password?token=${token}`;
 
             return `
             <br><br>
@@ -64,7 +65,8 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain: serverEnv == "development" ? "localhost" : ".mana.wiki",
+         domain:
+            serverEnv == "development" ? "localhost" : `.${settings.domain}`,
          secure: serverEnv == "development" ? false : true,
          sameSite: serverEnv == "development" ? "lax" : "none",
       },
