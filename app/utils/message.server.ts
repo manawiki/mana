@@ -1,5 +1,7 @@
 import type { Session } from "@remix-run/node";
 import { createCookieSessionStorage } from "@remix-run/node";
+import { settings } from "mana-config";
+
 export type ToastMessage = { message: string; type: "success" | "error" };
 
 const sessionSecret = process.env.PAYLOADCMS_SECRET ?? "DEFAULT_SECRET";
@@ -10,7 +12,7 @@ export const { commitSession, getSession } = createCookieSessionStorage({
       name: "__message",
       secure: isDev ? false : true,
       path: "/",
-      domain: isDev ? "localhost" : ".mana.wiki",
+      domain: isDev ? "localhost" : `.${settings.domain}`,
       secrets: [sessionSecret],
       httpOnly: isDev ? false : true,
       sameSite: isDev ? "lax" : "none",

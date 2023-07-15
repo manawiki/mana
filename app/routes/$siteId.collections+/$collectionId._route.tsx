@@ -44,6 +44,7 @@ import { nanoid } from "nanoid";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import { H2 } from "~/modules/collections/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -65,10 +66,8 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const url = new URL(request.url).origin;
-
    try {
-      const collectionDataFetchUrl = `${url}/api/collections?where[slug][equals]=${collectionId}&where[site.slug][equals]=${siteId}&depth=0`;
+      const collectionDataFetchUrl = `${settings.domainFull}/api/collections?where[slug][equals]=${collectionId}&where[site.slug][equals]=${siteId}&depth=0`;
 
       const collectionData = (await fetchWithCache(collectionDataFetchUrl, {
          headers: {
@@ -82,11 +81,9 @@ export async function loader({
       // Get custom collection list data
       if (collection.customDatabase) {
          const entrylist = await fetchWithCache(
-            `https://${
-               process.env.PAYLOAD_PUBLIC_SITE_ID
-            }-db.mana.wiki/api/${collectionId}?limit=20&depth=1&page=${
-               page ?? 1
-            }`
+            `https://${settings.siteId}-db.${
+               settings.domain
+            }/api/${collectionId}?limit=20&depth=1&page=${page ?? 1}`
          );
 
          return json(

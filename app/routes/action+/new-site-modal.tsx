@@ -104,13 +104,6 @@ export function NewSiteModal() {
                      <div className="text-1 text-center">
                         Mana is currently in its early stages of development and
                         has yet to reach a stable release!
-                        {/* Learn more{" "}
-                        <a
-                           className="text-blue-500"
-                           href="https://mana.wiki/hq"
-                        >
-                           here
-                        </a> */}
                      </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">

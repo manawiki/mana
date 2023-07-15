@@ -9,6 +9,7 @@ import nodemailer from "nodemailer";
 import coreBuildConfig from "./app/db/payload.config";
 import chokidar from "chokidar";
 import { broadcastDevReady } from "@remix-run/node";
+import { settings } from "./mana.config";
 
 require("dotenv").config();
 
@@ -27,12 +28,7 @@ const transport = nodemailer.createTransport({
 });
 
 const corsOptions = {
-   origin: [
-      "https://mana.wiki",
-      "https://starrail-static.mana.wiki",
-      "https://static.mana.wiki",
-      "http://localhost:3000",
-   ],
+   origin: settings.corsOrigins,
 };
 
 //Start core site (remix + payload instance)
@@ -62,8 +58,8 @@ async function startCore() {
          ? {
               email: {
                  transport,
-                 fromName: "No Reply - Mana Wiki",
-                 fromAddress: "dev@mana.wiki",
+                 fromName: settings.fromName,
+                 fromAddress: settings.fromEmail,
               },
            }
          : {

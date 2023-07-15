@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+import { settings } from "mana-config";
 
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
@@ -20,7 +21,7 @@ export async function loader({ context: { payload } }: LoaderArgs) {
          limit: 500,
       });
       const sites = docs.map(
-         (item) => `https://mana.wiki/${item.slug}/sitemap.xml`
+         (item) => `${settings.domainFull}/${item.slug}/sitemap.xml`
       );
       const sitemap = toXmlSitemap([...sites]);
       return new Response(sitemap, {

@@ -32,6 +32,7 @@ import { format } from "date-fns";
 import { PostHeader } from "../../components/PostHeader";
 import { postSchema } from "../../utils/postSchema";
 import { Image } from "~/components/Image";
+import { settings } from "mana-config";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -94,7 +95,7 @@ export const PostHeaderEdit = ({
       }
    }, [debouncedSubtitle]);
 
-   const postFullUrl = `https://mana.wiki/${siteId}/posts/${post.id}/${post.slug}`;
+   const postFullUrl = `${settings.domainFull}/${siteId}/posts/${post.id}/${post.slug}`;
 
    //Image Upload
    const [dragActive, setDragActive] = useState(false);

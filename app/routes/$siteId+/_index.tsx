@@ -33,6 +33,7 @@ import { isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 const initialValue: CustomElement[] = [
    {
@@ -54,11 +55,10 @@ export async function loader({
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
-   const url = new URL(request.url).origin;
 
    //Don't cache if logged in
    if (user) {
-      const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
+      const homeContentUrl = `${settings.domainFull}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
 
       const { docs: data } = (await (
          await fetch(homeContentUrl, {
@@ -79,7 +79,7 @@ export async function loader({
 
    //Use cache if anon
    if (!user) {
-      const homeContentUrl = `${url}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
+      const homeContentUrl = `${settings.domainFull}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
       const { docs: data } = (await fetchWithCache(homeContentUrl, {
          headers: {
             cookie: request.headers.get("cookie") ?? "",
@@ -96,7 +96,7 @@ export async function loader({
 
       if (hasAccess) {
          //Note that we findbyId so permissions pass the ID
-         const editHomeContentUrl = `${url}/api/homeContents/${homeData.id}?depth=0&draft=true`;
+         const editHomeContentUrl = `${settings.domainFull}/api/homeContents/${homeData.id}?depth=0&draft=true`;
          const data = (await (
             await fetch(editHomeContentUrl, {
                headers: {

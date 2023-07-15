@@ -43,6 +43,7 @@ import Toolbar from "../components/Toolbar";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { onKeyDown } from "~/modules/editor/editorCore";
+import { settings } from "mana-config";
 
 type Props = {
    element: GroupElement;
@@ -76,7 +77,7 @@ export default function BlockGroup({ element }: Props) {
 
    //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
-      `https://mana.wiki/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
+      `${settings.domainFull}/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
       fetcher
    );
 
@@ -100,10 +101,10 @@ export default function BlockGroup({ element }: Props) {
       if (defaultOptions.some((e) => e.slug === selectedCollection)) {
          switch (selectedCollection) {
             case "post": {
-               return `https://mana.wiki/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
+               return `${settings.domainFull}/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
             }
             case "site": {
-               return `https://mana.wiki/api/sites?where[name][contains]=${groupSelectQuery}&depth=1`;
+               return `${settings.domainFull}/api/sites?where[name][contains]=${groupSelectQuery}&depth=1`;
             }
             default:
                return null;
@@ -111,10 +112,10 @@ export default function BlockGroup({ element }: Props) {
       }
       //For entries
       if (siteType == "custom") {
-         return `https://${siteId}-db.mana.wiki/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`;
+         return `https://${siteId}-db.${settings.domain}/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`;
       }
       if (siteType == "core") {
-         return `https://mana.wiki/api/entries?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${selectedCollection}&where[name][contains]=${groupSelectQuery}&depth=1`;
+         return `${settings.domainFull}/api/entries?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${selectedCollection}&where[name][contains]=${groupSelectQuery}&depth=1`;
       }
    };
 
