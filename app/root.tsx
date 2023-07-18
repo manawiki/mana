@@ -44,6 +44,10 @@ import { Preferences } from "@capacitor/preferences";
 import { App as CapApp } from "@capacitor/app";
 import { settings } from "mana-config";
 
+import rdtStylesheet from "remix-development-tools/stylesheet.css";
+import { lazily } from "react-lazily";
+const { RemixDevTools } = lazily(() => import("remix-development-tools"));
+
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
@@ -127,6 +131,11 @@ export const links: LinksFunction = () => [
    { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
    { rel: "dns-prefetch", href: "https://use.typekit.net" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
+
+   //Remix Devtools
+   ...(rdtStylesheet && process.env.NODE_ENV === "development"
+      ? [{ rel: "stylesheet", href: rdtStylesheet }]
+      : []),
 ];
 
 export const handle = {
@@ -251,6 +260,7 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
+            {process.env.NODE_ENV === "development" && <RemixDevTools />}
          </body>
       </html>
    );
