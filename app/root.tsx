@@ -31,7 +31,7 @@ import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
 import { isNativeSSR } from "./utils";
@@ -45,8 +45,11 @@ import { App as CapApp } from "@capacitor/app";
 import { settings } from "mana-config";
 
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
-import { lazily } from "react-lazily";
-const { RemixDevTools } = lazily(() => import("remix-development-tools"));
+const RemixDevTools = lazy(() =>
+   import("remix-development-tools").then((module) => ({
+      default: module.RemixDevTools,
+   }))
+);
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
