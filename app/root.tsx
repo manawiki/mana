@@ -45,7 +45,11 @@ import { App as CapApp } from "@capacitor/app";
 import { settings } from "mana-config";
 
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
-const RemixDevTools = lazy(() =>import("remix-development-tools");
+const RemixDevTools = lazy(() =>
+   import("remix-development-tools").then((module) => ({
+      default: module.RemixDevTools,
+   }))
+);
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
