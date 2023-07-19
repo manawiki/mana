@@ -159,7 +159,7 @@ const seedUploads = async (result: any) => {
 				return findTrace?.docs?.[0]?.id;
 			}
 			else {
-				return null;
+				return t.trace_id.toString();
 			}
 	}));
 

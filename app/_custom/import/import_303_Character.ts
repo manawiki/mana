@@ -90,29 +90,31 @@ const seedUploads = async (result: any) => {
 		}));
 	}
 
-
+	
 	if (result.reward_list.length > 0) {
 		rewardListImport = result.reward_list.map((l:any) => {
-			const matId = matData.find((a:any) => a.data_key == l.materials?.data_key)?.id;
+			const matId = l.materials?.data_key.toString(); // matData.find((a:any) => a.data_key == l.materials?.data_key)?.id;
 			return {
 				...l,
 				materials: matId,
 			}
 		});
 	}
+	
 	if (result.reward_max_list.length > 0) {
 		rewardMaxListImport = result.reward_max_list.map((l:any) => {
-			const matId = matData.find((a:any) => a.data_key == l.materials?.data_key)?.id;
+			const matId = matData.find((a:any) => a?.data_key == l.materials?.data_key)?.id;
 			return {
 				...l,
 				materials: matId,
 			}
 		});
 	}
+	
 	if (result.promotion_cost.length > 0) {
 		promotionCostImport = result.promotion_cost.map((l:any) => {
 			const matQty = l.material_qty?.map((mat:any) => {
-				const matId = matData.find((a:any) => a.data_key == mat.materials?.data_key)?.id;
+				const matId = mat.materials?.data_key.toString(); // matData.find((a:any) => a.data_key == mat.materials?.data_key)?.id;
 	
 				return {
 					...mat,
@@ -126,6 +128,7 @@ const seedUploads = async (result: any) => {
 			}
 		});
 	}
+	
 
 	var matQtyImport = {
 		reward_list: rewardListImport,
@@ -214,7 +217,7 @@ const seedUploads = async (result: any) => {
 				return findTrace?.docs?.[0]?.id;
 			}
 			else {
-				return null;
+				return t.trace_id.toString();
 			}
 	}));
 
@@ -237,7 +240,7 @@ const seedUploads = async (result: any) => {
 				return findTrace?.docs?.[0]?.id;
 			}
 			else {
-				return null;
+				return t.eidolon_id.toString();
 			}
 	}));
 
