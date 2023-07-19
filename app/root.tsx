@@ -263,7 +263,9 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
-            {process.env.NODE_ENV === "development" && <RemixDevTools />}
+            {process.env.NODE_ENV === "development" && !isMobileApp && (
+               <RemixDevTools />
+            )}
          </body>
       </html>
    );
