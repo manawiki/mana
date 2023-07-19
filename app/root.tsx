@@ -27,6 +27,7 @@ import { useTranslation } from "react-i18next";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
+import customStylesheetUrl from "~/_custom/styles.css";
 
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
@@ -108,7 +109,7 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: tooltipStyles, as: "style" },
    { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
-
+   { rel: "preload", href: customStylesheetUrl, as: "style" },
    //logo font
    {
       rel: "preload",
@@ -120,6 +121,7 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: tooltipStyles },
    { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
+   { rel: "stylesheet", href: customStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: `https://static.${settings.domain}` },
