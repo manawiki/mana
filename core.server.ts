@@ -1,19 +1,30 @@
-import path from "path";
+import * as path from "node:path";
+import chokidar from "chokidar";
 import express from "express";
 import compression from "compression";
 import morgan from "morgan";
+import { createRequestHandler, type RequestHandler } from "@remix-run/express";
+import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import payload from "payload";
-import { createRequestHandler } from "@remix-run/express";
 import invariant from "tiny-invariant";
 import nodemailer from "nodemailer";
 import coreBuildConfig from "./app/db/payload.config";
-import chokidar from "chokidar";
-import { broadcastDevReady } from "@remix-run/node";
 import { settings } from "./mana.config";
 
+// patch in Remix runtime globals
+installGlobals();
 require("dotenv").config();
 
-const BUILD_DIR = path.join(process.cwd(), "build");
+/**
+ * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
+ */
+const BUILD_PATH = path.resolve("./build/index.js");
+
+/**
+ * Initial build
+ * @type {ServerBuild}
+ */
+let build = require(BUILD_PATH);
 
 const cors = require("cors");
 
@@ -106,26 +117,14 @@ async function startCore() {
    app.use(morgan("tiny"));
    app.use(payload.authenticate);
 
+   // Check if the server is running in development mode and reflect realtime changes in the codebase.
+   // We'll also inject payload in the remix handler so we can use it in our routes.
    app.all(
       "*",
       process.env.NODE_ENV === "development"
-         ? (req, res, next) => {
-              return createRequestHandler({
-                 build: require(BUILD_DIR),
-                 mode: process.env.NODE_ENV,
-                 getLoadContext(req, res) {
-                    return {
-                       // @ts-expect-error
-                       payload: req.payload,
-                       // @ts-expect-error
-                       user: req?.user,
-                       res,
-                    };
-                 },
-              })(req, res, next);
-           }
+         ? createDevRequestHandler()
          : createRequestHandler({
-              build: require(BUILD_DIR),
+              build,
               mode: process.env.NODE_ENV,
               getLoadContext(req, res) {
                  return {
@@ -144,13 +143,6 @@ async function startCore() {
       console.log(`Express server listening on port ${port}`);
 
       if (process.env.NODE_ENV === "development") {
-         const build = require(BUILD_DIR);
-
-         if (build.assets === undefined) {
-            console.log(build.assets);
-            debugger;
-         }
-
          broadcastDevReady(build);
       }
    });
@@ -158,27 +150,54 @@ async function startCore() {
 
 startCore();
 
-// during dev, we'll keep the build module up to date with the changes
-async function updateServer() {
-   for (const key in require.cache) {
-      if (key.startsWith(BUILD_DIR)) {
-         delete require.cache[key];
+// Create a request handler that watches for changes to the server build during development.
+function createDevRequestHandler(): RequestHandler {
+   async function handleServerUpdate() {
+      // 1. re-import the server build
+      build = await reimportServer();
+      // 2. tell dev server that this app server is now up-to-date and ready
+      broadcastDevReady(build);
+   }
+
+   chokidar
+      .watch(BUILD_PATH, { ignoreInitial: true })
+      .on("add", handleServerUpdate)
+      .on("change", handleServerUpdate);
+
+   // wrap request handler to make sure its recreated with the latest build for every request
+   return async (req, res, next) => {
+      try {
+         return createRequestHandler({
+            build,
+            mode: "development",
+            getLoadContext(req, res) {
+               return {
+                  // @ts-expect-error
+                  payload: req.payload,
+                  // @ts-expect-error
+                  user: req?.user,
+                  res,
+               };
+            },
+         })(req, res, next);
+      } catch (error) {
+         next(error);
       }
-   }
-   const build = require(BUILD_DIR);
-
-   if (build.assets === undefined) {
-      console.log(build.assets);
-      debugger;
-   }
-
-   broadcastDevReady(build);
+   };
 }
 
-if (process.env.NODE_ENV === "development") {
-   const watcher = chokidar.watch(BUILD_DIR, {
-      ignored: ["**/**.map"],
+// CJS require cache busting
+/**
+ * @type {() => Promise<ServerBuild>}
+ */
+async function reimportServer() {
+   // 1. manually remove the server build from the require cache
+   Object.keys(require.cache).forEach((key) => {
+      if (key.startsWith(BUILD_PATH)) {
+         delete require.cache[key];
+      }
    });
-   watcher.on("add", updateServer);
-   watcher.on("change", updateServer);
+
+   // 2. re-import the server build
+   return require(BUILD_PATH);
 }
