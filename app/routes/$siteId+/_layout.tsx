@@ -61,7 +61,6 @@ import {
    PencilSquareIcon as PencilSquareIconBold,
    CircleStackIcon as CircleStackIconBold,
 } from "@heroicons/react/24/solid";
-import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { Site, Update, User, CoreMeta } from "payload/generated-types";
 import { DotLoader, Modal } from "~/components";
@@ -121,13 +120,6 @@ export const meta: V2_MetaFunction = ({ data }) => {
    ];
 };
 
-export const links: LinksFunction = () => {
-   return [
-      { rel: "preload", href: customStylesheetUrl, as: "style" },
-      { rel: "stylesheet", href: customStylesheetUrl },
-   ];
-};
-
 export const handle = {
    i18n: "site",
 };
@@ -182,6 +174,8 @@ export default function SiteIndex() {
          ? safeArea?.bottom + 60
          : 60
       : 0;
+
+   const topSafeArea = isMobileApp ? (safeArea?.top ? safeArea?.top : 0) : 0;
 
    //Prevent layout shift on native. Don't paint screen yet.
    if (isMobileApp && !safeArea)
@@ -494,7 +488,7 @@ export default function SiteIndex() {
                         >
                            <div
                               style={{
-                                 paddingTop: safeArea?.top ?? "",
+                                 paddingTop: topSafeArea,
                               }}
                               className={clsx(
                                  isMobileApp
