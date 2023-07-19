@@ -8,6 +8,7 @@ import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import searchPlugin from "./plugins/search";
 import { globals } from "./globals";
+import { settings } from "../../mana.config";
 
 dotenv.config();
 
@@ -58,7 +59,7 @@ export default buildConfig({
          },
       }),
    },
-   cors: ["mana.wiki", "starrail-static.mana.wiki", "static.mana.wiki"],
+   cors: settings.cors,
    plugins: [
       cloudStorage({
          collections: {
@@ -66,7 +67,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/${filename}`;
+                  return `https://static.${settings.domain}/${filename}`;
                },
             },
          },

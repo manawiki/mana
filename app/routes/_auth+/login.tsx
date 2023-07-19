@@ -8,7 +8,6 @@ import { redirect, json } from "@remix-run/node";
 import {
    Form,
    Link,
-   NavLink,
    useActionData,
    useLoaderData,
    useNavigation,
@@ -37,12 +36,12 @@ import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { FormLabel } from "~/components/Forms";
 import { DotLoader } from "~/components/DotLoader";
 import { zx } from "zodix";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import clsx from "clsx";
 import { Image } from "~/components/Image";
 import type { CoreMeta } from "~/db/payload-types";
-import { SplashScreen } from "@capacitor/splash-screen";
+import { settings } from "mana-config";
 
 const LoginFormSchema = z.object({
    email: z
@@ -75,7 +74,7 @@ export async function loader({ context: { user }, request }: LoaderArgs) {
 }
 
 export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: "https://mana.wiki/login" }];
+   return [{ rel: "canonical", href: `${settings.domainFull}/login` }];
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {

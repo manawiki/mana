@@ -29,6 +29,7 @@ import { FormLabel } from "~/components/Forms";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { DotLoader } from "~/components/DotLoader";
 import clsx from "clsx";
+import { settings } from "mana-config";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
@@ -60,7 +61,7 @@ const JoinFormSchema = z.object({
 });
 
 export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: "https://mana.wiki/join" }];
+   return [{ rel: "canonical", href: `${settings.domainFull}/join` }];
 };
 
 export const meta: V2_MetaFunction = ({ data }) => {

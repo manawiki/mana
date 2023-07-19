@@ -7,6 +7,7 @@ import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { cacheThis, fetchWithCache } from "~/utils/cache.server";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import { settings } from "mana-config";
 
 type HeaderType = {
    name?: string;
@@ -48,7 +49,7 @@ export const getDefaultEntryData = async ({
 
    if (collection.customEntryTemplate) {
       const entry = await fetchWithCache(
-         `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=1`
+         `https://${settings.siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
       );
       data = { name: entry?.name, icon: { url: entry?.icon?.url } };
       return data;
@@ -81,10 +82,9 @@ export const getEmbeddedContent = async ({
       entryId: z.string(),
       siteId: z.string(),
    });
-   const url = new URL(request.url).origin;
 
    //Pull published version first if exists
-   const contentEmbedUrl = `${url}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1`;
+   const contentEmbedUrl = `${settings.domainFull}/api/contentEmbeds?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${collection}&where[relationId][equals]=${entryId}&depth=1`;
    const { docs: data } = (await fetchWithCache(contentEmbedUrl, {
       headers: {
          cookie: request.headers.get("cookie") ?? "",
@@ -155,7 +155,7 @@ export const getCustomEntryData = async ({
    });
 
    return fetchWithCache(
-      `https://${process.env.PAYLOAD_PUBLIC_SITE_ID}-db.mana.wiki/api/${collectionId}/${entryId}?depth=${depth}`
+      `https://${settings.siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`
    );
 };
 

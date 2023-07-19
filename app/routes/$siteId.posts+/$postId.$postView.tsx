@@ -23,6 +23,7 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export async function loader({
    context: { payload, user },
@@ -34,13 +35,15 @@ export async function loader({
       siteId: z.string(),
       postView: z.string(),
    });
-   const url = new URL(request.url).origin;
    try {
-      const post = (await fetchWithCache(`${url}/api/posts/${postId}?depth=2`, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })) as Post;
+      const post = (await fetchWithCache(
+         `${settings.domainFull}/api/posts/${postId}?depth=2`,
+         {
+            headers: {
+               cookie: request.headers.get("cookie") ?? "",
+            },
+         }
+      )) as Post;
 
       if (post._status == "draft") {
          throw json(null, { status: 404 });

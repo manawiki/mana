@@ -4,21 +4,21 @@ const config: CapacitorConfig = {
    appId: "wiki.mana",
    appName: "Mana",
    server: {
-      url: "https://mana.wiki/",
+      url: "https://mana.wiki",
       // url: "http://localhost:3000/",
       // cleartext: true,
    },
-   ios:{
-      appendUserAgent:"isIOS",
+   ios: {
+      appendUserAgent: "isIOS",
    },
-   android:{
-      appendUserAgent:"isAndroid",
+   android: {
+      appendUserAgent: "isAndroid",
    },
-   "plugins": {
-      "SplashScreen": {
-        "launchAutoHide": false
-      }
-    },
+   plugins: {
+      SplashScreen: {
+         launchAutoHide: false,
+      },
+   },
 };
 
 export default config;

@@ -29,6 +29,7 @@ import { FeedItem } from "./components/FeedItem";
 import Tooltip from "~/components/Tooltip";
 import type { Post } from "payload/generated-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { settings } from "mana-config";
 
 export const handle = {};
 
@@ -47,9 +48,9 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const url = new URL(request.url).origin;
-
-   const myPostsFetchUrl = `${url}/api/posts?draft=true&where[site.slug][equals]=${siteId}&depth=1&page=${
+   const myPostsFetchUrl = `${
+      settings.domainFull
+   }/api/posts?draft=true&where[site.slug][equals]=${siteId}&depth=1&page=${
       page ?? 1
    }&sort=-updatedAt${status ? `&where[_status][equals]=${status}` : ""}`;
 
@@ -59,7 +60,9 @@ export async function loader({
       },
    })) as Post[];
 
-   const publishedPostsFetchUrl = `${url}/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
+   const publishedPostsFetchUrl = `${
+      settings.domainFull
+   }/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
       q ? `&where[name][contains]=${q}` : ""
    }`;
 

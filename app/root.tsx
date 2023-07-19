@@ -12,7 +12,6 @@ import {
    ScrollRestoration,
    useLoaderData,
    useLocation,
-   useNavigate,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -43,6 +42,7 @@ import { fetchWithCache } from "./utils/cache.server";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Preferences } from "@capacitor/preferences";
 import { App as CapApp } from "@capacitor/app";
+import { settings } from "mana-config";
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -59,21 +59,21 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
       locale,
       user,
       siteTheme: themeSession.getTheme(),
-      subsite: process?.env?.PAYLOAD_PUBLIC_SITE_ID,
    };
 
    if (isMobileApp) {
-      const url = new URL(request.url).origin;
-      const { data, errors } = await fetchWithCache(`${url}/api/graphql`, {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-            cookie: request.headers.get("cookie") ?? "",
-         },
-         body: JSON.stringify({
-            query: CoreMetaQuery,
-         }),
-      });
+      const { data, errors } = await fetchWithCache(
+         `${settings.domainFull}/api/graphql`,
+         {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               query: CoreMetaQuery,
+            }),
+         }
+      );
       const coreMeta = data?.coreMeta as CoreMeta;
       if (errors) {
          console.error(JSON.stringify(errors)); // eslint-disable-line no-console
@@ -92,7 +92,7 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
 };
 
 export const meta: V2_MetaFunction = () => [
-   { title: "Mana - A new kind of wiki" },
+   { title: settings.title },
    { charSet: "utf-8" },
 ];
 
@@ -115,7 +115,7 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: tailwindStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
-   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "preconnect", href: `https://static.${settings.domain}` },
    { rel: "preconnect", href: "https://p.typekit.net" },
    //fonts needs a cors preconnect instead
    {
@@ -124,7 +124,7 @@ export const links: LinksFunction = () => [
       crossOrigin: "anonymous",
    },
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
    { rel: "dns-prefetch", href: "https://use.typekit.net" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
 ];
@@ -135,13 +135,12 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, subsite, isMobileApp, user } =
+   const { locale, siteTheme, toastMessage, isMobileApp, user } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    useChangeLanguage(locale);
-   const navigate = useNavigate();
    const location = useLocation();
 
    useEffect(() => {
@@ -171,7 +170,7 @@ function App() {
             if (!isActive) {
                Preferences.set({
                   key: "activeUrl",
-                  value: location.pathname,
+                  value: location.pathname + location.search,
                });
                SplashScreen.hide();
             }
@@ -190,7 +189,7 @@ function App() {
                   key: "initialSetup",
                   value: "complete",
                });
-               navigate("/login");
+               window.location.href = `${settings.domainFull}/login`;
                SplashScreen.hide();
             }
          });
@@ -201,7 +200,7 @@ function App() {
                   key: "activeUrl",
                   value: "",
                });
-               navigate(value);
+               window.location.href = `${settings.domainFull}${value}`;
                SplashScreen.hide();
             }
          });
@@ -231,16 +230,16 @@ function App() {
                //links cannot read env variables, so we need to pass it down here
                rel="preconnect"
                href={
-                  subsite
-                     ? `https://${subsite}-static.mana.wiki`
-                     : "https://static.mana.wiki"
+                  settings.siteId
+                     ? `https://${settings.siteId}-static.${settings.domain}`
+                     : `https://static.${settings.domain}`
                }
                crossOrigin="anonymous"
             />
-            {subsite && (
+            {settings.siteId && (
                <link
                   rel="dns-prefetch"
-                  href={`https://${subsite}-static.mana.wiki`}
+                  href={`https://${settings.siteId}-static.${settings.domain}`}
                />
             )}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
@@ -275,7 +274,7 @@ export function useChangeLanguage(locale: string) {
 }
 
 const CoreMetaQuery = `
-query CoreMeta{
+query {
    coreMeta: CoreMeta{
      featuredSites{
        site{
