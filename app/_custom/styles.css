@@ -1131,7 +1131,7 @@ input[type="range"] {
 }
 
 .rotate-input::after {
-   @apply bg-2 absolute block rounded-full;
+   @apply absolute block rounded-full;
    content: "";
    inset: 3px;
    z-index: 1;
