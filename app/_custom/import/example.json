@@ -1,32 +1,21 @@
 [
 	{
-		"data_key": "Ice",
-		"icon_path": "SpriteOutput/UI/Nature/IconAttribute/IconAttributeIce.png",
-		"icon_color_path": "SpriteOutput/UI/Nature/IconNatureColor/IconNatureColorIce.png",
-		"icon_active_path": "SpriteOutput/UI/Nature/IconNatureForWeak/IconNatureWhiteIce_2.png",
-		"icon_inactive_path": "SpriteOutput/UI/Nature/IconNatureForWeak/IconNatureWhiteIce_1.png",
-		"icon_damage_res_path": "SpriteOutput/UI/Avatar/Icon/IconIceResistanceDelta.png",
-		"icon_name": "IconAttributeIce",
-		"icon_color_name": "IconNatureColorIce",
-		"icon_active_name": "IconNatureWhiteIce_2",
-		"icon_inactive_name": "IconNatureWhiteIce_1",
-		"icon_damage_res_name": "IconIceResistanceDelta",
-		"name": "Ice",
-		"icon": {
-			"name": "IconAttributeIce.png"
-		},
-		"icon_color": {
-			"name": "IconNatureColorIce.png"
-		},
-		"icon_active": {
-			"name": "IconNatureWhiteIce_2.png"
-		},
-		"icon_inactive": {
-			"name": "IconNatureWhiteIce_1.png"
-		},
-		"icon_damage_res": {
-			"name": "IconIceResistanceDelta.png"
-		},
-		"checksum": "144b853e"
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_101_Materials.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201_LightCone.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_301_Eidolon.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_302_Trace.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_303_Character.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_304_SkillTree.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_305_CharacterVoice.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_306_CharacterProfile.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_320_PlayerIcon.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_401_RelicSet.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_402_Relic.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_411_Recipe.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_501_EnemySkill.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_502_Enemy.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_503_EnemyVariation.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_602_Achievements.ts",
+"importtest": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_702_Blessing.ts"
 	}
 ]
