@@ -183,6 +183,8 @@ export default function SiteIndex() {
          : 60
       : 0;
 
+   const topSafeArea = isMobileApp ? (safeArea?.top ? safeArea?.top : 0) : 0;
+
    //Prevent layout shift on native. Don't paint screen yet.
    if (isMobileApp && !safeArea)
       return (
@@ -494,7 +496,7 @@ export default function SiteIndex() {
                         >
                            <div
                               style={{
-                                 paddingTop: safeArea?.top ?? "",
+                                 paddingTop: topSafeArea,
                               }}
                               className={clsx(
                                  isMobileApp
