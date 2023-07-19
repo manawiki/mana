@@ -31,7 +31,7 @@ import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 import { i18nextServer } from "./utils/i18n";
 import fonts from "~/styles/fonts.css";
 import { commitSession, getSession } from "./utils/message.server";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 import { toast } from "./components/Toaster";
 import { useIsBot } from "~/utils/isBotProvider";
 import { isNativeSSR } from "./utils";
@@ -43,6 +43,13 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { Preferences } from "@capacitor/preferences";
 import { App as CapApp } from "@capacitor/app";
 import { settings } from "mana-config";
+
+import rdtStylesheet from "remix-development-tools/stylesheet.css";
+const RemixDevTools = lazy(() =>
+   import("remix-development-tools").then((module) => ({
+      default: module.RemixDevTools,
+   }))
+);
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -127,6 +134,11 @@ export const links: LinksFunction = () => [
    { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
    { rel: "dns-prefetch", href: "https://use.typekit.net" },
    { rel: "dns-prefetch", href: "https://p.typekit.net" },
+
+   //Remix Devtools
+   ...(rdtStylesheet && process.env.NODE_ENV === "development"
+      ? [{ rel: "stylesheet", href: rdtStylesheet }]
+      : []),
 ];
 
 export const handle = {
@@ -251,6 +263,7 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
+            {process.env.NODE_ENV === "development" && <RemixDevTools />}
          </body>
       </html>
    );
