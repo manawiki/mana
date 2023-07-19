@@ -3,7 +3,7 @@
    "sideEffects": false,
    "scripts": {
       "build": "yarn run generate:types && run-p \"build:*\"",
-      "build:remix": "remix build",
+      "build:remix": "remix build --sourcemap",
       "build:payload": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts payload build",
       "build:server": "tsc -p tsconfig.server.json",
       "start:core": "cross-env PAYLOAD_CONFIG_PATH=dist/payload.config.js NODE_ENV=production node dist/core.server.js",
@@ -123,6 +123,7 @@
       "npm-run-all": "^4.1.5",
       "prettier": "^2.8.4",
       "prettier-plugin-tailwindcss": "^0.2.3",
+      "remix-development-tools": "^1.0.8",
       "remix-flat-routes": "^0.5.9",
       "shx": "^0.3.4",
       "tailwindcss": "^3.3.0",

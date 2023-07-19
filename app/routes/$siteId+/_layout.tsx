@@ -61,7 +61,6 @@ import {
    PencilSquareIcon as PencilSquareIconBold,
    CircleStackIcon as CircleStackIconBold,
 } from "@heroicons/react/24/solid";
-import customStylesheetUrl from "~/_custom/styles.css";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
 import type { Site, Update, User, CoreMeta } from "payload/generated-types";
 import { DotLoader, Modal } from "~/components";
@@ -118,13 +117,6 @@ export const meta: V2_MetaFunction = ({ data }) => {
       {
          title: data.site.name,
       },
-   ];
-};
-
-export const links: LinksFunction = () => {
-   return [
-      { rel: "preload", href: customStylesheetUrl, as: "style" },
-      { rel: "stylesheet", href: customStylesheetUrl },
    ];
 };
 
