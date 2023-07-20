@@ -21,8 +21,11 @@ module.exports = {
                // import default fonts from tailwind
                ...defaultTheme.fontFamily.sans,
             ],
-            logo: ["new-order", ...defaultTheme.fontFamily.sans],
-            header: ["source-sans-pro", ...defaultTheme.fontFamily.sans],
+            header: [
+               "source-sans-pro",
+               "source-sans-pro Override",
+               ...defaultTheme.fontFamily.sans,
+            ],
          },
          animation: {
             enter: "enter 200ms ease-out",

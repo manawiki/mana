@@ -31,7 +31,6 @@ import {
    setErrorMessage,
    setSuccessMessage,
 } from "~/utils/message.server";
-import { Logo } from "~/components/Logo";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { FormLabel } from "~/components/Forms";
 import { DotLoader } from "~/components/DotLoader";
@@ -42,6 +41,7 @@ import clsx from "clsx";
 import { Image } from "~/components/Image";
 import type { CoreMeta } from "~/db/payload-types";
 import { settings } from "mana-config";
+import { LogoFull } from "~/components/LogoFull";
 
 const LoginFormSchema = z.object({
    email: z
@@ -130,12 +130,8 @@ export default function Login() {
          ></div>
 
          <div className={clsx(isMobileApp ? "hidden " : "")}>
-            <Link
-               to="/hq"
-               className="absolute left-5 top-5 flex items-center gap-2.5"
-            >
-               <Logo className="h-7 w-7" />
-               <span className="pb-1 font-logo text-3xl">mana</span>
+            <Link to="/hq" className="absolute left-5 top-5 p-1">
+               <LogoFull />
             </Link>
             <div className="absolute right-5 top-5 flex items-center gap-5">
                <DarkModeToggle />

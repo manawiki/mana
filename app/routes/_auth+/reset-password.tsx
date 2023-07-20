@@ -15,7 +15,7 @@ import {
    setErrorMessage,
    setSuccessMessage,
 } from "~/utils/message.server";
-import { Logo } from "~/components/Logo";
+import { LogoFull } from "~/components/LogoFull";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { FormLabel } from "~/components/Forms";
 import { DotLoader } from "~/components/DotLoader";
@@ -72,12 +72,8 @@ export default function ResetPassword() {
              h-full w-full bg-gradient-to-b 
              from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-zinc-800/50 dark:to-zinc-900/80"
          ></div>
-         <Link
-            to="/hq"
-            className="absolute left-5 top-5 flex items-center gap-2.5"
-         >
-            <Logo className="h-7 w-7" />
-            <span className="pb-1 font-logo text-3xl">mana</span>
+         <Link to="/hq" className="absolute left-5 top-5 p-1">
+            <LogoFull />
          </Link>
          <div className="absolute right-5 top-5 flex items-center gap-5">
             <DarkModeToggle />

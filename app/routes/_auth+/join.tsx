@@ -23,13 +23,13 @@ import {
    isProcessing,
 } from "~/utils";
 import { useTranslation } from "react-i18next";
-import { Logo } from "~/components/Logo";
 import { parseFormSafe } from "zodix";
 import { FormLabel } from "~/components/Forms";
 import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { DotLoader } from "~/components/DotLoader";
 import clsx from "clsx";
 import { settings } from "mana-config";
+import { LogoFull } from "~/components/LogoFull";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
@@ -100,12 +100,8 @@ export default function Signup() {
             from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
             ></div>
             <div className={clsx(isMobileApp ? "hidden " : "")}>
-               <Link
-                  to="/hq"
-                  className="absolute left-5 top-5 flex items-center gap-2.5"
-               >
-                  <Logo className="h-7 w-7" />
-                  <span className="pb-1 font-logo text-3xl">mana</span>
+               <Link to="/hq" className="absolute left-5 top-5 p-1">
+                  <LogoFull />
                </Link>
                <div className="absolute right-5 top-5 flex items-center gap-5">
                   <DarkModeToggle />
