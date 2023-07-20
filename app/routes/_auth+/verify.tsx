@@ -5,7 +5,7 @@ import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zx } from "zodix";
-import { Logo } from "~/components/Logo";
+import { LogoFull } from "~/components/LogoFull";
 import { commitSession, getSession, setSuccessMessage } from "~/utils";
 
 export async function loader({
@@ -56,12 +56,9 @@ export default function CheckEmail() {
    return (
       <>
          <main>
-            <div className="absolute left-0 top-12 z-10 flex w-full items-center justify-center">
-               <Link to="/hq" className="flex items-center gap-2.5">
-                  <Logo className="h-7 w-7" />
-                  <span className="pb-1 font-logo text-3xl">mana</span>
-               </Link>
-            </div>
+            <Link to="/hq" className="absolute left-5 top-5 p-1">
+               <LogoFull />
+            </Link>
             <div
                className="pattern-dots absolute left-0
                    top-0 h-full
