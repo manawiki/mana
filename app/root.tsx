@@ -106,13 +106,6 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
-   //logo font
-   {
-      rel: "preload",
-      href: "https://use.typekit.net/lak0idb.css",
-      as: "style",
-   },
-   { rel: "stylesheet", href: "https://use.typekit.net/lak0idb.css" },
 
    { rel: "stylesheet", href: tooltipStyles },
    { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
@@ -121,17 +114,9 @@ export const links: LinksFunction = () => [
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: `https://static.${settings.domain}` },
-   { rel: "preconnect", href: "https://p.typekit.net" },
-   //fonts needs a cors preconnect instead
-   {
-      rel: "preconnect",
-      href: "https://use.typekit.net",
-      crossOrigin: "anonymous",
-   },
+
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
-   { rel: "dns-prefetch", href: "https://use.typekit.net" },
-   { rel: "dns-prefetch", href: "https://p.typekit.net" },
 
    //Remix Devtools
    ...(rdtStylesheet && process.env.NODE_ENV === "development"
