@@ -1,5 +1,5 @@
 {
-   "include": ["core.server.ts", "payload.config.ts"],
+   "include": ["remix.env.d.ts", "core.server.ts", "payload.config.ts"],
    "compilerOptions": {
       "lib": ["DOM", "DOM.Iterable", "ES2022"],
       "isolatedModules": true,
