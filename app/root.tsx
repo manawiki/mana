@@ -114,9 +114,25 @@ export const links: LinksFunction = () => [
 
    //add preconnects to cdn to improve first bits
    { rel: "preconnect", href: `https://static.${settings.domain}` },
+   {
+      rel: "preconnect",
+      href: `https://${settings.domain}`,
+      crossOrigin: "anonymous",
+   },
+   {
+      rel: "preconnect",
+      href: `https://${
+         settings.siteId ? `${settings.siteId}-static` : "static"
+      }.${settings.domain}`,
+      crossOrigin: "anonymous",
+   },
 
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
+   {
+      rel: "dns-prefetch",
+      href: `https://${settings.siteId}-static.${settings.domain}`,
+   },
 
    //Remix Devtools
    ...(rdtStylesheet && process.env.NODE_ENV === "development"
@@ -221,22 +237,7 @@ function App() {
             />
             <Meta />
             <Links />
-            <link
-               //links cannot read env variables, so we need to pass it down here
-               rel="preconnect"
-               href={
-                  settings.siteId
-                     ? `https://${settings.siteId}-static.${settings.domain}`
-                     : `https://static.${settings.domain}`
-               }
-               crossOrigin="anonymous"
-            />
-            {settings.siteId && (
-               <link
-                  rel="dns-prefetch"
-                  href={`https://${settings.siteId}-static.${settings.domain}`}
-               />
-            )}
+
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
