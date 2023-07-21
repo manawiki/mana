@@ -128,9 +128,7 @@ async function startCore() {
               mode: process.env.NODE_ENV,
               getLoadContext(req, res) {
                  return {
-                    // @ts-expect-error
                     payload: req.payload,
-                    // @ts-expect-error
                     user: req?.user,
                     res,
                  };
@@ -172,9 +170,7 @@ function createDevRequestHandler(): RequestHandler {
             mode: "development",
             getLoadContext(req, res) {
                return {
-                  // @ts-expect-error
                   payload: req.payload,
-                  // @ts-expect-error
                   user: req?.user,
                   res,
                };
