@@ -248,7 +248,7 @@ function App() {
             {isBot ? null : <Scripts />}
             <LiveReload />
             {process.env.NODE_ENV === "development" && !isMobileApp && (
-               <RemixDevTools showRouteBoundaries={true} />
+               <RemixDevTools />
             )}
          </body>
       </html>
