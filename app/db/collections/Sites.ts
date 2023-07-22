@@ -72,6 +72,44 @@ export const Sites: CollectionConfig = {
          ],
       },
       {
+         name: "status",
+         type: "select",
+         access: {
+            update: isStaffFieldLevel,
+         },
+         options: [
+            {
+               label: "Verified",
+               value: "verified",
+            },
+            {
+               label: "Partner",
+               value: "partner",
+            },
+         ],
+      },
+      {
+         name: "category",
+         type: "select",
+         access: {
+            update: isStaffFieldLevel,
+         },
+         options: [
+            {
+               label: "Gaming",
+               value: "gaming",
+            },
+            {
+               label: "Entertainment",
+               value: "entertainment",
+            },
+            {
+               label: "Other",
+               value: "other",
+            },
+         ],
+      },
+      {
          name: "owner",
          type: "relationship",
          relationTo: "users",

@@ -19,7 +19,7 @@ module.exports = {
    },
    serverModuleFormat: "cjs",
    tailwind: true,
-   // postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
+   postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
    publicPath: getPublicPath(),
    // ignore all files in routes folder to prevent
    // default remix convention from picking up routes

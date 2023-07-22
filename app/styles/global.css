@@ -21,6 +21,14 @@ td {
    @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
 }
 
+/* Additional Tailwind directives: https://tailwindcss.com/docs/functions-and-directives/#responsive */
+@layer utilities {
+   .rtl {
+       direction: rtl;
+   }
+}
+
+
 @layer base {
    html {
       -webkit-tap-highlight-color: transparent;
