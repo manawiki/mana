@@ -223,7 +223,7 @@ const Discover = () => {
                <div className="relative z-10 mx-auto max-w-[680px] max-laptop:px-4">
                   <div className="flex items-center justify-center">
                      <div
-                        className="relative -mt-[28px] h-14 w-full  rounded-2xl border
+                        className="relative -mt-[28px] h-14 w-full rounded-2xl border
                    border-zinc-700/50 bg-zinc-800 shadow shadow-black/30"
                      >
                         <>
@@ -234,8 +234,8 @@ const Discover = () => {
                               <input
                                  type="text"
                                  placeholder="Search..."
-                                 className="h-full w-full border-0 bg-transparent pl-[50px] 
-                                 text-dark focus:outline-none focus:ring-0"
+                                 className="h-full w-full rounded-2xl border-0 bg-transparent 
+                                 pl-[50px] text-dark focus:outline-none focus:ring-1 focus:ring-zinc-600"
                                  value={query}
                                  onChange={(e) => setQuery(e.target.value)}
                               />
@@ -266,11 +266,9 @@ const Discover = () => {
                         onChange={(value) => {
                            if (value != "all") {
                               setSearchParams(
-                                 (old) => {
-                                    const newThing = new URLSearchParams(old);
-                                    console.log(newThing);
-                                    newThing.set("c", value);
-                                    return newThing;
+                                 (searchParams) => {
+                                    searchParams.set("c", value);
+                                    return searchParams;
                                  },
                                  { preventScrollReset: false }
                               );
@@ -344,12 +342,13 @@ const Discover = () => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
+                              reloadDocument={site.type == "custom" && true}
                               prefetch="intent"
                               to={`${site.slug}`}
                               key={site.id}
-                              className="flex items-center gap-3.5 rounded-2xl border border-transparent border-zinc-700
+                              className="flex items-center gap-3.5 rounded-2xl border border-zinc-700/60
                               bg-zinc-800 p-3 shadow shadow-black/30
-                              hover:border-zinc-600"
+                              hover:border-zinc-600/70"
                            >
                               <div
                                  className="h-11 w-11 flex-none overflow-hidden rounded-full
@@ -361,8 +360,8 @@ const Discover = () => {
                                     url={`${site.icon?.url}`}
                                  />
                               </div>
-                              <div className="truncate">
-                                 <div className="font-header font-bold text-dark laptop:text-lg">
+                              <div className="space-y-0.5 truncate">
+                                 <div className="font-mono text-sm font-semibold text-dark">
                                     {site.name}
                                  </div>
                                  <div className="truncate text-sm text-zinc-400">

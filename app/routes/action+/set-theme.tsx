@@ -24,4 +24,4 @@ export const action = async ({ request }: ActionArgs) => {
    );
 };
 
-export const loader = async () => redirect("/hq", { status: 404 });
+export const loader = async () => redirect("/", { status: 404 });

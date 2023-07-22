@@ -58,7 +58,7 @@ const PasswordResetSchema = z.object({
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("login.title");
@@ -307,7 +307,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
 
    const { intent } = await zx.parseForm(request, {

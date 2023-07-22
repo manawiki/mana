@@ -176,7 +176,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
    const issues = createCustomIssues(JoinFormSchema);
    const result = await parseFormSafe(request, JoinFormSchema);

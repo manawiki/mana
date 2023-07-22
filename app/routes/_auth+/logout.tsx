@@ -12,7 +12,7 @@ export const action: ActionFunction = async ({ context: { res } }) => {
       sameSite: isDev ? "lax" : ("none" as any), // Litteral types out of wack, typescript?
    };
    res.clearCookie("payload-token", cookieOptions);
-   return redirect("/hq");
+   return redirect("/");
 };
 
 export default () => {

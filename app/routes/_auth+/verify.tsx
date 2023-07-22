@@ -11,7 +11,7 @@ export async function loader({
    request,
 }: LoaderArgs) {
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
    const { token, email } = zx.parseQuery(request, {
       token: z.string(),
