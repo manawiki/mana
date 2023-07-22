@@ -244,7 +244,12 @@ function App() {
             <Outlet />
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
-            <ScrollRestoration />
+            <ScrollRestoration
+               //https://reactrouter.com/en/main/components/scroll-restoration#getkey
+               getKey={(location, matches) => {
+                  return location.pathname;
+               }}
+            />
             {isBot ? null : <Scripts />}
             <LiveReload />
             {process.env.NODE_ENV === "development" && !isMobileApp && (
