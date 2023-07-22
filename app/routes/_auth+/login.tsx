@@ -31,17 +31,14 @@ import {
    setErrorMessage,
    setSuccessMessage,
 } from "~/utils/message.server";
-import { DarkModeToggle } from "~/components/DarkModeToggle";
 import { FormLabel } from "~/components/Forms";
 import { DotLoader } from "~/components/DotLoader";
 import { zx } from "zodix";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import clsx from "clsx";
 import { Image } from "~/components/Image";
 import type { CoreMeta } from "~/db/payload-types";
 import { settings } from "mana-config";
-import { LogoFull } from "~/components/LogoFull";
 
 const LoginFormSchema = z.object({
    email: z
@@ -61,7 +58,7 @@ const PasswordResetSchema = z.object({
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
    const t = await i18nextServer.getFixedT(request, "auth");
    const title = t("login.title");
@@ -117,211 +114,190 @@ export default function Login() {
    };
 
    return (
-      <main>
+      <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
          <div
-            className="pattern-dots absolute left-0
-                   top-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 dark:pattern-bg-black dark:pattern-zinc-600"
-         ></div>
-         <div
-            className="absolute left-0 top-0 
-            h-full w-full bg-gradient-to-b
-            from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
-         ></div>
-
-         <div className={clsx(isMobileApp ? "hidden " : "")}>
-            <Link to="/hq" className="absolute left-5 top-5 p-1">
-               <LogoFull />
-            </Link>
-            <div className="absolute right-5 top-5 flex items-center gap-5">
-               <DarkModeToggle />
-            </div>
-         </div>
-         <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
-            <div
-               className="border-color bg-2 shadow-1 relative border-y
+            className="border-color bg-2 shadow-1 relative border-y
                p-6 shadow-sm tablet:rounded-xl tablet:border"
-            >
-               {isReset ? (
-                  <div className="border-color mb-6 flex items-center justify-between border-b-2 pb-4">
-                     <div className="text-xl font-bold">Reset Password</div>
-                     <button
-                        className="bg-3 shadow-1 flex items-center gap-2
+         >
+            {isReset ? (
+               <div className="border-color mb-6 flex items-center justify-between border-b-2 pb-4">
+                  <div className="text-xl font-bold">Reset Password</div>
+                  <button
+                     className="bg-3 shadow-1 flex items-center gap-2
                         rounded-full py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
-                        onClick={() => setIsReset(false)}
-                     >
-                        <ArrowLeft className="text-blue-500" size={20} />
-                        Back
-                     </button>
-                  </div>
-               ) : (
-                  <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
-                     {t("login.title")}
-                  </div>
-               )}
-               {isReset ? (
-                  <>
-                     <Form
-                        ref={zoPW.ref}
-                        method="post"
-                        className="space-y-6"
-                        replace
-                     >
-                        <fieldset>
-                           <FormLabel
-                              htmlFor={zoPW.fields.email()}
-                              text={t("login.email")}
-                              error={zoPW.errors.email((err) => err.message)}
-                           />
-                           <div className="mt-1">
-                              <input
-                                 autoFocus={true}
-                                 name={zoPW.fields.email()}
-                                 type="email"
-                                 className="input-text"
-                                 autoComplete="email"
-                                 disabled={disabled}
-                              />
-                           </div>
-                        </fieldset>
-                        <button
-                           name="intent"
-                           value="reset-password"
-                           type="submit"
-                           className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white
-                            hover:bg-zinc-600 focus:bg-zinc-400"
-                           disabled={disabled}
-                        >
-                           {addingPasswordRest ? (
-                              <DotLoader />
-                           ) : (
-                              t("pwReset.title")
-                           )}
-                        </button>
-                     </Form>
-                  </>
-               ) : (
-                  <>
-                     <Form
-                        ref={zo.ref}
-                        method="post"
-                        className="space-y-6"
-                        replace
-                     >
-                        <fieldset>
-                           <FormLabel
-                              htmlFor={zo.fields.email()}
-                              text={t("login.email")}
-                              error={zo.errors.email((err) => err.message)}
-                           />
-                           <div className="mt-1">
-                              <input
-                                 autoFocus={email ? false : true}
-                                 name={zo.fields.email()}
-                                 type="email"
-                                 className="input-text"
-                                 autoComplete="email"
-                                 disabled={disabled}
-                                 defaultValue={email ?? ""}
-                              />
-                           </div>
-                        </fieldset>
-                        <fieldset>
-                           <FormLabel
-                              htmlFor={zo.fields.password()}
-                              text={t("login.password")}
-                              error={zo.errors.password((err) => err.message)}
-                           />
-                           <div className="mt-1">
-                              <input
-                                 autoFocus={email ? true : false}
-                                 name={zo.fields.password()}
-                                 type="password"
-                                 autoComplete="new-password"
-                                 className="input-text"
-                                 disabled={disabled}
-                              />
-                           </div>
-                           <button
-                              type="button"
-                              className="pt-1.5 text-sm font-semibold text-blue-500"
-                              onClick={() => setIsReset(true)}
-                           >
-                              Forgot your password?
-                           </button>
-                        </fieldset>
-                        <input
-                           type="hidden"
-                           name={zo.fields.redirectTo()}
-                           value={redirectTo}
+                     onClick={() => setIsReset(false)}
+                  >
+                     <ArrowLeft className="text-blue-500" size={20} />
+                     Back
+                  </button>
+               </div>
+            ) : (
+               <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+                  {t("login.title")}
+               </div>
+            )}
+            {isReset ? (
+               <>
+                  <Form
+                     ref={zoPW.ref}
+                     method="post"
+                     className="space-y-6"
+                     replace
+                  >
+                     <fieldset>
+                        <FormLabel
+                           htmlFor={zoPW.fields.email()}
+                           text={t("login.email")}
+                           error={zoPW.errors.email((err) => err.message)}
                         />
-                        <button
-                           name="intent"
-                           value="login"
-                           type="submit"
-                           className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
-                           disabled={disabled}
-                        >
-                           {adding ? <DotLoader /> : t("login.action")}
-                        </button>
-                        <div className="!mt-4 flex items-center justify-center">
-                           <div className="text-center text-sm">
-                              {t("login.dontHaveAccount")}
-                              <Link
-                                 className="pl-1 font-bold text-blue-500"
-                                 to={{
-                                    pathname: "/join",
-                                    search: searchParams.toString(),
-                                 }}
-                              >
-                                 {t("login.signUp")}
-                              </Link>
-                           </div>
+                        <div className="mt-1">
+                           <input
+                              autoFocus={true}
+                              name={zoPW.fields.email()}
+                              type="email"
+                              className="input-text"
+                              autoComplete="email"
+                              disabled={disabled}
+                           />
                         </div>
-                     </Form>
-                  </>
-               )}
-            </div>
-            {isMobileApp && (
-               <section className="relative z-10 p-3 pt-8">
-                  <div className="text-1 pb-2.5 pl-1 text-sm font-bold">
-                     Featured
-                  </div>
-                  {coreMeta.featuredSites?.length === 0 ? null : (
-                     <menu className="space-y-3">
-                        {coreMeta.featuredSites?.map(({ site }) => (
+                     </fieldset>
+                     <button
+                        name="intent"
+                        value="reset-password"
+                        type="submit"
+                        className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white
+                            hover:bg-zinc-600 focus:bg-zinc-400"
+                        disabled={disabled}
+                     >
+                        {addingPasswordRest ? (
+                           <DotLoader />
+                        ) : (
+                           t("pwReset.title")
+                        )}
+                     </button>
+                  </Form>
+               </>
+            ) : (
+               <>
+                  <Form
+                     ref={zo.ref}
+                     method="post"
+                     className="space-y-6"
+                     replace
+                  >
+                     <fieldset>
+                        <FormLabel
+                           htmlFor={zo.fields.email()}
+                           text={t("login.email")}
+                           error={zo.errors.email((err) => err.message)}
+                        />
+                        <div className="mt-1">
+                           <input
+                              autoFocus={email ? false : true}
+                              name={zo.fields.email()}
+                              type="email"
+                              className="input-text"
+                              autoComplete="email"
+                              disabled={disabled}
+                              defaultValue={email ?? ""}
+                           />
+                        </div>
+                     </fieldset>
+                     <fieldset>
+                        <FormLabel
+                           htmlFor={zo.fields.password()}
+                           text={t("login.password")}
+                           error={zo.errors.password((err) => err.message)}
+                        />
+                        <div className="mt-1">
+                           <input
+                              autoFocus={email ? true : false}
+                              name={zo.fields.password()}
+                              type="password"
+                              autoComplete="new-password"
+                              className="input-text"
+                              disabled={disabled}
+                           />
+                        </div>
+                        <button
+                           type="button"
+                           className="pt-1.5 text-sm font-semibold text-blue-500"
+                           onClick={() => setIsReset(true)}
+                        >
+                           Forgot your password?
+                        </button>
+                     </fieldset>
+                     <input
+                        type="hidden"
+                        name={zo.fields.redirectTo()}
+                        value={redirectTo}
+                     />
+                     <button
+                        name="intent"
+                        value="login"
+                        type="submit"
+                        className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                        disabled={disabled}
+                     >
+                        {adding ? <DotLoader /> : t("login.action")}
+                     </button>
+                     <div className="!mt-4 flex items-center justify-center">
+                        <div className="text-center text-sm">
+                           {t("login.dontHaveAccount")}
                            <Link
-                              prefetch="render"
-                              reloadDocument={site.type == "custom" && true}
-                              key={site.id}
-                              className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                              to={`/${site.slug}`}
+                              className="pl-1 font-bold text-blue-500"
+                              to={{
+                                 pathname: "/join",
+                                 search: searchParams.toString(),
+                              }}
                            >
-                              <>
-                                 <div className="flex w-full items-center gap-3 truncate p-2">
-                                    <div className="h-7 w-7">
-                                       <Image
-                                          className="border-color overflow-hidden rounded-full border shadow-sm"
-                                          width={32}
-                                          height={32}
-                                          alt="Site Logo"
-                                          options="aspect_ratio=1:1&height=120&width=120"
-                                          url={site.icon?.url}
-                                       />
-                                    </div>
-                                    <div className="truncate text-sm font-bold">
-                                       {site.name}
-                                    </div>
-                                 </div>
-                              </>
+                              {t("login.signUp")}
                            </Link>
-                        ))}
-                     </menu>
-                  )}
-               </section>
+                        </div>
+                     </div>
+                  </Form>
+               </>
             )}
          </div>
-      </main>
+         {isMobileApp && (
+            <section className="relative z-10 p-3 pt-8">
+               <div className="text-1 pb-2.5 pl-1 text-sm font-bold">
+                  Featured
+               </div>
+               {coreMeta.featuredSites?.length === 0 ? null : (
+                  <menu className="space-y-3">
+                     {coreMeta.featuredSites?.map(({ site }) => (
+                        <Link
+                           prefetch="render"
+                           reloadDocument={site.type == "custom" && true}
+                           key={site.id}
+                           className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
+                           to={`/${site.slug}`}
+                        >
+                           <>
+                              <div className="flex w-full items-center gap-3 truncate p-2">
+                                 <div className="h-7 w-7">
+                                    <Image
+                                       className="border-color overflow-hidden rounded-full border shadow-sm"
+                                       width={32}
+                                       height={32}
+                                       alt="Site Logo"
+                                       options="aspect_ratio=1:1&height=120&width=120"
+                                       url={site.icon?.url}
+                                    />
+                                 </div>
+                                 <div className="truncate text-sm font-bold">
+                                    {site.name}
+                                 </div>
+                              </div>
+                           </>
+                        </Link>
+                     ))}
+                  </menu>
+               )}
+            </section>
+         )}
+      </div>
    );
 }
 
@@ -331,7 +307,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (user) {
-      return redirect("/hq");
+      return redirect("/");
    }
 
    const { intent } = await zx.parseForm(request, {
