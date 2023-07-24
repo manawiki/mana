@@ -36,8 +36,6 @@ import { DotLoader } from "~/components/DotLoader";
 import { zx } from "zodix";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { Image } from "~/components/Image";
-import type { CoreMeta } from "~/db/payload-types";
 import { settings } from "mana-config";
 
 const LoginFormSchema = z.object({
@@ -108,9 +106,8 @@ export default function Login() {
    });
 
    const [isReset, setIsReset] = useState(false);
-   const { isMobileApp, coreMeta } = useRouteLoaderData("root") as {
+   const { isMobileApp } = useRouteLoaderData("root") as {
       isMobileApp: Boolean;
-      coreMeta: CoreMeta;
    };
 
    return (
@@ -259,44 +256,6 @@ export default function Login() {
                </>
             )}
          </div>
-         {isMobileApp && (
-            <section className="relative z-10 p-3 pt-8">
-               <div className="text-1 pb-2.5 pl-1 text-sm font-bold">
-                  Featured
-               </div>
-               {coreMeta.featuredSites?.length === 0 ? null : (
-                  <menu className="space-y-3">
-                     {coreMeta.featuredSites?.map(({ site }) => (
-                        <Link
-                           prefetch="render"
-                           reloadDocument={site.type == "custom" && true}
-                           key={site.id}
-                           className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                           to={`/${site.slug}`}
-                        >
-                           <>
-                              <div className="flex w-full items-center gap-3 truncate p-2">
-                                 <div className="h-7 w-7">
-                                    <Image
-                                       className="border-color overflow-hidden rounded-full border shadow-sm"
-                                       width={32}
-                                       height={32}
-                                       alt="Site Logo"
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       url={site.icon?.url}
-                                    />
-                                 </div>
-                                 <div className="truncate text-sm font-bold">
-                                    {site.name}
-                                 </div>
-                              </div>
-                           </>
-                        </Link>
-                     ))}
-                  </menu>
-               )}
-            </section>
-         )}
       </div>
    );
 }

@@ -1,13 +1,7 @@
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
-import {
-   Link,
-   useLoaderData,
-   useRouteLoaderData,
-   useSearchParams,
-} from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { V2_MetaFunction } from "@remix-run/react";
 import clsx from "clsx";
-import { LogoFull } from "~/components/LogoFull";
 import indexStyles from "./styles.css";
 
 import { useEffect, useState } from "react";
@@ -27,7 +21,6 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
-import { LoggedOut, LoggedOutDropDown } from "~/modules/auth";
 import { useDebouncedValue } from "~/hooks";
 import type { Site } from "~/db/payload-types";
 import { Image } from "~/components";
@@ -122,9 +115,6 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
    useEffect(() => {
       AOS.init({
          once: true,
@@ -135,57 +125,10 @@ export default function IndexMain() {
    });
 
    return (
-      <div className="bg-zinc-900">
-         <main className="flex min-h-screen flex-col overflow-hidden">
-            <div className="grow">
-               <header className="absolute z-30 w-full">
-                  <div className="mx-auto max-w-6xl px-4">
-                     <div className="flex h-16 items-center justify-between">
-                        <div className="text-dark">
-                           <Link className="block" to="/">
-                              <LogoFull />
-                           </Link>
-                        </div>
-                        <nav className="">
-                           <LoggedOutDropDown />
-                           <LoggedOut>
-                              <ul className="flex items-center justify-end gap-3">
-                                 <li>
-                                    <Link
-                                       to="/join"
-                                       className="group relative inline-flex h-8 items-center justify-center overflow-hidden 
-                                 rounded-lg px-3 py-2  text-indigo-600 shadow shadow-zinc-950 transition duration-300 ease-out"
-                                    >
-                                       <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                                       <span
-                                          className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                                    rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                                       ></span>
-                                       <span className="relative text-xs font-extrabold uppercase text-white">
-                                          Sign Up
-                                       </span>
-                                    </Link>
-                                 </li>
-                                 <li>
-                                    <Link
-                                       className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
-                                 text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                                       to="/login"
-                                    >
-                                       Login
-                                    </Link>
-                                 </li>
-                              </ul>
-                           </LoggedOut>
-                        </nav>
-                     </div>
-                  </div>
-               </header>
-               <Top />
-               <Discover />
-            </div>
-         </main>
-      </div>
+      <>
+         <Top />
+         <Discover />
+      </>
    );
 }
 
@@ -259,9 +202,9 @@ const Discover = () => {
                         </>
                      </div>
                   </div>
-                  <div className="flex items-center justify-between gap-4 pb-3 pt-6">
+                  <div className="flex items-center justify-between gap-4 pb-4 pt-6">
                      <RadioGroup
-                        className="flex items-center gap-4"
+                        className="flex items-center gap-3"
                         value={category}
                         onChange={(value) => {
                            if (value != "all") {
@@ -336,7 +279,7 @@ const Discover = () => {
                         results
                      </div>
                   </div>
-                  <div className="flex-grow space-y-4 pt-2">
+                  <div className="flex-grow space-y-4">
                      {sites?.docs.length === 0 ? (
                         <div className="py-3 text-sm ">Empty</div>
                      ) : (
@@ -361,7 +304,7 @@ const Discover = () => {
                                  />
                               </div>
                               <div className="space-y-0.5 truncate">
-                                 <div className="font-mono text-sm font-semibold text-dark">
+                                 <div className="truncate font-mono text-sm font-semibold text-dark">
                                     {site.name}
                                  </div>
                                  <div className="truncate text-sm text-zinc-400">
@@ -403,7 +346,7 @@ const Discover = () => {
                               >
                                  <ChevronLeft
                                     size={18}
-                                    className="text-emerald-500"
+                                    className="text-zinc-500"
                                  />
                                  Prev
                               </button>
@@ -427,7 +370,7 @@ const Discover = () => {
                                  Next
                                  <ChevronRight
                                     size={18}
-                                    className="text-emerald-500"
+                                    className="text-zinc-500"
                                  />
                               </button>
                            ) : null}
