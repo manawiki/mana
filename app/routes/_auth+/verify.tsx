@@ -53,19 +53,17 @@ export default function CheckEmail() {
    const { t } = useTranslation(handle?.i18n);
    return (
       <>
-         <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
-            <div
-               className="border-color bg-2 shadow-1 text-1 relative 
+         <div
+            className="border-color bg-2 shadow-1 text-1 relative 
                border p-6 text-center text-lg font-semibold shadow-sm tablet:rounded-xl"
-            >
-               <div
-                  className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
+         >
+            <div
+               className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
                      w-14 items-center justify-center rounded-full border shadow-sm"
-               >
-                  <Check className="mx-auto" size={24} />
-               </div>
-               {t("register.verified")}
+            >
+               <Check className="mx-auto" size={24} />
             </div>
+            {t("register.verified")}
          </div>
       </>
    );
