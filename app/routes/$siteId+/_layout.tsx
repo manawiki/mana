@@ -63,7 +63,7 @@ import {
    CircleStackIcon as CircleStackIconBold,
 } from "@heroicons/react/24/solid";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
-import type { Site, Update, User, CoreMeta } from "payload/generated-types";
+import type { Site, Update, User } from "payload/generated-types";
 import { DotLoader, Modal } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
@@ -152,9 +152,8 @@ export default function SiteIndex() {
    const [searchToggle, setSearchToggle] = useState(false);
    let isBot = useIsBot();
 
-   const { isMobileApp, coreMeta, isIOS } = useRouteLoaderData("root") as {
+   const { isMobileApp, isIOS } = useRouteLoaderData("root") as {
       isMobileApp: Boolean;
-      coreMeta: CoreMeta;
       isIOS: Boolean;
    };
 
@@ -1099,52 +1098,6 @@ export default function SiteIndex() {
                               >
                                  {t("login.action", { ns: "auth" })}
                               </Link>
-                              {isMobileApp && (
-                                 <section className="relative z-10 pt-8">
-                                    <div className="text-1 pb-2.5 pl-1 text-sm font-bold">
-                                       Featured
-                                    </div>
-                                    {coreMeta.featuredSites?.length ===
-                                    0 ? null : (
-                                       <menu className="space-y-3">
-                                          {coreMeta.featuredSites?.map(
-                                             ({ site }) => (
-                                                <Link
-                                                   prefetch="render"
-                                                   reloadDocument={
-                                                      site.type == "custom" &&
-                                                      true
-                                                   }
-                                                   key={site.id}
-                                                   className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                                                   to={`/${site.slug}`}
-                                                >
-                                                   <>
-                                                      <div className="flex w-full items-center gap-3 truncate p-2">
-                                                         <div className="h-7 w-7">
-                                                            <Image
-                                                               className="border-color overflow-hidden rounded-full border shadow-sm"
-                                                               width={32}
-                                                               height={32}
-                                                               alt="Site Logo"
-                                                               options="aspect_ratio=1:1&height=120&width=120"
-                                                               url={
-                                                                  site.icon?.url
-                                                               }
-                                                            />
-                                                         </div>
-                                                         <div className="truncate text-sm font-bold">
-                                                            {site.name}
-                                                         </div>
-                                                      </div>
-                                                   </>
-                                                </Link>
-                                             )
-                                          )}
-                                       </menu>
-                                    )}
-                                 </section>
-                              )}
                            </div>
                         </LoggedOut>
                         {following?.length === 0 ? null : (
