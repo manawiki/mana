@@ -27,19 +27,17 @@ export const handle = {
 export default function CheckEmail() {
    const { t } = useTranslation(handle?.i18n);
    return (
-      <div className="mx-6 mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
-         <div
-            className="border-color bg-2 shadow-1 text-1 relative 
+      <div
+         className="border-color bg-2 shadow-1 text-1 relative 
                rounded-xl border p-6 text-center font-semibold shadow-sm"
-         >
-            <div
-               className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
+      >
+         <div
+            className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
                      w-14 items-center justify-center rounded-full border shadow-sm"
-            >
-               <Mail className="mx-auto" size={24} />
-            </div>
-            {t("register.checkEmail")}
+         >
+            <Mail className="mx-auto" size={24} />
          </div>
+         {t("register.checkEmail")}
       </div>
    );
 }

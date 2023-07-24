@@ -74,6 +74,7 @@ export async function loader({
                  docs {
                    id
                    name
+                   type
                    slug
                    status
                    about
@@ -156,13 +157,8 @@ const Discover = () => {
 
    return (
       <>
-         <section className="relative z-10 text-dark">
-            <section className="min-h-screen border-t border-zinc-700/50 bg-zinc-800/30">
-               <div
-                  className="pattern-dots absolute left-0
-                top-0 h-full
-                  w-full pattern-zinc-600 pattern-bg-zinc-800 pattern-opacity-10 pattern-size-4"
-               ></div>
+         <section className="relative z-10 h-full text-dark">
+            <section className="border-t border-zinc-700/50">
                <div className="relative z-10 mx-auto max-w-[680px] max-laptop:px-4">
                   <div className="flex items-center justify-center">
                      <div
@@ -281,7 +277,7 @@ const Discover = () => {
                   </div>
                   <div className="flex-grow space-y-4">
                      {sites?.docs.length === 0 ? (
-                        <div className="py-3 text-sm ">Empty</div>
+                        <div className="py-3 text-sm "></div>
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link

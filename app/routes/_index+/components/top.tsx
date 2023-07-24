@@ -10,7 +10,7 @@ export const Top = () => {
       isMobileApp: Boolean;
    };
    return (
-      <section>
+      <section className="bg-zinc-900">
          <div className="relative z-10 mx-auto max-w-6xl px-6 laptop:px-4">
             {/* Particles animation */}
             <Particles className="absolute inset-0 -z-10" />

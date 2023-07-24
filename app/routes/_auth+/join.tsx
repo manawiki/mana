@@ -82,89 +82,87 @@ export default function Signup() {
    });
    return (
       <>
-         <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
-            <div
-               className="border-color bg-2 shadow-1 relative 
+         <div
+            className="border-color bg-2 shadow-1 relative 
                   border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
-            >
-               <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
-                  {t("register.title")}
-               </div>
-               <Form ref={zo.ref} method="post" className="space-y-4" replace>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.username()}
-                        text={t("register.username")}
-                        error={zo.errors.username((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           autoFocus={true}
-                           type="text"
-                           name={zo.fields.username()}
-                           autoComplete="username"
-                           className="input-text lowercase"
-                           disabled={disabled}
-                        />
-                     </div>
-                  </fieldset>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.email()}
-                        text={t("register.email")}
-                        error={zo.errors.email((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           name={zo.fields.email()}
-                           type="email"
-                           autoComplete="email"
-                           className="input-text"
-                           disabled={disabled}
-                        />
-                     </div>
-                  </fieldset>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.password()}
-                        text={t("register.password")}
-                        error={zo.errors.password((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           name={zo.fields.password()}
-                           type="password"
-                           autoComplete="new-password"
-                           className="input-text"
-                           disabled={disabled}
-                        />
-                     </div>
-                  </fieldset>
-                  <button
-                     name="intent"
-                     value="join"
-                     type="submit"
-                     className="!mt-6 mb-3 h-11 w-full rounded bg-zinc-500 px-4
-                        font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
-                     disabled={disabled}
-                  >
-                     {adding ? <DotLoader /> : t("register.action")}
-                  </button>
-                  <div className="flex items-center justify-center">
-                     <div className="text-1 text-center text-sm">
-                        <Link
-                           className="font-bold text-blue-500"
-                           to={{
-                              pathname: "/login",
-                              search: searchParams.toString(),
-                           }}
-                        >
-                           {t("register.alreadyHaveAnAccount")}
-                        </Link>
-                     </div>
-                  </div>
-               </Form>
+         >
+            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+               {t("register.title")}
             </div>
+            <Form ref={zo.ref} method="post" className="space-y-4" replace>
+               <fieldset>
+                  <FormLabel
+                     htmlFor={zo.fields.username()}
+                     text={t("register.username")}
+                     error={zo.errors.username((err) => err.message)}
+                  />
+                  <div className="mt-1">
+                     <input
+                        autoFocus={true}
+                        type="text"
+                        name={zo.fields.username()}
+                        autoComplete="username"
+                        className="input-text lowercase"
+                        disabled={disabled}
+                     />
+                  </div>
+               </fieldset>
+               <fieldset>
+                  <FormLabel
+                     htmlFor={zo.fields.email()}
+                     text={t("register.email")}
+                     error={zo.errors.email((err) => err.message)}
+                  />
+                  <div className="mt-1">
+                     <input
+                        name={zo.fields.email()}
+                        type="email"
+                        autoComplete="email"
+                        className="input-text"
+                        disabled={disabled}
+                     />
+                  </div>
+               </fieldset>
+               <fieldset>
+                  <FormLabel
+                     htmlFor={zo.fields.password()}
+                     text={t("register.password")}
+                     error={zo.errors.password((err) => err.message)}
+                  />
+                  <div className="mt-1">
+                     <input
+                        name={zo.fields.password()}
+                        type="password"
+                        autoComplete="new-password"
+                        className="input-text"
+                        disabled={disabled}
+                     />
+                  </div>
+               </fieldset>
+               <button
+                  name="intent"
+                  value="join"
+                  type="submit"
+                  className="!mt-6 mb-3 h-11 w-full rounded bg-zinc-500 px-4
+                        font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                  disabled={disabled}
+               >
+                  {adding ? <DotLoader /> : t("register.action")}
+               </button>
+               <div className="flex items-center justify-center">
+                  <div className="text-1 text-center text-sm">
+                     <Link
+                        className="font-bold text-blue-500"
+                        to={{
+                           pathname: "/login",
+                           search: searchParams.toString(),
+                        }}
+                     >
+                        {t("register.alreadyHaveAnAccount")}
+                     </Link>
+                  </div>
+               </div>
+            </Form>
          </div>
       </>
    );

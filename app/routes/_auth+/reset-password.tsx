@@ -56,43 +56,41 @@ export default function ResetPassword() {
    const zoPW = useZorm("pw-reset", PasswordResetSchema);
 
    return (
-      <div className="mt-20 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
-         <div
-            className="border-color bg-2 shadow-1 relative border-y
+      <div
+         className="border-color bg-2 shadow-1 relative border-y
                 p-6 shadow-sm tablet:rounded-xl tablet:border"
-         >
-            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
-               {t("pwReset.title")}
-            </div>
-            <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zoPW.fields.password()}
-                     text={t("pwReset.password")}
-                     error={zoPW.errors.password((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        name={zoPW.fields.password()}
-                        type="password"
-                        autoComplete="new-password"
-                        className="input-text"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <input type="hidden" name={zoPW.fields.token()} value={token} />
-               <button
-                  name="intent"
-                  value="password-reset"
-                  type="submit"
-                  className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
-                  disabled={disabled}
-               >
-                  {adding ? <DotLoader /> : "Reset Password"}
-               </button>
-            </Form>
+      >
+         <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+            {t("pwReset.title")}
          </div>
+         <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
+            <fieldset>
+               <FormLabel
+                  htmlFor={zoPW.fields.password()}
+                  text={t("pwReset.password")}
+                  error={zoPW.errors.password((err) => err.message)}
+               />
+               <div className="mt-1">
+                  <input
+                     name={zoPW.fields.password()}
+                     type="password"
+                     autoComplete="new-password"
+                     className="input-text"
+                     disabled={disabled}
+                  />
+               </div>
+            </fieldset>
+            <input type="hidden" name={zoPW.fields.token()} value={token} />
+            <button
+               name="intent"
+               value="password-reset"
+               type="submit"
+               className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+               disabled={disabled}
+            >
+               {adding ? <DotLoader /> : "Reset Password"}
+            </button>
+         </Form>
       </div>
    );
 }
