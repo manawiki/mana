@@ -68,6 +68,15 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                   <Tab.Group>
                      {/* Create one tab per language of EN, JP, CN, KR */}
                      <Tab.List className="grid grid-cols-4 gap-3 rounded-lg py-3">
+                        <Tab
+                           //hide player by default to avoid certain svg loading issues
+                           //we can remove this tab if we want to show the player by default and has no perf impacts
+                           hidden
+                           className="focus:outline-none"
+                           key="none"
+                        >
+                           <div hidden>none</div>
+                        </Tab>
                         {lang.map((l) => (
                            <Tab className="focus:outline-none" key={l}>
                               {({ selected }) => (
@@ -85,6 +94,9 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                         ))}
                      </Tab.List>
                      <Tab.Panels>
+                        <Tab.Panel>
+                           <div className="mt-1 h-6 w-full"></div>
+                        </Tab.Panel>
                         <Tab.Panel>
                            <audio
                               className="mt-1 h-6 w-full"
