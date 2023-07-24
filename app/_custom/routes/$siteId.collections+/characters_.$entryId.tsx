@@ -166,7 +166,7 @@ export default function CharacterEntry() {
             <Story pageData={entryDefault} />
 
             {/* Voice Line Section */}
-            <VoiceLines pageData={entryDefault} />
+            {/* <VoiceLines pageData={entryDefault} /> */}
          </EntryContent>
       </EntryParent>
    );
