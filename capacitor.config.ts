@@ -14,11 +14,11 @@ const config: CapacitorConfig = {
    android: {
       appendUserAgent: "isAndroid",
    },
-   plugins: {
-      SplashScreen: {
-         launchAutoHide: false,
-      },
-   },
+   // plugins: {
+   //    SplashScreen: {
+   //       launchAutoHide: false,
+   //    },
+   // },
 };
 
 export default config;

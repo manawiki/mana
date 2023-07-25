@@ -5,7 +5,7 @@ import { LoggedOut, LoggedOutDropDown } from "~/modules/auth";
 export default function IndexLayout() {
    return (
       <div className="bg-bg1Dark">
-         <main className="flex min-h-screen flex-col overflow-hidden">
+         <main className="flex min-h-screen flex-col overflow-hidden pb-40">
             <div className="grow">
                <div
                   className="pattern-dots absolute left-0 top-0 h-full
