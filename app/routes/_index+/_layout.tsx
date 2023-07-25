@@ -1,10 +1,11 @@
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
+import { DarkModeToggle } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
 import { LoggedOut, LoggedOutDropDown } from "~/modules/auth";
 
 export default function IndexLayout() {
    return (
-      <div className="bg-bg1Dark">
+      <div className="bg-1">
          <main className="flex min-h-screen flex-col overflow-hidden pb-40">
             <div className="grow">
                <Header />
@@ -35,6 +36,9 @@ const Header = () => {
                         <LoggedOutDropDown />
                         <LoggedOut>
                            <ul className="flex items-center justify-end gap-3">
+                              <li>
+                                 <DarkModeToggle />
+                              </li>
                               <li>
                                  <Link
                                     to="/join"
@@ -78,13 +82,13 @@ const Footer = () => {
    return (
       <>
          {!isMobileApp && (
-            <footer className="bg-bg1Dark py-6">
-               <div className="relative z-10 mx-auto -mt-5 flex max-w-6xl items-center justify-center gap-4 text-zinc-300">
+            <footer className="bg-1 py-6">
+               <div className="relative z-10 mx-auto -mt-5 flex max-w-6xl items-center justify-center gap-4">
                   <a
                      href="https://discord.com/invite/nRNM35ytD7"
                      rel="noreferrer"
                      target="_blank"
-                     className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700/50 bg-bg2Dark "
+                     className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
                   >
                      <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +104,7 @@ const Footer = () => {
                      href="https://github.com/manawiki/core"
                      rel="noreferrer"
                      target="_blank"
-                     className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700/50 bg-bg2Dark "
+                     className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
                   >
                      <svg
                         className="h-9 w-9 fill-current"
@@ -114,7 +118,7 @@ const Footer = () => {
                      href="https://twitter.com/mana_wiki"
                      rel="noreferrer"
                      target="_blank"
-                     className="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-700/50 bg-bg2Dark "
+                     className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
                   >
                      <svg
                         className="h-8 w-8 fill-current"

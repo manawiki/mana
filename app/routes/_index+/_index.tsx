@@ -186,7 +186,7 @@ const Discover = () => {
 
    return (
       <>
-         <section className="relative z-10 h-full text-dark">
+         <section className="relative z-10 h-full">
             {isMobileApp && (
                <LoggedIn>
                   <div className="px-4 pb-10 pt-20">
@@ -198,23 +198,20 @@ const Discover = () => {
                   </div>
                </LoggedIn>
             )}
-            <section className="border-t border-zinc-700/50">
+            <section className="border-color border-t">
                <div className="relative z-20 mx-auto max-w-[680px] max-laptop:px-4">
                   <div className="flex items-center justify-center">
-                     <div
-                        className="relative -mt-[28px] h-14 w-full rounded-2xl border
-                   border-zinc-700/50 bg-zinc-800 shadow shadow-black/30"
-                     >
+                     <div className="bg-2 shadow-1 border-color relative -mt-[28px] h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200">
                         <>
                            <div className="relative flex h-full w-full items-center gap-2">
                               <span className="absolute left-[16px] top-[17px]">
-                                 <Search size={20} className="text-zinc-400" />
+                                 <Search size={20} />
                               </span>
                               <input
                                  type="text"
                                  placeholder="Search..."
                                  className="h-full w-full rounded-2xl border-0 bg-transparent 
-                                 pl-[50px] text-dark focus:outline-none focus:ring-1 focus:ring-zinc-600"
+                                 pl-[50px] focus:outline-none focus:ring-0"
                                  value={query}
                                  onChange={(e) => setQuery(e.target.value)}
                               />
@@ -267,13 +264,13 @@ const Discover = () => {
                               <div
                                  className={clsx(
                                     checked
-                                       ? "border-blue-800 bg-blue-950"
-                                       : "border-zinc-700 bg-zinc-800",
-                                    "flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow shadow-black/30"
+                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                       : "bg-2 border-color",
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
                                  <Globe2 size={15} />
-                                 <span className="text-zinc-200">All</span>
+                                 <span>All</span>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -282,13 +279,13 @@ const Discover = () => {
                               <div
                                  className={clsx(
                                     checked
-                                       ? "border-blue-800 bg-blue-950"
-                                       : "border-zinc-700 bg-zinc-800",
-                                    "flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow shadow-black/30"
+                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                       : "bg-2 border-color",
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
                                  <Gamepad2 size={16} />
-                                 <span className="text-zinc-200">Gaming</span>
+                                 <span>Gaming</span>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -297,19 +294,19 @@ const Discover = () => {
                               <div
                                  className={clsx(
                                     checked
-                                       ? "border-blue-800 bg-blue-950"
-                                       : "border-zinc-700 bg-zinc-800",
-                                    "flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow shadow-black/30"
+                                       ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
+                                       : "bg-2 border-color",
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
                                  <Component size={14} />
-                                 <span className="text-zinc-200">Other</span>
+                                 <span>Other</span>
                               </div>
                            )}
                         </RadioGroup.Option>
                      </RadioGroup>
-                     <div className="pr-0.5 pt-2 text-sm font-bold">
-                        <span className="font-bold text-zinc-400">
+                     <div className="pr-1 pt-2 text-sm">
+                        <span className="text-zinc-400">
                            {sites?.totalDocs}
                         </span>{" "}
                         results
@@ -324,13 +321,11 @@ const Discover = () => {
                               reloadDocument={site.type == "custom" && true}
                               to={`/${site.slug}`}
                               key={site.id}
-                              className="flex items-center gap-3.5 rounded-2xl border border-zinc-700/60
-                              bg-zinc-800 p-3 shadow shadow-black/30
-                              hover:border-zinc-600/70"
+                              className="border-color bg-2 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
                            >
                               <div
-                                 className="h-11 w-11 flex-none overflow-hidden rounded-full
-                                 border border-zinc-500 bg-zinc-700 shadow shadow-black/50"
+                                 className="shadow-1 border-1 h-11 w-11 flex-none
+                                 overflow-hidden rounded-full border shadow"
                               >
                                  <Image
                                     height={44}
@@ -338,11 +333,11 @@ const Discover = () => {
                                     url={`${site.icon?.url}`}
                                  />
                               </div>
-                              <div className="space-y-0.5 truncate">
-                                 <div className="truncate font-mono text-sm font-semibold text-dark">
+                              <div className="space-y-1 truncate">
+                                 <div className="truncate font-mono font-bold">
                                     {site.name}
                                  </div>
-                                 <div className="truncate text-sm text-zinc-400">
+                                 <div className="truncate text-xs">
                                     {site.about}
                                  </div>
                               </div>
