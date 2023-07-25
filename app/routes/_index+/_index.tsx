@@ -122,9 +122,6 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
    useEffect(() => {
       AOS.init({
          once: true,
@@ -133,12 +130,6 @@ export default function IndexMain() {
          easing: "ease-out-cubic",
       });
    });
-
-   useEffect(() => {
-      if (isMobileApp) {
-         SplashScreen.hide();
-      }
-   }, [isMobileApp]);
 
    return (
       <>
