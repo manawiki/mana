@@ -11,7 +11,6 @@ import {
    Scripts,
    ScrollRestoration,
    useLoaderData,
-   useLocation,
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import {
@@ -38,10 +37,8 @@ import { useIsBot } from "~/utils/isBotProvider";
 import { isNativeSSR } from "./utils";
 import { StatusBar } from "@capacitor/status-bar";
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
-import { fetchWithCache } from "./utils/cache.server";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Preferences } from "@capacitor/preferences";
-import { App as CapApp } from "@capacitor/app";
 import { settings } from "mana-config";
 
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
@@ -127,7 +124,6 @@ function App() {
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    useChangeLanguage(locale);
-   const location = useLocation();
 
    useEffect(() => {
       if (!toastMessage) {
@@ -151,21 +147,6 @@ function App() {
 
    useEffect(() => {
       if (isMobileApp) {
-         //When the app closes or loses focus, save the last active url so we can revisit it later
-         CapApp.addListener("appStateChange", ({ isActive }) => {
-            if (!isActive) {
-               Preferences.set({
-                  key: "activeUrl",
-                  value: location.pathname + location.search,
-               });
-               SplashScreen.hide();
-            }
-         });
-      }
-   }, [location]);
-
-   useEffect(() => {
-      if (isMobileApp) {
          setBackForwardNavigationGestures(true);
          StatusBar.setOverlaysWebView({ overlay: true });
          // If first time loading the app, send user to the login page
@@ -175,17 +156,6 @@ function App() {
                   key: "initialSetup",
                   value: "complete",
                });
-               SplashScreen.hide();
-            }
-         });
-         // On initial load, check if activeUrl exists, then delete it and redirect the user to the url
-         Preferences.get({ key: "activeUrl" }).then(({ value }) => {
-            if (value) {
-               Preferences.set({
-                  key: "activeUrl",
-                  value: "",
-               });
-               window.location.href = `${settings.domainFull}${value}`;
                SplashScreen.hide();
             }
          });
