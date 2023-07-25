@@ -1253,7 +1253,7 @@ const PinnedMenu = ({ site }: { site: Site }) => {
             <>
                <div className="space-y-0.5 pl-3 pt-6">
                   <div className="flex items-center gap-2.5 pb-2 pl-2.5">
-                     <div className="text-1 flex items-center gap-3 text-sm font-bold">
+                     <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
                         <Pin className="text-red-400" size={16} />
                         <span>Pinned</span>
                      </div>
