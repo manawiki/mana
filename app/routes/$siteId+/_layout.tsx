@@ -24,13 +24,11 @@ import {
    Pin,
    Search,
    Settings2,
-   User as UserLucideIcon,
    Users,
    X,
 } from "lucide-react";
 import type {
    ActionFunction,
-   LinksFunction,
    LoaderArgs,
    V2_MetaFunction,
 } from "@remix-run/node";
@@ -77,6 +75,7 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
+import { LoggedOutNativeMobile } from "./components/LoggedOutNativeMobile";
 
 export async function loader({
    context: { payload, user },
@@ -1066,85 +1065,79 @@ export default function SiteIndex() {
                      <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
                         <button
                            type="button"
-                           className="bg-1 shadow-1 absolute bottom-7
-                              left-1/2 flex h-14 w-14 -translate-x-1/2
-                              transform items-center justify-center rounded-full shadow
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                           className="bg-1 shadow-1 border-color absolute -bottom-6 left-1/2
+                              flex h-12 w-12 -translate-x-1/2 transform items-center
+                              justify-center rounded-full border shadow hover:bg-red-50
+                            focus:outline-none dark:hover:bg-zinc-700"
                            onClick={() => setMenuOpen(false)}
                         >
-                           <X size={28} className="text-red-400" />
+                           <X size={20} className="text-red-400" />
                         </button>
                         <LoggedOut>
-                           <div className="space-y-3">
+                           <div className="flex h-full w-full flex-col items-center justify-center px-4">
                               <Link
-                                 to="/join"
-                                 className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
-                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
+                                 className="mt-4 block w-full rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white"
+                                 to="/"
                               >
-                                 <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                                 <span
-                                    className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                                 ></span>
-                                 <span className="relative text-sm font-bold text-white">
-                                    {t("login.signUp", { ns: "auth" })}
-                                 </span>
+                                 Explore Discoverable Sites
                               </Link>
-                              <Link
-                                 className="border-color bg-3 shadow-1 flex h-10 items-center
-                           justify-center rounded-full border text-center text-sm
-                           font-bold shadow-sm"
-                                 to={`/login?redirectTo=${location.pathname}`}
-                              >
-                                 {t("login.action", { ns: "auth" })}
-                              </Link>
+                              <div className="flex w-full items-center gap-4 pb-6 pt-8">
+                                 <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
+                                 <span className="text-sm">or</span>
+                                 <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
+                              </div>
+                              <div className="pb-4 text-center text-sm font-semibold">
+                                 Login to view the sites you <b>follow</b>
+                              </div>
+                              <LoggedOutNativeMobile />
                            </div>
                         </LoggedOut>
-                        {following?.length === 0 ? null : (
-                           <menu className="space-y-3">
-                              {following?.map((item) => (
-                                 <NavLink
-                                    prefetch="intent"
-                                    reloadDocument={
-                                       // Reload if custom site, but NOT if current site is custom
-                                       item.type == "custom" &&
-                                       site.type != "custom" &&
-                                       true
-                                    }
-                                    key={item.id}
-                                    onClick={() => setMenuOpen(false)}
-                                    className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                                    to={`/${item.slug}`}
-                                 >
-                                    {({ isActive }) => (
-                                       <>
-                                          <div className="flex w-full items-center gap-3 truncate p-2">
-                                             <div className="h-7 w-7 flex-none ">
-                                                <Image
-                                                   className="border-color overflow-hidden rounded-full border shadow-sm"
-                                                   width={32}
-                                                   height={32}
-                                                   alt="Site Logo"
-                                                   options="aspect_ratio=1:1&height=120&width=120"
-                                                   url={item.icon?.url}
-                                                />
+                        <LoggedIn>
+                           {following?.length === 0 ? null : (
+                              <menu className="space-y-3">
+                                 {following?.map((item) => (
+                                    <NavLink
+                                       prefetch="intent"
+                                       reloadDocument={
+                                          // Reload if custom site, but NOT if current site is custom
+                                          item.type == "custom" &&
+                                          site.type != "custom" &&
+                                          true
+                                       }
+                                       key={item.id}
+                                       onClick={() => setMenuOpen(false)}
+                                       className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
+                                       to={`/${item.slug}`}
+                                    >
+                                       {({ isActive }) => (
+                                          <>
+                                             <div className="flex w-full items-center gap-3 truncate p-2">
+                                                <div className="h-7 w-7 flex-none ">
+                                                   <Image
+                                                      className="border-color overflow-hidden rounded-full border shadow-sm"
+                                                      width={32}
+                                                      height={32}
+                                                      alt="Site Logo"
+                                                      options="aspect_ratio=1:1&height=120&width=120"
+                                                      url={item.icon?.url}
+                                                   />
+                                                </div>
+                                                <div className="truncate text-sm font-bold">
+                                                   {item.name}
+                                                </div>
                                              </div>
-                                             <div className="truncate text-sm font-bold">
-                                                {item.name}
-                                             </div>
-                                          </div>
-                                          {isActive && (
-                                             <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                                          )}
-                                       </>
-                                    )}
-                                 </NavLink>
-                              ))}
-                           </menu>
-                        )}
+                                             {isActive && (
+                                                <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
+                                             )}
+                                          </>
+                                       )}
+                                    </NavLink>
+                                 ))}
+                              </menu>
+                           )}
+                        </LoggedIn>
                      </div>
                   </Modal>
-
                   {/* ==== User Native Mobile Menu ==== */}
                   <Modal
                      onClose={() => {
@@ -1155,47 +1148,22 @@ export default function SiteIndex() {
                      <div className="bg-2 h-[80vh] w-[96vw] transform rounded-2xl p-4 text-left align-middle shadow-xl transition-all">
                         <button
                            type="button"
-                           className="bg-1 shadow-1 absolute bottom-7
-                              left-1/2 flex h-14 w-14 -translate-x-1/2
-                              transform items-center justify-center rounded-full shadow
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
+                           className="bg-1 shadow-1 border-color absolute -bottom-6 left-1/2
+                           flex h-12 w-12 -translate-x-1/2 transform items-center
+                           justify-center rounded-full border shadow hover:bg-red-50
+                         focus:outline-none dark:hover:bg-zinc-700"
                            onClick={() => setUserMenuOpen(false)}
                         >
-                           <X size={28} className="text-red-400" />
+                           <X size={20} className="text-red-400" />
                         </button>
                         <section>
-                           <LoggedOut>
-                              <div className="m-4 space-y-3">
-                                 <Link
-                                    to="/join"
-                                    className="shadow-1 group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
-                           rounded-full p-4 px-5 font-medium text-indigo-600 shadow-sm transition duration-300 ease-out"
-                                 >
-                                    <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                                    <span
-                                       className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                           rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                                    ></span>
-                                    <span className="relative text-sm font-bold text-white">
-                                       {t("login.signUp", { ns: "auth" })}
-                                    </span>
-                                 </Link>
-                                 <Link
-                                    className="border-color bg-3 shadow-1 flex h-10 items-center
-                                    justify-center rounded-full border text-center text-sm
-                                    font-bold shadow-sm"
-                                    to={`/login?redirectTo=${location.pathname}`}
-                                 >
-                                    {t("login.action", { ns: "auth" })}
-                                 </Link>
-                              </div>
-                           </LoggedOut>
+                           <LoggedOutNativeMobile />
                            <LoggedIn>
                               <Form action="/logout" method="post">
                                  <button
                                     type="submit"
                                     className="shadow-1 bg-3 border-color relative flex w-full items-center
-               justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
+                                    justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
                                  >
                                     <div className="font-bold">Logout</div>
                                     <LogOut
@@ -1206,9 +1174,6 @@ export default function SiteIndex() {
                               </Form>
                            </LoggedIn>
                         </section>
-                        <div className="border-color mx-40 mt-6 flex items-center justify-center border-t-2 pt-4">
-                           <DarkModeToggle />
-                        </div>
                      </div>
                   </Modal>
                </div>

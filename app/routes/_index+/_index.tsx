@@ -1,5 +1,10 @@
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
-import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+   Link,
+   useLoaderData,
+   useRouteLoaderData,
+   useSearchParams,
+} from "@remix-run/react";
 import type { V2_MetaFunction } from "@remix-run/react";
 import clsx from "clsx";
 import indexStyles from "./styles.css";
@@ -25,6 +30,7 @@ import { useDebouncedValue } from "~/hooks";
 import type { Site } from "~/db/payload-types";
 import { Image } from "~/components";
 import { RadioGroup } from "@headlessui/react";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -116,6 +122,9 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
+   const { isMobileApp } = useRouteLoaderData("root") as {
+      isMobileApp: Boolean;
+   };
    useEffect(() => {
       AOS.init({
          once: true,
@@ -124,6 +133,12 @@ export default function IndexMain() {
          easing: "ease-out-cubic",
       });
    });
+
+   useEffect(() => {
+      if (isMobileApp) {
+         SplashScreen.hide();
+      }
+   }, [isMobileApp]);
 
    return (
       <>
