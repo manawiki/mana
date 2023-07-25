@@ -30,7 +30,12 @@ import { useDebouncedValue } from "~/hooks";
 import type { Site } from "~/db/payload-types";
 import { Image } from "~/components";
 import { RadioGroup } from "@headlessui/react";
-import { SplashScreen } from "@capacitor/splash-screen";
+import {
+   FollowingListMobile,
+   LoggedIn,
+   LoggedOut,
+   LoggedOutMobile,
+} from "~/modules/auth";
 
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -122,6 +127,9 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
+   const { isMobileApp } = useRouteLoaderData("root") as {
+      isMobileApp: Boolean;
+   };
    useEffect(() => {
       AOS.init({
          once: true,
@@ -134,6 +142,19 @@ export default function IndexMain() {
    return (
       <>
          <Top />
+         {isMobileApp && (
+            <LoggedOut>
+               <div className="px-5 pb-10 pt-20">
+                  <div className="pb-4 text-center text-sm font-bold">
+                     Login to view the sites you <b>follow</b>
+                  </div>
+                  <LoggedOutMobile />
+                  <div className="pt-12 text-center text-sm font-bold">
+                     Explore Discoverable Sites
+                  </div>
+               </div>
+            </LoggedOut>
+         )}
          <Discover />
       </>
    );
@@ -143,7 +164,9 @@ const Discover = () => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
-
+   const { isMobileApp } = useRouteLoaderData("root") as {
+      isMobileApp: Boolean;
+   };
    const [searchParams, setSearchParams] = useSearchParams({});
    const [category, setCategory] = useState("all");
 
@@ -164,8 +187,19 @@ const Discover = () => {
    return (
       <>
          <section className="relative z-10 h-full text-dark">
+            {isMobileApp && (
+               <LoggedIn>
+                  <div className="px-4 pb-10 pt-20">
+                     <div className="pb-3 pl-1 text-sm font-bold">
+                        Following
+                     </div>
+                     <FollowingListMobile />
+                     <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
+                  </div>
+               </LoggedIn>
+            )}
             <section className="border-t border-zinc-700/50">
-               <div className="relative z-10 mx-auto max-w-[680px] max-laptop:px-4">
+               <div className="relative z-20 mx-auto max-w-[680px] max-laptop:px-4">
                   <div className="flex items-center justify-center">
                      <div
                         className="relative -mt-[28px] h-14 w-full rounded-2xl border
@@ -281,15 +315,14 @@ const Discover = () => {
                         results
                      </div>
                   </div>
-                  <div className="flex-grow space-y-4">
+                  <div className="relative z-20 flex-grow space-y-4">
                      {sites?.docs.length === 0 ? (
                         <div className="py-3 text-sm "></div>
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
                               reloadDocument={site.type == "custom" && true}
-                              prefetch="intent"
-                              to={`${site.slug}`}
+                              to={`/${site.slug}`}
                               key={site.id}
                               className="flex items-center gap-3.5 rounded-2xl border border-zinc-700/60
                               bg-zinc-800 p-3 shadow shadow-black/30

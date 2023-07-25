@@ -38,10 +38,12 @@ import { z } from "zod";
 import { assertIsPost, isAdding, isNativeSSR } from "~/utils";
 import {
    AdminOrStaffOrOwner,
+   FollowingListMobile,
    FollowingSite,
    LoggedIn,
    LoggedOut,
    LoggedOutDropDown,
+   LoggedOutMobile,
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
@@ -75,7 +77,6 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
-import { LoggedOutNativeMobile } from "./components/LoggedOutNativeMobile";
 
 export async function loader({
    context: { payload, user },
@@ -164,7 +165,6 @@ export default function SiteIndex() {
          SafeArea.getSafeAreaInsets().then(({ insets }) => {
             setSetArea(insets);
          });
-         SplashScreen.hide();
       }
    }, []);
 
@@ -1073,69 +1073,38 @@ export default function SiteIndex() {
                         >
                            <X size={20} className="text-red-400" />
                         </button>
-                        <LoggedOut>
-                           <div className="flex h-full w-full flex-col items-center justify-center px-4">
+                        {isMobileApp && (
+                           <LoggedOut>
+                              <div className="flex h-full w-full flex-col items-center justify-center px-4">
+                                 <Link
+                                    className="mt-4 block w-full rounded-full bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white"
+                                    to="/"
+                                 >
+                                    Explore Discoverable Sites
+                                 </Link>
+                                 <div className="flex w-full items-center gap-4 pb-6 pt-8">
+                                    <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
+                                    <span className="text-sm">or</span>
+                                    <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
+                                 </div>
+                                 <div className="pb-4 text-center text-sm font-semibold">
+                                    Login to view the sites you <b>follow</b>
+                                 </div>
+                                 <LoggedOutMobile />
+                              </div>
+                           </LoggedOut>
+                        )}
+                        <menu className="flex h-full flex-col">
+                           <FollowingListMobile setMenuOpen={setMenuOpen} />
+                           <LoggedIn>
                               <Link
-                                 className="mt-4 block w-full rounded-xl bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white"
+                                 className="mb-5 block rounded-full bg-emerald-500 px-8 py-3 text-center text-sm font-bold text-white"
                                  to="/"
                               >
                                  Explore Discoverable Sites
                               </Link>
-                              <div className="flex w-full items-center gap-4 pb-6 pt-8">
-                                 <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
-                                 <span className="text-sm">or</span>
-                                 <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
-                              </div>
-                              <div className="pb-4 text-center text-sm font-semibold">
-                                 Login to view the sites you <b>follow</b>
-                              </div>
-                              <LoggedOutNativeMobile />
-                           </div>
-                        </LoggedOut>
-                        <LoggedIn>
-                           {following?.length === 0 ? null : (
-                              <menu className="space-y-3">
-                                 {following?.map((item) => (
-                                    <NavLink
-                                       prefetch="intent"
-                                       reloadDocument={
-                                          // Reload if custom site, but NOT if current site is custom
-                                          item.type == "custom" &&
-                                          site.type != "custom" &&
-                                          true
-                                       }
-                                       key={item.id}
-                                       onClick={() => setMenuOpen(false)}
-                                       className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                                       to={`/${item.slug}`}
-                                    >
-                                       {({ isActive }) => (
-                                          <>
-                                             <div className="flex w-full items-center gap-3 truncate p-2">
-                                                <div className="h-7 w-7 flex-none ">
-                                                   <Image
-                                                      className="border-color overflow-hidden rounded-full border shadow-sm"
-                                                      width={32}
-                                                      height={32}
-                                                      alt="Site Logo"
-                                                      options="aspect_ratio=1:1&height=120&width=120"
-                                                      url={item.icon?.url}
-                                                   />
-                                                </div>
-                                                <div className="truncate text-sm font-bold">
-                                                   {item.name}
-                                                </div>
-                                             </div>
-                                             {isActive && (
-                                                <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                                             )}
-                                          </>
-                                       )}
-                                    </NavLink>
-                                 ))}
-                              </menu>
-                           )}
-                        </LoggedIn>
+                           </LoggedIn>
+                        </menu>
                      </div>
                   </Modal>
                   {/* ==== User Native Mobile Menu ==== */}
@@ -1157,7 +1126,6 @@ export default function SiteIndex() {
                            <X size={20} className="text-red-400" />
                         </button>
                         <section>
-                           <LoggedOutNativeMobile />
                            <LoggedIn>
                               <Form action="/logout" method="post">
                                  <button
