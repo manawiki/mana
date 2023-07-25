@@ -7,10 +7,6 @@ export default function IndexLayout() {
       <div className="bg-bg1Dark">
          <main className="flex min-h-screen flex-col overflow-hidden pb-40">
             <div className="grow">
-               <div
-                  className="pattern-dots absolute left-0 top-0 h-full
-                  w-full pattern-zinc-600 pattern-bg-zinc-800 pattern-opacity-10 pattern-size-4"
-               ></div>
                <Header />
                <Outlet />
             </div>
@@ -82,7 +78,7 @@ const Footer = () => {
    return (
       <>
          {!isMobileApp && (
-            <footer className="h-11 border-t border-zinc-700/50 bg-bg1Dark">
+            <footer className="bg-bg1Dark py-6">
                <div className="relative z-10 mx-auto -mt-5 flex max-w-6xl items-center justify-center gap-4 text-zinc-300">
                   <a
                      href="https://discord.com/invite/nRNM35ytD7"

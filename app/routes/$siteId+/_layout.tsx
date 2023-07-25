@@ -42,6 +42,7 @@ import {
    LoggedIn,
    LoggedOut,
    LoggedOutDropDown,
+   LoggedOutMobile,
    NotFollowingSite,
 } from "~/modules/auth";
 import { Menu, Transition } from "@headlessui/react";
@@ -75,7 +76,6 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { useIsBot } from "~/utils/isBotProvider";
 import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
-import { LoggedOutNativeMobile } from "./components/LoggedOutNativeMobile";
 
 export async function loader({
    context: { payload, user },
@@ -1089,7 +1089,7 @@ export default function SiteIndex() {
                               <div className="pb-4 text-center text-sm font-semibold">
                                  Login to view the sites you <b>follow</b>
                               </div>
-                              <LoggedOutNativeMobile />
+                              <LoggedOutMobile />
                            </div>
                         </LoggedOut>
                         <LoggedIn>
@@ -1100,9 +1100,7 @@ export default function SiteIndex() {
                                        prefetch="intent"
                                        reloadDocument={
                                           // Reload if custom site, but NOT if current site is custom
-                                          item.type == "custom" &&
-                                          site.type != "custom" &&
-                                          true
+                                          item.type == "custom" && true
                                        }
                                        key={item.id}
                                        onClick={() => setMenuOpen(false)}
@@ -1157,7 +1155,7 @@ export default function SiteIndex() {
                            <X size={20} className="text-red-400" />
                         </button>
                         <section>
-                           <LoggedOutNativeMobile />
+                           <LoggedOutMobile />
                            <LoggedIn>
                               <Form action="/logout" method="post">
                                  <button
