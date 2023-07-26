@@ -30,12 +30,8 @@ import { useDebouncedValue } from "~/hooks";
 import type { Site } from "~/db/payload-types";
 import { Image } from "~/components";
 import { RadioGroup } from "@headlessui/react";
-import {
-   FollowingListMobile,
-   LoggedIn,
-   LoggedOut,
-   LoggedOutMobile,
-} from "~/modules/auth";
+import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
+import { FollowingListMobile } from "../$siteId+/components";
 
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
