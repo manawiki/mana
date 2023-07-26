@@ -142,7 +142,7 @@ export default function IndexMain() {
          </LoggedOut>
          {isMobileApp && (
             <LoggedOut>
-               <div className="px-5 pb-10 pt-20">
+               <div className="bg-3 relative z-10 px-5 pb-10 pt-20">
                   <div className="pb-4 text-center text-sm font-bold">
                      Login to view the sites you <b>follow</b>
                   </div>

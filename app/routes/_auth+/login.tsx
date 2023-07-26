@@ -11,7 +11,6 @@ import {
    useActionData,
    useLoaderData,
    useNavigation,
-   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { i18nextServer } from "~/utils/i18n";
@@ -106,10 +105,6 @@ export default function Login() {
    });
 
    const [isReset, setIsReset] = useState(false);
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
-
    return (
       <div
          className="border-color bg-2 shadow-1 relative border-y
