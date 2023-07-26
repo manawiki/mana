@@ -1,18 +1,10 @@
 import type { Site, User } from "payload/generated-types";
-import {
-   Form,
-   useRouteLoaderData,
-   Link,
-   useLocation,
-   NavLink,
-} from "@remix-run/react";
+import { Form, useRouteLoaderData, Link, useLocation } from "@remix-run/react";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 import { Menu, Transition } from "@headlessui/react";
 import { LogOut, User as UserLucideIcon } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
 import { Fragment } from "react";
 import { useTranslation } from "react-i18next";
-import { Image } from "~/components";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -151,60 +143,5 @@ export const LoggedOutMobile = () => {
             </Link>
          </div>
       </LoggedOut>
-   );
-};
-
-export const FollowingListMobile = ({
-   setMenuOpen,
-}: {
-   setMenuOpen?: Dispatch<SetStateAction<boolean>>;
-}) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
-   const following = user?.sites as Site[];
-
-   return (
-      <>
-         <LoggedIn>
-            {following?.length === 0 ? null : (
-               <div className="flex-grow space-y-3">
-                  {following?.map((item) => (
-                     <NavLink
-                        reloadDocument={
-                           // Reload if custom site, but NOT if current site is custom
-                           item.type == "custom" && true
-                        }
-                        key={item.id}
-                        onClick={() => setMenuOpen(false)}
-                        className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                        to={`/${item.slug}`}
-                     >
-                        {({ isActive }) => (
-                           <>
-                              <div className="flex w-full items-center gap-3 truncate p-2">
-                                 <div className="h-7 w-7 flex-none ">
-                                    <Image
-                                       className="border-color overflow-hidden rounded-full border shadow-sm"
-                                       width={32}
-                                       height={32}
-                                       alt="Site Logo"
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       url={item.icon?.url}
-                                    />
-                                 </div>
-                                 <div className="truncate text-sm font-bold">
-                                    {item.name}
-                                 </div>
-                              </div>
-                              {isActive && (
-                                 <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                              )}
-                           </>
-                        )}
-                     </NavLink>
-                  ))}
-               </div>
-            )}
-         </LoggedIn>
-      </>
    );
 };
