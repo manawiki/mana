@@ -56,6 +56,7 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
       isAndroid,
       toastMessage,
       locale,
+      user,
       siteTheme: themeSession.getTheme(),
    };
 
