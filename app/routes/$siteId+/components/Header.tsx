@@ -7,8 +7,8 @@ import { isAdding } from "~/utils";
 
 import {
    LoggedIn,
+   LoggedInDropDown,
    LoggedOut,
-   LoggedOutDropDown,
    NotFollowingSite,
 } from "~/modules/auth";
 
@@ -75,7 +75,7 @@ export const Header = ({
                      </LoggedIn>
                   </div>
                </div>
-               <LoggedOutDropDown />
+               <LoggedInDropDown />
                <LoggedOut>
                   <Link
                      prefetch="intent"

@@ -137,7 +137,9 @@ export default function IndexMain() {
 
    return (
       <>
-         <Top />
+         <LoggedOut>
+            <Top />
+         </LoggedOut>
          {isMobileApp && (
             <LoggedOut>
                <div className="px-5 pb-10 pt-20">
@@ -160,9 +162,6 @@ const Discover = () => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
    const [searchParams, setSearchParams] = useSearchParams({});
    const [category, setCategory] = useState("all");
 
@@ -183,18 +182,18 @@ const Discover = () => {
    return (
       <>
          <section className="relative z-10 h-full">
-            {isMobileApp && (
-               <LoggedIn>
-                  <div className="px-4 pb-10 pt-20">
+            <LoggedIn>
+               <div className="bg-1 pb-10 pt-20">
+                  <div className="mx-auto max-w-[680px] max-laptop:px-4">
                      <div className="pb-3 pl-1 text-sm font-bold">
                         Following
                      </div>
                      <FollowingListMobile />
                      <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
                   </div>
-               </LoggedIn>
-            )}
-            <section className="border-color border-t">
+               </div>
+            </LoggedIn>
+            <div className="border-color border-t pb-20">
                <div className="relative z-20 mx-auto max-w-[680px] max-laptop:px-4">
                   <div className="flex items-center justify-center">
                      <div className="bg-2 shadow-1 border-color relative -mt-[28px] h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200">
@@ -404,7 +403,7 @@ const Discover = () => {
                      </div>
                   )}
                </div>
-            </section>
+            </div>
          </section>
       </>
    );

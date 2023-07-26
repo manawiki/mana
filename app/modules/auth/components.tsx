@@ -61,7 +61,7 @@ export const LoggedOut = ({ children }: { children: React.ReactNode }) => {
    return user ? null : <>{children}</>;
 };
 
-export const LoggedOutDropDown = () => {
+export const LoggedInDropDown = () => {
    return (
       <LoggedIn>
          <section className="z-50 flex h-14 items-center justify-end gap-2.5">

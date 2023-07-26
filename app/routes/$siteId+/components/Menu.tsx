@@ -140,8 +140,8 @@ export const PinnedList = ({
                   <li key={item.id}>
                      <Link
                         onClick={() => onOpenChange(false)}
-                        className="shadow-1 bg-3 relative flex items-center 
-                          gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+                        className="shadow-1 bg-3 border-color relative flex items-center gap-3
+                          rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
                         prefetch="intent"
                         to={pinnedLinkUrlGenerator(item, site?.slug ?? "")}
                      >
@@ -181,7 +181,7 @@ export const PrimaryMenuLinks = ({
       <div className="grid grid-cols-2 gap-3">
          <Link
             onClick={() => onOpenChange(false)}
-            className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+            className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
             prefetch="intent"
             to={`/${site.slug}/posts`}
          >
@@ -190,7 +190,7 @@ export const PrimaryMenuLinks = ({
          </Link>
          <Link
             onClick={() => onOpenChange(false)}
-            className="shadow-1 bg-3 relative flex items-center gap-3 rounded-xl p-3 pr-4 text-sm font-bold shadow-sm"
+            className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
             prefetch="intent"
             to={`/${site.slug}/collections`}
          >

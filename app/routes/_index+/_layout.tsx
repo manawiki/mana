@@ -1,17 +1,23 @@
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
 import { DarkModeToggle } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
-import { LoggedOut, LoggedOutDropDown } from "~/modules/auth";
+import { LoggedIn, LoggedInDropDown, LoggedOut } from "~/modules/auth";
 
 export default function IndexLayout() {
    return (
       <div className="bg-1">
-         <main className="flex min-h-screen flex-col overflow-hidden pb-40">
+         <main className="flex min-h-screen flex-col overflow-hidden">
             <div className="grow">
                <Header />
                <Outlet />
             </div>
          </main>
+         <div
+            className="pattern-dots absolute left-0
+            top-0 h-full  w-full
+            pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+            dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+         ></div>
          <Footer />
       </div>
    );
@@ -27,28 +33,31 @@ const Header = () => {
             <header className="absolute z-30 w-full">
                <div className="mx-auto max-w-6xl px-4">
                   <div className="flex h-16 items-center justify-between">
-                     <div className="text-dark">
+                     <LoggedIn>
                         <Link className="block" to="/">
                            <LogoFull />
                         </Link>
-                     </div>
-                     <nav className="">
-                        <LoggedOutDropDown />
+                     </LoggedIn>
+                     <LoggedOut>
+                        <Link className="block text-white" to="/">
+                           <LogoFull />
+                        </Link>
+                     </LoggedOut>
+                     <nav className="flex items-center gap-4">
+                        <DarkModeToggle />
+                        <LoggedInDropDown />
                         <LoggedOut>
                            <ul className="flex items-center justify-end gap-3">
-                              <li>
-                                 <DarkModeToggle />
-                              </li>
                               <li>
                                  <Link
                                     to="/join"
                                     className="group relative inline-flex h-8 items-center justify-center overflow-hidden 
-                  rounded-lg px-3 py-2  text-indigo-600 shadow shadow-zinc-950 transition duration-300 ease-out"
+                                    rounded-lg px-3 py-2  text-indigo-600 shadow shadow-zinc-950 transition duration-300 ease-out"
                                  >
                                     <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
                                     <span
                                        className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
-                     rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
+                                       rotate-45 transform rounded-lg bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
                                     ></span>
                                     <span className="relative text-xs font-extrabold uppercase text-white">
                                        Sign Up
@@ -58,7 +67,7 @@ const Header = () => {
                               <li>
                                  <Link
                                     className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
-                  text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
+                                    text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
                                     to="/login"
                                  >
                                     Login
@@ -82,8 +91,8 @@ const Footer = () => {
    return (
       <>
          {!isMobileApp && (
-            <footer className="bg-1 py-6">
-               <div className="relative z-10 mx-auto -mt-5 flex max-w-6xl items-center justify-center gap-4">
+            <footer className="border-color border-t py-4">
+               <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-center gap-4">
                   <a
                      href="https://discord.com/invite/nRNM35ytD7"
                      rel="noreferrer"
