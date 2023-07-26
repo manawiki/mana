@@ -37,9 +37,8 @@ import { useIsBot } from "~/utils/isBotProvider";
 import { isNativeSSR } from "./utils";
 import { StatusBar } from "@capacitor/status-bar";
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
-import { SplashScreen } from "@capacitor/splash-screen";
-import { Preferences } from "@capacitor/preferences";
 import { settings } from "mana-config";
+import { App as CapacitorApp } from "@capacitor/app";
 
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
 const RemixDevTools = lazy(() => import("remix-development-tools"));
@@ -57,7 +56,6 @@ export const loader = async ({ context: { user }, request }: LoaderArgs) => {
       isAndroid,
       toastMessage,
       locale,
-      user,
       siteTheme: themeSession.getTheme(),
    };
 
@@ -118,7 +116,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, isMobileApp, user } =
+   const { locale, siteTheme, toastMessage, isMobileApp } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
@@ -149,14 +147,11 @@ function App() {
       if (isMobileApp) {
          setBackForwardNavigationGestures(true);
          StatusBar.setOverlaysWebView({ overlay: true });
-         // If first time loading the app, send user to the login page
-         Preferences.get({ key: "initialSetup" }).then(({ value }) => {
-            if (!user && !value) {
-               Preferences.set({
-                  key: "initialSetup",
-                  value: "complete",
-               });
-               SplashScreen.hide();
+         CapacitorApp.addListener("backButton", ({ canGoBack }) => {
+            if (!canGoBack) {
+               CapacitorApp.exitApp();
+            } else {
+               window.history.back();
             }
          });
       }

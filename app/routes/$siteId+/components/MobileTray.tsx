@@ -68,9 +68,11 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
 };
 
 export const FollowingTrayContent = ({
+   site,
    isMobileApp,
    setFollowerMenuOpen,
 }: {
+   site: Site;
    isMobileApp: Boolean;
    setFollowerMenuOpen: any;
 }) => {
@@ -80,6 +82,7 @@ export const FollowingTrayContent = ({
             <LoggedOut>
                <div className="flex w-full flex-col items-center justify-center px-4">
                   <Link
+                     reloadDocument={site.type != "custom" && true}
                      className="block w-full rounded-full bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white"
                      to="/"
                   >
@@ -101,6 +104,7 @@ export const FollowingTrayContent = ({
             <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
             <LoggedIn>
                <Link
+                  reloadDocument={site.type != "custom" && true}
                   className="mx-6 my-9 rounded-full bg-emerald-500 px-5 py-3 text-center text-sm font-bold text-white"
                   to="/"
                >

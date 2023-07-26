@@ -95,10 +95,10 @@ export default function SiteIndex() {
    const gaTrackingId = site?.gaTagId;
    let isBot = useIsBot();
 
-   const { isMobileApp } = useRouteLoaderData("root") as {
+   const { isMobileApp, isIOS } = useRouteLoaderData("root") as {
       isMobileApp: Boolean;
+      isIOS: Boolean;
    };
-
    //On native mobile, get the safe area padding
    const [safeArea, setSetArea] = useState() as any;
 
@@ -172,6 +172,7 @@ export default function SiteIndex() {
                         safeArea={safeArea}
                         setUserMenuOpen={setUserMenuOpen}
                         setFollowerMenuOpen={setFollowerMenuOpen}
+                        isIOS={isIOS}
                         isMobileApp={isMobileApp}
                      />
 
@@ -181,6 +182,7 @@ export default function SiteIndex() {
                         open={isFollowerMenuOpen}
                      >
                         <FollowingTrayContent
+                           site={site}
                            isMobileApp={isMobileApp}
                            setFollowerMenuOpen={setFollowerMenuOpen}
                         />

@@ -10,10 +10,6 @@ PODS:
     - Capacitor
   - CapacitorPluginSafeArea (2.0.5):
     - Capacitor
-  - CapacitorPreferences (5.0.6):
-    - Capacitor
-  - CapacitorSplashScreen (5.0.6):
-    - Capacitor
   - CapacitorStatusBar (5.0.6):
     - Capacitor
 
@@ -24,8 +20,6 @@ DEPENDENCIES:
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - CapacitorPluginIosWebviewConfigurator (from `../../node_modules/capacitor-plugin-ios-webview-configurator`)
   - CapacitorPluginSafeArea (from `../../node_modules/capacitor-plugin-safe-area`)
-  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
-  - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
 
 EXTERNAL SOURCES:
@@ -41,10 +35,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-plugin-ios-webview-configurator"
   CapacitorPluginSafeArea:
     :path: "../../node_modules/capacitor-plugin-safe-area"
-  CapacitorPreferences:
-    :path: "../../node_modules/@capacitor/preferences"
-  CapacitorSplashScreen:
-    :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
 
@@ -55,10 +45,8 @@ SPEC CHECKSUMS:
   CapacitorCordova: b31a46ad379c93a5c04e0598a6164e8cb90c2bb2
   CapacitorPluginIosWebviewConfigurator: 4090b21ed635a5676718436bbbf386191d077271
   CapacitorPluginSafeArea: bfdd714827dbd89fb44fea286beec996e1b0c5c4
-  CapacitorPreferences: f03954bcb0ff09c792909e46bff88e3183c16b10
-  CapacitorSplashScreen: 5fa2ab5e46cf5cc530cf16a51c80c7a986579ccd
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
 
-PODFILE CHECKSUM: 970c9903218d19ca32e622e30f40a8a679923268
+PODFILE CHECKSUM: d8319548868a2652266c91e8c8a1541613d25ecf
 
 COCOAPODS: 1.12.1

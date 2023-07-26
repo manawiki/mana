@@ -1808,16 +1808,6 @@
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-5.1.1.tgz#1f6c7761620fc3b354d895a6235bebee40856b9c"
   integrity sha512-Vk76qa1TDckcPNcUgEIgNdgFo4SqTDBNYqKaYVDMOgkZxg4aKe6PzZaqw1e9T3e4NKFSrDHnCDanA5UFB9tQ3w==
 
-"@capacitor/preferences@^5.0.6":
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/@capacitor/preferences/-/preferences-5.0.6.tgz#96ce925001cc41272a93b6860160fb10d335cbe0"
-  integrity sha512-aDe4wGTVSAIue6XXdUFgyz7SGszxK/Ptt/iWTydMpzc1PlZXw1XTTnciM+S+SLLNZFzXlkpXT3wMnh9t0DojUA==
-
-"@capacitor/splash-screen@^5.0.6":
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/@capacitor/splash-screen/-/splash-screen-5.0.6.tgz#d29320de49cc68add59e17fecb64aa2f1a08447f"
-  integrity sha512-9B8wSm89D+LlshFw8B+mjPU8pJNf1WOx2mkMjMvcH0/EqxNaE+ZaO8lPCX+9WvWSEZs3O3l11qiSnOFHeK0t9A==
-
 "@capacitor/status-bar@^5.0.4", "@capacitor/status-bar@^5.0.6":
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/@capacitor/status-bar/-/status-bar-5.0.6.tgz#281568a7f7aeacf80777702cb9947c29dc32685c"
