@@ -2,7 +2,7 @@ import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
 export const Rarities: CollectionConfig = {
-   slug: "rarity",
+   slug: "rarities",
    labels: { singular: "rarity", plural: "rarities" },
    admin: {
       group: "Custom",
