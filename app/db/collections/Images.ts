@@ -17,6 +17,11 @@ export const Images: CollectionConfig = {
          type: "text",
       },
       {
+         name: "hash",
+         type: "text",
+         unique: true,
+      },
+      {
          name: "createdBy",
          type: "relationship",
          relationTo: "users",

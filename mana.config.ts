@@ -20,9 +20,10 @@ export const settings: ManaConfig = {
    corsOrigins: [
       "https://mana.wiki",
       "https://starrail-static.mana.wiki",
+      "https://neuralcloud-static.mana.wiki",
       "https://static.mana.wiki",
       "http://localhost:3000",
    ],
-   cors: ["mana.wiki", "starrail-static.mana.wiki", "static.mana.wiki"],
-   siteId: "starrail",
+   cors: ["mana.wiki", "static.mana.wiki", "starrail-static.mana.wiki", "neuralcloud-static.mana.wiki"],
+   siteId: "neuralcloud",
 };
