@@ -525,6 +525,9 @@ const CharacterInfo = ({
       setTimeout(() => {
          setDisableRefresh(false);
       }, refreshCooldown * 1000);
+
+      // Disable Refresh if already submitting
+      if (navigation.state !== "idle") setDisableRefresh(true);
    }, [navigation.state, refreshCooldown]);
 
    // Character Data Loading
