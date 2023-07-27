@@ -89,6 +89,16 @@ export const Users: CollectionConfig = {
          unique: true,
       },
       {
+         name: "email",
+         type: "email",
+         label: "User email",
+         required: true,
+         unique: true,
+         access: {
+            read: isStaffFieldLevel,
+         },
+      },
+      {
          name: "roles",
          saveToJWT: true,
          type: "select",
