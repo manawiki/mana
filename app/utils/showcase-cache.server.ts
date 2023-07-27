@@ -6,7 +6,8 @@ export const lruCache = remember(
    "lruCache",
    new LRUCache({
       max: 1000, // maximum number of items to store in the cache
-      ttl: 60 * 1000, // how long to live in ms
+      ttl: 10 * 60 * 1000, // how long to live in ms
+      allowStale: true, // allow stale items to be returned until they are removed
    })
 );
 
@@ -25,6 +26,7 @@ export async function fetchShowcase(url: string, init?: RequestInit) {
       console.log(`Showcase uid ${key} from cache.`);
       return cached;
    }
+
    return fetch(url, init).then((res) => {
       const response = res.json();
       lruCache.set(key, response);
@@ -40,19 +42,25 @@ export async function refetchShowcase(url: string, init?: RequestInit) {
    //The key could be graphql, in that case we'll use init.body instead. We should also delete any spacing characters
    const key = url.split("/").pop();
 
-   return fetch(url, init).then((res) => {
-      const response = res.json();
+   // fetch, update cache if return, if error, return the error
+   return fetch(url, init)
+      .then((res) => {
+         const response = res.json();
 
-      // update or set cache
-      if (lruCache.get(key)) {
-         console.log(`Showcase uid ${key} updated.`);
-         lruCache.set(key, response);
-      } else {
-         //log cache size, trim length to terminal width
-         console.log(`Showcase uid ${key} cached`);
-         lruCache.set(key, response);
-      }
+         // update or set cache
+         if (lruCache.get(key)) {
+            console.log(`Showcase uid ${key} updated.`);
+            lruCache.set(key, response);
+         } else {
+            //log cache size, trim length to terminal width
+            console.log(`Showcase uid ${key} cached`);
+            lruCache.set(key, response);
+         }
 
-      return response;
-   });
+         return response;
+      })
+      .catch((err) => {
+         console.log(`Showcase uid ${key} failed to update.`);
+         return err;
+      });
 }

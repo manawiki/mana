@@ -1574,6 +1574,8 @@ const CharacterInfo = ({
             items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
             shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
             onClick={onDownloadImage}
+            aria-label="Download"
+            title="Download"
          >
             <Download size={18} />
             <span>Download</span>
@@ -1584,7 +1586,9 @@ const CharacterInfo = ({
                type="submit"
                className="border-color shadow-1 absolute left-2/3 z-20 flex -translate-x-1/2 transform
             items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
-            shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
+            shadow disabled:opacity-50 dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
+               aria-label={disableRefresh ? "On cooldown..." : "Refresh"}
+               title={disableRefresh ? "On cooldown..." : "Refresh"}
             >
                {disableRefresh ? (
                   <Hourglass size={18} />
