@@ -48,7 +48,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
    return (
       <>
          <LoggedIn>
-            <Form action="/logout" method="post">
+            <Form reloadDocument={true} action="/logout" method="post">
                <button
                   onClick={() => onOpenChange(false)}
                   type="submit"
