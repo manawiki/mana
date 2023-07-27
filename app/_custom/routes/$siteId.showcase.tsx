@@ -39,7 +39,7 @@ export async function loader({ params, request }: LoaderArgs) {
 
    if (!uid) return null;
 
-   const showcaseDataUrl = `${process.env.SERVICE_SHOWCASE_URL}/api/showcase/${uid}`;
+   const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
 
    if (showcaseData.detail)
