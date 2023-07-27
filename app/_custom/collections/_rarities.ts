@@ -1,9 +1,9 @@
 import { isStaff } from "../../access/user";
 import type { CollectionConfig } from "payload/types";
 
-export const Rarities: CollectionConfig = {
-   slug: "rarities",
-   labels: { singular: "rarity", plural: "rarities" },
+export const _Rarities: CollectionConfig = {
+   slug: "_rarities",
+   labels: { singular: "_rarity", plural: "_rarities" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -12,25 +12,25 @@ export const Rarities: CollectionConfig = {
       create: isStaff,
       read: () => true,
       update: isStaff,
-      delete: isStaff
+      delete: isStaff,
    },
    fields: [
       {
          name: "id",
-         type: "text"
+         type: "text",
       },
       {
          name: "name",
-         type: "text"
+         type: "text",
       },
       {
          name: "hex",
-         type: "text"
+         type: "text",
       },
       {
          name: "icon",
          type: "upload",
-         relationTo: "images"
-      }
-   ]
+         relationTo: "images",
+      },
+   ],
 };
