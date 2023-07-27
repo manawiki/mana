@@ -24,6 +24,12 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
+         name: "isPublic", // required
+         type: "checkbox", // required
+         label: "Public",
+         defaultValue: false,
+      },
+      {
          name: "pinned",
          type: "array",
          label: "Pinned",
