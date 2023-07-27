@@ -48,7 +48,11 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
    return (
       <>
          <LoggedIn>
-            <Form reloadDocument={true} action="/logout" method="post">
+            <Form
+               reloadDocument={true}
+               action="https://mana.wiki/logout"
+               method="post"
+            >
                <button
                   onClick={() => onOpenChange(false)}
                   type="submit"
