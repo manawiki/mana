@@ -1,4 +1,8 @@
-export const CustomCollections = [];
+import { Rarities } from "./rarity";
+
+export const CustomCollections = [
+    Rarities
+];
 
 export const CustomSearchCollections = [];
 
