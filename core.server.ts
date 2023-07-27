@@ -82,15 +82,35 @@ async function startCore() {
    // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
    app.disable("x-powered-by");
 
-   // no ending slashes for SEO reasons
+   const getHost = (req: { get: (key: string) => string | undefined }) =>
+      req.get("X-Forwarded-Host") ?? req.get("host") ?? "";
+
    app.use((req, res, next) => {
+      //enforce https connection to make sure the site uses http2 protocol
+      const proto = req.get("X-Forwarded-Proto");
+      const host = getHost(req);
+      console.log("proto", proto, "host", host);
+      if (proto === "http") {
+         res.set("X-Forwarded-Proto", "https");
+         res.redirect(`https://${host}${req.originalUrl}`);
+         return;
+      }
+
+      // if they connect once with HTTPS, then they'll connect with HTTPS for the next hundred years
+      res.set(
+         "Strict-Transport-Security",
+         "max-age=63072000; includeSubDomains; preload"
+      );
+
+      // no ending slashes for SEO reasons
       if (req.path.endsWith("/") && req.path.length > 1) {
          const query = req.url.slice(req.path.length);
          const safepath = req.path.slice(0, -1).replace(/\/+/g, "/");
          res.redirect(301, safepath + query);
-      } else {
-         next();
+         return;
       }
+
+      next();
    });
 
    // Remix fingerprints its assets so we can cache forever.
