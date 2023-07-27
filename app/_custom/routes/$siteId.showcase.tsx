@@ -1,13 +1,15 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
+   Form,
    Link,
    useLoaderData,
+   useNavigation,
    useRevalidator,
    useSearchParams,
    useTransition,
 } from "@remix-run/react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -21,12 +23,14 @@ import {
    X,
    CircleDot,
    Download,
+   Hourglass,
 } from "lucide-react";
 import { isLoading } from "~/utils";
 import { toPng } from "html-to-image";
 
 import type { Material } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
+import { fetchShowcase, refetchShowcase } from "~/utils/showcase-cache.server";
 import { settings } from "mana-config";
 
 // Sample data, will import via API for real case
@@ -40,7 +44,7 @@ export async function loader({ params, request }: LoaderArgs) {
    if (!uid) return null;
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
-   const showcaseData = await fetchWithCache(showcaseDataUrl);
+   const showcaseData = await fetchShowcase(showcaseDataUrl);
 
    if (showcaseData.detail)
       return json({
@@ -262,6 +266,7 @@ const DisplayPlayerInfo = ({
                   skillTrees={skillTrees}
                   statTypes={statTypes}
                   displayChar={displayChar}
+                  refreshCooldown={refreshCooldown}
                />
             </div>
          </div>
@@ -504,10 +509,23 @@ const CharacterInfo = ({
    skillTrees,
    statTypes,
    displayChar,
+   refreshCooldown,
 }: any) => {
    // State Variables:
    // hoverStat = Current mouse-over'd state.
    const [hoverStat, setHoverStat] = useState<string[]>([]);
+
+   //Disable Refresh if already submitting
+   const navigation = useNavigation();
+
+   const [disableRefresh, setDisableRefresh] = useState<boolean>(true);
+
+   useEffect(() => {
+      // Turn disableRefresh false after 60 seconds
+      setTimeout(() => {
+         setDisableRefresh(false);
+      }, refreshCooldown * 1000);
+   }, [navigation.state, refreshCooldown]);
 
    // Character Data Loading
    // If the displayChar variable is set to -1, show the assist_avatar; otherwise for 0, 1, 2, show the avatar_detail_list for the corresponding index.
@@ -1549,7 +1567,7 @@ const CharacterInfo = ({
             </div>
          </div>
          <button
-            className="border-color shadow-1 absolute left-1/2 z-20 flex -translate-x-1/2 transform
+            className="border-color shadow-1 absolute left-1/3 z-20 flex -translate-x-1/2 transform
             items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
             shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
             onClick={onDownloadImage}
@@ -1557,11 +1575,41 @@ const CharacterInfo = ({
             <Download size={18} />
             <span>Download</span>
          </button>
+         <Form method="post">
+            <button
+               disabled={disableRefresh}
+               type="submit"
+               className="border-color shadow-1 absolute left-2/3 z-20 flex -translate-x-1/2 transform
+            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
+            shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
+            >
+               {disableRefresh ? (
+                  <Hourglass size={18} />
+               ) : (
+                  <RefreshCcw size={18} />
+               )}
+               <span>Refresh</span>
+            </button>
+         </Form>
 
          {/* <ScreenshotButton /> */}
       </>
    );
 };
+
+// Basically the same as laoder, but refetches instead
+export async function action({ request }: ActionArgs) {
+   const { uid } = zx.parseQuery(request, {
+      uid: z.string().optional(),
+   });
+
+   if (!uid) return null;
+
+   const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
+   const showcaseData = await refetchShowcase(showcaseDataUrl);
+
+   return showcaseData;
+}
 
 const ItemFrameSquare = ({
    mat,
