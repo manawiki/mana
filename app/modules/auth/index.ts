@@ -1,5 +1,16 @@
 import type { User, Site } from "payload/generated-types";
 import { useRouteLoaderData } from "@remix-run/react";
+import { settings } from "mana-config";
+
+export const handleLogout = async () => {
+   void (await fetch(`${settings.domainFull}/api/users/logout`, {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json",
+      },
+   }));
+   location.reload();
+};
 
 export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
    const { user } = useRouteLoaderData("root") as { user: User };

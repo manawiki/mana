@@ -1,6 +1,6 @@
 import type { Site, User } from "payload/generated-types";
-import { Form, useRouteLoaderData, Link, useLocation } from "@remix-run/react";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
+import { useRouteLoaderData, Link, useLocation } from "@remix-run/react";
+import { handleLogout, useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
 import { Menu, Transition } from "@headlessui/react";
 import { LogOut, User as UserLucideIcon } from "lucide-react";
 import { Fragment } from "react";
@@ -87,21 +87,17 @@ export const LoggedInDropDown = () => {
                   >
                      <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
                         <Menu.Item>
-                           <Form action="/logout" method="post">
-                              <button
-                                 type="submit"
-                                 className="text-1 flex w-full items-center gap-3 rounded-lg
-                        p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                              >
-                                 <div className="flex-grow text-left">
-                                    Logout
-                                 </div>
-                                 <LogOut
-                                    size={18}
-                                    className="text-red-400 dark:text-red-300"
-                                 />
-                              </button>
-                           </Form>
+                           <button
+                              className="text-1 flex w-full items-center gap-3 rounded-lg
+                              p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                              onClick={handleLogout}
+                           >
+                              <div className="flex-grow text-left">Logout</div>
+                              <LogOut
+                                 size={18}
+                                 className="text-red-400 dark:text-red-300"
+                              />
+                           </button>
                         </Menu.Item>
                      </div>
                   </Menu.Items>
