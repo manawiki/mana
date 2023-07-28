@@ -14747,10 +14747,10 @@ vary@^1, vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vaul@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.0.6.tgz#7b9a0b38bcf4637a462062a10419f5f9857a5904"
-  integrity sha512-YTI1wkukcgw8EKrZ4cgnj/NDXue0Y6vicGkix1iu4j2oNX2Wcdr9FXdPlvXxhzBdDfEl+dIMu8zjgri3UIawNg==
+vaul@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.1.0.tgz#d9157a16ae8f9139f9d7faf5fa98aa8ca7dfb943"
+  integrity sha512-x78j1x+AAvjgxSUNorDKisK0Lx/e9f8aIXCbelXO4zIe7klkmd+lB1jrUYaAnt5GkLuXBdUEw/9wDJNzNFtoTw==
   dependencies:
     "@radix-ui/react-dialog" "^1.0.4"
 
