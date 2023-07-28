@@ -1,7 +1,12 @@
 import type { Site } from "~/db/payload-types";
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
-import { Form, Link } from "@remix-run/react";
+import {
+   LoggedIn,
+   LoggedOut,
+   LoggedOutMobile,
+   handleLogout,
+} from "~/modules/auth";
+import { Link } from "@remix-run/react";
 import { LogOut } from "lucide-react";
 import { Drawer } from "vaul";
 
@@ -48,20 +53,18 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
    return (
       <>
          <LoggedIn>
-            <Form reloadDocument={true} action="/logout" method="post">
-               <button
-                  onClick={() => onOpenChange(false)}
-                  type="submit"
-                  className="shadow-1 bg-3 border-color relative flex w-full items-center
+            <button
+               onClick={() => {
+                  onOpenChange(false);
+                  handleLogout();
+               }}
+               type="submit"
+               className="shadow-1 bg-3 border-color relative flex w-full items-center
                   justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
-               >
-                  <div className="font-bold">Logout</div>
-                  <LogOut
-                     size={18}
-                     className="text-red-400 dark:text-red-300"
-                  />
-               </button>
-            </Form>
+            >
+               <div className="font-bold">Logout</div>
+               <LogOut size={18} className="text-red-400 dark:text-red-300" />
+            </button>
          </LoggedIn>
       </>
    );
