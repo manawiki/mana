@@ -1,5 +1,7 @@
+import { Link } from "@remix-run/react";
 import type { LinkElement } from "../types";
 import type { ReactNode } from "react";
+import { settings } from "mana-config";
 
 type Props = {
    element: LinkElement;
@@ -7,6 +9,20 @@ type Props = {
 };
 
 export default function BlockLink({ element, children }: Props) {
+   const hostName = new URL(element.url as string).hostname;
+   const pathname = new URL(element.url as string).pathname;
+   const currentHost = settings.domain;
+
+   // Use client-side routing if internal link
+   if (hostName == currentHost) {
+      return (
+         <Link prefetch="viewport" className="text-blue-500" to={pathname}>
+            {children}
+         </Link>
+      );
+   }
+
+   //Otherwise render as regular a tag for external links
    return (
       <a rel="nofollow" className="text-blue-500" href={element.url}>
          {children}

@@ -17,7 +17,7 @@ export const Images: CollectionConfig = {
          type: "text",
       },
       {
-         name: "hash",
+         name: "checksum",
          type: "text",
          unique: true,
       },
