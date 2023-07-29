@@ -2,7 +2,7 @@ import Payload from "payload";
 import path from "path";
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
@@ -13,7 +13,7 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: MONGO_URL as any,
+      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
