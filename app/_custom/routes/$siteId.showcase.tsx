@@ -7,9 +7,8 @@ import {
    useNavigation,
    useRevalidator,
    useSearchParams,
-   useTransition,
 } from "@remix-run/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { Image } from "~/components";
 import { zx } from "zodix";
 import { z } from "zod";
@@ -30,7 +29,7 @@ import { toPng } from "html-to-image";
 
 import type { Material } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
-import { fetchShowcase, refetchShowcase } from "~/utils/showcase-cache.server";
+import { fetchShowcase } from "~/utils/showcase-cache.server";
 import { settings } from "mana-config";
 
 // Sample data, will import via API for real case
@@ -440,31 +439,25 @@ const CharacterSelector = ({
                const cdata = characters.find((a: any) => a.character_id == c);
 
                // Make sure to only show the selector if that character is different from the assist_avatar
-               return (
-                  <>
-                     {i == 0 || (charids[0] != c && i > 0) ? (
-                        <>
-                           <div
-                              className="cursor-pointer"
-                              onClick={() => {
-                                 setDisplayChar(i - 1);
-                              }}
-                              key={c + "-" + i}
-                           >
-                              {/* NOTE: Passing style in as a parameter in case we want to format the actively selected character differently! */}
-                              <ItemFrameRound
-                                 mat={cdata}
-                                 className={`${
-                                    displayChar == i - 1
-                                       ? "border-zinc-300 shadow dark:border-zinc-400"
-                                       : ""
-                                 }`}
-                              />
-                           </div>
-                        </>
-                     ) : null}
-                  </>
-               );
+               return i == 0 || (charids[0] != c && i > 0) ? (
+                  <div
+                     className="cursor-pointer"
+                     onClick={() => {
+                        setDisplayChar(i - 1);
+                     }}
+                     key={c + "-" + i}
+                  >
+                     {/* NOTE: Passing style in as a parameter in case we want to format the actively selected character differently! */}
+                     <ItemFrameRound
+                        mat={cdata}
+                        className={`${
+                           displayChar == i - 1
+                              ? "border-zinc-300 shadow dark:border-zinc-400"
+                              : ""
+                        }`}
+                     />
+                  </div>
+               ) : null;
             })}
          </div>
       </>
@@ -1011,70 +1004,63 @@ const CharacterInfo = ({
                         {charbase?.eidolons?.map((e: any, i: any) => {
                            const elv = chardata?.promotion ?? 0;
 
-                           return (
-                              <>
-                                 {elv > i ? (
-                                    <>
-                                       <Tooltip
-                                          id="eidolon-stat"
-                                          side="right"
-                                          html={
-                                             <div className="w-44">
-                                                <div className="pb-0.5 text-blue-500">
-                                                   {e?.name}
-                                                </div>
-                                                <div
-                                                   dangerouslySetInnerHTML={{
-                                                      __html: e?.description,
-                                                   }}
-                                                ></div>
-                                             </div>
-                                          }
-                                       >
-                                          <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
-                                             <Image
-                                                options="aspect_ratio=1:1&height=60&width=60"
-                                                alt={"Eidolon Lv." + i + 1}
-                                                url={e.icon?.url}
-                                                className="absolute object-contain"
-                                             />
-                                          </div>
-                                       </Tooltip>
-                                    </>
-                                 ) : (
-                                    <Tooltip
-                                       id="eidolon-stat"
-                                       side="right"
-                                       html={
-                                          <div className="z-40 w-44">
-                                             <div className="pb-0.5 text-blue-500">
-                                                {e?.name}
-                                             </div>
-                                             <div
-                                                dangerouslySetInnerHTML={{
-                                                   __html: e?.description,
-                                                }}
-                                             ></div>
-                                          </div>
-                                       }
-                                    >
-                                       <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
-                                          <Image
-                                             options="aspect_ratio=1:1&height=60&width=60"
-                                             alt={"Eidolon Lv." + i + 1}
-                                             url={e.icon?.url}
-                                             className="absolute object-contain opacity-30"
-                                          />
-                                          <div className="mt-2.5 flex items-center justify-center">
-                                             <Lock
-                                                className="text-white"
-                                                size={18}
-                                             />
-                                          </div>
+                           return elv > i ? (
+                              <Tooltip
+                                 key={i}
+                                 id="eidolon-stat"
+                                 side="right"
+                                 html={
+                                    <div className="w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {e?.name}
                                        </div>
-                                    </Tooltip>
-                                 )}
-                              </>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html: e?.description,
+                                          }}
+                                       ></div>
+                                    </div>
+                                 }
+                              >
+                                 <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
+                                    <Image
+                                       options="aspect_ratio=1:1&height=60&width=60"
+                                       alt={"Eidolon Lv." + i + 1}
+                                       url={e.icon?.url}
+                                       className="absolute object-contain"
+                                    />
+                                 </div>
+                              </Tooltip>
+                           ) : (
+                              <Tooltip
+                                 key={i}
+                                 id="eidolon-stat"
+                                 side="right"
+                                 html={
+                                    <div className="z-40 w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {e?.name}
+                                       </div>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html: e?.description,
+                                          }}
+                                       ></div>
+                                    </div>
+                                 }
+                              >
+                                 <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
+                                    <Image
+                                       options="aspect_ratio=1:1&height=60&width=60"
+                                       alt={"Eidolon Lv." + i + 1}
+                                       url={e.icon?.url}
+                                       className="absolute object-contain opacity-30"
+                                    />
+                                    <div className="mt-2.5 flex items-center justify-center">
+                                       <Lock className="text-white" size={18} />
+                                    </div>
+                                 </div>
+                              </Tooltip>
                            );
                         })}
                      </div>
@@ -1164,51 +1150,50 @@ const CharacterInfo = ({
 
                               {/* Light Cone Stat Values */}
                               <div className="flex items-center gap-2 pt-2">
-                                 {wstats?.map((s: any) => {
+                                 {wstats?.map((s: any, i: number) => {
                                     const stattype = statTypes.find(
                                        (a: any) => a.name == s.name
                                     );
                                     const lcstatname = s.name?.replace("%", "");
+
                                     return (
-                                       <>
-                                          <div
-                                             className={`flex items-center gap-1 rounded-full ${
-                                                hoverStat.indexOf(lcstatname) >
-                                                -1
-                                                   ? "bg-blue-200 dark:bg-zinc-700"
-                                                   : hoverStat.length > 0
-                                                   ? "opacity-40"
-                                                   : ""
-                                             }`}
-                                             onMouseOver={() =>
-                                                setHoverStat([lcstatname])
-                                             }
-                                             onMouseOut={() => setHoverStat([])}
-                                             onClick={() =>
-                                                setHoverStat(
-                                                   hoverStat.length > 0
-                                                      ? []
-                                                      : [lcstatname]
-                                                )
-                                             }
-                                          >
-                                             <div className="h-5 w-5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500">
-                                                <Image
-                                                   options="aspect_ratio=1:1&height=30&width=30"
-                                                   alt="StatIcon"
-                                                   url={stattype?.icon?.url}
-                                                   className="object-fit"
-                                                />
-                                             </div>
-                                             <div className="text-1 inline-block pr-2 align-middle text-xs font-bold">
-                                                +
-                                                {formatStat(
-                                                   stattype?.name,
-                                                   s?.base
-                                                )}
-                                             </div>
+                                       <div
+                                          key={i}
+                                          className={`flex items-center gap-1 rounded-full ${
+                                             hoverStat.indexOf(lcstatname) > -1
+                                                ? "bg-blue-200 dark:bg-zinc-700"
+                                                : hoverStat.length > 0
+                                                ? "opacity-40"
+                                                : ""
+                                          }`}
+                                          onMouseOver={() =>
+                                             setHoverStat([lcstatname])
+                                          }
+                                          onMouseOut={() => setHoverStat([])}
+                                          onClick={() =>
+                                             setHoverStat(
+                                                hoverStat.length > 0
+                                                   ? []
+                                                   : [lcstatname]
+                                             )
+                                          }
+                                       >
+                                          <div className="h-5 w-5 rounded-full bg-zinc-400 align-middle dark:bg-zinc-500">
+                                             <Image
+                                                options="aspect_ratio=1:1&height=30&width=30"
+                                                alt="StatIcon"
+                                                url={stattype?.icon?.url}
+                                                className="object-fit"
+                                             />
                                           </div>
-                                       </>
+                                          <div className="text-1 inline-block pr-2 align-middle text-xs font-bold">
+                                             +
+                                             {formatStat(
+                                                stattype?.name,
+                                                s?.base
+                                             )}
+                                          </div>
+                                       </div>
                                     );
                                  })}
                               </div>
@@ -1217,16 +1202,16 @@ const CharacterInfo = ({
                      )}
                      {/* Stat Display */}
                      <div className="max-desktop:border-color relative max-desktop:border-b">
-                        {statVal.map((s: any) => {
+                        {statVal.map((s: any, i: number) => {
                            const stattype = statTypes.find(
                               (a: any) => a.name == s.name
                            );
 
                            const statname = s.name?.replace("%", "");
                            return (
-                              <>
-                                 <div
-                                    className={`flex cursor-default items-center justify-between border border-transparent
+                              <div
+                                 key={i}
+                                 className={`flex cursor-default items-center justify-between border border-transparent
                                     px-2 py-0.5 odd:bg-white/70 even:bg-zinc-50/50 dark:odd:bg-bg3Dark/70 dark:even:bg-bg2Dark/50 ${
                                        hoverStat.indexOf(statname) > -1
                                           ? "shadow-1 border-color !bg-blue-200 shadow-lg dark:!bg-zinc-700"
@@ -1234,57 +1219,56 @@ const CharacterInfo = ({
                                           ? "opacity-40"
                                           : ""
                                     }`}
-                                    onMouseOver={() => setHoverStat([statname])}
-                                    onMouseOut={() => setHoverStat([])}
-                                    onClick={() =>
-                                       setHoverStat(
-                                          hoverStat.length > 0 ? [] : [statname]
-                                       )
-                                    }
-                                 >
-                                    <div className="flex flex-grow items-center gap-2">
-                                       <div>
-                                          {stattype?.icon?.url ? (
-                                             <div
-                                                className="flex h-6 w-6 items-center justify-center
+                                 onMouseOver={() => setHoverStat([statname])}
+                                 onMouseOut={() => setHoverStat([])}
+                                 onClick={() =>
+                                    setHoverStat(
+                                       hoverStat.length > 0 ? [] : [statname]
+                                    )
+                                 }
+                              >
+                                 <div className="flex flex-grow items-center gap-2">
+                                    <div>
+                                       {stattype?.icon?.url ? (
+                                          <div
+                                             className="flex h-6 w-6 items-center justify-center
                                                 rounded-full bg-zinc-400 dark:bg-zinc-500"
-                                             >
-                                                <Image
-                                                   options="aspect_ratio=1:1&height=50&width=50"
-                                                   alt={"StatIcon"}
-                                                   url={
-                                                      stattype?.icon?.url ??
-                                                      "no_image_42df124128"
-                                                   }
-                                                />
-                                             </div>
-                                          ) : null}
-                                       </div>
-                                       <div className="text-sm font-bold">
-                                          {s.name}
-                                       </div>
+                                          >
+                                             <Image
+                                                options="aspect_ratio=1:1&height=50&width=50"
+                                                alt={"StatIcon"}
+                                                url={
+                                                   stattype?.icon?.url ??
+                                                   "no_image_42df124128"
+                                                }
+                                             />
+                                          </div>
+                                       ) : null}
                                     </div>
-                                    {/* Stat Value With Modifier */}
-                                    <div className="text-right">
-                                       <div className="text-sm font-bold">
-                                          {formatStat(s.name, s.base + s.mod)}
-                                       </div>
-                                       <div className="space-x-0.5 text-[8pt]">
-                                          {s.base > 0 ? (
-                                             <span className="text-1">
-                                                {formatStat(s.name, s.base)}
-                                             </span>
-                                          ) : null}
-
-                                          {s.mod ? (
-                                             <span className="text-green-500">
-                                                +{formatStat(s.name, s.mod)}
-                                             </span>
-                                          ) : null}
-                                       </div>
+                                    <div className="text-sm font-bold">
+                                       {s.name}
                                     </div>
                                  </div>
-                              </>
+                                 {/* Stat Value With Modifier */}
+                                 <div className="text-right">
+                                    <div className="text-sm font-bold">
+                                       {formatStat(s.name, s.base + s.mod)}
+                                    </div>
+                                    <div className="space-x-0.5 text-[8pt]">
+                                       {s.base > 0 ? (
+                                          <span className="text-1">
+                                             {formatStat(s.name, s.base)}
+                                          </span>
+                                       ) : null}
+
+                                       {s.mod ? (
+                                          <span className="text-green-500">
+                                             +{formatStat(s.name, s.mod)}
+                                          </span>
+                                       ) : null}
+                                    </div>
+                                 </div>
+                              </div>
                            );
                         })}
                      </div>
@@ -1349,58 +1333,61 @@ const CharacterInfo = ({
                         const mainstatname = mainstat?.name?.replace("%", "");
 
                         return (
-                           <>
-                              <div className="relative mb-2 flex items-center justify-between gap-2">
-                                 {/* Relic Image */}
-                                 <ItemFrameSquare
-                                    mat={r}
-                                    style=""
-                                    lv={"+" + rlv}
-                                 />
+                           <div
+                              key={i}
+                              className="relative mb-2 flex items-center justify-between gap-2"
+                           >
+                              {/* Relic Image */}
+                              <ItemFrameSquare
+                                 mat={r}
+                                 style=""
+                                 lv={"+" + rlv}
+                              />
 
-                                 {/* Relic Main Stat and Level */}
-                                 <div className="bg-3 shadow-1 flex h-[62px] flex-grow items-center justify-between rounded px-1 shadow-sm">
+                              {/* Relic Main Stat and Level */}
+                              <div className="bg-3 shadow-1 flex h-[62px] flex-grow items-center justify-between rounded px-1 shadow-sm">
+                                 <div
+                                    className={`mr-1 flex-grow cursor-default rounded p-1 ${
+                                       hoverStat.indexOf(mainstatname) > -1
+                                          ? "bg-blue-200 dark:bg-zinc-700"
+                                          : hoverStat.length > 0
+                                          ? "opacity-40"
+                                          : "bg-3"
+                                    }`}
+                                    onMouseOver={() =>
+                                       setHoverStat([mainstatname])
+                                    }
+                                    onMouseOut={() => setHoverStat([])}
+                                    onClick={() =>
+                                       setHoverStat(
+                                          hoverStat.length > 0
+                                             ? []
+                                             : [mainstatname]
+                                       )
+                                    }
+                                 >
                                     <div
-                                       className={`mr-1 flex-grow cursor-default rounded p-1 ${
-                                          hoverStat.indexOf(mainstatname) > -1
-                                             ? "bg-blue-200 dark:bg-zinc-700"
-                                             : hoverStat.length > 0
-                                             ? "opacity-40"
-                                             : "bg-3"
-                                       }`}
-                                       onMouseOver={() =>
-                                          setHoverStat([mainstatname])
-                                       }
-                                       onMouseOut={() => setHoverStat([])}
-                                       onClick={() =>
-                                          setHoverStat(
-                                             hoverStat.length > 0
-                                                ? []
-                                                : [mainstatname]
-                                          )
-                                       }
-                                    >
-                                       <div
-                                          className="inline-flex h-5 w-5 items-center justify-center
+                                       className="inline-flex h-5 w-5 items-center justify-center
                                              gap-1 rounded-full bg-zinc-400 dark:bg-zinc-600"
-                                       >
-                                          <Image
-                                             options="aspect_ratio=1:1&height=60&width=60"
-                                             alt="StatIcon"
-                                             url={mainstat?.icon?.url}
-                                          />
-                                       </div>
-                                       <div className="text-xs font-bold">
-                                          {formatStat(
-                                             mainstat?.name,
-                                             mainstat?.value
-                                          )}
-                                       </div>
+                                    >
+                                       <Image
+                                          options="aspect_ratio=1:1&height=60&width=60"
+                                          alt="StatIcon"
+                                          url={mainstat?.icon?.url}
+                                       />
                                     </div>
+                                    <div className="text-xs font-bold">
+                                       {formatStat(
+                                          mainstat?.name,
+                                          mainstat?.value
+                                       )}
+                                    </div>
+                                 </div>
 
-                                    {/* Relic Substats */}
-                                    <div className="grid w-40 grid-cols-2 gap-x-1 text-center desktop:w-[150px]">
-                                       {rdata.subobj?.map((sub: any) => {
+                                 {/* Relic Substats */}
+                                 <div className="grid w-40 grid-cols-2 gap-x-1 text-center desktop:w-[150px]">
+                                    {rdata.subobj?.map(
+                                       (sub: any, key: number) => {
                                           const steptext =
                                              sub?.stepDistribution?.map(
                                                 (step: any) =>
@@ -1415,88 +1402,85 @@ const CharacterInfo = ({
                                              ""
                                           );
                                           return (
-                                             <>
-                                                <div
-                                                   className={`flex cursor-default items-center rounded px-1 py-0.5 ${
-                                                      hoverStat.indexOf(
-                                                         statname
-                                                      ) > -1
-                                                         ? "bg-blue-200 dark:bg-zinc-700"
-                                                         : hoverStat.length > 0
-                                                         ? "opacity-40"
-                                                         : ""
-                                                   }`}
-                                                   onMouseOver={() =>
-                                                      setHoverStat([statname])
-                                                   }
-                                                   onMouseOut={() =>
-                                                      setHoverStat([])
-                                                   }
-                                                   onClick={() =>
-                                                      setHoverStat(
-                                                         hoverStat.length > 0
-                                                            ? []
-                                                            : [statname]
-                                                      )
-                                                   }
-                                                >
-                                                   <div>
-                                                      <div className="flex items-center gap-1">
-                                                         <div
-                                                            className="inline-flex h-4 w-4 items-center 
+                                             <div
+                                                key={key}
+                                                className={`flex cursor-default items-center rounded px-1 py-0.5 ${
+                                                   hoverStat.indexOf(statname) >
+                                                   -1
+                                                      ? "bg-blue-200 dark:bg-zinc-700"
+                                                      : hoverStat.length > 0
+                                                      ? "opacity-40"
+                                                      : ""
+                                                }`}
+                                                onMouseOver={() =>
+                                                   setHoverStat([statname])
+                                                }
+                                                onMouseOut={() =>
+                                                   setHoverStat([])
+                                                }
+                                                onClick={() =>
+                                                   setHoverStat(
+                                                      hoverStat.length > 0
+                                                         ? []
+                                                         : [statname]
+                                                   )
+                                                }
+                                             >
+                                                <div>
+                                                   <div className="flex items-center gap-1">
+                                                      <div
+                                                         className="inline-flex h-4 w-4 items-center 
                                              justify-center rounded-full bg-zinc-400 dark:bg-zinc-600"
-                                                         >
-                                                            <Image
-                                                               options="aspect_ratio=1:1&height=20&width=20"
-                                                               alt="StatIcon"
-                                                               url={
-                                                                  sub?.icon?.url
-                                                               }
-                                                               className="object-fit"
-                                                            />
-                                                         </div>
-                                                         <div className="text-xs">
-                                                            +
-                                                            {formatStat(
-                                                               sub?.name,
-                                                               sub?.value
-                                                            )}
-                                                         </div>
+                                                      >
+                                                         <Image
+                                                            options="aspect_ratio=1:1&height=20&width=20"
+                                                            alt="StatIcon"
+                                                            url={sub?.icon?.url}
+                                                            className="object-fit"
+                                                         />
                                                       </div>
-                                                      <div className="mt-0.5 flex w-full">
-                                                         {steptext?.map(
-                                                            (st: any) => {
-                                                               return (
-                                                                  <>
-                                                                     <div
-                                                                        className={`mx-1 -mt-3 inline-flex w-full justify-center text-center text-lg leading-none text-blue-500  ${
-                                                                           st ==
-                                                                           "="
-                                                                              ? "text-opacity-0"
-                                                                              : ""
-                                                                        }`}
-                                                                     >
-                                                                        {st}
-                                                                     </div>
-                                                                  </>
-                                                               );
-                                                            }
+                                                      <div className="text-xs">
+                                                         +
+                                                         {formatStat(
+                                                            sub?.name,
+                                                            sub?.value
                                                          )}
                                                       </div>
                                                    </div>
+                                                   <div className="mt-0.5 flex w-full">
+                                                      {steptext?.map(
+                                                         (
+                                                            st: any,
+                                                            key: number
+                                                         ) => {
+                                                            return (
+                                                               <div
+                                                                  key={key}
+                                                                  className={`mx-1 -mt-3 inline-flex w-full justify-center text-center text-lg leading-none text-blue-500  ${
+                                                                     st == "="
+                                                                        ? "text-opacity-0"
+                                                                        : ""
+                                                                  }`}
+                                                               >
+                                                                  {st}
+                                                               </div>
+                                                            );
+                                                         }
+                                                      )}
+                                                   </div>
                                                 </div>
-                                             </>
+                                             </div>
                                           );
-                                       })}
-                                    </div>
+                                       }
+                                    )}
                                  </div>
                               </div>
-                           </>
+                           </div>
                         );
                      })}
                      {/* Relic Set Bonuses */}
                      <div className="!mt-3 space-y-2">
-                        {rset?.map((set: any) => {
+                        {rset?.map((set: any, key: number) => {
                            var setdesc = "";
 
                            set.effect_desc.map((e: any, i: any) => {
@@ -1522,46 +1506,45 @@ const CharacterInfo = ({
                            // Check if any of the set bonuses also include the currently highlighted stat
 
                            return (
-                              <>
-                                 <div
-                                    className={`bg-3 shadow-1 flex items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
-                                    onMouseOver={() => setHoverStat(sbonuses)}
-                                    onMouseOut={() => setHoverStat([])}
-                                    // onClick={() =>
-                                    //    setHoverStat(
-                                    //       hoverStat?.length > 0
-                                    //          ? []
-                                    //          : sbonuses
-                                    //    )
-                                    // }
-                                 >
-                                    <Tooltip
-                                       id="relic-set-bonus"
-                                       side="top"
-                                       className="relative font-bold"
-                                       html={
-                                          <div className="w-44">
-                                             <div className="pb-0.5 text-blue-500">
-                                                {set?.name}
-                                             </div>
-                                             <div
-                                                dangerouslySetInnerHTML={{
-                                                   __html: setdesc,
-                                                }}
-                                             ></div>
+                              <div
+                                 key={key}
+                                 className={`bg-3 shadow-1 flex items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
+                                 onMouseOver={() => setHoverStat(sbonuses)}
+                                 onMouseOut={() => setHoverStat([])}
+                                 // onClick={() =>
+                                 //    setHoverStat(
+                                 //       hoverStat?.length > 0
+                                 //          ? []
+                                 //          : sbonuses
+                                 //    )
+                                 // }
+                              >
+                                 <Tooltip
+                                    id="relic-set-bonus"
+                                    side="top"
+                                    className="relative font-bold"
+                                    html={
+                                       <div className="w-44">
+                                          <div className="pb-0.5 text-blue-500">
+                                             {set?.name}
                                           </div>
-                                       }
-                                    >
-                                       {set.name}
-                                    </Tooltip>
-                                    <div
-                                       className="bg-2 relative flex h-6 w-6 items-center justify-center 
+                                          <div
+                                             dangerouslySetInnerHTML={{
+                                                __html: setdesc,
+                                             }}
+                                          ></div>
+                                       </div>
+                                    }
+                                 >
+                                    {set.name}
+                                 </Tooltip>
+                                 <div
+                                    className="bg-2 relative flex h-6 w-6 items-center justify-center 
                                        rounded-full font-bold text-green-400"
-                                    >
-                                       {set.num}
-                                    </div>
+                                 >
+                                    {set.num}
                                  </div>
-                              </>
+                              </div>
                            );
                         })}
                      </div>
@@ -1613,7 +1596,7 @@ export async function action({ request }: ActionArgs) {
    if (!uid) return null;
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
-   const showcaseData = await refetchShowcase(showcaseDataUrl);
+   const showcaseData = await fetchShowcase(showcaseDataUrl);
 
    return showcaseData;
 }
@@ -1709,17 +1692,16 @@ const SkillTreeDisplay = ({
          <div className="canvas mx-auto flex scale-[0.5] items-center justify-center">
             <div className={`canvas-${pathkey}`}></div>
 
-            {connectorlist?.map((con: any) => {
+            {connectorlist?.map((con: any, key: number) => {
                return (
-                  <>
-                     <div
-                        className={`connector connector-${con}-${pathkey}`}
-                     ></div>
-                  </>
+                  <div
+                     key={key}
+                     className={`connector connector-${con}-${pathkey}`}
+                  ></div>
                );
             })}
 
-            {treelist?.map((node: any, i: any) => {
+            {treelist?.map((node: any, i: number) => {
                const nodelv = data.skilltree_list?.find(
                   (a: any) => a.point_id == node.point_id
                )?.level;
@@ -1746,7 +1728,7 @@ const SkillTreeDisplay = ({
                   intersect(skillstats, hoverStat)?.length > 0 ? "invert" : "";
 
                return (
-                  <>
+                  <Fragment key={`skill-tree-${i}`}>
                      <div
                         className={`point point-${
                            i + 1
@@ -1793,7 +1775,7 @@ const SkillTreeDisplay = ({
                            </div>
                         }
                      ></Tooltip>
-                  </>
+                  </Fragment>
                );
             })}
          </div>
@@ -1804,7 +1786,7 @@ const SkillTreeDisplay = ({
 const InputUIDNote = ({ uid }: { uid: any }) => {
    const [inputUID, setInputUID] = useState(uid);
    const [searchParams, setSearchParams] = useSearchParams({});
-   const transition = useTransition();
+   const transition = useNavigation();
    const isSearching = isLoading(transition);
    return (
       <form
