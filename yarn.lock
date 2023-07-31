@@ -5478,6 +5478,11 @@ cacheable-request@^7.0.2:
     normalize-url "^6.0.1"
     responselike "^2.0.0"
 
+cachified@^3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/cachified/-/cachified-3.5.4.tgz#66ec656930756fb887082a60a7f2eb255bb2a9bd"
+  integrity sha512-RO7jQl7vL1qulRvr+o++iVVduFlKb2pJUYxY48LULusyqmGUFaRESERu1Z7UI895JNtTB4yvfErNv64OsayK8g==
+
 call-bind@^1.0.0, call-bind@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
