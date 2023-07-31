@@ -120,7 +120,7 @@ export default function SiteIndex() {
    //Prevent layout shift on native. Don't paint screen yet.
    if (isMobileApp && !safeArea)
       return (
-         <div className="bg-3 flex min-h-[100vh] min-w-full items-center justify-start">
+         <div className="bg-1 flex min-h-[100vh] min-w-full items-center justify-start">
             <DotLoader />
          </div>
       );
