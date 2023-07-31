@@ -1,11 +1,13 @@
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
-import { DarkModeToggle } from "~/components";
+import { SafeArea } from "capacitor-plugin-safe-area";
+import { useState, useEffect } from "react";
+import { DarkModeToggle, DotLoader } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
 import { LoggedIn, LoggedInDropDown, LoggedOut } from "~/modules/auth";
 
 export default function IndexLayout() {
    return (
-      <div className="bg-1">
+      <div className="">
          <main className="flex min-h-screen flex-col overflow-hidden">
             <div className="grow">
                <Header />
