@@ -1,6 +1,7 @@
-import type { ReactElement, ReactNode } from "react";
-// import ReactDOMServer from "react-dom/server";
+import { type ReactElement, type ReactNode, lazy } from "react";
 import { type PlacesType, Tooltip as TT } from "react-tooltip";
+import { lazily } from "react-lazily";
+const ReactDOMServer = lazily(() => import("react-dom/server"));
 
 type TooltipProps = {
    id: string;
@@ -26,7 +27,9 @@ export default function Tooltip({
          <div
             className={className}
             data-tooltip-id={id}
-            data-tooltip-html={html}
+            data-tooltip-html={
+               html ? ReactDOMServer.renderToStaticMarkup(html) : null
+            }
             data-tooltip-content={content}
             data-tooltip-place={side}
          >
