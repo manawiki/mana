@@ -9,10 +9,16 @@ import invariant from "tiny-invariant";
 import nodemailer from "nodemailer";
 import coreBuildConfig from "./app/db/payload.config";
 import { settings } from "./mana.config";
+import sourceMapSupport from "source-map-support";
 
 // patch in Remix runtime globals
 installGlobals();
 require("dotenv").config();
+sourceMapSupport.install();
+
+// We'll make chokidar a dev dependency so it doesn't get bundled in production.
+const chokidar =
+   process.env.NODE_ENV === "development" ? require("chokidar") : null;
 
 /**
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
@@ -26,10 +32,6 @@ const BUILD_PATH = path.resolve("./build/index.js");
 let build = require(BUILD_PATH);
 
 const cors = require("cors");
-
-// We'll make chokidar a dev dependency so it doesn't get bundled in production.
-const chokidar =
-   process.env.NODE_ENV === "development" ? require("chokidar") : null;
 
 const transport = nodemailer.createTransport({
    host: process.env.PAYLOAD_NODEMAILER_HOST,
