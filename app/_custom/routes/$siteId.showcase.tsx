@@ -230,13 +230,14 @@ const DisplayPlayerInfo = ({
                   id="refreshUid"
                   side="left"
                   html={
-                     <div className="flex items-center gap-0.5">
+                     //needs to be actual html string, not jsx
+                     `<div class="flex items-center gap-0.5">
                         <span>Refresh in</span>
-                        <span className="font-bold text-zinc-50 underline">
-                           {refreshCooldown}
+                        <span class="font-bold text-zinc-50 underline">
+                           ${refreshCooldown}
                         </span>
                         <span>seconds</span>
-                     </div>
+                     </div>`
                   }
                >
                   <button
@@ -1010,16 +1011,15 @@ const CharacterInfo = ({
                                  id="eidolon-stat"
                                  side="right"
                                  html={
-                                    <div className="w-44">
-                                       <div className="pb-0.5 text-blue-500">
-                                          {e?.name}
+                                    //needs to be actual html string, not jsx
+                                    `<div class="w-44">
+                                       <div class="pb-0.5 text-blue-500">
+                                          ${e?.name}
                                        </div>
-                                       <div
-                                          dangerouslySetInnerHTML={{
-                                             __html: e?.description,
-                                          }}
-                                       ></div>
-                                    </div>
+                                       <div>
+                                          ${e?.description}                                          
+                                       </div>
+                                    </div>`
                                  }
                               >
                                  <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
@@ -1037,16 +1037,15 @@ const CharacterInfo = ({
                                  id="eidolon-stat"
                                  side="right"
                                  html={
-                                    <div className="z-40 w-44">
-                                       <div className="pb-0.5 text-blue-500">
-                                          {e?.name}
+                                    //needs to be actual html string, not jsx
+                                    `<div class="z-40 w-44">
+                                       <div class="pb-0.5 text-blue-500">
+                                          ${e?.name}
                                        </div>
-                                       <div
-                                          dangerouslySetInnerHTML={{
-                                             __html: e?.description,
-                                          }}
-                                       ></div>
-                                    </div>
+                                       <div>
+                                          ${e?.description}                                          
+                                       </div>
+                                    </div>`
                                  }
                               >
                                  <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
@@ -1117,20 +1116,18 @@ const CharacterInfo = ({
                                     )
                                  }
                                  html={
-                                    <div className="w-44">
-                                       <div className="pb-0.5 text-blue-500">
-                                          {lcbase?.name}
+                                    //needs to be actual html string, not jsx
+                                    `<div class="w-44">
+                                       <div class="pb-0.5 text-blue-500">
+                                          ${lcbase?.name}
                                        </div>
-                                       <div
-                                          dangerouslySetInnerHTML={{
-                                             __html:
-                                                lcbase?.skill_data[
-                                                   chardata?.equipment
-                                                      ?.promotion - 1
-                                                ]?.desc,
-                                          }}
-                                       ></div>
-                                    </div>
+                                       <div>
+                                          ${lcbase?.skill_data?.[
+                                             chardata?.equipment
+                                                ?.promotion - 1
+                                          ]?.desc}
+                                       </div>
+                                    </div>`
                                  }
                               >
                                  {lcbase.name}
@@ -1289,36 +1286,37 @@ const CharacterInfo = ({
                            id="relic-help"
                            side="right"
                            html={
-                              <div className="w-60 text-left font-normal">
-                                 <div className="mb-2 border-b border-zinc-700 pb-2">
+                              // needs to be actual html string, not jsx
+                              `<div class="w-60 text-left font-normal">
+                                 <div class="mb-2 border-b border-zinc-700 pb-2">
                                     Each group of dots represents an individual
                                     time the substat was rolled into. The number
                                     of dots represent the quality of substat
                                     rolls
                                  </div>
-                                 <div className="flex items-center gap-2">
-                                    <div className="flex w-8 items-center justify-center gap-1">
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div class="flex items-center gap-2">
+                                    <div class="flex w-8 items-center justify-center gap-1">
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Lowest roll</span>
                                  </div>
-                                 <div className="flex items-center gap-2">
-                                    <div className="flex w-8 items-center justify-center gap-1">
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div class="flex items-center gap-2">
+                                    <div class="flex w-8 items-center justify-center gap-1">
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Medium roll</span>
                                  </div>
 
-                                 <div className="flex items-center gap-2">
-                                    <div className="flex w-8 items-center justify-center gap-1">
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div class="flex items-center gap-2">
+                                    <div class="flex w-8 items-center justify-center gap-1">
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Highest roll (best)</span>
                                  </div>
-                              </div>
+                              </div>`
                            }
                         >
                            <Info className="text-1 h-5 w-5 laptop:h-4 laptop:w-4" />
@@ -1524,16 +1522,15 @@ const CharacterInfo = ({
                                     side="top"
                                     className="relative font-bold"
                                     html={
-                                       <div className="w-44">
-                                          <div className="pb-0.5 text-blue-500">
-                                             {set?.name}
+                                       //needs to be actual html string, not jsx
+                                       `<div class="w-44">
+                                          <div class="pb-0.5 text-blue-500">
+                                             ${set?.name}
                                           </div>
-                                          <div
-                                             dangerouslySetInnerHTML={{
-                                                __html: setdesc,
-                                             }}
-                                          ></div>
-                                       </div>
+                                          <div>
+                                             ${setdesc}
+                                          </div>
+                                       </div>`
                                     }
                                  >
                                     {set.name}
@@ -1763,16 +1760,15 @@ const SkillTreeDisplay = ({
                         id="skill-tree"
                         side="left"
                         html={
-                           <div className="w-80 text-2xl">
-                              <div className="pb-0.5 text-blue-500">
-                                 {node?.name}
+                           // needs to be actual html string, not jsx
+                           `<div class="w-80 text-2xl">
+                              <div class="pb-0.5 text-blue-500">
+                                 ${node?.name ?? ""}
                               </div>
-                              <div
-                                 dangerouslySetInnerHTML={{
-                                    __html: node_desc,
-                                 }}
-                              ></div>
-                           </div>
+                              <div>
+                                 ${node_desc}
+                              </div>
+                           </div>`
                         }
                      ></Tooltip>
                   </Fragment>
