@@ -1,10 +1,9 @@
 import type { ReactElement, ReactNode } from "react";
-import ReactDOMServer from "react-dom/server";
 import { type PlacesType, Tooltip as TT } from "react-tooltip";
 
 type TooltipProps = {
    id: string;
-   html?: any;
+   html?: any; //Needs to be actual html string, not jsx; ie class= instead of className=, ${variable} instead of {variable} etc;
    className?: string;
    children: ReactElement;
    content?: ReactNode;
@@ -24,9 +23,10 @@ export default function Tooltip({
       <>
          <TT className="rounded px-3 text-xs font-semibold" id={id} />
          <div
+            {...props}
             className={className}
             data-tooltip-id={id}
-            data-tooltip-html={ReactDOMServer.renderToStaticMarkup(html)}
+            data-tooltip-html={html}
             data-tooltip-content={content}
             data-tooltip-place={side}
          >
