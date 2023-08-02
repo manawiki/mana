@@ -25,7 +25,6 @@ import { getThemeSession } from "~/utils/theme.server";
 import { useTranslation } from "react-i18next";
 
 import tailwindStylesheetUrl from "./styles/global.css";
-import tooltipStyles from "react-tooltip/dist/react-tooltip.css";
 import customStylesheetUrl from "~/_custom/styles.css";
 
 import { i18nextServer } from "./utils/i18n";
@@ -73,12 +72,10 @@ export const meta: V2_MetaFunction = () => [
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
-   { rel: "preload", href: tooltipStyles, as: "style" },
    { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
 
-   { rel: "stylesheet", href: tooltipStyles },
    { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
