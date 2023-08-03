@@ -11480,6 +11480,13 @@ pause@0.0.1:
   resolved "https://registry.yarnpkg.com/pause/-/pause-0.0.1.tgz#1d408b3fdb76923b9543d96fb4c9dfd535d9cb5d"
   integrity sha512-KG8UEiEVkR3wGEb4m5yZkVCzigAD+cVEJck2CzYZO37ZGJfctvVptVO192MwrtPhzONn6go8ylnOdMhKqi4nfg==
 
+payload-query@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/payload-query/-/payload-query-1.0.2.tgz#9aca29d205100b4bfd02a55ee1dd5b4050ad93a3"
+  integrity sha512-eiuWNo2Qrzqj9PkxQEdKzhY2m8p0oUntZ7hjRledfedtREqRFIjTPLgXGD2ekCoqJM6mXJNAiFb7loe8oq0rKg==
+  dependencies:
+    ts-powertools "0.0.3"
+
 payload@^1.11.8:
   version "1.11.8"
   resolved "https://registry.yarnpkg.com/payload/-/payload-1.11.8.tgz#8b924b131dccdddc1665fb777c7cf681017058b1"
@@ -12550,7 +12557,7 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
-qs@^6.11.0, qs@^6.9.1:
+qs@^6.11.0, qs@^6.11.2, qs@^6.9.1:
   version "6.11.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.2.tgz#64bea51f12c1f5da1bc01496f48ffcff7c69d7d9"
   integrity sha512-tDNIz22aBzCDxLtVH++VnTfzxlfeK5CbqohpSqpJgj1Wg/cQbStNAz3NuqCs5vV+pjBsK4x4pN9HlVh7rcYRiA==
@@ -14564,6 +14571,11 @@ ts-node@^10.2.1, ts-node@^10.9.1:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
+
+ts-powertools@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/ts-powertools/-/ts-powertools-0.0.3.tgz#fc9bec76bc8d76cc980df1dde106b4f1bf95a863"
+  integrity sha512-s91+R33pSmjn79DE6+K98u1HTjahl+JH5q9GDRFR/Fq/tPjDwiiDXrT1mHEJPpVraQKWy8bh3pmd6u0cdcKSBQ==
 
 tsconfig-paths@^3.14.1:
   version "3.14.2"

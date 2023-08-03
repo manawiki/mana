@@ -15,10 +15,9 @@ import { zx } from "zodix";
 import { z } from "zod";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { Suspense, useEffect, useState } from "react";
-import type { Site, Update, User } from "payload/generated-types";
+import type { Site, User } from "payload/generated-types";
 import { DotLoader } from "~/components";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import { deferIf } from "defer-if";
 import { SafeArea } from "capacitor-plugin-safe-area";
 import { useIsBot } from "~/utils/isBotProvider";
@@ -38,7 +37,7 @@ import {
 } from "./components";
 
 export async function loader({
-   context: { payload, user },
+   context: { user },
    params,
    request,
 }: LoaderArgs) {
@@ -48,26 +47,13 @@ export async function loader({
 
    const { isMobileApp } = isNativeSSR(request);
 
-   const siteUrl = `${settings.domainFull}/api/sites?where[slug][equals]=${siteId}&depth=2`;
+   const site = await fetchSite({ siteId, user });
 
-   const { docs: slug } = (await fetchWithCache(siteUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
-      },
-   })) as PaginatedDocs<Site>;
-
-   const site = slug[0];
-
-   const updatesUrl = `${settings.domainFull}/api/updates?where[site.slug][equals]=${siteId}&depth=0&sort=-createdAt`;
-
-   const { docs: updateResults } = (await fetchWithCache(updatesUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
-      },
-   })) as PaginatedDocs<Update>;
-   return await deferIf({ updateResults, site }, isMobileApp, {
+   return await deferIf({ site }, isMobileApp, {
       init: {
-         headers: { "Cache-Control": "public, s-maxage=60, max-age=60" },
+         headers: {
+            "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
+         },
       },
    });
 }
@@ -317,4 +303,135 @@ export const action: ActionFunction = async ({
          user,
       });
    }
+};
+
+const fetchSite = async ({
+   siteId,
+   user,
+}: {
+   siteId: Site["slug"];
+   user?: User;
+}): Promise<Site> => {
+   const QUERY = {
+      method: "POST",
+      headers: {
+         "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+         query: `
+         query {
+            site: Sites(
+              where: {
+                slug: { equals: "${siteId}" }
+              }
+            ) {
+               docs {
+                  id
+                  name
+                  type
+                  slug
+                  status
+                  about
+                  isPublic
+                  gaTagId
+                  icon {
+                    url
+                  }
+                  pinned {
+                    id
+                    relation {
+                      relationTo
+                      value {
+                        ... on Entry {
+                          id
+                          entryName: name
+                          collectionEntity {
+                            slug
+                          }
+                          icon {
+                            url
+                          }
+                        }
+                        ... on CustomPage {
+                          customPageName: name
+                          customPageSlug: slug
+                          icon {
+                            url
+                          }
+                        }
+                        ... on Post {
+                          id
+                          postName: name
+                        }
+                        ... on Collection {
+                          collectionName: name
+                          collectionSlug: slug
+                          icon {
+                            url
+                          }
+                        }
+                      }
+                    }
+                  }
+                  owner {
+                    id
+                    username
+                    avatar {
+                      url
+                    }
+                  }
+                  admins {
+                    id
+                    username
+                    avatar {
+                      url
+                    }
+                  }
+                }
+            }
+          }
+         `,
+         variables: {
+            siteId,
+         },
+      }),
+   };
+
+   //Rename keys to "name"
+   const swaps = {
+      collectionName: "name",
+      entryName: "name",
+      customPageName: "name",
+   };
+   const pattern = new RegExp(
+      Object.keys(swaps)
+         .map((e) => `(?:"(${e})":)`)
+         .join("|"),
+      "g"
+   );
+
+   const updateKeys = (data: Site) =>
+      JSON.parse(
+         JSON.stringify(data).replace(
+            pattern,
+            //@ts-ignore
+            (m) => `"${swaps[m.slice(1, -2)]}":`
+         )
+      );
+
+   //Fetch from cache if anon
+   if (!user) {
+      const { data } = await fetchWithCache(
+         `${settings.domainFull}/api/graphql`,
+         QUERY
+      );
+      return updateKeys(data.site.docs[0]);
+   }
+
+   //Otherwise fresh pull
+   const { data } = await fetch(
+      `${settings.domainFull}/api/graphql`,
+      QUERY
+   ).then((res) => res.json());
+   return updateKeys(data.site.docs[0]);
 };

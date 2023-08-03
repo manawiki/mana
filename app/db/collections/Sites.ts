@@ -24,8 +24,8 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
-         name: "isPublic", // required
-         type: "checkbox", // required
+         name: "isPublic",
+         type: "checkbox",
          label: "Public",
          defaultValue: false,
       },
