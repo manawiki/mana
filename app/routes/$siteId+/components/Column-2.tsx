@@ -1,19 +1,21 @@
-import { NavLink } from "@remix-run/react";
-import type { Site, User } from "~/db/payload-types";
-import {
-   HomeIcon as HomeIconBold,
-   PencilSquareIcon as PencilSquareIconBold,
-   CircleStackIcon as CircleStackIconBold,
-} from "@heroicons/react/24/solid";
-import { settings } from "mana-config";
-import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
 import {
    CircleStackIcon,
    HomeIcon,
    PencilSquareIcon,
 } from "@heroicons/react/24/outline";
+import {
+   HomeIcon as HomeIconBold,
+   PencilSquareIcon as PencilSquareIconBold,
+   CircleStackIcon as CircleStackIconBold,
+} from "@heroicons/react/24/solid";
+import { NavLink } from "@remix-run/react";
 import { HardDrive, Lock } from "lucide-react";
+
+import { settings } from "mana-config";
+import type { Site, User } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+
+import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
 
 export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
    return (

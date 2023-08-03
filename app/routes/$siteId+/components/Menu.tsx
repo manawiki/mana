@@ -1,11 +1,13 @@
-import type { Site, User } from "~/db/payload-types";
 import { CircleStackIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { Squares2X2Icon, UserIcon } from "@heroicons/react/24/solid";
 import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import { Component, Pin } from "lucide-react";
+
 import { Image } from "~/components";
-import { pinnedLinkUrlGenerator } from "../utils";
-import { Squares2X2Icon, UserIcon } from "@heroicons/react/24/solid";
+import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/modules/auth";
+
+import { pinnedLinkUrlGenerator } from "../utils";
 
 export const activeStyle = `bg-white shadow-sm shadow-1 text-light dark:bg-bg3Dark dark:text-dark`;
 export const defaultStyle = `bg-2 hover:bg-white flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;

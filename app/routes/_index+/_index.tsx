@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+
+import { RadioGroup } from "@headlessui/react";
 import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
 import {
    Link,
@@ -6,13 +9,10 @@ import {
    useSearchParams,
 } from "@remix-run/react";
 import type { V2_MetaFunction } from "@remix-run/react";
-import clsx from "clsx";
-import indexStyles from "./styles.css";
-
-import { useEffect, useState } from "react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
-import { Top } from "./components/top";
+import { SafeArea } from "capacitor-plugin-safe-area";
+import clsx from "clsx";
 import {
    ChevronLeft,
    ChevronRight,
@@ -22,17 +22,19 @@ import {
    Search,
    X,
 } from "lucide-react";
-import { zx } from "zodix";
 import { z } from "zod";
-import { fetchWithCache } from "~/utils/cache.server";
+import { zx } from "zodix";
+
 import { settings } from "mana-config";
-import { useDebouncedValue } from "~/hooks";
-import type { Site } from "~/db/payload-types";
 import { DotLoader, Image } from "~/components";
-import { RadioGroup } from "@headlessui/react";
+import type { Site } from "~/db/payload-types";
+import { useDebouncedValue } from "~/hooks";
 import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
+import { fetchWithCache } from "~/utils/cache.server";
+
+import { Top } from "./components/top";
+import indexStyles from "./styles.css";
 import { FollowingListMobile } from "../$siteId+/components";
-import { SafeArea } from "capacitor-plugin-safe-area";
 
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },

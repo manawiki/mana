@@ -1,8 +1,10 @@
-import type { Site } from "~/db/payload-types";
-import { PinnedList, PrimaryMenuLinks } from "./Menu";
 import { Component, Dog, Users } from "lucide-react";
-import Tooltip from "~/components/Tooltip";
+
 import { Image } from "~/components";
+import Tooltip from "~/components/Tooltip";
+import type { Site } from "~/db/payload-types";
+
+import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
 export const ColumnFour = ({
    safeArea,

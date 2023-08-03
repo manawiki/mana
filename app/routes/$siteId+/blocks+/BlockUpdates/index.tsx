@@ -1,27 +1,29 @@
+import { useEffect, useMemo } from "react";
+
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
 import { format } from "date-fns";
+import { Loader2, Plus, Trash } from "lucide-react";
+import type { Descendant } from "slate";
+import { Editor, createEditor, Transforms } from "slate";
+import { withHistory } from "slate-history";
+import { Editable, Slate, withReact } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
+
 import type { Update } from "payload/generated-types";
+import { H2Default } from "~/modules/collections/components/H2";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
+import { Toolbar } from "~/modules/editor/components";
+import { onKeyDown } from "~/modules/editor/editorCore";
+import type { UpdatesElement } from "~/modules/editor/types";
 import {
    UpdatesEditor,
    initialValue,
 } from "~/routes/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
-import type { UpdatesElement } from "~/modules/editor/types";
-import { Editable, Slate, withReact } from "slate-react";
-import { useEffect, useMemo } from "react";
-import type { Descendant } from "slate";
-import { Editor, createEditor, Transforms } from "slate";
-import { Toolbar } from "~/modules/editor/components";
-import { onKeyDown } from "~/modules/editor/editorCore";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
 import { isAdding, isProcessing } from "~/utils";
-import { Loader2, Plus, Trash } from "lucide-react";
-import { withHistory } from "slate-history";
-import { H2Default } from "~/modules/collections/components/H2";
 
 type Props = {
    element: UpdatesElement;
