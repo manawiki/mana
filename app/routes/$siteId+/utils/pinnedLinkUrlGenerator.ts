@@ -3,11 +3,11 @@ export const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
 
    switch (type) {
       case "customPages": {
-         const slug = item.relation?.value.slug;
+         const slug = item.relation?.value.customPageSlug;
          return `/${siteSlug}/${slug}`;
       }
       case "collections": {
-         const slug = item.relation?.value.slug;
+         const slug = item.relation?.value.collectionSlug;
          return `/${siteSlug}/collections/${slug}`;
       }
       case "entries": {

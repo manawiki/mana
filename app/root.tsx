@@ -181,12 +181,7 @@ function App() {
             <Outlet />
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
-            <ScrollRestoration
-               //https://reactrouter.com/en/main/components/scroll-restoration#getkey
-               getKey={(location, matches) => {
-                  return location.pathname;
-               }}
-            />
+            <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
             {process.env.NODE_ENV === "development" && !isMobileApp && (
@@ -213,33 +208,3 @@ export function useChangeLanguage(locale: string) {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
 }
-
-// const [visible, setVisible] = useState(false);
-
-// useEffect(() => {
-//    const onScroll = () => {
-//       setVisible(document.documentElement.scrollTop >= 200);
-//    };
-//    onScroll();
-//    document.addEventListener("scroll", onScroll);
-//    return () => document.removeEventListener("scroll", onScroll);
-// }, []);
-
-//     {visible && (
-//    <button
-//       className="fixed bottom-14 right-12 z-50 flex
-//       h-12 w-12 items-center justify-center rounded-full border-2 border-zinc-200
-//       bg-white shadow-xl shadow-gray-200 transition duration-200 active:translate-y-0.5
-//       dark:border-zinc-600 dark:bg-bg4Dark dark:shadow-zinc-900
-//       laptop:hidden"
-//       onClick={() =>
-//          window.scrollTo({
-//             top: 0,
-//             behavior: "smooth",
-//          })
-//       }
-//       aria-label="Scroll to top"
-//    >
-//       <ArrowUp className="text-black dark:text-white" size={20} />
-//    </button>
-// )}

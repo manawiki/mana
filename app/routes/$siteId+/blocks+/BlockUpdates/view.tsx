@@ -22,7 +22,7 @@ const dateFormat = (dateString: string) =>
 
 export const BlockUpdatesView = ({ element }: Props) => {
    const { updateResults } =
-      (useRouteLoaderData("routes/$siteId+/_layout") as {
+      (useRouteLoaderData("routes/$siteId+/_index") as {
          updateResults: Update[];
       }) || [];
 

@@ -84,8 +84,8 @@ export const SoloEditor = ({
    intent,
 }: {
    fetcher: any;
-   defaultValue: Descendant[] | undefined;
-   siteId: string;
+   defaultValue: Descendant[] | string[];
+   siteId: string | undefined;
    collectionEntity?: string;
    pageId?: string;
    sectionId?: string;
