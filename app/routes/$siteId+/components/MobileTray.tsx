@@ -1,14 +1,16 @@
+import { Link } from "@remix-run/react";
+import { LogOut } from "lucide-react";
+import { Drawer } from "vaul";
+
 import type { Site } from "~/db/payload-types";
-import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
 import {
    LoggedIn,
    LoggedOut,
    LoggedOutMobile,
    handleLogout,
 } from "~/modules/auth";
-import { Link } from "@remix-run/react";
-import { LogOut } from "lucide-react";
-import { Drawer } from "vaul";
+
+import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
 
 export const MobileTray = ({
    children,

@@ -1,8 +1,9 @@
 import type { LoaderArgs } from "@remix-run/node";
-import type { Collection } from "payload/generated-types";
 import { z } from "zod";
 import { zx } from "zodix";
+
 import { settings } from "mana-config";
+import type { Collection } from "payload/generated-types";
 
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls

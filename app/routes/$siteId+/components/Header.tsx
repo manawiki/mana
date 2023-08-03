@@ -1,16 +1,16 @@
 import { Link } from "@remix-run/react";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
 import { DarkModeToggle } from "~/components";
 import type { Site } from "~/db/payload-types";
-import { isAdding } from "~/utils";
-
 import {
    LoggedIn,
    LoggedInDropDown,
    LoggedOut,
    NotFollowingSite,
 } from "~/modules/auth";
+import { isAdding } from "~/utils";
 
 export const Header = ({
    location,

@@ -1,8 +1,9 @@
 import { NavLink } from "@remix-run/react";
-import { LoggedOut, LoggedIn } from "~/modules/auth";
-import { NewSiteModal } from "~/routes/action+/new-site-modal";
+
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
+import { LoggedOut, LoggedIn } from "~/modules/auth";
+import { NewSiteModal } from "~/routes/action+/new-site-modal";
 
 export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
    const following = user?.sites as Site[];

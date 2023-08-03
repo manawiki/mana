@@ -1,10 +1,8 @@
-import type { Site } from "~/db/payload-types";
-import clsx from "clsx";
-import { Link, Outlet } from "@remix-run/react";
-import SearchComboBox from "../resource+/Search";
 import { Fragment, useState } from "react";
-import { isAdding } from "~/utils";
-import { useTranslation } from "react-i18next";
+
+import { Menu, Transition } from "@headlessui/react";
+import { Link, Outlet } from "@remix-run/react";
+import clsx from "clsx";
 import {
    ChevronLeft,
    Loader2,
@@ -14,10 +12,15 @@ import {
    Settings2,
    X,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 import { Image } from "~/components";
+import type { Site } from "~/db/payload-types";
 import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
-import { Menu, Transition } from "@headlessui/react";
+import { isAdding } from "~/utils";
+
 import { MenuTrayContent, MobileTray } from "./MobileTray";
+import SearchComboBox from "../resource+/Search";
 
 export const ColumnThree = ({
    location,

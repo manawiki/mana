@@ -1,8 +1,10 @@
-import { useRouteLoaderData } from "@remix-run/react";
 import { useMemo } from "react";
+
+import { useRouteLoaderData } from "@remix-run/react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
+
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/modules/collections/components/H2";
 import Block from "~/modules/editor/blocks/Block";

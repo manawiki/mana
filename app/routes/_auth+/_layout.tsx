@@ -1,12 +1,8 @@
-import type { LoaderArgs } from "@remix-run/node";
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
-import { DarkModeToggle } from "~/components";
-import { LogoFull } from "~/components/LogoFull";
 import clsx from "clsx";
 
-export const loader = async ({ request }: LoaderArgs) => {
-   return null;
-};
+import { DarkModeToggle } from "~/components";
+import { LogoFull } from "~/components/LogoFull";
 
 export default function AuthLayout() {
    const { isMobileApp } = useRouteLoaderData("root") as {
