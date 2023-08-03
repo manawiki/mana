@@ -1,23 +1,16 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 import { nanoid } from "nanoid";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
-import {
-   useFetcher,
-   useLoaderData,
-   useParams,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import { useCallback, useMemo } from "react";
+import { Await, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { Suspense, useCallback, useMemo } from "react";
 import { createEditor } from "slate";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
-import type { HomeContent } from "payload/generated-types";
+import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import { SoloEditor } from "../editors+/SoloEditor";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
@@ -29,23 +22,16 @@ import {
    type RenderElementProps,
 } from "slate-react";
 import Tooltip from "~/components/Tooltip";
-import { isProcessing } from "~/utils";
+import { isNativeSSR, isProcessing } from "~/utils";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
-
-const initialValue: CustomElement[] = [
-   {
-      id: nanoid(),
-      type: BlockType.Paragraph,
-      children: [
-         {
-            text: "",
-         },
-      ],
-   },
-];
+import { deferIf } from "defer-if";
+import type { Payload } from "payload";
+import type { Select } from "payload-query";
+import { select } from "payload-query";
+import qs from "qs";
 
 export async function loader({
    context: { payload, user },
@@ -56,71 +42,33 @@ export async function loader({
       siteId: z.string(),
    });
 
-   //Don't cache if logged in
-   if (user) {
-      const homeContentUrl = `${settings.domainFull}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
+   const { isMobileApp } = isNativeSSR(request);
 
-      const { docs: data } = (await (
-         await fetch(homeContentUrl, {
-            headers: {
-               cookie: request.headers.get("cookie") ?? "",
-            },
-         })
-      ).json()) as PaginatedDocs<HomeContent>;
+   const updateResults = await fetchHomeUpdates({
+      payload,
+      siteId,
+      user,
+      request,
+   });
 
-      if (data.length == 0) return json({ home: null, isChanged: false });
-      const home = data[0]?.content;
-      //Otherwise return json and cache
-      return json(
-         { home, isChanged: false },
-         { headers: { "Cache-Control": "public, s-maxage=60" } }
-      );
-   }
+   const { home, isChanged } = await fetchHomeContent({
+      payload,
+      siteId,
+      user,
+      request,
+   });
 
-   //Use cache if anon
-   if (!user) {
-      const homeContentUrl = `${settings.domainFull}/api/homeContents?where[site.slug][equals]=${siteId}&depth=1`;
-      const { docs: data } = (await fetchWithCache(homeContentUrl, {
+   return await deferIf({ home, isChanged, updateResults }, isMobileApp, {
+      init: {
          headers: {
-            cookie: request.headers.get("cookie") ?? "",
+            "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
          },
-      })) as PaginatedDocs<HomeContent>;
-
-      if (data.length == 0) return json({ home: null, isChanged: false });
-
-      const homeData = data[0];
-      const site = homeData.site;
-      const userId = user?.id;
-
-      const hasAccess = isSiteOwnerOrAdmin(userId, site);
-
-      if (hasAccess) {
-         //Note that we findbyId so permissions pass the ID
-         const editHomeContentUrl = `${settings.domainFull}/api/homeContents/${homeData.id}?depth=0&draft=true`;
-         const data = (await (
-            await fetch(editHomeContentUrl, {
-               headers: {
-                  cookie: request.headers.get("cookie") ?? "",
-               },
-            })
-         ).json()) as HomeContent;
-         if (!data) return json({ home: null, isChanged: false });
-         const home = data.content;
-         const isChanged =
-            JSON.stringify(home) != JSON.stringify(homeData.content);
-         return json({ home, isChanged });
-      }
-      const home = data[0]?.content;
-      //Otherwise return json and cache
-      return json(
-         { home, isChanged: false },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-      );
-   }
+      },
+   });
 }
 
 export default function SiteIndexMain() {
-   const { home, isChanged } = useLoaderData<typeof loader>() || {};
+   const { home, isChanged } = useLoaderData<typeof loader>();
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
@@ -131,10 +79,11 @@ export default function SiteIndexMain() {
 
    const isAutoSaving =
       fetcher.state === "submitting" &&
-      fetcher.formData.get("intentType") === "update";
+      fetcher.formData?.get("intentType") === "update";
+
    const isPublishing =
       fetcher.state === "submitting" &&
-      fetcher.formData.get("intentType") === "publish";
+      fetcher.formData?.get("intentType") === "publish";
 
    const disabled = isProcessing(fetcher.state);
 
@@ -144,13 +93,18 @@ export default function SiteIndexMain() {
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen">
-                     <SoloEditor
-                        key={siteId}
-                        fetcher={fetcher}
-                        siteId={siteId}
-                        intent="homeContent"
-                        defaultValue={home ?? initialValue}
-                     />
+                     <Suspense fallback="Loading...">
+                        <Await resolve={home}>
+                           <SoloEditor
+                              key={siteId}
+                              fetcher={fetcher}
+                              siteId={siteId}
+                              intent="homeContent"
+                              // @ts-ignore
+                              defaultValue={home ?? initialValue}
+                           />
+                        </Await>
+                     </Suspense>
                      <div
                         className="shadow-1 border-color bg-2 fixed inset-x-0 bottom-20 z-40 mx-auto flex
                   max-w-[200px] items-center justify-between rounded-full border p-2 shadow-sm"
@@ -193,6 +147,7 @@ export default function SiteIndexMain() {
                                        disabled={disabled}
                                        onClick={() => {
                                           fetcher.submit(
+                                             //@ts-ignore
                                              {
                                                 intent: "homeContent",
                                                 intentType: "publish",
@@ -242,13 +197,18 @@ export default function SiteIndexMain() {
             ) : (
                <>
                   {home && (
-                     <Slate key={siteId} editor={editor} value={home}>
-                        <Editable
-                           renderElement={renderElement}
-                           renderLeaf={Leaf}
-                           readOnly={true}
-                        />
-                     </Slate>
+                     <Suspense fallback="Loading...">
+                        <Await resolve={home}>
+                           {/* @ts-ignore */}
+                           <Slate key={siteId} editor={editor} value={home}>
+                              <Editable
+                                 renderElement={renderElement}
+                                 renderLeaf={Leaf}
+                                 readOnly={true}
+                              />
+                           </Slate>
+                        </Await>
+                     </Suspense>
                   )}
                </>
             )}
@@ -256,3 +216,155 @@ export default function SiteIndexMain() {
       </>
    );
 }
+
+const fetchHomeUpdates = async ({
+   payload,
+   siteId,
+   user,
+   request,
+}: {
+   payload: Payload;
+   siteId: Site["slug"];
+   user?: User;
+   request: Request;
+}): Promise<Update[]> => {
+   if (user) {
+      const { docs } = await payload.find({
+         collection: "updates",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+         },
+         sort: "-createdAt",
+         depth: 0,
+         user,
+      });
+
+      const select2: Select<Update> = { entry: true, createdAt: true };
+
+      const selectUpdateResults = select(select2);
+
+      //@ts-expect-error
+      return docs.map((doc) => selectUpdateResults(doc));
+   }
+
+   const updatesQuery = qs.stringify(
+      {
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+         },
+         select: {
+            entry: true,
+            createdAt: true,
+         },
+         sort: "-createdAt",
+      },
+      { addQueryPrefix: true }
+   );
+   const updatesUrl = `${settings.domainFull}/api/updates${updatesQuery}`;
+
+   const { docs: updateResults } = await fetchWithCache(updatesUrl, {
+      headers: {
+         cookie: request.headers.get("cookie") ?? "",
+      },
+   });
+   return updateResults;
+};
+
+const fetchHomeContent = async ({
+   payload,
+   siteId,
+   user,
+   request,
+}: {
+   payload: Payload;
+   siteId: Site["slug"];
+   user?: User;
+   request: Request;
+}): Promise<{
+   home: HomeContent["content"];
+   isChanged: Boolean;
+}> => {
+   //Use local API and bypass cache for logged in users
+   if (user) {
+      const { docs } = await payload.find({
+         collection: "homeContents",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+         },
+         user,
+      });
+
+      const homeData = docs[0];
+      const site = homeData.site;
+      const userId = user?.id;
+      const hasAccess = isSiteOwnerOrAdmin(userId, site);
+
+      //If site admin, pull the latest draft and update isChanged
+      if (hasAccess) {
+         const data = await payload.findByID({
+            collection: "homeContents",
+            id: homeData.id,
+            depth: 1,
+            draft: true,
+            user,
+         });
+
+         const home = select({ id: false, content: true }, data).content;
+
+         const isChanged =
+            JSON.stringify(home) != JSON.stringify(homeData.content);
+
+         return { home, isChanged };
+      }
+
+      const home = docs[0]?.content;
+
+      return { home, isChanged: false };
+   }
+
+   //For anon, use cached endpoint call.
+   const homeContentQuery = qs.stringify(
+      {
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+         },
+         select: {
+            content: true,
+         },
+         depth: 1,
+      },
+      { addQueryPrefix: true }
+   );
+
+   const homeContentUrl = `${settings.domainFull}/api/homeContents${homeContentQuery}`;
+
+   const { docs } = await fetchWithCache(homeContentUrl, {
+      headers: {
+         cookie: request.headers.get("cookie") ?? "",
+      },
+   });
+
+   const home = docs[0]?.content;
+
+   return { home, isChanged: false };
+};
+
+const initialValue: CustomElement[] = [
+   {
+      id: nanoid(),
+      type: BlockType.Paragraph,
+      children: [
+         {
+            text: "",
+         },
+      ],
+   },
+];

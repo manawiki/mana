@@ -28,10 +28,11 @@ import { fetchWithCache } from "~/utils/cache.server";
 import { settings } from "mana-config";
 import { useDebouncedValue } from "~/hooks";
 import type { Site } from "~/db/payload-types";
-import { Image } from "~/components";
+import { DotLoader, Image } from "~/components";
 import { RadioGroup } from "@headlessui/react";
 import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
 import { FollowingListMobile } from "../$siteId+/components";
+import { SafeArea } from "capacitor-plugin-safe-area";
 
 export const meta: V2_MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -126,6 +127,22 @@ export default function IndexMain() {
    const { isMobileApp } = useRouteLoaderData("root") as {
       isMobileApp: Boolean;
    };
+
+   const [safeArea, setSetArea] = useState() as any;
+
+   useEffect(() => {
+      if (isMobileApp) {
+         SafeArea.getSafeAreaInsets().then(({ insets }) => {
+            setSetArea(insets);
+         });
+      }
+   }, [isMobileApp]);
+   const topSafeArea = isMobileApp
+      ? safeArea?.top
+         ? safeArea?.top + 20
+         : 0
+      : 70;
+
    useEffect(() => {
       AOS.init({
          once: true,
@@ -135,6 +152,14 @@ export default function IndexMain() {
       });
    });
 
+   //Prevent layout shift on native. Don't paint screen yet.
+   if (isMobileApp && !safeArea)
+      return (
+         <div className="bg-1 flex min-h-[100vh] min-w-full items-center justify-start">
+            <DotLoader />
+         </div>
+      );
+
    return (
       <>
          <LoggedOut>
@@ -142,7 +167,12 @@ export default function IndexMain() {
          </LoggedOut>
          {isMobileApp && (
             <LoggedOut>
-               <div className="bg-3 relative z-10 px-5 pb-10 pt-20">
+               <div
+                  style={{
+                     paddingTop: topSafeArea,
+                  }}
+                  className="bg-3 relative z-10 px-5 pb-10"
+               >
                   <div className="pb-4 text-center text-sm font-bold">
                      Login to view the sites you <b>follow</b>
                   </div>
@@ -153,12 +183,12 @@ export default function IndexMain() {
                </div>
             </LoggedOut>
          )}
-         <Discover />
+         <Discover topSafeArea={topSafeArea} />
       </>
    );
 }
 
-const Discover = () => {
+const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
@@ -183,7 +213,12 @@ const Discover = () => {
       <>
          <section className="relative z-10 h-full">
             <LoggedIn>
-               <div className="bg-1 pb-10 pt-20">
+               <div
+                  style={{
+                     paddingTop: topSafeArea,
+                  }}
+                  className="bg-1 pb-10"
+               >
                   <div className="mx-auto max-w-[680px] max-laptop:px-4">
                      <div className="pb-3 pl-1 text-sm font-bold">
                         Following

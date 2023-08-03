@@ -8,6 +8,7 @@ import { Logo } from "./components/Logo";
 import { BackMana } from "./components/BackMana";
 import searchPlugin from "./plugins/search";
 import { settings } from "../../mana.config";
+import { selectPlugin } from "payload-query";
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ export default buildConfig({
    },
    cors: settings.cors,
    plugins: [
+      selectPlugin(),
       cloudStorage({
          collections: {
             images: {
@@ -169,6 +171,7 @@ export default buildConfig({
          },
       }),
    ],
+   globals: [],
    collections,
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-types.ts"),
