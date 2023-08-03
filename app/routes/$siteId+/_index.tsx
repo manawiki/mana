@@ -1,37 +1,40 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { z } from "zod";
-import { zx } from "zodix";
-import { nanoid } from "nanoid";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
-import { Await, useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { Suspense, useCallback, useMemo } from "react";
+
+import type { LoaderArgs } from "@remix-run/node";
+import { Await, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { deferIf } from "defer-if";
+import { Check, History, Loader2, MoreVertical } from "lucide-react";
+import { nanoid } from "nanoid";
+import type { Payload } from "payload";
+import type { Select } from "payload-query";
+import { select } from "payload-query";
+import qs from "qs";
 import { createEditor } from "slate";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import type { HomeContent, Site, Update, User } from "payload/generated-types";
-import { SoloEditor } from "../editors+/SoloEditor";
-import {
-   AdminOrStaffOrOwner,
-   useIsStaffOrSiteAdminOrStaffOrOwner,
-} from "~/modules/auth";
 import {
    Slate,
    Editable,
    withReact,
    type RenderElementProps,
 } from "slate-react";
-import Tooltip from "~/components/Tooltip";
-import { isNativeSSR, isProcessing } from "~/utils";
-import { Check, History, Loader2, MoreVertical } from "lucide-react";
-import { isSiteOwnerOrAdmin } from "~/access/site";
-import { fetchWithCache } from "~/utils/cache.server";
+import { z } from "zod";
+import { zx } from "zodix";
+
 import { settings } from "mana-config";
-import { deferIf } from "defer-if";
-import type { Payload } from "payload";
-import type { Select } from "payload-query";
-import { select } from "payload-query";
-import qs from "qs";
+import type { HomeContent, Site, Update, User } from "payload/generated-types";
+import { isSiteOwnerOrAdmin } from "~/access/site";
+import Tooltip from "~/components/Tooltip";
+import {
+   AdminOrStaffOrOwner,
+   useIsStaffOrSiteAdminOrStaffOrOwner,
+} from "~/modules/auth";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
+import type { CustomElement } from "~/modules/editor/types";
+import { BlockType } from "~/modules/editor/types";
+import { isNativeSSR, isProcessing } from "~/utils";
+import { fetchWithCache } from "~/utils/cache.server";
+
+import { SoloEditor } from "../editors+/SoloEditor";
 
 export async function loader({
    context: { payload, user },
@@ -58,13 +61,7 @@ export async function loader({
       request,
    });
 
-   return await deferIf({ home, isChanged, updateResults }, isMobileApp, {
-      init: {
-         headers: {
-            "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
-         },
-      },
-   });
+   return await deferIf({ home, isChanged, updateResults }, isMobileApp);
 }
 
 export default function SiteIndexMain() {

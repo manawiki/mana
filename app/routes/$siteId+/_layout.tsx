@@ -1,3 +1,11 @@
+import { Suspense, useEffect, useState } from "react";
+
+import type {
+   ActionFunction,
+   LoaderArgs,
+   V2_MetaFunction,
+} from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
    Await,
    useFetcher,
@@ -5,24 +13,18 @@ import {
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
-import type {
-   ActionFunction,
-   LoaderArgs,
-   V2_MetaFunction,
-} from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { zx } from "zodix";
+import { SafeArea } from "capacitor-plugin-safe-area";
+import { deferIf } from "defer-if";
 import { z } from "zod";
-import { assertIsPost, isNativeSSR } from "~/utils";
-import { Suspense, useEffect, useState } from "react";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import { DotLoader } from "~/components";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
-import { deferIf } from "defer-if";
-import { SafeArea } from "capacitor-plugin-safe-area";
-import { useIsBot } from "~/utils/isBotProvider";
+import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
+import { useIsBot } from "~/utils/isBotProvider";
 
 import {
    MobileNav,

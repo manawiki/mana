@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
+
+import { useFetcher } from "@remix-run/react";
 import { type Descendant, createEditor } from "slate";
+import { withHistory } from "slate-history";
 import { Editable, Slate, withReact } from "slate-react";
-import type { CustomElement } from "../../../../modules/editor/types";
-import Leaf from "~/modules/editor/blocks/Leaf";
+
+import { useDebouncedValue, useIsMount } from "~/hooks";
 import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
 import { Toolbar } from "~/modules/editor/components";
 import { onKeyDown } from "~/modules/editor/editorCore";
-import { useFetcher } from "@remix-run/react";
-import { useDebouncedValue, useIsMount } from "~/hooks";
-import { withHistory } from "slate-history";
+
+import type { CustomElement } from "../../../../modules/editor/types";
 
 const useEditor = () =>
    useMemo(() => withReact(withHistory(createEditor())), []);

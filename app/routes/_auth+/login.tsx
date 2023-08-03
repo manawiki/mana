@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type {
    ActionFunction,
    LinksFunction,
@@ -13,9 +15,15 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
-import { i18nextServer } from "~/utils/i18n";
+import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
+import { DotLoader } from "~/components/DotLoader";
+import { FormLabel } from "~/components/Forms";
 import {
    type FormResponse,
    assertIsPost,
@@ -23,19 +31,13 @@ import {
    isProcessing,
    safeRedirect,
 } from "~/utils";
-import { useTranslation } from "react-i18next";
+import { i18nextServer } from "~/utils/i18n";
 import {
    commitSession,
    getSession,
    setErrorMessage,
    setSuccessMessage,
 } from "~/utils/message.server";
-import { FormLabel } from "~/components/Forms";
-import { DotLoader } from "~/components/DotLoader";
-import { zx } from "zodix";
-import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
-import { settings } from "mana-config";
 
 const LoginFormSchema = z.object({
    email: z

@@ -1,3 +1,5 @@
+import { Fragment, useEffect, useMemo, useState } from "react";
+
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -8,6 +10,7 @@ import {
    useParams,
    useRouteLoaderData,
 } from "@remix-run/react";
+import { clsx } from "clsx";
 import {
    Component,
    Database,
@@ -16,15 +19,14 @@ import {
    Loader2,
    X,
 } from "lucide-react";
-import { Fragment, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { zx } from "zodix";
-import type { Search, Site } from "payload/generated-types";
-import { useDebouncedValue } from "~/hooks";
-import { Image } from "~/components";
-import { isAdding } from "~/utils";
-import { clsx } from "clsx";
+
 import { settings } from "mana-config";
+import type { Search, Site } from "payload/generated-types";
+import { Image } from "~/components";
+import { useDebouncedValue } from "~/hooks";
+import { isAdding } from "~/utils";
 
 export async function loader({
    context: { payload, user },
