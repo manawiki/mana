@@ -59,11 +59,11 @@ export async function loader({
    });
 
    return await deferIf({ home, isChanged, updateResults }, isMobileApp, {
-      init: {
-         headers: {
-            "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
-         },
-      },
+      // init: {
+      //    headers: {
+      //       "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
+      //    },
+      // },
    });
 }
 
