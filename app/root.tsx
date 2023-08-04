@@ -83,7 +83,6 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: customStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
-   { rel: "preconnect", href: `https://static.${settings.domain}` },
    {
       rel: "preconnect",
       href: `https://${settings.domain}`,
@@ -93,15 +92,17 @@ export const links: LinksFunction = () => [
       rel: "preconnect",
       href: `https://${
          settings.siteId ? `${settings.siteId}-static` : "static"
-      }.${settings.domain}`,
+      }.mana.wiki`,
       crossOrigin: "anonymous",
    },
 
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
+   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
    {
       rel: "dns-prefetch",
-      href: `https://${settings.siteId}-static.${settings.domain}`,
+      href: `https://${
+         settings.siteId ? `${settings.siteId}-static` : "static"
+      }.mana.wiki`,
    },
 
    //Remix Devtools
@@ -142,7 +143,6 @@ function App() {
    }, [toastMessage]);
 
    //We only want to run this on initial mount
-
    useEffect(() => {
       if (isMobileApp) {
          setBackForwardNavigationGestures(true);

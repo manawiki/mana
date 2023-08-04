@@ -1,4 +1,5 @@
 import { LRUCache } from "lru-cache";
+
 import { remember } from "./remember.server";
 
 // Setup an in memory lru-cache for api calls, this will be cleared on server restart.
@@ -12,7 +13,7 @@ export const lruCache = remember(
 
 /**
  * Setup a lru-cache for layout data, so we don't have to fetch it every time. Params are based on browser fetch api.
- * @param url - rest api endpoint `https://${settings.siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
+ * @param url - rest api endpoint `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
  * @param init - browser fetch api init object for headers, body, etc
  * @returns  the result of the fetch or its cached value
  */

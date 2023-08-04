@@ -1,19 +1,21 @@
-import { buildConfig } from "payload/config";
-import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
-import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
-import dotenv from "dotenv";
 import path from "path";
+
+import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
+import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import dotenv from "dotenv";
+import { buildConfig } from "payload/config";
+
+import { Users } from "./collections/CustomUsers";
 import { Images } from "./collections/Images";
 import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
-import { Users } from "./collections/CustomUsers";
+import searchPlugin from "./plugins/search";
+import { settings } from "../../mana.config";
 import {
    CustomCollections,
    CustomSearchCollections,
    CustomDefaultPriorities,
 } from "../_custom/collections";
-import searchPlugin from "./plugins/search";
-import { settings } from "../../mana.config";
 
 dotenv.config();
 
@@ -60,7 +62,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.${settings.domain}/${settings.siteId}/${filename}`;
+                  return `https://static.mana.wiki/${settings.siteId}/${filename}`;
                },
                prefix: settings.siteId,
             },

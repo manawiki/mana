@@ -1,13 +1,14 @@
-import type { Params } from "@remix-run/react";
 import type { V2_MetaFunction } from "@remix-run/node";
+import type { Params } from "@remix-run/react";
+import type { Payload } from "payload";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import { z } from "zod";
 import { zx } from "zodix";
-import type { Payload } from "payload";
+
+import { settings } from "mana-config";
 import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { cacheThis, fetchWithCache } from "~/utils/cache.server";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import { settings } from "mana-config";
 
 type HeaderType = {
    name?: string;
@@ -24,8 +25,9 @@ export const getDefaultEntryData = async ({
    params: Params;
    request: any;
 }) => {
-   const { entryId } = zx.parseParams(params, {
+   const { entryId, siteId } = zx.parseParams(params, {
       entryId: z.string(),
+      siteId: z.string(),
    });
 
    //We must get param from url since we can't access the param for custom templates.
@@ -46,10 +48,9 @@ export const getDefaultEntryData = async ({
    const collection = collectionData?.docs[0];
 
    let data = {} as HeaderType;
-
    if (collection.customEntryTemplate) {
       const entry = await fetchWithCache(
-         `https://${settings.siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
+         `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
       );
       data = { name: entry?.name, icon: { url: entry?.icon?.url } };
       return data;
@@ -150,12 +151,13 @@ export const getCustomEntryData = async ({
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
-   const { entryId } = zx.parseParams(params, {
+   const { entryId, siteId } = zx.parseParams(params, {
       entryId: z.string(),
+      siteId: z.string(),
    });
 
    return fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`
+      `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`
    );
 };
 

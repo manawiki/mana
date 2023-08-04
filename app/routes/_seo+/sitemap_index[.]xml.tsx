@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+
 import { settings } from "mana-config";
 
 const toXmlSitemap = (urls: string[]) => {

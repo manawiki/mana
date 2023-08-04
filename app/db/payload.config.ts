@@ -1,14 +1,16 @@
-import { buildConfig } from "payload/config";
 import path from "path";
-import { collections } from "./collections";
-import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
+import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import dotenv from "dotenv";
-import { Logo } from "./components/Logo";
-import { BackMana } from "./components/BackMana";
-import searchPlugin from "./plugins/search";
-import { settings } from "../../mana.config";
+import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
+
+import { collections } from "./collections";
+import { BackMana } from "./components/BackMana";
+import { Logo } from "./components/Logo";
+import searchPlugin from "./plugins/search";
+import { corsConfig } from "../../mana.config";
 
 dotenv.config();
 
@@ -59,8 +61,11 @@ export default buildConfig({
          },
       }),
    },
-   cors: settings.cors,
    plugins: [
+      async (config) => {
+         const { cors } = await corsConfig();
+         return { ...config, cors };
+      },
       selectPlugin(),
       cloudStorage({
          collections: {
@@ -68,7 +73,7 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.${settings.domain}/${filename}`;
+                  return `https://static.mana.wiki/${filename}`;
                },
             },
          },
