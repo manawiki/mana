@@ -1,8 +1,7 @@
 import qs from "qs";
 
-import type { Site } from "payload-types";
-
 import { config } from "./app/_custom/config";
+import type { Site } from "./app/db/payload-types";
 import { fetchWithCache } from "./app/utils/cache.server";
 
 type ManaConfig = {
