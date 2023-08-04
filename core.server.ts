@@ -174,20 +174,22 @@ function createProductionRequestHandler(): RequestHandler {
       { config: require(METRONOME_CONFIG_PATH) }
    );
 
-   const getLoadContext = (req: any, res: any) => ({
-      payload: req.payload,
-      user: req?.user,
-      res,
-   });
+   function getLoadContext(req: any, res: any) {
+      return {
+         payload: req.payload,
+         user: req?.user,
+         res,
+      };
+   }
 
    return createRequestHandler({
       build: buildWithMetronome,
       mode: process.env.NODE_ENV,
-      getLoadContext,
-      // : combineGetLoadContexts({
-      //    getLoadContext,
-      //    metronomeGetLoadContext,
-      // }),
+      getLoadContext: combineGetLoadContexts(
+         getLoadContext,
+         // @ts-ignore
+         metronomeGetLoadContext
+      ),
    });
 }
 
