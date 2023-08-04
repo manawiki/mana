@@ -1,6 +1,6 @@
 import qs from "qs";
 
-import type { Site } from "~/db/payload-types";
+import type { Site } from "payload-types";
 
 import { config } from "./app/_custom/config";
 import { fetchWithCache } from "./app/utils/cache.server";
