@@ -7,7 +7,7 @@ import { I18nextProvider } from "react-i18next";
 
 import { initI18nextClient } from "./utils/i18n/i18next.client";
 
-const callback = () =>
+async function hydrate() {
    startTransition(() => {
       hydrateRoot(
          document,
@@ -18,32 +18,6 @@ const callback = () =>
          </I18nextProvider>
       );
    });
-
-if (process.env.NODE_ENV === "development") {
-   import("remix-development-tools").then(({ initClient }) => {
-      // Add all the dev tools props here into the client
-      initClient();
-
-      //This works fine
-      callback();
-      // this loops
-      // initI18nextClient(callback);
-   });
-} else {
-   initI18nextClient(callback);
 }
 
-// async function hydrate() {
-//    startTransition(() => {
-//       hydrateRoot(
-//          document,
-//          <I18nextProvider i18n={i18next}>
-//             <StrictMode>
-//                <RemixBrowser />
-//             </StrictMode>
-//          </I18nextProvider>
-//       );
-//    });
-// }
-
-// initI18nextClient(hydrate);
+initI18nextClient(hydrate);

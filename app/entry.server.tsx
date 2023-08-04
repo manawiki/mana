@@ -27,21 +27,13 @@ export default async function handleRequest(
    // completely unique instance and not share any state
    const instance = await createI18nextServerInstance(request, remixContext);
 
-   //load RDT into RemixContext
-   const context =
-      process.env.NODE_ENV === "development"
-         ? await import("remix-development-tools").then(({ initServer }) =>
-              initServer(remixContext)
-           )
-         : remixContext;
-
    return new Promise(async (resolve, reject) => {
       const { pipe, abort } = renderToPipeableStream(
          <I18nextProvider i18n={instance}>
             <IsBotProvider
                isBot={isbot(request.headers.get("User-Agent") ?? "")}
             >
-               <RemixServer context={context} url={request.url} />
+               <RemixServer context={remixContext} url={request.url} />
             </IsBotProvider>
          </I18nextProvider>,
          {
