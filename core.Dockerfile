@@ -1,4 +1,4 @@
-FROM node:16-alpine as base
+FROM node:18-bookworm-slim as base
 
 ARG STATIC_URL
 ENV STATIC_URL $STATIC_URL
