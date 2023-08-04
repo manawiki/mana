@@ -39,6 +39,8 @@
       "@dnd-kit/utilities": "^3.2.1",
       "@headlessui/react": "^1.7.16",
       "@heroicons/react": "^2.0.15",
+      "@metronome-sh/express": "^6.0.1",
+      "@metronome-sh/react": "^6.0.1",
       "@payloadcms/plugin-cloud-storage": "^1.0.14",
       "@radix-ui/react-checkbox": "^1.0.3",
       "@radix-ui/react-dropdown-menu": "^2.0.4",
