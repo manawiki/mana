@@ -1,7 +1,6 @@
 import qs from "qs";
 
 import { config } from "./app/_custom/config";
-import type { Site } from "./app/db/payload-types";
 import { fetchWithCache } from "./app/utils/cache.server";
 
 type ManaConfig = {
@@ -38,7 +37,7 @@ export const corsConfig = async (): Promise<CorsConfig> => {
 
    const { docs } = await fetchWithCache(customSitesUrl);
 
-   const siteCorsOrigins = docs.flatMap((site: Site) => {
+   const siteCorsOrigins = docs.flatMap((site: any) => {
       if (site.type == "custom" && site.domain)
          return [
             `https://${site.slug}-static.mana.wiki`,
@@ -49,7 +48,7 @@ export const corsConfig = async (): Promise<CorsConfig> => {
       return null;
    });
 
-   const siteCors = docs.flatMap((site: Site) => {
+   const siteCors = docs.flatMap((site: any) => {
       if (site.type == "custom" && site.domain)
          return [`${site.slug}-static.mana.wiki`, site.domain];
       if (site.type == "core" && site.domain) return site.domain;
