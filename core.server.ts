@@ -187,7 +187,7 @@ function createProductionRequestHandler(): RequestHandler {
       mode: process.env.NODE_ENV,
       getLoadContext: combineGetLoadContexts(
          getLoadContext,
-         // @ts-ignore
+         // @ts-expect-error huh... metronome isn't happy with itself.
          metronomeGetLoadContext
       ),
    });
