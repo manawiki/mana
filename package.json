@@ -137,6 +137,6 @@
       "typescript": "^5.1.3"
    },
    "engines": {
-      "node": ">=16"
+      "node": ">=18"
    }
 }
