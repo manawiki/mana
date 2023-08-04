@@ -16,7 +16,7 @@ import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
 import coreBuildConfig from "./app/db/payload.config";
-import { settings } from "./mana.config";
+import { settings, corsConfig } from "./mana.config";
 
 // patch in Remix runtime globals
 installGlobals();
@@ -50,15 +50,11 @@ const transport = nodemailer.createTransport({
    },
 });
 
-const corsOptions = {
-   origin: settings.corsOrigins,
-};
-
 //Start core site (remix + payload instance)
 async function startCore() {
    const app = express();
-
-   app.use(cors(corsOptions));
+   const { corsOrigins } = await corsConfig();
+   app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");

@@ -1,22 +1,19 @@
-import express from "express";
 import compression from "compression";
+import express from "express";
 import morgan from "morgan";
+import nodemailer from "nodemailer";
 import payload from "payload";
 import invariant from "tiny-invariant";
+
 import customBuildConfig from "./app/db/payload.custom.config";
-import nodemailer from "nodemailer";
-import { settings } from "./mana.config";
+import { settings, corsConfig } from "./mana.config";
 
 require("dotenv").config();
 const cors = require("cors");
 
-const corsOptions = {
-   origin: settings.corsOrigins,
-};
-
 const transport = nodemailer.createTransport({
    host: process.env.PAYLOAD_NODEMAILER_HOST,
-   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT),
+   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT as string),
    secure: false,
    auth: {
       user: process.env.PAYLOAD_NODEMAILER_USER,
@@ -28,7 +25,8 @@ const transport = nodemailer.createTransport({
 async function startCustom() {
    const app = express();
 
-   app.use(cors(corsOptions));
+   const { corsOrigins } = await corsConfig();
+   app.use(cors({ origin: corsOrigins }));
 
    // Redirect all traffic at root to admin UI
    app.get("/", function (_, res) {

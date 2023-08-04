@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
    type ActionFunction,
    type LoaderArgs,
@@ -14,11 +16,26 @@ import {
    Form,
    useActionData,
 } from "@remix-run/react";
+import {
+   Component,
+   ImagePlus,
+   Loader2,
+   ChevronLeft,
+   ChevronRight,
+} from "lucide-react";
+import { nanoid } from "nanoid";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
 import { useTranslation } from "react-i18next";
+import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
-import { useEffect, useState } from "react";
-import { createCustomIssues, useZorm } from "react-zorm";
+
+import { settings } from "mana-config";
+import type { Entry, Collection } from "payload/generated-types";
+import { Image } from "~/components/Image";
+import { useDebouncedValue } from "~/hooks";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { H2 } from "~/modules/collections/components/H2";
 import {
    assertIsPost,
    getMultipleFormData,
@@ -27,24 +44,7 @@ import {
    isAdding,
    isProcessing,
 } from "~/utils";
-
-import {
-   Component,
-   ImagePlus,
-   Loader2,
-   ChevronLeft,
-   ChevronRight,
-} from "lucide-react";
-
-import { Image } from "~/components/Image";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { useDebouncedValue } from "~/hooks";
-import type { Entry, Collection } from "payload/generated-types";
-import { nanoid } from "nanoid";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import { H2 } from "~/modules/collections/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -81,7 +81,7 @@ export async function loader({
       // Get custom collection list data
       if (collection.customDatabase) {
          const entrylist = await fetchWithCache(
-            `https://${settings.siteId}-db.${
+            `https://${siteId}-db.${
                settings.domain
             }/api/${collectionId}?limit=20&depth=1&page=${page ?? 1}`
          );

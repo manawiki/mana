@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
    type ActionFunction,
    type LoaderArgs,
@@ -10,8 +12,20 @@ import {
    useLoaderData,
    useFetcher,
    useActionData,
-   useRouteLoaderData,
 } from "@remix-run/react";
+import clsx from "clsx";
+import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
+import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import { useTranslation } from "react-i18next";
+import { createCustomIssues, useZorm } from "react-zorm";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
+import type { Collection } from "payload/generated-types";
+import { Image } from "~/components/Image";
+import { toast } from "~/components/Toaster";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
 import {
    assertIsPost,
    isProcessing,
@@ -20,27 +34,14 @@ import {
    isAdding,
    type FormResponse,
 } from "~/utils";
-import { useTranslation } from "react-i18next";
-import { z } from "zod";
-import { zx } from "zodix";
-import { useEffect, useState } from "react";
-import { createCustomIssues, useZorm } from "react-zorm";
-import { ChevronRight, Database, ImagePlus, Loader2 } from "lucide-react";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
-import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
-import { toast } from "~/components/Toaster";
-import { Image } from "~/components/Image";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
-import type { Collection } from "payload/generated-types";
 import { fetchWithCache } from "~/utils/cache.server";
-import clsx from "clsx";
-import { settings } from "mana-config";
+
+import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
-
    try {
       const collectionDataFetchUrl = `${settings.domainFull}/api/collections?where[hiddenCollection][equals]=false&where[site.slug][equals]=${siteId}&depth=1`;
 
@@ -51,7 +52,6 @@ export async function loader({ params, request }: LoaderArgs) {
       })) as PaginatedDocs<Collection>;
 
       const collections = collectionData.docs;
-
       return json(
          { collections },
          { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
