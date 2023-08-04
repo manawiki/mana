@@ -31,6 +31,7 @@ const chokidar =
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
  */
 const BUILD_PATH = path.resolve("./build/index.js");
+const METRONOME_CONFIG_PATH = path.resolve("./metronome.config.js");
 
 /**
  * Initial build
@@ -169,8 +170,8 @@ startCore();
 function createProductionRequestHandler(): RequestHandler {
    const buildWithMetronome = registerMetronome(build);
    const metronomeGetLoadContext = createMetronomeGetLoadContext(
-      buildWithMetronome
-      // { config: require("./metronome.config.js") }
+      buildWithMetronome,
+      { config: require(METRONOME_CONFIG_PATH) }
    );
 
    const getLoadContext = (req: any, res: any) => ({
