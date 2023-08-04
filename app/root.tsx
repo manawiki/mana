@@ -176,7 +176,7 @@ function App() {
             />
             <Meta />
             <Links />
-            <MetronomeLinks />
+            {process.env.NODE_ENV === "production" && <MetronomeLinks />}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">

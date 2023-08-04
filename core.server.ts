@@ -1,5 +1,10 @@
 import * as path from "node:path";
 
+import {
+   combineGetLoadContexts,
+   createMetronomeGetLoadContext,
+   registerMetronome,
+} from "@metronome-sh/express";
 import { createRequestHandler, type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
@@ -145,17 +150,7 @@ async function startCore() {
       "*",
       process.env.NODE_ENV === "development"
          ? createDevRequestHandler()
-         : createRequestHandler({
-              build,
-              mode: process.env.NODE_ENV,
-              getLoadContext(req, res) {
-                 return {
-                    payload: req.payload,
-                    user: req?.user,
-                    res,
-                 };
-              },
-           })
+         : createProductionRequestHandler()
    );
    const port = process.env.PORT || 3000;
 
@@ -169,6 +164,30 @@ async function startCore() {
 }
 
 startCore();
+
+// Create a request handler that uses metronome in production
+function createProductionRequestHandler(): RequestHandler {
+   const buildWithMetronome = registerMetronome(build);
+   const metronomeGetLoadContext = createMetronomeGetLoadContext(
+      buildWithMetronome,
+      { config: require("./metronome.config.js") }
+   );
+
+   const getLoadContext = (req: any, res: any) => ({
+      payload: req.payload,
+      user: req?.user,
+      res,
+   });
+
+   return createRequestHandler({
+      build: buildWithMetronome,
+      mode: process.env.NODE_ENV,
+      getLoadContext: combineGetLoadContexts({
+         getLoadContext,
+         metronomeGetLoadContext,
+      }),
+   });
+}
 
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {
