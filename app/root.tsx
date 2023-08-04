@@ -1,4 +1,4 @@
-import { useEffect, lazy } from "react";
+import { useEffect, lazy, Suspense } from "react";
 
 import { App as CapacitorApp } from "@capacitor/app";
 import { StatusBar } from "@capacitor/status-bar";
@@ -21,7 +21,6 @@ import {
 import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import rdtStylesheet from "remix-development-tools/stylesheet.css";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -42,7 +41,10 @@ import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 
-const RemixDevTools = lazy(() => import("remix-development-tools"));
+const RemixDevTools =
+   process.env.NODE_ENV === "development"
+      ? lazy(() => import("remix-development-tools"))
+      : null;
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
    const themeSession = await getThemeSession(request);
@@ -104,11 +106,6 @@ export const links: LinksFunction = () => [
          settings.siteId ? `${settings.siteId}-static` : "static"
       }.mana.wiki`,
    },
-
-   //Remix Devtools
-   ...(rdtStylesheet && process.env.NODE_ENV === "development"
-      ? [{ rel: "stylesheet", href: rdtStylesheet }]
-      : []),
 ];
 
 export const handle = {
@@ -186,9 +183,11 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
-            {process.env.NODE_ENV === "development" && !isMobileApp && (
-               <RemixDevTools />
-            )}
+            {!isMobileApp && RemixDevTools ? (
+               <Suspense>
+                  <RemixDevTools />
+               </Suspense>
+            ) : null}
          </body>
       </html>
    );
