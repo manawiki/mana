@@ -183,10 +183,11 @@ function createProductionRequestHandler(): RequestHandler {
    return createRequestHandler({
       build: buildWithMetronome,
       mode: process.env.NODE_ENV,
-      getLoadContext: combineGetLoadContexts({
-         getLoadContext,
-         metronomeGetLoadContext,
-      }),
+      getLoadContext,
+      // : combineGetLoadContexts({
+      //    getLoadContext,
+      //    metronomeGetLoadContext,
+      // }),
    });
 }
 
