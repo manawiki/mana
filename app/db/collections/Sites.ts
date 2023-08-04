@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload/types";
+
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../access/user";
 
 export const sitesSlug = "sites";
@@ -76,6 +77,11 @@ export const Sites: CollectionConfig = {
                value: "custom",
             },
          ],
+      },
+      {
+         name: "domain",
+         type: "text",
+         unique: true,
       },
       {
          name: "status",
