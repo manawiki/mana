@@ -58,9 +58,9 @@ export const corsConfig = async (): Promise<CorsConfig> => {
 
    return {
       corsOrigins: [
-         process.env.NODE_ENV == "production"
-            ? "https://mana.wiki"
-            : "http://localhost:3000",
+         "https://mana.wiki",
+         "https://static.mana.wiki",
+         "http://localhost:3000",
          ...siteCorsOrigins,
       ],
       cors: ["mana.wiki", "static.mana.wiki", ...siteCors],
