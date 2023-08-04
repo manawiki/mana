@@ -169,8 +169,8 @@ startCore();
 function createProductionRequestHandler(): RequestHandler {
    const buildWithMetronome = registerMetronome(build);
    const metronomeGetLoadContext = createMetronomeGetLoadContext(
-      buildWithMetronome,
-      { config: require("./metronome.config.js") }
+      buildWithMetronome
+      // { config: require("./metronome.config.js") }
    );
 
    const getLoadContext = (req: any, res: any) => ({
