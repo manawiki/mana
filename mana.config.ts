@@ -71,12 +71,11 @@ export const corsConfig = async (): Promise<CorsConfig> => {
    } catch (err) {
       return {
          corsOrigins: [
-            "https://core.mana.wiki",
             "https://mana.wiki",
             "https://static.mana.wiki",
             "http://localhost:3000",
          ],
-         cors: ["mana.wiki", "https://core.mana.wiki", "static.mana.wiki"],
+         cors: ["mana.wiki", "static.mana.wiki"],
       };
    }
 };
