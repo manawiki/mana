@@ -204,14 +204,10 @@ export const PrimaryMenuLinks = ({
 };
 
 export const MobileNav = ({
-   isIOS,
-   safeArea,
    isMobileApp,
    setFollowerMenuOpen,
    setUserMenuOpen,
 }: {
-   safeArea: any;
-   isIOS: Boolean;
    isMobileApp: Boolean;
    setFollowerMenuOpen: any;
    setUserMenuOpen: any;
@@ -220,9 +216,6 @@ export const MobileNav = ({
       <>
          {isMobileApp && (
             <nav
-               style={{
-                  paddingBottom: (isIOS && safeArea?.bottom) ?? "",
-               }}
                className="border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100
                         bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
             >
@@ -257,13 +250,3 @@ export const MobileNav = ({
       </>
    );
 };
-
-// const followersUrl = `${url}/api/users?depth=0&where[sites][equals]=${site.id}`;
-
-// (await (
-//    await fetch(followersUrl, {
-//       headers: {
-//          cookie: request.headers.get("cookie") ?? "",
-//       },
-//    })
-// ).json()) as PaginatedDocs,

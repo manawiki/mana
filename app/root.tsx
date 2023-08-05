@@ -1,7 +1,5 @@
 import { useEffect, lazy } from "react";
 
-import { App as CapacitorApp } from "@capacitor/app";
-import { StatusBar } from "@capacitor/status-bar";
 import { MetronomeLinks } from "@metronome-sh/react";
 import type {
    V2_MetaFunction,
@@ -18,7 +16,6 @@ import {
    ScrollRestoration,
    useLoaderData,
 } from "@remix-run/react";
-import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
@@ -141,21 +138,6 @@ function App() {
             throw new Error(`${type} is not handled`);
       }
    }, [toastMessage]);
-
-   //We only want to run this on initial mount
-   useEffect(() => {
-      if (isMobileApp) {
-         setBackForwardNavigationGestures(true);
-         StatusBar.setOverlaysWebView({ overlay: true });
-         CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-            if (!canGoBack) {
-               CapacitorApp.exitApp();
-            } else {
-               window.history.back();
-            }
-         });
-      }
-   }, []);
 
    return (
       <html

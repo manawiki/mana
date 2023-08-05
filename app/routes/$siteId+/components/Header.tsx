@@ -32,7 +32,7 @@ export const Header = ({
       <>
          {!isMobileApp && (
             <header
-               className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
+               className="bg-2 border-color shadow-1 fixed top-0 z-30 flex 
                         h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
             >
                <div className="z-10 flex items-center gap-3">

@@ -23,7 +23,7 @@ export const MobileTray = ({
 }) => {
    return (
       <Drawer.Root onOpenChange={onOpenChange} open={open}>
-         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
+         <Drawer.Overlay className="fixed inset-0 z-50 min-h-[100vh] bg-black/40" />
          <Drawer.Portal>
             <Drawer.Content className="bg-2 fixed bottom-0 left-0 right-0 z-50 mt-24 flex h-[80%] flex-col rounded-t-xl pb-5">
                <div className="bg-2 relative flex-1 rounded-t-xl p-4">
@@ -110,10 +110,10 @@ export const FollowingTrayContent = ({
             <LoggedIn>
                <Link
                   reloadDocument={site.type != "custom" && true}
-                  className="mx-6 my-9 rounded-full bg-emerald-500 px-5 py-3 text-center text-sm font-bold text-white"
+                  className="mx-20 my-9 rounded-full bg-emerald-500 px-5 py-3 text-center text-sm font-bold text-white"
                   to="/"
                >
-                  Explore Discoverable Sites
+                  Explore
                </Link>
             </LoggedIn>
          </menu>

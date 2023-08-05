@@ -11,7 +11,6 @@ import {
 import type { V2_MetaFunction } from "@remix-run/react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
-import { SafeArea } from "capacitor-plugin-safe-area";
 import clsx from "clsx";
 import {
    ChevronLeft,
@@ -26,7 +25,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import { DotLoader, Image } from "~/components";
+import { Image, Logo } from "~/components";
 import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/hooks";
 import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
@@ -130,21 +129,6 @@ export default function IndexMain() {
       isMobileApp: Boolean;
    };
 
-   const [safeArea, setSetArea] = useState() as any;
-
-   useEffect(() => {
-      if (isMobileApp) {
-         SafeArea.getSafeAreaInsets().then(({ insets }) => {
-            setSetArea(insets);
-         });
-      }
-   }, [isMobileApp]);
-   const topSafeArea = isMobileApp
-      ? safeArea?.top
-         ? safeArea?.top + 20
-         : 0
-      : 70;
-
    useEffect(() => {
       AOS.init({
          once: true,
@@ -154,14 +138,6 @@ export default function IndexMain() {
       });
    });
 
-   //Prevent layout shift on native. Don't paint screen yet.
-   if (isMobileApp && !safeArea)
-      return (
-         <div className="bg-1 flex min-h-[100vh] min-w-full items-center justify-start">
-            <DotLoader />
-         </div>
-      );
-
    return (
       <>
          <LoggedOut>
@@ -169,28 +145,26 @@ export default function IndexMain() {
          </LoggedOut>
          {isMobileApp && (
             <LoggedOut>
-               <div
-                  style={{
-                     paddingTop: topSafeArea,
-                  }}
-                  className="bg-3 relative z-10 px-5 pb-10"
-               >
+               <div className="bg-3 relative z-10 px-5 py-10">
+                  <Logo className="mx-auto mb-4 h-7 w-7" />
                   <div className="pb-4 text-center text-sm font-bold">
                      Login to view the sites you <b>follow</b>
                   </div>
-                  <LoggedOutMobile />
+                  <div className="px-10">
+                     <LoggedOutMobile />
+                  </div>
                   <div className="pt-12 text-center text-sm font-bold">
                      Explore Discoverable Sites
                   </div>
                </div>
             </LoggedOut>
          )}
-         <Discover topSafeArea={topSafeArea} />
+         <Discover />
       </>
    );
 }
 
-const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
+const Discover = () => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
@@ -215,12 +189,7 @@ const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
       <>
          <section className="relative z-10 h-full">
             <LoggedIn>
-               <div
-                  style={{
-                     paddingTop: topSafeArea,
-                  }}
-                  className="bg-1 pb-10"
-               >
+               <div className="bg-gradient-to-b from-white to-zinc-100 pt-20 dark:from-bg3Dark dark:to-bg1Dark">
                   <div className="mx-auto max-w-[680px] max-laptop:px-4">
                      <div className="pb-3 pl-1 text-sm font-bold">
                         Following
@@ -297,7 +266,7 @@ const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-2 border-color",
+                                       : "bg-3 border-color",
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
@@ -312,7 +281,7 @@ const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-2 border-color",
+                                       : "bg-3 border-color",
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
@@ -327,7 +296,7 @@ const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-2 border-color",
+                                       : "bg-3 border-color",
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
                                  )}
                               >
@@ -353,7 +322,7 @@ const Discover = ({ topSafeArea }: { topSafeArea: string }) => {
                               reloadDocument={site.type == "custom" && true}
                               to={`/${site.slug}`}
                               key={site.id}
-                              className="border-color bg-2 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
+                              className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
                            >
                               <div
                                  className="shadow-1 border-1 h-11 w-11 flex-none
