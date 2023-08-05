@@ -6,7 +6,7 @@ import { remember } from "./remember.server";
 export const lruCache = remember(
    "lruCache",
    new LRUCache({
-      max: 500, // maximum number of items to store in the cache
+      max: 250, // maximum number of items to store in the cache
       ttl: 5 * 60 * 1000, // how long to live in ms
    })
 );
