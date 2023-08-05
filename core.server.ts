@@ -55,13 +55,11 @@ async function startCore() {
    const app = express();
    const corsOrigins =
       process.env.IS_CORE == "true"
-         ? {
-              origin: [
-                 "https://mana.wiki",
-                 "https://static.mana.wiki",
-                 "http://localhost:3000",
-              ],
-           }
+         ? [
+              "https://mana.wiki",
+              "https://static.mana.wiki",
+              "http://localhost:3000",
+           ]
          : await corsConfig();
    app.use(cors({ origin: corsOrigins }));
 
