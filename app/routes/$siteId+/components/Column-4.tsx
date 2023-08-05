@@ -7,31 +7,18 @@ import type { Site } from "~/db/payload-types";
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
 export const ColumnFour = ({
-   safeArea,
    site,
    isMobileApp,
 }: {
-   safeArea: any;
    site: Site;
    isMobileApp: Boolean;
 }) => {
-   const bottomSafeArea = isMobileApp
-      ? safeArea?.bottom
-         ? safeArea?.bottom + 60
-         : 60
-      : 0;
-
    return (
       <section
          className="bg-2 border-color relative z-20 max-laptop:mx-auto
                         max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
       >
-         <div
-            style={{
-               paddingBottom: bottomSafeArea,
-            }}
-            className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto"
-         >
+         <div className="flex flex-col max-laptop:pb-16 laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
             <div className="border-color border-b laptop:pt-14">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                   <PrimaryMenuLinks site={site} />

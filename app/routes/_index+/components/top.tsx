@@ -1,9 +1,11 @@
-import { Image } from "~/components";
-import { Particles } from "./particles";
-import { ManaCore } from "./manacore";
-import Tooltip from "~/components/Tooltip";
 import { useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+
+import { Image } from "~/components";
+import Tooltip from "~/components/Tooltip";
+
+import { ManaCore } from "./manacore";
+import { Particles } from "./particles";
 
 export const Top = () => {
    const { isMobileApp } = useRouteLoaderData("root") as {

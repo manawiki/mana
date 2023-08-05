@@ -1,8 +1,8 @@
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
-import { SafeArea } from "capacitor-plugin-safe-area";
-import { useState, useEffect } from "react";
-import { DarkModeToggle, DotLoader } from "~/components";
+
+import { DarkModeToggle } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
+import type { User } from "~/db/payload-types";
 import { LoggedIn, LoggedInDropDown, LoggedOut } from "~/modules/auth";
 
 export default function IndexLayout() {
@@ -26,12 +26,15 @@ export default function IndexLayout() {
 }
 
 const Header = () => {
-   const { isMobileApp } = useRouteLoaderData("root") as {
+   const { user, isMobileApp } = useRouteLoaderData("root") as {
+      user: User;
       isMobileApp: Boolean;
    };
+   const isMobileAndAnon = !user && isMobileApp;
+
    return (
       <>
-         {!isMobileApp && (
+         {!isMobileAndAnon && (
             <header className="absolute z-30 w-full">
                <div className="mx-auto max-w-6xl px-4">
                   <div className="flex h-16 items-center justify-between">

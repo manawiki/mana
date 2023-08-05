@@ -31,6 +31,10 @@ export const Sites: CollectionConfig = {
          defaultValue: false,
       },
       {
+         name: "followers",
+         type: "number",
+      },
+      {
          name: "pinned",
          type: "array",
          label: "Pinned",
