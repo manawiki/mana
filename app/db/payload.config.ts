@@ -63,8 +63,11 @@ export default buildConfig({
    },
    plugins: [
       async (config) => {
-         const { cors } = await corsConfig();
-         return { ...config, cors };
+         if (process.env.IS_CORE == "true") {
+            const { cors } = await corsConfig();
+            return { ...config, cors };
+         }
+         return config;
       },
       selectPlugin(),
       cloudStorage({
