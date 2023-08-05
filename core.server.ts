@@ -1,15 +1,22 @@
 import * as path from "node:path";
-import express from "express";
-import compression from "compression";
-import morgan from "morgan";
+
+import {
+   combineGetLoadContexts,
+   createMetronomeGetLoadContext,
+   registerMetronome,
+} from "@metronome-sh/express";
 import { createRequestHandler, type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
-import payload from "payload";
-import invariant from "tiny-invariant";
+import compression from "compression";
+import express from "express";
+import morgan from "morgan";
 import nodemailer from "nodemailer";
-import coreBuildConfig from "./app/db/payload.config";
-import { settings } from "./mana.config";
+import payload from "payload";
 import sourceMapSupport from "source-map-support";
+import invariant from "tiny-invariant";
+
+import coreBuildConfig from "./app/db/payload.config";
+import { settings, corsConfig } from "./mana.config";
 
 // patch in Remix runtime globals
 installGlobals();
@@ -43,15 +50,11 @@ const transport = nodemailer.createTransport({
    },
 });
 
-const corsOptions = {
-   origin: settings.corsOrigins,
-};
-
 //Start core site (remix + payload instance)
 async function startCore() {
    const app = express();
-
-   app.use(cors(corsOptions));
+   const { corsOrigins } = await corsConfig();
+   app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");
@@ -143,17 +146,7 @@ async function startCore() {
       "*",
       process.env.NODE_ENV === "development"
          ? createDevRequestHandler()
-         : createRequestHandler({
-              build,
-              mode: process.env.NODE_ENV,
-              getLoadContext(req, res) {
-                 return {
-                    payload: req.payload,
-                    user: req?.user,
-                    res,
-                 };
-              },
-           })
+         : createProductionRequestHandler()
    );
    const port = process.env.PORT || 3000;
 
@@ -167,6 +160,39 @@ async function startCore() {
 }
 
 startCore();
+
+// Create a request handler that uses metronome in production
+function createProductionRequestHandler(): RequestHandler {
+   const buildWithMetronome = registerMetronome(build);
+   const metronomeGetLoadContext = createMetronomeGetLoadContext(
+      buildWithMetronome,
+      {
+         config: {
+            ignoredRoutes: [],
+            ignoredPathnames: ["/healthcheck"],
+            ignoreHeadMethod: true,
+         },
+      }
+   );
+
+   function getLoadContext(req: any, res: any) {
+      return {
+         payload: req.payload,
+         user: req?.user,
+         res,
+      };
+   }
+
+   return createRequestHandler({
+      build: buildWithMetronome,
+      mode: process.env.NODE_ENV,
+      getLoadContext: combineGetLoadContexts(
+         getLoadContext,
+         // @ts-expect-error huh... metronome isn't happy with itself.
+         metronomeGetLoadContext
+      ),
+   });
+}
 
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {

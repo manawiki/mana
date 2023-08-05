@@ -13,14 +13,12 @@ import {
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
-import { SafeArea } from "capacitor-plugin-safe-area";
 import { deferIf } from "defer-if";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
-import { DotLoader } from "~/components";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -83,12 +81,9 @@ export default function SiteIndex() {
    const gaTrackingId = site?.gaTagId;
    let isBot = useIsBot();
 
-   const { isMobileApp, isIOS } = useRouteLoaderData("root") as {
+   const { isMobileApp } = useRouteLoaderData("root") as {
       isMobileApp: Boolean;
-      isIOS: Boolean;
    };
-   //On native mobile, get the safe area padding
-   const [safeArea, setSetArea] = useState() as any;
 
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
@@ -96,22 +91,6 @@ export default function SiteIndex() {
       }
       setSearchToggle(false);
    }, [location, gaTrackingId]);
-
-   useEffect(() => {
-      if (isMobileApp) {
-         SafeArea.getSafeAreaInsets().then(({ insets }) => {
-            setSetArea(insets);
-         });
-      }
-   }, [isMobileApp]);
-
-   //Prevent layout shift on native. Don't paint screen yet.
-   if (isMobileApp && !safeArea)
-      return (
-         <div className="bg-1 flex min-h-[100vh] min-w-full items-center justify-start">
-            <DotLoader />
-         </div>
-      );
 
    return (
       <>
@@ -141,26 +120,19 @@ export default function SiteIndex() {
                            location={location}
                            searchToggle={searchToggle}
                            setSearchToggle={setSearchToggle}
-                           safeArea={safeArea}
                            isMobileApp={isMobileApp}
                            site={site}
                            fetcher={fetcher}
                         />
 
                         {/* ==== Right Sidebar ==== */}
-                        <ColumnFour
-                           safeArea={safeArea}
-                           site={site}
-                           isMobileApp={isMobileApp}
-                        />
+                        <ColumnFour site={site} isMobileApp={isMobileApp} />
                      </div>
 
                      {/* ============  Mobile Components ============ */}
                      <MobileNav
-                        safeArea={safeArea}
                         setUserMenuOpen={setUserMenuOpen}
                         setFollowerMenuOpen={setFollowerMenuOpen}
-                        isIOS={isIOS}
                         isMobileApp={isMobileApp}
                      />
 
@@ -247,13 +219,28 @@ export const action: ActionFunction = async ({
          user,
       });
       const siteUID = siteData?.docs[0].id;
-
-      return await payload.update({
+      await payload.update({
          collection: "users",
          id: userId ?? "",
          data: { sites: [...sites, siteUID] },
          overrideAccess: false,
          user,
+      });
+
+      const { totalDocs } = await payload.find({
+         collection: "users",
+         where: {
+            sites: {
+               equals: siteUID,
+            },
+         },
+         depth: 0,
+      });
+
+      return await payload.update({
+         collection: "sites",
+         id: siteUID,
+         data: { followers: totalDocs },
       });
    }
 
@@ -297,12 +284,29 @@ export const action: ActionFunction = async ({
          // only splice array when item is found
          sites.splice(index, 1); // 2nd parameter means remove one item only
       }
-      return await payload.update({
+
+      await payload.update({
          collection: "users",
          id: userId ?? "",
          data: { sites },
          overrideAccess: false,
          user,
+      });
+
+      const { totalDocs } = await payload.find({
+         collection: "users",
+         where: {
+            sites: {
+               equals: siteUID,
+            },
+         },
+         depth: 0,
+      });
+
+      return await payload.update({
+         collection: "sites",
+         id: siteUID,
+         data: { followers: totalDocs },
       });
    }
 };

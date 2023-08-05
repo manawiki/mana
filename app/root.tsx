@@ -1,8 +1,12 @@
+import { useEffect, lazy } from "react";
+
+import { MetronomeLinks } from "@metronome-sh/react";
 import type {
    V2_MetaFunction,
    LinksFunction,
    LoaderArgs,
 } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
    Links,
    LiveReload,
@@ -12,34 +16,29 @@ import {
    ScrollRestoration,
    useLoaderData,
 } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { Toaster } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
+import rdtStylesheet from "remix-development-tools/stylesheet.css";
+
+import { settings } from "mana-config";
+import customStylesheetUrl from "~/_custom/styles.css";
+import fonts from "~/styles/fonts.css";
+import { useIsBot } from "~/utils/isBotProvider";
 import {
    ThemeBody,
    ThemeHead,
    ThemeProvider,
    useTheme,
 } from "~/utils/theme-provider";
-import { Toaster } from "react-hot-toast";
-import type { ToastMessage } from "./utils/message.server";
 import { getThemeSession } from "~/utils/theme.server";
-import { useTranslation } from "react-i18next";
 
-import tailwindStylesheetUrl from "./styles/global.css";
-import customStylesheetUrl from "~/_custom/styles.css";
-
-import { i18nextServer } from "./utils/i18n";
-import fonts from "~/styles/fonts.css";
-import { commitSession, getSession } from "./utils/message.server";
-import { useEffect, lazy } from "react";
 import { toast } from "./components/Toaster";
-import { useIsBot } from "~/utils/isBotProvider";
+import tailwindStylesheetUrl from "./styles/global.css";
 import { isNativeSSR } from "./utils";
-import { StatusBar } from "@capacitor/status-bar";
-import { setBackForwardNavigationGestures } from "capacitor-plugin-ios-webview-configurator";
-import { settings } from "mana-config";
-import { App as CapacitorApp } from "@capacitor/app";
+import { i18nextServer } from "./utils/i18n";
+import { commitSession, getSession } from "./utils/message.server";
+import type { ToastMessage } from "./utils/message.server";
 
-import rdtStylesheet from "remix-development-tools/stylesheet.css";
 const RemixDevTools = lazy(() => import("remix-development-tools"));
 
 export const loader = async ({ context: { user }, request }: LoaderArgs) => {
@@ -81,7 +80,6 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: customStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
-   { rel: "preconnect", href: `https://static.${settings.domain}` },
    {
       rel: "preconnect",
       href: `https://${settings.domain}`,
@@ -91,15 +89,17 @@ export const links: LinksFunction = () => [
       rel: "preconnect",
       href: `https://${
          settings.siteId ? `${settings.siteId}-static` : "static"
-      }.${settings.domain}`,
+      }.mana.wiki`,
       crossOrigin: "anonymous",
    },
 
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.${settings.domain}` },
+   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
    {
       rel: "dns-prefetch",
-      href: `https://${settings.siteId}-static.${settings.domain}`,
+      href: `https://${
+         settings.siteId ? `${settings.siteId}-static` : "static"
+      }.mana.wiki`,
    },
 
    //Remix Devtools
@@ -139,22 +139,6 @@ function App() {
       }
    }, [toastMessage]);
 
-   //We only want to run this on initial mount
-
-   useEffect(() => {
-      if (isMobileApp) {
-         setBackForwardNavigationGestures(true);
-         StatusBar.setOverlaysWebView({ overlay: true });
-         CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-            if (!canGoBack) {
-               CapacitorApp.exitApp();
-            } else {
-               window.history.back();
-            }
-         });
-      }
-   }, []);
-
    return (
       <html
          lang={locale}
@@ -174,7 +158,7 @@ function App() {
             />
             <Meta />
             <Links />
-
+            {process.env.NODE_ENV === "production" && <MetronomeLinks />}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">

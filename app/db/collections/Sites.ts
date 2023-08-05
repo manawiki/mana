@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload/types";
+
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../access/user";
 
 export const sitesSlug = "sites";
@@ -28,6 +29,10 @@ export const Sites: CollectionConfig = {
          type: "checkbox",
          label: "Public",
          defaultValue: false,
+      },
+      {
+         name: "followers",
+         type: "number",
       },
       {
          name: "pinned",
@@ -76,6 +81,11 @@ export const Sites: CollectionConfig = {
                value: "custom",
             },
          ],
+      },
+      {
+         name: "domain",
+         type: "text",
+         unique: true,
       },
       {
          name: "status",

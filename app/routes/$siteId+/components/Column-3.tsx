@@ -27,7 +27,6 @@ export const ColumnThree = ({
    searchToggle,
    setSearchToggle,
    fetcher,
-   safeArea,
    site,
    isMobileApp,
 }: {
@@ -35,31 +34,32 @@ export const ColumnThree = ({
    searchToggle: any;
    setSearchToggle: any;
    fetcher: any;
-   safeArea: any;
    site: Site;
    isMobileApp: Boolean;
 }) => {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const isSiteHome = location.pathname == `/${site.slug}`;
-   const topSafeArea = isMobileApp ? (safeArea?.top ? safeArea?.top : 0) : 0;
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
    return (
       <>
-         <section className="max-laptop:border-color bg-3 max-laptop:border-b">
+         <section
+            className={clsx(
+               isMobileApp ? "pt-16" : "max-laptop:pt-14",
+               "max-laptop:border-color bg-3 max-laptop:border-b"
+            )}
+            c
+         >
             <section
                className={clsx(
                   isMobileApp
-                     ? "sticky top-0 w-full "
-                     : "sticky max-laptop:top-[56px] laptop:top-6",
-                  "z-40 laptop:z-50"
+                     ? "fixed top-0"
+                     : "fixed max-laptop:top-[56px] laptop:sticky laptop:top-6",
+                  "z-40 w-full laptop:z-50"
                )}
             >
                <div
-                  style={{
-                     paddingTop: topSafeArea,
-                  }}
                   className={clsx(
                      isMobileApp
                         ? "bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
