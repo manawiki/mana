@@ -11,7 +11,7 @@ import {
 export const lruCache = remember(
    "lruCache",
    new LRUCache<string, CacheEntry>({
-      max: 1000, // maximum number of items to store in the cache
+      max: 100, // maximum number of items to store in the cache
       // ttl: 10 * 60 * 1000, // how long to live in ms
       // allowStale: true, // allow stale items to be returned until they are removed
    })
