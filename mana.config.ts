@@ -1,7 +1,6 @@
 import qs from "qs";
 
 import { config } from "./app/_custom/config";
-import { fetchWithCache } from "./app/utils/cache.server";
 
 type ManaConfig = {
    title: string;
@@ -18,16 +17,6 @@ type CorsConfig = {
 };
 
 export const corsConfig = async (): Promise<CorsConfig> => {
-   if (process.env.IS_CORE == "true") {
-      return {
-         corsOrigins: [
-            "https://mana.wiki",
-            "https://static.mana.wiki",
-            "http://localhost:3000",
-         ],
-         cors: ["mana.wiki", "static.mana.wiki"],
-      };
-   }
    const customSitesQuery = qs.stringify(
       {
          where: {
@@ -46,36 +35,49 @@ export const corsConfig = async (): Promise<CorsConfig> => {
 
    const customSitesUrl = `https://mana-core-fwq2wjp57a-uc.a.run.app/api/sites${customSitesQuery}`;
 
-   const { docs } = await (await fetch(customSitesUrl)).json();
+   try {
+      const { docs } = await (await fetch(customSitesUrl)).json();
 
-   const siteCorsOrigins = docs.flatMap((site: any) => {
-      if (site.type == "custom" && site.domain)
-         return [
-            `https://${site.slug}-static.mana.wiki`,
-            `https://${site.domain}`,
-         ];
-      if (site.type == "core" && site.domain) return `https://${site.domain}`;
-      if (site.type == "custom") return `https://${site.slug}-static.mana.wiki`;
-      return null;
-   });
+      const siteCorsOrigins = docs.flatMap((site: any) => {
+         if (site.type == "custom" && site.domain)
+            return [
+               `https://${site.slug}-static.mana.wiki`,
+               `https://${site.domain}`,
+            ];
+         if (site.type == "core" && site.domain)
+            return `https://${site.domain}`;
+         if (site.type == "custom")
+            return `https://${site.slug}-static.mana.wiki`;
+         return null;
+      });
 
-   const siteCors = docs.flatMap((site: any) => {
-      if (site.type == "custom" && site.domain)
-         return [`${site.slug}-static.mana.wiki`, site.domain];
-      if (site.type == "core" && site.domain) return site.domain;
-      if (site.type == "custom") return `${site.slug}-static.mana.wiki`;
-      return null;
-   });
+      const siteCors = docs.flatMap((site: any) => {
+         if (site.type == "custom" && site.domain)
+            return [`${site.slug}-static.mana.wiki`, site.domain];
+         if (site.type == "core" && site.domain) return site.domain;
+         if (site.type == "custom") return `${site.slug}-static.mana.wiki`;
+         return null;
+      });
 
-   return {
-      corsOrigins: [
-         "https://mana.wiki",
-         "https://static.mana.wiki",
-         "http://localhost:3000",
-         ...siteCorsOrigins,
-      ],
-      cors: ["mana.wiki", "static.mana.wiki", ...siteCors],
-   };
+      return {
+         corsOrigins: [
+            "https://mana.wiki",
+            "https://static.mana.wiki",
+            "http://localhost:3000",
+            ...siteCorsOrigins,
+         ],
+         cors: ["mana.wiki", "static.mana.wiki", ...siteCors],
+      };
+   } catch (err) {
+      return {
+         corsOrigins: [
+            "https://mana.wiki",
+            "https://static.mana.wiki",
+            "http://localhost:3000",
+         ],
+         cors: ["mana.wiki", "static.mana.wiki"],
+      };
+   }
 };
 
 export const settings: ManaConfig = {
