@@ -1,5 +1,10 @@
-export const CustomCollections = [];
+import { Characters } from "./characters";
+import { _Rarities } from "./_rarities";
 
-export const CustomSearchCollections = [];
+export const CustomCollections = [Characters, _Rarities];
 
-export const CustomDefaultPriorities = {};
+export const CustomSearchCollections = ["characters"];
+
+export const CustomDefaultPriorities = {
+   characters: 70,
+};
