@@ -18,6 +18,16 @@ type CorsConfig = {
 };
 
 export const corsConfig = async (): Promise<CorsConfig> => {
+   if (process.env.IS_CORE == "true") {
+      return {
+         corsOrigins: [
+            "https://mana.wiki",
+            "https://static.mana.wiki",
+            "http://localhost:3000",
+         ],
+         cors: ["mana.wiki", "static.mana.wiki"],
+      };
+   }
    const customSitesQuery = qs.stringify(
       {
          where: {
@@ -33,9 +43,10 @@ export const corsConfig = async (): Promise<CorsConfig> => {
       },
       { addQueryPrefix: true }
    );
+
    const customSitesUrl = `https://mana-core-fwq2wjp57a-uc.a.run.app/api/sites${customSitesQuery}`;
 
-   const { docs } = await fetchWithCache(customSitesUrl);
+   const { docs } = await (await fetch(customSitesUrl)).json();
 
    const siteCorsOrigins = docs.flatMap((site: any) => {
       if (site.type == "custom" && site.domain)
