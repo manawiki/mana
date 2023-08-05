@@ -53,7 +53,7 @@ const transport = nodemailer.createTransport({
 //Start core site (remix + payload instance)
 async function startCore() {
    const app = express();
-   const { corsOrigins } = await corsConfig();
+   const corsOrigins = await corsConfig();
    app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
