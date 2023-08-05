@@ -63,7 +63,7 @@ export default buildConfig({
    },
    plugins: [
       async (config) => {
-         if (process.env.IS_CORE == "true") {
+         if (process.env.IS_CORE != "true") {
             const { cors } = await corsConfig();
             return { ...config, cors };
          }

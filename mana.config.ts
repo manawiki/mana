@@ -33,7 +33,7 @@ export const corsConfig = async (): Promise<CorsConfig> => {
       },
       { addQueryPrefix: true }
    );
-   const customSitesUrl = `https://mana.wiki/api/sites${customSitesQuery}`;
+   const customSitesUrl = `https://mana-core-fwq2wjp57a-uc.a.run.app/api/sites${customSitesQuery}`;
 
    const { docs } = await fetchWithCache(customSitesUrl);
 

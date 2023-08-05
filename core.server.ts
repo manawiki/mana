@@ -54,7 +54,7 @@ const transport = nodemailer.createTransport({
 async function startCore() {
    const app = express();
    const corsOrigins =
-      process.env.IS_CORE == "true"
+      process.env.IS_CORE != "true"
          ? {
               origin: [
                  "https://mana.wiki",
