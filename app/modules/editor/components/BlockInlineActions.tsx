@@ -1,9 +1,12 @@
-import Button from "./Button";
-import Tooltip from "~/components/Tooltip";
-import BlockTypeSelector from "./BlockTypeSelector";
-import type { CustomElement } from "../types";
-import { GripVertical, Plus } from "lucide-react";
 import { useDraggable } from "@dnd-kit/core";
+import { GripVertical, Plus } from "lucide-react";
+
+import Tooltip from "~/components/Tooltip";
+
+import BlockTypeSelector from "./BlockTypeSelector";
+import Button from "./Button";
+import type { CustomElement } from "../types";
+
 
 type Props = {
    blockId: string;

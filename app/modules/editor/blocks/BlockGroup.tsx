@@ -1,8 +1,5 @@
-import { Editable, ReactEditor, Slate, useSlate, withReact } from "slate-react";
-import type { CustomElement, GroupElement, groupItem } from "../types";
-import type { BaseEditor } from "slate";
-import { Transforms, createEditor } from "slate";
 import { Fragment, useMemo, useState } from "react";
+
 import {
    DragOverlay,
    DndContext,
@@ -17,7 +14,9 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Tooltip from "~/components/Tooltip";
+import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
+import { useParams, useRouteLoaderData } from "@remix-run/react";
+import { arrayMoveImmutable } from "array-move";
 import {
    Rows,
    ChevronDown,
@@ -32,18 +31,23 @@ import {
    Plus,
    Trash,
 } from "lucide-react";
-import { arrayMoveImmutable } from "array-move";
-import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { useParams, useRouteLoaderData } from "@remix-run/react";
-import type { Collection, Entry, Site } from "payload/generated-types";
-import useSWR from "swr";
 import { nanoid } from "nanoid";
+import { Transforms, createEditor } from "slate";
+import type { BaseEditor } from "slate";
+import { Editable, ReactEditor, Slate, useSlate, withReact } from "slate-react";
+import useSWR from "swr";
+
+
+import { settings } from "mana-config";
+import type { Collection, Entry, Site } from "payload/generated-types";
 import { Image } from "~/components";
-import Toolbar from "../components/Toolbar";
+import Tooltip from "~/components/Tooltip";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { onKeyDown } from "~/modules/editor/editorCore";
-import { settings } from "mana-config";
+
+import Toolbar from "../components/Toolbar";
+import type { CustomElement, GroupElement, groupItem } from "../types";
 
 type Props = {
    element: GroupElement;

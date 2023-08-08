@@ -1,5 +1,6 @@
 // User specific permissions
 import type { Access, FieldAccess } from "payload/types";
+
 import type { User } from "payload/generated-types";
 
 export const isLoggedIn: Access = ({ req: { user } }) => {

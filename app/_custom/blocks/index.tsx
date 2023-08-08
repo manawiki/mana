@@ -1,7 +1,8 @@
-import { DefaultElement, useReadOnly } from "slate-react";
-import { ExampleBlock } from "./Example";
-import { nanoid } from "nanoid";
 import { Component } from "lucide-react";
+import { nanoid } from "nanoid";
+import { DefaultElement, useReadOnly } from "slate-react";
+
+import { ExampleBlock } from "./Example";
 enum BlockType {
    CustomComponent = "customComponent",
 }

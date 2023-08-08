@@ -1,13 +1,13 @@
-import { Sites } from "./Sites";
-import { Images } from "./Images";
-import { Users } from "./Users";
-import { Posts } from "./Posts";
 import { Collections } from "./Collections";
-import { Entries } from "./Entries";
-import { CustomPages } from "./CustomPages";
-import { Updates } from "./Updates";
 import { ContentEmbeds } from "./ContentEmbeds";
+import { CustomPages } from "./CustomPages";
+import { Entries } from "./Entries";
 import { HomeContents } from "./HomeContents";
+import { Images } from "./Images";
+import { Posts } from "./Posts";
+import { Sites } from "./Sites";
+import { Updates } from "./Updates";
+import { Users } from "./Users";
 
 export const collections = [
    Sites,

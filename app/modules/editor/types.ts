@@ -1,6 +1,7 @@
-import { type Collection } from "payload/generated-types";
 import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
+
+import { type Collection } from "payload/generated-types";
 
 declare module "slate" {
    interface CustomTypes {

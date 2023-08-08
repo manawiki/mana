@@ -1,5 +1,3 @@
-import { Image } from "~/components/Image";
-import type { Collection } from "payload/generated-types";
 import {
    NavLink,
    useLocation,
@@ -7,6 +5,9 @@ import {
    useRouteLoaderData,
 } from "@remix-run/react";
 import { Component, Layout, Users } from "lucide-react";
+
+import type { Collection } from "payload/generated-types";
+import { Image } from "~/components/Image";
 
 type HeaderType = {
    name?: string;

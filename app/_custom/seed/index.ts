@@ -1,5 +1,6 @@
-import Payload from "payload";
 import path from "path";
+
+import Payload from "payload";
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;

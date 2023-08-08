@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload/types";
+
 import { canMutateAsSiteAdmin, canRead } from "../../access/site";
 
 export const HomeContents: CollectionConfig = {

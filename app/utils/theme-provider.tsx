@@ -1,4 +1,3 @@
-import { useFetcher } from "@remix-run/react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import {
     createContext,
@@ -8,6 +7,8 @@ import {
     useRef,
     useState,
 } from "react";
+
+import { useFetcher } from "@remix-run/react";
 
 enum Theme {
     DARK = "dark",

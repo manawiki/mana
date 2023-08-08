@@ -1,4 +1,9 @@
+import type { FormEvent } from "react";
+import { useState, useEffect, Fragment } from "react";
+
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { useFetcher, useActionData, Link, useParams } from "@remix-run/react";
+import { format } from "date-fns";
 import {
    Loader2,
    ImageMinus,
@@ -13,26 +18,26 @@ import {
    Share2,
    Image as ImageIcon,
 } from "lucide-react";
-import type { Post } from "payload/generated-types";
-import type { FormEvent } from "react";
-import { useState, useEffect, Fragment } from "react";
-import { useZorm } from "react-zorm";
-import { useDebouncedValue, useIsMount } from "~/hooks";
-import { isProcessing, isAdding, type FormResponse } from "~/utils";
-import { Menu, Popover, Transition } from "@headlessui/react";
-import { DotLoader } from "~/components/DotLoader";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { useTranslation } from "react-i18next";
+import TextareaAutosize from "react-textarea-autosize";
+import { useZorm } from "react-zorm";
+
+import { settings } from "mana-config";
+import type { Post } from "payload/generated-types";
+import { DotLoader } from "~/components/DotLoader";
+import { Image } from "~/components/Image";
+import { useDebouncedValue, useIsMount } from "~/hooks";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { Tooltip } from "~/modules/editor/components";
+import { isProcessing, isAdding, type FormResponse } from "~/utils";
+
+
 import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
-import { Tooltip } from "~/modules/editor/components";
 import { PostVersionModal } from "./PostVersionModal";
-import TextareaAutosize from "react-textarea-autosize";
-import { format } from "date-fns";
 import { PostHeader } from "../../components/PostHeader";
 import { postSchema } from "../../utils/postSchema";
-import { Image } from "~/components/Image";
-import { settings } from "mana-config";
+
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation

@@ -1,6 +1,7 @@
+import { MousePointer2 } from "lucide-react";
+
 import { Image } from "~/components/Image";
 import { Tooltip } from "~/modules/editor/components";
-import { MousePointer2 } from "lucide-react";
 
 type Props = {
    imageUrl: string;

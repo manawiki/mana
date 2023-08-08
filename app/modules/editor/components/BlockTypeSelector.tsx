@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
+
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { nanoid } from "nanoid";
-import type { CustomElement } from "../types";
-import { BlockType } from "../types";
-import Tooltip from "~/components/Tooltip";
-import { GROUP_COLORS } from "../blocks/BlockGroup";
 import {
    CheckSquare,
    Codesandbox,
@@ -16,7 +12,15 @@ import {
    Type,
    Youtube,
 } from "lucide-react";
+import { nanoid } from "nanoid";
+
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
+import Tooltip from "~/components/Tooltip";
+
+import { GROUP_COLORS } from "../blocks/BlockGroup";
+import type { CustomElement } from "../types";
+import { BlockType } from "../types";
+
 
 type Props = {
    children: ReactNode;

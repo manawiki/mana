@@ -1,4 +1,14 @@
 import { useEffect, useRef, useState } from "react";
+
+import {
+   Bold,
+   Edit,
+   Italic,
+   Link2,
+   Link2Off,
+   Strikethrough,
+   Underline,
+} from "lucide-react";
 import { createPortal } from "react-dom";
 import {
    Editor,
@@ -9,22 +19,14 @@ import {
    Element as SlateElement,
 } from "slate";
 import { useFocused, useSlate } from "slate-react";
-import Select from "./Select";
+
 import Tooltip from "~/components/Tooltip";
 
-import { toggleMark, topLevelPath } from "../utils";
+import Button from "./Button";
+import Select from "./Select";
 import type { CustomElement, LinkElement, TextBlock } from "../types";
 import { BlockType } from "../types";
-import {
-   Bold,
-   Edit,
-   Italic,
-   Link2,
-   Link2Off,
-   Strikethrough,
-   Underline,
-} from "lucide-react";
-import Button from "./Button";
+import { toggleMark, topLevelPath } from "../utils";
 
 export default function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);

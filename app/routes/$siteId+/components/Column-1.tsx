@@ -3,7 +3,7 @@ import { NavLink } from "@remix-run/react";
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedOut, LoggedIn } from "~/modules/auth";
-import { NewSiteModal } from "~/routes/action+/new-site-modal";
+// import { NewSiteModal } from "~/routes/action+/new-site-modal";
 
 export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
    const following = user?.sites as Site[];
@@ -122,15 +122,15 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                               </li>
                            ))}
                         </ul>
-                        <NewSiteModal />
+                        {/* <NewSiteModal /> */}
                      </div>
                   )}
                </LoggedIn>
-               <LoggedOut>
+               {/* <LoggedOut>
                   <div className="items-center justify-center">
                      <NewSiteModal />
                   </div>
-               </LoggedOut>
+               </LoggedOut> */}
             </menu>
          </div>
       </section>
