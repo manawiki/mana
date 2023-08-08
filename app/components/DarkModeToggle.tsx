@@ -1,4 +1,5 @@
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+
 import { Theme, Themed, useTheme } from "~/utils/theme-provider";
 
 export const DarkModeToggle = () => {

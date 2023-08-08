@@ -2,7 +2,6 @@ import { Link } from "@remix-run/react";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { DarkModeToggle } from "~/components";
 import type { Site } from "~/db/payload-types";
 import {
    LoggedIn,
@@ -88,7 +87,6 @@ export const Header = ({
                   </Link>
 
                   <div className="relative z-10 flex w-full items-center justify-end gap-3">
-                     <DarkModeToggle />
                      <Link
                         prefetch="intent"
                         reloadDocument={site.type != "custom" && true}
