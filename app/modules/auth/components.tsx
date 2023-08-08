@@ -1,16 +1,18 @@
 import { Fragment } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { useRouteLoaderData, Link, useLocation } from "@remix-run/react";
+import {
+   useRouteLoaderData,
+   Link,
+   useLocation,
+   useMatches,
+} from "@remix-run/react";
 import { LogOut, User as UserLucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { Site, User } from "payload/generated-types";
 
-import { handleLogout, useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
-
-
-
+import { handleLogout, useIsStaffOrSiteAdminOrStaffOrOwner } from "./functions";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -31,9 +33,9 @@ export const AdminOrStaffOrOwner = ({
 //Render child components if the user is following the site
 export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
-   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
-      site: Site;
-   };
+
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
    if (site && user?.sites?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
@@ -41,9 +43,8 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
 
 //Is custom site
 export const CustomSite = ({ children }: { children: React.ReactNode }) => {
-   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
-      site: Site;
-   };
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
    const isCustom = site.type === "custom";
    return isCustom ? <>{children}</> : null;
 };
@@ -54,9 +55,9 @@ export const NotFollowingSite = ({
    children: React.ReactNode;
 }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
-   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
-      site: Site;
-   };
+
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
    if (!user) return null;
    if (user?.sites?.some((e: any) => e.id === site?.id)) return null;
    return <>{children}</>;

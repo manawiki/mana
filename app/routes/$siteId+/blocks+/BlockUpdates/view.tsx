@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useRouteLoaderData } from "@remix-run/react";
+import { useMatches } from "@remix-run/react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
@@ -23,14 +23,12 @@ const dateFormat = (dateString: string) =>
    }).format(new Date(dateString));
 
 export const BlockUpdatesView = ({ element }: Props) => {
-   const { updateResults } =
-      (useRouteLoaderData("routes/$siteId+/_index") as {
-         updateResults: Update[];
-      }) || [];
+   //layout presume to have site data, might be brittle in the future
+   const updateResults = useMatches()?.[2]?.data?.updateResults as Update[];
 
    return (
       <section className="my-6">
-         {updateResults?.length === 0 ? null : (
+         {updateResults && updateResults?.length === 0 ? null : (
             <>
                <H2Default text="Updates" />
                <div
