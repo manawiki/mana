@@ -1,4 +1,4 @@
-import { useRouteLoaderData } from "@remix-run/react";
+import { useMatches, useRouteLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
 import type { User, Site } from "payload/generated-types";
@@ -15,9 +15,8 @@ export const handleLogout = async () => {
 
 export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
    const { user } = useRouteLoaderData("root") as { user: User };
-   const { site } =
-      (useRouteLoaderData("routes/$siteId+/_layout") as { site: Site }) || {};
-
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
    //always false if not logged in
    if (!user || !user?.id) return false;
 

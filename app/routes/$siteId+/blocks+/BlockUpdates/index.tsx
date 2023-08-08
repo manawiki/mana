@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useFetcher, useParams, useRouteLoaderData } from "@remix-run/react";
+import { useFetcher, useMatches, useParams } from "@remix-run/react";
 import { format } from "date-fns";
 import { Loader2, Plus, Trash } from "lucide-react";
 import type { Descendant } from "slate";
@@ -37,10 +37,10 @@ const dateFormat = (dateString: string) =>
    }).format(new Date(dateString));
 
 export const BlockUpdates = ({ element }: Props) => {
-   const { updateResults } =
-      (useRouteLoaderData("routes/$siteId+/_index") as {
-         updateResults: Update[];
-      }) || [];
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const updateResults = (useMatches()?.[1]?.data?.updateResults ??
+      []) as Update[];
+
    const { siteId } = useParams();
    const useEditor = () =>
       useMemo(() => withReact(withHistory(createEditor())), []);

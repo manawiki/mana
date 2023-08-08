@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { useParams, useRouteLoaderData } from "@remix-run/react";
+import { useMatches, useRouteLoaderData } from "@remix-run/react";
 import { arrayMoveImmutable } from "array-move";
 import {
    Rows,
@@ -36,7 +36,6 @@ import { Transforms, createEditor } from "slate";
 import type { BaseEditor } from "slate";
 import { Editable, ReactEditor, Slate, useSlate, withReact } from "slate-react";
 import useSWR from "swr";
-
 
 import { settings } from "mana-config";
 import type { Collection, Entry, Site } from "payload/generated-types";
@@ -66,14 +65,11 @@ export const GROUP_COLORS = [
    "#f472b6",
 ];
 
-export default function BlockGroup({ element }: Props) {
+export function BlockGroup({ element }: Props) {
    const editor = useSlate();
 
-   const { siteId } = useParams();
-
-   const { site } = useRouteLoaderData("routes/$siteId+/_layout") as {
-      site: Site;
-   };
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 
