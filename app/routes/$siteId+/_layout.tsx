@@ -19,6 +19,7 @@ import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
 import * as gtag from "~/routes/$siteId+/utils/gtags.client";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -41,9 +42,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
+   const siteId = params?.siteId ?? customConfig?.siteId;
 
    const { isMobileApp } = isNativeSSR(request);
 
@@ -193,9 +192,7 @@ export const action: ActionFunction = async ({
    params,
 }) => {
    assertIsPost(request);
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
+   const siteId = params?.siteId ?? customConfig?.siteId;
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
