@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Site, User } from "payload/generated-types";
 
-import { handleLogout, useIsStaffOrSiteAdminOrStaffOrOwner } from ".";
+import { handleLogout, useIsStaffOrSiteAdminOrStaffOrOwner } from "./functions";
 
 export const LoggedIn = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -55,6 +55,7 @@ export const NotFollowingSite = ({
    children: React.ReactNode;
 }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
+
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const site = useMatches()?.[1]?.data?.site as Site;
    if (!user) return null;

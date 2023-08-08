@@ -1,6 +1,6 @@
 import qs from "qs";
 
-import { config } from "./app/_custom/config";
+import config from "./app/_custom/config.json";
 
 type ManaConfig = {
    title: string;
@@ -97,6 +97,6 @@ export const settings: ManaConfig = {
    domain: config.domain ?? "mana.wiki",
    domainFull:
       process.env.NODE_ENV == "production"
-         ? `https://${config.domain ? config.domain : "mana.wiki"}`
+         ? `https://${config.domain ?? "mana.wiki"}`
          : "http://localhost:3000",
 };
