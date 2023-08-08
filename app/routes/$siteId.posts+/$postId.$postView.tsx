@@ -1,29 +1,32 @@
-import { Link, useLoaderData } from "@remix-run/react";
 import { Suspense, useCallback, useMemo } from "react";
+
 import {
    json,
    redirect,
    type V2_MetaFunction,
    type LoaderArgs,
 } from "@remix-run/node";
-import { z } from "zod";
-import { zx } from "zodix";
+import { Link, useLoaderData } from "@remix-run/react";
+import { ArrowLeft } from "lucide-react";
+import { createEditor, type Descendant } from "slate";
 import {
    Editable,
    Slate,
    withReact,
    type RenderElementProps,
 } from "slate-react";
-import { createEditor, type Descendant } from "slate";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { PostHeader } from "./components/PostHeader";
-import { ArrowLeft } from "lucide-react";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
+import { AdminOrStaffOrOwner } from "~/modules/auth";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
+
+import { PostHeader } from "./components/PostHeader";
 
 export async function loader({
    context: { payload, user },

@@ -1,7 +1,8 @@
-import { HOTKEYS } from "./constants";
-import { toggleMark } from "./utils";
 import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { Range, Transforms } from "slate";
+
+import { HOTKEYS } from "./constants";
+import { toggleMark } from "./utils";
 
 export const onKeyDown = (event, editor) => {
    const { selection } = editor;

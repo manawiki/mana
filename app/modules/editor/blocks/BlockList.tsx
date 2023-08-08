@@ -1,5 +1,6 @@
-import type { ListElement } from "../types";
 import type { ReactNode } from "react";
+
+import type { ListElement } from "../types";
 
 type Props = {
    element: ListElement;

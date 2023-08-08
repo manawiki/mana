@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import type { BaseEditor, BaseRange, Operation, Path } from "slate";
 import { Range, Transforms, Editor, Element } from "slate";
+
 import type { Format, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 

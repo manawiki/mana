@@ -1,10 +1,12 @@
-import type { CustomElement, ToDoElement } from "../types";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { ReactEditor, useSlate } from "slate-react";
-import { Transforms } from "slate";
+
 import * as Checkbox from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
+import { Transforms } from "slate";
+import { ReactEditor, useSlate } from "slate-react";
+
+import type { CustomElement, ToDoElement } from "../types";
 
 type Props = {
    element: ToDoElement;

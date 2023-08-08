@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 import deepMerge from "ts-deepmerge";
+
 import type { SearchConfig } from "../types";
 
 // all settings can be overridden by the config

@@ -1,10 +1,12 @@
-import Backend from "i18next-fs-backend";
 import { resolve } from "node:path";
-import { RemixI18Next } from "remix-i18next";
-import { config } from "./config"; // your i18n configuration file
+
 import type { EntryContext } from "@remix-run/node";
 import { createInstance } from "i18next";
+import Backend from "i18next-fs-backend";
 import { initReactI18next } from "react-i18next";
+import { RemixI18Next } from "remix-i18next";
+
+import { config } from "./config"; // your i18n configuration file
 
 export const i18nextServer = new RemixI18Next({
    detection: {

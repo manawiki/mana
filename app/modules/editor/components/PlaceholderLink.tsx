@@ -1,7 +1,9 @@
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
-import Button from "./Button";
+
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+
+import Button from "./Button";
 
 type Input = {
    type: string;

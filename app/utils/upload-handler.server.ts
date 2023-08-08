@@ -1,4 +1,5 @@
-import type { Payload } from "payload";
+import path, { extname } from "path";
+
 import { unstable_createFileUploadHandler } from "@remix-run/node";
 import {
    unstable_composeUploadHandlers,
@@ -6,7 +7,7 @@ import {
    unstable_parseMultipartFormData,
 } from "@remix-run/server-runtime";
 import { nanoid } from "nanoid";
-import path, { extname } from "path";
+import type { Payload } from "payload";
 import { parseFormAny } from "react-zorm";
 import type { ZodRawShape, ZodTypeAny } from "zod";
 import { ZodType, z } from "zod";

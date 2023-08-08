@@ -1,8 +1,9 @@
-import { Editor, Transforms } from "slate";
-import { ReactEditor, useEditor } from "slate-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import isUrl from "is-url";
+import { Editor, Transforms } from "slate";
+import { ReactEditor, useEditor } from "slate-react";
+
 
 export default function LinkEditor({ editorOffsets, selectionForLink }) {
    const linkEditorRef = useRef(null);

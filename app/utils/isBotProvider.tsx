@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-
 import { createContext, useContext } from "react";
 
 type Props = { isBot: boolean; children: ReactNode };
