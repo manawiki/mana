@@ -1,13 +1,6 @@
 const { flatRoutes } = require("remix-flat-routes");
 
 /** @type {import('@remix-run/dev').AppConfig} */
-
-function getPublicPath() {
-   const staticAssetsUrl = process.env.STATIC_URL;
-   if (!staticAssetsUrl) return "/build/";
-   return `${staticAssetsUrl}/build/`;
-}
-
 module.exports = {
    future: {
       v2_routeConvention: true,
@@ -20,12 +13,16 @@ module.exports = {
    serverModuleFormat: "cjs",
    tailwind: true,
    postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
-   publicPath: getPublicPath(),
+   publicPath: process.env.STATIC_URL
+      ? `${process.env.STATIC_URL}/build/`
+      : "/build/",
+
+   serverDependenciesToBundle: ["nanoid", "array-move"],
    // ignore all files in routes folder to prevent
    // default remix convention from picking up routes
    ignoredRouteFiles: ["**/.*"],
    routes: async (defineRoutes) => {
-      return flatRoutes(["routes", "_custom/routes"], defineRoutes);
+      let routes = flatRoutes(["routes", "_custom/routes"], defineRoutes);
+      return routes;
    },
-   serverDependenciesToBundle: ["nanoid", "array-move"],
 };
