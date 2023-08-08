@@ -1,12 +1,13 @@
 import { Suspense } from "react";
-import { Disclosure } from "@headlessui/react";
 
+import { Disclosure } from "@headlessui/react";
 import { BarChart2, ChevronDown } from "lucide-react";
+import { lazily } from "react-lazily";
+
 import type { StatsType } from "./StatsGraph";
 
 // We'll lazy load StatGraph to improve performance
 // import { StatGraph } from "./StatsGraph";
-import { lazily } from "react-lazily";
 const { StatsGraph } = lazily(() => import("./StatsGraph.tsx"));
 
 export { StatsType };

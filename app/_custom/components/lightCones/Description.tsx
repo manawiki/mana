@@ -1,4 +1,5 @@
 import type { LightCone } from "payload/generated-custom-types";
+
 import { H2 } from "../custom";
 
 export const Description = ({ pageData }: { pageData: LightCone }) => {

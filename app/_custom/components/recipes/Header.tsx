@@ -1,5 +1,5 @@
-import { Image } from "~/components";
 import type { Recipe } from "payload/generated-custom-types";
+import { Image } from "~/components";
 
 export const Header = ({ pageData }: { pageData: Recipe }) => {
    const resultitem = pageData?.result_item;

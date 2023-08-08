@@ -1,6 +1,16 @@
-import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
+
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { Enemy } from "payload/generated-custom-types";
+import { H2 } from "~/_custom/components/custom";
+import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
+import { Drops } from "~/_custom/components/enemies/Drops";
+import { Resistances } from "~/_custom/components/enemies/Resistances";
+import { Selector } from "~/_custom/components/enemies/Selector";
+import { Skills } from "~/_custom/components/enemies/Skills";
+import { Stats } from "~/_custom/components/enemies/Stats";
 import {
    EntryParent,
    EntryHeader,
@@ -8,17 +18,6 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { Selector } from "~/_custom/components/enemies/Selector";
-import { Stats } from "~/_custom/components/enemies/Stats";
-import { Resistances } from "~/_custom/components/enemies/Resistances";
-import { Skills } from "~/_custom/components/enemies/Skills";
-import { Drops } from "~/_custom/components/enemies/Drops";
-import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
-
-import { H2 } from "~/_custom/components/custom";
-
-import type { Enemy } from "payload/generated-custom-types";
 
 export { meta };
 

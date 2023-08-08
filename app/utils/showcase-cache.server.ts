@@ -1,11 +1,12 @@
-import { LRUCache } from "lru-cache";
-import { remember } from "./remember.server";
 import {
    cachified,
    type CacheEntry,
    lruCacheAdapter,
    verboseReporter,
 } from "cachified";
+import { LRUCache } from "lru-cache";
+
+import { remember } from "./remember.server";
 
 // Setup an in memory lru-cache for api calls, this will be cleared on server restart.
 export const lruCache = remember(

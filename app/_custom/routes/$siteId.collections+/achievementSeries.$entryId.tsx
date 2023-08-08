@@ -1,5 +1,15 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
+import type {
+   Achievement,
+   AchievementSery,
+} from "payload/generated-custom-types";
+import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
+import { Header } from "~/_custom/components/achievementSeries/Header";
 import {
    EntryParent,
    EntryHeader,
@@ -7,19 +17,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { Achievements } from "~/_custom/components/achievementSeries/Achievements";
-import { Header } from "~/_custom/components/achievementSeries/Header";
-
-import { zx } from "zodix";
-import { z } from "zod";
-
-import type {
-   Achievement,
-   AchievementSery,
-} from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
 
 export { meta };
 

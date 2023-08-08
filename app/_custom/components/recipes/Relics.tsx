@@ -1,7 +1,8 @@
 import { Link } from "@remix-run/react";
+
+import type { Recipe } from "payload/generated-custom-types";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
-import type { Recipe } from "payload/generated-custom-types";
 
 export const Relics = ({ pageData }: { pageData: Recipe }) => {
    // Only return a result if there are relics!

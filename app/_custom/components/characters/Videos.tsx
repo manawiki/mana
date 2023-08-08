@@ -1,5 +1,5 @@
-import { H2 } from "~/_custom/components/custom";
 import type { Character } from "payload/generated-custom-types";
+import { H2 } from "~/_custom/components/custom";
 
 export const Videos = ({ pageData }: { pageData: Character }) => {
    const vids = pageData?.videos;

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Image } from "~/components";
+
 import type {
    Material,
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
+import { Image } from "~/components";
 
 export const SkillTree = ({
    pageData,

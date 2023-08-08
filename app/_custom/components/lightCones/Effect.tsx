@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { LightCone } from "payload/generated-custom-types";
 
+import type { LightCone } from "payload/generated-custom-types";
 import { H2 } from "~/_custom/components/custom";
 
 export const Effect = ({ pageData }: { pageData: LightCone }) => {

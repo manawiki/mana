@@ -1,10 +1,8 @@
+import React, { useState, useEffect } from "react";
+
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Image } from "~/components";
-import { H2 } from "~/_custom/components/custom";
-import React, { useState, useEffect } from "react";
-
 import {
    Chart as ChartJS,
    CategoryScale,
@@ -17,6 +15,8 @@ import {
 import { Bar } from "react-chartjs-2";
 
 import type { Material } from "payload/generated-custom-types";
+import { H2 } from "~/_custom/components/custom";
+import { Image } from "~/components";
 import { fetchWithCache } from "~/utils/cache.server";
 
 ChartJS.register(

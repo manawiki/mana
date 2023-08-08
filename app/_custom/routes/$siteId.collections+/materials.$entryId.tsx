@@ -1,5 +1,8 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { Material } from "payload/generated-custom-types";
+import { Header } from "~/_custom/components/materials/Header";
 import {
    EntryParent,
    EntryHeader,
@@ -7,9 +10,6 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-import type { Material } from "payload/generated-custom-types";
-
-import { Header } from "~/_custom/components/materials/Header";
 
 export { meta };
 

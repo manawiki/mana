@@ -1,5 +1,6 @@
-import { Check } from "lucide-react";
 import { useState, useEffect } from "react";
+
+import { Check } from "lucide-react";
 
 import type { Achievement as AchievementType } from "payload/generated-custom-types";
 

@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { H2 } from "../custom";
-import { Image } from "~/components";
+
 import { Star } from "lucide-react";
+
 import type { RelicSet, Relic } from "payload/generated-custom-types";
+import { Image } from "~/components";
+
+import { H2 } from "../custom";
 
 export const RelicsInSet = ({
    pageData,

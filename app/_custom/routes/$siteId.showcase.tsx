@@ -1,3 +1,5 @@
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -8,11 +10,7 @@ import {
    useRevalidator,
    useSearchParams,
 } from "@remix-run/react";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
-import { Image } from "~/components";
-import { zx } from "zodix";
-import { z } from "zod";
-import Tooltip from "~/components/Tooltip";
+import { toPng } from "html-to-image";
 import {
    ArrowRight,
    Info,
@@ -24,13 +22,16 @@ import {
    Download,
    Hourglass,
 } from "lucide-react";
-import { isLoading } from "~/utils";
-import { toPng } from "html-to-image";
+import { z } from "zod";
+import { zx } from "zodix";
 
+import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
+import { Image } from "~/components";
+import Tooltip from "~/components/Tooltip";
+import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { fetchShowcase } from "~/utils/showcase-cache.server";
-import { settings } from "mana-config";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";

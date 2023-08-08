@@ -1,7 +1,9 @@
 import { Disclosure } from "@headlessui/react";
 import { ChevronDown } from "lucide-react";
-import { H2 } from "../custom";
+
 import type { Character } from "payload/generated-custom-types";
+
+import { H2 } from "../custom";
 
 export const Story = ({ pageData }: {pageData: Character}) => {
    const stories = pageData.story;

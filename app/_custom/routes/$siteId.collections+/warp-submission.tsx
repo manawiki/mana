@@ -28,12 +28,13 @@
 // Was able to get it to work, but we can't use the authkey from the bug report page, we need an authkey from the gacha_record
 // any authkey for a given account will work for getting data from all banner types though
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { H2 } from "~/_custom/components/custom";
 import { useState } from "react";
-import { useLoaderData } from "@remix-run/react";
-import { json } from "@remix-run/node";
 
+import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
 
 // Global Count for total imported Warps

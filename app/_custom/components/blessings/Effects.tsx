@@ -1,4 +1,5 @@
 import type { Blessing } from "payload/generated-custom-types";
+
 import { H2 } from "../custom";
 
 export const Effects = ({ pageData }: { pageData: Blessing }) => {

@@ -1,5 +1,5 @@
-import { Image } from "~/components";
 import type { Character } from "payload/generated-custom-types";
+import { Image } from "~/components";
 
 export const ImageGallery = ({ pageData }: { pageData: Character }) => {
    var galleryname = [

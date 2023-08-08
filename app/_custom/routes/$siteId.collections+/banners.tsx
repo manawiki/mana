@@ -1,8 +1,9 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { settings } from "mana-config";
 import { ClientOnly } from "remix-utils";
+
+import { settings } from "mana-config";
 import { H2 } from "~/_custom/components/custom";
 import { Image } from "~/components";
 import { fetchWithCache } from "~/utils/cache.server";

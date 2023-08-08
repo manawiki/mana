@@ -1,5 +1,9 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { Blessing } from "payload/generated-custom-types";
+import { Effects } from "~/_custom/components/blessings/Effects";
+import { Header } from "~/_custom/components/blessings/Header";
 import {
    EntryParent,
    EntryHeader,
@@ -7,13 +11,9 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { Header } from "~/_custom/components/blessings/Header";
-import { Effects } from "~/_custom/components/blessings/Effects";
 // import { Header } from "~/_custom/components/blessings/Header";
 // import { Header } from "~/_custom/components/blessings/Header";
 
-import type { Blessing } from "payload/generated-custom-types";
 
 export { meta };
 

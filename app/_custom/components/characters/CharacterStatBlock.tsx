@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import { Image } from "~/components";
 import type { Character } from "payload/generated-custom-types";
+import { Image } from "~/components";
 
-import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph.tsx";
 import { CSVStats } from "../CSVStats.tsx";
+import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph.tsx";
 
 export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
    // Cast stats to the correct type

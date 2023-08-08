@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Image } from "~/components";
+
 import type {
    Material,
    Character,
    SkillTree,
    Trace as TraceType,
 } from "payload/generated-custom-types";
+import { Image } from "~/components";
 
 export const Traces = ({
    pageData,

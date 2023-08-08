@@ -1,5 +1,13 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
+import type { RelicSet, Relic } from "payload/generated-custom-types";
+import { H2 } from "~/_custom/components/custom";
+import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
+import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
 import {
    EntryParent,
    EntryHeader,
@@ -7,17 +15,7 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
-import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
-
-import { zx } from "zodix";
-import { z } from "zod";
-import { H2 } from "~/_custom/components/custom";
-
-import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
 
 export { meta };
 

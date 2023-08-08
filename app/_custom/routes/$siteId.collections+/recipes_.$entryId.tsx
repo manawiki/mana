@@ -1,5 +1,11 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { Recipe } from "payload/generated-custom-types";
+import { Header } from "~/_custom/components/recipes/Header";
+import { Ingredients } from "~/_custom/components/recipes/Ingredients";
+import { Relics } from "~/_custom/components/recipes/Relics";
+import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
 import {
    EntryParent,
    EntryHeader,
@@ -7,13 +13,6 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { Header } from "~/_custom/components/recipes/Header";
-import { Relics } from "~/_custom/components/recipes/Relics";
-import { Ingredients } from "~/_custom/components/recipes/Ingredients";
-import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
-
-import type { Recipe } from "payload/generated-custom-types";
 
 // import { Header } from "~/_custom/components/blessings/Header";
 

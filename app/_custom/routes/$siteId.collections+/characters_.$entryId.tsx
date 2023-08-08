@@ -1,6 +1,26 @@
-import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { z } from "zod";
+import { zx } from "zodix";
 
+import { settings } from "mana-config";
+import type {
+   Character,
+   SkillTree as SkillTreeType,
+} from "payload/generated-custom-types";
+import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
+import { Eidolons } from "~/_custom/components/characters/Eidolons";
+import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
+import { Navigation } from "~/_custom/components/characters/Navigation";
+import { Profile } from "~/_custom/components/characters/Profile";
+import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
+import { SkillTree } from "~/_custom/components/characters/SkillTree";
+import { Story } from "~/_custom/components/characters/Story";
+import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterialCost";
+import { Traces } from "~/_custom/components/characters/Traces";
+import { Videos } from "~/_custom/components/characters/Videos";
+import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
+import { H2 } from "~/_custom/components/custom";
 import {
    EntryParent,
    EntryHeader,
@@ -8,30 +28,8 @@ import {
    EntryContent,
    getEmbeddedContent,
 } from "~/modules/collections";
-import { Navigation } from "~/_custom/components/characters/Navigation";
-import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
-import { SkillTree } from "~/_custom/components/characters/SkillTree";
-import { Traces } from "~/_custom/components/characters/Traces";
-import { Eidolons } from "~/_custom/components/characters/Eidolons";
-import { PromotionCost } from "~/_custom/components/characters/PromotionCost";
-import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterialCost";
-import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
-import { Videos } from "~/_custom/components/characters/Videos";
-import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
-import { Profile } from "~/_custom/components/characters/Profile";
-import { Story } from "~/_custom/components/characters/Story";
-
-import { zx } from "zodix";
-import { z } from "zod";
-import { H2 } from "~/_custom/components/custom";
 import { EntryContentEmbed } from "~/modules/collections/components/EntryContentEmbed";
-
-import type {
-   Character,
-   SkillTree as SkillTreeType,
-} from "payload/generated-custom-types";
 import { fetchWithCache } from "~/utils/cache.server";
-import { settings } from "mana-config";
 
 export { meta };
 

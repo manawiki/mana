@@ -9,14 +9,16 @@
 */
 
 import { useRef, useEffect, useState } from "react";
+
 import { Disclosure, Combobox } from "@headlessui/react";
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Image } from "~/components";
-import { H2 } from "~/_custom/components/custom";
-import { fetchWithCache } from "~/utils/cache.server";
+
 import { settings } from "mana-config";
+import { H2 } from "~/_custom/components/custom";
+import { Image } from "~/components";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
    context: { payload },

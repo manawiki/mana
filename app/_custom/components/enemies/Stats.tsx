@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import type { Enemy } from "payload/generated-custom-types";
+
 import { CSVStats } from "../CSVStats";
 import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph";
 

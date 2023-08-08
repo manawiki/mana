@@ -1,5 +1,13 @@
-import { useLoaderData } from "@remix-run/react";
 import { json, type LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { LightCone } from "payload/generated-custom-types";
+import { AdditionalData } from "~/_custom/components/lightCones/AdditionalData";
+import { Description } from "~/_custom/components/lightCones/Description";
+import { Effect } from "~/_custom/components/lightCones/Effect";
+import { ImageGallery } from "~/_custom/components/lightCones/ImageGallery";
+import { PromotionCost } from "~/_custom/components/lightCones/PromotionCost";
+import { Stats } from "~/_custom/components/lightCones/Stats";
 import {
    EntryParent,
    EntryHeader,
@@ -7,15 +15,6 @@ import {
    EntryContent,
    getCustomEntryData,
 } from "~/modules/collections";
-
-import { Stats } from "~/_custom/components/lightCones/Stats";
-import { Effect } from "~/_custom/components/lightCones/Effect";
-import { Description } from "~/_custom/components/lightCones/Description";
-import { PromotionCost } from "~/_custom/components/lightCones/PromotionCost";
-import { ImageGallery } from "~/_custom/components/lightCones/ImageGallery";
-import { AdditionalData } from "~/_custom/components/lightCones/AdditionalData";
-
-import type { LightCone } from "payload/generated-custom-types";
 
 export { meta };
 
