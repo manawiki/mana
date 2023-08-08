@@ -23,13 +23,12 @@ const dateFormat = (dateString: string) =>
    }).format(new Date(dateString));
 
 export const BlockUpdatesView = ({ element }: Props) => {
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const updateResults = (useMatches()?.[1]?.data?.updateResults ??
-      []) as Update[];
+   //layout presume to have site data, might be brittle in the future
+   const updateResults = useMatches()?.[2]?.data?.updateResults as Update[];
 
    return (
       <section className="my-6">
-         {updateResults?.length === 0 ? null : (
+         {updateResults && updateResults?.length === 0 ? null : (
             <>
                <H2Default text="Updates" />
                <div

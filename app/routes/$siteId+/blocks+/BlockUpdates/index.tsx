@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useFetcher, useMatches, useParams } from "@remix-run/react";
+import { useFetcher, useMatches } from "@remix-run/react";
 import { format } from "date-fns";
 import { Loader2, Plus, Trash } from "lucide-react";
 import type { Descendant } from "slate";
@@ -13,6 +13,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/modules/collections/components/H2";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
@@ -37,11 +38,12 @@ const dateFormat = (dateString: string) =>
    }).format(new Date(dateString));
 
 export const BlockUpdates = ({ element }: Props) => {
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const updateResults = (useMatches()?.[1]?.data?.updateResults ??
-      []) as Update[];
+   //index presume to have results data, might be brittle in the future
+   const { updateResults, siteId } = useMatches()?.[2]?.data as {
+      updateResults: Update[];
+      siteId: string;
+   };
 
-   const { siteId } = useParams();
    const useEditor = () =>
       useMemo(() => withReact(withHistory(createEditor())), []);
    const editor = useEditor();
@@ -65,7 +67,7 @@ export const BlockUpdates = ({ element }: Props) => {
 
    return (
       <section>
-         {updateResults?.length === 0 ? null : (
+         {updateResults && updateResults?.length === 0 ? null : (
             <>
                <H2Default text="Updates" />
                <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
@@ -205,9 +207,7 @@ export const action = async ({
       intent: z.string(),
    });
 
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
+   const { siteId } = params?.siteId ?? customConfig?.siteId;
 
    switch (intent) {
       case "createUpdate": {

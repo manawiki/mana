@@ -15,7 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { useMatches, useRouteLoaderData } from "@remix-run/react";
+import { useMatches, useParams } from "@remix-run/react";
 import { arrayMoveImmutable } from "array-move";
 import {
    Rows,
@@ -39,6 +39,7 @@ import useSWR from "swr";
 
 import { settings } from "mana-config";
 import type { Collection, Entry, Site } from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import Block from "~/modules/editor/blocks/Block";
@@ -67,6 +68,8 @@ export const GROUP_COLORS = [
 
 export function BlockGroup({ element }: Props) {
    const editor = useSlate();
+
+   const siteId = useParams()?.siteId ?? customConfig?.siteId;
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const site = useMatches()?.[1]?.data?.site as Site;
