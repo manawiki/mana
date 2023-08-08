@@ -1,6 +1,7 @@
+import clsx from "clsx";
 import { Component, Dog, Users } from "lucide-react";
 
-import { Image } from "~/components";
+import { DarkModeToggle, Image, LogoText } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 
@@ -18,7 +19,12 @@ export const ColumnFour = ({
          className="bg-2 border-color relative z-20 max-laptop:mx-auto
                         max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
       >
-         <div className="flex flex-col max-laptop:pb-16 laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
+         <div
+            className={clsx(
+               isMobileApp ? "pb-16" : "",
+               "flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto"
+            )}
+         >
             <div className="border-color border-b laptop:pt-14">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                   <PrimaryMenuLinks site={site} />
@@ -103,9 +109,43 @@ export const ColumnFour = ({
                   </div>
                </section>
             </div>
-            <div className="border-color flex items-center justify-center">
-               {/* <div className="bg-1 h-[250px] w-[300px] rounded-lg" /> */}
+            <div className="flex-grow"></div>
+            <div className="flex items-center justify-center border-zinc-200/40 py-5  dark:border-zinc-700/40 laptop:border-t">
+               <div className="h-[250px] w-[300px] rounded-lg bg-zinc-100 dark:bg-zinc-700/20" />
             </div>
+            {!isMobileApp && (
+               <div className="border-color relative border-t p-6 dark:border-zinc-700/40 laptop:p-4">
+                  <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-2">
+                        <a
+                           className="border-color shadow-1 bg-3 rounded-lg border px-3 py-2 text-xs font-semibold shadow-sm"
+                           href="https://mana.wiki"
+                        >
+                           Get the app
+                        </a>
+                        <DarkModeToggle />
+                     </div>
+                     <a className="text-xs" href="https://mana.wiki">
+                        <div className="-mb-[1px] text-[8px] font-bold text-zinc-400 dark:text-zinc-500">
+                           Powered by
+                        </div>
+                        <div className="flex justify-end">
+                           <LogoText className="w-10 text-zinc-500 dark:text-zinc-400" />
+                        </div>
+                     </a>
+                  </div>
+
+                  <div
+                     className="absolute left-0 top-0 -z-10 h-full w-full 
+                  bg-gradient-to-r from-white/40 to-white/80 dark:from-bg2Dark/40 dark:to-bg2Dark/80"
+                  />
+                  <div
+                     className="pattern-opacity-50 pattern-dots absolute left-0 top-0 -z-20
+                           h-full w-full pattern-bg-white pattern-zinc-300 
+                           pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
+                  />
+               </div>
+            )}
          </div>
       </section>
    );

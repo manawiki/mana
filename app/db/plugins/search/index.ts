@@ -1,9 +1,9 @@
 import type { Config } from "payload/config";
 
+import { generateSearchCollection } from "./src";
 import deleteFromSearch from "./src/hooks/deleteFromSearch";
 import syncWithSearch from "./src/hooks/syncWithSearch";
 import type { SearchConfig } from "./types";
-import { generateSearchCollection } from "./src";
 
 const Search =
    (incomingSearchConfig: SearchConfig) =>

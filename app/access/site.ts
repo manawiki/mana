@@ -1,5 +1,6 @@
-import type { Site, User } from "payload/generated-types";
 import type { Access } from "payload/types";
+
+import type { Site, User } from "payload/generated-types";
 
 //Check if user is a site owner or admin?
 export const isSiteOwnerOrAdmin = (userId: string, site: Site) => {

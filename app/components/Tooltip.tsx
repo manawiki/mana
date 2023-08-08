@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
+
 import { type PlacesType, Tooltip as TT } from "react-tooltip";
 
 type TooltipProps = {

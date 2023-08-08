@@ -9,8 +9,8 @@ import { LoggedIn } from "~/modules/auth";
 
 import { pinnedLinkUrlGenerator } from "../utils";
 
-export const activeStyle = `bg-white shadow-sm shadow-1 text-light dark:bg-bg3Dark dark:text-dark`;
-export const defaultStyle = `bg-2 hover:bg-white flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
+export const activeStyle = `bg-zinc-200/40 dark:bg-bg3Dark`;
+export const defaultStyle = `bg-2 hover:bg-zinc-100 flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark/70 bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
 
 export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -84,7 +84,7 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                               className={({ isActive }) =>
                                  `${
                                     isActive ? activeStyle : ""
-                                 } ${defaultStyle} relative font-normal`
+                                 } ${defaultStyle} relative text-sm font-semibold`
                               }
                               to={pinnedLinkUrlGenerator(
                                  item,
@@ -216,7 +216,7 @@ export const MobileNav = ({
       <>
          {isMobileApp && (
             <nav
-               className="border-color fixed inset-x-0 bottom-0 z-50 w-full border-t border-gray-100
+               className="border-color fixed inset-x-0 bottom-0 z-50 h-16 w-full border-t border-gray-100
                         bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
             >
                <div className="grid grid-cols-2 gap-2">
@@ -225,10 +225,10 @@ export const MobileNav = ({
                      onClick={() => setFollowerMenuOpen(true)}
                   >
                      <Squares2X2Icon
-                        className="mx-auto h-6 w-6 text-blue-500 transition duration-300 group-active:translate-y-0.5"
+                        className="mx-auto h-6 w-6 text-zinc-700 transition duration-300 group-active:translate-y-0.5 dark:text-zinc-100"
                         aria-hidden="true"
                      />
-                     <div className="text-center text-[9px] font-bold">
+                     <div className="text-1 text-center text-[9px] font-bold">
                         Following
                      </div>
                   </button>
@@ -237,10 +237,10 @@ export const MobileNav = ({
                      onClick={() => setUserMenuOpen(true)}
                   >
                      <UserIcon
-                        className="mx-auto h-6 w-6 text-blue-500 transition duration-300 group-active:translate-y-0.5"
+                        className="mx-auto h-6 w-6 text-zinc-700 transition duration-300 group-active:translate-y-0.5 dark:text-zinc-100"
                         aria-hidden="true"
                      />
-                     <div className="text-center text-[9px] font-bold">
+                     <div className="text-1 text-center text-[9px] font-bold">
                         User
                      </div>
                   </button>

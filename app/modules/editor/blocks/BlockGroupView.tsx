@@ -1,10 +1,7 @@
-import { Link } from "@remix-run/react";
-import type { GroupElement } from "../types";
-import { Image } from "~/components";
-import { Component } from "lucide-react";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
 import { useCallback, useMemo } from "react";
+
+import { Link } from "@remix-run/react";
+import { Component } from "lucide-react";
 import { type Descendant, createEditor } from "slate";
 import {
    withReact,
@@ -12,6 +9,12 @@ import {
    Editable,
    type RenderElementProps,
 } from "slate-react";
+
+import { Image } from "~/components";
+import Block from "~/modules/editor/blocks/Block";
+import Leaf from "~/modules/editor/blocks/Leaf";
+
+import type { GroupElement } from "../types";
 
 type Props = {
    element: GroupElement;

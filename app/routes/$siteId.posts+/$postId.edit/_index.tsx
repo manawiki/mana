@@ -1,5 +1,5 @@
-import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
 import { useEffect } from "react";
+
 import {
    type ActionArgs,
    type LoaderArgs,
@@ -7,6 +7,16 @@ import {
    json,
    redirect,
 } from "@remix-run/node";
+import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
+import { nanoid } from "nanoid";
+import { createCustomIssues } from "react-zorm";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { toast } from "~/components";
+import type { CustomElement } from "~/modules/editor/types";
+import { BlockType } from "~/modules/editor/types";
+import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import {
    type FormResponse,
    assertIsPatch,
@@ -18,16 +28,9 @@ import {
    assertIsDelete,
    slugify,
 } from "~/utils";
-import { z } from "zod";
-import { zx } from "zodix";
-import { createCustomIssues } from "react-zorm";
-import { postSchema } from "../utils/postSchema";
-import { toast } from "~/components";
-import { nanoid } from "nanoid";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
+
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
-import { SoloEditor } from "~/routes/editors+/SoloEditor";
+import { postSchema } from "../utils/postSchema";
 
 export async function loader({
    context: { payload, user },

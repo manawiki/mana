@@ -12,20 +12,21 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
-import { i18nextServer } from "~/utils/i18n";
+import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
+import { parseFormSafe } from "zodix";
+
+import { settings } from "mana-config";
+import { DotLoader } from "~/components/DotLoader";
+import { FormLabel } from "~/components/Forms";
 import {
    type FormResponse,
    assertIsPost,
    isAdding,
    isProcessing,
 } from "~/utils";
-import { useTranslation } from "react-i18next";
-import { parseFormSafe } from "zodix";
-import { FormLabel } from "~/components/Forms";
-import { DotLoader } from "~/components/DotLoader";
-import { settings } from "mana-config";
+import { i18nextServer } from "~/utils/i18n";
 
 export async function loader({ context: { user }, request }: LoaderArgs) {
    if (user) {

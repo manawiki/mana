@@ -1,11 +1,13 @@
-import { initialValue } from "~/routes/$siteId.collections+/$collectionId.$entryId+/_index";
-import { H2 } from "./H2";
+import { lazily } from "react-lazily";
+
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { initialValue } from "~/routes/$siteId.collections+/$collectionId.$entryId+/_index";
+
+import { H2 } from "./H2";
 
 // import { SoloEditor } from "~/routes/editors+/SoloEditor";
 // import { EntryViewer } from "./EntryViewer";
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
-import { lazily } from "react-lazily";
 const { SoloEditor } = lazily(() => import("~/routes/editors+/SoloEditor.tsx"));
 const { EntryViewer } = lazily(() => import("./EntryViewer.tsx"));
 

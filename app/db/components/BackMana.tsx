@@ -1,5 +1,6 @@
-import { ChevronLeft } from "lucide-react";
 import React from "react";
+
+import { ChevronLeft } from "lucide-react";
 
 export const BackMana: React.FC = () => {
    return (

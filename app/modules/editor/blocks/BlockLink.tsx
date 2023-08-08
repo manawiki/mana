@@ -1,7 +1,10 @@
-import { Link } from "@remix-run/react";
-import type { LinkElement } from "../types";
 import type { ReactNode } from "react";
+
+import { Link } from "@remix-run/react";
+
 import { settings } from "mana-config";
+
+import type { LinkElement } from "../types";
 
 type Props = {
    element: LinkElement;

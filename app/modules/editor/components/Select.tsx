@@ -1,6 +1,7 @@
+import { Fragment } from "react";
+
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
-import { Fragment } from "react";
 
 type Props = {
    defaultValue?: string;

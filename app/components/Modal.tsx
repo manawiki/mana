@@ -1,6 +1,7 @@
+import { Fragment } from "react";
+
 import { Dialog, Transition } from "@headlessui/react";
 import { useNavigate } from "@remix-run/react";
-import { Fragment } from "react";
 
 //A modal generic wrapper, pass in show and onClose to control the modal state, otherwise use it as a route modal
 export function Modal({

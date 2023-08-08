@@ -1,8 +1,10 @@
-import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, VideoElement } from "../types";
-import { Transforms } from "slate";
-import Placeholder from "../components/Placeholder";
 import { Video } from "lucide-react";
+import { Transforms } from "slate";
+import { ReactEditor, useSlate } from "slate-react";
+
+import Placeholder from "../components/Placeholder";
+import type { CustomElement, VideoElement } from "../types";
+
 
 type Props = {
    element: VideoElement;

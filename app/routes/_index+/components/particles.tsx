@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+
 import { useMousePosition } from "./mouse-position";
 
 interface ParticlesProps {

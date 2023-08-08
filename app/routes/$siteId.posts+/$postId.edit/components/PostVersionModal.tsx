@@ -1,16 +1,19 @@
+import { useMemo, useCallback, Fragment, useState } from "react";
+
+import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useSearchParams } from "@remix-run/react";
+import { format } from "date-fns";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
-import { isAdding } from "~/utils";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
-import { useMemo, useCallback, Fragment, useState } from "react";
+
+import { Modal } from "~/components";
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
-import { format } from "date-fns";
-import { RadioGroup, Tab } from "@headlessui/react";
-import { Modal } from "~/components";
+import { isAdding } from "~/utils";
+
 import { PostHeader } from "../../components/PostHeader";
 
 export const PostVersionModal = ({

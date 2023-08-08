@@ -1,12 +1,15 @@
-import { ReactEditor, useSlate } from "slate-react";
-import type { CustomElement, ImageElement } from "../types";
-import { Transforms } from "slate";
-import { Loader2, Upload } from "lucide-react";
-import { useFetcher } from "@remix-run/react";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import { isAdding } from "~/utils";
+
+import { useFetcher } from "@remix-run/react";
+import { Loader2, Upload } from "lucide-react";
+import { Transforms } from "slate";
+import { ReactEditor, useSlate } from "slate-react";
+
 import { Image } from "~/components";
+import { isAdding } from "~/utils";
+
+import type { CustomElement, ImageElement } from "../types";
 type Props = {
    element: ImageElement;
 };

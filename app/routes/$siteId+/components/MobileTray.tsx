@@ -68,6 +68,11 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                <LogOut size={18} className="text-red-400 dark:text-red-300" />
             </button>
          </LoggedIn>
+         <LoggedOut>
+            <div className="flex w-full flex-col items-center justify-center px-4">
+               <LoggedOutMobile />
+            </div>
+         </LoggedOut>
       </>
    );
 };
@@ -88,10 +93,11 @@ export const FollowingTrayContent = ({
                <div className="flex w-full flex-col items-center justify-center px-4">
                   <Link
                      reloadDocument={site.type != "custom" && true}
-                     className="block w-full rounded-full bg-emerald-500 px-4 py-3 text-center text-sm font-bold text-white"
+                     className="block w-full rounded-full bg-zinc-800 px-4 py-3 text-center text-sm 
+                     font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                      to="/"
                   >
-                     Explore Discoverable Sites
+                     Explore
                   </Link>
                   <div className="flex w-full items-center gap-4 pb-6 pt-8">
                      <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
@@ -110,7 +116,8 @@ export const FollowingTrayContent = ({
             <LoggedIn>
                <Link
                   reloadDocument={site.type != "custom" && true}
-                  className="mx-20 my-9 rounded-full bg-emerald-500 px-5 py-3 text-center text-sm font-bold text-white"
+                  className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
+                   text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                   to="/"
                >
                   Explore

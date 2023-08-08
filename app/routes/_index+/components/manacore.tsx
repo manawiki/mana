@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { Transition } from "@headlessui/react";
-import { Particles } from "./particles";
+
 import { Logo } from "~/components";
+
+import { Particles } from "./particles";
 
 export const ManaCore = () => {
    const [tab, setTab] = useState<number>(1);

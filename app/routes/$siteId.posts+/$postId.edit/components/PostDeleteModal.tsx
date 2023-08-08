@@ -1,6 +1,7 @@
 import { useFetcher } from "@remix-run/react";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
 import { Modal } from "~/components/Modal";
 import { isAdding } from "~/utils";
 
