@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useMemo } from "react";
 
 import type { LoaderArgs } from "@remix-run/node";
-import { Await, useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -16,11 +16,10 @@ import {
    withReact,
    type RenderElementProps,
 } from "slate-react";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import Tooltip from "~/components/Tooltip";
 import {
@@ -41,9 +40,7 @@ export async function loader({
    params,
    request,
 }: LoaderArgs) {
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
+   const siteId = params?.siteId ?? customConfig?.siteId;
 
    const { isMobileApp } = isNativeSSR(request);
 
@@ -61,17 +58,20 @@ export async function loader({
       request,
    });
 
-   return await deferIf({ home, isChanged, updateResults }, isMobileApp);
+   return await deferIf(
+      { home, isChanged, updateResults, siteId },
+      isMobileApp
+   );
 }
 
 export default function SiteIndexMain() {
-   const { home, isChanged } = useLoaderData<typeof loader>();
+   const { home, isChanged, siteId } = useLoaderData<typeof loader>();
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
    }, []);
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-   const { siteId } = useParams();
+
    const fetcher = useFetcher();
 
    const isAutoSaving =

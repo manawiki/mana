@@ -7,7 +7,7 @@ import { BlockUpdates } from "~/routes/$siteId+/blocks+/BlockUpdates";
 import { BlockUpdatesView } from "~/routes/$siteId+/blocks+/BlockUpdates/view";
 
 import BlockCodeSandbox from "./BlockCodeSandbox";
-import BlockGroup from "./BlockGroup";
+import { BlockGroup } from "./BlockGroup";
 import BlockGroupView from "./BlockGroupView";
 import BlockImage from "./BlockImage";
 import BlockLink from "./BlockLink";
@@ -16,7 +16,6 @@ import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
-
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created

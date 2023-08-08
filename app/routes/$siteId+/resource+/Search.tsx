@@ -24,6 +24,7 @@ import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Search, Site } from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { useDebouncedValue } from "~/hooks";
 import { isAdding } from "~/utils";
@@ -167,7 +168,7 @@ export function SearchComboBox({
    const fetcher = useFetcher();
    const [query, setQuery] = useState("");
    const debouncedValue = useDebouncedValue(query, 100);
-   const { siteId } = useParams();
+   const siteId = useParams()?.siteId ?? customConfig?.siteId;
 
    //leave searchListItems as an empty array until fetcher is loaded
    const searchListItems = useMemo(
