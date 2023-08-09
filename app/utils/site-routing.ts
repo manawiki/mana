@@ -30,11 +30,17 @@ export const siteHomePath = ({
    isMobileApp?: Boolean;
 }) => {
    //Only rewrite url on web production, mobile will share cookie under a singular domain
-   if (!isMobileApp && site.domain && process.env.NODE_ENV == "production") {
+   if (!isMobileApp && process.env.NODE_ENV == "production") {
       if (currentSite?.domain) {
+         if (site?.domain) {
+            return "/";
+         }
          return `https://mana.wiki/${site.slug}`;
       }
-      return `https://${site?.domain}`;
+      //If nav site != active site, show external link
+      if (site?.domain != currentSite?.domain) {
+         return `https://${site.domain}`;
+      }
    }
    return `/${site.slug}`;
 };
