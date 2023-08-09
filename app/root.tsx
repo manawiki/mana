@@ -56,7 +56,7 @@ export const loader = async ({
       const pathname = new URL(request.url as string).pathname;
 
       //If current path is not siteId and not currently home, redirect to home
-      if (siteId != customConfig?.siteId && pathname != "/") {
+      if (siteId && siteId != customConfig?.siteId && pathname != "/") {
          return redirect("/");
       }
 
