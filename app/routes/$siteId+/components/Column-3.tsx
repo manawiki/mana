@@ -49,7 +49,6 @@ export const ColumnThree = ({
                isMobileApp ? "pt-16" : "max-laptop:pt-14",
                "max-laptop:border-color bg-3 max-laptop:border-b"
             )}
-            c
          >
             <section
                className={clsx(
