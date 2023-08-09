@@ -94,7 +94,10 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                           currentSite: item,
                                        })}
                                        className="bg-2 shadow-1 rounded-full shadow"
-                                       to={siteHomePath({ site: item })}
+                                       to={siteHomePath({
+                                          site: item,
+                                          currentSite: site,
+                                       })}
                                     >
                                        {({ isActive }) => (
                                           <>

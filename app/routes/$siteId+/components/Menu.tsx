@@ -39,7 +39,11 @@ export const FollowingListMobile = ({
                         key={item.id}
                         onClick={() => setMenuOpen(false)}
                         className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                        to={siteHomePath({ site: item, isMobileApp })}
+                        to={siteHomePath({
+                           site: item,
+                           currentSite: site,
+                           isMobileApp,
+                        })}
                      >
                         {({ isActive }) => (
                            <>
