@@ -1,4 +1,3 @@
-import { settings } from "mana-config";
 import customConfig from "~/_custom/config.json";
 import type { Site } from "~/db/payload-types";
 
@@ -32,7 +31,7 @@ export const siteHomePath = ({
       return `https://${site?.domain}`;
    }
    if (customConfig?.domain != "" && !site?.domain) {
-      return `${settings.domainFull}/${site.slug}`;
+      return `https://mana.wiki/${site.slug}`;
    }
    return `/${site.slug}`;
 };
