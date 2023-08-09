@@ -6,13 +6,22 @@ import { Component, Pin } from "lucide-react";
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/modules/auth";
+import { siteHomePath, siteHomeShouldReload } from "~/utils";
 
 import { pinnedLinkUrlGenerator } from "../utils";
 
 export const activeStyle = `bg-zinc-200/40 dark:bg-bg3Dark`;
 export const defaultStyle = `bg-2 hover:bg-zinc-100 flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark/70 bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
 
-export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
+export const FollowingListMobile = ({
+   setMenuOpen,
+   isMobileApp,
+   site,
+}: {
+   setMenuOpen?: any;
+   isMobileApp: Boolean;
+   site?: Site;
+}) => {
    const { user } = useRouteLoaderData("root") as { user: User };
    const following = user?.sites as Site[];
 
@@ -23,14 +32,14 @@ export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
                <div className="flex-grow space-y-3">
                   {following?.map((item) => (
                      <NavLink
-                        reloadDocument={
-                           // Reload if custom site, but NOT if current site is custom
-                           item.type == "custom" && true
-                        }
+                        reloadDocument={siteHomeShouldReload({
+                           site,
+                           currentSite: item,
+                        })}
                         key={item.id}
                         onClick={() => setMenuOpen(false)}
                         className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                        to={`/${item.slug}`}
+                        to={siteHomePath({ site: item, isMobileApp })}
                      >
                         {({ isActive }) => (
                            <>

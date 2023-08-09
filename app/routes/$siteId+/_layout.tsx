@@ -338,6 +338,7 @@ const fetchSite = async ({
                   about
                   isPublic
                   gaTagId
+                  domain
                   icon {
                     url
                   }

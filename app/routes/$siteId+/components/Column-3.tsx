@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next";
 import { Image } from "~/components";
 import type { Site } from "~/db/payload-types";
 import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
-import { isAdding } from "~/utils";
+import { isAdding, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../resource+/Search";
@@ -82,7 +82,7 @@ export const ColumnThree = ({
                            >
                               <Link
                                  prefetch="intent"
-                                 to={`/${site.slug}`}
+                                 to={siteHomeRoot({ site })}
                                  className={clsx(
                                     isMobileApp
                                        ? "group mr-3"
@@ -123,9 +123,9 @@ export const ColumnThree = ({
                                     <LoggedOut>
                                        <Link
                                           prefetch="intent"
-                                          reloadDocument={
-                                             site.type != "custom" && true
-                                          }
+                                          reloadDocument={siteHomeShouldReload({
+                                             site,
+                                          })}
                                           to={`/login?redirectTo=/${site.slug}`}
                                           className="flex h-8 w-[70px] items-center justify-center rounded-full bg-black
                                                       text-xs font-bold text-white dark:bg-white dark:text-black"
@@ -232,9 +232,9 @@ export const ColumnThree = ({
                                  <div className="flex items-center">
                                     <Link
                                        prefetch="intent"
-                                       reloadDocument={
-                                          site.type != "custom" && true
-                                       }
+                                       reloadDocument={siteHomeShouldReload({
+                                          site,
+                                       })}
                                        to={`/login?redirectTo=/${site.slug}`}
                                        className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
                                text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"

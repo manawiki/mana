@@ -29,6 +29,7 @@ import { Image, Logo } from "~/components";
 import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/hooks";
 import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
+import { siteHomeShouldReload } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
@@ -159,12 +160,12 @@ export default function IndexMain() {
                </div>
             </LoggedOut>
          )}
-         <Discover />
+         <Discover isMobileApp={isMobileApp} />
       </>
    );
 }
 
-const Discover = () => {
+const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
@@ -194,7 +195,7 @@ const Discover = () => {
                      <div className="pb-3 pl-1 text-sm font-bold">
                         Following
                      </div>
-                     <FollowingListMobile />
+                     <FollowingListMobile isMobileApp={isMobileApp} />
                      <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
                   </div>
                </div>
@@ -319,7 +320,9 @@ const Discover = () => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              reloadDocument={site.type == "custom" && true}
+                              reloadDocument={siteHomeShouldReload({
+                                 site,
+                              })}
                               to={`/${site.slug}`}
                               key={site.id}
                               className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
