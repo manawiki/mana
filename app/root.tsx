@@ -6,7 +6,7 @@ import type {
    LinksFunction,
    LoaderArgs,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
    Links,
    LiveReload,
@@ -19,8 +19,11 @@ import {
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { settings } from "mana-config";
+import customConfig from "~/_custom/config.json";
 import customStylesheetUrl from "~/_custom/styles.css";
 import fonts from "~/styles/fonts.css";
 import { useIsBot } from "~/utils/isBotProvider";
@@ -41,7 +44,32 @@ import type { ToastMessage } from "./utils/message.server";
 
 const RemixDevTools = lazy(() => import("remix-development-tools"));
 
-export const loader = async ({ context: { user }, request }: LoaderArgs) => {
+export const loader = async ({
+   context: { user },
+   request,
+   params,
+}: LoaderArgs) => {
+   if (customConfig?.domain) {
+      const { siteId } = zx.parseParams(params, {
+         siteId: z.string().optional(),
+      });
+      const pathname = new URL(request.url as string).pathname;
+
+      //If current path is not siteId and not currently home, redirect to home
+      if (siteId != customConfig?.siteId && pathname != "/") {
+         return redirect("/");
+      }
+
+      //redirect "/$sited" to "/"
+      if (
+         pathname != "/" &&
+         pathname == `/${customConfig?.siteId}` && //Only redirect on site index
+         siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
+      ) {
+         return redirect("/");
+      }
+   }
+
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
    const session = await getSession(request.headers.get("cookie"));

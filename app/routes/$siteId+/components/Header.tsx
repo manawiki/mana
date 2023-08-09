@@ -9,7 +9,7 @@ import {
    LoggedOut,
    NotFollowingSite,
 } from "~/modules/auth";
-import { isAdding } from "~/utils";
+import { isAdding, siteHomeShouldReload } from "~/utils";
 
 export const Header = ({
    location,
@@ -82,7 +82,9 @@ export const Header = ({
                <LoggedOut>
                   <Link
                      prefetch="intent"
-                     reloadDocument={site.type != "custom" && true}
+                     reloadDocument={siteHomeShouldReload({
+                        site,
+                     })}
                      to={`/login?redirectTo=/${site.slug}`}
                      className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
@@ -93,7 +95,9 @@ export const Header = ({
                   <div className="relative z-10 flex w-full items-center justify-end gap-3">
                      <Link
                         prefetch="intent"
-                        reloadDocument={site.type != "custom" && true}
+                        reloadDocument={siteHomeShouldReload({
+                           site,
+                        })}
                         to="/join"
                         className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                  rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
@@ -109,7 +113,9 @@ export const Header = ({
                      </Link>
                      <Link
                         prefetch="intent"
-                        reloadDocument={site.type != "custom" && true}
+                        reloadDocument={siteHomeShouldReload({
+                           site,
+                        })}
                         className="border-color bg-3 shadow-1 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"

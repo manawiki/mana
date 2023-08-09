@@ -3,6 +3,7 @@ import { NavLink } from "@remix-run/react";
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedOut, LoggedIn } from "~/modules/auth";
+import { siteHomePath, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 // import { NewSiteModal } from "~/routes/action+/new-site-modal";
 
 export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
@@ -21,7 +22,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                   <NavLink
                      prefetch="intent"
                      className="bg-2 shadow-1 rounded-full shadow"
-                     to={`/${site.slug}`}
+                     to={siteHomeRoot({ site })}
                   >
                      {({ isActive }) => (
                         <>
@@ -88,14 +89,12 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                  <div className="relative flex items-center justify-center">
                                     <NavLink
                                        prefetch="intent"
-                                       reloadDocument={
-                                          // Reload if custom site, but NOT if current site is custom
-                                          item.type == "custom" &&
-                                          site.type != "custom" &&
-                                          true
-                                       }
+                                       reloadDocument={siteHomeShouldReload({
+                                          site,
+                                          currentSite: item,
+                                       })}
                                        className="bg-2 shadow-1 rounded-full shadow"
-                                       to={`/${item.slug}`}
+                                       to={siteHomePath({ site: item })}
                                     >
                                        {({ isActive }) => (
                                           <>

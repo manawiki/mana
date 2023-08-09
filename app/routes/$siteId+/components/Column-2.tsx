@@ -14,6 +14,7 @@ import { HardDrive, Lock } from "lucide-react";
 import { settings } from "mana-config";
 import type { Site, User } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { siteHomeRoot } from "~/utils";
 
 import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
 
@@ -28,7 +29,7 @@ export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
                   className={({ isActive }) =>
                      `${isActive ? activeStyle : ""} ${defaultStyle}`
                   }
-                  to={`/${site.slug}`}
+                  to={siteHomeRoot({ site })}
                >
                   {({ isActive }) => (
                      <>
