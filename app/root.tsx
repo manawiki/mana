@@ -55,7 +55,11 @@ export const loader = async ({
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
    const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
-   customDomainRouting({ params, request, isMobileApp });
+   const isCustomDomain = customDomainRouting({ params, request, isMobileApp });
+   if (isCustomDomain) {
+      return redirect(isCustomDomain);
+   }
+
    const sharedData = {
       isMobileApp,
       isIOS,
@@ -210,7 +214,7 @@ const customDomainRouting = ({
    request: Request;
    isMobileApp: Boolean;
 }) => {
-   if (customConfig?.domain) {
+   if (customConfig?.domain && process.env.NODE_ENV == "production") {
       const { siteId } = zx.parseParams(params, {
          siteId: z.string().optional(),
       });
@@ -218,17 +222,17 @@ const customDomainRouting = ({
 
       //If current path is not siteId and not currently home, redirect to home
       if (siteId && siteId != customConfig?.siteId && pathname != "/") {
-         return redirect("/");
+         return "/";
       }
 
       //If not on host, redirect
       if (
          siteId &&
-         customConfig.domain != "" &&
          !isMobileApp &&
+         customConfig.domain != "" &&
          customConfig.domain != hostname
       ) {
-         return redirect(`https://${customConfig.domain}`);
+         return `https://${customConfig.domain}`;
       }
 
       //redirect "/$sited" to "/"
@@ -237,7 +241,7 @@ const customDomainRouting = ({
          pathname == `/${customConfig?.siteId}` && //Only redirect on site index
          siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
       ) {
-         return redirect("/");
+         return "/";
       }
    }
 };
