@@ -139,6 +139,7 @@ export const ColumnThree = ({
                                           <fetcher.Form
                                              className="w-full"
                                              method="post"
+                                             action={`/${site.slug}`}
                                           >
                                              <button
                                                 name="intent"
@@ -201,7 +202,10 @@ export const ColumnThree = ({
                                             p-1.5 shadow-sm"
                                                 >
                                                    <Menu.Item>
-                                                      <fetcher.Form method="post">
+                                                      <fetcher.Form
+                                                         action={`/${site.slug}`}
+                                                         method="post"
+                                                      >
                                                          <button
                                                             name="intent"
                                                             value="unfollow"
@@ -245,6 +249,7 @@ export const ColumnThree = ({
                                     <fetcher.Form
                                        className="w-full"
                                        method="post"
+                                       action={`/${site.slug}`}
                                     >
                                        <button
                                           name="intent"

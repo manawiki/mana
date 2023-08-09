@@ -41,7 +41,11 @@ export const Header = ({
                         <div className="flex items-center gap-3">
                            <NotFollowingSite>
                               <div className="flex items-center">
-                                 <fetcher.Form className="w-full" method="post">
+                                 <fetcher.Form
+                                    action={`/${site.slug}`}
+                                    className="w-full"
+                                    method="post"
+                                 >
                                     <button
                                        name="intent"
                                        value="followSite"
