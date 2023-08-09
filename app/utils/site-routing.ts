@@ -1,3 +1,4 @@
+import { settings } from "mana-config";
 import customConfig from "~/_custom/config.json";
 import type { Site } from "~/db/payload-types";
 
@@ -26,11 +27,15 @@ export const siteHomePath = ({
 }: {
    site: Site;
    isMobileApp?: Boolean;
-}) =>
-   //On the mobile app, we are ok serving all sites through
-   `${
-      site?.domain && !isMobileApp ? `https://${site?.domain}` : `/${site.slug}`
-   }`;
+}) => {
+   if (site?.domain && !isMobileApp) {
+      return `https://${site?.domain}`;
+   }
+   if (customConfig?.domain != "" && !site?.domain) {
+      return `${settings.domainFull}/${site.slug}`;
+   }
+   return `/${site.slug}`;
+};
 
 export const siteHomeRoot = ({ site }: { site: Site }) =>
    `${site?.domain ? `/` : `/${site.slug}`}`;
