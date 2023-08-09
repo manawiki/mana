@@ -207,7 +207,7 @@ export const action = async ({
       intent: z.string(),
    });
 
-   const { siteId } = params?.siteId ?? customConfig?.siteId;
+   const siteId = params?.siteId ?? customConfig?.siteId;
 
    switch (intent) {
       case "createUpdate": {

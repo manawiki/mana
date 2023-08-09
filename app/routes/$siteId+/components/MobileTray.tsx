@@ -9,6 +9,7 @@ import {
    LoggedOutMobile,
    handleLogout,
 } from "~/modules/auth";
+import { siteHomeShouldReload } from "~/utils";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
 
@@ -92,7 +93,9 @@ export const FollowingTrayContent = ({
             <LoggedOut>
                <div className="flex w-full flex-col items-center justify-center px-4">
                   <Link
-                     reloadDocument={site.type != "custom" && true}
+                     reloadDocument={siteHomeShouldReload({
+                        site,
+                     })}
                      className="block w-full rounded-full bg-zinc-800 px-4 py-3 text-center text-sm 
                      font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                      to="/"
@@ -112,10 +115,16 @@ export const FollowingTrayContent = ({
             </LoggedOut>
          )}
          <menu className="flex h-full flex-col">
-            <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
+            <FollowingListMobile
+               site={site}
+               isMobileApp={isMobileApp}
+               setMenuOpen={setFollowerMenuOpen}
+            />
             <LoggedIn>
                <Link
-                  reloadDocument={site.type != "custom" && true}
+                  reloadDocument={siteHomeShouldReload({
+                     site,
+                  })}
                   className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
                    text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                   to="/"

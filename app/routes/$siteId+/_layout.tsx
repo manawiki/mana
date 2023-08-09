@@ -193,6 +193,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    const siteId = params?.siteId ?? customConfig?.siteId;
+
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
@@ -337,6 +338,7 @@ const fetchSite = async ({
                   about
                   isPublic
                   gaTagId
+                  domain
                   icon {
                     url
                   }
