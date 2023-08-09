@@ -21,20 +21,28 @@ export const siteHomeShouldReload = ({
 };
 
 export const siteHomePath = ({
+   currentSite,
    site,
    isMobileApp,
 }: {
+   currentSite: Site | undefined;
    site: Site;
    isMobileApp?: Boolean;
 }) => {
-   if (site?.domain && !isMobileApp) {
+   //Only rewrite url on web production, mobile will share cookie under a singular domain
+   if (!isMobileApp && site.domain && process.env.NODE_ENV == "production") {
+      if (currentSite?.domain) {
+         return `https://mana.wiki/${site.slug}`;
+      }
       return `https://${site?.domain}`;
-   }
-   if (customConfig?.domain != "" && !site?.domain) {
-      return `https://mana.wiki/${site.slug}`;
    }
    return `/${site.slug}`;
 };
 
-export const siteHomeRoot = ({ site }: { site: Site }) =>
-   `${site?.domain ? `/` : `/${site.slug}`}`;
+export const siteHomeRoot = ({ site }: { site: Site }) => {
+   return `${
+      site?.domain && process.env.NODE_ENV == "production"
+         ? `/`
+         : `/${site.slug}`
+   }`;
+};

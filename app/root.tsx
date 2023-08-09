@@ -7,6 +7,7 @@ import type {
    LoaderArgs,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
+import type { Params } from "@remix-run/react";
 import {
    Links,
    LiveReload,
@@ -49,33 +50,12 @@ export const loader = async ({
    request,
    params,
 }: LoaderArgs) => {
-   if (customConfig?.domain) {
-      const { siteId } = zx.parseParams(params, {
-         siteId: z.string().optional(),
-      });
-      const pathname = new URL(request.url as string).pathname;
-
-      //If current path is not siteId and not currently home, redirect to home
-      if (siteId && siteId != customConfig?.siteId && pathname != "/") {
-         return redirect("/");
-      }
-
-      //redirect "/$sited" to "/"
-      if (
-         pathname != "/" &&
-         pathname == `/${customConfig?.siteId}` && //Only redirect on site index
-         siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
-      ) {
-         return redirect("/");
-      }
-   }
-
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
    const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
-
+   customDomainRouting({ params, request, isMobileApp });
    const sharedData = {
       isMobileApp,
       isIOS,
@@ -220,3 +200,44 @@ export function useChangeLanguage(locale: string) {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
 }
+
+const customDomainRouting = ({
+   params,
+   request,
+   isMobileApp,
+}: {
+   params: Params;
+   request: Request;
+   isMobileApp: Boolean;
+}) => {
+   if (customConfig?.domain) {
+      const { siteId } = zx.parseParams(params, {
+         siteId: z.string().optional(),
+      });
+      const { hostname, pathname } = new URL(request.url as string);
+
+      //If current path is not siteId and not currently home, redirect to home
+      if (siteId && siteId != customConfig?.siteId && pathname != "/") {
+         return redirect("/");
+      }
+
+      //If not on host, redirect
+      if (
+         siteId &&
+         customConfig.domain != "" &&
+         !isMobileApp &&
+         customConfig.domain != hostname
+      ) {
+         return redirect(`https://${customConfig.domain}`);
+      }
+
+      //redirect "/$sited" to "/"
+      if (
+         pathname != "/" &&
+         pathname == `/${customConfig?.siteId}` && //Only redirect on site index
+         siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
+      ) {
+         return redirect("/");
+      }
+   }
+};
