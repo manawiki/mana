@@ -10519,10 +10519,10 @@ payload-query@^1.0.2:
   dependencies:
     ts-powertools "0.0.3"
 
-payload@^1.11.8:
-  version "1.11.8"
-  resolved "https://registry.yarnpkg.com/payload/-/payload-1.11.8.tgz#8b924b131dccdddc1665fb777c7cf681017058b1"
-  integrity sha512-N5nYYdmY1L1iBqqrrB7frBJwTUx1+yEk4PLKvy3VkQKpegLqyjGLhAGl41H5JIzBGDUFhcOY1feRoG4kOLmFHw==
+payload@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/payload/-/payload-1.13.1.tgz#0a4a9779fa6482883cbdc58ba3e9d76fa371dab8"
+  integrity sha512-3eW9o2mZzpXduMf10Q/1szNjBbhvr5F/2hcsZU6sFqOIIjvFDcvCkYnf+G7W1k8HcpivDkxFjGc0NddXDVfYZw==
   dependencies:
     "@date-io/date-fns" "^2.16.0"
     "@dnd-kit/core" "^6.0.7"
