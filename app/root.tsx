@@ -55,10 +55,10 @@ export const loader = async ({
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
    const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
-   const isCustomDomain = customDomainRouting({ params, request, isMobileApp });
-   if (isCustomDomain) {
-      return redirect(isCustomDomain);
-   }
+   // const isCustomDomain = customDomainRouting({ params, request, isMobileApp });
+   // if (isCustomDomain) {
+   //    return redirect(isCustomDomain);
+   // }
 
    const sharedData = {
       isMobileApp,
@@ -205,34 +205,34 @@ export function useChangeLanguage(locale: string) {
    }, [locale, i18n]);
 }
 
-const customDomainRouting = ({
-   params,
-   request,
-   isMobileApp,
-}: {
-   params: Params;
-   request: Request;
-   isMobileApp: Boolean;
-}) => {
-   if (customConfig?.domain && process.env.NODE_ENV == "production") {
-      const { siteId } = zx.parseParams(params, {
-         siteId: z.string().optional(),
-      });
-      const { pathname } = new URL(request.url as string);
+// const customDomainRouting = ({
+//    params,
+//    request,
+//    isMobileApp,
+// }: {
+//    params: Params;
+//    request: Request;
+//    isMobileApp: Boolean;
+// }) => {
+//    if (customConfig?.domain && process.env.NODE_ENV == "production") {
+//       const { siteId } = zx.parseParams(params, {
+//          siteId: z.string().optional(),
+//       });
+//       const { pathname } = new URL(request.url as string);
 
-      //If current path is not siteId and not currently home, redirect to home
-      if (siteId && siteId != customConfig?.siteId && pathname != "/") {
-         return "/";
-      }
+//       //If current path is not siteId and not currently home, redirect to home
+//       if (siteId && siteId != customConfig?.siteId && pathname != "/") {
+//          return "/";
+//       }
 
-      //redirect "/$sited" to "/"
-      if (
-         pathname != "/" &&
-         pathname == `/${customConfig?.siteId}` && //Only redirect on site index
-         siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
-      ) {
-         return "/";
-      }
-   }
-   return;
-};
+//       //redirect "/$sited" to "/"
+//       if (
+//          pathname != "/" &&
+//          pathname == `/${customConfig?.siteId}` && //Only redirect on site index
+//          siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
+//       ) {
+//          return "/";
+//       }
+//    }
+//    return;
+// };

@@ -28,7 +28,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                         <>
                            <div
                               className="h-8 w-8 overflow-hidden 
-                     rounded-full laptop:h-[50px] laptop:w-[50px]"
+                     rounded-full laptop:h-11 laptop:w-11"
                            >
                               <Image
                                  alt="Site Logo"
@@ -38,7 +38,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                            </div>
                            {isActive && (
                               <span
-                                 className="absolute -left-1 top-2 h-9 w-2.5 
+                                 className="absolute -left-1 top-2 h-7 w-2.5 
                      rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
                               />
                            )}
@@ -60,7 +60,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                               <>
                                  <div
                                     className="h-8 w-8 overflow-hidden 
-                     rounded-full laptop:h-[50px] laptop:w-[50px]"
+                     rounded-full laptop:h-11 laptop:w-11"
                                  >
                                     <Image
                                        alt="Site Logo"
@@ -93,7 +93,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                           site,
                                           currentSite: item,
                                        })}
-                                       className="bg-2 shadow-1 rounded-full shadow"
+                                       className="bg-2 shadow-1 group rounded-full shadow"
                                        to={siteHomePath({
                                           site: item,
                                           currentSite: site,
@@ -102,8 +102,8 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                        {({ isActive }) => (
                                           <>
                                              <div
-                                                className="h-8 w-8 overflow-hidden 
-                                                rounded-full laptop:h-[50px] laptop:w-[50px]"
+                                                className="h-8 w-8 overflow-hidden rounded-full transition
+                                                duration-300 group-active:translate-y-0.5 laptop:h-11 laptop:w-11"
                                              >
                                                 <Image
                                                    alt="Site Logo"
@@ -113,7 +113,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                              </div>
                                              {isActive && (
                                                 <span
-                                                   className="absolute -left-1 top-2 h-9 w-2.5 
+                                                   className="absolute -left-1 top-2 h-7 w-2.5 
                                                    rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden"
                                                 />
                                              )}
