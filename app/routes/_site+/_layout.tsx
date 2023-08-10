@@ -20,7 +20,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import * as gtag from "~/routes/$siteId+/utils/gtags.client";
+import * as gtag from "~/routes/_site+/$siteId+/utils/gtags.client";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { useIsBot } from "~/utils/isBotProvider";
@@ -35,7 +35,7 @@ import {
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
-} from "./components";
+} from "./$siteId+/components";
 
 export async function loader({
    context: { user },
