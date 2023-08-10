@@ -218,21 +218,11 @@ const customDomainRouting = ({
       const { siteId } = zx.parseParams(params, {
          siteId: z.string().optional(),
       });
-      const { hostname, pathname } = new URL(request.url as string);
+      const { pathname } = new URL(request.url as string);
 
       //If current path is not siteId and not currently home, redirect to home
       if (siteId && siteId != customConfig?.siteId && pathname != "/") {
          return "/";
-      }
-
-      //If not on host, redirect
-      if (
-         siteId &&
-         !isMobileApp &&
-         customConfig.domain != "" &&
-         customConfig.domain != hostname
-      ) {
-         return `https://${customConfig.domain}`;
       }
 
       //redirect "/$sited" to "/"
