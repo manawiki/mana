@@ -23,7 +23,7 @@ import type { UpdatesElement } from "~/modules/editor/types";
 import {
    UpdatesEditor,
    initialValue,
-} from "~/routes/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
+} from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
 import { isAdding, isProcessing } from "~/utils";
 
 type Props = {

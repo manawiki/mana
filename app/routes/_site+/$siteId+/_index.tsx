@@ -30,10 +30,9 @@ import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import type { CustomElement } from "~/modules/editor/types";
 import { BlockType } from "~/modules/editor/types";
+import { SoloEditor } from "~/routes/editors+/SoloEditor";
 import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-
-import { SoloEditor } from "../editors+/SoloEditor";
 
 export async function loader({
    context: { payload, user },
