@@ -179,6 +179,7 @@ export const action: ActionFunction = async ({
    }
    const issues = createCustomIssues(JoinFormSchema);
    const result = await parseFormSafe(request, JoinFormSchema);
+
    if (result.success) {
       const { email, password, username } = result.data;
 
@@ -221,7 +222,6 @@ export const action: ActionFunction = async ({
                password,
                sites: ["TLPWIBnfCr"],
             },
-            overrideAccess: false,
             user,
          });
          return redirect("/check-email");
