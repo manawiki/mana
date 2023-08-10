@@ -261,7 +261,6 @@ export const action: ActionFunction = async ({
          data: {
             email,
          },
-
          disableEmail: false,
       });
       if (token) {
