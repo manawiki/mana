@@ -28,7 +28,7 @@ export const EntryHeader = ({ entry }: { entry: HeaderType }) => {
    const collectionId = params?.collectionId ? params?.collectionId : slug;
 
    const coreCollectionData = useRouteLoaderData(
-      "routes/$siteId.collections+/$collectionId._route"
+      "routes/_site+/$siteId.collections+/$collectionId._route"
    ) as { collection: Collection };
 
    const isCustomWikiPage = coreCollectionData?.collection?.customEntryTemplate;

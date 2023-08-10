@@ -4,8 +4,7 @@ import { DarkModeToggle } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
 import type { User } from "~/db/payload-types";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-
-import { UserMenu } from "../$siteId+/components";
+import { UserMenu } from "../_site+/$siteId+/components";
 
 export default function IndexLayout() {
    return (
