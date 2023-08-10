@@ -1,15 +1,12 @@
 import { Link } from "@remix-run/react";
-import { ChevronDown, Loader2 } from "lucide-react";
+import { ChevronDown, Loader2, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { Site } from "~/db/payload-types";
-import {
-   LoggedIn,
-   LoggedInDropDown,
-   LoggedOut,
-   NotFollowingSite,
-} from "~/modules/auth";
+import { LoggedIn, LoggedOut, NotFollowingSite } from "~/modules/auth";
 import { isAdding, siteHomeShouldReload } from "~/utils";
+
+import { UserMenu } from "./UserMenu";
 
 export const Header = ({
    location,
@@ -17,12 +14,14 @@ export const Header = ({
    fetcher,
    isMobileApp,
    setFollowerMenuOpen,
+   setUserMenuOpen,
 }: {
    location: any;
    site: Site;
    fetcher: any;
    isMobileApp: Boolean;
    setFollowerMenuOpen: any;
+   setUserMenuOpen: any;
 }) => {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -31,54 +30,59 @@ export const Header = ({
       <>
          {!isMobileApp && (
             <header
-               className="bg-2 border-color shadow-1 fixed top-0 z-30 flex 
+               className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
                         h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
             >
-               <div className="z-10 flex items-center gap-3">
-                  <div className="laptop:hidden">
+               <LoggedIn>
+                  <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                      {/* Following menu modal */}
-                     <LoggedIn>
-                        <div className="flex items-center gap-3">
-                           <NotFollowingSite>
-                              <div className="flex items-center">
-                                 <fetcher.Form
-                                    action={`/${site.slug}`}
-                                    className="w-full"
-                                    method="post"
-                                 >
-                                    <button
-                                       name="intent"
-                                       value="followSite"
-                                       className="flex h-8 items-center justify-center rounded-full bg-black
+                     <div className="flex items-center gap-3">
+                        <NotFollowingSite>
+                           <div className="flex items-center">
+                              <fetcher.Form
+                                 action={`/${site.slug}`}
+                                 className="w-full"
+                                 method="post"
+                              >
+                                 <button
+                                    name="intent"
+                                    value="followSite"
+                                    className="flex h-8 items-center justify-center rounded-full bg-black
                                                 px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                                    >
-                                       {adding ? (
-                                          <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                       ) : (
-                                          t("follow.actionFollow")
-                                       )}
-                                    </button>
-                                 </fetcher.Form>
-                              </div>
-                           </NotFollowingSite>
-                           <button
-                              className="bg-3 shadow-1 border-color flex items-center justify-center
+                                 >
+                                    {adding ? (
+                                       <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                    ) : (
+                                       t("follow.actionFollow")
+                                    )}
+                                 </button>
+                              </fetcher.Form>
+                           </div>
+                        </NotFollowingSite>
+                        <button
+                           className="bg-3 shadow-1 border-color flex items-center justify-center
                                        gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
-                              onClick={() => setFollowerMenuOpen(true)}
-                           >
-                              <div className="pr-2 text-xs">My Follows</div>
-                              <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
-                                 <ChevronDown
-                                    className="dark:text-white"
-                                    size={14}
-                                 />
-                              </div>
-                           </button>
-                        </div>
-                     </LoggedIn>
+                           onClick={() => setFollowerMenuOpen(true)}
+                        >
+                           <div className="pr-2 text-xs">My Follows</div>
+                           <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
+                              <ChevronDown
+                                 className="dark:text-white"
+                                 size={14}
+                              />
+                           </div>
+                        </button>
+                     </div>
+                     <button
+                        className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                     justify-center rounded-full border shadow-sm"
+                        onClick={() => setUserMenuOpen(true)}
+                     >
+                        <User size={20} />
+                     </button>
                   </div>
-               </div>
-               <LoggedInDropDown />
+               </LoggedIn>
+               <UserMenu />
                <LoggedOut>
                   <Link
                      prefetch="intent"
@@ -127,7 +131,7 @@ export const Header = ({
                </LoggedOut>
                <div
                   className="pattern-opacity-50 pattern-dots absolute left-0 top-0
-                           h-full w-full pattern-bg-white pattern-zinc-300 
+                           -z-10 h-full w-full pattern-bg-white pattern-zinc-300
                            pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
                />
             </header>

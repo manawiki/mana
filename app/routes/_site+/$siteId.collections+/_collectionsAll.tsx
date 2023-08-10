@@ -36,7 +36,7 @@ import {
 } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
-import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
+import type { loader as siteDetailsLoader } from "../_layout";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {

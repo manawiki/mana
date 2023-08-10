@@ -1,7 +1,7 @@
 import { lazily } from "react-lazily";
 
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { initialValue } from "~/routes/$siteId.collections+/$collectionId.$entryId+/_index";
+import { initialValue } from "~/routes/_site+/$siteId.collections+/$collectionId.$entryId+/_index.tsx";
 
 import { H2 } from "./H2";
 
