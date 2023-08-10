@@ -234,4 +234,5 @@ const customDomainRouting = ({
          return "/";
       }
    }
+   return;
 };
