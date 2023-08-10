@@ -10,7 +10,7 @@ import { collections } from "./collections";
 import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
-import { corsConfig } from "../../mana.config";
+import { corsConfig, settings } from "../../mana.config";
 
 dotenv.config();
 
@@ -30,6 +30,7 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
+   serverURL: settings.domainFull,
    admin: {
       components: {
          beforeNavLinks: [BackMana],
