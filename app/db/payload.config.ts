@@ -61,11 +61,12 @@ export default buildConfig({
          },
       }),
    },
+   cors: ["mana.wiki", "static.mana.wiki", "starrail-static.mana.wiki"],
    plugins: [
-      async (config) => {
-         const { cors } = await corsConfig();
-         return { ...config, cors };
-      },
+      // async (config) => {
+      //    const { cors } = await corsConfig();
+      //    return { ...config, cors };
+      // },
       selectPlugin(),
       cloudStorage({
          collections: {
