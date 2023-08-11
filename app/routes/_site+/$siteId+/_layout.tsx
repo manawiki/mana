@@ -1,6 +1,11 @@
 import { Suspense, useEffect, useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type {
+   ActionFunction,
+   LoaderArgs,
+   V2_MetaFunction,
+} from "@remix-run/node";
 import {
    Await,
    useFetcher,
@@ -9,12 +14,14 @@ import {
    useRouteLoaderData,
 } from "@remix-run/react";
 import { deferIf } from "defer-if";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import * as gtag from "~/routes/_site+/$siteId+/utils/gtags.client";
-import { isNativeSSR } from "~/utils";
+import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { useIsBot } from "~/utils/isBotProvider";
 
@@ -28,7 +35,7 @@ import {
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
-} from "./$siteId+/components";
+} from "./components";
 
 export async function loader({
    context: { user },
@@ -179,6 +186,130 @@ export default function SiteIndex() {
       </>
    );
 }
+
+export const action: ActionFunction = async ({
+   context: { payload, user },
+   request,
+   params,
+}) => {
+   assertIsPost(request);
+   const siteId = params?.siteId ?? customConfig?.siteId;
+
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
+
+   switch (intent) {
+      case "followSite": {
+         //We need to get the current sites of the user, then prepare the new sites array
+         const userId = user?.id;
+         const userCurrentSites = user?.sites || [];
+         //@ts-ignore
+         const sites = userCurrentSites.map(({ id }: { id }) => id);
+         //Finally we update the user with the new site id
+
+         const siteData = await payload.find({
+            collection: "sites",
+            where: {
+               slug: {
+                  equals: siteId,
+               },
+            },
+            user,
+         });
+         const siteUID = siteData?.docs[0].id;
+         await payload.update({
+            collection: "users",
+            id: userId ?? "",
+            data: { sites: [...sites, siteUID] },
+            overrideAccess: false,
+            user,
+         });
+
+         const { totalDocs } = await payload.find({
+            collection: "users",
+            where: {
+               sites: {
+                  equals: siteUID,
+               },
+            },
+            depth: 0,
+         });
+
+         return await payload.update({
+            collection: "sites",
+            id: siteUID,
+            data: { followers: totalDocs },
+         });
+      }
+      case "unfollow": {
+         const userId = user?.id;
+
+         const siteData = await payload.find({
+            collection: "sites",
+            where: {
+               slug: {
+                  equals: siteId,
+               },
+            },
+            user,
+         });
+         const siteUID = siteData?.docs[0].id;
+         const site = await payload.findByID({
+            collection: "sites",
+            id: siteUID,
+            user,
+         });
+
+         // Prevent site creator from leaving own site
+         //@ts-ignore
+         if (site.owner?.id === userId) {
+            return json(
+               {
+                  errors: "Cannot unfollow your own site",
+               },
+               { status: 400 }
+            );
+         }
+         const userCurrentSites = user?.sites || [];
+         //@ts-ignore
+         const sites = userCurrentSites.map(({ id }: { id }) => id);
+
+         //Remove the current site from the user's sites array
+         const index = sites.indexOf(site.id);
+         if (index > -1) {
+            // only splice array when item is found
+            sites.splice(index, 1); // 2nd parameter means remove one item only
+         }
+
+         await payload.update({
+            collection: "users",
+            id: userId ?? "",
+            data: { sites },
+            overrideAccess: false,
+            user,
+         });
+
+         const { totalDocs } = await payload.find({
+            collection: "users",
+            where: {
+               sites: {
+                  equals: siteUID,
+               },
+            },
+            depth: 0,
+         });
+
+         return await payload.update({
+            collection: "sites",
+            id: siteUID,
+            data: { followers: totalDocs },
+         });
+      }
+      default:
+         return null;
+   }
+};
 
 const fetchSite = async ({
    siteId,

@@ -1,9 +1,9 @@
 import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
 
-import { DarkModeToggle } from "~/components";
 import { LogoFull } from "~/components/LogoFull";
 import type { User } from "~/db/payload-types";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
+
 import { UserMenu } from "../_site+/$siteId+/components";
 
 export default function IndexLayout() {
@@ -50,7 +50,6 @@ const Header = () => {
                         </Link>
                      </LoggedOut>
                      <nav className="flex items-center gap-4">
-                        <DarkModeToggle />
                         <UserMenu />
                         <LoggedOut>
                            <ul className="flex items-center justify-end gap-3">
