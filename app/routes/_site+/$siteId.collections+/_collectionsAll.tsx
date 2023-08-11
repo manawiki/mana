@@ -69,9 +69,9 @@ const CollectionSchema = z.object({
 
 export const meta: V2_MetaFunction<
    typeof loader,
-   { "routes/$siteId+/_layout": typeof siteDetailsLoader }
+   { "routes/_site+/_layout": typeof siteDetailsLoader }
 > = ({ matches }) => {
-   const siteName = matches.find(({ id }) => id === "routes/$siteId+/_layout")
+   const siteName = matches.find(({ id }) => id === "routes/_site+/_layout")
       ?.data?.site.name;
    return [
       {
