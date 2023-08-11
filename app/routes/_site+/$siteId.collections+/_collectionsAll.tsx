@@ -36,7 +36,7 @@ import {
 } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
-import type { loader as siteDetailsLoader } from "../_layout";
+import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
 
 export async function loader({ params, request }: LoaderArgs) {
    const { siteId } = zx.parseParams(params, {
@@ -69,10 +69,11 @@ const CollectionSchema = z.object({
 
 export const meta: V2_MetaFunction<
    typeof loader,
-   { "routes/_site+/_layout": typeof siteDetailsLoader }
+   { "routes/_site+/$siteId+/_layout": typeof siteDetailsLoader }
 > = ({ matches }) => {
-   const siteName = matches.find(({ id }) => id === "routes/_site+/_layout")
-      ?.data?.site.name;
+   const siteName = matches.find(
+      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+   )?.data?.site.name;
    return [
       {
          title: `Collections - ${siteName}`,
