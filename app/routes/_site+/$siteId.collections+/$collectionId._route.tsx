@@ -113,8 +113,9 @@ export async function loader({
 }
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
-   const siteName = matches.find(({ id }) => id === "routes/_site+/_layout")
-      ?.data?.site.name;
+   const siteName = matches.find(
+      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+   )?.data?.site.name;
    const collectionName = data.collection.name;
 
    return [

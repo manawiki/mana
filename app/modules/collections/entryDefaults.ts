@@ -162,8 +162,9 @@ export const getCustomEntryData = async ({
 };
 
 export const meta: V2_MetaFunction = ({ matches, data }) => {
-   const siteName = matches.find(({ id }) => id === "routes/_site+/_layout")
-      ?.data?.site?.name;
+   const siteName = matches.find(
+      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+   )?.data?.site?.name;
    return [
       {
          title: `${data?.entryDefault?.name} - ${siteName}`,
