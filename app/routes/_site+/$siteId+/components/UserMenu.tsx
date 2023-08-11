@@ -19,6 +19,8 @@ import {
 } from "~/modules/auth";
 import { isAdding } from "~/utils";
 
+import { ThemeToggleUser } from "./ThemeToggleUser";
+
 export const UserMenu = () => {
    const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -43,40 +45,47 @@ export const UserMenu = () => {
                      leaveTo="transform opacity-0 scale-95"
                   >
                      <Menu.Items
-                        className="absolute right-0 z-10 mt-1 w-full min-w-[200px]
+                        className="absolute right-0 z-10 mt-1 w-full min-w-[240px]
              max-w-md origin-top-right transform text-sm transition-all"
                      >
-                        <div className="border-color bg-3 shadow-1 rounded-lg border p-1 shadow">
-                           <Menu.Item>
-                              <button
-                                 className="text-1 flex w-full items-center gap-3 rounded-lg
-                               p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                 onClick={() => setMenuOpen(true)}
-                              >
-                                 <div className="flex-grow text-left">
-                                    Settings
-                                 </div>
-                                 <Settings
-                                    size={18}
-                                    className="text-zinc-500 dark:text-zinc-400"
-                                 />
-                              </button>
-                           </Menu.Item>
-                           <Menu.Item>
-                              <button
-                                 className="text-1 flex w-full items-center gap-3 rounded-lg
-                               p-2 pl-3 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                 onClick={handleLogout}
-                              >
-                                 <div className="flex-grow text-left">
-                                    Logout
-                                 </div>
-                                 <LogOut
-                                    size={16}
-                                    className="text-zinc-500 dark:text-zinc-400"
-                                 />
-                              </button>
-                           </Menu.Item>
+                        <div className="border-color bg-3 shadow-1 rounded-lg border font-semibold shadow">
+                           <div className="p-1">
+                              <Menu.Item>
+                                 <button
+                                    className="text-1 flex w-full items-center gap-3 rounded-lg
+                               p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    onClick={() => setMenuOpen(true)}
+                                 >
+                                    <div className="flex-grow text-left">
+                                       Settings
+                                    </div>
+                                    <Settings
+                                       size={18}
+                                       className="text-zinc-500 dark:text-zinc-400"
+                                    />
+                                 </button>
+                              </Menu.Item>
+                              <Menu.Item>
+                                 <ThemeToggleUser />
+                              </Menu.Item>
+                           </div>
+                           <div className="border-color border-t p-1">
+                              <Menu.Item>
+                                 <button
+                                    className="text-1 flex w-full items-center gap-3 rounded-lg
+                               p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    onClick={handleLogout}
+                                 >
+                                    <div className="flex-grow text-left">
+                                       Logout
+                                    </div>
+                                    <LogOut
+                                       size={16}
+                                       className="text-zinc-500 dark:text-zinc-400"
+                                    />
+                                 </button>
+                              </Menu.Item>
+                           </div>
                         </div>
                      </Menu.Items>
                   </Transition>

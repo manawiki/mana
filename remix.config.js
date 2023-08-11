@@ -32,16 +32,11 @@ async function manaRoutes(defineRoutes) {
    if (customConfig?.domain) {
       routes = {
          ...routes,
-         "routes/_index+/_layout": {
-            id: "routes/_index+/_layout",
-            parentId: "root",
-            file: "routes/$siteId+/_layout.tsx",
-         },
-         "routes/_index+/_index": {
+         "routes/_home+/_index": {
             index: true,
-            id: "routes/_index+/_index",
-            parentId: "routes/_index+/_layout",
-            file: "routes/$siteId+/_index.tsx",
+            id: "routes/_home+/_index",
+            parentId: "routes/_site+/_layout",
+            file: "routes/_site+/$siteId+/_index.tsx",
          },
       };
    }
