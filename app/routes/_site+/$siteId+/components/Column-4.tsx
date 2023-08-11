@@ -6,6 +6,7 @@ import Tooltip from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
+import { LoggedOut } from "~/modules/auth";
 
 export const ColumnFour = ({
    site,
@@ -123,7 +124,9 @@ export const ColumnFour = ({
                         >
                            Get the app
                         </a>
-                        <DarkModeToggle />
+                        <LoggedOut>
+                           <DarkModeToggle />
+                        </LoggedOut>
                      </div>
                      <a className="text-xs" href="https://mana.wiki">
                         <div className="-mb-[1px] text-[8px] font-bold text-zinc-400 dark:text-zinc-500">

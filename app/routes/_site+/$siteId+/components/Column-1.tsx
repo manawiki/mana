@@ -15,7 +15,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
       >
          <div
             className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
-            laptop:h-full laptop:w-[82px] laptop:overflow-y-auto laptop:pt-4"
+            laptop:h-full laptop:w-[76px] laptop:overflow-y-auto laptop:pt-4"
          >
             <LoggedOut>
                <div className="relative flex items-center justify-center pb-3">
