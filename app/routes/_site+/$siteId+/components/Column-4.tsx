@@ -4,9 +4,9 @@ import { Component, Dog, Users } from "lucide-react";
 import { DarkModeToggle, Image, LogoText } from "~/components";
 import Tooltip from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
+import { LoggedOut } from "~/modules/auth";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
-import { LoggedOut } from "~/modules/auth";
 
 export const ColumnFour = ({
    site,
@@ -111,11 +111,11 @@ export const ColumnFour = ({
                </section>
             </div>
             <div className="flex-grow"></div>
-            <div className="flex items-center justify-center border-zinc-200/40 py-5  dark:border-zinc-700/40 laptop:border-t">
+            {/* <div className="flex items-center justify-center border-zinc-200/40 py-5  dark:border-zinc-700/40 laptop:border-t">
                <div className="h-[250px] w-[300px] rounded-lg bg-zinc-100 dark:bg-zinc-700/20" />
-            </div>
+            </div> */}
             {!isMobileApp && (
-               <div className="border-color relative border-t p-6 dark:border-zinc-700/40 laptop:p-4">
+               <div className="border-color relative border-t p-4 dark:border-zinc-700/40">
                   <div className="flex items-center justify-between">
                      <div className="flex items-center gap-2">
                         <a

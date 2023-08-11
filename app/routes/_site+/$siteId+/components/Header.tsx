@@ -61,11 +61,11 @@ export const Header = ({
                         </NotFollowingSite>
                         <button
                            className="bg-3 shadow-1 border-color flex items-center justify-center
-                                       gap-2 rounded-full border p-1.5 pl-3   text-sm font-bold shadow-sm"
+                                       gap-1 rounded-full border p-1.5 pl-3 text-sm font-bold shadow-sm"
                            onClick={() => setFollowerMenuOpen(true)}
                         >
                            <div className="pr-2 text-xs">My Follows</div>
-                           <div className="bg-1 flex h-5 w-5 items-center justify-center rounded-full">
+                           <div className="flex h-5 w-5 items-center justify-center rounded-full dark:bg-zinc-700">
                               <ChevronDown
                                  className="dark:text-white"
                                  size={14}
@@ -75,7 +75,7 @@ export const Header = ({
                      </div>
                      <button
                         className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
-                     justify-center rounded-full border shadow-sm"
+                     justify-center rounded-xl border shadow-sm"
                         onClick={() => setUserMenuOpen(true)}
                      >
                         <User size={20} />
