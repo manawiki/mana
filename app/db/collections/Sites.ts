@@ -147,6 +147,11 @@ export const Sites: CollectionConfig = {
          },
       },
       {
+         name: "favicon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "id",
          type: "text",
       },
