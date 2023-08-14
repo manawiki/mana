@@ -6,8 +6,7 @@ import type {
    LinksFunction,
    LoaderArgs,
 } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import type { Params } from "@remix-run/react";
+import { json } from "@remix-run/node";
 import {
    Links,
    LiveReload,
@@ -16,16 +15,15 @@ import {
    Scripts,
    ScrollRestoration,
    useLoaderData,
+   useMatches,
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/stylesheet.css";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import customConfig from "~/_custom/config.json";
 import customStylesheetUrl from "~/_custom/styles.css";
+import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
 import { useIsBot } from "~/utils/isBotProvider";
 import {
@@ -133,6 +131,10 @@ function App() {
    const isBot = useIsBot();
    useChangeLanguage(locale);
 
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const site = useMatches()?.[1]?.data?.site as Site;
+   const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
+
    useEffect(() => {
       if (!toastMessage) {
          return;
@@ -167,6 +169,30 @@ function App() {
             <meta
                name="format-detection"
                content="telephone=no, date=no, email=no, address=no"
+            />
+            <link
+               sizes="32x32"
+               rel="icon"
+               type="image/x-icon"
+               href={`${favicon}?width=32&height=32`}
+            />
+            <link
+               sizes="128x128"
+               rel="icon"
+               type="image/x-icon"
+               href={`${favicon}?width=128&height=128`}
+            />
+            <link
+               sizes="180x180"
+               rel="icon"
+               type="image/x-icon"
+               href={`${favicon}?width=180&height=180`}
+            />
+            <link
+               sizes="192x192"
+               rel="icon"
+               type="image/x-icon"
+               href={`${favicon}?width=192&height=192`}
             />
             <Meta />
             <Links />

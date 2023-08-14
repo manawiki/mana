@@ -344,6 +344,9 @@ const fetchSite = async ({
                   icon {
                     url
                   }
+                  favicon {
+                     url
+                  }
                   pinned {
                     id
                     relation {
