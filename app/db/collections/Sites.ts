@@ -155,12 +155,5 @@ export const Sites: CollectionConfig = {
          name: "id",
          type: "text",
       },
-      {
-         name: "content",
-         type: "relationship",
-         relationTo: "contentEmbeds",
-         hasMany: false,
-         maxDepth: 1,
-      },
    ],
 };
