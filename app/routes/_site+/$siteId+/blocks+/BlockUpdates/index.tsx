@@ -5,6 +5,7 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import { format } from "date-fns";
 import { Loader2, Plus, Trash } from "lucide-react";
+import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
 import { Editor, createEditor, Transforms } from "slate";
 import { withHistory } from "slate-history";
@@ -20,15 +21,20 @@ import Leaf from "~/modules/editor/blocks/Leaf";
 import { Toolbar } from "~/modules/editor/components";
 import { onKeyDown } from "~/modules/editor/editorCore";
 import type { UpdatesElement } from "~/modules/editor/types";
-import {
-   UpdatesEditor,
-   initialValue,
-} from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
+import { UpdatesEditor } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
 import { isAdding, isProcessing } from "~/utils";
 
 type Props = {
    element: UpdatesElement;
 };
+
+const updatesInlineInitialValue = [
+   {
+      id: nanoid(),
+      type: "updatesInline",
+      children: [{ text: "" }],
+   },
+];
 
 const dateFormat = (dateString: string) =>
    new Intl.DateTimeFormat("en-US", {
@@ -67,131 +73,130 @@ export const BlockUpdates = ({ element }: Props) => {
 
    return (
       <section>
-         {updateResults && updateResults?.length === 0 ? null : (
-            <>
-               <H2Default text="Updates" />
-               <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
-                  <div className="flex items-center justify-between gap-2 py-1 pr-2">
-                     <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
-                        {Intl.DateTimeFormat("en-US", {
-                           month: "short",
-                           day: "numeric",
-                        }).format(new Date())}
-                     </span>
-                     <div className="h-full w-full text-sm">
-                        <Slate
-                           editor={editor}
-                           value={initialValue as Descendant[]}
-                        >
-                           <Toolbar />
-                           <Editable
-                              className="py-2"
-                              placeholder="Share an update..."
-                              renderElement={Block}
-                              renderLeaf={Leaf}
-                              onKeyDown={(e) => onKeyDown(e, editor)}
-                           />
-                        </Slate>
-                     </div>
-                     <button
-                        onClick={() => {
-                           fetcher.submit(
-                              {
-                                 data: JSON.stringify(editor.children),
-                                 intent: "createUpdate",
-                              },
-                              {
-                                 method: "post",
-                                 action: `/${siteId}/blocks/BlockUpdates`,
-                              }
-                           );
-                        }}
-                        disabled={disabled}
-                        type="submit"
+         <>
+            <H2Default text="Updates" />
+            <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
+               <div className="flex items-center justify-between gap-2 py-1 pr-2">
+                  <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
+                     {Intl.DateTimeFormat("en-US", {
+                        month: "short",
+                        day: "numeric",
+                     }).format(new Date())}
+                  </span>
+                  <div className="h-full w-full text-sm">
+                     <Slate
+                        editor={editor}
+                        value={updatesInlineInitialValue as Descendant[]}
                      >
-                        <div
-                           className="shadow-1 font-bol inline-flex h-8 w-8 items-center justify-center rounded-xl 
+                        <Toolbar />
+                        <Editable
+                           className="py-2"
+                           placeholder="Share an update..."
+                           renderElement={Block}
+                           renderLeaf={Leaf}
+                           onKeyDown={(e) => onKeyDown(e, editor)}
+                        />
+                     </Slate>
+                  </div>
+                  <button
+                     onClick={() => {
+                        fetcher.submit(
+                           {
+                              data: JSON.stringify(editor.children),
+                              intent: "createUpdate",
+                           },
+                           {
+                              method: "post",
+                              action: `/${siteId}/blocks/BlockUpdates`,
+                           }
+                        );
+                     }}
+                     disabled={disabled}
+                     type="submit"
+                  >
+                     <div
+                        className="shadow-1 font-bol inline-flex h-8 w-8 items-center justify-center rounded-xl 
                            border border-blue-200/80 bg-gradient-to-b from-blue-50
                            to-blue-100 text-xs font-bold
                            text-blue-500 shadow-sm transition dark:border-blue-900
                            dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-200 
                            dark:shadow-blue-950"
-                        >
-                           {addingUpdate ? (
-                              <Loader2 size={16} className="animate-spin" />
-                           ) : (
-                              <Plus size={18} />
-                           )}
-                        </div>
-                     </button>
-                  </div>
-                  {updateResults?.map((row) => (
-                     <section
-                        key={row.id}
-                        className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
                      >
-                        <time
-                           className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
-                           dateTime={row?.createdAt}
-                        >
-                           {dateFormat(row?.createdAt)}
-                        </time>
-                        <span className="divide-color flex-grow divide-y text-sm">
-                           {row.entry?.length === 0 ? (
-                              <UpdatesEditor rowId={row.id} siteId={siteId} />
-                           ) : (
-                              <>
-                                 {row.entry?.map((item) => (
-                                    <div
-                                       key={item.id}
-                                       className="group/updates relative py-3"
-                                    >
-                                       <UpdatesEditor
-                                          rowId={row.id}
-                                          entryId={item.id}
-                                          siteId={siteId}
-                                          blocks={item.content}
-                                       />
-                                       <button
-                                          className="absolute right-3 top-3.5 hidden group-hover/updates:block"
-                                          onClick={() =>
-                                             fetcher.submit(
-                                                {
-                                                   entryId: item.id,
-                                                   updateId: row.id,
-                                                   intent: "deleteEntry",
-                                                },
-                                                {
-                                                   method: "DELETE",
-                                                   action: `/${siteId}/blocks/BlockUpdates`,
-                                                }
-                                             )
-                                          }
-                                          disabled={disabled}
-                                          type="submit"
-                                       >
-                                          {deletingUpdate ? (
-                                             <Loader2
-                                                size={15}
-                                                className="animate-spin"
-                                             />
-                                          ) : (
-                                             <Trash
-                                                className="text-zinc-400 hover:text-red-400"
-                                                size={15}
-                                             />
-                                          )}
-                                       </button>
-                                    </div>
-                                 ))}
-                              </>
-                           )}
-                        </span>
-                     </section>
-                  ))}
+                        {addingUpdate ? (
+                           <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                           <Plus size={18} />
+                        )}
+                     </div>
+                  </button>
                </div>
-            </>
-         )}
+               {updateResults?.map((row) => (
+                  <section
+                     key={row.id}
+                     className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                  >
+                     <time
+                        className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
+                        dateTime={row?.createdAt}
+                     >
+                        {dateFormat(row?.createdAt)}
+                     </time>
+                     <span className="divide-color flex-grow divide-y text-sm">
+                        {row.entry?.length === 0 ? (
+                           <UpdatesEditor rowId={row.id} siteId={siteId} />
+                        ) : (
+                           <>
+                              {row.entry?.map((item) => (
+                                 <div
+                                    key={item.id}
+                                    className="group/updates relative py-3"
+                                 >
+                                    <UpdatesEditor
+                                       rowId={row.id}
+                                       entryId={item.id}
+                                       siteId={siteId}
+                                       blocks={item.content}
+                                    />
+                                    <button
+                                       className="absolute right-3 top-3.5 hidden group-hover/updates:block"
+                                       onClick={() =>
+                                          fetcher.submit(
+                                             //@ts-expect-error
+                                             {
+                                                entryId: item.id,
+                                                updateId: row.id,
+                                                intent: "deleteEntry",
+                                             },
+                                             {
+                                                method: "DELETE",
+                                                action: `/${siteId}/blocks/BlockUpdates`,
+                                             }
+                                          )
+                                       }
+                                       disabled={disabled}
+                                       type="submit"
+                                    >
+                                       {deletingUpdate ? (
+                                          <Loader2
+                                             size={15}
+                                             className="animate-spin"
+                                          />
+                                       ) : (
+                                          <Trash
+                                             className="text-zinc-400 hover:text-red-400"
+                                             size={15}
+                                          />
+                                       )}
+                                    </button>
+                                 </div>
+                              ))}
+                           </>
+                        )}
+                     </span>
+                  </section>
+               ))}
+            </div>
+         </>
       </section>
    );
 };

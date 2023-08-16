@@ -4,7 +4,6 @@ import { json, type ActionFunction, type LoaderArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
-import { nanoid } from "nanoid";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -99,7 +98,7 @@ export default function SiteIndexMain() {
                               siteId={siteId}
                               intent="homeContent"
                               // @ts-ignore
-                              defaultValue={home ?? initialValue}
+                              defaultValue={home}
                            />
                         </Await>
                      </Suspense>
@@ -354,15 +353,3 @@ const fetchHomeContent = async ({
 
    return { home, isChanged: false };
 };
-
-const initialValue: CustomElement[] = [
-   {
-      id: nanoid(),
-      type: BlockType.Paragraph,
-      children: [
-         {
-            text: "",
-         },
-      ],
-   },
-];

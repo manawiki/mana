@@ -1,7 +1,7 @@
 import { lazily } from "react-lazily";
 
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { initialValue } from "~/routes/_site+/$siteId.collections+/$collectionId.$entryId+/_index.tsx";
+import { initialValue } from "~/modules/editor/utils.ts";
 
 import { H2 } from "./H2";
 
@@ -45,7 +45,7 @@ export const EntryContentEmbed = ({
                   fetcher={fetcher}
                   collectionEntity={collectionEntity}
                   pageId={entryId}
-                  defaultValue={content ?? initialValue}
+                  defaultValue={content ?? initialValue()}
                />
             </>
          ) : (
