@@ -20,6 +20,10 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
+import {
+   isStaffOrSiteAdminOrStaffOrOwnerServer,
+   useIsStaffOrSiteAdminOrStaffOrOwner,
+} from "~/modules/auth";
 import * as gtag from "~/routes/_site+/$siteId+/utils/gtags.client";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -47,6 +51,23 @@ export async function loader({
    const { isMobileApp } = isNativeSSR(request);
 
    const site = await fetchSite({ siteId, user });
+
+   if (!site) {
+      throw new Response(null, {
+         status: 404,
+         statusText: "Not Found",
+      });
+   }
+
+   //If site is not set to public, limit access to staff and site admins/owners only
+   const hasAccess = isStaffOrSiteAdminOrStaffOrOwnerServer(user, site);
+
+   if (!hasAccess && !site.isPublic) {
+      throw new Response(null, {
+         status: 404,
+         statusText: "Not Found",
+      });
+   }
 
    return await deferIf({ site }, isMobileApp, {
       init: {
