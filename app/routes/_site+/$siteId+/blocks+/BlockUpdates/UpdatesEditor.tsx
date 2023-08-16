@@ -10,17 +10,10 @@ import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { Toolbar } from "~/modules/editor/components";
 import { onKeyDown } from "~/modules/editor/editorCore";
-
-import type { CustomElement } from "../../../../modules/editor/types";
+import type { CustomElement } from "~/modules/editor/types";
 
 const useEditor = () =>
    useMemo(() => withReact(withHistory(createEditor())), []);
-export const initialValue = [
-   {
-      type: "updatesInline",
-      children: [{ text: "" }],
-   },
-];
 
 export const UpdatesEditor = ({
    rowId,
@@ -59,7 +52,7 @@ export const UpdatesEditor = ({
       <Slate
          onChange={(e) => setValue(e)}
          editor={editor}
-         value={(blocks as Descendant[]) ?? initialValue}
+         value={blocks as Descendant[]}
       >
          <Toolbar />
          <Editable

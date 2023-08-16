@@ -21,7 +21,6 @@ import { GROUP_COLORS } from "../blocks/BlockGroup";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
-
 type Props = {
    children: ReactNode;
    onSelect: (block: CustomElement) => void;
