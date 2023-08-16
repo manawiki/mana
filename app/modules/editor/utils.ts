@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
-import type { BaseEditor, BaseRange, Operation, Path } from "slate";
-import { Range, Transforms, Editor, Element } from "slate";
+import type { Operation, Path } from "slate";
+import { Transforms, Editor } from "slate";
 
-import type { Format, ParagraphElement } from "./types";
+import type { CustomElement, Format, ParagraphElement } from "./types";
 import { BlockType } from "./types";
 
 export function toPx(value: number | undefined): string | undefined {
@@ -83,3 +83,15 @@ export function setGlobalCursor(type: CursorType) {
 export function removeGlobalCursor(type: CursorType) {
    document.body.classList.remove(type);
 }
+
+export const initialValue = (): CustomElement[] => {
+   const id = nanoid();
+
+   return [
+      {
+         id,
+         type: BlockType.Paragraph,
+         children: [{ text: "" }],
+      },
+   ];
+};

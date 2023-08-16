@@ -10,6 +10,7 @@ import { z } from "zod";
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
+import { initialValue } from "~/modules/editor/utils";
 import {
    assertIsPost,
    isAdding,
@@ -19,6 +20,8 @@ import {
    safeNanoID,
    type FormResponse,
 } from "~/utils";
+import { BlockType, CustomElement } from "~/modules/editor/types";
+import { nanoid } from "nanoid";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),
@@ -270,6 +273,29 @@ export const action: ActionFunction = async ({
             user,
          });
 
+         const initialValue = [
+            {
+               id: nanoid(),
+               type: BlockType.Paragraph,
+               children: [{ text: "" }],
+            },
+            {
+               id: nanoid(),
+               type: BlockType.Updates,
+               children: [{ text: "" }],
+            },
+         ];
+
+         await payload.create({
+            collection: "homeContents",
+            data: {
+               content: initialValue,
+               site: siteId,
+            },
+            overrideAccess: false,
+            user,
+         });
+
          //We need to get the current sites of the user, then prepare the new sites array
          const userCurrentSites = user?.sites || [];
          const sites = userCurrentSites.map((site) =>
@@ -277,6 +303,7 @@ export const action: ActionFunction = async ({
          );
 
          //Finally we update the user with the new site id
+         //@ts-ignore
          await payload.update({
             collection: "users",
             id: userId,

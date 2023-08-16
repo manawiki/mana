@@ -39,14 +39,6 @@ export async function loader({
 
 export { meta };
 
-export const initialValue = [
-   {
-      id: nanoid(),
-      type: "paragraph",
-      children: [{ text: "" }],
-   },
-];
-
 export default function CollectionEntryWiki() {
    const { entryDefault, embed } = useLoaderData<typeof loader>() || {};
    const { siteId, entryId, collectionId } = useParams();
