@@ -35,24 +35,27 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import Block, { CreateNewBlockFromBlock } from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
+import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
    BlockInlineActions,
    Button,
    Toolbar,
    Tooltip,
-} from "~/modules/editor/components";
-import { HOTKEYS, PROSE_CONTAINER_ID } from "~/modules/editor/constants";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
+} from "~/routes/_editor+/components";
+import {
+   HOTKEYS,
+   PROSE_CONTAINER_ID,
+} from "~/routes/_editor+/functions/constants";
 import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
    withLayout,
    withNodeId,
-} from "~/modules/editor/utils";
+} from "~/routes/_editor+/functions/utils";
+import type { CustomElement } from "~/routes/_editor+/types";
+import { BlockType } from "~/routes/_editor+/types";
 
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,

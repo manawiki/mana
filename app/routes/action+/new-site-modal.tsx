@@ -10,7 +10,7 @@ import { z } from "zod";
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-import { initialValue } from "~/modules/editor/utils";
+import { initialValue } from "~/routes/_editor+/functions/utils";
 import {
    assertIsPost,
    isAdding,
@@ -20,7 +20,7 @@ import {
    safeNanoID,
    type FormResponse,
 } from "~/utils";
-import { BlockType, CustomElement } from "~/modules/editor/types";
+import { BlockType, CustomElement } from "~/routes/_editor+/types";
 import { nanoid } from "nanoid";
 
 const SiteSchema = z.object({

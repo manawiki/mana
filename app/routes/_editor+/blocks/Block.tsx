@@ -1,19 +1,21 @@
 import { nanoid } from "nanoid";
 import { type RenderElementProps, useReadOnly } from "slate-react";
-import { DefaultElement } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
-import { BlockUpdates } from "~/routes/$siteId.blocks+/updates";
-import { BlockUpdatesView } from "~/routes/$siteId.blocks+/updates/view";
 
 import BlockCodeSandbox from "./BlockCodeSandbox";
 import { BlockGroup } from "./BlockGroup";
+// eslint-disable-next-line import/no-cycle
 import BlockGroupView from "./BlockGroupView";
 import BlockImage from "./BlockImage";
 import BlockLink from "./BlockLink";
 import BlockList from "./BlockList";
 import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
+// eslint-disable-next-line import/no-cycle
+import { BlockUpdates } from "../$siteId.blocks+/updates";
+// eslint-disable-next-line import/no-cycle
+import { BlockUpdatesView } from "../$siteId.blocks+/updates/view";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
@@ -36,11 +38,11 @@ export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
 // https://github.com/ianstormtaylor/slate/issues/3930
-export default function Block({
+export const Block = ({
    element,
    children,
    attributes,
-}: RenderElementProps) {
+}: RenderElementProps) => {
    const readOnly = useReadOnly();
 
    switch (element.type) {
@@ -100,7 +102,7 @@ export default function Block({
       case BlockType.H3: {
          return (
             <h3 className="flex items-center gap-3" {...attributes}>
-               <div className="min-w-[100px] flex-none">{children}</div>
+               <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
                   className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-bg4Dark"
@@ -156,4 +158,4 @@ export default function Block({
             />
          );
    }
-}
+};

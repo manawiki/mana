@@ -28,7 +28,7 @@ import { DotLoader } from "~/components/DotLoader";
 import { Image } from "~/components/Image";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { Tooltip } from "~/modules/editor/components";
+import { Tooltip } from "~/routes/_editor+/components";
 import { isProcessing, isAdding, type FormResponse } from "~/utils";
 
 import { PostDeleteModal } from "./PostDeleteModal";

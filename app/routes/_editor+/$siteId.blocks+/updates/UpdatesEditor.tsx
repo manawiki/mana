@@ -7,11 +7,11 @@ import { Editable, Slate, withReact } from "slate-react";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { Toolbar } from "~/modules/editor/components";
-import { onKeyDown } from "~/modules/editor/editorCore";
-import type { CustomElement } from "~/modules/editor/types";
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { Toolbar } from "~/routes/_editor+/components";
+import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
+import type { CustomElement } from "~/routes/_editor+/types";
 
 const useEditor = () =>
    useMemo(() => withReact(withHistory(createEditor())), []);
