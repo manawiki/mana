@@ -33,7 +33,7 @@ export const CustomBlocks = ({ element, children, attributes }: any) => {
 
 export const CustomBlocksAddConfig = (onSelect: any) => {
    return {
-      label: "custom",
+      label: "Custom",
       items: [
          {
             label: "Sample Component",

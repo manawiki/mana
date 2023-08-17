@@ -31,13 +31,11 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { Tooltip } from "~/modules/editor/components";
 import { isProcessing, isAdding, type FormResponse } from "~/utils";
 
-
 import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
 import { PostVersionModal } from "./PostVersionModal";
 import { PostHeader } from "../../components/PostHeader";
 import { postSchema } from "../../utils/postSchema";
-
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation

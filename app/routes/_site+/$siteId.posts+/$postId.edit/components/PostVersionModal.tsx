@@ -84,7 +84,7 @@ export const PostVersionModal = ({
                                  <PostHeader post={version} />
                                  <Slate
                                     editor={editor}
-                                    value={
+                                    initialValue={
                                        version.version?.content as Descendant[]
                                     }
                                  >

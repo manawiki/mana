@@ -1,4 +1,9 @@
-import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
+import {
+   Link,
+   Outlet,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 
 import { LogoFull } from "~/components/LogoFull";
 import type { User } from "~/db/payload-types";
@@ -32,6 +37,7 @@ const Header = () => {
       isMobileApp: Boolean;
    };
    const isMobileAndAnon = !user && isMobileApp;
+   const location = useLocation();
 
    return (
       <>
@@ -73,7 +79,7 @@ const Header = () => {
                                  <Link
                                     className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
                                     text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                                    to="/login"
+                                    to={`/login?redirectTo=${location.pathname}`}
                                  >
                                     Login
                                  </Link>

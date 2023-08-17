@@ -843,7 +843,7 @@ const InlineEditor = ({
             onChange={(e) => updateContentValue(e)}
             editor={inlineEditor}
             // @ts-ignore
-            value={
+            initialValue={
                element.content ?? [
                   {
                      type: "paragraph",

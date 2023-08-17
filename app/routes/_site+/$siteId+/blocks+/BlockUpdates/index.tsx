@@ -75,7 +75,7 @@ export const BlockUpdates = ({ element }: Props) => {
       <section>
          <>
             <H2Default text="Updates" />
-            <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
+            <div className="divide-color border-color bg-2 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
                <div className="flex items-center justify-between gap-2 py-1 pr-2">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
@@ -86,11 +86,11 @@ export const BlockUpdates = ({ element }: Props) => {
                   <div className="h-full w-full text-sm">
                      <Slate
                         editor={editor}
-                        value={updatesInlineInitialValue as Descendant[]}
+                        initialValue={updatesInlineInitialValue as Descendant[]}
                      >
                         <Toolbar />
                         <Editable
-                           className="py-2"
+                           className="outline-none"
                            placeholder="Share an update..."
                            renderElement={Block}
                            renderLeaf={Leaf}

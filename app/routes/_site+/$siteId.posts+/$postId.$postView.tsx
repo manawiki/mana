@@ -144,7 +144,10 @@ export default function PostPage() {
             )}
             <div className="mx-auto max-w-[728px] pb-8 max-desktop:px-3">
                <Suspense fallback={<div>Loading...</div>}>
-                  <Slate editor={editor} value={post.content as Descendant[]}>
+                  <Slate
+                     editor={editor}
+                     initialValue={post.content as Descendant[]}
+                  >
                      <Editable
                         renderElement={renderElement}
                         renderLeaf={Leaf}

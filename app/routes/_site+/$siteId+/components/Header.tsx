@@ -99,9 +99,6 @@ export const Header = ({
                   <div className="relative z-10 flex w-full items-center justify-end gap-3">
                      <Link
                         prefetch="intent"
-                        reloadDocument={siteHomeShouldReload({
-                           site,
-                        })}
                         to="/join"
                         className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                  rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
@@ -117,9 +114,6 @@ export const Header = ({
                      </Link>
                      <Link
                         prefetch="intent"
-                        reloadDocument={siteHomeShouldReload({
-                           site,
-                        })}
                         className="border-color bg-3 shadow-1 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"

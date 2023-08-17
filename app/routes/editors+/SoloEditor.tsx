@@ -54,9 +54,6 @@ import {
    withNodeId,
 } from "~/modules/editor/utils";
 
-
-
-
 const SHORTCUTS: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
    "-": BlockType.BulletedList,
@@ -89,7 +86,7 @@ export const SoloEditor = ({
    intent,
 }: {
    fetcher: any;
-   defaultValue: Descendant[] | string[];
+   defaultValue: Descendant[];
    siteId: string | undefined;
    collectionEntity?: string;
    pageId?: string;
@@ -295,7 +292,7 @@ export const SoloEditor = ({
    );
 
    return (
-      <div className="relative cursor-text pb-4">
+      <div className="relative pb-4">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
@@ -306,7 +303,7 @@ export const SoloEditor = ({
                   <Slate
                      onChange={(e) => setValue(e)}
                      editor={editor}
-                     value={defaultValue}
+                     initialValue={defaultValue}
                   >
                      <Toolbar />
                      <DndContext
@@ -320,6 +317,7 @@ export const SoloEditor = ({
                            strategy={verticalListSortingStrategy}
                         >
                            <Editable
+                              className="outline-none"
                               renderElement={renderElement}
                               renderLeaf={Leaf}
                               /**
@@ -403,8 +401,8 @@ function SortableElement({
          >
             {renderElement({ element, children })}
             <div
-               className="absolute -top-10 select-none pr-3 opacity-0 group-hover:opacity-100
-               laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
+               className="absolute -top-10 z-10 select-none pr-3 opacity-0
+               group-hover:opacity-100 laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
                contentEditable={false}
             >
                <BlockInlineActions
@@ -413,7 +411,7 @@ function SortableElement({
                />
             </div>
             <div
-               className="absolute -top-10 right-0 z-40 select-none pl-3
+               className="absolute -top-10 right-0 z-10 select-none pl-3
                 opacity-0 group-hover:opacity-100 laptop:-right-11 laptop:-top-0.5"
                contentEditable={false}
             >
@@ -444,7 +442,7 @@ function DragOverlayContent({
    const [value] = useState([JSON.parse(JSON.stringify(element))]); // clone
 
    return (
-      <Slate editor={editor} value={value}>
+      <Slate editor={editor} initialValue={value}>
          <Editable
             readOnly={true}
             renderElement={renderElement}
