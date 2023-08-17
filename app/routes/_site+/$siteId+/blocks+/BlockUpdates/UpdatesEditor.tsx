@@ -52,7 +52,7 @@ export const UpdatesEditor = ({
       <Slate
          onChange={(e) => setValue(e)}
          editor={editor}
-         value={blocks as Descendant[]}
+         initialValue={blocks as Descendant[]}
       >
          <Toolbar />
          <Editable

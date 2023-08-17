@@ -20,10 +20,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import {
-   isStaffOrSiteAdminOrStaffOrOwnerServer,
-   useIsStaffOrSiteAdminOrStaffOrOwner,
-} from "~/modules/auth";
+import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/modules/auth";
 import * as gtag from "~/routes/_site+/$siteId+/utils/gtags.client";
 import { assertIsPost, isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";

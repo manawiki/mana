@@ -14,7 +14,7 @@ export const EntryViewer = ({ content }: { content: any }) => {
       return <Block {...props} />;
    }, []);
    return (
-      <Slate editor={editor} value={content}>
+      <Slate editor={editor} initialValue={content}>
          <Editable
             renderElement={renderElement}
             renderLeaf={Leaf}

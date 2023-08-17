@@ -197,7 +197,11 @@ export default function SiteIndexMain() {
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
                            {/* @ts-ignore */}
-                           <Slate key={siteId} editor={editor} value={home}>
+                           <Slate
+                              key={siteId}
+                              editor={editor}
+                              initialValue={home}
+                           >
                               <Editable
                                  renderElement={renderElement}
                                  renderLeaf={Leaf}

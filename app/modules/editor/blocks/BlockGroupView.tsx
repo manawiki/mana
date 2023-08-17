@@ -139,7 +139,7 @@ export default function GroupView({ element }: Props) {
                      </div>
                      {content && (
                         <div>
-                           <Slate editor={editor} value={content}>
+                           <Slate editor={editor} initialValue={content}>
                               <Editable
                                  renderElement={renderElement}
                                  renderLeaf={Leaf}
@@ -261,7 +261,7 @@ export default function GroupView({ element }: Props) {
                      </div>
                      {content && (
                         <div>
-                           <Slate editor={editor} value={content}>
+                           <Slate editor={editor} initialValue={content}>
                               <Editable
                                  renderElement={renderElement}
                                  renderLeaf={Leaf}

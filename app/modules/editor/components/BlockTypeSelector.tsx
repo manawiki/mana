@@ -1,6 +1,7 @@
-import type { ReactNode } from "react";
+import { Fragment } from "react";
 
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import { Popover } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
 import {
    CheckSquare,
    Codesandbox,
@@ -9,6 +10,7 @@ import {
    ImagePlus,
    LayoutList,
    List,
+   Plus,
    Type,
    Youtube,
 } from "lucide-react";
@@ -17,16 +19,78 @@ import { nanoid } from "nanoid";
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import Tooltip from "~/components/Tooltip";
 
-import { GROUP_COLORS } from "../blocks/BlockGroup";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
 type Props = {
-   children: ReactNode;
    onSelect: (block: CustomElement) => void;
 };
 
-export default function BlockTypeSelector({ children, onSelect }: Props) {
+export const BlockTypeSelector = ({ onSelect }: Props) => {
+   const primary = [
+      {
+         label: "Text",
+         icon: <Type size={16} />,
+         description: "Plain text",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.Paragraph,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
+         label: "Heading 2",
+         icon: <Heading2 size={16} />,
+         description: "Large size heading",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.H2,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
+         label: "Heading 3",
+         icon: <Heading3 size={16} />,
+         description: "Medium size heading",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.H3,
+               children: [{ text: "" }],
+            });
+         },
+      },
+
+      {
+         label: "Bulleted list",
+         icon: <List size={16} />,
+         description: "A basic bulleted list",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.BulletedList,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
+         label: "To do list",
+         icon: <CheckSquare size={16} />,
+         description: "A basic to do list",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.ToDo,
+               checked: false,
+               children: [{ text: "" }],
+            });
+         },
+      },
+   ];
    const groups = [
       {
          label: "Widgets",
@@ -59,72 +123,6 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
             //       });
             //    },
             // },
-         ],
-      },
-      {
-         label: "Text",
-         items: [
-            {
-               label: "Heading 2",
-               icon: <Heading2 size={20} />,
-               description: "Large size heading",
-               onSelect: () => {
-                  onSelect({
-                     id: nanoid(),
-                     type: BlockType.H2,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-            {
-               label: "Heading 3",
-               icon: <Heading3 size={20} />,
-               description: "Medium size heading",
-               onSelect: () => {
-                  onSelect({
-                     id: nanoid(),
-                     type: BlockType.H3,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-            {
-               label: "Normal text",
-               icon: <Type size={20} />,
-               description: "Plain text",
-               onSelect: () => {
-                  onSelect({
-                     id: nanoid(),
-                     type: BlockType.Paragraph,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-            {
-               label: "Bulleted list",
-               icon: <List size={20} />,
-               description: "A basic bulleted list",
-               onSelect: () => {
-                  onSelect({
-                     id: nanoid(),
-                     type: BlockType.BulletedList,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-            {
-               label: "To do list",
-               icon: <CheckSquare size={20} />,
-               description: "A basic to do list",
-               onSelect: () => {
-                  onSelect({
-                     id: nanoid(),
-                     type: BlockType.ToDo,
-                     checked: false,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
          ],
       },
       {
@@ -186,63 +184,107 @@ export default function BlockTypeSelector({ children, onSelect }: Props) {
    }
 
    return (
-      <DropdownMenuPrimitive.Root>
-         <Tooltip id="insert-block" content="Insert block below">
-            <DropdownMenuPrimitive.Trigger asChild>
-               {children}
-            </DropdownMenuPrimitive.Trigger>
-         </Tooltip>
-
-         <DropdownMenuPrimitive.Portal>
-            <DropdownMenuPrimitive.Content
-               className="shadow-1 border-color bg-2 relative z-10
-               h-72 w-60 overflow-scroll rounded-lg border shadow outline-none"
-            >
-               {groups.map((group, indexGroup) => {
-                  return (
-                     <DropdownMenuPrimitive.Group key={indexGroup} className="">
-                        <DropdownMenuPrimitive.Label
-                           className="text-1 bg-2 sticky top-0 px-2.5 pb-1.5 pt-2.5 text-xs
-                        font-bold"
-                        >
-                           {group?.label}
-                        </DropdownMenuPrimitive.Label>
-                        <div className="border-color divide-color divide-y border-y">
-                           {groups[indexGroup]?.items?.map(
-                              (item, indexItem) => {
-                                 return (
-                                    <DropdownMenuPrimitive.DropdownMenuItem
-                                       className="bg-3 flex cursor-pointer items-center gap-3 space-y-1 p-3
-                                    text-xs outline-none hover:bg-zinc-50 dark:hover:bg-bg2Dark"
-                                       key={indexItem}
-                                       onSelect={item.onSelect}
-                                    >
-                                       {item.icon && (
-                                          <div
-                                             className="flex h-8 w-8 items-center justify-center
-                                     rounded-lg bg-zinc-100 dark:bg-bg4Dark"
-                                          >
-                                             {item.icon}
-                                          </div>
-                                       )}
-                                       <div>
-                                          <div className="font-bold text-zinc-500 dark:text-zinc-300">
-                                             {item.label}
-                                          </div>
-                                          <div className="text-1 text-xs">
-                                             {item.description}
-                                          </div>
-                                       </div>
-                                    </DropdownMenuPrimitive.DropdownMenuItem>
-                                 );
-                              }
-                           )}
+      <Popover>
+         {({ open }) => (
+            <>
+               <Float
+                  as={Fragment}
+                  enter="transition ease-out duration-200"
+                  enterFrom="opacity-0 translate-y-1"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-150"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                  placement="bottom-start"
+                  offset={5}
+                  portal
+               >
+                  <Popover.Button
+                     className="hover:bg-2 flex h-7 w-7 items-center justify-center focus:outline-none"
+                     aria-label="Insert block below"
+                  >
+                     <Plus
+                        className={`${
+                           open ? "rotate-45 text-red-400" : ""
+                        } transform transition duration-300 ease-in-out`}
+                        size={16}
+                     />
+                  </Popover.Button>
+                  <Popover.Panel
+                     className="border-color shadow-1 bg-2 transform
+                  overflow-hidden rounded-lg border shadow laptop:w-screen laptop:max-w-[770px]"
+                  >
+                     <>
+                        <div className="relative h-12 text-sm">
+                           <input
+                              className="bg-2 h-full w-full px-4 focus:outline-none"
+                              placeholder="Search..."
+                           />
                         </div>
-                     </DropdownMenuPrimitive.Group>
-                  );
-               })}
-            </DropdownMenuPrimitive.Content>
-         </DropdownMenuPrimitive.Portal>
-      </DropdownMenuPrimitive.Root>
+                        <div className="bg-3 border-color inline-flex w-full gap-3 border-y p-3">
+                           {primary?.map((row) => (
+                              <Tooltip
+                                 key={row.label}
+                                 id="primary"
+                                 side="top"
+                                 content={row.label}
+                              >
+                                 <button
+                                    className="bg-2 shadow-1 border-color flex h-10 w-10 items-center justify-center rounded-lg border text-center shadow-sm"
+                                    onClick={row.onSelect}
+                                 >
+                                    {row.icon}
+                                 </button>
+                              </Tooltip>
+                           ))}
+                        </div>
+                        <div className="space-y-4 p-3">
+                           {groups.map((group, indexGroup) => {
+                              return (
+                                 <div key={indexGroup} className="">
+                                    <div className="text-1 pb-2 pl-2 text-xs font-bold">
+                                       {group?.label}
+                                    </div>
+                                    <div className="grid gap-3 laptop:grid-cols-3">
+                                       {groups[indexGroup]?.items?.map(
+                                          (item, indexItem) => {
+                                             return (
+                                                <button
+                                                   className="bg-3 shadow-1 flex cursor-pointer items-center gap-2 rounded-lg p-2 text-left
+                                                   text-xs shadow-sm outline-none hover:bg-zinc-50 dark:hover:bg-bg3Dark"
+                                                   key={indexItem}
+                                                   onClick={item.onSelect}
+                                                >
+                                                   {item.icon && (
+                                                      <div
+                                                         className="flex h-8 w-8 items-center justify-center
+                                                         rounded-lg bg-zinc-100 dark:bg-bg4Dark"
+                                                      >
+                                                         {item.icon}
+                                                      </div>
+                                                   )}
+                                                   <div className="space-y-0.5 truncate">
+                                                      <div className="font-bold text-zinc-500 dark:text-zinc-300">
+                                                         {item.label}
+                                                      </div>
+                                                      <div className="text-1 truncate text-xs">
+                                                         {item.description}
+                                                      </div>
+                                                   </div>
+                                                </button>
+                                             );
+                                          }
+                                       )}
+                                    </div>
+                                 </div>
+                              );
+                           })}
+                        </div>
+                     </>
+                  </Popover.Panel>
+               </Float>
+            </>
+         )}
+      </Popover>
    );
-}
+};

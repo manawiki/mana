@@ -31,6 +31,7 @@ const chokidar =
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
  */
 const BUILD_PATH = path.resolve("./build/index.js");
+const WATCH_PATH = path.resolve("./build/metafile.server.json");
 
 /**
  * Initial build
@@ -211,7 +212,7 @@ function createDevRequestHandler(): RequestHandler {
    }
 
    chokidar
-      .watch(BUILD_PATH, {
+      .watch(WATCH_PATH, {
          ignoreInitial: true,
          awaitWriteFinish: { stabilityThreshold: 200 },
       })
