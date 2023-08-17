@@ -16,12 +16,13 @@ import { zx } from "zodix";
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/modules/collections/components/H2";
+// eslint-disable-next-line import/no-cycle
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { Toolbar } from "~/modules/editor/components";
 import { onKeyDown } from "~/modules/editor/editorCore";
-import type { UpdatesElement } from "~/modules/editor/types";
-import { UpdatesEditor } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
+import type { CustomElement, UpdatesElement } from "~/modules/editor/types";
+import { UpdatesEditor } from "~/routes/$siteId.blocks+/updates/UpdatesEditor";
 import { isAdding, isProcessing } from "~/utils";
 
 type Props = {
@@ -107,7 +108,7 @@ export const BlockUpdates = ({ element }: Props) => {
                            },
                            {
                               method: "post",
-                              action: `/${siteId}/blocks/BlockUpdates`,
+                              action: `/${siteId}/blocks/updates`,
                            }
                         );
                      }}
@@ -155,7 +156,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                        rowId={row.id}
                                        entryId={item.id}
                                        siteId={siteId}
-                                       blocks={item.content}
+                                       blocks={item.content as CustomElement[]}
                                     />
                                     <button
                                        className="absolute right-3 top-3.5 hidden group-hover/updates:block"
@@ -169,7 +170,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                              },
                                              {
                                                 method: "DELETE",
-                                                action: `/${siteId}/blocks/BlockUpdates`,
+                                                action: `/${siteId}/blocks/updates`,
                                              }
                                           )
                                        }
@@ -248,6 +249,7 @@ export const action = async ({
             return await payload.create({
                collection: "updates",
                data: {
+                  //@ts-expect-error
                   site: site.id,
                   dateId: currentDate,
                   entry: [
@@ -269,6 +271,7 @@ export const action = async ({
             collection: "updates",
             id: updateId,
             data: {
+               //@ts-ignore
                entry: [{ content: newData }, ...entryData],
             },
             overrideAccess: false,
@@ -306,6 +309,7 @@ export const action = async ({
             collection: "updates",
             id: updateId,
             data: {
+               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,
@@ -336,6 +340,7 @@ export const action = async ({
             collection: "updates",
             id: rowId,
             data: {
+               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,
