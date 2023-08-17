@@ -1,6 +1,6 @@
 import { Suspense, useCallback, useMemo } from "react";
 
-import { json, type ActionFunction, type LoaderArgs } from "@remix-run/node";
+import { type LoaderArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2, MoreVertical } from "lucide-react";
@@ -8,6 +8,7 @@ import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
 import qs from "qs";
+import type { Descendant } from "slate";
 import { createEditor } from "slate";
 import {
    Slate,
@@ -15,8 +16,6 @@ import {
    withReact,
    type RenderElementProps,
 } from "slate-react";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
@@ -27,12 +26,10 @@ import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
 } from "~/modules/auth";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
-import { SoloEditor } from "~/routes/editors+/SoloEditor";
-import { assertIsPost, isNativeSSR, isProcessing } from "~/utils";
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { SoloEditor } from "~/routes/_editor+/editors+/SoloEditor";
+import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -97,8 +94,7 @@ export default function SiteIndexMain() {
                               fetcher={fetcher}
                               siteId={siteId}
                               intent="homeContent"
-                              // @ts-ignore
-                              defaultValue={home}
+                              defaultValue={home as Descendant[]}
                            />
                         </Await>
                      </Suspense>
@@ -196,11 +192,10 @@ export default function SiteIndexMain() {
                   {home && (
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
-                           {/* @ts-ignore */}
                            <Slate
                               key={siteId}
                               editor={editor}
-                              initialValue={home}
+                              initialValue={home as Descendant[]}
                            >
                               <Editable
                                  renderElement={renderElement}

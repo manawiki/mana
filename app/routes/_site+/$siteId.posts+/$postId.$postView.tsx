@@ -22,8 +22,8 @@ import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { PostHeader } from "./components/PostHeader";
@@ -73,9 +73,9 @@ export const handle = {
 };
 
 export const meta: V2_MetaFunction = ({ data, matches }) => {
-   const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
-   )?.data?.site.name;
+   const siteName = //@ts-ignore
+      matches.find(({ id }) => id === "routes/_site+/$siteId+/_layout")?.data
+         ?.site.name;
    const postTitle = data.post.name;
    const postDescription = data.post.subtitle;
 

@@ -35,7 +35,7 @@ import type { Entry, Collection } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { H2 } from "~/modules/collections/components/H2";
+import { H2 } from "~/components/H2";
 import {
    assertIsPost,
    getMultipleFormData,

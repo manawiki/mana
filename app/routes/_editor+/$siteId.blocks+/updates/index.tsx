@@ -15,15 +15,16 @@ import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { H2Default } from "~/modules/collections/components/H2";
-// eslint-disable-next-line import/no-cycle
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { Toolbar } from "~/modules/editor/components";
-import { onKeyDown } from "~/modules/editor/editorCore";
-import type { CustomElement, UpdatesElement } from "~/modules/editor/types";
-import { UpdatesEditor } from "~/routes/$siteId.blocks+/updates/UpdatesEditor";
+import { H2Default } from "~/components/H2";
 import { isAdding, isProcessing } from "~/utils";
+
+// eslint-disable-next-line import/no-cycle
+import { UpdatesEditor } from "./UpdatesEditor";
+import { Block } from "../../blocks/Block";
+import { Leaf } from "../../blocks/Leaf";
+import { Toolbar } from "../../components";
+import { onKeyDown } from "../../functions/editorCore";
+import type { UpdatesElement, CustomElement } from "../../types";
 
 type Props = {
    element: UpdatesElement;

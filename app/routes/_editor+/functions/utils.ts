@@ -2,8 +2,12 @@ import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
 import { Transforms, Editor } from "slate";
 
-import type { CustomElement, Format, ParagraphElement } from "./types";
-import { BlockType } from "./types";
+import {
+   BlockType,
+   type CustomElement,
+   type Format,
+   type ParagraphElement,
+} from "../types";
 
 export function toPx(value: number | undefined): string | undefined {
    return value ? `${Math.round(value)}px` : undefined;

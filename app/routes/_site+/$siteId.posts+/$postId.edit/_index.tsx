@@ -14,9 +14,9 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { toast } from "~/components";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
-import { SoloEditor } from "~/routes/editors+/SoloEditor";
+import { SoloEditor } from "~/routes/_editor+/editors+/SoloEditor";
+import type { CustomElement } from "~/routes/_editor+/types";
+import { BlockType } from "~/routes/_editor+/types";
 import {
    type FormResponse,
    assertIsPatch,

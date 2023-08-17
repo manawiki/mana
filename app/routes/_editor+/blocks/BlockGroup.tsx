@@ -42,9 +42,10 @@ import type { Collection, Entry, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import Tooltip from "~/components/Tooltip";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { onKeyDown } from "~/modules/editor/editorCore";
+// eslint-disable-next-line import/no-cycle
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
 
 import Toolbar from "../components/Toolbar";
 import type { CustomElement, GroupElement, groupItem } from "../types";
