@@ -3,8 +3,8 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 import { DefaultElement } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
-import { BlockUpdates } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates";
-import { BlockUpdatesView } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/view";
+import { BlockUpdates } from "~/routes/$siteId.blocks+/updates";
+import { BlockUpdatesView } from "~/routes/$siteId.blocks+/updates/view";
 
 import BlockCodeSandbox from "./BlockCodeSandbox";
 import { BlockGroup } from "./BlockGroup";

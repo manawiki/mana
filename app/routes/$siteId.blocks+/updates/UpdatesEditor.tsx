@@ -6,6 +6,7 @@ import { withHistory } from "slate-history";
 import { Editable, Slate, withReact } from "slate-react";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
+// eslint-disable-next-line import/no-cycle
 import Block from "~/modules/editor/blocks/Block";
 import Leaf from "~/modules/editor/blocks/Leaf";
 import { Toolbar } from "~/modules/editor/components";
@@ -43,13 +44,14 @@ export const UpdatesEditor = ({
                rowId,
                entryId: entryId ?? "",
             },
-            { method: "patch", action: `/${siteId}/blocks/BlockUpdates` }
+            { method: "patch", action: `/${siteId}/blocks/updates` }
          );
       }
    }, [debouncedValue]);
 
    return (
       <Slate
+         //@ts-ignore
          onChange={(e) => setValue(e)}
          editor={editor}
          initialValue={blocks as Descendant[]}
