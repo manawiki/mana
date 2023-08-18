@@ -60,3 +60,27 @@ export async function cacheThis<T>(func: () => Promise<T>) {
    console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
    return result;
 }
+
+export async function cacheWithSelect<T>(
+   func: () => Promise<T>,
+   selectFunction: Function,
+   selectOptions: Partial<Record<keyof any, boolean>>
+) {
+   //the key is the function stringified
+   let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
+
+   // if the function is payload api, we'll use the body instead
+   key = key.split("(")?.slice(2)?.join("(") ?? key;
+
+   const cached = lruCache.get(key);
+   if (cached) {
+      return cached as T;
+   }
+   const result = await func();
+   const selectFields = selectFunction(result, selectOptions);
+   lruCache.set(key, selectFields);
+
+   //log cache size, trim length to terminal width
+   console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
+   return result;
+}

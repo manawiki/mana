@@ -34,6 +34,7 @@ export enum BlockType {
    Group = "group",
    Updates = "updates",
    UpdatesInline = "updatesInline",
+   Accordion = "accordion",
 }
 
 export type TextBlock =
@@ -71,6 +72,13 @@ export type ImageElement = BlockElement & {
    type: BlockType.Image;
    refId: string | null;
    url: string | null;
+   children: [{ text: "" }];
+};
+
+export type AccordionElement = BlockElement & {
+   type: BlockType.Accordion;
+   label: string | null;
+   isOpen: boolean | undefined;
    children: [{ text: "" }];
 };
 
@@ -131,7 +139,8 @@ export type CustomElement =
    | LinkElement
    | GroupElement
    | UpdatesElement
-   | UpdatesInlineElement;
+   | UpdatesInlineElement
+   | AccordionElement;
 
 export type CustomText = {
    text: string;
