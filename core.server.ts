@@ -214,7 +214,6 @@ function createDevRequestHandler(): RequestHandler {
    chokidar
       .watch(WATCH_PATH, {
          ignoreInitial: true,
-         awaitWriteFinish: { stabilityThreshold: 200 },
       })
       .on("add", handleServerUpdate)
       .on("change", handleServerUpdate);

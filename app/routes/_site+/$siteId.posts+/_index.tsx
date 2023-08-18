@@ -1,8 +1,8 @@
 import { useState, useEffect, Fragment } from "react";
 
 import { Listbox, Menu, Transition } from "@headlessui/react";
-import type { LoaderArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import {
    Form,
    Link,
@@ -21,21 +21,30 @@ import {
    Search,
    X,
 } from "lucide-react";
+import type { Payload } from "payload";
+import type { PaginatedDocs } from "payload/dist/database/types";
+import { select, type Select } from "payload-query";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
-import type { Post } from "payload/generated-types";
+import type { Image, Post, Site, User } from "payload/generated-types";
 import Tooltip from "~/components/Tooltip";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { isLoading, safeNanoID } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
+import { cacheWithSelect } from "~/utils/cache.server";
 
 import { FeedItem } from "./components/FeedItem";
 
+type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
 export const handle = {};
+
+const PostsAllSchema = z.object({
+   q: z.string().optional(),
+   status: z.union([z.literal("draft"), z.literal("published")]).optional(),
+   page: z.coerce.number().optional(),
+});
 
 export async function loader({
    context: { payload, user },
@@ -46,44 +55,28 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const { q, status, page } = zx.parseQuery(request, {
-      q: z.string().optional(),
-      status: z.union([z.literal("draft"), z.literal("published")]).optional(),
-      page: z.coerce.number().optional(),
+   const { q, status, page } = zx.parseQuery(request, PostsAllSchema);
+
+   const myPosts = await fetchMyPosts({
+      status,
+      page,
+      payload,
+      siteId,
+      user,
    });
 
-   const myPostsFetchUrl = `${
-      settings.domainFull
-   }/api/posts?draft=true&where[site.slug][equals]=${siteId}&depth=1&page=${
-      page ?? 1
-   }&sort=-updatedAt${status ? `&where[_status][equals]=${status}` : ""}`;
+   const publishedPosts = await fetchPublishedPosts({
+      q,
+      payload,
+      siteId,
+      user,
+   });
 
-   const myPosts = (await fetchWithCache(myPostsFetchUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
-      },
-   })) as Post[];
-
-   const publishedPostsFetchUrl = `${
-      settings.domainFull
-   }/api/posts?where[site.slug][equals]=${siteId}&depth=2&sort=-publishedAt&where[_status][equals]=published${
-      q ? `&where[name][contains]=${q}` : ""
-   }`;
-
-   const publishedPosts = (await fetchWithCache(publishedPostsFetchUrl, {
-      headers: {
-         cookie: request.headers.get("cookie") ?? "",
-      },
-   })) as [];
-
-   return json(
-      { q, myPosts, publishedPosts },
-      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-   );
+   return json({ q, myPosts, publishedPosts });
 }
 
 export default function PostsIndex() {
-   const { myPosts, publishedPosts, q } = useLoaderData<typeof loader>() || {};
+   const { publishedPosts, q, myPosts } = useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const transition = useNavigation();
@@ -162,23 +155,6 @@ export default function PostsIndex() {
                                     </button>
                                  </Form>
                               </Menu.Item>
-                              {/* <Menu.Item>
-                              <Form method="post">
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                                 p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    name="intent"
-                                    value="createPost"
-                                    type="submit"
-                                 >
-                                    <LayoutTemplate
-                                       size="18"
-                                       className="text-emerald-500"
-                                    />
-                                    <span>Template</span>
-                                 </button>
-                              </Form>
-                           </Menu.Item> */}
                            </div>
                         </Menu.Items>
                      </Transition>
@@ -315,10 +291,10 @@ export default function PostsIndex() {
                      </Listbox>
                   </div>
                   <section className="border-color divide-color divide-y border-y">
-                     {myPosts?.docs.length === 0 ? (
+                     {myPosts && myPosts?.docs.length === 0 ? (
                         <div className="py-3 text-sm ">No drafts...</div>
                      ) : (
-                        myPosts?.docs.map((post) => (
+                        myPosts?.docs?.map((post) => (
                            <Link
                               prefetch="intent"
                               to={`${post.id}/edit`}
@@ -362,72 +338,10 @@ export default function PostsIndex() {
                         ))
                      )}
                   </section>
-                  {myPosts?.totalPages > 1 && (
-                     <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-                        <div>
-                           Showing{" "}
-                           <span className="font-bold">
-                              {myPosts?.pagingCounter}
-                           </span>{" "}
-                           to{" "}
-                           <span className="font-bold">
-                              {myPosts?.docs?.length +
-                                 myPosts.pagingCounter -
-                                 1}
-                           </span>{" "}
-                           of{" "}
-                           <span className="font-bold">
-                              {myPosts?.totalDocs}
-                           </span>{" "}
-                           results
-                        </div>
-                        <div className="flex items-center gap-3 text-xs">
-                           {myPosts?.hasPrevPage ? (
-                              <button
-                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                                 onClick={() =>
-                                    setSearchParams((searchParams) => {
-                                       searchParams.set(
-                                          "page",
-                                          myPosts.prevPage as any
-                                       );
-                                       return searchParams;
-                                    })
-                                 }
-                              >
-                                 <ChevronLeft
-                                    size={18}
-                                    className="text-emerald-500"
-                                 />
-                                 Prev
-                              </button>
-                           ) : null}
-                           {myPosts.hasNextPage && myPosts.hasPrevPage && (
-                              <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                           )}
-                           {myPosts.hasNextPage ? (
-                              <button
-                                 className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                                 onClick={() =>
-                                    setSearchParams((searchParams) => {
-                                       searchParams.set(
-                                          "page",
-                                          myPosts.nextPage as any
-                                       );
-                                       return searchParams;
-                                    })
-                                 }
-                              >
-                                 Next
-                                 <ChevronRight
-                                    size={18}
-                                    className="text-emerald-500"
-                                 />
-                              </button>
-                           ) : null}
-                        </div>
-                     </div>
-                  )}
+                  <Pagination
+                     myPosts={myPosts}
+                     setSearchParams={setSearchParams}
+                  />
                </section>
             </AdminOrStaffOrOwner>
             <div className="relative flex h-12 items-center justify-between">
@@ -436,9 +350,9 @@ export default function PostsIndex() {
                      <div className="relative flex w-full items-center gap-2">
                         <span className="absolute left-0">
                            {isSearching ? (
-                              <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
+                              <Loader2 className="h-6 w-6 animate-spin text-zinc-500" />
                            ) : (
-                              <Search size={20} className="text-emerald-500" />
+                              <Search size={20} className="text-zinc-500" />
                            )}
                         </span>
                         <input
@@ -474,13 +388,17 @@ export default function PostsIndex() {
                            setSearchToggle(true);
                         }}
                      >
-                        <Search size={22} className="text-emerald-500" />
+                        <Search size={22} className="text-zinc-500" />
                      </button>
                   </>
                )}
             </div>
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
-               {publishedPosts?.docs?.length === 0 ? (
+               {publishedPosts && publishedPosts?.docs?.length > 0 ? (
+                  publishedPosts.docs.map((post) => (
+                     <FeedItem key={post.id} post={post} />
+                  ))
+               ) : (
                   <div className="flex items-center justify-between py-3 text-sm">
                      <div className="flex items-center gap-1">
                         {searchParams.get("q") ? (
@@ -503,7 +421,7 @@ export default function PostsIndex() {
                                        value={searchParams.get("q") ?? ""}
                                        name="name"
                                     />
-                                    <span className="font-bold text-emerald-500 underline-offset-2 group-hover:underline">
+                                    <span className="font-bold text-zinc-500 underline-offset-2 group-hover:underline">
                                        New Post
                                     </span>
                                     <ChevronRight
@@ -518,10 +436,6 @@ export default function PostsIndex() {
                         )}
                      </div>
                   </div>
-               ) : (
-                  publishedPosts.docs.map((post) => (
-                     <FeedItem key={post.id} post={post} />
-                  ))
                )}
             </section>
          </main>
@@ -567,7 +481,9 @@ export const action = async ({
                id: safeNanoID(),
                slug: "untitled",
                name,
+               //@ts-ignore
                author: user?.id,
+               //@ts-ignore
                site: site.id,
             },
             user,
@@ -583,7 +499,9 @@ export const action = async ({
                id: safeNanoID(),
                slug: "untitled",
                name: "Untitled",
+               //@ts-ignore
                author: user?.id,
+               //@ts-ignore
                site: site.id,
             },
             user,
@@ -594,4 +512,248 @@ export const action = async ({
          return redirect(`/${siteId}/posts/${post.id}/edit`);
       }
    }
+};
+
+const Pagination = ({
+   myPosts,
+   setSearchParams,
+}: {
+   myPosts: SerializeFrom<typeof loader>["myPosts"];
+   setSearchParams: setSearchParamsType;
+}) =>
+   myPosts &&
+   myPosts?.totalPages > 1 && (
+      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+         <div>
+            Showing <span className="font-bold">{myPosts?.pagingCounter}</span>{" "}
+            to{" "}
+            <span className="font-bold">
+               {myPosts?.docs?.length + myPosts.pagingCounter - 1}
+            </span>{" "}
+            of <span className="font-bold">{myPosts?.totalDocs}</span> results
+         </div>
+         <div className="flex items-center gap-3 text-xs">
+            {myPosts?.hasPrevPage ? (
+               <button
+                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                  onClick={() =>
+                     setSearchParams((searchParams) => {
+                        searchParams.set("page", myPosts.prevPage as any);
+                        return searchParams;
+                     })
+                  }
+               >
+                  <ChevronLeft size={18} className="text-emerald-500" />
+                  Prev
+               </button>
+            ) : null}
+            {myPosts.hasNextPage && myPosts.hasPrevPage && (
+               <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            )}
+            {myPosts.hasNextPage ? (
+               <button
+                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                  onClick={() =>
+                     setSearchParams((searchParams) => {
+                        searchParams.set("page", myPosts.nextPage as any);
+                        return searchParams;
+                     })
+                  }
+               >
+                  Next
+                  <ChevronRight size={18} className="text-emerald-500" />
+               </button>
+            ) : null}
+         </div>
+      </div>
+   );
+
+const fetchPublishedPosts = async ({
+   q,
+   payload,
+   siteId,
+   user,
+}: typeof PostsAllSchema._type & {
+   payload: Payload;
+   siteId: Site["slug"];
+   user?: User;
+}) => {
+   const postSelect: Select<Post> = {
+      slug: true,
+      name: true,
+      author: true,
+      publishedAt: true,
+      updatedAt: true,
+      subtitle: true,
+      banner: true,
+   };
+
+   if (user) {
+      const data = await payload.find({
+         collection: "posts",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+            _status: {
+               equals: "published",
+            },
+            ...(q
+               ? {
+                    name: {
+                       contains: q,
+                    },
+                 }
+               : {}),
+         },
+         depth: 2,
+         overrideAccess: false,
+         user,
+         sort: "-publishedAt",
+      });
+
+      const { docs } = filterAuthorFields(data, postSelect);
+
+      return { docs };
+   }
+
+   const result = await cacheWithSelect(
+      () =>
+         payload.find({
+            collection: "posts",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               _status: {
+                  equals: "published",
+               },
+               ...(q
+                  ? {
+                       name: {
+                          contains: q,
+                       },
+                    }
+                  : {}),
+            },
+            depth: 2,
+            overrideAccess: false,
+            user,
+            sort: "-publishedAt",
+         }),
+      filterAuthorFields,
+      postSelect
+   );
+   return result;
+};
+
+const fetchMyPosts = async ({
+   status,
+   page,
+   payload,
+   siteId,
+   user,
+}: typeof PostsAllSchema._type & {
+   payload: Payload;
+   siteId: Site["slug"];
+   user?: User;
+}) => {
+   /**
+    * --------------------------------------------------------
+    * If authenticated, pull user's own posts (site-specific).
+    * If no posts are returned:
+    *    1) User doesn't have permission ["canRead"], so access check returns an empty array.
+    *    2) User has no posts.
+    * --------------------------------------------------------
+    * If we get a result, we prune it before sending it to the client
+    */
+   if (user) {
+      const data = await payload.find({
+         collection: "posts",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+            author: {
+               equals: user.id,
+            },
+            ...(status
+               ? {
+                    _status: {
+                       equals: status,
+                    },
+                 }
+               : {}),
+         },
+         draft: true,
+         page: page ?? 1,
+         sort: "-updatedAt",
+         depth: 2,
+         overrideAccess: false,
+         user,
+      });
+
+      const postSelect: Select<Post> = {
+         name: true,
+         _status: true,
+         updatedAt: true,
+      };
+
+      const result = filterAuthorFields(data, postSelect);
+
+      return result;
+   }
+   return;
+};
+
+const filterAuthorFields = (
+   data: PaginatedDocs<Post>,
+   selectConfig: Partial<Record<keyof any, boolean>>
+) => {
+   const authorSelect: Select<User> = {
+      id: false,
+      username: true,
+      avatar: true,
+   };
+
+   const avatarSelect: Select<Image> = {
+      id: false,
+      url: true,
+   };
+
+   const bannerSelect: Select<Image> = {
+      id: false,
+      url: true,
+   };
+
+   const filtered = data.docs.map((doc) => {
+      const authorFull = select(authorSelect, doc.author);
+
+      const banner = doc.banner && select(bannerSelect, doc.banner);
+
+      const post = select(selectConfig, doc);
+
+      //Combine author object after pruning image fields
+      const author = {
+         ...authorFull,
+         avatar: authorFull?.avatar && select(avatarSelect, authorFull?.avatar),
+      };
+
+      //Combine final result
+      const result = {
+         ...post,
+         author,
+         banner,
+      };
+
+      return result;
+   });
+
+   //Extract pagination fields
+   const { docs, ...pagination } = data;
+
+   //Combine filtered docs with pagination info
+   const result = { docs: filtered, ...pagination };
+
+   return result;
 };

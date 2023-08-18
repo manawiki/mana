@@ -3,7 +3,9 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
+import { BlockAccordion } from "./BlockAccordion";
 import BlockCodeSandbox from "./BlockCodeSandbox";
+// eslint-disable-next-line import/no-cycle
 import { BlockGroup } from "./BlockGroup";
 // eslint-disable-next-line import/no-cycle
 import BlockGroupView from "./BlockGroupView";
@@ -65,6 +67,15 @@ export const Block = ({
                <BlockUpdates element={element} />
                <div style={{ display: "none" }}>{children}</div>
             </div>
+         );
+      }
+      case BlockType.Accordion: {
+         return (
+            <BlockAccordion
+               readOnly={readOnly}
+               element={element}
+               children={children}
+            />
          );
       }
       case BlockType.UpdatesInline: {

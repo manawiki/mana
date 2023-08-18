@@ -32,11 +32,26 @@ export const canRead =
          });
          if (content.site) return isSiteOwnerOrAdmin(user.id, content.site);
       }
-      // otherwise only return if published
+      /**
+       * If there is no user,
+       * restrict the documents that are returned
+       * to only those where `_status` is equal to `published`
+       * or where `_status` does not exist
+       * */
+
       return {
-         _status: {
-            equals: "published",
-         },
+         or: [
+            {
+               _status: {
+                  equals: "published",
+               },
+            },
+            {
+               _status: {
+                  exists: false,
+               },
+            },
+         ],
       };
    };
 

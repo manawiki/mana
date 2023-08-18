@@ -16,7 +16,6 @@ export const FeedItem = ({ post }: { post: Post }) => {
             <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
                <div className="flex items-center gap-3">
                   <div className="h-6 w-6 overflow-hidden rounded-full">
-                     {/* @ts-ignore */}
                      {post?.author.avatar?.url ? (
                         <Image
                            width={20}
@@ -24,14 +23,12 @@ export const FeedItem = ({ post }: { post: Post }) => {
                            alt={post.name}
                            options="aspect_ratio=1:1&height=80&width=80"
                            className="w-full object-cover laptop:rounded"
-                           //@ts-ignore
                            url={post?.author.avatar?.url}
                         />
                      ) : (
                         <div className="bg-1 border-color shadow-1 h-6 w-6 overflow-hidden rounded-full border-2 shadow-sm"></div>
                      )}
                   </div>
-                  {/* @ts-ignore */}
                   <div className="font-bold">{post.author.username}</div>
                </div>
                <div className="text-xs font-bold uppercase">
@@ -59,8 +56,8 @@ export const FeedItem = ({ post }: { post: Post }) => {
                      <Image
                         alt={post.name}
                         options="height=200"
+                        height={200}
                         className="w-full rounded object-cover"
-                        //@ts-ignore
                         url={post?.banner?.url}
                      />
                   </div>
