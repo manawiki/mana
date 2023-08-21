@@ -48,19 +48,30 @@ import {
    PROSE_CONTAINER_ID,
 } from "~/routes/_editor+/functions/constants";
 import {
+   indentItem,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
+   undentItem,
    withLayout,
+   withLists,
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
 import type { CustomElement } from "~/routes/_editor+/types";
 import { BlockType } from "~/routes/_editor+/types";
 
-const SHORTCUTS: Record<string, BlockType> = {
+const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
    "-": BlockType.BulletedList,
    "+": BlockType.BulletedList,
+   "1.": BlockType.NumberedList,
+};
+
+const SHORTCUTS: Record<string, BlockType> = {
+   "*": BlockType.ListItem,
+   "-": BlockType.ListItem,
+   "+": BlockType.ListItem,
+   "1.": BlockType.ListItem,
    "##": BlockType.H2,
    "###": BlockType.H3,
    "[]": BlockType.ToDo,
@@ -69,8 +80,10 @@ const SHORTCUTS: Record<string, BlockType> = {
 const useEditor = () =>
    useMemo(
       () =>
-         withShortcuts(
-            withNodeId(withLayout(withReact(withHistory(createEditor()))))
+         withLists(
+            withShortcuts(
+               withNodeId(withLayout(withReact(withHistory(createEditor()))))
+            )
          ),
       []
    );
@@ -138,23 +151,6 @@ export const SoloEditor = ({
 
             let newBlock;
 
-            // Default paragraph new line
-            const paragraphBlock: CustomElement = {
-               type: BlockType.Paragraph,
-               children: [{ text: "" }],
-               id: nanoid(),
-            };
-
-            // If caret at position 0, convert previous block to empty paragraph
-            if (editor.selection.anchor.offset === 0) {
-               Transforms.setNodes(editor, paragraphBlock, {
-                  at: editor.selection,
-               });
-
-               // Pass state of old block to new block
-               newBlock = previousBlock;
-            }
-
             // Create different current element on new line if set in Block.tsx
             if (
                !newBlock &&
@@ -164,10 +160,6 @@ export const SoloEditor = ({
                )
             ) {
                newBlock = CreateNewBlockFromBlock[previousBlock.type]();
-            }
-
-            if (!newBlock) {
-               newBlock = paragraphBlock;
             }
 
             insertBreak();
@@ -277,6 +269,16 @@ export const SoloEditor = ({
             Transforms.move(editor, { unit: "offset" });
             return;
          }
+         //UL and OL key logic
+         if (isHotkey("shift+tab", event)) {
+            // attempt to un-indent on shift+tab within list
+            event.preventDefault();
+            undentItem(editor);
+         } else if (isHotkey("tab", event)) {
+            // attempt to indent on tab within list
+            event.preventDefault();
+            indentItem(editor);
+         }
       }
 
       //Render mark commands
@@ -304,7 +306,7 @@ export const SoloEditor = ({
             <div className="mx-auto w-full">
                <Suspense fallback={<div>Loading...</div>}>
                   <Slate
-                     onChange={(e) => setValue(e)}
+                     onChange={setValue}
                      editor={editor}
                      initialValue={defaultValue}
                   >
@@ -485,6 +487,17 @@ function withShortcuts(editor: Editor) {
                match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
             });
 
+            if (type === BlockType.ListItem) {
+               const list = {
+                  id: nanoid(),
+                  type: LIST_WRAPPER[beforeText],
+                  children: [],
+               };
+               Transforms.wrapNodes(editor, list, {
+                  match: (n) => n.type === BlockType.ListItem,
+               });
+            }
+
             return;
          }
       }
@@ -514,7 +527,14 @@ function withShortcuts(editor: Editor) {
                   type: BlockType.Paragraph,
                };
                Transforms.setNodes(editor, newProperties);
-
+               if (block.type === BlockType.ListItem) {
+                  Transforms.unwrapNodes(editor, {
+                     match: (n) =>
+                        n.type === BlockType.BulletedList ||
+                        n.type === BlockType.NumberedList,
+                     split: true,
+                  });
+               }
                return;
             }
          }

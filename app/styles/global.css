@@ -2,32 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Since dark/light class is set at html level, we can't declare styles inline  */
-
-html.light {
-   @apply bg-zinc-50;
-}
-
-html.dark {
-   @apply bg-bg2Dark;
-}
-table {
-   @apply border-collapse;
-}
-th {
-   @apply bg-2 border border-zinc-200 p-3 dark:border-bg4Dark;
-}
-td {
-   @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
-}
-
 /* Additional Tailwind directives: https://tailwindcss.com/docs/functions-and-directives/#responsive */
 @layer utilities {
    .rtl {
        direction: rtl;
    }
 }
-
 
 @layer base {
    html {
@@ -37,14 +17,26 @@ td {
    .border-color {
       @apply border-[#ededed] dark:border-[#36393e];
    }
-}
-h2 {
-   @apply mb-1.5 mt-6 font-header text-[22px] font-bold dark:text-zinc-200;
-}
-h3 {
-   @apply mb-1.5 pt-3 font-header text-[18px] font-bold dark:text-zinc-200;
+   table {
+      @apply border-collapse;
+   }
+   th {
+      @apply bg-2 border border-zinc-200 p-3 dark:border-bg4Dark;
+   }
+   td {
+      @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
+   }
 }
 
+/* Since dark/light class is set at html level, we can't declare styles inline  */
+
+html.light {
+   @apply bg-zinc-50;
+}
+
+html.dark {
+   @apply bg-bg2Dark;
+}
 
 @layer components {
    .input-text {
@@ -102,31 +94,23 @@ h3 {
    animation-delay: 0.4;
 }
 
-/* Default Editor Styles */
-.post-content ul {
-   @apply mb-5 list-disc space-y-1.5 pl-7;
+/* --------------- Editor  ---------------*/
+.editor-ol{
+   @apply space-y-1.5 list-decimal pl-5 mb-3;
 }
-.post-content ol {
-   @apply mb-5 list-decimal space-y-1.5 pl-7;
+.editor-ol .editor-ol{
+   @apply list-[lower-alpha]
 }
-.post-content blockquote {
-   @apply text-1 border-color my-4 border-l-2 pl-3 italic;
+.editor-ol .editor-ol .editor-ol{
+   @apply list-[lower-roman]
 }
-.post-content p {
-   @apply !mb-3;
+
+.editor-ul{
+   @apply list-disc space-y-1.5 pl-5 mb-3;
 }
-.post-content code {
-   @apply rounded bg-zinc-200 px-[4px] py-[3px] text-sm dark:bg-zinc-700;
+.editor-ul .editor-ul{
+   @apply list-[circle];
 }
-.post-content pre > code {
-   @apply !bg-transparent p-0;
-}
-.post-content {
-   @apply break-words;
-}
-.post-content h2 {
-   @apply border-color !mb-3 border-b pb-3 pt-8 text-2xl font-bold text-light dark:text-dark;
-}
-.post-content a {
-   @apply text-blue-500;
+.editor-ul .editor-ul .editor-ul{
+   @apply list-[square];
 }
