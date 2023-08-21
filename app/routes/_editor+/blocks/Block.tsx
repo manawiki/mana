@@ -11,7 +11,6 @@ import { BlockGroup } from "./BlockGroup";
 import BlockGroupView from "./BlockGroupView";
 import BlockImage from "./BlockImage";
 import BlockLink from "./BlockLink";
-import BlockList from "./BlockList";
 import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
 // eslint-disable-next-line import/no-cycle
@@ -27,11 +26,6 @@ export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
    [BlockType.ToDo]: () => ({
       type: BlockType.ToDo,
       checked: false,
-      id: nanoid(),
-      children: [],
-   }),
-   [BlockType.BulletedList]: () => ({
-      type: BlockType.BulletedList,
       id: nanoid(),
       children: [],
    }),
@@ -92,8 +86,8 @@ export const Block = ({
          return (
             <h2
                {...attributes}
-               className="shadow-1 border-color relative mb-2.5 mt-8 
-         overflow-hidden rounded-lg border-2 text-xl shadow-sm shadow-zinc-50"
+               className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden
+         rounded-lg border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50"
             >
                <div
                   className="pattern-dots absolute left-0 top-0 -z-0 h-full
@@ -112,7 +106,7 @@ export const Block = ({
       }
       case BlockType.H3: {
          return (
-            <h3 className="flex items-center gap-3" {...attributes}>
+            <h3 className="flex items-center gap-3 font-header" {...attributes}>
                <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
@@ -123,10 +117,20 @@ export const Block = ({
       }
       case BlockType.BulletedList: {
          return (
-            <div {...attributes}>
-               <BlockList element={element}>{children}</BlockList>
-            </div>
+            <ul className="editor-ul" {...attributes}>
+               {children}
+            </ul>
          );
+      }
+      case BlockType.NumberedList: {
+         return (
+            <ol className="editor-ol" {...attributes}>
+               {children}
+            </ol>
+         );
+      }
+      case BlockType.ListItem: {
+         return <li {...attributes}>{children}</li>;
       }
       case BlockType.ToDo: {
          return (
