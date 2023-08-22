@@ -28,7 +28,6 @@ export const UpdatesEditor = ({
    siteId: string | undefined;
 }) => {
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    const isMount = useIsMount();
    const fetcher = useFetcher();
    const [value, setValue] = useState("");

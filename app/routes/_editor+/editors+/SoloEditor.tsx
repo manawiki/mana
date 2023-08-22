@@ -60,6 +60,8 @@ import {
 import type { CustomElement } from "~/routes/_editor+/types";
 import { BlockType } from "~/routes/_editor+/types";
 
+import { withLinkify } from "../functions/plugins/link/withLinkify";
+
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
    "-": BlockType.BulletedList,
@@ -82,7 +84,11 @@ const useEditor = () =>
       () =>
          withLists(
             withShortcuts(
-               withNodeId(withLayout(withReact(withHistory(createEditor()))))
+               withNodeId(
+                  withLayout(
+                     withLinkify(withReact(withHistory(createEditor())))
+                  )
+               )
             )
          ),
       []
@@ -115,8 +121,6 @@ export const SoloEditor = ({
    const activeElement = editor.children.find(
       (x) => "id" in x && x.id === activeId
    ) as CustomElement | undefined;
-
-   editor.isInline = (element) => ["link"].includes(element.type);
 
    const isMount = useIsMount();
    const [value, setValue] = useState();

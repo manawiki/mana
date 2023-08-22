@@ -87,7 +87,6 @@ const useEditor = () => useMemo(() => withReact(createEditor()), []);
 
 const UpdatesEditorView = ({ content }: { content: Descendant[] }) => {
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    return (
       <Slate editor={editor} initialValue={content}>
          <Editable renderElement={Block} renderLeaf={Leaf} readOnly={true} />

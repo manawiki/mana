@@ -55,7 +55,6 @@ export const BlockUpdates = ({ element }: Props) => {
    const useEditor = () =>
       useMemo(() => withReact(withHistory(createEditor())), []);
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
    const addingUpdate = isAdding(fetcher, "createUpdate");

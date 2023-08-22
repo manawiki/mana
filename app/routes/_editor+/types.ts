@@ -157,7 +157,6 @@ export type CustomElement =
    | ToDoElement
    | ImageElement
    | VideoElement
-   | ListElement
    | CodeSandboxElement
    | LinkElement
    | GroupElement
