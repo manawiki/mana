@@ -825,7 +825,6 @@ const InlineEditor = ({
    element: GroupElement;
 }) => {
    const inlineEditor = useMemo(() => withReact(createEditor()), []);
-   inlineEditor.isInline = (element) => ["link"].includes(element.type);
 
    const updateContentValue = (event: any) => {
       const path = ReactEditor.findPath(editor, element);
