@@ -6,21 +6,15 @@ import { withHistory } from "slate-history";
 import { Editable, Slate, withReact } from "slate-react";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { Toolbar } from "~/modules/editor/components";
-import { onKeyDown } from "~/modules/editor/editorCore";
-
-import type { CustomElement } from "../../../../modules/editor/types";
+// eslint-disable-next-line import/no-cycle
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { Toolbar } from "~/routes/_editor+/components";
+import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
+import type { CustomElement } from "~/routes/_editor+/types";
 
 const useEditor = () =>
    useMemo(() => withReact(withHistory(createEditor())), []);
-export const initialValue = [
-   {
-      type: "updatesInline",
-      children: [{ text: "" }],
-   },
-];
 
 export const UpdatesEditor = ({
    rowId,
@@ -34,7 +28,6 @@ export const UpdatesEditor = ({
    siteId: string | undefined;
 }) => {
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    const isMount = useIsMount();
    const fetcher = useFetcher();
    const [value, setValue] = useState("");
@@ -50,16 +43,17 @@ export const UpdatesEditor = ({
                rowId,
                entryId: entryId ?? "",
             },
-            { method: "patch", action: `/${siteId}/blocks/BlockUpdates` }
+            { method: "patch", action: `/${siteId}/blocks/updates` }
          );
       }
    }, [debouncedValue]);
 
    return (
       <Slate
+         //@ts-ignore
          onChange={(e) => setValue(e)}
          editor={editor}
-         value={(blocks as Descendant[]) ?? initialValue}
+         initialValue={blocks as Descendant[]}
       >
          <Toolbar />
          <Editable

@@ -25,6 +25,8 @@ export enum BlockType {
    H2 = "h2",
    H3 = "h3",
    BulletedList = "bulleted-list",
+   NumberedList = "numbered-list",
+   ListItem = "list-item",
    ToDo = "todo",
    Paragraph = "paragraph",
    Image = "image",
@@ -34,6 +36,7 @@ export enum BlockType {
    Group = "group",
    Updates = "updates",
    UpdatesInline = "updatesInline",
+   Accordion = "accordion",
 }
 
 export type TextBlock =
@@ -41,13 +44,13 @@ export type TextBlock =
    | BlockType.H3
    | BlockType.Paragraph
    | BlockType.BulletedList
+   | BlockType.NumberedList
    | BlockType.ToDo
    | BlockType.Link;
 
 export type BlockElement = {
    id: string;
    children: CustomText[];
-   createdBy?: number;
 };
 
 export type ParagraphElement = BlockElement & {
@@ -58,8 +61,27 @@ export type HeadingElement = BlockElement & {
    type: BlockType.H2 | BlockType.H3;
 };
 
-export type ListElement = BlockElement & {
+export type ListElement = {
+   type: BlockType.ListItem;
+   children: CustomText[];
+};
+
+export type NumberedListElement = {
+   id: string;
+   type: BlockType.NumberedList;
+   children: {
+      type: BlockType.ListItem;
+      children: CustomText[];
+   };
+};
+
+export type BulletedListElement = {
+   id: string;
    type: BlockType.BulletedList;
+   children: {
+      type: BlockType.ListItem;
+      children: CustomText[];
+   };
 };
 
 export type ToDoElement = BlockElement & {
@@ -71,6 +93,13 @@ export type ImageElement = BlockElement & {
    type: BlockType.Image;
    refId: string | null;
    url: string | null;
+   children: [{ text: "" }];
+};
+
+export type AccordionElement = BlockElement & {
+   type: BlockType.Accordion;
+   label: string | null;
+   isOpen: boolean | undefined;
    children: [{ text: "" }];
 };
 
@@ -123,7 +152,8 @@ export type GroupElement = BlockElement & {
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
-   | ListElement
+   | BulletedListElement
+   | NumberedListElement
    | ToDoElement
    | ImageElement
    | VideoElement
@@ -131,7 +161,8 @@ export type CustomElement =
    | LinkElement
    | GroupElement
    | UpdatesElement
-   | UpdatesInlineElement;
+   | UpdatesInlineElement
+   | AccordionElement;
 
 export type CustomText = {
    text: string;

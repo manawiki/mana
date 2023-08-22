@@ -1,19 +1,22 @@
 import { nanoid } from "nanoid";
 import { type RenderElementProps, useReadOnly } from "slate-react";
-import { DefaultElement } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
-import { BlockUpdates } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates";
-import { BlockUpdatesView } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/view";
 
+import { BlockAccordion } from "./BlockAccordion";
 import BlockCodeSandbox from "./BlockCodeSandbox";
+// eslint-disable-next-line import/no-cycle
 import { BlockGroup } from "./BlockGroup";
+// eslint-disable-next-line import/no-cycle
 import BlockGroupView from "./BlockGroupView";
 import BlockImage from "./BlockImage";
 import BlockLink from "./BlockLink";
-import BlockList from "./BlockList";
 import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
+// eslint-disable-next-line import/no-cycle
+import { BlockUpdates } from "../$siteId.blocks+/updates";
+// eslint-disable-next-line import/no-cycle
+import { BlockUpdatesView } from "../$siteId.blocks+/updates/view";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
@@ -26,21 +29,16 @@ export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
       id: nanoid(),
       children: [],
    }),
-   [BlockType.BulletedList]: () => ({
-      type: BlockType.BulletedList,
-      id: nanoid(),
-      children: [],
-   }),
 };
 
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
 // https://github.com/ianstormtaylor/slate/issues/3930
-export default function Block({
+export const Block = ({
    element,
    children,
    attributes,
-}: RenderElementProps) {
+}: RenderElementProps) => {
    const readOnly = useReadOnly();
 
    switch (element.type) {
@@ -65,6 +63,15 @@ export default function Block({
             </div>
          );
       }
+      case BlockType.Accordion: {
+         return (
+            <BlockAccordion
+               readOnly={readOnly}
+               element={element}
+               children={children}
+            />
+         );
+      }
       case BlockType.UpdatesInline: {
          return <div {...attributes}>{children}</div>;
       }
@@ -79,20 +86,19 @@ export default function Block({
          return (
             <h2
                {...attributes}
-               className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden 
-         rounded-lg border-2 text-xl shadow-sm shadow-zinc-50"
+               className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden
+         rounded-lg border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50"
             >
                <div
-                  className="pattern-dots absolute left-0
-                   top-0 h-full
+                  className="pattern-dots absolute left-0 top-0 -z-0 h-full
                      w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
                      pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
-               ></div>
+               />
                <div
-                  className="absolute left-0 top-0 h-full w-full 
+                  className="absolute left-0 top-0 -z-10 h-full w-full
             bg-gradient-to-r from-zinc-100/40 dark:from-zinc-900/20"
-               ></div>
-               <div className="relative z-10 h-full w-full px-4 py-3">
+               />
+               <div className="relative h-full w-full px-4 py-3">
                   {children}
                </div>
             </h2>
@@ -100,8 +106,8 @@ export default function Block({
       }
       case BlockType.H3: {
          return (
-            <h3 className="flex items-center gap-3" {...attributes}>
-               <div className="min-w-[100px] flex-none">{children}</div>
+            <h3 className="flex items-center gap-3 font-header" {...attributes}>
+               <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
                   className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-bg4Dark"
@@ -111,10 +117,20 @@ export default function Block({
       }
       case BlockType.BulletedList: {
          return (
-            <div {...attributes}>
-               <BlockList element={element}>{children}</BlockList>
-            </div>
+            <ul className="editor-ul" {...attributes}>
+               {children}
+            </ul>
          );
+      }
+      case BlockType.NumberedList: {
+         return (
+            <ol className="editor-ol" {...attributes}>
+               {children}
+            </ol>
+         );
+      }
+      case BlockType.ListItem: {
+         return <li {...attributes}>{children}</li>;
       }
       case BlockType.ToDo: {
          return (
@@ -157,4 +173,4 @@ export default function Block({
             />
          );
    }
-}
+};

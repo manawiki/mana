@@ -255,30 +255,49 @@ export const action: ActionFunction = async ({
    });
 
    if (intent === "reset-password") {
-      const { email } = await zx.parseForm(request, PasswordResetSchema);
-      const token = await payload.forgotPassword({
-         collection: "users",
-         data: {
-            email,
-         },
-         disableEmail: false,
-      });
-      if (token) {
-         const session = await getSession(request.headers.get("cookie"));
-         setSuccessMessage(
-            session,
-            "We sent you an email with a link to reset your password"
-         );
-         return redirect("/login", {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+      const session = await getSession(request.headers.get("cookie"));
+      const result = await zx.parseFormSafe(request, PasswordResetSchema);
+
+      if (result.success) {
+         const { email } = result.data;
+         try {
+            const token = await payload.forgotPassword({
+               collection: "users",
+               data: {
+                  email,
+               },
+               disableEmail: false,
+            });
+            if (token) {
+               const session = await getSession(request.headers.get("cookie"));
+               setSuccessMessage(
+                  session,
+                  "We sent you an email with a link to reset your password"
+               );
+               return redirect("/login", {
+                  headers: { "Set-Cookie": await commitSession(session) },
+               });
+            }
+            setErrorMessage(
+               session,
+               "This email doesn't exist, do you want to create a new account?"
+            );
+            return redirect("/login", {
+               headers: { "Set-Cookie": await commitSession(session) },
+            });
+         } catch (error) {
+            setErrorMessage(session, "Something went wrong");
+            return redirect("/login", {
+               headers: { "Set-Cookie": await commitSession(session) },
+            });
+         }
       }
+      return;
    }
 
    if (intent === "login") {
       const session = await getSession(request.headers.get("cookie"));
       const result = await zx.parseFormSafe(request, LoginFormSchema);
-
       if (result.success) {
          const { email, password, redirectTo } = result.data;
          const { email: signUpEmail } = zx.parseQuery(request, {

@@ -1,5 +1,5 @@
 import type { RenderLeafProps } from "slate-react";
-export default function Leaf({ leaf, children, attributes }: RenderLeafProps) {
+export const Leaf = ({ leaf, children, attributes }: RenderLeafProps) => {
    if (leaf.placeholder) {
       return (
          <>
@@ -31,4 +31,4 @@ export default function Leaf({ leaf, children, attributes }: RenderLeafProps) {
    }
 
    return <span {...attributes}>{children}</span>;
-}
+};

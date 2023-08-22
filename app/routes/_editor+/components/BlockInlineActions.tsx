@@ -1,26 +1,25 @@
 import { useDraggable } from "@dnd-kit/core";
-import { GripVertical, Plus } from "lucide-react";
+import { GripVertical } from "lucide-react";
 
 import Tooltip from "~/components/Tooltip";
 
-import BlockTypeSelector from "./BlockTypeSelector";
+import { BlockTypeSelector } from "./BlockTypeSelector";
 import Button from "./Button";
 import type { CustomElement } from "../types";
-
 
 type Props = {
    blockId: string;
    onInsertBelow: (block: CustomElement) => void;
 };
 
-export default function BlockInlineActions({ blockId, onInsertBelow }: Props) {
+export const BlockInlineActions = ({ blockId, onInsertBelow }: Props) => {
    const { listeners, setActivatorNodeRef } = useDraggable({
       id: blockId,
    });
 
    return (
       <div
-         className="shadow-1 border-color bg-3 
+         className="shadow-1 border-color bg-3 relative z-50
          flex items-center overflow-hidden rounded-lg border shadow-sm"
       >
          <Tooltip id="drag" content="Drag to reorder">
@@ -33,14 +32,7 @@ export default function BlockInlineActions({ blockId, onInsertBelow }: Props) {
                <GripVertical size={16} />
             </Button>
          </Tooltip>
-         <BlockTypeSelector onSelect={onInsertBelow}>
-            <Button
-               className="hover:bg-2 flex h-7 w-7 items-center justify-center focus:outline-none"
-               ariaLabel="Insert block below"
-            >
-               <Plus size={16} />
-            </Button>
-         </BlockTypeSelector>
+         <BlockTypeSelector onSelect={onInsertBelow} />
       </div>
    );
-}
+};

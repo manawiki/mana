@@ -1,14 +1,13 @@
 import { lazily } from "react-lazily";
 
+import { H2 } from "~/components/H2.tsx";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { initialValue } from "~/routes/_site+/$siteId.collections+/$collectionId.$entryId+/_index.tsx";
+import { initialValue } from "~/routes/_editor+/functions/utils.ts";
 
-import { H2 } from "./H2";
-
-// import { SoloEditor } from "~/routes/editors+/SoloEditor";
-// import { EntryViewer } from "./EntryViewer";
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
-const { SoloEditor } = lazily(() => import("~/routes/editors+/SoloEditor.tsx"));
+const { SoloEditor } = lazily(
+   () => import("~/routes/_editor+/editors+/SoloEditor.tsx")
+);
 const { EntryViewer } = lazily(() => import("./EntryViewer.tsx"));
 
 export const EntryContentEmbed = ({
@@ -45,7 +44,7 @@ export const EntryContentEmbed = ({
                   fetcher={fetcher}
                   collectionEntity={collectionEntity}
                   pageId={entryId}
-                  defaultValue={content ?? initialValue}
+                  defaultValue={content ?? initialValue()}
                />
             </>
          ) : (

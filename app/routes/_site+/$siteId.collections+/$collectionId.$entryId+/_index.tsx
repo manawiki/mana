@@ -6,7 +6,6 @@ import { zx } from "zodix";
 
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { EntryHeader, getDefaultEntryData, meta } from "~/modules/collections";
-import { SoloEditor } from "~/routes/editors+/SoloEditor";
 
 export async function loader({
    context: { payload, user },
@@ -38,14 +37,6 @@ export async function loader({
 }
 
 export { meta };
-
-export const initialValue = [
-   {
-      id: nanoid(),
-      type: "paragraph",
-      children: [{ text: "" }],
-   },
-];
 
 export default function CollectionEntryWiki() {
    const { entryDefault, embed } = useLoaderData<typeof loader>() || {};

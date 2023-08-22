@@ -11,8 +11,9 @@ import {
 } from "slate-react";
 
 import { Image } from "~/components";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
+// eslint-disable-next-line import/no-cycle
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 
 import type { GroupElement } from "../types";
 
@@ -139,7 +140,7 @@ export default function GroupView({ element }: Props) {
                      </div>
                      {content && (
                         <div>
-                           <Slate editor={editor} value={content}>
+                           <Slate editor={editor} initialValue={content}>
                               <Editable
                                  renderElement={renderElement}
                                  renderLeaf={Leaf}
@@ -261,7 +262,7 @@ export default function GroupView({ element }: Props) {
                      </div>
                      {content && (
                         <div>
-                           <Slate editor={editor} value={content}>
+                           <Slate editor={editor} initialValue={content}>
                               <Editable
                                  renderElement={renderElement}
                                  renderLeaf={Leaf}
