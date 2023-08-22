@@ -10,8 +10,8 @@ import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { isAdding } from "~/utils";
 
 import { PostHeader } from "../../components/PostHeader";
@@ -84,7 +84,7 @@ export const PostVersionModal = ({
                                  <PostHeader post={version} />
                                  <Slate
                                     editor={editor}
-                                    value={
+                                    initialValue={
                                        version.version?.content as Descendant[]
                                     }
                                  >

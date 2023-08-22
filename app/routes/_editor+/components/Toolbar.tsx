@@ -24,9 +24,9 @@ import Tooltip from "~/components/Tooltip";
 
 import Button from "./Button";
 import Select from "./Select";
+import { toggleMark, topLevelPath } from "../functions/utils";
 import type { CustomElement, LinkElement, TextBlock } from "../types";
 import { BlockType } from "../types";
-import { toggleMark, topLevelPath } from "../utils";
 
 export default function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);

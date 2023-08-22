@@ -15,14 +15,16 @@ import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { H2Default } from "~/modules/collections/components/H2";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import { Toolbar } from "~/modules/editor/components";
-import { onKeyDown } from "~/modules/editor/editorCore";
-import type { UpdatesElement } from "~/modules/editor/types";
-import { UpdatesEditor } from "~/routes/_site+/$siteId+/blocks+/BlockUpdates/UpdatesEditor";
+import { H2Default } from "~/components/H2";
 import { isAdding, isProcessing } from "~/utils";
+
+// eslint-disable-next-line import/no-cycle
+import { UpdatesEditor } from "./UpdatesEditor";
+import { Block } from "../../blocks/Block";
+import { Leaf } from "../../blocks/Leaf";
+import { Toolbar } from "../../components";
+import { onKeyDown } from "../../functions/editorCore";
+import type { UpdatesElement, CustomElement } from "../../types";
 
 type Props = {
    element: UpdatesElement;
@@ -53,7 +55,6 @@ export const BlockUpdates = ({ element }: Props) => {
    const useEditor = () =>
       useMemo(() => withReact(withHistory(createEditor())), []);
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
    const addingUpdate = isAdding(fetcher, "createUpdate");
@@ -75,7 +76,7 @@ export const BlockUpdates = ({ element }: Props) => {
       <section>
          <>
             <H2Default text="Updates" />
-            <div className="divide-color border-color bg-2 shadow-1 divide-y overflow-hidden rounded-lg border shadow-sm">
+            <div className="divide-color border-color bg-2 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
                <div className="flex items-center justify-between gap-2 py-1 pr-2">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
@@ -86,11 +87,11 @@ export const BlockUpdates = ({ element }: Props) => {
                   <div className="h-full w-full text-sm">
                      <Slate
                         editor={editor}
-                        value={updatesInlineInitialValue as Descendant[]}
+                        initialValue={updatesInlineInitialValue as Descendant[]}
                      >
                         <Toolbar />
                         <Editable
-                           className="py-2"
+                           className="outline-none"
                            placeholder="Share an update..."
                            renderElement={Block}
                            renderLeaf={Leaf}
@@ -107,7 +108,7 @@ export const BlockUpdates = ({ element }: Props) => {
                            },
                            {
                               method: "post",
-                              action: `/${siteId}/blocks/BlockUpdates`,
+                              action: `/${siteId}/blocks/updates`,
                            }
                         );
                      }}
@@ -155,7 +156,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                        rowId={row.id}
                                        entryId={item.id}
                                        siteId={siteId}
-                                       blocks={item.content}
+                                       blocks={item.content as CustomElement[]}
                                     />
                                     <button
                                        className="absolute right-3 top-3.5 hidden group-hover/updates:block"
@@ -169,7 +170,7 @@ export const BlockUpdates = ({ element }: Props) => {
                                              },
                                              {
                                                 method: "DELETE",
-                                                action: `/${siteId}/blocks/BlockUpdates`,
+                                                action: `/${siteId}/blocks/updates`,
                                              }
                                           )
                                        }
@@ -248,6 +249,7 @@ export const action = async ({
             return await payload.create({
                collection: "updates",
                data: {
+                  //@ts-expect-error
                   site: site.id,
                   dateId: currentDate,
                   entry: [
@@ -269,6 +271,7 @@ export const action = async ({
             collection: "updates",
             id: updateId,
             data: {
+               //@ts-ignore
                entry: [{ content: newData }, ...entryData],
             },
             overrideAccess: false,
@@ -306,6 +309,7 @@ export const action = async ({
             collection: "updates",
             id: updateId,
             data: {
+               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,
@@ -336,6 +340,7 @@ export const action = async ({
             collection: "updates",
             id: rowId,
             data: {
+               //@ts-expect-error
                entry: updatedData ?? {},
             },
             overrideAccess: false,

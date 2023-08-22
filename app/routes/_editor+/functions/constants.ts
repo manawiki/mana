@@ -1,4 +1,4 @@
-import type { Format } from "./types";
+import type { Format } from "../types";
 
 export const PROSE_CONTAINER_ID = "prose_container";
 

@@ -6,10 +6,11 @@ import { createEditor } from "slate";
 import { Editable, Slate, withReact } from "slate-react";
 
 import type { Update } from "payload/generated-types";
-import { H2Default } from "~/modules/collections/components/H2";
-import Block from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
-import type { UpdatesElement } from "~/modules/editor/types";
+import { H2Default } from "~/components/H2";
+// eslint-disable-next-line import/no-cycle
+import { Block } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import type { UpdatesElement } from "~/routes/_editor+/types";
 
 type Props = {
    element: UpdatesElement;
@@ -86,9 +87,8 @@ const useEditor = () => useMemo(() => withReact(createEditor()), []);
 
 const UpdatesEditorView = ({ content }: { content: Descendant[] }) => {
    const editor = useEditor();
-   editor.isInline = (element) => ["link"].includes(element.type);
    return (
-      <Slate editor={editor} value={content}>
+      <Slate editor={editor} initialValue={content}>
          <Editable renderElement={Block} renderLeaf={Leaf} readOnly={true} />
       </Slate>
    );

@@ -35,32 +35,45 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import Block, { CreateNewBlockFromBlock } from "~/modules/editor/blocks/Block";
-import Leaf from "~/modules/editor/blocks/Leaf";
+import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
+import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
    BlockInlineActions,
    Button,
    Toolbar,
    Tooltip,
-} from "~/modules/editor/components";
-import { HOTKEYS, PROSE_CONTAINER_ID } from "~/modules/editor/constants";
-import type { CustomElement } from "~/modules/editor/types";
-import { BlockType } from "~/modules/editor/types";
+} from "~/routes/_editor+/components";
 import {
+   HOTKEYS,
+   PROSE_CONTAINER_ID,
+} from "~/routes/_editor+/functions/constants";
+import {
+   indentItem,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
+   undentItem,
    withLayout,
+   withLists,
    withNodeId,
-} from "~/modules/editor/utils";
+} from "~/routes/_editor+/functions/utils";
+import type { CustomElement } from "~/routes/_editor+/types";
+import { BlockType } from "~/routes/_editor+/types";
 
+import { withLinkify } from "../functions/plugins/link/withLinkify";
 
-
-
-const SHORTCUTS: Record<string, BlockType> = {
+const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
    "-": BlockType.BulletedList,
    "+": BlockType.BulletedList,
+   "1.": BlockType.NumberedList,
+};
+
+const SHORTCUTS: Record<string, BlockType> = {
+   "*": BlockType.ListItem,
+   "-": BlockType.ListItem,
+   "+": BlockType.ListItem,
+   "1.": BlockType.ListItem,
    "##": BlockType.H2,
    "###": BlockType.H3,
    "[]": BlockType.ToDo,
@@ -69,8 +82,14 @@ const SHORTCUTS: Record<string, BlockType> = {
 const useEditor = () =>
    useMemo(
       () =>
-         withShortcuts(
-            withNodeId(withLayout(withReact(withHistory(createEditor()))))
+         withLists(
+            withShortcuts(
+               withNodeId(
+                  withLayout(
+                     withLinkify(withReact(withHistory(createEditor())))
+                  )
+               )
+            )
          ),
       []
    );
@@ -89,7 +108,7 @@ export const SoloEditor = ({
    intent,
 }: {
    fetcher: any;
-   defaultValue: Descendant[] | string[];
+   defaultValue: Descendant[];
    siteId: string | undefined;
    collectionEntity?: string;
    pageId?: string;
@@ -102,8 +121,6 @@ export const SoloEditor = ({
    const activeElement = editor.children.find(
       (x) => "id" in x && x.id === activeId
    ) as CustomElement | undefined;
-
-   editor.isInline = (element) => ["link"].includes(element.type);
 
    const isMount = useIsMount();
    const [value, setValue] = useState();
@@ -138,23 +155,6 @@ export const SoloEditor = ({
 
             let newBlock;
 
-            // Default paragraph new line
-            const paragraphBlock: CustomElement = {
-               type: BlockType.Paragraph,
-               children: [{ text: "" }],
-               id: nanoid(),
-            };
-
-            // If caret at position 0, convert previous block to empty paragraph
-            if (editor.selection.anchor.offset === 0) {
-               Transforms.setNodes(editor, paragraphBlock, {
-                  at: editor.selection,
-               });
-
-               // Pass state of old block to new block
-               newBlock = previousBlock;
-            }
-
             // Create different current element on new line if set in Block.tsx
             if (
                !newBlock &&
@@ -164,10 +164,6 @@ export const SoloEditor = ({
                )
             ) {
                newBlock = CreateNewBlockFromBlock[previousBlock.type]();
-            }
-
-            if (!newBlock) {
-               newBlock = paragraphBlock;
             }
 
             insertBreak();
@@ -277,6 +273,16 @@ export const SoloEditor = ({
             Transforms.move(editor, { unit: "offset" });
             return;
          }
+         //UL and OL key logic
+         if (isHotkey("shift+tab", event)) {
+            // attempt to un-indent on shift+tab within list
+            event.preventDefault();
+            undentItem(editor);
+         } else if (isHotkey("tab", event)) {
+            // attempt to indent on tab within list
+            event.preventDefault();
+            indentItem(editor);
+         }
       }
 
       //Render mark commands
@@ -295,7 +301,7 @@ export const SoloEditor = ({
    );
 
    return (
-      <div className="relative cursor-text pb-4">
+      <div className="relative pb-4">
          <div
             className="mx-auto max-w-[728px]"
             id={PROSE_CONTAINER_ID}
@@ -304,9 +310,9 @@ export const SoloEditor = ({
             <div className="mx-auto w-full">
                <Suspense fallback={<div>Loading...</div>}>
                   <Slate
-                     onChange={(e) => setValue(e)}
+                     onChange={setValue}
                      editor={editor}
-                     value={defaultValue}
+                     initialValue={defaultValue}
                   >
                      <Toolbar />
                      <DndContext
@@ -320,6 +326,7 @@ export const SoloEditor = ({
                            strategy={verticalListSortingStrategy}
                         >
                            <Editable
+                              className="outline-none"
                               renderElement={renderElement}
                               renderLeaf={Leaf}
                               /**
@@ -403,8 +410,8 @@ function SortableElement({
          >
             {renderElement({ element, children })}
             <div
-               className="absolute -top-10 select-none pr-3 opacity-0 group-hover:opacity-100
-               laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
+               className="absolute -top-10 z-10 select-none pr-3 opacity-0
+               group-hover:opacity-100 laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
                contentEditable={false}
             >
                <BlockInlineActions
@@ -413,7 +420,7 @@ function SortableElement({
                />
             </div>
             <div
-               className="absolute -top-10 right-0 z-40 select-none pl-3
+               className="absolute -top-10 right-0 z-10 select-none pl-3
                 opacity-0 group-hover:opacity-100 laptop:-right-11 laptop:-top-0.5"
                contentEditable={false}
             >
@@ -444,7 +451,7 @@ function DragOverlayContent({
    const [value] = useState([JSON.parse(JSON.stringify(element))]); // clone
 
    return (
-      <Slate editor={editor} value={value}>
+      <Slate editor={editor} initialValue={value}>
          <Editable
             readOnly={true}
             renderElement={renderElement}
@@ -484,6 +491,17 @@ function withShortcuts(editor: Editor) {
                match: (n) => Element.isElement(n) && Editor.isBlock(editor, n),
             });
 
+            if (type === BlockType.ListItem) {
+               const list = {
+                  id: nanoid(),
+                  type: LIST_WRAPPER[beforeText],
+                  children: [],
+               };
+               Transforms.wrapNodes(editor, list, {
+                  match: (n) => n.type === BlockType.ListItem,
+               });
+            }
+
             return;
          }
       }
@@ -513,7 +531,14 @@ function withShortcuts(editor: Editor) {
                   type: BlockType.Paragraph,
                };
                Transforms.setNodes(editor, newProperties);
-
+               if (block.type === BlockType.ListItem) {
+                  Transforms.unwrapNodes(editor, {
+                     match: (n) =>
+                        n.type === BlockType.BulletedList ||
+                        n.type === BlockType.NumberedList,
+                     split: true,
+                  });
+               }
                return;
             }
          }
