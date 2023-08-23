@@ -277,7 +277,7 @@ export const ColumnThree = ({
                               </button>
                               <button
                                  className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
-                                             border shadow-sm transition duration-300 active:translate-y-0.5 desktop:hidden"
+                                             border shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
                                  aria-label="Menu"
                                  onClick={() => setPrimaryMenuOpen(true)}
                               >
