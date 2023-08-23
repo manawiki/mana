@@ -48,19 +48,18 @@ import {
    PROSE_CONTAINER_ID,
 } from "~/routes/_editor+/functions/constants";
 import {
-   indentItem,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
-   undentItem,
    withLayout,
-   withLists,
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
 import type { CustomElement } from "~/routes/_editor+/types";
 import { BlockType } from "~/routes/_editor+/types";
 
 import { withLinkify } from "../functions/plugins/link/withLinkify";
+import { indentItem, undentItem } from "../functions/plugins/list/utils";
+import { withLists } from "../functions/plugins/list/withLists";
 
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,

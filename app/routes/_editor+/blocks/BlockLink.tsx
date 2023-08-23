@@ -19,7 +19,11 @@ export default function BlockLink({ element, children }: Props) {
    // Use client-side routing if internal link
    if (hostName == currentHost) {
       return (
-         <Link prefetch="viewport" className="text-blue-500" to={pathname}>
+         <Link
+            prefetch="viewport"
+            className="text-blue-600 visited:text-purple-600 hover:underline"
+            to={pathname}
+         >
             {children}
          </Link>
       );
@@ -27,7 +31,11 @@ export default function BlockLink({ element, children }: Props) {
 
    //Otherwise render as regular a tag for external links
    return (
-      <a rel="nofollow" className="text-blue-500" href={element.url}>
+      <a
+         rel="nofollow"
+         className="text-blue-600 visited:text-purple-600 hover:underline"
+         href={element.url}
+      >
          {children}
       </a>
    );
