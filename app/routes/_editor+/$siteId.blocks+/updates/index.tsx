@@ -24,6 +24,7 @@ import { Block } from "../../blocks/Block";
 import { Leaf } from "../../blocks/Leaf";
 import { Toolbar } from "../../components";
 import { onKeyDown } from "../../functions/editorCore";
+import { withLinkify } from "../../plugins/link/withLinkify";
 import type { UpdatesElement, CustomElement } from "../../types";
 
 type Props = {
@@ -53,7 +54,7 @@ export const BlockUpdates = ({ element }: Props) => {
    };
 
    const useEditor = () =>
-      useMemo(() => withReact(withHistory(createEditor())), []);
+      useMemo(() => withLinkify(withReact(withHistory(createEditor()))), []);
    const editor = useEditor();
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);

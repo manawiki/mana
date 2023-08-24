@@ -57,9 +57,9 @@ import {
 import type { CustomElement } from "~/routes/_editor+/types";
 import { BlockType } from "~/routes/_editor+/types";
 
-import { withLinkify } from "../functions/plugins/link/withLinkify";
-import { indentItem, undentItem } from "../functions/plugins/list/utils";
-import { withLists } from "../functions/plugins/list/withLists";
+import { withLinkify } from "../plugins/link/withLinkify";
+import { indentItem, undentItem } from "../plugins/list/utils";
+import { withLists } from "../plugins/list/withLists";
 
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,

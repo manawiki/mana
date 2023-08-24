@@ -25,16 +25,6 @@ export const isLinkActive = (editor: Editor) => {
    return !!link;
 };
 
-export const getLinkUrl = (editor: Editor) => {
-   const [match] = Editor.nodes(editor, {
-      match: isLinkifyElement,
-   });
-
-   const [node] = match;
-
-   return isLinkifyElement(node) ? node.url : undefined;
-};
-
 /**
  * We additionally want to return isEdit flag to upper function
  */
