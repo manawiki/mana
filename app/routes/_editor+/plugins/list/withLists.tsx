@@ -7,7 +7,7 @@ import { liftNodes } from "./utils";
 export const withLists = (editor: Editor) => {
    const { insertBreak, deleteBackward } = editor;
 
-   const backspace = (callback) => {
+   const backspace = (callback: any) => {
       const { selection } = editor;
 
       // check that there is a current selection without highlight

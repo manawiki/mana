@@ -46,6 +46,7 @@ import Tooltip from "~/components/Tooltip";
 import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
+import { swrRestFetcher } from "~/utils";
 
 import Toolbar from "../components/Toolbar";
 import type { CustomElement, GroupElement, groupItem } from "../types";
@@ -53,8 +54,6 @@ import type { CustomElement, GroupElement, groupItem } from "../types";
 type Props = {
    element: GroupElement;
 };
-
-const fetcher = (...args: any) => fetch(args).then((res) => res.json());
 
 export const GROUP_COLORS = [
    "#a1a1aa",
@@ -82,7 +81,7 @@ export function BlockGroup({ element }: Props) {
    //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `${settings.domainFull}/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
-      fetcher
+      swrRestFetcher
    );
 
    const defaultOptions = [
@@ -123,8 +122,8 @@ export function BlockGroup({ element }: Props) {
       }
    };
 
-   //Get custom entry data to popular icon and title
-   const { data: entryData } = useSWR(() => getDataType(), fetcher);
+   //Get custom entry data to populate icon and title
+   const { data: entryData } = useSWR(() => getDataType(), swrRestFetcher);
 
    const filteredEntries =
       groupSelectQuery === ""

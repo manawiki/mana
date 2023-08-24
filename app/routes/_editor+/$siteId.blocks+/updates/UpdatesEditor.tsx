@@ -13,8 +13,10 @@ import { Toolbar } from "~/routes/_editor+/components";
 import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
 import type { CustomElement } from "~/routes/_editor+/types";
 
+import { withLinkify } from "../../plugins/link/withLinkify";
+
 const useEditor = () =>
-   useMemo(() => withReact(withHistory(createEditor())), []);
+   useMemo(() => withLinkify(withReact(withHistory(createEditor()))), []);
 
 export const UpdatesEditor = ({
    rowId,
