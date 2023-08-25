@@ -21,7 +21,7 @@ export const BlockLinkView = ({ element, children }: Props) => {
          <Link
             prefetch="intent"
             to={pathname}
-            className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap px-1
+            className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
          >
             <span

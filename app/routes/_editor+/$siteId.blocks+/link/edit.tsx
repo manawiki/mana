@@ -77,10 +77,10 @@ export const BlockLink = ({ element, children }: Props) => {
       return (
          <span
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
-            px-1 text-blue-600 visited:text-purple-600 dark:text-blue-500"
+          text-blue-600 visited:text-purple-600 dark:text-blue-500"
          >
             <button
-               className="flex shadow-1 absolute right-0 top-1 z-20 h-4 w-4 items-center justify-center rounded-full
+               className="shadow-1 absolute right-0 top-1 z-20 flex h-4 w-4 items-center justify-center rounded-full
                bg-red-500 opacity-0 shadow hover:bg-zinc-500 group-hover/link:opacity-100"
                onClick={() => {
                   const path = ReactEditor.findPath(editor, element);

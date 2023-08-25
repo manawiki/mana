@@ -59,6 +59,7 @@ export const UpdatesEditor = ({
       >
          <Toolbar />
          <Editable
+            className="outline-none"
             renderElement={Block}
             renderLeaf={Leaf}
             onKeyDown={(e) => onKeyDown(e, editor)}
