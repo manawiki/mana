@@ -28,6 +28,11 @@ export const Dolls: CollectionConfig = {
          name: "icon",
          type: "upload",
          relationTo: "images",
+      },
+      {
+         name: "bust_img",
+         type: "upload",
+         relationTo: "images"
       }
    ],
 };
