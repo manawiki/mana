@@ -254,7 +254,7 @@ export const SoloEditor = ({
    const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
       const { selection } = editor;
 
-      // Default left/right behavior is unit:'character'.
+      // Default left/right behavior is unit:'character'. Used to escape links
       // This fails to distinguish between two cursor positions, such as
       // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
       // Here we modify the behavior to unit:'offset'.
@@ -389,7 +389,7 @@ function SortableElement({
 
    return (
       <div
-         className="group relative flex flex-col 
+         className="flex group relative flex-col 
          border-y border-dashed border-transparent 
          hover:border-y hover:border-zinc-200 dark:hover:border-zinc-700"
          {...attributes}

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { TrashIcon } from "@heroicons/react/20/solid";
 import { Link, useParams } from "@remix-run/react";
 import qs from "qs";
 import { Transforms } from "slate";
@@ -7,6 +8,7 @@ import { ReactEditor, useSlate } from "slate-react";
 import useSWR from "swr";
 
 import customConfig from "~/_custom/config.json";
+import { Image } from "~/components";
 import { swrRestFetcher } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../types";
@@ -52,7 +54,7 @@ export const BlockLink = ({ element, children }: Props) => {
       swrRestFetcher
    );
 
-   // If iconURL property is null and we get data, we update
+   // If iconURL property is null and we get data then update
    if (canFetch && data) {
       const path = ReactEditor.findPath(editor, element);
 
@@ -64,22 +66,59 @@ export const BlockLink = ({ element, children }: Props) => {
       Transforms.setNodes<CustomElement>(editor, newProperties, {
          at: path,
       });
+      //We update the child text
+      Transforms.insertText(editor, data.name, {
+         at: path,
+      });
+      //Move cursor out of the "link" so they can continue typing
+      Transforms.move(editor, { unit: "offset" });
    }
-
+   if (isSafeLink && element.icon) {
+      return (
+         <span
+            className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
+            px-1 text-blue-600 visited:text-purple-600 dark:text-blue-500"
+         >
+            <button
+               className="flex shadow-1 absolute right-0 top-1 z-20 h-4 w-4 items-center justify-center rounded-full
+               bg-red-500 opacity-0 shadow hover:bg-zinc-500 group-hover/link:opacity-100"
+               onClick={() => {
+                  const path = ReactEditor.findPath(editor, element);
+                  return Transforms.removeNodes(editor, { at: path });
+               }}
+            >
+               <TrashIcon className="h-3 w-3 text-white" />
+            </button>
+            <span
+               className="border-color shadow-1 flex h-6 w-6 items-center justify-center
+               self-center overflow-hidden rounded-full border shadow-sm"
+            >
+               <Image
+                  width={30}
+                  height={30}
+                  url={element.icon.url}
+                  options="aspect_ratio=1:1&height=40&width=40"
+               />
+            </span>
+            {children}
+         </span>
+      );
+   }
    if (isSafeLink) {
       return (
          <Link
-            className="text-blue-600 visited:text-purple-600 hover:underline"
+            className="text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
             to={pathname}
          >
             {children}
          </Link>
       );
    }
+
    return (
       <a
          rel="nofollow"
-         className="text-blue-600 visited:text-purple-600 hover:underline"
+         className="inline-flex text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
          href={element.url}
       >
          {children}

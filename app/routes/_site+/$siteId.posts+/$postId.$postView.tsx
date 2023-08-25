@@ -97,7 +97,7 @@ export default function PostPage() {
    return (
       <div className="relative">
          <AdminOrStaffOrOwner>
-            <div className="sticky top-[86px] flex items-center justify-center">
+            <div className="flex sticky top-[86px] items-center justify-center">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
                   className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 
@@ -112,7 +112,7 @@ export default function PostPage() {
          </AdminOrStaffOrOwner>
          <main>
             <div className="mx-auto max-w-[728px] max-desktop:px-3">
-               <h1 className="pt-20 font-header text-2xl !leading-[3rem] laptop:pt-14 laptop:text-4xl">
+               <h1 className="font-header text-3xl !leading-[3rem] laptop:text-4xl">
                   {post.name}
                </h1>
                <PostHeader post={post} />

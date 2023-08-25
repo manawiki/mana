@@ -127,7 +127,7 @@ export default function PostEditPage() {
    const { postId } = useParams();
 
    return (
-      <main className="relative min-h-screen max-laptop:pb-20">
+      <main className="relative min-h-screen max-laptop:px-3 max-laptop:pb-20">
          <PostHeaderEdit versions={versions} post={post} />
          <SoloEditor
             intent="updatePostContent"
