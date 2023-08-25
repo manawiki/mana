@@ -15,7 +15,7 @@ import {
 import { Bar } from "react-chartjs-2";
 
 import type { Material } from "payload/generated-custom-types";
-import { H2 } from "~/_custom/components/custom";
+import { H2 } from "~/components/H2";
 import { Image } from "~/components";
 import { fetchWithCache } from "~/utils/cache.server";
 

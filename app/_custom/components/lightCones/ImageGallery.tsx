@@ -1,7 +1,7 @@
 import type { LightCone } from "payload/generated-custom-types";
 import { Image } from "~/components";
 
-import { H2 } from "../custom";
+import { H2 } from "~/components/H2";
 
 export const ImageGallery = ({ pageData }: { pageData: LightCone }) => {
    var galleryname = ["Icon", "Full Image"];

@@ -20,7 +20,7 @@ import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterial
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
-import { H2 } from "~/_custom/components/custom";
+import { H2 } from "~/components/H2";
 import {
    EntryParent,
    EntryHeader,

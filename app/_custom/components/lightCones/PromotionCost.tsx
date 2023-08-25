@@ -1,5 +1,5 @@
 import type { LightCone, Material } from "payload/generated-custom-types";
-import { H2 } from "~/_custom/components/custom";
+import { H2 } from "~/components/H2";
 
 export const PromotionCost = ({ pageData }: { pageData: LightCone }) => {
    return (

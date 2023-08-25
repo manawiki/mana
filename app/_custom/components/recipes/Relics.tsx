@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 
 import type { Recipe } from "payload/generated-custom-types";
-import { H2 } from "~/_custom/components/custom";
+import { H2 } from "~/components/H2";
 import { Image } from "~/components";
 
 export const Relics = ({ pageData }: { pageData: Recipe }) => {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { LightCone } from "payload/generated-custom-types";
-import { H2 } from "~/_custom/components/custom";
+import { H2 } from "~/components/H2";
 
 export const Effect = ({ pageData }: { pageData: LightCone }) => {
    const [skillLevel, setSkillLevel] = useState(1);
