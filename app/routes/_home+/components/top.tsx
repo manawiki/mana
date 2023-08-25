@@ -1,8 +1,8 @@
 import { useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import { Github } from "lucide-react";
 
 import { Image } from "~/components";
-import Tooltip from "~/components/Tooltip";
 
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";
@@ -62,7 +62,20 @@ export const Top = () => {
                            data-aos-delay="400"
                            className="flex items-center justify-center gap-3.5"
                         >
-                           <Tooltip
+                           <a
+                              href="https://github.com/manawiki/core"
+                              className="
+                         relative inline-flex w-28 items-center justify-center gap-2 rounded-full border border-transparent
+                         px-3 py-2.5 text-zinc-100 shadow-sm shadow-black/30 transition duration-150 ease-in-out
+                         [background:linear-gradient(theme(colors.zinc.800),_theme(colors.zinc.800))_padding-box,_conic-gradient(theme(colors.zinc.400),_theme(colors.zinc.700)_25%,_theme(colors.zinc.700)_75%,_theme(colors.zinc.400)_100%)_border-box]
+                         before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-zinc-800/30 hover:text-white"
+                           >
+                              <Github size={16} />
+                              <span className="pt-0.5 text-sm font-bold">
+                                 Github
+                              </span>
+                           </a>
+                           {/* <Tooltip
                               id="coming-soon"
                               side="top"
                               content="Coming Soon!"
@@ -240,7 +253,7 @@ export const Top = () => {
                                     Android
                                  </span>
                               </a>
-                           </Tooltip>
+                           </Tooltip> */}
                         </div>
                      </div>
                   </div>
