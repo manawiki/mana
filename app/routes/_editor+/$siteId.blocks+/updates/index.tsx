@@ -4,7 +4,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import { format } from "date-fns";
-import { Loader2, Plus, Trash } from "lucide-react";
+import { Loader2, Send, Trash } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
 import { Editor, createEditor, Transforms } from "slate";
@@ -24,6 +24,7 @@ import { Block } from "../../blocks/Block";
 import { Leaf } from "../../blocks/Leaf";
 import { Toolbar } from "../../components";
 import { onKeyDown } from "../../functions/editorCore";
+import { withLinkify } from "../../plugins/link/withLinkify";
 import type { UpdatesElement, CustomElement } from "../../types";
 
 type Props = {
@@ -53,7 +54,7 @@ export const BlockUpdates = ({ element }: Props) => {
    };
 
    const useEditor = () =>
-      useMemo(() => withReact(withHistory(createEditor())), []);
+      useMemo(() => withLinkify(withReact(withHistory(createEditor()))), []);
    const editor = useEditor();
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
@@ -77,7 +78,7 @@ export const BlockUpdates = ({ element }: Props) => {
          <>
             <H2Default text="Updates" />
             <div className="divide-color border-color bg-2 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="flex items-center justify-between gap-2 py-1 pr-2">
+               <div className="flex items-center justify-between gap-2 py-1 pr-2.5">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
@@ -116,17 +117,22 @@ export const BlockUpdates = ({ element }: Props) => {
                      type="submit"
                   >
                      <div
-                        className="shadow-1 font-bol inline-flex h-8 w-8 items-center justify-center rounded-xl 
-                           border border-blue-200/80 bg-gradient-to-b from-blue-50
-                           to-blue-100 text-xs font-bold
-                           text-blue-500 shadow-sm transition dark:border-blue-900
-                           dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-200 
-                           dark:shadow-blue-950"
+                        className="shadow-1 border-color inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 
+                           rounded-full border border-zinc-200 bg-gradient-to-br from-white
+                           to-zinc-50  text-xs font-bold shadow-sm transition hover:border-zinc-300
+                           hover:bg-white hover:!shadow active:!shadow-none dark:from-bg3Dark
+                           dark:to-bg2Dark dark:text-zinc-200 dark:hover:border-zinc-700"
                      >
                         {addingUpdate ? (
                            <Loader2 size={16} className="animate-spin" />
                         ) : (
-                           <Plus size={18} />
+                           <>
+                              <Send
+                                 className="text-zinc-400 dark:text-zinc-300"
+                                 size={12}
+                              />
+                              <span className="text-1 pr-0.5">Post</span>
+                           </>
                         )}
                      </div>
                   </button>

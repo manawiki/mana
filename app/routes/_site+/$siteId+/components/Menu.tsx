@@ -81,15 +81,16 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
       <>
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
-               <div className="space-y-0.5 pl-3 pt-6">
-                  <div className="flex items-center gap-2.5 pb-2 pl-2.5">
+               <div className="space-y-0.5 pt-6 desktop:pl-3">
+                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-2.5 desktop:pl-2.5">
+                     <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:hidden" />
                      <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
                         <Pin className="text-red-400" size={16} />
-                        <span>Pinned</span>
+                        <span className="max-desktop:hidden">Pinned</span>
                      </div>
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
                   </div>
-                  <ul className="space-y-0.5 pr-3">
+                  <ul className="space-y-0.5 max-desktop:mx-3 desktop:pr-3">
                      {site.pinned?.map((item: any) => (
                         <li key={item.id}>
                            <NavLink
@@ -120,7 +121,7 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                                     />
                                  )}
                               </div>
-                              <div className="truncate">
+                              <div className="truncate max-desktop:hidden">
                                  {item.relation.value.name}
                               </div>
                            </NavLink>
@@ -128,7 +129,7 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                      ))}
                   </ul>
                </div>
-               <div className="ml-6 mt-3 block h-0.5 rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
+               <div className="mt-3 block h-0.5 rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:ml-6" />
             </>
          )}
       </>
