@@ -28,6 +28,13 @@ export const Skills: CollectionConfig = {
          name: "icon",
          type: "upload",
          relationTo: "images",
-      }
+      },
+      {
+         name: "doll",
+         type: "relationship",
+         relationTo: "dolls",
+         hasMany: false,
+         index: true,
+      },
    ],
 };
