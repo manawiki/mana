@@ -99,7 +99,7 @@ export default function SiteIndexMain() {
                         </Await>
                      </Suspense>
                      <div
-                        className="shadow-1 border-color bg-2 fixed inset-x-0 bottom-20 z-40 mx-auto flex
+                        className="shadow-1 border-color bg-2 flex fixed inset-x-0 bottom-20 z-40 mx-auto
                   max-w-[200px] items-center justify-between rounded-full border p-2 shadow-sm"
                      >
                         <div

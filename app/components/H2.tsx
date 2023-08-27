@@ -3,7 +3,7 @@ export const H2 = ({ text }: { text: string }) => {
       <>
          <h2
             className="border-color shadow-1 relative mb-2.5 mt-8 overflow-hidden 
-         rounded-lg border-2 px-4 py-3 text-xl shadow-sm"
+         rounded-lg border-2 px-4 py-3 font-header text-xl font-bold shadow-sm"
          >
             <div
                className="pattern-dots absolute left-0

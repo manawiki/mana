@@ -253,8 +253,8 @@ export default function Toolbar() {
                </div>
             </section>
             {isLinkActive(editor) ? (
-               <section className="bg-3 mt-1.5 flex items-center gap-3 rounded-md px-2">
-                  <span className="text-1 flex-grow py-2 text-xs">
+               <section className="bg-3 flex mt-1.5 items-center gap-3 truncate rounded-md px-2">
+                  <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
                      {activeLinkUrl(editor)}
                   </span>
                   <Tooltip

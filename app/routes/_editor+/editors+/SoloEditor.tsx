@@ -48,19 +48,18 @@ import {
    PROSE_CONTAINER_ID,
 } from "~/routes/_editor+/functions/constants";
 import {
-   indentItem,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
-   undentItem,
    withLayout,
-   withLists,
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
 import type { CustomElement } from "~/routes/_editor+/types";
 import { BlockType } from "~/routes/_editor+/types";
 
-import { withLinkify } from "../functions/plugins/link/withLinkify";
+import { withLinkify } from "../plugins/link/withLinkify";
+import { indentItem, undentItem } from "../plugins/list/utils";
+import { withLists } from "../plugins/list/withLists";
 
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -255,7 +254,7 @@ export const SoloEditor = ({
    const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
       const { selection } = editor;
 
-      // Default left/right behavior is unit:'character'.
+      // Default left/right behavior is unit:'character'. Used to escape links
       // This fails to distinguish between two cursor positions, such as
       // <inline>foo<cursor/></inline> vs <inline>foo</inline><cursor/>.
       // Here we modify the behavior to unit:'offset'.
@@ -390,7 +389,7 @@ function SortableElement({
 
    return (
       <div
-         className="group relative flex flex-col 
+         className="flex group relative flex-col 
          border-y border-dashed border-transparent 
          hover:border-y hover:border-zinc-200 dark:hover:border-zinc-700"
          {...attributes}

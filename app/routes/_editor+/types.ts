@@ -126,6 +126,11 @@ export type CodeSandboxElement = BlockElement & {
 export type LinkElement = BlockElement & {
    type: BlockType.Link;
    url: string | undefined;
+   icon: {
+      url: string | undefined;
+   };
+   name: string | undefined;
+   view: "icon-inline" | undefined;
    children: [{ text: "" }];
 };
 

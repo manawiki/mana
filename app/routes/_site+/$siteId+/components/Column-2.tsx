@@ -20,8 +20,8 @@ import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
 
 export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
    return (
-      <section>
-         <div className="bg-1 bg-2 border-color shadow-1 fixed bottom-0 top-0 z-50 mx-auto hidden h-full w-[220px] overflow-y-auto border-r py-4 shadow-sm desktop:block">
+      <section className="bg-2 border-color shadow-1 z-50 border-r">
+         <div className="fixed bottom-0 top-0 z-50 mx-auto h-full overflow-y-auto py-4 shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[220px]">
             <div className="space-y-1 px-3">
                <NavLink
                   prefetch="intent"
@@ -38,7 +38,7 @@ export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
                         ) : (
                            <HomeIcon className="h-[17px] w-[17px] text-blue-500" />
                         )}
-                        <span>Home</span>
+                        <span className="max-desktop:hidden">Home</span>
                      </>
                   )}
                </NavLink>
@@ -56,7 +56,7 @@ export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
                         ) : (
                            <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
                         )}
-                        <span>Posts</span>
+                        <span className="max-desktop:hidden">Posts</span>
                      </>
                   )}
                </NavLink>
@@ -74,7 +74,7 @@ export const ColumnTwo = ({ site, user }: { site: Site; user: User }) => {
                         ) : (
                            <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
                         )}
-                        <span>Collections</span>
+                        <span className="max-desktop:hidden">Collections</span>
                      </>
                   )}
                </NavLink>
