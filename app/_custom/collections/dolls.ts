@@ -33,6 +33,21 @@ export const Dolls: CollectionConfig = {
          name: "bust_img",
          type: "upload",
          relationTo: "images"
+      },
+      {
+         name: "gacha_img",
+         type: "upload",
+         relationTo: "images"
+      },
+      {
+         name: "half_img",
+         type: "upload",
+         relationTo: "images"
+      },
+      {
+         name: "whole_img",
+         type: "upload",
+         relationTo: "images"
       }
    ],
 };
