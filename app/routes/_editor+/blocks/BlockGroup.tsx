@@ -41,7 +41,7 @@ import { settings } from "mana-config";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
 import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
@@ -525,53 +525,55 @@ export function BlockGroup({ element }: Props) {
                >
                   <RadioGroup.Option value="list">
                      {({ checked }) => (
-                        <Tooltip
-                           id="group-list-view"
-                           side="top"
-                           content="List View"
-                        >
-                           <div
-                              className={`${
-                                 checked
-                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                    : ""
-                              }
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <div
+                                 className={`${
+                                    checked
+                                       ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                       : ""
+                                 }
                                  flex h-7 w-7 items-center justify-center rounded`}
-                           >
-                              <RadioGroup.Label className="sr-only">
-                                 List View
-                              </RadioGroup.Label>
-                              <List
-                                 className={`${checked ? "text-zinc-500" : ""}`}
-                                 size={16}
-                              />
-                           </div>
+                              >
+                                 <RadioGroup.Label className="sr-only">
+                                    List View
+                                 </RadioGroup.Label>
+                                 <List
+                                    className={`${
+                                       checked ? "text-zinc-500" : ""
+                                    }`}
+                                    size={16}
+                                 />
+                              </div>
+                           </TooltipTrigger>
+                           <TooltipContent>List View</TooltipContent>
                         </Tooltip>
                      )}
                   </RadioGroup.Option>
                   <RadioGroup.Option value="grid">
                      {({ checked }) => (
-                        <Tooltip
-                           id="group-grid-view"
-                           side="top"
-                           content="Gird View"
-                        >
-                           <div
-                              className={`${
-                                 checked
-                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                    : ""
-                              }
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <div
+                                 className={`${
+                                    checked
+                                       ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                       : ""
+                                 }
                            flex h-7 w-7 items-center justify-center rounded`}
-                           >
-                              <RadioGroup.Label className="sr-only">
-                                 Grid View
-                              </RadioGroup.Label>
-                              <LayoutGrid
-                                 className={`${checked ? "text-zinc-500" : ""}`}
-                                 size={16}
-                              />
-                           </div>
+                              >
+                                 <RadioGroup.Label className="sr-only">
+                                    Grid View
+                                 </RadioGroup.Label>
+                                 <LayoutGrid
+                                    className={`${
+                                       checked ? "text-zinc-500" : ""
+                                    }`}
+                                    size={16}
+                                 />
+                              </div>
+                           </TooltipTrigger>
+                           <TooltipContent>Gird View</TooltipContent>
                         </Tooltip>
                      )}
                   </RadioGroup.Option>
@@ -588,53 +590,51 @@ export function BlockGroup({ element }: Props) {
             >
                <RadioGroup.Option value="1-col">
                   {({ checked }) => (
-                     <Tooltip
-                        id="1-column-list-view"
-                        side="top"
-                        content="1-Column"
-                     >
-                        <div
-                           className={`${
-                              checked
-                                 ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                 : ""
-                           }
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <div
+                              className={`${
+                                 checked
+                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                    : ""
+                              }
                                  flex h-8 w-8 items-center justify-center rounded`}
-                        >
-                           <RadioGroup.Label className="sr-only">
-                              List View
-                           </RadioGroup.Label>
-                           <Rows
-                              className={`${checked ? "text-zinc-500" : ""}`}
-                              size={16}
-                           />
-                        </div>
+                           >
+                              <RadioGroup.Label className="sr-only">
+                                 List View
+                              </RadioGroup.Label>
+                              <Rows
+                                 className={`${checked ? "text-zinc-500" : ""}`}
+                                 size={16}
+                              />
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent>1-Column</TooltipContent>
                      </Tooltip>
                   )}
                </RadioGroup.Option>
                <RadioGroup.Option value="2-col">
                   {({ checked }) => (
-                     <Tooltip
-                        id="2-columns-view"
-                        side="top"
-                        content="2-Columns"
-                     >
-                        <div
-                           className={`${
-                              checked
-                                 ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                 : ""
-                           }
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <div
+                              className={`${
+                                 checked
+                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
+                                    : ""
+                              }
                            flex h-8 w-8 items-center justify-center rounded`}
-                        >
-                           <RadioGroup.Label className="sr-only">
-                              2-Columns
-                           </RadioGroup.Label>
-                           <Columns
-                              className={`${checked ? "text-zinc-500" : ""}`}
-                              size={16}
-                           />
-                        </div>
+                           >
+                              <RadioGroup.Label className="sr-only">
+                                 2-Columns
+                              </RadioGroup.Label>
+                              <Columns
+                                 className={`${checked ? "text-zinc-500" : ""}`}
+                                 size={16}
+                              />
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent>2-Columns</TooltipContent>
                      </Tooltip>
                   )}
                </RadioGroup.Option>
@@ -964,32 +964,35 @@ const SortableListItem = ({
                </span>
             </div>
             <div className="absolute left-2 flex items-center gap-3 opacity-0 group-hover:opacity-100">
-               <Tooltip
-                  side="left"
-                  id={`drag-${rowId}`}
-                  content="Drag to reorder"
-               >
-                  <button
-                     type="button"
-                     aria-label="Drag to reorder"
-                     ref={setActivatorNodeRef}
-                     {...listeners}
-                     className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
-                  >
-                     <GripVertical className="text-1" size={16} />
-                  </button>
+               <Tooltip>
+                  <TooltipTrigger> Drag to reorder</TooltipTrigger>
+                  <TooltipContent>
+                     <button
+                        type="button"
+                        aria-label="Drag to reorder"
+                        ref={setActivatorNodeRef}
+                        {...listeners}
+                        className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
+                     >
+                        <GripVertical className="text-1" size={16} />
+                     </button>
+                  </TooltipContent>
                </Tooltip>
-               <Tooltip side="left" id={`delete-${rowId}`} content="Delete">
-                  <button
-                     className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
-                     onClick={deleteRow}
-                     aria-label="Delete"
-                  >
-                     <Trash
-                        className="text-zinc-400 dark:text-zinc-500"
-                        size={16}
-                     />
-                  </button>
+
+               <Tooltip>
+                  <TooltipTrigger>
+                     <button
+                        className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
+                        onClick={deleteRow}
+                        aria-label="Delete"
+                     >
+                        <Trash
+                           className="text-zinc-400 dark:text-zinc-500"
+                           size={16}
+                        />
+                     </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete</TooltipContent>
                </Tooltip>
             </div>
             <div className="flex flex-none items-center justify-center">
@@ -1135,28 +1138,35 @@ const SortableGridItem = ({
             className="absolute left-0 top-0 flex w-full select-none 
          items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100"
          >
-            <Tooltip side="top" id={`delete-${rowId}`} content="Delete">
-               <button
-                  className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
-                  onClick={deleteRow}
-                  aria-label="Delete"
-               >
-                  <Trash
-                     className="text-zinc-400 dark:text-zinc-500"
-                     size={16}
-                  />
-               </button>
+            <Tooltip>
+               <TooltipTrigger>
+                  <button
+                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
+                     onClick={deleteRow}
+                     aria-label="Delete"
+                  >
+                     <Trash
+                        className="text-zinc-400 dark:text-zinc-500"
+                        size={16}
+                     />
+                  </button>
+               </TooltipTrigger>
+               <TooltipContent>Delete</TooltipContent>
             </Tooltip>
-            <Tooltip side="top" id={`drag-${rowId}`} content="Drag to reorder">
-               <button
-                  type="button"
-                  aria-label="Drag to reorder"
-                  ref={setActivatorNodeRef}
-                  {...listeners}
-                  className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
-               >
-                  <Move className="text-1" size={16} />
-               </button>
+
+            <Tooltip>
+               <TooltipTrigger>
+                  <button
+                     type="button"
+                     aria-label="Drag to reorder"
+                     ref={setActivatorNodeRef}
+                     {...listeners}
+                     className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+                  >
+                     <Move className="text-1" size={16} />
+                  </button>
+               </TooltipTrigger>
+               <TooltipContent>Drag to reorder</TooltipContent>
             </Tooltip>
          </div>
          <div className="block truncate">

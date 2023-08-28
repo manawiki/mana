@@ -26,9 +26,9 @@ import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { DotLoader } from "~/components/DotLoader";
 import { Image } from "~/components/Image";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { Tooltip } from "~/routes/_editor+/components";
 import { isProcessing, isAdding, type FormResponse } from "~/utils";
 
 import { PostDeleteModal } from "./PostDeleteModal";
@@ -274,8 +274,8 @@ export const PostHeaderEdit = ({
                      </button>
                   </div>
                   <div className="flex items-center justify-between gap-3">
-                     <>
-                        <Tooltip id="history" side="bottom" content="History">
+                     <Tooltip>
+                        <TooltipTrigger>
                            <button
                               className="border-color bg-5 flex h-9 w-9 items-center 
                                  justify-center rounded-full
@@ -284,27 +284,26 @@ export const PostHeaderEdit = ({
                            >
                               <History className="text-emerald-500" size={18} />
                            </button>
-                        </Tooltip>
-                     </>
-
+                        </TooltipTrigger>
+                        <TooltipContent>History</TooltipContent>
+                     </Tooltip>
                      <Popover className="relative">
                         {({ open }) => (
                            <>
-                              <Tooltip
-                                 id="share-post"
-                                 side="bottom"
-                                 content="Share"
-                              >
-                                 <Popover.Button
-                                    className="border-color bg-5 flex h-9 w-9
+                              <Tooltip>
+                                 <TooltipTrigger>
+                                    <Popover.Button
+                                       className="border-color bg-5 flex h-9 w-9
                                     items-center justify-center
                                rounded-full border hover:border-emerald-200 focus:outline-none dark:border-zinc-600 dark:hover:border-emerald-800"
-                                 >
-                                    <Share2
-                                       size={18}
-                                       className="text-emerald-500"
-                                    />
-                                 </Popover.Button>
+                                    >
+                                       <Share2
+                                          size={18}
+                                          className="text-emerald-500"
+                                       />
+                                    </Popover.Button>
+                                 </TooltipTrigger>
+                                 <TooltipContent>Share</TooltipContent>
                               </Tooltip>
                               <Transition
                                  as={Fragment}
@@ -336,23 +335,23 @@ export const PostHeaderEdit = ({
                                                 )}
                                              </div>
                                           </div>
-
-                                          <Tooltip
-                                             id="view-live-post"
-                                             side="right"
-                                             content="View post"
-                                          >
-                                             <Link
-                                                className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
+                                          <Tooltip>
+                                             <TooltipTrigger>
+                                                <Link
+                                                   className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
                                            gap-2 rounded-xl text-sm font-bold shadow-sm"
-                                                target="_blank"
-                                                to={`/${siteId}/posts/${post.id}/${post.slug}`}
-                                             >
-                                                <ExternalLink
-                                                   size={18}
-                                                   className="text-emerald-500"
-                                                />
-                                             </Link>
+                                                   target="_blank"
+                                                   to={`/${siteId}/posts/${post.id}/${post.slug}`}
+                                                >
+                                                   <ExternalLink
+                                                      size={18}
+                                                      className="text-emerald-500"
+                                                   />
+                                                </Link>
+                                             </TooltipTrigger>
+                                             <TooltipContent>
+                                                View post
+                                             </TooltipContent>
                                           </Tooltip>
                                        </div>
                                     ) : (
@@ -374,25 +373,24 @@ export const PostHeaderEdit = ({
                                           readOnly
                                           value={postFullUrl}
                                        />
-                                       <Tooltip
-                                          id="copy-post-url"
-                                          side="right"
-                                          content="Copy"
-                                       >
-                                          <button
-                                             className="active:bg-5 flex h-7 w-7 flex-none 
+                                       <Tooltip>
+                                          <TooltipTrigger>
+                                             <button
+                                                className="active:bg-5 flex h-7 w-7 flex-none 
                                              items-center justify-center rounded-md"
-                                             onClick={() =>
-                                                navigator.clipboard.writeText(
-                                                   postFullUrl
-                                                )
-                                             }
-                                          >
-                                             <Copy
-                                                className="text-emerald-500"
-                                                size={18}
-                                             />
-                                          </button>
+                                                onClick={() =>
+                                                   navigator.clipboard.writeText(
+                                                      postFullUrl
+                                                   )
+                                                }
+                                             >
+                                                <Copy
+                                                   className="text-emerald-500"
+                                                   size={18}
+                                                />
+                                             </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>Copy</TooltipContent>
                                        </Tooltip>
                                     </div>
                                  </Popover.Panel>
@@ -405,52 +403,49 @@ export const PostHeaderEdit = ({
                            <DotLoader />
                         </div>
                      ) : (
-                        <>
-                           <>
-                              <fetcher.Form method="post">
-                                 <Tooltip
-                                    id="publish-changes"
-                                    side="bottom"
-                                    content="Publish New Changes"
-                                 >
-                                    <button
-                                       disabled={disabled}
-                                       type="submit"
-                                       name="intent"
-                                       value="publish"
-                                       className="
+                        <fetcher.Form method="post">
+                           <Tooltip>
+                              <TooltipTrigger>
+                                 <button
+                                    disabled={disabled}
+                                    type="submit"
+                                    name="intent"
+                                    value="publish"
+                                    className="
                                           shadow-1 group inline-flex h-9 cursor-pointer items-center
                                           justify-center rounded-full bg-emerald-500 px-4 text-sm font-bold text-white shadow-sm 
                                           transition hover:bg-emerald-600 dark:hover:bg-emerald-400"
+                                 >
+                                    Publish
+                                    <svg
+                                       className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
+                                       fill="none"
+                                       width="12"
+                                       height="12"
+                                       viewBox="0 0 12 12"
+                                       aria-hidden="true"
                                     >
-                                       Publish
-                                       <svg
-                                          className="-mr-1 ml-2 mt-0.5 stroke-white stroke-2"
-                                          fill="none"
-                                          width="12"
-                                          height="12"
-                                          viewBox="0 0 12 12"
-                                          aria-hidden="true"
-                                       >
-                                          <path
-                                             className="opacity-0 transition group-hover:opacity-100"
-                                             d="M0 5h7"
-                                          ></path>
-                                          <path
-                                             className="transition group-hover:translate-x-[3px]"
-                                             d="M1 1l4 4-4 4"
-                                          ></path>
-                                       </svg>
-                                    </button>
-                                 </Tooltip>
-                              </fetcher.Form>
-                           </>
-                        </>
+                                       <path
+                                          className="opacity-0 transition group-hover:opacity-100"
+                                          d="M0 5h7"
+                                       ></path>
+                                       <path
+                                          className="transition group-hover:translate-x-[3px]"
+                                          d="M1 1l4 4-4 4"
+                                       ></path>
+                                    </svg>
+                                 </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                 Publish New Changes
+                              </TooltipContent>
+                           </Tooltip>
+                        </fetcher.Form>
                      )}
                   </div>
                </div>
             </AdminOrStaffOrOwner>
-            <div className="flex relative mb-3 items-center gap-3">
+            <div className="relative mb-3 flex items-center gap-3">
                <TextareaAutosize
                   className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
                    font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
@@ -461,7 +456,7 @@ export const PostHeaderEdit = ({
                />
             </div>
             <PostHeader post={post} />
-            <div className="border-color flex relative mb-6 items-center gap-3 border-b border-zinc-100 pb-3">
+            <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-3">
                <TextareaAutosize
                   className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
                   p-0 text-sm font-semibold focus:ring-transparent"
@@ -490,7 +485,7 @@ export const PostHeaderEdit = ({
                         />
                      </div>
                      <button
-                        className="flex absolute right-2.5 top-2.5 h-10 w-10 items-center
+                        className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
                    justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
                         onClick={() =>
                            fetcher.submit(
@@ -528,7 +523,7 @@ export const PostHeaderEdit = ({
                            dragActive
                               ? "border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
                               : "hover:border-dashed hover:border-zinc-300 dark:hover:border-zinc-600 "
-                        } bg-2 border-color flex group aspect-[1.91/1] cursor-pointer items-center
+                        } bg-2 border-color group flex aspect-[1.91/1] cursor-pointer items-center
                         justify-center overflow-hidden border-y shadow-sm hover:border-2
                         tablet:rounded-md tablet:border laptop:rounded-none 
                         laptop:border-x-0 desktop:rounded-md desktop:border`}

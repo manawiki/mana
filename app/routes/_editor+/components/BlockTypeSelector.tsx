@@ -19,7 +19,7 @@ import {
 import { nanoid } from "nanoid";
 
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
@@ -249,21 +249,21 @@ export const BlockTypeSelector = ({ onSelect }: Props) => {
                            >
                               <div className="dark:bg2Dark roudned-t-lg relative z-10 inline-flex w-full gap-3 bg-white p-3 dark:bg-neutral-800">
                                  {primary?.map((row) => (
-                                    <Tooltip
-                                       key={row.label}
-                                       id="primary"
-                                       side="bottom"
-                                       content={row.label}
-                                    >
-                                       <button
-                                          className="bg-2 shadow-1 border-color flex h-10 w-10 items-center justify-center rounded-lg border text-center shadow-sm"
-                                          onClick={() => {
-                                             row.onSelect();
-                                             closeModal();
-                                          }}
-                                       >
-                                          {row.icon}
-                                       </button>
+                                    <Tooltip key={row.label}>
+                                       <TooltipTrigger>
+                                          <button
+                                             className="bg-2 shadow-1 border-color flex h-10 w-10 items-center justify-center rounded-lg border text-center shadow-sm"
+                                             onClick={() => {
+                                                row.onSelect();
+                                                closeModal();
+                                             }}
+                                          >
+                                             {row.icon}
+                                          </button>
+                                       </TooltipTrigger>
+                                       <TooltipContent>
+                                          {row.label}
+                                       </TooltipContent>
                                     </Tooltip>
                                  ))}
                               </div>
