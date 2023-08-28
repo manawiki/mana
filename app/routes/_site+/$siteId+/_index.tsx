@@ -1,9 +1,17 @@
 import { Suspense, useCallback, useMemo } from "react";
 
+import {
+   FloatingDelayGroup,
+   autoUpdate,
+   offset,
+   shift,
+   useFloating,
+} from "@floating-ui/react";
+import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import { type LoaderArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
-import { Check, History, Loader2, MoreVertical } from "lucide-react";
+import { Check, History, Loader2 } from "lucide-react";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -21,7 +29,7 @@ import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
@@ -62,7 +70,7 @@ export async function loader({
 }
 
 export default function SiteIndexMain() {
-   const { home, isChanged, siteId } = useLoaderData<typeof loader>();
+   const { home, siteId } = useLoaderData<typeof loader>();
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <Block {...props} />;
@@ -71,19 +79,28 @@ export default function SiteIndexMain() {
 
    const fetcher = useFetcher();
 
-   const isAutoSaving =
-      fetcher.state === "submitting" &&
-      fetcher.formData?.get("intentType") === "update";
-
-   const isPublishing =
-      fetcher.state === "submitting" &&
-      fetcher.formData?.get("intentType") === "publish";
-
-   const disabled = isProcessing(fetcher.state);
+   const { refs, floatingStyles } = useFloating({
+      whileElementsMounted: autoUpdate,
+      placement: "right-start",
+      middleware: [
+         shift({
+            padding: {
+               top: 80,
+            },
+         }),
+         offset({
+            mainAxis: 50,
+            crossAxis: 0,
+         }),
+      ],
+   });
 
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
+         <main
+            ref={refs.setReference}
+            className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
+         >
             {hasAccess ? (
                <AdminOrStaffOrOwner>
                   <div className="relative min-h-screen">
@@ -98,93 +115,6 @@ export default function SiteIndexMain() {
                            />
                         </Await>
                      </Suspense>
-                     <div
-                        className="shadow-1 border-color bg-2 flex fixed inset-x-0 bottom-20 z-40 mx-auto
-                  max-w-[200px] items-center justify-between rounded-full border p-2 shadow-sm"
-                     >
-                        <div
-                           className="shadow-1 border-color bg-3 flex h-10
-                     w-10 items-center justify-center rounded-full border shadow-sm"
-                        >
-                           {isAutoSaving ? (
-                              <Loader2 size={18} className="animate-spin" />
-                           ) : (
-                              <MoreVertical size={18} />
-                           )}
-                        </div>
-
-                        {isPublishing ? (
-                           <div
-                              className="shadow-1 inline-flex h-10 w-10 items-center justify-center 
-                        rounded-full border border-blue-200/80 bg-gradient-to-b
-                        from-blue-50 to-blue-100 text-sm font-bold text-white shadow-sm transition
-                        dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
-                        dark:shadow-blue-950"
-                           >
-                              <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
-                           </div>
-                        ) : (
-                           <>
-                              {isChanged ? (
-                                 <Tooltip
-                                    id="save-home-changes"
-                                    side="top"
-                                    content="Publish latest changes"
-                                 >
-                                    <button
-                                       className="shadow-1 inline-flex h-10 items-center justify-center gap-1.5 
-                                    rounded-full border border-blue-200/70 bg-gradient-to-b from-blue-50 to-blue-100
-                                    px-3.5 text-sm font-bold text-blue-500 shadow-sm transition dark:border-blue-900
-                                    dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-300 
-                                    dark:shadow-blue-950"
-                                       disabled={disabled}
-                                       onClick={() => {
-                                          fetcher.submit(
-                                             //@ts-ignore
-                                             {
-                                                intent: "homeContent",
-                                                intentType: "publish",
-                                                siteId,
-                                             },
-                                             {
-                                                method: "post",
-                                                action: "/editors/SoloEditor",
-                                             }
-                                          );
-                                       }}
-                                    >
-                                       Publish
-                                    </button>
-                                 </Tooltip>
-                              ) : (
-                                 <Tooltip
-                                    id="no-changes"
-                                    side="top"
-                                    content="No changes to publish..."
-                                 >
-                                    <div
-                                       className="shadow-1 border-color bg-3 flex h-10
-                                       w-10 items-center justify-center rounded-full border shadow-sm"
-                                    >
-                                       <Check size={18} />
-                                    </div>
-                                 </Tooltip>
-                              )}
-                           </>
-                        )}
-                        <Tooltip
-                           id="revert-last-publish"
-                           side="top"
-                           content="History"
-                        >
-                           <div
-                              className="shadow-1 border-color bg-3 flex h-10
-                               w-10 items-center justify-center rounded-full border shadow-sm"
-                           >
-                              <History size={18} />
-                           </div>
-                        </Tooltip>
-                     </div>
                   </div>
                </AdminOrStaffOrOwner>
             ) : (
@@ -209,6 +139,11 @@ export default function SiteIndexMain() {
                </>
             )}
          </main>
+         <EditorCommandBar
+            fetcher={fetcher}
+            refs={refs}
+            floatingStyles={floatingStyles}
+         />
       </>
    );
 }
@@ -268,6 +203,113 @@ const fetchHomeUpdates = async ({
       },
    });
    return updateResults;
+};
+
+const EditorCommandBar = ({
+   fetcher,
+   refs,
+   floatingStyles,
+}: {
+   fetcher: any;
+   refs: any;
+   floatingStyles: any;
+}) => {
+   const { isChanged, siteId } = useLoaderData<typeof loader>();
+
+   const isAutoSaving =
+      fetcher.state === "submitting" &&
+      fetcher.formData?.get("intentType") === "update";
+
+   const isPublishing =
+      fetcher.state === "submitting" &&
+      fetcher.formData?.get("intentType") === "publish";
+
+   const disabled = isProcessing(fetcher.state);
+
+   return (
+      <div
+         ref={refs.setFloating}
+         style={floatingStyles}
+         className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow"
+      >
+         {/* <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
+            <MoreVertical size={18} />
+         </div> */}
+         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
+            {isPublishing ? (
+               <div
+                  className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
+                  rounded-full border border-blue-200/80 bg-gradient-to-b
+                  from-blue-50 to-blue-100 text-sm font-bold text-white shadow-sm transition
+                  dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
+                  dark:shadow-blue-950"
+               >
+                  <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
+               </div>
+            ) : (
+               <>
+                  {isChanged ? (
+                     <Tooltip placement="left">
+                        <TooltipTrigger>
+                           <button
+                              className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
+                              border border-blue-200/70 bg-gradient-to-b from-blue-50 to-blue-100
+                              text-sm font-bold text-blue-500 shadow-sm transition dark:border-blue-900
+                              dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-300 
+                              dark:shadow-blue-950"
+                              disabled={disabled}
+                              onClick={() => {
+                                 fetcher.submit(
+                                    //@ts-ignore
+                                    {
+                                       intent: "homeContent",
+                                       intentType: "publish",
+                                       siteId,
+                                    },
+                                    {
+                                       method: "post",
+                                       action: "/editors/SoloEditor",
+                                    }
+                                 );
+                              }}
+                           >
+                              <PaperAirplaneIcon className="h-4 w-4" />
+                           </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Publish latest changes</TooltipContent>
+                     </Tooltip>
+                  ) : (
+                     <Tooltip placement="left">
+                        <TooltipTrigger>
+                           <div
+                              className="shadow-1 border-color bg-3 flex h-8
+                                 w-8 items-center justify-center rounded-full border shadow-sm"
+                           >
+                              {isAutoSaving ? (
+                                 <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                 <Check size={16} />
+                              )}
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                           No changes to publish...
+                        </TooltipContent>
+                     </Tooltip>
+                  )}
+               </>
+            )}
+            <Tooltip placement="left">
+               <TooltipTrigger>
+                  <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
+                     <History size={18} />
+                  </div>
+               </TooltipTrigger>
+               <TooltipContent>History</TooltipContent>
+            </Tooltip>
+         </FloatingDelayGroup>
+      </div>
+   );
 };
 
 const fetchHomeContent = async ({
