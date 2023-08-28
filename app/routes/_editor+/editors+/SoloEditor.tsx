@@ -34,6 +34,7 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
@@ -41,7 +42,6 @@ import {
    BlockInlineActions,
    Button,
    Toolbar,
-   Tooltip,
 } from "~/routes/_editor+/components";
 import {
    HOTKEYS,
@@ -389,7 +389,7 @@ function SortableElement({
 
    return (
       <div
-         className="flex group relative flex-col 
+         className="group relative flex flex-col 
          border-y border-dashed border-transparent 
          hover:border-y hover:border-zinc-200 dark:hover:border-zinc-700"
          {...attributes}
@@ -423,15 +423,18 @@ function SortableElement({
                 opacity-0 group-hover:opacity-100 laptop:-right-11 laptop:-top-0.5"
                contentEditable={false}
             >
-               <Tooltip id="delete" content="Delete">
-                  <Button
-                     className="hover:bg-2 shadow-1 border-color bg-3 flex
+               <Tooltip>
+                  <TooltipTrigger>
+                     <Button
+                        className="hover:bg-2 shadow-1 border-color bg-3 flex
                       h-8 w-8 items-center justify-center rounded-md border shadow-sm"
-                     onClick={onDelete}
-                     ariaLabel="Delete"
-                  >
-                     <Trash className="text-1" size={14} />
-                  </Button>
+                        onClick={onDelete}
+                        ariaLabel="Delete"
+                     >
+                        <Trash className="text-1" size={14} />
+                     </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Delete</TooltipContent>
                </Tooltip>
             </div>
          </div>

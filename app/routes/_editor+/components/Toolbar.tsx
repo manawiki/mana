@@ -20,7 +20,7 @@ import {
 } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import Button from "./Button";
 import Select from "./Select";
@@ -172,9 +172,128 @@ export default function Toolbar() {
                )} */}
                <div className="flex items-center gap-1">
                   {!isLinkActive(editor) && (
-                     <Tooltip id="add-link" content="Add Link">
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <Button
+                              ariaLabel="Add Link"
+                              onPointerDown={(e) => e.preventDefault()}
+                              onClick={(e) => {
+                                 e.preventDefault();
+                                 const url = window.prompt(
+                                    "Enter the URL of the link:"
+                                 );
+                                 if (!url) return;
+                                 wrapLink(editor, url);
+                              }}
+                              className={`${
+                                 isLinkActive(editor) === true
+                                    ? "bg-3 border-color border"
+                                    : ""
+                              } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                           >
+                              <Link2 size={16} />
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Add Link</TooltipContent>
+                     </Tooltip>
+                  )}
+                  <Tooltip>
+                     <TooltipTrigger>
                         <Button
-                           ariaLabel="Add Link"
+                           ariaLabel="Toggle Bold"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={() => toggleMark(editor, "bold")}
+                           className={`${
+                              marks && marks["bold"] === true
+                                 ? "bg-3 border-color border"
+                                 : ""
+                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                        >
+                           <Bold size={16} />
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Toggle Bold</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Button
+                           ariaLabel="Toggle Italic"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={() => toggleMark(editor, "italic")}
+                           className={`${
+                              marks && marks["italic"] === true
+                                 ? "bg-3 border-color border"
+                                 : ""
+                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                        >
+                           <Italic size={16} />
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Toggle Italic</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Button
+                           ariaLabel="Toggle Underline"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={() => toggleMark(editor, "underline")}
+                           className={`${
+                              marks && marks["underline"] === true
+                                 ? "bg-3 border-color border"
+                                 : ""
+                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                        >
+                           <Underline size={16} />
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Toggle Underline</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Button
+                           ariaLabel="Toggle Strikethrough"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={() => toggleMark(editor, "strikeThrough")}
+                           className={`${
+                              marks && marks["strikeThrough"] === true
+                                 ? "bg-3 border-color border"
+                                 : ""
+                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                        >
+                           <Strikethrough size={16} />
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Toggle Strikethrough</TooltipContent>
+                  </Tooltip>
+               </div>
+            </section>
+            {isLinkActive(editor) ? (
+               <section className="bg-3 mt-1.5 flex items-center gap-3 truncate rounded-md px-2">
+                  <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
+                     {activeLinkUrl(editor)}
+                  </span>
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Button
+                           className="flex items-center p-1"
+                           ariaLabel="Remove Link"
+                           onPointerDown={(e) => e.preventDefault()}
+                           onClick={(e) => {
+                              if (isLinkActive(editor)) {
+                                 unwrapLink(editor);
+                              }
+                           }}
+                        >
+                           <Link2Off className="text-red-400" size={16} />
+                        </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Remove Link</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Button
+                           className="flex items-center p-1"
+                           ariaLabel="Update Link"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
                               e.preventDefault();
@@ -184,115 +303,11 @@ export default function Toolbar() {
                               if (!url) return;
                               wrapLink(editor, url);
                            }}
-                           className={`${
-                              isLinkActive(editor) === true
-                                 ? "bg-3 border-color border"
-                                 : ""
-                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
                         >
-                           <Link2 size={16} />
+                           <Edit className="text-blue-400" size={14} />
                         </Button>
-                     </Tooltip>
-                  )}
-                  <Tooltip id="bold" content="Toggle Bold">
-                     <Button
-                        ariaLabel="Toggle Bold"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={() => toggleMark(editor, "bold")}
-                        className={`${
-                           marks && marks["bold"] === true
-                              ? "bg-3 border-color border"
-                              : ""
-                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                     >
-                        <Bold size={16} />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip id="italic" content="Toggle Italic">
-                     <Button
-                        ariaLabel="Toggle Italic"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={() => toggleMark(editor, "italic")}
-                        className={`${
-                           marks && marks["italic"] === true
-                              ? "bg-3 border-color border"
-                              : ""
-                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                     >
-                        <Italic size={16} />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip id="underline" content="Toggle Underline">
-                     <Button
-                        ariaLabel="Toggle Underline"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={() => toggleMark(editor, "underline")}
-                        className={`${
-                           marks && marks["underline"] === true
-                              ? "bg-3 border-color border"
-                              : ""
-                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                     >
-                        <Underline size={16} />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip id="strikethrough" content="Toggle Strikethrough">
-                     <Button
-                        ariaLabel="Toggle Strikethrough"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={() => toggleMark(editor, "strikeThrough")}
-                        className={`${
-                           marks && marks["strikeThrough"] === true
-                              ? "bg-3 border-color border"
-                              : ""
-                        } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                     >
-                        <Strikethrough size={16} />
-                     </Button>
-                  </Tooltip>
-               </div>
-            </section>
-            {isLinkActive(editor) ? (
-               <section className="bg-3 flex mt-1.5 items-center gap-3 truncate rounded-md px-2">
-                  <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
-                     {activeLinkUrl(editor)}
-                  </span>
-                  <Tooltip
-                     className="flex items-center p-1"
-                     id="remove-link"
-                     content="Remove Link"
-                  >
-                     <Button
-                        ariaLabel="Remove Link"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                           if (isLinkActive(editor)) {
-                              unwrapLink(editor);
-                           }
-                        }}
-                     >
-                        <Link2Off className="text-red-400" size={16} />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip
-                     className="flex items-center p-1"
-                     id="update-link"
-                     content="Update Link"
-                  >
-                     <Button
-                        ariaLabel="Update Link"
-                        onPointerDown={(e) => e.preventDefault()}
-                        onClick={(e) => {
-                           e.preventDefault();
-                           const url = window.prompt(
-                              "Enter the URL of the link:"
-                           );
-                           if (!url) return;
-                           wrapLink(editor, url);
-                        }}
-                     >
-                        <Edit className="text-blue-400" size={14} />
-                     </Button>
+                     </TooltipTrigger>
+                     <TooltipContent>Update Link</TooltipContent>
                   </Tooltip>
                </section>
             ) : null}

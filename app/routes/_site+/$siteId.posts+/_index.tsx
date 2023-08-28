@@ -28,7 +28,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Image, Post, Site, User } from "payload/generated-types";
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { isLoading, safeNanoID } from "~/utils";
@@ -316,20 +316,20 @@ export default function PostsIndex() {
                                        )}
                                     </time>
                                     {post._status == "published" ? (
-                                       <Tooltip
-                                          id="published"
-                                          content="Published"
-                                          side="left"
-                                       >
-                                          <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
+                                       <Tooltip>
+                                          <TooltipTrigger>
+                                             <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Published
+                                          </TooltipContent>
                                        </Tooltip>
                                     ) : (
-                                       <Tooltip
-                                          id="draft"
-                                          content="Draft"
-                                          side="left"
-                                       >
-                                          <div className="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-500" />
+                                       <Tooltip>
+                                          <TooltipTrigger>
+                                             <div className="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-500" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>Draft</TooltipContent>
                                        </Tooltip>
                                     )}
                                  </div>
