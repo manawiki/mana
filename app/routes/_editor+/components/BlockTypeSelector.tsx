@@ -208,7 +208,7 @@ export const BlockTypeSelector = ({ onSelect }: Props) => {
       setIsOpen(true);
    }
    return (
-      <Float dialog placement="bottom-start" offset={2}>
+      <Float dialog placement="bottom-start" offset={6}>
          <Float.Reference>
             <button
                type="button"

@@ -118,12 +118,12 @@ export const ColumnFour = ({
                <div className="border-color relative border-t p-4 dark:border-zinc-700/40">
                   <div className="flex items-center justify-between">
                      <div className="flex items-center gap-2">
-                        <a
+                        {/* <a
                            className="border-color shadow-1 bg-3 rounded-lg border px-3 py-2 text-xs font-semibold shadow-sm"
                            href="https://mana.wiki"
                         >
                            Get the app
-                        </a>
+                        </a> */}
                         <LoggedOut>
                            <DarkModeToggle />
                         </LoggedOut>

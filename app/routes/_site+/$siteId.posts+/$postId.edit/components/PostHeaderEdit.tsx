@@ -136,7 +136,7 @@ export const PostHeaderEdit = ({
             isUnpublishOpen={isUnpublishOpen}
             setUnpublishOpen={setUnpublishOpen}
          />
-         <section className="mx-auto max-w-[728px] max-tablet:px-3">
+         <section className="mx-auto max-w-[728px]">
             <AdminOrStaffOrOwner>
                <div className="flex items-center justify-between pb-6">
                   <div className="flex items-center justify-between gap-3 desktop:-ml-11">
@@ -450,7 +450,7 @@ export const PostHeaderEdit = ({
                   </div>
                </div>
             </AdminOrStaffOrOwner>
-            <div className="relative mb-3 flex items-center gap-3">
+            <div className="flex relative mb-3 items-center gap-3">
                <TextareaAutosize
                   className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
                    font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
@@ -461,7 +461,7 @@ export const PostHeaderEdit = ({
                />
             </div>
             <PostHeader post={post} />
-            <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-3">
+            <div className="border-color flex relative mb-6 items-center gap-3 border-b border-zinc-100 pb-3">
                <TextareaAutosize
                   className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
                   p-0 text-sm font-semibold focus:ring-transparent"
@@ -490,7 +490,7 @@ export const PostHeaderEdit = ({
                         />
                      </div>
                      <button
-                        className="absolute right-2.5 top-2.5 flex h-10 w-10 items-center
+                        className="flex absolute right-2.5 top-2.5 h-10 w-10 items-center
                    justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
                         onClick={() =>
                            fetcher.submit(
@@ -528,7 +528,7 @@ export const PostHeaderEdit = ({
                            dragActive
                               ? "border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
                               : "hover:border-dashed hover:border-zinc-300 dark:hover:border-zinc-600 "
-                        } bg-2 border-color group flex aspect-[1.91/1] cursor-pointer items-center
+                        } bg-2 border-color flex group aspect-[1.91/1] cursor-pointer items-center
                         justify-center overflow-hidden border-y shadow-sm hover:border-2
                         tablet:rounded-md tablet:border laptop:rounded-none 
                         laptop:border-x-0 desktop:rounded-md desktop:border`}

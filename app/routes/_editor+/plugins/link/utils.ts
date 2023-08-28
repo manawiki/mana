@@ -12,6 +12,24 @@ const isLinkifyElement = (element: CustomElement) =>
 const linkify = LinkifyIt();
 
 linkify.tlds(tlds);
+linkify.tlds(tlds);
+
+//If in link edit mode, double space will exit you out.
+export const moveCursorOut = (editor: Editor) => {
+   const { selection } = editor;
+
+   // check that there is a current selection without highlight
+   if (selection && Range.isCollapsed(selection)) {
+      const [match] = Editor.nodes(editor, {
+         match: (n) => n.type === "link",
+      });
+
+      // check that there was a match
+      if (match) {
+         Transforms.move(editor, { unit: "offset" });
+      }
+   }
+};
 
 /**
  * If text contains something similar to link `true` will be returned
@@ -23,16 +41,6 @@ export const isLinkActive = (editor: Editor) => {
       match: isLinkifyElement,
    });
    return !!link;
-};
-
-export const getLinkUrl = (editor: Editor) => {
-   const [match] = Editor.nodes(editor, {
-      match: isLinkifyElement,
-   });
-
-   const [node] = match;
-
-   return isLinkifyElement(node) ? node.url : undefined;
 };
 
 /**
@@ -146,7 +154,8 @@ export const tryWrapLink = (editor: Editor): void => {
          offset: wordAnchorOffset + link.lastIndex,
       },
    });
-   wrapLink(editor, link.url);
+   const linkWithSSL = `https://${link.text}`;
+   wrapLink(editor, linkWithSSL);
 };
 
 /**

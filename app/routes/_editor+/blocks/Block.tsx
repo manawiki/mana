@@ -10,9 +10,10 @@ import { BlockGroup } from "./BlockGroup";
 // eslint-disable-next-line import/no-cycle
 import BlockGroupView from "./BlockGroupView";
 import BlockImage from "./BlockImage";
-import BlockLink from "./BlockLink";
 import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
+import { BlockLink } from "../$siteId.blocks+/link/edit";
+import { BlockLinkView } from "../$siteId.blocks+/link/view";
 // eslint-disable-next-line import/no-cycle
 import { BlockUpdates } from "../$siteId.blocks+/updates";
 // eslint-disable-next-line import/no-cycle
@@ -43,6 +44,8 @@ export const Block = ({
 
    switch (element.type) {
       case BlockType.Link: {
+         if (readOnly)
+            return <BlockLinkView element={element} children={children} />;
          return <BlockLink element={element} children={children} />;
       }
       case BlockType.Group: {
