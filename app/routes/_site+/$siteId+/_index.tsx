@@ -139,11 +139,13 @@ export default function SiteIndexMain() {
                </>
             )}
          </main>
-         <EditorCommandBar
-            fetcher={fetcher}
-            refs={refs}
-            floatingStyles={floatingStyles}
-         />
+         <AdminOrStaffOrOwner>
+            <EditorCommandBar
+               fetcher={fetcher}
+               refs={refs}
+               floatingStyles={floatingStyles}
+            />
+         </AdminOrStaffOrOwner>
       </>
    );
 }
