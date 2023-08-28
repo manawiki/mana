@@ -305,67 +305,55 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   {/* UID - Will move this elsewhere in future, atm commented out due to mobile issue */}
 
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">UID</span>
                         <span>{data?.detail_info?.uid}</span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
-                        UID
-                     </TooltipContent>
+                     <TooltipContent>UID</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1">Trailblaze Lvl</span>
                         <span>{data?.detail_info?.level}</span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Trailblaze Level
-                     </TooltipContent>
+                     <TooltipContent>Trailblaze Level</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1">Equilibrium Lvl</span>
                         <span>{data?.detail_info?.world_level}</span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Equilibrium Level
-                     </TooltipContent>
+                     <TooltipContent>Equilibrium Level</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1">Achievements</span>
                         <span>
                            {data?.detail_info?.record_info?.achievement_count}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Achievements Unlocked
-                     </TooltipContent>
+                     <TooltipContent>Achievements Unlocked</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1">Characters</span>
                         <span>
                            {data?.detail_info?.record_info?.avatar_count}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Characters Owned
-                     </TooltipContent>
+                     <TooltipContent>Characters Owned</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1">Simulated</span>
                         <span>
                            {data?.detail_info?.record_info?.rogue_area_progress}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Simulated Universe World
-                     </TooltipContent>
+                     <TooltipContent>Simulated Universe World</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">F. Hall Normal</span>
                         <span>
                            {
@@ -374,12 +362,10 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            }
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Forgotten Hall Normal
-                     </TooltipContent>
+                     <TooltipContent>Forgotten Hall Normal</TooltipContent>
                   </Tooltip>
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger className={dataClass}>
                         <span className="text-1 truncate">F. Hall Hard</span>
                         <span>
                            {
@@ -388,9 +374,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            }
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={dataClass}>
-                        Forgotten Hall Hard
-                     </TooltipContent>
+                     <TooltipContent>Forgotten Hall Hard</TooltipContent>
                   </Tooltip>
                </div>
             </section>
@@ -985,12 +969,12 @@ const CharacterInfo = ({
                      </div>
 
                      {/* Eidolon Levels; if not unlocked, show 🔒 */}
-                     <div className="absolute left-0 top-16">
+                     <div className="absolute left-0 top-16 flex flex-col">
                         {charbase?.eidolons?.map((e: any, i: any) => {
                            const elv = chardata?.promotion ?? 0;
 
                            return elv > i ? (
-                              <Tooltip key={i}>
+                              <Tooltip placement="right" key={i}>
                                  <TooltipTrigger>
                                     <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
                                        <Image
@@ -1006,12 +990,16 @@ const CharacterInfo = ({
                                        <div className="pb-0.5 text-blue-500">
                                           {e?.name}
                                        </div>
-                                       <div>{e?.description}</div>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html: e?.description,
+                                          }}
+                                       />
                                     </div>
                                  </TooltipContent>
                               </Tooltip>
                            ) : (
-                              <Tooltip key={i}>
+                              <Tooltip placement="right-start" key={i}>
                                  <TooltipTrigger>
                                     <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
                                        <Image
@@ -1033,7 +1021,11 @@ const CharacterInfo = ({
                                        <div className="pb-0.5 text-blue-500">
                                           {e?.name}
                                        </div>
-                                       <div>{e?.description}</div>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html: e?.description,
+                                          }}
+                                       />
                                     </div>
                                  </TooltipContent>
                               </Tooltip>
@@ -1265,7 +1257,7 @@ const CharacterInfo = ({
                            </TooltipTrigger>
                            <TooltipContent>
                               <div className="w-60 text-left font-normal">
-                                 <div className="mb-2 border-b border-zinc-700 pb-2">
+                                 <div className="border-color mb-2 border-b pb-2">
                                     Each group of dots represents an individual
                                     time the substat was rolled into. The number
                                     of dots represent the quality of substat
@@ -1479,37 +1471,34 @@ const CharacterInfo = ({
                            // Check if any of the set bonuses also include the currently highlighted stat
 
                            return (
-                              <div
-                                 key={key}
-                                 className={`bg-3 shadow-1 flex items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
-                                 onMouseOver={() => setHoverStat(sbonuses)}
-                                 onMouseOut={() => setHoverStat([])}
-                                 // onClick={() =>
-                                 //    setHoverStat(
-                                 //       hoverStat?.length > 0
-                                 //          ? []
-                                 //          : sbonuses
-                                 //    )
-                                 // }
-                              >
-                                 <Tooltip>
-                                    <TooltipTrigger>{set.name}</TooltipTrigger>
-                                    <TooltipContent>
-                                       <div className="w-44">
-                                          <div className="pb-0.5 text-blue-500">
-                                             {set?.name}
-                                          </div>
-                                          <div>{setdesc}</div>
-                                       </div>
-                                    </TooltipContent>
-                                 </Tooltip>
-                                 <div
-                                    className="bg-2 relative flex h-6 w-6 items-center justify-center 
-                                       rounded-full font-bold text-green-400"
+                              <Tooltip key={key}>
+                                 <TooltipTrigger
+                                    className={`bg-3 shadow-1 flex w-full items-center justify-between rounded-lg px-3 py-2 text-xs shadow-sm ${highlightStyle}`}
+                                    onMouseOver={() => setHoverStat(sbonuses)}
+                                    onMouseOut={() => setHoverStat([])}
                                  >
-                                    {set.num}
-                                 </div>
-                              </div>
+                                    {set.name}
+
+                                    <div
+                                       className="bg-2 relative flex h-6 w-6 items-center justify-center 
+                                       rounded-full font-bold text-green-400"
+                                    >
+                                       {set.num}
+                                    </div>
+                                 </TooltipTrigger>
+                                 <TooltipContent>
+                                    <div className="w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {set?.name}
+                                       </div>
+                                       <div
+                                          dangerouslySetInnerHTML={{
+                                             __html: setdesc,
+                                          }}
+                                       />
+                                    </div>
+                                 </TooltipContent>
+                              </Tooltip>
                            );
                         })}
                      </div>
@@ -1717,19 +1706,30 @@ const SkillTreeDisplay = ({
                      </div>
 
                      <Tooltip>
-                        <TooltipTrigger>
-                           <div className="w-80 text-2xl">
-                              <div className="pb-0.5 text-blue-500">
-                                 ${node?.name ?? ""}
-                              </div>
-                              <div>${node_desc}</div>
-                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent
+                        <TooltipTrigger
                            className={`absolute z-30 h-[20px] w-[20px] origin-top-left scale-[2.0] point-${
                               i + 1
                            }-${pathkey}`}
-                        ></TooltipContent>
+                           onMouseOver={() => setHoverStat(skillstats)}
+                           onMouseOut={() => setHoverStat([])}
+                           onClick={() =>
+                              setHoverStat(
+                                 hoverStat.length > 0 ? [] : skillstats
+                              )
+                           }
+                        >
+                           <></>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                           <div className="max-w-[200px]">
+                              <div className="pb-0.5 text-blue-500">
+                                 {node?.name ?? ""}
+                              </div>
+                              <div
+                                 dangerouslySetInnerHTML={{ __html: node_desc }}
+                              />
+                           </div>
+                        </TooltipContent>
                      </Tooltip>
                   </Fragment>
                );
