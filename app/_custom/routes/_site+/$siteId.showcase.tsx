@@ -28,10 +28,10 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { fetchShowcase } from "~/utils/showcase-cache.server";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -318,7 +318,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         <span className="text-1">Trailblaze Lvl</span>
                         <span>{data?.detail_info?.level}</span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Trailblaze Level
                      </TooltipContent>
                   </Tooltip>
@@ -327,7 +327,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                         <span className="text-1">Equilibrium Lvl</span>
                         <span>{data?.detail_info?.world_level}</span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Equilibrium Level
                      </TooltipContent>
                   </Tooltip>
@@ -338,7 +338,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            {data?.detail_info?.record_info?.achievement_count}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Achievements Unlocked
                      </TooltipContent>
                   </Tooltip>
@@ -349,7 +349,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            {data?.detail_info?.record_info?.avatar_count}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Characters Owned
                      </TooltipContent>
                   </Tooltip>
@@ -360,7 +360,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            {data?.detail_info?.record_info?.rogue_area_progress}
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Simulated Universe World
                      </TooltipContent>
                   </Tooltip>
@@ -374,7 +374,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            }
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Forgotten Hall Normal
                      </TooltipContent>
                   </Tooltip>
@@ -388,7 +388,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                            }
                         </span>
                      </TooltipTrigger>
-                     <TooltipContent className={`${dataClass}`}>
+                     <TooltipContent className={dataClass}>
                         Forgotten Hall Hard
                      </TooltipContent>
                   </Tooltip>
