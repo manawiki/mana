@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Component, Dog, Users } from "lucide-react";
 
 import { DarkModeToggle, Image, LogoText } from "~/components";
-import Tooltip from "~/components/Tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 import { LoggedOut } from "~/modules/auth";
 
@@ -51,61 +51,66 @@ export const ColumnFour = ({
                      {site.admins?.length === 0 ? null : (
                         <>
                            {site.admins?.map((user: any) => (
-                              <Tooltip
-                                 key={user.id}
-                                 id="site-contributors"
-                                 content={user.username}
-                              >
-                                 <div
-                                    className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
+                              <Tooltip key={user.id}>
+                                 <TooltipTrigger>
+                                    <div
+                                       className="bg-3 shadow-1 flex h-9 w-9 items-center justify-center
                                           overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
+                                    >
+                                       {user.avatar?.url ? (
+                                          <Image
+                                             url={user.avatar?.url}
+                                             options="aspect_ratio=1:1&height=80&width=80"
+                                             alt="User Avatar"
+                                          />
+                                       ) : (
+                                          <Dog className="text-1" size={20} />
+                                       )}
+                                    </div>
+                                 </TooltipTrigger>
+                                 <TooltipContent>
+                                    {user.username}
+                                 </TooltipContent>
+                              </Tooltip>
+                           ))}
+                           <Tooltip key={site?.owner?.id}>
+                              <TooltipTrigger>
+                                 <div
+                                    className="bg-3 shadow-1 h-9 w-9 overflow-hidden rounded-full 
+                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
                                  >
-                                    {user.avatar?.url ? (
+                                    {site?.owner?.avatar?.url ? (
                                        <Image
-                                          url={user.avatar?.url}
+                                          url={site?.owner?.avatar?.url}
                                           options="aspect_ratio=1:1&height=80&width=80"
                                           alt="User Avatar"
                                        />
                                     ) : (
-                                       <Dog className="text-1" size={20} />
+                                       <div
+                                          className="bg-3 shadow-1 flex h-9 w-9 items-center
+                                                justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
+                                       >
+                                          <Dog className="text-1" size={20} />
+                                       </div>
                                     )}
                                  </div>
-                              </Tooltip>
-                           ))}
-                           <Tooltip
-                              key={site?.owner?.id}
-                              id="site-creator"
-                              content={site?.owner?.username}
-                           >
-                              <div
-                                 className="bg-3 shadow-1 h-9 w-9 overflow-hidden rounded-full 
-                                          border border-zinc-200 shadow-sm dark:border-zinc-600"
-                              >
-                                 {site?.owner?.avatar?.url ? (
-                                    <Image
-                                       url={site?.owner?.avatar?.url}
-                                       options="aspect_ratio=1:1&height=80&width=80"
-                                       alt="User Avatar"
-                                    />
-                                 ) : (
-                                    <div
-                                       className="bg-3 shadow-1 flex h-9 w-9 items-center
-                                                justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
-                                    >
-                                       <Dog className="text-1" size={20} />
-                                    </div>
-                                 )}
-                              </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                 {site?.owner?.username}
+                              </TooltipContent>
                            </Tooltip>
                         </>
                      )}
-                     <Tooltip id="join-site" content="Coming Soon!">
-                        <div
-                           className="shadow-1 flex h-9 items-center justify-center rounded-full
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <div
+                              className="shadow-1 flex h-9 items-center justify-center rounded-full
                                  bg-zinc-500 px-4 text-sm font-semibold text-white shadow dark:bg-zinc-600"
-                        >
-                           Join
-                        </div>
+                           >
+                              Join
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent>Coming Soon!</TooltipContent>
                      </Tooltip>
                   </div>
                </section>

@@ -5,7 +5,7 @@ import {
    useRouteLoaderData,
 } from "@remix-run/react";
 
-import { LogoFull } from "~/components/LogoFull";
+import { LogoFull } from "~/components";
 import type { User } from "~/db/payload-types";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
 
