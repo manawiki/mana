@@ -28,10 +28,10 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import Tooltip from "~/components/Tooltip";
 import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { fetchShowcase } from "~/utils/showcase-cache.server";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -303,88 +303,69 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                   grid-cols-2 gap-2 p-2 pt-2 laptop:grid-cols-4"
                >
                   {/* UID - Will move this elsewhere in future, atm commented out due to mobile issue */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="starrail-uid"
-                     content="UID"
-                  >
-                     <>
+
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1 truncate">UID</span>
                         <span>{data?.detail_info?.uid}</span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        UID
+                     </TooltipContent>
                   </Tooltip>
-
-                  {/* Level (Trailblaze Level) */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="trailblazeLevel"
-                     content="Trailblaze Level"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1">Trailblaze Lvl</span>
                         <span>{data?.detail_info?.level}</span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Trailblaze Level
+                     </TooltipContent>
                   </Tooltip>
-
-                  {/* World Level (Equilibrium Level) */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="equilibriumLevel"
-                     content="Equilibrium Level"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1">Equilibrium Lvl</span>
                         <span>{data?.detail_info?.world_level}</span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Equilibrium Level
+                     </TooltipContent>
                   </Tooltip>
-
-                  {/* Achievements */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="achievements"
-                     content="Achievements Unlocked"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1">Achievements</span>
                         <span>
                            {data?.detail_info?.record_info?.achievement_count}
                         </span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Achievements Unlocked
+                     </TooltipContent>
                   </Tooltip>
-
-                  {/* Total Characters */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="owned"
-                     content="Characters Owned"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1">Characters</span>
                         <span>
                            {data?.detail_info?.record_info?.avatar_count}
                         </span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Characters Owned
+                     </TooltipContent>
                   </Tooltip>
-
-                  {/* Simulated Universe */}
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="su-world"
-                     content="Simulated Universe World"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1">Simulated</span>
                         <span>
                            {data?.detail_info?.record_info?.rogue_area_progress}
                         </span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Simulated Universe World
+                     </TooltipContent>
                   </Tooltip>
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="fHalldHard"
-                     content="Forgotten Hall Normal"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1 truncate">F. Hall Normal</span>
                         <span>
                            {
@@ -392,14 +373,13 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                                  ?.none_schedule_max_level
                            }
                         </span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Forgotten Hall Normal
+                     </TooltipContent>
                   </Tooltip>
-                  <Tooltip
-                     className={`${dataClass}`}
-                     id="fHallHard"
-                     content="Forgotten Hall Hard"
-                  >
-                     <>
+                  <Tooltip>
+                     <TooltipTrigger>
                         <span className="text-1 truncate">F. Hall Hard</span>
                         <span>
                            {
@@ -407,7 +387,10 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
                                  ?.schedule_max_level
                            }
                         </span>
-                     </>
+                     </TooltipTrigger>
+                     <TooltipContent className={`${dataClass}`}>
+                        Forgotten Hall Hard
+                     </TooltipContent>
                   </Tooltip>
                </div>
             </section>
@@ -1007,59 +990,52 @@ const CharacterInfo = ({
                            const elv = chardata?.promotion ?? 0;
 
                            return elv > i ? (
-                              <Tooltip
-                                 key={i}
-                                 id="eidolon-stat"
-                                 side="right"
-                                 html={
-                                    //needs to be actual html string, not jsx
-                                    `<div class="w-44">
-                                       <div class="pb-0.5 text-blue-500">
-                                          ${e?.name}
+                              <Tooltip key={i}>
+                                 <TooltipTrigger>
+                                    <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
+                                       <Image
+                                          options="aspect_ratio=1:1&height=60&width=60"
+                                          alt={"Eidolon Lv." + i + 1}
+                                          url={e.icon?.url}
+                                          className="absolute object-contain"
+                                       />
+                                    </div>
+                                 </TooltipTrigger>
+                                 <TooltipContent>
+                                    <div className="w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {e?.name}
                                        </div>
-                                       <div>
-                                          ${e?.description}                                          
-                                       </div>
-                                    </div>`
-                                 }
-                              >
-                                 <div className="relative my-1 block h-10 w-10 rounded-full bg-gray-900">
-                                    <Image
-                                       options="aspect_ratio=1:1&height=60&width=60"
-                                       alt={"Eidolon Lv." + i + 1}
-                                       url={e.icon?.url}
-                                       className="absolute object-contain"
-                                    />
-                                 </div>
+                                       <div>{e?.description}</div>
+                                    </div>
+                                 </TooltipContent>
                               </Tooltip>
                            ) : (
-                              <Tooltip
-                                 key={i}
-                                 id="eidolon-stat"
-                                 side="right"
-                                 html={
-                                    //needs to be actual html string, not jsx
-                                    `<div class="z-40 w-44">
-                                       <div class="pb-0.5 text-blue-500">
-                                          ${e?.name}
+                              <Tooltip key={i}>
+                                 <TooltipTrigger>
+                                    <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
+                                       <Image
+                                          options="aspect_ratio=1:1&height=60&width=60"
+                                          alt={"Eidolon Lv." + i + 1}
+                                          url={e.icon?.url}
+                                          className="absolute object-contain opacity-30"
+                                       />
+                                       <div className="mt-2.5 flex items-center justify-center">
+                                          <Lock
+                                             className="text-white"
+                                             size={18}
+                                          />
                                        </div>
-                                       <div>
-                                          ${e?.description}                                          
-                                       </div>
-                                    </div>`
-                                 }
-                              >
-                                 <div className="relative my-1 h-10 w-10 rounded-full border border-gray-700 bg-gray-900">
-                                    <Image
-                                       options="aspect_ratio=1:1&height=60&width=60"
-                                       alt={"Eidolon Lv." + i + 1}
-                                       url={e.icon?.url}
-                                       className="absolute object-contain opacity-30"
-                                    />
-                                    <div className="mt-2.5 flex items-center justify-center">
-                                       <Lock className="text-white" size={18} />
                                     </div>
-                                 </div>
+                                 </TooltipTrigger>
+                                 <TooltipContent>
+                                    <div className="z-40 w-44">
+                                       <div className="pb-0.5 text-blue-500">
+                                          {e?.name}
+                                       </div>
+                                       <div>{e?.description}</div>
+                                    </div>
+                                 </TooltipContent>
                               </Tooltip>
                            );
                         })}
@@ -1283,44 +1259,42 @@ const CharacterInfo = ({
                         id="relic-legend"
                         className="relative z-30 h-6 w-6 max-desktop:mb-2 max-desktop:mt-4 desktop:absolute desktop:-left-6 desktop:top-0"
                      >
-                        <Tooltip
-                           id="relic-help"
-                           side="right"
-                           html={
-                              // needs to be actual html string, not jsx
-                              `<div class="w-60 text-left font-normal">
-                                 <div class="mb-2 border-b border-zinc-700 pb-2">
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <Info className="text-1 h-5 w-5 laptop:h-4 laptop:w-4" />
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              <div className="w-60 text-left font-normal">
+                                 <div className="mb-2 border-b border-zinc-700 pb-2">
                                     Each group of dots represents an individual
                                     time the substat was rolled into. The number
                                     of dots represent the quality of substat
                                     rolls
                                  </div>
-                                 <div class="flex items-center gap-2">
-                                    <div class="flex w-8 items-center justify-center gap-1">
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div className="flex items-center gap-2">
+                                    <div className="flex w-8 items-center justify-center gap-1">
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Lowest roll</span>
                                  </div>
-                                 <div class="flex items-center gap-2">
-                                    <div class="flex w-8 items-center justify-center gap-1">
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div className="flex items-center gap-2">
+                                    <div className="flex w-8 items-center justify-center gap-1">
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Medium roll</span>
                                  </div>
 
-                                 <div class="flex items-center gap-2">
-                                    <div class="flex w-8 items-center justify-center gap-1">
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
-                                       <span class="block h-1 w-1 rounded-full bg-blue-500" />
+                                 <div className="flex items-center gap-2">
+                                    <div className="flex w-8 items-center justify-center gap-1">
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
+                                       <span className="block h-1 w-1 rounded-full bg-blue-500" />
                                     </div>
                                     <span>Highest roll (best)</span>
                                  </div>
-                              </div>`
-                           }
-                        >
-                           <Info className="text-1 h-5 w-5 laptop:h-4 laptop:w-4" />
+                              </div>
+                           </TooltipContent>
                         </Tooltip>
                      </div>
                      {rbase?.map((r: any, i: any) => {
@@ -1518,23 +1492,16 @@ const CharacterInfo = ({
                                  //    )
                                  // }
                               >
-                                 <Tooltip
-                                    id="relic-set-bonus"
-                                    side="top"
-                                    className="relative font-bold"
-                                    html={
-                                       //needs to be actual html string, not jsx
-                                       `<div class="w-44">
-                                          <div class="pb-0.5 text-blue-500">
-                                             ${set?.name}
+                                 <Tooltip>
+                                    <TooltipTrigger>{set.name}</TooltipTrigger>
+                                    <TooltipContent>
+                                       <div className="w-44">
+                                          <div className="pb-0.5 text-blue-500">
+                                             {set?.name}
                                           </div>
-                                          <div>
-                                             ${setdesc}
-                                          </div>
-                                       </div>`
-                                    }
-                                 >
-                                    {set.name}
+                                          <div>{setdesc}</div>
+                                       </div>
+                                    </TooltipContent>
                                  </Tooltip>
                                  <div
                                     className="bg-2 relative flex h-6 w-6 items-center justify-center 
@@ -1749,29 +1716,21 @@ const SkillTreeDisplay = ({
                         ) : null}
                      </div>
 
-                     <Tooltip
-                        className={`absolute z-30 h-[20px] w-[20px] origin-top-left scale-[2.0] point-${
-                           i + 1
-                        }-${pathkey}`}
-                        onMouseOver={() => setHoverStat(skillstats)}
-                        onMouseOut={() => setHoverStat([])}
-                        onClick={() =>
-                           setHoverStat(hoverStat.length > 0 ? [] : skillstats)
-                        }
-                        id="skill-tree"
-                        side="left"
-                        html={
-                           // needs to be actual html string, not jsx
-                           `<div class="w-80 text-2xl">
-                              <div class="pb-0.5 text-blue-500">
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <div className="w-80 text-2xl">
+                              <div className="pb-0.5 text-blue-500">
                                  ${node?.name ?? ""}
                               </div>
-                              <div>
-                                 ${node_desc}
-                              </div>
-                           </div>`
-                        }
-                     ></Tooltip>
+                              <div>${node_desc}</div>
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent
+                           className={`absolute z-30 h-[20px] w-[20px] origin-top-left scale-[2.0] point-${
+                              i + 1
+                           }-${pathkey}`}
+                        ></TooltipContent>
+                     </Tooltip>
                   </Fragment>
                );
             })}
