@@ -1,6 +1,6 @@
 import invariant from "tiny-invariant";
 
-export const isNativeSSR = (request: Request) => {
+export function isNativeSSR(request: Request) {
    const ua = request.headers.get("user-agent");
    invariant(ua);
    return {
@@ -8,4 +8,4 @@ export const isNativeSSR = (request: Request) => {
       isIOS: ua.includes("isIOS"),
       isAndroid: ua.includes("isAndroid"),
    };
-};
+}

@@ -1,13 +1,13 @@
 import customConfig from "~/_custom/config.json";
 import type { Site } from "~/db/payload-types";
 
-export const siteHomeShouldReload = ({
+export function siteHomeShouldReload({
    currentSite,
    site,
 }: {
    currentSite?: any;
    site?: Site;
-}) => {
+}) {
    // Don't use csr if any are true
    // This will only return true if user is on a core site
    // and navigates to another core site
@@ -18,9 +18,9 @@ export const siteHomeShouldReload = ({
       customConfig?.domain != ""
    )
       return true;
-};
+}
 
-export const siteHomePath = ({
+export function siteHomePath({
    currentSite,
    site,
    isMobileApp,
@@ -28,7 +28,7 @@ export const siteHomePath = ({
    currentSite: Site | undefined;
    site: Site;
    isMobileApp?: Boolean;
-}) => {
+}) {
    //Only rewrite url on web production, mobile will share cookie under a singular domain
    if (!isMobileApp && process.env.NODE_ENV == "production") {
       if (currentSite?.domain) {
@@ -43,12 +43,12 @@ export const siteHomePath = ({
       }
    }
    return `/${site.slug}`;
-};
+}
 
-export const siteHomeRoot = ({ site }: { site: Site }) => {
+export function siteHomeRoot({ site }: { site: Site }) {
    return `${
       site?.domain && process.env.NODE_ENV == "production"
          ? `/`
          : `/${site.slug}`
    }`;
-};
+}
