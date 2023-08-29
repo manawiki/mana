@@ -1,12 +1,12 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { ClientOnly } from "remix-utils";
 
 import { settings } from "mana-config";
 import { H2 } from "~/components/H2";
 import { Image } from "~/components";
 import { fetchWithCache } from "~/utils/cache.server";
+import { Suspense } from "react";
 
 export async function loader({
    context: { payload },
@@ -118,18 +118,25 @@ const BannerList = ({ banners }: any) => {
                      >
                         <div className="font-bold">{b?.name}</div>
                         <div className="text-1 text-xs">
-                           <ClientOnly
-                           //Local date can create potential hydration mismatch when server and client timezones are different
+                           <Suspense
+                           //time locale may trigger hydration issues
                            >
-                              {() => (
-                                 <>
-                                    {new Date(b?.start_date).toLocaleString()} -{" "}
-                                    {b?.end_date
-                                       ? new Date(b?.end_date).toLocaleString()
-                                       : null}
-                                 </>
-                              )}
-                           </ClientOnly>
+                              <time
+                                 dateTime={b?.start_date}
+                                 suppressHydrationWarning
+                              >
+                                 {new Date(b?.start_date).toLocaleString()}
+                              </time>{" "}
+                              -{" "}
+                              {b?.end_date ? (
+                                 <time
+                                    dateTime={b?.end_date}
+                                    suppressHydrationWarning
+                                 >
+                                    {new Date(b?.end_date).toLocaleString()}
+                                 </time>
+                              ) : null}
+                           </Suspense>
                         </div>
                      </div>
                      <div className="relative items-center laptop:flex">
