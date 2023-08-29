@@ -166,6 +166,7 @@ startCore();
 function createProductionRequestHandler(): RequestHandler {
    const buildWithMetronome = registerMetronome(build);
    const metronomeGetLoadContext = createMetronomeGetLoadContext(
+      //@ts-ignore need to overload the metronome types
       buildWithMetronome,
       {
          config: {
@@ -185,6 +186,7 @@ function createProductionRequestHandler(): RequestHandler {
    }
 
    return createRequestHandler({
+      //@ts-ignore need to overload the metronome types
       build: buildWithMetronome,
       mode: process.env.NODE_ENV,
       getLoadContext: combineGetLoadContexts(

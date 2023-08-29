@@ -6,7 +6,7 @@
       "esModuleInterop": true,
       "jsx": "react-jsx",
       "module": "nodenext",
-      "moduleResolution": "node",
+      "moduleResolution": "nodenext",
       "resolveJsonModule": true,
       "strict": false,
       //      "noImplicitAny": true,
