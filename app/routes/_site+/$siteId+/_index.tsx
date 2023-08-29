@@ -8,7 +8,8 @@ import {
    useFloating,
 } from "@floating-ui/react";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
-import { ActionArgs, redirect, type LoaderArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2 } from "lucide-react";
@@ -246,7 +247,7 @@ const EditorCommandBar = ({
          <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow"
+            className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow max-laptop:hidden"
          >
             {/* <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
             <MoreVertical size={18} />
