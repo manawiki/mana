@@ -4,14 +4,6 @@ const customConfig = require("./app/_custom/config.json");
 
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-   future: {
-      v2_routeConvention: true,
-      v2_meta: true,
-      v2_normalizeFormMethod: true,
-      v2_errorBoundary: true,
-      v2_headers: true,
-      v2_dev: true,
-   },
    serverModuleFormat: "cjs",
    tailwind: true,
    postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
