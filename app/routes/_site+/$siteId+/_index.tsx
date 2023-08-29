@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 
 import {
    FloatingDelayGroup,
@@ -8,7 +8,7 @@ import {
    useFloating,
 } from "@floating-ui/react";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
-import { type LoaderArgs } from "@remix-run/node";
+import { ActionArgs, redirect, type LoaderArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2 } from "lucide-react";
@@ -24,6 +24,8 @@ import {
    withReact,
    type RenderElementProps,
 } from "slate-react";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
@@ -40,12 +42,17 @@ import { SoloEditor } from "~/routes/_editor+/editors+/SoloEditor";
 import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
+import { HomeVersionModal } from "./components/HomeVersionModal";
+
 export async function loader({
    context: { payload, user },
    params,
    request,
 }: LoaderArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
+   const { page } = zx.parseQuery(request, {
+      page: z.coerce.number().optional(),
+   });
 
    const { isMobileApp } = isNativeSSR(request);
 
@@ -56,7 +63,8 @@ export async function loader({
       request,
    });
 
-   const { home, isChanged } = await fetchHomeContent({
+   const { home, isChanged, versions } = await fetchHomeContent({
+      page,
       payload,
       siteId,
       user,
@@ -64,7 +72,7 @@ export async function loader({
    });
 
    return await deferIf(
-      { home, isChanged, updateResults, siteId },
+      { home, isChanged, updateResults, versions, siteId },
       isMobileApp
    );
 }
@@ -227,90 +235,105 @@ const EditorCommandBar = ({
       fetcher.formData?.get("intentType") === "publish";
 
    const disabled = isProcessing(fetcher.state);
+   const [isVersionModalOpen, setVersionModal] = useState(false);
 
    return (
-      <div
-         ref={refs.setFloating}
-         style={floatingStyles}
-         className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow"
-      >
-         {/* <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
+      <>
+         <HomeVersionModal
+            isVersionModalOpen={isVersionModalOpen}
+            setVersionModal={setVersionModal}
+         />
+         <div
+            ref={refs.setFloating}
+            style={floatingStyles}
+            className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow"
+         >
+            {/* <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
             <MoreVertical size={18} />
          </div> */}
-         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
-            {isPublishing ? (
-               <div
-                  className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
+            <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
+               {isPublishing ? (
+                  <div
+                     className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
                   rounded-full border border-blue-200/80 bg-gradient-to-b
                   from-blue-50 to-blue-100 text-sm font-bold text-white shadow-sm transition
                   dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
                   dark:shadow-blue-950"
-               >
-                  <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
-               </div>
-            ) : (
-               <>
-                  {isChanged ? (
-                     <Tooltip placement="left">
-                        <TooltipTrigger>
-                           <button
-                              className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
+                  >
+                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
+                  </div>
+               ) : (
+                  <>
+                     {isChanged ? (
+                        <Tooltip placement="left">
+                           <TooltipTrigger>
+                              <button
+                                 className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
                               border border-blue-200/70 bg-gradient-to-b from-blue-50 to-blue-100
                               text-sm font-bold text-blue-500 shadow-sm transition dark:border-blue-900
                               dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-300 
                               dark:shadow-blue-950"
-                              disabled={disabled}
-                              onClick={() => {
-                                 fetcher.submit(
-                                    //@ts-ignore
-                                    {
-                                       intent: "homeContent",
-                                       intentType: "publish",
-                                       siteId,
-                                    },
-                                    {
-                                       method: "post",
-                                       action: "/editors/SoloEditor",
-                                    }
-                                 );
-                              }}
-                           >
-                              <PaperAirplaneIcon className="h-4 w-4" />
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>Publish latest changes</TooltipContent>
-                     </Tooltip>
-                  ) : (
-                     <Tooltip placement="left">
-                        <TooltipTrigger>
-                           <div
-                              className="shadow-1 border-color bg-3 flex h-8
+                                 disabled={disabled}
+                                 onClick={() => {
+                                    fetcher.submit(
+                                       //@ts-ignore
+                                       {
+                                          intent: "homeContent",
+                                          intentType: "publish",
+                                          siteId,
+                                       },
+                                       {
+                                          method: "post",
+                                          action: "/editors/SoloEditor",
+                                       }
+                                    );
+                                 }}
+                              >
+                                 <PaperAirplaneIcon className="h-4 w-4" />
+                              </button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              Publish latest changes
+                           </TooltipContent>
+                        </Tooltip>
+                     ) : (
+                        <Tooltip placement="left">
+                           <TooltipTrigger>
+                              <div
+                                 className="shadow-1 border-color bg-3 flex h-8
                                  w-8 items-center justify-center rounded-full border shadow-sm"
-                           >
-                              {isAutoSaving ? (
-                                 <Loader2 size={16} className="animate-spin" />
-                              ) : (
-                                 <Check size={16} />
-                              )}
-                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           No changes to publish...
-                        </TooltipContent>
-                     </Tooltip>
-                  )}
-               </>
-            )}
-            <Tooltip placement="left">
-               <TooltipTrigger>
-                  <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
-                     <History size={18} />
-                  </div>
-               </TooltipTrigger>
-               <TooltipContent>History</TooltipContent>
-            </Tooltip>
-         </FloatingDelayGroup>
-      </div>
+                              >
+                                 {isAutoSaving ? (
+                                    <Loader2
+                                       size={16}
+                                       className="animate-spin"
+                                    />
+                                 ) : (
+                                    <Check size={16} />
+                                 )}
+                              </div>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              No changes to publish...
+                           </TooltipContent>
+                        </Tooltip>
+                     )}
+                  </>
+               )}
+               <Tooltip placement="left">
+                  <TooltipTrigger>
+                     <button
+                        className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm"
+                        onClick={() => setVersionModal(true)}
+                     >
+                        <History size={18} />
+                     </button>
+                  </TooltipTrigger>
+                  <TooltipContent>History</TooltipContent>
+               </Tooltip>
+            </FloatingDelayGroup>
+         </div>
+      </>
    );
 };
 
@@ -319,15 +342,14 @@ const fetchHomeContent = async ({
    siteId,
    user,
    request,
+   page = 1,
 }: {
    payload: Payload;
    siteId: Site["slug"];
    user?: User;
    request: Request;
-}): Promise<{
-   home: HomeContent["content"];
-   isChanged: Boolean;
-}> => {
+   page: number | undefined;
+}) => {
    //Use local API and bypass cache for logged in users
    if (user) {
       const { docs } = await payload.find({
@@ -341,11 +363,10 @@ const fetchHomeContent = async ({
       });
 
       const homeData = docs[0];
-      const site = homeData.site;
-      const userId = user?.id;
-      const hasAccess = isSiteOwnerOrAdmin(userId, site);
 
       //If site admin, pull the latest draft and update isChanged
+      const hasAccess = isSiteOwnerOrAdmin(user?.id, homeData.site);
+
       if (hasAccess) {
          const data = await payload.findByID({
             collection: "homeContents",
@@ -355,20 +376,57 @@ const fetchHomeContent = async ({
             user,
          });
 
+         //We disable perms since ID is not a paramater we can use, if above perms pass, we pull versions.
+         const versionData = await payload.findVersions({
+            collection: "homeContents",
+            depth: 2,
+            where: {
+               parent: {
+                  equals: homeData.id,
+               },
+            },
+            limit: 20,
+            user,
+            page,
+         });
+
+         const versions = versionData.docs
+            .filter((doc) => doc.version._status === "published")
+            .map((doc) => {
+               const versionRow = select({ id: true, updatedAt: true }, doc);
+               const version = select(
+                  {
+                     id: false,
+                     content: true,
+                     _status: true,
+                  },
+                  doc.version
+               );
+
+               //Combine final result
+               const result = {
+                  ...versionRow,
+                  version,
+               };
+
+               return result;
+            });
+
          const home = select({ id: false, content: true }, data).content;
 
          const isChanged =
             JSON.stringify(home) != JSON.stringify(homeData.content);
 
-         return { home, isChanged };
+         return { home, isChanged, versions };
       }
 
-      const home = docs[0]?.content;
+      //If no access, return content field from original query
+      const home = docs[0].content;
 
       return { home, isChanged: false };
    }
 
-   //For anon, use cached endpoint call.
+   //For anon users, use cached endpoint call.
    const homeContentQuery = qs.stringify(
       {
          where: {
@@ -392,7 +450,37 @@ const fetchHomeContent = async ({
       },
    });
 
-   const home = docs[0]?.content;
+   const home = docs[0].content as HomeContent["content"];
 
    return { home, isChanged: false };
 };
+
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionArgs) {
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
+
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
+   switch (intent) {
+      case "versionUpdate": {
+         const { versionId, collectionSlug } = await zx.parseForm(request, {
+            versionId: z.string(),
+            collectionSlug: z.string(),
+         });
+         return await payload.restoreVersion({
+            //@ts-ignore
+            collection: collectionSlug,
+            id: versionId,
+            overrideAccess: false,
+            user,
+         });
+      }
+
+      default:
+         return null;
+   }
+}

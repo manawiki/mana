@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { useNavigate } from "@remix-run/react";
 
 //A modal generic wrapper, pass in show and onClose to control the modal state, otherwise use it as a route modal
 export function Modal({
@@ -13,15 +12,9 @@ export function Modal({
    onClose?: () => void;
    children?: React.ReactNode;
 }) {
-   const navigate = useNavigate();
-
    return (
       <Transition appear show={show} as={Fragment}>
-         <Dialog
-            onClose={onClose ?? (() => navigate(-1))}
-            as="div"
-            className="relative z-50"
-         >
+         <Dialog onClose={onClose} as="div" className="relative z-50">
             <div className="h-full w-full">
                <Transition.Child
                   //backdrop transition
