@@ -43,7 +43,7 @@ const resaveCollection = async () => {
                      data: {
                         name: result.name,
                         icon: result.icon.id,
-                        priority: 9,
+                        priority: 30,
                         doc: {
                            relationTo: collectionSlug,
                            value: id,

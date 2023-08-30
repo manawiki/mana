@@ -1,0 +1,1200 @@
+/* Global Element Honkai Styling! */
+
+input[type="checkbox"][disabled] {
+   opacity: 0.5;
+   filter: grayscale(80%);
+}
+
+input[type="range"] {
+   border: 1px rgba(255, 255, 255, 0.1) solid;
+}
+
+/* Item/Material Frame */
+.material-frame {
+   border-radius: 2px 8px 0px 0px;
+}
+
+/* HSR: Rarity Colors */
+.color-rarity-1 {
+   background-image: linear-gradient(
+      to right bottom,
+      #4f5864,
+      #5b6571,
+      #68737e,
+      #75818b,
+      #838f99
+   );
+}
+.color-rarity-2 {
+   background-image: linear-gradient(
+      to right bottom,
+      #48575c,
+      #44676b,
+      #427872,
+      #498873,
+      #5e966c
+   );
+}
+.color-rarity-3 {
+   background-image: linear-gradient(
+      to right bottom,
+      #515474,
+      #506688,
+      #4d799a,
+      #498ca9,
+      #499fb3
+   );
+}
+
+.color-rarity-4 {
+   background-image: linear-gradient(
+      to right bottom,
+      #595482,
+      #6e6195,
+      #866da7,
+      #9e7ab9,
+      #b886ca
+   );
+}
+
+.color-rarity-5 {
+   background-image: linear-gradient(
+      to right bottom,
+      #695453,
+      #90655b,
+      #b3785d,
+      #d1905a,
+      #e6ac54
+   );
+}
+
+/* HSR Character Showcase Image */
+.hsr-showcase-character {
+   mask-image: linear-gradient(to top, black 0%, black 100%),
+      linear-gradient(to top, transparent 0%, black 100%),
+      linear-gradient(to right, transparent 0%, black 100%);
+   mask-position: center, top, right;
+   mask-size: 100% 100%, 100% 150px, 150px 100%;
+   mask-repeat: no-repeat, no-repeat, no-repeat;
+   mask-composite: subtract, add, add;
+}
+
+/* Honkai Star Rail Character Stat Block */
+.level-input-box::-webkit-outer-spin-button,
+.level-input-box::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+
+.level-input-box {
+   -moz-appearance: textfield;
+}
+
+/* Honkai Star Rail Skill Tree */
+.w-350px {
+   width: 350px;
+}
+
+.canvas {
+   position: relative;
+   height: 400px;
+   width: 350px;
+}
+.canvas-Knight {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsKnight.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Mage {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsnMage.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Rogue {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsRogue.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Priest {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsPirest.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Warlock {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsWarlock.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Shaman {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsShaman.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.canvas-Warrior {
+   position: absolute;
+   height: 400px;
+   width: 350px;
+   top: 0;
+   left: 0;
+   background-image: url("https://static.mana.wiki/starrail/BgPathsWarrior.png");
+   background-repeat: no-repeat;
+   background-size: 300px;
+   background-position: center;
+   opacity: 0.5;
+}
+.point {
+   background-color: black;
+   border: 2px solid white;
+   height: 40px;
+   width: 40px;
+   border-radius: 100%;
+   box-sizing: border-box;
+   position: absolute;
+   text-align: center;
+   box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, 1);
+   background-repeat: no-repeat;
+   background-size: contain;
+   background-position: center;
+}
+.connector {
+   position: absolute;
+   border: 2px solid white;
+   z-index: 0;
+}
+.connector-1-Knight {
+   top: 50px;
+   left: 171px;
+   height: 250px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Knight {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Knight {
+   top: 220px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-4-Knight {
+   top: 320px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Knight {
+   top: 210px;
+   left: 85px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(45deg);
+}
+.connector-6-Knight {
+   top: 280px;
+   left: 35px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(45deg);
+}
+.connector-7-Knight {
+   top: 210px;
+   left: 205px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(135deg);
+}
+.connector-8-Knight {
+   top: 280px;
+   left: 210px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(135deg);
+}
+.point-1-Knight {
+   top: 200px;
+   left: 105px;
+}
+.point-2-Knight {
+   top: 200px;
+   left: 205px;
+}
+.point-3-Knight {
+   top: 200px;
+   left: 155px;
+}
+.point-4-Knight {
+   top: 150px;
+   left: 155px;
+}
+.point-5-Knight {
+   top: 250px;
+   left: 155px;
+}
+.point-6-Knight {
+   top: 300px;
+   left: 105px;
+}
+.point-7-Knight {
+   top: 300px;
+   left: 205px;
+}
+.point-8-Knight {
+   top: 100px;
+   left: 155px;
+}
+.point-9-Knight {
+   top: 300px;
+   left: 155px;
+}
+.point-10-Knight {
+   top: 262px;
+   left: 67px;
+}
+.point-11-Knight {
+   top: 225px;
+   left: 30px;
+}
+.point-12-Knight {
+   top: 162px;
+   left: 67px;
+}
+.point-13-Knight {
+   top: 262px;
+   left: 243px;
+}
+.point-14-Knight {
+   top: 225px;
+   left: 280px;
+}
+.point-15-Knight {
+   top: 162px;
+   left: 243px;
+}
+.point-16-Knight {
+   top: 50px;
+   left: 155px;
+}
+.point-17-Knight {
+   top: 50px;
+   left: 105px;
+}
+.point-18-Knight {
+   top: 50px;
+   left: 205px;
+}
+
+.connector-1-Warrior {
+   top: 50px;
+   left: 171px;
+   height: 300px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Warrior {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Warrior {
+   top: 210px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-4-Warrior {
+   top: 320px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Warrior {
+   top: 200px;
+   left: 35px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(127deg);
+}
+.connector-6-Warrior {
+   top: 271px;
+   left: 35px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(53deg);
+}
+.connector-7-Warrior {
+   top: 202px;
+   left: 255px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(53deg);
+}
+.connector-8-Warrior {
+   top: 271px;
+   left: 210px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(127deg);
+}
+.point-1-Warrior {
+   top: 190px;
+   left: 105px;
+}
+.point-2-Warrior {
+   top: 190px;
+   left: 205px;
+}
+.point-3-Warrior {
+   top: 200px;
+   left: 155px;
+}
+.point-4-Warrior {
+   top: 150px;
+   left: 155px;
+}
+.point-5-Warrior {
+   top: 250px;
+   left: 155px;
+}
+.point-6-Warrior {
+   top: 300px;
+   left: 105px;
+}
+.point-7-Warrior {
+   top: 300px;
+   left: 205px;
+}
+.point-8-Warrior {
+   top: 100px;
+   left: 155px;
+}
+.point-9-Warrior {
+   top: 325px;
+   left: 155px;
+}
+.point-10-Warrior {
+   top: 250px;
+   left: 67px;
+}
+.point-11-Warrior {
+   top: 200px;
+   left: 30px;
+}
+.point-12-Warrior {
+   top: 150px;
+   left: 67px;
+}
+.point-13-Warrior {
+   top: 250px;
+   left: 243px;
+}
+.point-14-Warrior {
+   top: 200px;
+   left: 280px;
+}
+.point-15-Warrior {
+   top: 150px;
+   left: 243px;
+}
+.point-16-Warrior {
+   top: 50px;
+   left: 155px;
+}
+.point-17-Warrior {
+   top: 50px;
+   left: 105px;
+}
+.point-18-Warrior {
+   top: 50px;
+   left: 205px;
+}
+.connector-1-Rogue {
+   top: 50px;
+   left: 171px;
+   height: 250px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Rogue {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Rogue {
+   top: 195px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-4-Rogue {
+   top: 270px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Rogue {
+   top: 185px;
+   left: 85px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(45deg);
+}
+.connector-6-Rogue {
+   top: 231px;
+   left: 35px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(45deg);
+}
+.connector-7-Rogue {
+   top: 190px;
+   left: 205px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(135deg);
+}
+.connector-8-Rogue {
+   top: 231px;
+   left: 210px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(135deg);
+}
+.point-1-Rogue {
+   top: 175px;
+   left: 105px;
+}
+.point-2-Rogue {
+   top: 175px;
+   left: 205px;
+}
+.point-3-Rogue {
+   top: 200px;
+   left: 155px;
+}
+.point-4-Rogue {
+   top: 150px;
+   left: 155px;
+}
+.point-5-Rogue {
+   top: 250px;
+   left: 155px;
+}
+.point-6-Rogue {
+   top: 250px;
+   left: 105px;
+}
+.point-7-Rogue {
+   top: 250px;
+   left: 205px;
+}
+.point-8-Rogue {
+   top: 100px;
+   left: 155px;
+}
+.point-9-Rogue {
+   top: 300px;
+   left: 155px;
+}
+.point-10-Rogue {
+   top: 212px;
+   left: 67px;
+}
+.point-11-Rogue {
+   top: 175px;
+   left: 30px;
+}
+.point-12-Rogue {
+   top: 137px;
+   left: 67px;
+}
+.point-13-Rogue {
+   top: 212px;
+   left: 243px;
+}
+.point-14-Rogue {
+   top: 175px;
+   left: 280px;
+}
+.point-15-Rogue {
+   top: 137px;
+   left: 243px;
+}
+.point-16-Rogue {
+   top: 50px;
+   left: 155px;
+}
+.point-17-Rogue {
+   top: 50px;
+   left: 105px;
+}
+.point-18-Rogue {
+   top: 50px;
+   left: 205px;
+}
+
+.connector-1-Priest {
+   top: 50px;
+   left: 171px;
+   height: 290px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Priest {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Priest {
+   top: 205px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-4-Priest {
+   top: 300px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Priest {
+   top: 200px;
+   left: 35px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(127deg);
+}
+.connector-6-Priest {
+   top: 265px;
+   left: 35px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(45deg);
+}
+.connector-7-Priest {
+   top: 202px;
+   left: 255px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(53deg);
+}
+.connector-8-Priest {
+   top: 261px;
+   left: 210px;
+   height: 1px;
+   width: 100px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(135deg);
+}
+.connector-9-Priest {
+   top: 342px;
+   left: 125px;
+   height: 1px;
+   width: 80px;
+   border-color: white transparent transparent transparent;
+}
+.point-1-Priest {
+   top: 185px;
+   left: 105px;
+}
+.point-2-Priest {
+   top: 185px;
+   left: 205px;
+}
+.point-3-Priest {
+   top: 208px;
+   left: 155px;
+}
+.point-4-Priest {
+   top: 150px;
+   left: 155px;
+}
+.point-5-Priest {
+   top: 258px;
+   left: 155px;
+}
+.point-6-Priest {
+   top: 280px;
+   left: 105px;
+}
+.point-7-Priest {
+   top: 280px;
+   left: 205px;
+}
+.point-8-Priest {
+   top: 50px;
+   left: 155px;
+}
+.point-9-Priest {
+   top: 320px;
+   left: 185px;
+}
+.point-10-Priest {
+   top: 242px;
+   left: 67px;
+}
+.point-11-Priest {
+   top: 205px;
+   left: 30px;
+}
+.point-12-Priest {
+   top: 157px;
+   left: 67px;
+}
+.point-13-Priest {
+   top: 242px;
+   left: 243px;
+}
+.point-14-Priest {
+   top: 205px;
+   left: 280px;
+}
+.point-15-Priest {
+   top: 158px;
+   left: 243px;
+}
+.point-16-Priest {
+   top: 50px;
+   left: 205px;
+}
+.point-17-Priest {
+   top: 50px;
+   left: 105px;
+}
+.point-18-Priest {
+   top: 320px;
+   left: 125px;
+}
+
+.connector-1-Mage {
+   top: 50px;
+   left: 171px;
+   height: 280px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Mage {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Mage {
+   top: 220px;
+   left: 25px;
+   height: 1px;
+   width: 300px;
+   border-color: white transparent transparent transparent;
+}
+.connector-4-Mage {
+   top: 320px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Mage {
+   top: 150px;
+   left: 25px;
+   height: 100px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-6-Mage {
+   top: 150px;
+   left: 316px;
+   height: 100px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.point-1-Mage {
+   top: 200px;
+   left: 105px;
+}
+.point-2-Mage {
+   top: 200px;
+   left: 205px;
+}
+.point-3-Mage {
+   top: 200px;
+   left: 155px;
+}
+.point-4-Mage {
+   top: 130px;
+   left: 155px;
+}
+.point-5-Mage {
+   top: 300px;
+   left: 155px;
+}
+.point-6-Mage {
+   top: 200px;
+   left: 55px;
+}
+.point-7-Mage {
+   top: 200px;
+   left: 255px;
+}
+.point-8-Mage {
+   top: 50px;
+   left: 155px;
+}
+.point-9-Mage {
+   top: 300px;
+   left: 105px;
+}
+.point-10-Mage {
+   top: 200px;
+   left: 10px;
+}
+.point-11-Mage {
+   top: 250px;
+   left: 10px;
+}
+.point-12-Mage {
+   top: 150px;
+   left: 10px;
+}
+.point-13-Mage {
+   top: 200px;
+   left: 300px;
+}
+.point-14-Mage {
+   top: 250px;
+   left: 300px;
+}
+.point-15-Mage {
+   top: 150px;
+   left: 300px;
+}
+.point-16-Mage {
+   top: 50px;
+   left: 105px;
+}
+.point-17-Mage {
+   top: 50px;
+   left: 205px;
+}
+.point-18-Mage {
+   top: 300px;
+   left: 205px;
+}
+
+.connector-1-Shaman {
+   top: 50px;
+   left: 171px;
+   height: 280px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Shaman {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Shaman {
+   top: 170px;
+   left: 50px;
+   height: 180px;
+   width: 250px;
+   border-color: white transparent transparent transparent;
+   border-radius: 50%/180px 180px 0 0;
+}
+.connector-4-Shaman {
+   top: 320px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-5-Shaman {
+   top: 150px;
+   left: 72px;
+   height: 50px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-6-Shaman {
+   top: 200px;
+   left: 270px;
+   height: 50px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-7-Shaman {
+   top: 150px;
+   left: 72px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(145deg);
+}
+.connector-8-Shaman {
+   top: 253px;
+   left: 215px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(35deg);
+}
+.point-1-Shaman {
+   top: 175px;
+   left: 105px;
+}
+.point-2-Shaman {
+   top: 175px;
+   left: 205px;
+}
+.point-3-Shaman {
+   top: 200px;
+   left: 155px;
+}
+.point-4-Shaman {
+   top: 150px;
+   left: 155px;
+}
+.point-5-Shaman {
+   top: 250px;
+   left: 155px;
+}
+.point-6-Shaman {
+   top: 200px;
+   left: 55px;
+}
+.point-7-Shaman {
+   top: 200px;
+   left: 255px;
+}
+.point-8-Shaman {
+   top: 100px;
+   left: 155px;
+}
+.point-9-Shaman {
+   top: 300px;
+   left: 155px;
+}
+.point-10-Shaman {
+   top: 150px;
+   left: 55px;
+}
+.point-11-Shaman {
+   top: 120px;
+   left: 105px;
+}
+.point-12-Shaman {
+   top: 300px;
+   left: 105px;
+}
+.point-13-Shaman {
+   top: 250px;
+   left: 255px;
+}
+.point-14-Shaman {
+   top: 230px;
+   left: 205px;
+}
+.point-15-Shaman {
+   top: 300px;
+   left: 205px;
+}
+.point-16-Shaman {
+   top: 50px;
+   left: 155px;
+}
+.point-17-Shaman {
+   top: 50px;
+   left: 105px;
+}
+.point-18-Shaman {
+   top: 50px;
+   left: 205px;
+}
+
+.connector-1-Warlock {
+   top: 50px;
+   left: 171px;
+   height: 280px;
+   width: 1px;
+   border-color: transparent white transparent transparent;
+}
+.connector-2-Warlock {
+   top: 70px;
+   left: 105px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+}
+.connector-3-Warlock {
+   top: 73px;
+   left: 50px;
+   height: 100px;
+   width: 250px;
+   border-color: white transparent transparent transparent;
+   border-radius: 50%/50px 50px 0 0;
+   transform: rotateX(180deg);
+}
+.connector-4-Warlock {
+   top: 190px;
+   left: 25px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(125deg);
+}
+.connector-5-Warlock {
+   top: 190px;
+   left: 265px;
+   height: 1px;
+   width: 50px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(55deg);
+}
+.connector-6-Warlock {
+   top: 285px;
+   left: 20px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(55deg);
+}
+.connector-7-Warlock {
+   top: 265px;
+   left: 215px;
+   height: 1px;
+   width: 120px;
+   border-color: white transparent transparent transparent;
+   -webkit-transform: rotate(125deg);
+}
+.point-1-Warlock {
+   top: 150px;
+   left: 105px;
+}
+.point-2-Warlock {
+   top: 150px;
+   left: 205px;
+}
+.point-3-Warlock {
+   top: 150px;
+   left: 155px;
+}
+.point-4-Warlock {
+   top: 100px;
+   left: 155px;
+}
+.point-5-Warlock {
+   top: 200px;
+   left: 155px;
+}
+.point-6-Warlock {
+   top: 140px;
+   left: 55px;
+}
+.point-7-Warlock {
+   top: 140px;
+   left: 255px;
+}
+.point-8-Warlock {
+   top: 50px;
+   left: 155px;
+}
+.point-9-Warlock {
+   top: 250px;
+   left: 155px;
+}
+.point-10-Warlock {
+   top: 200px;
+   left: 17px;
+}
+.point-11-Warlock {
+   top: 250px;
+   left: 55px;
+}
+.point-12-Warlock {
+   top: 300px;
+   left: 93px;
+}
+.point-13-Warlock {
+   top: 200px;
+   left: 293px;
+}
+.point-14-Warlock {
+   top: 250px;
+   left: 255px;
+}
+.point-15-Warlock {
+   top: 300px;
+   left: 217px;
+}
+.point-16-Warlock {
+   top: 50px;
+   left: 105px;
+}
+.point-17-Warlock {
+   top: 50px;
+   left: 205px;
+}
+.point-18-Warlock {
+   top: 300px;
+   left: 155px;
+}
+
+/* better version */
+
+@property --r2 {
+   syntax: "<angle>";
+   inherits: false;
+   initial-value: 0deg;
+}
+
+@property --x {
+   syntax: "<length>";
+   inherits: false;
+   initial-value: 0px;
+}
+
+.rotate-input::after {
+   @apply absolute block rounded-full;
+   content: "";
+   inset: 3px;
+   z-index: 1;
+   transition: opacity 0.3s ease;
+}
+
+.dark .rotate-input {
+   position: relative;
+   background: conic-gradient(
+      from calc(var(--r2) - 80deg) at var(--x) 28px,
+      #36393e 0%,
+      #3b81f6 20%,
+      #36393e 25%
+   );
+   animation: -0.64s rotating2 3s linear infinite, -0.64s x 3s linear infinite;
+}
+
+.rotate-input {
+   position: relative;
+   background: conic-gradient(
+      from calc(var(--r2) - 80deg) at var(--x) 28px,
+      #e4e4e7 0%,
+      #3b81f6 20%,
+      #e4e4e7 25%
+   );
+   animation: -0.64s rotating2 3s linear infinite, -0.64s x 3s linear infinite;
+}
+@keyframes x {
+   /* w:h === 6:1 */
+   /* with a 80px x-margin */
+   0% {
+      --x: 80px;
+   }
+   /* 6/(6+3.14) * 50% */
+   32.82275711% {
+      --x: 200px;
+   }
+   50% {
+      --x: 200px;
+   }
+   /* 50% + 32.8% */
+   82.82275711% {
+      --x: 80px;
+   }
+   100% {
+      --x: 80px;
+   }
+}
+
+@keyframes rotating2 {
+   0% {
+      --r2: 0deg;
+   }
+   32.82275711% {
+      --r2: 0deg;
+   }
+   50% {
+      --r2: 180deg;
+   }
+   82.82275711% {
+      --r2: 180deg;
+   }
+   100% {
+      --r2: 360deg;
+   }
+}
