@@ -13,8 +13,8 @@ import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
 import type { HomeContent } from "~/db/payload-types";
-import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 import { isAdding } from "~/utils";
 
 export const HomeVersionModal = ({

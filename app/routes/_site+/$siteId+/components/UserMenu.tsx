@@ -192,7 +192,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                                                          {
                                                             method: "delete",
                                                             action:
-                                                               "/action/auth",
+                                                               "/auth-actions",
                                                          }
                                                       )
                                                    }
@@ -301,7 +301,7 @@ const UserDeleteSection = () => {
                            { intent: "deleteUserAccount" },
                            {
                               method: "delete",
-                              action: "/action/auth",
+                              action: "/auth-actions",
                            }
                         )
                      }

@@ -15,7 +15,7 @@ linkify.tlds(tlds);
 linkify.tlds(tlds);
 
 //If in link edit mode, double space will exit you out.
-export const moveCursorOut = (editor: Editor) => {
+export function moveCursorOut(editor: Editor) {
    const { selection } = editor;
 
    // check that there is a current selection without highlight
@@ -29,7 +29,7 @@ export const moveCursorOut = (editor: Editor) => {
          Transforms.move(editor, { unit: "offset" });
       }
    }
-};
+}
 
 /**
  * If text contains something similar to link `true` will be returned

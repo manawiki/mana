@@ -71,6 +71,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <List size={16} />,
          description: "A basic bulleted list",
          onSelect: () => {
+            //@ts-expect-error
             onSelect({
                id: nanoid(),
                type: BlockType.BulletedList,

@@ -1,23 +1,20 @@
+/* eslint-disable import/no-cycle */
 import { nanoid } from "nanoid";
 import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockAccordion } from "./BlockAccordion";
-import { BlockCodeSandbox } from "./BlockCodeSandbox";
-// eslint-disable-next-line import/no-cycle
-import { BlockGroup } from "./BlockGroup";
-// eslint-disable-next-line import/no-cycle
-import { BlockGroupView } from "./BlockGroupView";
-import { BlockToDo } from "./BlockToDo";
-import { BlockVideo } from "./BlockVideo";
 import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
 import { BlockLink } from "../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../$siteId.blocks+/link/BlockLinkView";
-// eslint-disable-next-line import/no-cycle
 import { BlockUpdates } from "../$siteId.blocks+/updates/_updates";
-// eslint-disable-next-line import/no-cycle
 import { BlockUpdatesView } from "../$siteId.blocks+/updates/BlockUpdatesView";
+import { BlockAccordion } from "../blocks//BlockAccordion";
+import { BlockCodeSandbox } from "../blocks//BlockCodeSandbox";
+import { BlockGroup } from "../blocks//BlockGroup";
+import { BlockGroupView } from "../blocks//BlockGroupView";
+import { BlockToDo } from "../blocks//BlockToDo";
+import { BlockVideo } from "../blocks/BlockVideo";
 import type { CustomElement } from "../functions/types";
 import { BlockType } from "../functions/types";
 
