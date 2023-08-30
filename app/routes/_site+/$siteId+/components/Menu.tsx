@@ -155,27 +155,33 @@ export const PinnedList = ({
                {site.pinned?.map((item: any) => (
                   <li key={item.id}>
                      <Link
-                        onClick={() => onOpenChange(false)}
-                        className="shadow-1 bg-3 border-color relative flex items-center gap-3
-                          rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
                         prefetch="intent"
                         to={pinnedLinkUrlGenerator(item, site?.slug ?? "")}
                      >
-                        <div className="h-5 w-5">
-                           {item.relation?.value?.icon?.url ? (
-                              <Image
-                                 width={80}
-                                 height={80}
-                                 url={item.relation?.value?.icon?.url}
-                                 options="aspect_ratio=1:1&height=80&width=80"
-                                 alt="Pinned Icon"
-                              />
-                           ) : (
-                              <Component className="text-1 mx-auto" size={24} />
-                           )}
-                        </div>
-                        <div className="truncate">
-                           {item.relation.value.name}
+                        <div
+                           onClick={() => onOpenChange(false)}
+                           className="shadow-1 bg-3 border-color relative flex items-center gap-3
+                          rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
+                        >
+                           <div className="h-5 w-5">
+                              {item.relation?.value?.icon?.url ? (
+                                 <Image
+                                    width={80}
+                                    height={80}
+                                    url={item.relation?.value?.icon?.url}
+                                    options="aspect_ratio=1:1&height=80&width=80"
+                                    alt="Pinned Icon"
+                                 />
+                              ) : (
+                                 <Component
+                                    className="text-1 mx-auto"
+                                    size={24}
+                                 />
+                              )}
+                           </div>
+                           <div className="truncate">
+                              {item.relation.value.name}
+                           </div>
                         </div>
                      </Link>
                   </li>
@@ -195,23 +201,23 @@ export const PrimaryMenuLinks = ({
 }) => {
    return (
       <div className="grid grid-cols-2 gap-3">
-         <Link
-            onClick={() => onOpenChange(false)}
-            className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
-            prefetch="intent"
-            to={`/${site.slug}/posts`}
-         >
-            <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
-            <span>Posts</span>
+         <Link prefetch="intent" to={`/${site.slug}/posts`}>
+            <div
+               className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4  text-sm font-bold shadow-sm"
+               onClick={() => onOpenChange(false)}
+            >
+               <PencilSquareIcon className="h-[17px] w-[17px] text-emerald-500" />
+               <span>Posts</span>
+            </div>
          </Link>
-         <Link
-            onClick={() => onOpenChange(false)}
-            className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
-            prefetch="intent"
-            to={`/${site.slug}/collections`}
-         >
-            <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
-            <span>Collections</span>
+         <Link prefetch="intent" to={`/${site.slug}/collections`}>
+            <div
+               onClick={() => onOpenChange(false)}
+               className="shadow-1 bg-3 border-color relative flex items-center gap-3 rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
+            >
+               <CircleStackIcon className="h-[17px] w-[17px] text-yellow-500" />
+               <span>Collections</span>
+            </div>
          </Link>
       </div>
    );
