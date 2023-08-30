@@ -36,7 +36,10 @@ import { zx } from "zodix";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
+import {
+   EditorBlocks,
+   CreateNewBlockFromBlock,
+} from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
    BlockInlineActions,
@@ -47,6 +50,8 @@ import {
    HOTKEYS,
    PROSE_CONTAINER_ID,
 } from "~/routes/_editor+/functions/constants";
+import type { CustomElement } from "~/routes/_editor+/functions/types";
+import { BlockType } from "~/routes/_editor+/functions/types";
 import {
    removeGlobalCursor,
    setGlobalCursor,
@@ -54,12 +59,10 @@ import {
    withLayout,
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
-import type { CustomElement } from "~/routes/_editor+/types";
-import { BlockType } from "~/routes/_editor+/types";
 
-import { withLinkify } from "../plugins/link/withLinkify";
-import { indentItem, undentItem } from "../plugins/list/utils";
-import { withLists } from "../plugins/list/withLists";
+import { withLinkify } from "./plugins/link/withLinkify";
+import { indentItem, undentItem } from "./plugins/list/utils";
+import { withLists } from "./plugins/list/withLists";
 
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -97,7 +100,7 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export const SoloEditor = ({
+export const ManaEditor = ({
    fetcher,
    defaultValue,
    siteId,
@@ -138,7 +141,7 @@ export const SoloEditor = ({
                collectionEntity,
                sectionId,
             },
-            { method: "patch", action: "/editors/SoloEditor" }
+            { method: "patch", action: "/editor" }
          );
       }
    }, [debouncedValue]);
@@ -221,7 +224,7 @@ export const SoloEditor = ({
       return isTopLevel ? (
          <SortableElement
             {...props}
-            renderElement={Block}
+            renderElement={EditorBlocks}
             onDelete={() =>
                Transforms.removeNodes(editor, {
                   at: ReactEditor.findPath(editor, props.element),
@@ -247,7 +250,7 @@ export const SoloEditor = ({
             }}
          />
       ) : (
-         <Block {...props} />
+         <EditorBlocks {...props} />
       );
    }, []);
 

@@ -10,7 +10,7 @@ import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { isAdding } from "~/utils";
 
@@ -32,7 +32,7 @@ export const PostVersionModal = ({
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
 
    const init = versions.docs[0];

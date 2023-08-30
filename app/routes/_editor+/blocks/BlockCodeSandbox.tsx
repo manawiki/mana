@@ -3,13 +3,13 @@ import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import Placeholder from "../components/Placeholder";
-import type { CustomElement, CodeSandboxElement } from "../types";
+import type { CustomElement, CodeSandboxElement } from "../functions/types";
 
 type Props = {
    element: CodeSandboxElement;
 };
 
-export default function BlockCodeSandbox({ element }: Props) {
+export function BlockCodeSandbox({ element }: Props) {
    const editor = useSlate();
 
    return (

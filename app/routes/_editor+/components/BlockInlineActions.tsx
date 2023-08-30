@@ -5,14 +5,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import { BlockTypeSelector } from "./BlockTypeSelector";
 import Button from "./Button";
-import type { CustomElement } from "../types";
+import type { CustomElement } from "../functions/types";
 
 type Props = {
    blockId: string;
    onInsertBelow: (block: CustomElement) => void;
 };
 
-export const BlockInlineActions = ({ blockId, onInsertBelow }: Props) => {
+export function BlockInlineActions({ blockId, onInsertBelow }: Props) {
    const { listeners, setActivatorNodeRef } = useDraggable({
       id: blockId,
    });
@@ -39,4 +39,4 @@ export const BlockInlineActions = ({ blockId, onInsertBelow }: Props) => {
          <BlockTypeSelector onSelect={onInsertBelow} />
       </div>
    );
-};
+}

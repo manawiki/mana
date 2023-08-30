@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useMatches } from "@remix-run/react";
 import { Loader2, Upload } from "lucide-react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -9,17 +9,24 @@ import { ReactEditor, useSlate } from "slate-react";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
 
-import type { CustomElement, ImageElement } from "../types";
+import type { CustomElement, ImageElement } from "../../functions/types";
 type Props = {
    element: ImageElement;
 };
 
-export default function BlockImage({ element }: Props) {
+export function BlockImage({ element }: Props) {
    const editor = useSlate();
    const fetcher = useFetcher();
    const isImageAdding = isAdding(fetcher, "addBlockImage");
 
+   //index presume to have results data, might be brittle in the future
+   const { siteId } = useMatches()?.[2]?.data as {
+      siteId: string;
+   };
+
    const [dragActive, setDragActive] = useState(false);
+
+   const actionPath = `/${siteId}/blocks/image`;
 
    useEffect(() => {
       if (fetcher.state === "idle" && fetcher.data != null) {
@@ -46,7 +53,7 @@ export default function BlockImage({ element }: Props) {
          fetcher.submit(formData, {
             encType: "multipart/form-data",
             method: "POST",
-            action: "/action/block-actions",
+            action: actionPath,
          });
       }
    };
@@ -77,12 +84,11 @@ export default function BlockImage({ element }: Props) {
                   <fetcher.Form
                      method="post"
                      encType="multipart/form-data"
-                     replace
                      onDragEnter={(e) => handleDrag(e)}
                      onChange={(event) => {
                         fetcher.submit(event.currentTarget, {
                            method: "post",
-                           action: "/action/block-actions",
+                           action: actionPath,
                         });
                      }}
                   >

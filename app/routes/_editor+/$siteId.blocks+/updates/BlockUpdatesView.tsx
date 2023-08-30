@@ -8,9 +8,9 @@ import { Editable, Slate, withReact } from "slate-react";
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/components/H2";
 // eslint-disable-next-line import/no-cycle
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
-import type { UpdatesElement } from "~/routes/_editor+/types";
+import type { UpdatesElement } from "~/routes/_editor+/functions/types";
 
 type Props = {
    element: UpdatesElement;
@@ -23,8 +23,9 @@ const dateFormat = (dateString: string) =>
       timeZone: "America/Los_Angeles",
    }).format(new Date(dateString));
 
-export const BlockUpdatesView = ({ element }: Props) => {
+export function BlockUpdatesView({ element }: Props) {
    //layout presume to have site data, might be brittle in the future
+   //@ts-expect-error
    const updateResults = useMatches()?.[2]?.data?.updateResults as Update[];
 
    return (
@@ -81,15 +82,17 @@ export const BlockUpdatesView = ({ element }: Props) => {
          )}
       </section>
    );
-};
-
-const useEditor = () => useMemo(() => withReact(createEditor()), []);
+}
 
 const UpdatesEditorView = ({ content }: { content: Descendant[] }) => {
-   const editor = useEditor();
+   const editor = useMemo(() => withReact(createEditor()), []);
    return (
       <Slate editor={editor} initialValue={content}>
-         <Editable renderElement={Block} renderLeaf={Leaf} readOnly={true} />
+         <Editable
+            renderElement={EditorBlocks}
+            renderLeaf={Leaf}
+            readOnly={true}
+         />
       </Slate>
    );
 };

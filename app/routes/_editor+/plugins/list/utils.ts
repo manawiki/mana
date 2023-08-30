@@ -1,6 +1,6 @@
 import { Editor, Transforms, Range } from "slate";
 
-export const undentItem = (editor: Editor) => {
+export function undentItem(editor: Editor) {
    const { selection } = editor;
 
    // check that there is a current selection without highlight
@@ -28,9 +28,9 @@ export const undentItem = (editor: Editor) => {
          }
       }
    }
-};
+}
 
-export const indentItem = (editor: Editor) => {
+export function indentItem(editor: Editor) {
    const maxDepth = 5;
 
    const { selection } = editor;
@@ -61,9 +61,9 @@ export const indentItem = (editor: Editor) => {
          }
       }
    }
-};
+}
 
-export const liftNodes = (editor: Editor) => {
+export function liftNodes(editor: Editor) {
    // check for the new parent
    const [listMatch] = Editor.nodes(editor, {
       match: (n) => n.type === "bulleted-list" || n.type === "numbered-list",
@@ -73,4 +73,4 @@ export const liftNodes = (editor: Editor) => {
       // 'lift' the list-item to the next parent
       Transforms.liftNodes(editor, { match: (n) => n.type === "list-item" });
    }
-};
+}

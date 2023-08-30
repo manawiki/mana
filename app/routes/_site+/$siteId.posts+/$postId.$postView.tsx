@@ -3,7 +3,7 @@ import { Suspense, useCallback, useMemo } from "react";
 import {
    json,
    redirect,
-   type V2_MetaFunction,
+   type MetaFunction,
    type LoaderArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -22,7 +22,7 @@ import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -72,10 +72,10 @@ export const handle = {
    i18n: "post",
 };
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
-   const siteName = //@ts-ignore
-      matches.find(({ id }) => id === "routes/_site+/$siteId+/_layout")?.data
-         ?.site.name;
+export const meta: MetaFunction = ({ data, matches }) => {
+   const siteName = matches.find(
+      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+   )?.data?.site.name;
    const postTitle = data.post.name;
    const postDescription = data.post.subtitle;
 
@@ -91,13 +91,13 @@ export default function PostPage() {
    const editor = useMemo(() => withReact(createEditor()), []);
    const { post, siteId } = useLoaderData<typeof loader>() || {};
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
 
    return (
       <div className="relative">
          <AdminOrStaffOrOwner>
-            <div className="flex sticky top-[86px] items-center justify-center">
+            <div className="sticky top-[86px] flex items-center justify-center">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
                   className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 

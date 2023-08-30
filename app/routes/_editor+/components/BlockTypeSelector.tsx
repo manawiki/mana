@@ -21,14 +21,14 @@ import { nanoid } from "nanoid";
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement } from "../types";
-import { BlockType } from "../types";
+import type { CustomElement } from "../functions/types";
+import { BlockType } from "../functions/types";
 
 type Props = {
    onSelect: (block: CustomElement) => void;
 };
 
-export const BlockTypeSelector = ({ onSelect }: Props) => {
+export function BlockTypeSelector({ onSelect }: Props) {
    const primary = [
       {
          label: "Text",
@@ -66,7 +66,6 @@ export const BlockTypeSelector = ({ onSelect }: Props) => {
             });
          },
       },
-
       {
          label: "Bulleted list",
          icon: <List size={16} />,
@@ -329,7 +328,7 @@ export const BlockTypeSelector = ({ onSelect }: Props) => {
          </Transition>
       </Float>
    );
-};
+}
 
 // Alternative version
 // <Popover>
