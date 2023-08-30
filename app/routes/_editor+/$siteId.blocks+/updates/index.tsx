@@ -236,6 +236,9 @@ export const action = async ({
                dateId: {
                   equals: currentDate,
                },
+               "site.slug": {
+                  equals: siteId,
+               },
             },
             user,
          });

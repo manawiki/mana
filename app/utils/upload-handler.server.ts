@@ -28,7 +28,7 @@ const uploadHandler = ({ prefix }: { prefix: string }) =>
  * We use a custom parser "parseFormAny" from Zorm to handle the file upload https://github.com/rileytomasek/zodix/issues/14
  */
 
-export const getMultipleFormData = async <T extends ZodRawShape | ZodTypeAny>({
+export async function getMultipleFormData<T extends ZodRawShape | ZodTypeAny>({
    request,
    prefix,
    schema,
@@ -36,7 +36,7 @@ export const getMultipleFormData = async <T extends ZodRawShape | ZodTypeAny>({
    request: Request;
    prefix: string;
    schema: T;
-}) => {
+}) {
    const formData = await unstable_parseMultipartFormData(
       request,
       uploadHandler({ prefix })
@@ -44,10 +44,10 @@ export const getMultipleFormData = async <T extends ZodRawShape | ZodTypeAny>({
    const finalSchema = schema instanceof ZodType ? schema : z.object(schema);
    return await finalSchema.safeParseAsync(parseFormAny(formData));
    // return await zx.parseFormSafe(formData, schema, parseFormAny(formData));
-};
+}
 
 //Uploads image to payload images collection and returns the id to update another collection
-export const uploadImage = async ({
+export async function uploadImage({
    payload,
    user,
    image,
@@ -57,7 +57,7 @@ export const uploadImage = async ({
       filepath: string;
    };
    user: any;
-}) => {
+}) {
    const imageUploadResult = await payload.create({
       collection: "images",
       data: {
@@ -69,4 +69,4 @@ export const uploadImage = async ({
       overrideAccess: false,
    });
    return imageUploadResult;
-};
+}
