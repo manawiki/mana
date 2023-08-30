@@ -14,7 +14,7 @@ type Props = {
    element: ImageElement;
 };
 
-export const BlockImage = ({ element }: Props) => {
+export function BlockImage({ element }: Props) {
    const editor = useSlate();
    const fetcher = useFetcher();
    const isImageAdding = isAdding(fetcher, "addBlockImage");
@@ -138,4 +138,4 @@ export const BlockImage = ({ element }: Props) => {
          )}
       </div>
    );
-};
+}

@@ -9,7 +9,7 @@ type Props = {
    element: CodeSandboxElement;
 };
 
-export default function BlockCodeSandbox({ element }: Props) {
+export function BlockCodeSandbox({ element }: Props) {
    const editor = useSlate();
 
    return (

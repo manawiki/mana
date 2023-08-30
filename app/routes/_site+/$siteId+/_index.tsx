@@ -37,7 +37,7 @@ import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
 } from "~/modules/auth";
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR, isProcessing } from "~/utils";
@@ -82,7 +82,7 @@ export default function SiteIndexMain() {
    const { home, siteId } = useLoaderData<typeof loader>();
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 

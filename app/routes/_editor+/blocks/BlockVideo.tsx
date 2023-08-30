@@ -9,7 +9,7 @@ type Props = {
    element: VideoElement;
 };
 
-export default function BlockVideo({ element }: Props) {
+export function BlockVideo({ element }: Props) {
    const editor = useSlate();
 
    return (

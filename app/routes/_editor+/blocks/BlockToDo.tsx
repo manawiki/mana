@@ -13,7 +13,7 @@ type Props = {
    children: ReactNode;
 };
 
-export default function BlockToDo({ element, children }: Props) {
+export function BlockToDo({ element, children }: Props) {
    const editor = useSlate();
    const [checked, setChecked] = useState(element.checked);
 

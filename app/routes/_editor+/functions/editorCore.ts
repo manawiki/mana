@@ -4,7 +4,7 @@ import { Range, Transforms } from "slate";
 import { HOTKEYS } from "./constants";
 import { toggleMark } from "./utils";
 
-export const onKeyDown = (event, editor) => {
+export function onKeyDown(event, editor) {
    const { selection } = editor;
 
    if (selection && Range.isCollapsed(selection)) {
@@ -29,4 +29,4 @@ export const onKeyDown = (event, editor) => {
          toggleMark(editor, mark);
       }
    }
-};
+}

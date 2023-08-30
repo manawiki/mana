@@ -3,7 +3,7 @@ import { Element, Range, Transforms, Node } from "slate";
 
 import { isLink, LINK, wrapLink, tryWrapLink } from "./utils";
 
-export const withLinkify = (editor: Editor) => {
+export function withLinkify(editor: Editor) {
    const { insertData, insertBreak, insertText, isInline, normalizeNode } =
       editor;
 
@@ -64,4 +64,4 @@ export const withLinkify = (editor: Editor) => {
    };
 
    return editor;
-};
+}

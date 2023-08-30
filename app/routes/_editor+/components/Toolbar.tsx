@@ -15,7 +15,6 @@ import {
    Path,
    Range,
    Transforms,
-   Node,
    Element as SlateElement,
 } from "slate";
 import { useFocused, useSlate } from "slate-react";
@@ -24,9 +23,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import Button from "./Button";
 import Select from "./Select";
-import { toggleMark, topLevelPath } from "../functions/utils";
 import type { CustomElement, LinkElement, TextBlock } from "../functions/types";
 import { BlockType } from "../functions/types";
+import { toggleMark, topLevelPath } from "../functions/utils";
 
 export default function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);

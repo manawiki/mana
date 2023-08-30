@@ -4,20 +4,20 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 import { CustomBlocks } from "~/_custom/blocks";
 
 import { BlockAccordion } from "./BlockAccordion";
-import BlockCodeSandbox from "./BlockCodeSandbox";
+import { BlockCodeSandbox } from "./BlockCodeSandbox";
 // eslint-disable-next-line import/no-cycle
 import { BlockGroup } from "./BlockGroup";
 // eslint-disable-next-line import/no-cycle
-import BlockGroupView from "./BlockGroupView";
-import BlockToDo from "./BlockToDo";
-import BlockVideo from "./BlockVideo";
+import { BlockGroupView } from "./BlockGroupView";
+import { BlockToDo } from "./BlockToDo";
+import { BlockVideo } from "./BlockVideo";
 import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
-import { BlockLink } from "../$siteId.blocks+/link/edit";
-import { BlockLinkView } from "../$siteId.blocks+/link/view";
+import { BlockLink } from "../$siteId.blocks+/link/_link";
+import { BlockLinkView } from "../$siteId.blocks+/link/BlockLinkView";
 // eslint-disable-next-line import/no-cycle
-import { BlockUpdates } from "../$siteId.blocks+/updates";
+import { BlockUpdates } from "../$siteId.blocks+/updates/_updates";
 // eslint-disable-next-line import/no-cycle
-import { BlockUpdatesView } from "../$siteId.blocks+/updates/view";
+import { BlockUpdatesView } from "../$siteId.blocks+/updates/BlockUpdatesView";
 import type { CustomElement } from "../functions/types";
 import { BlockType } from "../functions/types";
 
@@ -35,11 +35,11 @@ export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
 // https://github.com/ianstormtaylor/slate/issues/3930
-export const Block = ({
+export function EditorBlocks({
    element,
    children,
    attributes,
-}: RenderElementProps) => {
+}: RenderElementProps) {
    const readOnly = useReadOnly();
 
    switch (element.type) {
@@ -176,4 +176,4 @@ export const Block = ({
             />
          );
    }
-};
+}

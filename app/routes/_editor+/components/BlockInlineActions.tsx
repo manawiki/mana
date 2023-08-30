@@ -12,7 +12,7 @@ type Props = {
    onInsertBelow: (block: CustomElement) => void;
 };
 
-export const BlockInlineActions = ({ blockId, onInsertBelow }: Props) => {
+export function BlockInlineActions({ blockId, onInsertBelow }: Props) {
    const { listeners, setActivatorNodeRef } = useDraggable({
       id: blockId,
    });
@@ -39,4 +39,4 @@ export const BlockInlineActions = ({ blockId, onInsertBelow }: Props) => {
          <BlockTypeSelector onSelect={onInsertBelow} />
       </div>
    );
-};
+}

@@ -36,7 +36,10 @@ import { zx } from "zodix";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
+import {
+   EditorBlocks,
+   CreateNewBlockFromBlock,
+} from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
    BlockInlineActions,
@@ -221,7 +224,7 @@ export const ManaEditor = ({
       return isTopLevel ? (
          <SortableElement
             {...props}
-            renderElement={Block}
+            renderElement={EditorBlocks}
             onDelete={() =>
                Transforms.removeNodes(editor, {
                   at: ReactEditor.findPath(editor, props.element),
@@ -247,7 +250,7 @@ export const ManaEditor = ({
             }}
          />
       ) : (
-         <Block {...props} />
+         <EditorBlocks {...props} />
       );
    }, []);
 

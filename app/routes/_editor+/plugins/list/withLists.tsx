@@ -4,7 +4,7 @@ import { Editor, Point, Transforms, Range } from "slate";
 
 import { liftNodes } from "./utils";
 
-export const withLists = (editor: Editor) => {
+export function withLists(editor: Editor) {
    const { insertBreak, deleteBackward } = editor;
 
    const backspace = (callback: any) => {
@@ -62,4 +62,4 @@ export const withLists = (editor: Editor) => {
    };
 
    return editor;
-};
+}

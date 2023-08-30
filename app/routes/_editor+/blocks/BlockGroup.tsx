@@ -43,7 +43,7 @@ import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
 import { swrRestFetcher } from "~/utils";
@@ -76,6 +76,7 @@ export function BlockGroup({ element }: Props) {
    const siteId = useParams()?.siteId ?? customConfig?.siteId;
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   //@ts-expect-error
    const site = useMatches()?.[1]?.data?.site as Site;
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
@@ -859,7 +860,7 @@ const InlineEditor = ({
             <Toolbar />
             <Editable
                placeholder="Start writing..."
-               renderElement={Block}
+               renderElement={EditorBlocks}
                renderLeaf={Leaf}
                onKeyDown={(e) => onKeyDown(e, inlineEditor)}
             />

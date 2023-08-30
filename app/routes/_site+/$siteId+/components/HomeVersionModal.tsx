@@ -13,7 +13,7 @@ import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
 import type { HomeContent } from "~/db/payload-types";
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { isAdding } from "~/utils";
 
@@ -25,6 +25,7 @@ export const HomeVersionModal = ({
    setVersionModal: Dispatch<SetStateAction<boolean>>;
 }) => {
    //layout presume to have site data, might be brittle in the future
+   //@ts-expect-error
    const versions = useMatches()?.[2]?.data?.versions as HomeContent[];
 
    const fetcher = useFetcher();
@@ -34,7 +35,7 @@ export const HomeVersionModal = ({
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
 
    const [selectedVersion, setSelectedVersion] = useState(versions[0]);

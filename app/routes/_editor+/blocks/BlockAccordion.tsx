@@ -14,7 +14,7 @@ type Props = {
    readOnly: boolean;
 };
 
-export const BlockAccordion = ({ element, children, readOnly }: Props) => {
+export function BlockAccordion({ element, children, readOnly }: Props) {
    //Otherwise render as regular a tag for external links
    const [labelValue, setLabelValue] = useState(element?.label ?? "");
    const editor = useSlate();
@@ -97,4 +97,4 @@ export const BlockAccordion = ({ element, children, readOnly }: Props) => {
          )}
       </Disclosure>
    );
-};
+}

@@ -9,7 +9,7 @@ import {
    type ParagraphElement,
 } from "./types";
 
-export const withNodeId = (editor: Editor) => {
+export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
    const { apply, insertFragment } = editor;
 
@@ -40,7 +40,7 @@ export const withNodeId = (editor: Editor) => {
    };
 
    return editor;
-};
+}
 
 export function withLayout(editor: Editor) {
    const { normalizeNode } = editor;
@@ -96,7 +96,7 @@ export function removeGlobalCursor(type: CursorType) {
    document.body.classList.remove(type);
 }
 
-export const initialValue = (): CustomElement[] => {
+export function initialValue(): CustomElement[] {
    const id = nanoid();
 
    return [
@@ -106,4 +106,4 @@ export const initialValue = (): CustomElement[] => {
          children: [{ text: "" }],
       },
    ];
-};
+}

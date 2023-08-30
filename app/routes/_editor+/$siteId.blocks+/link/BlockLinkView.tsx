@@ -11,7 +11,7 @@ type Props = {
    children: ReactNode;
 };
 
-export const BlockLinkView = ({ element, children }: Props) => {
+export function BlockLinkView({ element, children }: Props) {
    const { hostname, pathname } = new URL(element.url as string);
 
    const isSafeLink = ["mana.wiki"].includes(hostname);
@@ -63,4 +63,4 @@ export const BlockLinkView = ({ element, children }: Props) => {
          {children}
       </a>
    );
-};
+}

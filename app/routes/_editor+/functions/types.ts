@@ -167,7 +167,8 @@ export type CustomElement =
    | GroupElement
    | UpdatesElement
    | UpdatesInlineElement
-   | AccordionElement;
+   | AccordionElement
+   | ListElement;
 
 export type CustomText = {
    text: string;
