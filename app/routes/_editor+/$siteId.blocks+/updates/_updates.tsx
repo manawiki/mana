@@ -18,7 +18,7 @@ import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/components/H2";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
 import { withLinkify } from "~/routes/_editor+/plugins/link/withLinkify";

@@ -8,7 +8,7 @@ import { Editable, Slate, withReact } from "slate-react";
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/components/H2";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import type { UpdatesElement } from "~/routes/_editor+/functions/types";
 

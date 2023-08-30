@@ -4,14 +4,14 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Editable, Slate, withReact } from "slate-react";
 
-import { Block } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 
 //Isolate the Slate Viewer to make it easier to tree-shake with lazily loaded components
 export const EntryViewer = ({ content }: { content: any }) => {
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
    return (
       <Slate editor={editor} initialValue={content}>

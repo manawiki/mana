@@ -10,7 +10,7 @@ import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
-import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { isAdding } from "~/utils";
 

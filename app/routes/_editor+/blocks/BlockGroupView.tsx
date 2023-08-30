@@ -12,7 +12,7 @@ import {
 
 import { Image } from "~/components";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 
 import type { GroupElement } from "../functions/types";
