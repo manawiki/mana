@@ -37,8 +37,8 @@ import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
 } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";

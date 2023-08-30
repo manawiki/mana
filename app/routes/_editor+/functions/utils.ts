@@ -1,6 +1,7 @@
+import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms, Range } from "slate";
 
 import {
    BlockType,
@@ -8,6 +9,13 @@ import {
    type Format,
    type ParagraphElement,
 } from "./types";
+
+export const HOTKEYS: Record<string, Format> = {
+   "mod+b": "bold",
+   "mod+i": "italic",
+   "mod+u": "underline",
+   "mod+s": "strikeThrough",
+};
 
 export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
@@ -22,7 +30,7 @@ export function withNodeId(editor: Editor) {
     3. onPaste
  */
    editor.insertFragment = (fragment) => {
-      fragment.forEach((node) => {
+      fragment.forEach((node: any) => {
          if (node.type) {
             node.id = nanoid();
          }
@@ -106,4 +114,31 @@ export function initialValue(): CustomElement[] {
          children: [{ text: "" }],
       },
    ];
+}
+
+export function onKeyDown(event: any, editor: any) {
+   const { selection } = editor;
+
+   if (selection && Range.isCollapsed(selection)) {
+      const { nativeEvent } = event;
+      if (isKeyHotkey("left", nativeEvent)) {
+         event.preventDefault();
+         Transforms.move(editor, { unit: "offset", reverse: true });
+         return;
+      }
+      if (isKeyHotkey("right", nativeEvent)) {
+         event.preventDefault();
+         Transforms.move(editor, { unit: "offset" });
+         return;
+      }
+   }
+
+   //Render mark commands
+   for (const hotkey in HOTKEYS) {
+      if (isHotkey(hotkey, event as any) && editor.selection) {
+         event.preventDefault();
+         const mark = HOTKEYS[hotkey];
+         toggleMark(editor, mark);
+      }
+   }
 }

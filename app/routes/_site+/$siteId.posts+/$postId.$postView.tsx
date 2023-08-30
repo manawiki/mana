@@ -22,8 +22,8 @@ import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { PostHeader } from "./components/PostHeader";

@@ -12,8 +12,8 @@ import {
 
 import { Image } from "~/components";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 
 import type { GroupElement } from "../functions/types";
 

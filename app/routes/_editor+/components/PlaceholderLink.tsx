@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-import Button from "./Button";
+import Button from "~/components/Button";
 
 type Input = {
    type: string;

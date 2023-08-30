@@ -34,25 +34,18 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 
+import Button from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 import {
    EditorBlocks,
    CreateNewBlockFromBlock,
-} from "~/routes/_editor+/blocks/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
-import {
-   BlockInlineActions,
-   Button,
-   Toolbar,
-} from "~/routes/_editor+/components";
-import {
-   HOTKEYS,
-   PROSE_CONTAINER_ID,
-} from "~/routes/_editor+/functions/constants";
+} from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 import type { CustomElement } from "~/routes/_editor+/functions/types";
 import { BlockType } from "~/routes/_editor+/functions/types";
 import {
+   HOTKEYS,
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
@@ -60,6 +53,8 @@ import {
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
 
+import { BlockInlineActions } from "./components/BlockInlineActions";
+import { Toolbar } from "./components/Toolbar";
 import { withLinkify } from "./plugins/link/withLinkify";
 import { indentItem, undentItem } from "./plugins/list/utils";
 import { withLists } from "./plugins/list/withLists";
@@ -100,7 +95,7 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export const ManaEditor = ({
+export function ManaEditor({
    fetcher,
    defaultValue,
    siteId,
@@ -116,7 +111,7 @@ export const ManaEditor = ({
    pageId?: string;
    sectionId?: string;
    intent?: string;
-}) => {
+}) {
    const editor = useEditor();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -306,7 +301,6 @@ export const ManaEditor = ({
       <div className="relative pb-4">
          <div
             className="mx-auto max-w-[728px]"
-            id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full">
@@ -374,7 +368,7 @@ export const ManaEditor = ({
          </div>
       </div>
    );
-};
+}
 
 function SortableElement({
    attributes,
