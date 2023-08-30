@@ -15,7 +15,7 @@ import { Image } from "~/components";
 import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 
-import type { GroupElement } from "../types";
+import type { GroupElement } from "../functions/types";
 
 type Props = {
    element: GroupElement;

@@ -10,7 +10,7 @@ import { H2Default } from "~/components/H2";
 // eslint-disable-next-line import/no-cycle
 import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
-import type { UpdatesElement } from "~/routes/_editor+/types";
+import type { UpdatesElement } from "~/routes/_editor+/functions/types";
 
 type Props = {
    element: UpdatesElement;

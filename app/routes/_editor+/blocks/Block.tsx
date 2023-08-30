@@ -9,17 +9,17 @@ import BlockCodeSandbox from "./BlockCodeSandbox";
 import { BlockGroup } from "./BlockGroup";
 // eslint-disable-next-line import/no-cycle
 import BlockGroupView from "./BlockGroupView";
-import BlockImage from "./BlockImage";
 import BlockToDo from "./BlockToDo";
 import BlockVideo from "./BlockVideo";
+import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
 import { BlockLink } from "../$siteId.blocks+/link/edit";
 import { BlockLinkView } from "../$siteId.blocks+/link/view";
 // eslint-disable-next-line import/no-cycle
 import { BlockUpdates } from "../$siteId.blocks+/updates";
 // eslint-disable-next-line import/no-cycle
 import { BlockUpdatesView } from "../$siteId.blocks+/updates/view";
-import type { CustomElement } from "../types";
-import { BlockType } from "../types";
+import type { CustomElement } from "../functions/types";
+import { BlockType } from "../functions/types";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created

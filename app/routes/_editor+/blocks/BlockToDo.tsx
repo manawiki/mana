@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
-import type { CustomElement, ToDoElement } from "../types";
+import type { CustomElement, ToDoElement } from "../functions/types";
 
 type Props = {
    element: ToDoElement;

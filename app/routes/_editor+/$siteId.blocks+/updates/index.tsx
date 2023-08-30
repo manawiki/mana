@@ -25,7 +25,7 @@ import { Leaf } from "../../blocks/Leaf";
 import { Toolbar } from "../../components";
 import { onKeyDown } from "../../functions/editorCore";
 import { withLinkify } from "../../plugins/link/withLinkify";
-import type { UpdatesElement, CustomElement } from "../../types";
+import type { UpdatesElement, CustomElement } from "../../functions/types";
 
 type Props = {
    element: UpdatesElement;

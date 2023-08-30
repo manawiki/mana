@@ -97,7 +97,7 @@ export default function PostPage() {
    return (
       <div className="relative">
          <AdminOrStaffOrOwner>
-            <div className="flex sticky top-[86px] items-center justify-center">
+            <div className="sticky top-[86px] flex items-center justify-center">
                <Link
                   to={`/${siteId}/posts/${post.id}/edit`}
                   className="shadow-1 group inline-flex w-36 flex-none items-center justify-center gap-2 rounded-2xl 

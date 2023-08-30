@@ -11,7 +11,7 @@ import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { Toolbar } from "~/routes/_editor+/components";
 import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
-import type { CustomElement } from "~/routes/_editor+/types";
+import type { CustomElement } from "~/routes/_editor+/functions/types";
 
 import { withLinkify } from "../../plugins/link/withLinkify";
 

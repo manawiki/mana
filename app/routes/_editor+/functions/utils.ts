@@ -7,7 +7,7 @@ import {
    type CustomElement,
    type Format,
    type ParagraphElement,
-} from "../types";
+} from "./types";
 
 export const withNodeId = (editor: Editor) => {
    const makeNodeId = () => nanoid(16);

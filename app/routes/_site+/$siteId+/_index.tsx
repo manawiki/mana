@@ -39,7 +39,7 @@ import {
 } from "~/modules/auth";
 import { Block } from "~/routes/_editor+/blocks/Block";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
-import { SoloEditor } from "~/routes/_editor+/editors+/SoloEditor";
+import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -115,7 +115,7 @@ export default function SiteIndexMain() {
                   <div className="relative min-h-screen">
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
-                           <SoloEditor
+                           <ManaEditor
                               key={siteId}
                               fetcher={fetcher}
                               siteId={siteId}
@@ -285,7 +285,7 @@ const EditorCommandBar = ({
                                        },
                                        {
                                           method: "post",
-                                          action: "/editors/SoloEditor",
+                                          action: "/editor",
                                        }
                                     );
                                  }}

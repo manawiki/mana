@@ -48,7 +48,7 @@ export default function CollectionEntryWiki() {
          <EntryHeader entry={entryDefault} />
          <AdminOrStaffOrOwner>
             <div className="">
-               {/* <SoloEditor
+               {/* <ManaEditor
                   siteId={siteId ?? ""}
                   fetcher={fetcher}
                   collectionEntity={collectionId ?? ""}

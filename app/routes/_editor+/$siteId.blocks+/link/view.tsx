@@ -4,7 +4,7 @@ import { Link } from "@remix-run/react";
 
 import { Image } from "~/components";
 
-import type { LinkElement } from "../../types";
+import type { LinkElement } from "../../functions/types";
 
 type Props = {
    element: LinkElement;

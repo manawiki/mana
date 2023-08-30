@@ -49,7 +49,11 @@ import { onKeyDown } from "~/routes/_editor+/functions/editorCore";
 import { swrRestFetcher } from "~/utils";
 
 import Toolbar from "../components/Toolbar";
-import type { CustomElement, GroupElement, groupItem } from "../types";
+import type {
+   CustomElement,
+   GroupElement,
+   groupItem,
+} from "../functions/types";
 
 type Props = {
    element: GroupElement;
