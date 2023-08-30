@@ -39,7 +39,7 @@ import { useDebouncedValue, useIsMount } from "~/hooks";
 import {
    EditorBlocks,
    CreateNewBlockFromBlock,
-} from "~/routes/_editor+/blocks/Block";
+} from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
    BlockInlineActions,

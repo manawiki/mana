@@ -37,7 +37,7 @@ import {
    AdminOrStaffOrOwner,
    useIsStaffOrSiteAdminOrStaffOrOwner,
 } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/blocks/Block";
+import { EditorBlocks } from "~/routes/_editor+/blocks/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR, isProcessing } from "~/utils";
