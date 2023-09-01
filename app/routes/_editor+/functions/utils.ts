@@ -1,7 +1,7 @@
 import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
-import { Editor, Transforms, Range } from "slate";
+import { Editor, Transforms, Range, Element } from "slate";
 
 import {
    BlockType,
@@ -19,7 +19,7 @@ export const HOTKEYS: Record<string, Format> = {
 
 export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
-   const { apply, insertFragment } = editor;
+   const { apply, insertFragment, insertBreak } = editor;
 
    /* 
     Check if we need to re-write the id on paste
@@ -45,6 +45,37 @@ export function withNodeId(editor: Editor) {
       }
 
       return apply(operation);
+   };
+
+   //Break to paragraph if element is any of the following
+   editor.insertBreak = () => {
+      const { selection } = editor;
+
+      if (selection) {
+         const [title] = Editor.nodes(editor, {
+            match: (n: any) =>
+               !Editor.isEditor(n) &&
+               Element.isElement(n) &&
+               [BlockType.EventItem, BlockType.H2, BlockType.H3].includes(
+                  n.type
+               ),
+         });
+
+         if (title) {
+            Transforms.insertNodes(
+               editor,
+               {
+                  id: nanoid(),
+                  children: [{ text: "" }],
+                  type: BlockType.Paragraph,
+               },
+               { at: [editor.children.length] }
+            );
+            Transforms.move(editor, { distance: 1, unit: "line" });
+            return;
+         }
+      }
+      insertBreak();
    };
 
    return editor;

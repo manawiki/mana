@@ -35,7 +35,6 @@ export function BlockInlineActions({ blockId, onInsertBelow }: Props) {
             </TooltipTrigger>
             <TooltipContent>Drag to reorder</TooltipContent>
          </Tooltip>
-
          <BlockTypeSelector onSelect={onInsertBelow} />
       </div>
    );
