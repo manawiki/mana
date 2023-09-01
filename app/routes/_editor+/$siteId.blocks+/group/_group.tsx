@@ -48,12 +48,12 @@ import { Leaf } from "~/routes/_editor+/components/Leaf";
 import { onKeyDown } from "~/routes/_editor+/functions/utils";
 import { swrRestFetcher } from "~/utils";
 
-import { Toolbar } from "../components/Toolbar";
+import { Toolbar } from "../../components/Toolbar";
 import type {
    CustomElement,
    GroupElement,
    groupItem,
-} from "../functions/types";
+} from "../../functions/types";
 
 type Props = {
    element: GroupElement;

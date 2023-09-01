@@ -3,6 +3,7 @@ import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import {
+   CalendarClock,
    CheckSquare,
    Codesandbox,
    Heading2,
@@ -10,6 +11,7 @@ import {
    ImagePlus,
    LayoutList,
    List,
+   ListOrdered,
    Plus,
    Type,
    UnfoldVertical,
@@ -71,11 +73,34 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <List size={16} />,
          description: "A basic bulleted list",
          onSelect: () => {
-            //@ts-expect-error
             onSelect({
                id: nanoid(),
                type: BlockType.BulletedList,
-               children: [{ text: "" }],
+               children: [
+                  {
+                     id: nanoid(),
+                     type: BlockType.ListItem,
+                     children: [{ text: "" }],
+                  },
+               ],
+            });
+         },
+      },
+      {
+         label: "Ordered list",
+         icon: <ListOrdered size={16} />,
+         description: "A basic ordered list",
+         onSelect: () => {
+            onSelect({
+               id: nanoid(),
+               type: BlockType.NumberedList,
+               children: [
+                  {
+                     id: nanoid(),
+                     type: BlockType.ListItem,
+                     children: [{ text: "" }],
+                  },
+               ],
             });
          },
       },
@@ -110,6 +135,24 @@ export function BlockTypeSelector({ onSelect }: Props) {
                      collection: "",
                      groupItems: [],
                      children: [{ text: "" }],
+                  });
+               },
+            },
+            {
+               label: "Event Timeline",
+               icon: <CalendarClock size={20} />,
+               description: "Create events with a start and end date",
+               onSelect: () => {
+                  onSelect({
+                     id: nanoid(),
+                     type: BlockType.Events,
+                     children: [
+                        {
+                           id: nanoid(),
+                           type: BlockType.EventItem,
+                           children: [{ text: "" }],
+                        },
+                     ],
                   });
                },
             },
@@ -192,6 +235,30 @@ export function BlockTypeSelector({ onSelect }: Props) {
          ],
       },
    ];
+
+   // const path = [
+   //    ReactEditor.findPath(editor, props.element)[0] + 1,
+   // ];
+
+   // Transforms.insertNodes(editor, block, {
+   //    at: path,
+   // });
+
+   // Transforms.wrapNodes(editor, list, {
+   //    match: (n) => n.type === BlockType.ListItem,
+   // });
+   // {
+   //    id: nanoid(),
+   //    type: BlockType.Events,
+   //    children: [
+   //       {
+   //          id: nanoid(),
+   //          label: "Hello",
+   //          type: BlockType.EventItem,
+   //          children: [{ text: "asd 123" }],
+   //       },
+   //    ],
+   // }
 
    //If custom site has blocks, add to select options
    const customBlocks = CustomBlocksAddConfig(onSelect);

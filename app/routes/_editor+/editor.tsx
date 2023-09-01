@@ -229,19 +229,18 @@ export function ManaEditor({
                const path = [
                   ReactEditor.findPath(editor, props.element)[0] + 1,
                ];
-
                Transforms.insertNodes(editor, block, {
                   at: path,
                });
 
                // Defer selection to be able to focus the element we just inserted
-               setTimeout(() => {
-                  ReactEditor.focus(editor);
-                  Transforms.select(editor, {
-                     anchor: { path: [path[0], 0], offset: 0 },
-                     focus: { path: [path[0], 0], offset: 0 },
-                  });
-               }, 0);
+               // setTimeout(() => {
+               //    ReactEditor.focus(editor);
+               //    Transforms.select(editor, {
+               //       anchor: { path: [path[0], 0], offset: 0 },
+               //       focus: { path: [path[0], 0], offset: 0 },
+               //    });
+               // }, 0);
             }}
          />
       ) : (
@@ -271,11 +270,11 @@ export function ManaEditor({
             return;
          }
          //UL and OL key logic
-         if (isHotkey("shift+tab", event)) {
+         if (isKeyHotkey("shift+tab", nativeEvent)) {
             // attempt to un-indent on shift+tab within list
             event.preventDefault();
             undentItem(editor);
-         } else if (isHotkey("tab", event)) {
+         } else if (isKeyHotkey("tab", nativeEvent)) {
             // attempt to indent on tab within list
             event.preventDefault();
             indentItem(editor);

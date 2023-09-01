@@ -4,6 +4,10 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
+import { BlockEventItem, BlockEvents } from "../$siteId.blocks+/events/_events";
+import { BlockEventsView } from "../$siteId.blocks+/events/BlockEventsView";
+import { BlockGroup } from "../$siteId.blocks+/group/_group";
+import { BlockGroupView } from "../$siteId.blocks+/group/BlockGroupView";
 import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
 import { BlockLink } from "../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../$siteId.blocks+/link/BlockLinkView";
@@ -11,8 +15,6 @@ import { BlockUpdates } from "../$siteId.blocks+/updates/_updates";
 import { BlockUpdatesView } from "../$siteId.blocks+/updates/BlockUpdatesView";
 import { BlockAccordion } from "../blocks//BlockAccordion";
 import { BlockCodeSandbox } from "../blocks//BlockCodeSandbox";
-import { BlockGroup } from "../blocks//BlockGroup";
-import { BlockGroupView } from "../blocks//BlockGroupView";
 import { BlockToDo } from "../blocks//BlockToDo";
 import { BlockVideo } from "../blocks/BlockVideo";
 import type { CustomElement } from "../functions/types";
@@ -72,9 +74,6 @@ export function EditorBlocks({
             />
          );
       }
-      case BlockType.UpdatesInline: {
-         return <div {...attributes}>{children}</div>;
-      }
       case BlockType.Paragraph: {
          return (
             <p className="mb-3" {...attributes}>
@@ -131,6 +130,32 @@ export function EditorBlocks({
       }
       case BlockType.ListItem: {
          return <li {...attributes}>{children}</li>;
+      }
+      case BlockType.Events: {
+         if (readOnly)
+            return (
+               <BlockEventsView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
+         return (
+            <BlockEvents
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.EventItem: {
+         return (
+            <BlockEventItem
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
       }
       case BlockType.ToDo: {
          return (
