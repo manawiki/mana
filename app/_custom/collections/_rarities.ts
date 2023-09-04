@@ -33,5 +33,10 @@ export const _Rarities: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
+      {
+         name: "checksum",
+         type: "text",
+         required: true,
+      }
    ],
 };
