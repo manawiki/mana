@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const _Rarities: CollectionConfig = {
-   slug: "_rarities",
-   labels: { singular: "_rarity", plural: "_rarities" },
+export const _WarehouseCategories: CollectionConfig = {
+   slug: "_warehouseCategories",
+   labels: { singular: "_warehouseCategory", plural: "_warehouseCategories" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -22,10 +22,6 @@ export const _Rarities: CollectionConfig = {
       },
       {
          name: "name",
-         type: "text",
-      },
-      {
-         name: "hex",
          type: "text",
       },
       {
