@@ -13,7 +13,7 @@ export const Dolls: CollectionConfig = {
       create: isStaff,
       read: () => true,
       update: isStaff,
-      delete: isStaff, 
+      delete: isStaff,
    },
    fields: [
       {

@@ -1,17 +1,21 @@
 import { _Rarities } from "./_rarities";
 import { _WarehouseCategories } from "./_warehouseCategories";
 import { Dolls } from "./dolls";
+import { Items } from "./items";
 
 export const CustomCollections = [
-   Dolls, 
    _Rarities,
-   _WarehouseCategories
+   _WarehouseCategories,
+   Dolls,
+   Items,
 ];
 
 export const CustomSearchCollections = [
-   "dolls"
+   "dolls",
+   "items",
 ];
 
 export const CustomDefaultPriorities = {
    dolls: 70,
+   items: 60,
 };
