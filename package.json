@@ -53,7 +53,6 @@
       "cors": "^2.8.5",
       "cross-env": "^7.0.3",
       "date-and-time": "^3.0.2",
-      "date-fns": "^2.29.3",
       "deep-equal": "^2.2.1",
       "defer-if": "^1.0.5",
       "dotenv": "^16.0.3",
