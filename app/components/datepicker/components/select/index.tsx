@@ -93,7 +93,7 @@ function CustomSelect<T>({
       return () => {
          document.removeEventListener("click", clickListener);
       };
-   }, [closeOptionsDropdown, ref.current]);
+   }, [closeOptionsDropdown]);
 
    return (
       <div

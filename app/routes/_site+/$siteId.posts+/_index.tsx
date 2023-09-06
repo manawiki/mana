@@ -10,7 +10,7 @@ import {
    useSearchParams,
    useNavigation,
 } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import {
    ChevronDown,
    ChevronLeft,
@@ -310,9 +310,9 @@ export default function PostsIndex() {
                                        className="text-1 flex items-center gap-1.5 text-sm"
                                        dateTime={post?.updatedAt}
                                     >
-                                       {format(
+                                       {dt.format(
                                           new Date(post?.updatedAt),
-                                          "MMM dd"
+                                          "MMM D"
                                        )}
                                     </time>
                                     {post._status == "published" ? (

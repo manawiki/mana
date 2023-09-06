@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import { Loader2, Send, Trash } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
@@ -229,7 +229,7 @@ export const action = async ({
          });
 
          const newData = JSON.parse(data);
-         const currentDate = format(new Date(), "MMM-dd-yy");
+         const currentDate = dt.format(new Date(), "MMM-dd-yy");
 
          const update = await payload.find({
             collection: "updates",

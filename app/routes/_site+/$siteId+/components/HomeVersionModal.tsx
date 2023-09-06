@@ -4,7 +4,7 @@ import { useMemo, useCallback, Fragment, useState } from "react";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import { Loader2 } from "lucide-react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
@@ -58,9 +58,9 @@ export const HomeVersionModal = ({
                         className="bg-2 text-1 border-color fixed left-0 top-0 z-10 
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
-                        {format(
+                        {dt.format(
                            new Date(selectedVersion?.updatedAt as string),
-                           "MMMM d, hh:mm aaa"
+                           "MMMM D, hh:mm A"
                         )}
                      </div>
                      {versions?.map(
@@ -121,11 +121,11 @@ export const HomeVersionModal = ({
                                                    className="flex items-center gap-1.5 text-sm group-hover:underline"
                                                    dateTime={row?.updatedAt}
                                                 >
-                                                   {format(
+                                                   {dt.format(
                                                       new Date(
                                                          row?.updatedAt as string
                                                       ),
-                                                      "MMMM d, hh:mm aaa"
+                                                      "MMMM D, hh:mm A"
                                                    )}
                                                 </time>
                                                 {/* {checked == false  : "asdasd"} */}
