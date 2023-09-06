@@ -1,10 +1,11 @@
 /// <reference types="@remix-run/dev" />
 /// <reference types="@remix-run/node/globals" />
 
-import type { User } from "payload/generated-types";
+import type { ServerBuild } from "@remix-run/node";
 import type { Response } from "express";
 import type { Payload } from "payload";
-import type { ServerBuild } from "@remix-run/node";
+
+import type { User } from "payload/generated-types";
 
 export interface RemixRequestContext {
    payload: Payload;
