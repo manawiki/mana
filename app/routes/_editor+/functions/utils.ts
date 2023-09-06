@@ -1,7 +1,7 @@
 import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
-import { Editor, Transforms, Range, Element } from "slate";
+import { Editor, Transforms, Range, Element, Node } from "slate";
 
 import {
    BlockType,
@@ -56,9 +56,7 @@ export function withNodeId(editor: Editor) {
             match: (n: any) =>
                !Editor.isEditor(n) &&
                Element.isElement(n) &&
-               [BlockType.EventItem, BlockType.H2, BlockType.H3].includes(
-                  n.type
-               ),
+               [BlockType.H2, BlockType.H3].includes(n.type),
          });
 
          if (title) {

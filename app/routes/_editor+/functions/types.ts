@@ -2,7 +2,7 @@ import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import { type Collection } from "payload/generated-types";
-import { Time } from "~/components/datepicker/time-picker/types";
+import type { Time } from "~/components/datepicker/time-picker/types";
 
 declare module "slate" {
    interface CustomTypes {
@@ -68,9 +68,11 @@ export type EventItemElement = BlockElement & {
    type: BlockType.EventItem;
    label?: string | null;
    startDate?: Date | null;
-   startTime?: Time | null;
+   startTime?: Time;
+   startTimestamp?: Date | null;
    endDate?: Date | null;
-   endTime?: Time | null;
+   endTime?: Time;
+   endTimestamp?: Date | null;
 };
 
 export type EventsElement = {

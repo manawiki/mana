@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import { Disclosure, Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
@@ -7,11 +7,12 @@ import clsx from "clsx";
 import { CalendarPlus, ChevronDown, Timer, X } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useTimer } from "react-timer-hook";
-import { Transforms } from "slate";
+import { Transforms, Node, Editor } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import DatePicker from "~/components/datepicker/date-picker";
 import TimePicker from "~/components/datepicker/time-picker";
+import type { Time } from "~/components/datepicker/time-picker/types";
 import {
    convertTimeToDate,
    getCurrentTime,
@@ -27,7 +28,6 @@ import type {
 export function BlockEvents({
    element,
    children,
-   ...attributes
 }: {
    element: EventsElement;
    children: ReactNode;
@@ -35,13 +35,13 @@ export function BlockEvents({
    const editor = useSlate();
 
    return (
-      <>
+      <section className="pb-4">
          <div className="divide-color shadow-1 border-color bg-3 divide-y rounded-lg border shadow-sm">
             {children}
          </div>
          <div contentEditable={false} className="pt-3">
             <button
-               className="shadow-1 border-color rounded-lg border bg-blue-50 px-3 py-2 text-xs font-bold shadow-sm"
+               className="shadow-1 border-color rounded-lg border bg-zinc-800 px-3 py-2 text-xs font-bold text-white shadow-sm"
                onClick={() => {
                   const path = [
                      ReactEditor.findPath(editor, element),
@@ -62,7 +62,7 @@ export function BlockEvents({
                Add
             </button>
          </div>
-      </>
+      </section>
    );
 }
 
@@ -84,42 +84,88 @@ export function BlockEventItem({
    const [endDate, setEndDate] = useState(
       element?.endDate ? new Date(element?.endDate) : today
    );
-   const initStartTime = element?.startTime ? element?.startTime : currentTime;
-   const initEndTime = element?.endTime ? element?.endTime : currentTime;
 
-   const [startTime, setStartTime] = useState(initStartTime);
-   const [endTime, setEndTime] = useState(initEndTime);
+   const [startTime, setStartTime] = useState(
+      element?.startTime ? element?.startTime : currentTime
+   );
+   const [endTime, setEndTime] = useState(
+      element?.endTime ? element?.endTime : currentTime
+   );
 
-   const updateEditorValue = (
-      event: any,
+   function updateEditorValue(
+      event: Time | Date | string | any,
       key: "startDate" | "startTime" | "endDate" | "endTime" | "label"
-   ) => {
-      //If time field, we need to convert it to the right format
-
+   ) {
       const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         [key]: event,
-      };
+      if (key == "label") {
+         return Transforms.setNodes<CustomElement>(
+            editor,
+            { [key]: event },
+            {
+               at: path,
+            }
+         );
+      }
 
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
+      const { startTime, endTime, startTimestamp, endTimestamp } = element;
+
+      Transforms.setNodes<CustomElement>(
+         editor,
+         {
+            ...(key == "startDate" && {
+               startDate: event,
+               startTimestamp: convertTimeToDate(
+                  startTime ?? {
+                     hours: 0,
+                     minutes: 0,
+                  },
+                  event
+               ),
+            }),
+            ...(key == "endDate" && {
+               endDate: event,
+               endTimestamp: convertTimeToDate(
+                  endTime ?? {
+                     hours: 0,
+                     minutes: 0,
+                  },
+                  event
+               ),
+            }),
+            ...(key == "startTime" && {
+               startTime: event,
+               startTimestamp: convertTimeToDate(event, startDate),
+            }),
+            ...(key == "endTime" && {
+               endTime: event,
+               endTimestamp: convertTimeToDate(event, endDate),
+            }),
+         },
+         {
+            at: path,
+         }
+      );
+
+      if (!startTimestamp || !endTimestamp) return;
+      const updatedParent = Node.parent(editor, path);
+      const currentChildren = updatedParent.children;
+      const sortedUpdated = [...currentChildren].sort(
+         //@ts-ignore
+         (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
+      );
+      return sortedUpdated.forEach((row: any) => {
+         Transforms.moveNodes<CustomElement>(editor, {
+            at: [path[0]],
+            match: (node: Node) =>
+               //@ts-ignore
+               Editor.isBlock(editor, node) && node.id === row?.id,
+            to: [
+               path[0],
+               sortedUpdated.findIndex((item: any) => item.id == row.id),
+            ],
+         });
       });
-   };
-
-   //Combine date with time field
-   const displayStartDate =
-      element?.startTime &&
-      element?.startDate &&
-      convertTimeToDate(element?.startTime, element?.startDate);
-
-   const displayEndDate =
-      element?.endTime &&
-      element?.endDate &&
-      convertTimeToDate(element?.endTime, element?.endDate);
-
-   const isActiveEvent = displayStartDate && displayStartDate > today;
-   const isEventOver = displayEndDate && displayEndDate > today;
+   }
 
    return (
       <Disclosure key={element.id}>
@@ -139,7 +185,7 @@ export function BlockEventItem({
                      type="text"
                      className="flex-grow border-0 bg-transparent p-0 text-sm font-bold focus:ring-0"
                   />
-                  <CountdownTimer expiryTimestamp={displayEndDate} />
+                  <CountdownTimer element={element} />
                   <div className="flex items-center">
                      <section className="relative">
                         <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 transform rounded-full bg-zinc-200 px-1.5 text-[8px] font-bold dark:bg-zinc-700">
@@ -185,7 +231,7 @@ export function BlockEventItem({
                                        >
                                           <DatePicker
                                              value={startDate}
-                                             onChange={(e: any) => {
+                                             onChange={(e) => {
                                                 setStartDate(e);
                                                 updateEditorValue(
                                                    e,
@@ -240,7 +286,7 @@ export function BlockEventItem({
                                        >
                                           <TimePicker
                                              className="!w-full !border-0 !py-2 text-xs !shadow-none"
-                                             onChange={(e: any) => {
+                                             onChange={(e) => {
                                                 setStartTime(e);
                                                 updateEditorValue(
                                                    e,
@@ -354,7 +400,7 @@ export function BlockEventItem({
                                        >
                                           <TimePicker
                                              className="!w-full !border-0 !py-2 text-xs !shadow-none"
-                                             onChange={(e: any) => {
+                                             onChange={(e) => {
                                                 setEndTime(e);
                                                 updateEditorValue(e, "endTime");
                                              }}
@@ -396,32 +442,134 @@ export function BlockEventItem({
    );
 }
 
-function CountdownTimer({ expiryTimestamp }: { expiryTimestamp: Date }) {
-   const { seconds, minutes, hours, days } = useTimer({
-      expiryTimestamp,
-      onExpire: () => console.warn("onExpire called"),
+function CountdownTimer({ element }: { element: EventItemElement }) {
+   const today = new Date();
+
+   const { startTime, endTime, startDate, endDate } = element;
+
+   const hasStartFields = startTime && startDate;
+   const hasEndFields = endTime && endDate;
+
+   const hasAllFields = hasStartFields && hasEndFields;
+
+   //Combine date with time field
+   const displayStartDate =
+      hasStartFields && convertTimeToDate(startTime, startDate);
+
+   const displayEndDate = hasEndFields && convertTimeToDate(endTime, endDate);
+
+   const isActiveEvent = displayStartDate && today >= displayStartDate;
+
+   //If the event is active, show countdown before event ends, otherwise show countdown before event starts
+   const expirationDate = isActiveEvent ? displayEndDate : displayStartDate;
+
+   const [expiryTime, setExpiryTimestamp] = useState(expirationDate);
+
+   const { minutes, hours, days, restart } = useTimer({
+      expiryTimestamp: expiryTime ?? new Date(),
    });
 
+   useEffect(() => {
+      if (expirationDate) {
+         setExpiryTimestamp(expirationDate);
+         restart(expirationDate);
+      }
+   }, [element]);
+
+   const label = isActiveEvent ? "End Date" : "Start Date";
+
    return (
-      <div className="flex items-center gap-2 text-xs font-bold">
-         {days ? (
-            <div className="flex items-center gap-0.5">
-               <span>{days}</span>
-               <span className="font-semibold text-zinc-400">d</span>
-            </div>
-         ) : null}
-         {hours ? (
-            <div className="flex items-center gap-0.5">
-               <span>{hours}</span>
-               <span className="font-semibold text-zinc-400">h</span>
-            </div>
-         ) : null}
-         {minutes ? (
-            <div className="flex items-center gap-0.5">
-               <span>{minutes}</span>
-               <span className="font-semibold text-zinc-400">m</span>
-            </div>
-         ) : null}
+      <div className="flex items-center gap-4">
+         {hasAllFields && (
+            <>
+               <section>
+                  <div
+                     className={clsx(
+                        isActiveEvent ? "text-sky-500" : "text-blue-500",
+                        "text-right text-[10px] font-bold"
+                     )}
+                  >
+                     {label}
+                  </div>
+                  <div className="flex items-center justify-end">
+                     <div className="text-1 flex items-center gap-2 text-xs font-bold">
+                        {days ? (
+                           <div className="flex items-center gap-0.5">
+                              <span>{days}</span>
+                              <span className="font-semibold text-zinc-400">
+                                 d
+                              </span>
+                           </div>
+                        ) : null}
+                        {hours ? (
+                           <div className="flex items-center gap-0.5">
+                              <span>{hours}</span>
+                              <span className="font-semibold text-zinc-400">
+                                 h
+                              </span>
+                           </div>
+                        ) : null}
+                        {minutes ? (
+                           <div className="flex items-center gap-0.5">
+                              <span>{minutes}</span>
+                              <span className="font-semibold text-zinc-400">
+                                 m
+                              </span>
+                           </div>
+                        ) : null}
+                     </div>
+                  </div>
+               </section>
+               {!isActiveEvent && (
+                  <CountdownTimerEnd expiryTimestamp={displayEndDate} />
+               )}
+            </>
+         )}
       </div>
+   );
+}
+
+function CountdownTimerEnd({ expiryTimestamp }: { expiryTimestamp: any }) {
+   const [expiryTime, setExpiryTimestamp] = useState(expiryTimestamp);
+
+   const { minutes, hours, days, restart } = useTimer({
+      expiryTimestamp: expiryTime,
+   });
+
+   useEffect(() => {
+      if (expiryTimestamp) {
+         setExpiryTimestamp(expiryTimestamp);
+         restart(expiryTimestamp);
+      }
+   }, [expiryTimestamp, restart]);
+
+   return (
+      <section className="w-24">
+         <div className="text-right text-[10px] font-bold text-purple-400">
+            Duration
+         </div>
+         <div className="flex items-center justify-end">
+            <div className="text-1 flex items-center gap-2 text-xs font-bold">
+               {days ? (
+                  <div className="flex items-center gap-0.5">
+                     <span>{days}</span>
+                     <span className="font-semibold text-zinc-400">d</span>
+                  </div>
+               ) : null}
+               {hours ? (
+                  <div className="flex items-center gap-0.5">
+                     <span>{hours}</span>
+                     <span className="font-semibold text-zinc-400">h</span>
+                  </div>
+               ) : null}
+               {minutes ? (
+                  <div className="flex items-center gap-0.5">
+                     <span>{minutes}</span>
+                     <span className="font-semibold text-zinc-400">m</span>
+                  </div>
+               ) : null}
+            </div>
+         </div>
+      </section>
    );
 }

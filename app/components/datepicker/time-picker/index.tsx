@@ -7,6 +7,8 @@ import React, {
    useState,
 } from "react";
 
+import { useIsMount } from "~/hooks";
+
 import {
    alignTime,
    generateHourOptions,
@@ -72,6 +74,8 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       },
       ref
    ) => {
+      const isMount = useIsMount();
+
       if (
          typeof minutesInterval !== "number" &&
          minutesInterval < 1 &&
@@ -155,8 +159,11 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       }, [selectedTime.hours, displayFormat, currentMeridiem]);
 
       useEffect(() => {
-         onChange(selectedTime);
-      }, [selectedTime, onChange]);
+         //Only update state after initial mount
+         if (!isMount) {
+            onChange(selectedTime);
+         }
+      }, [selectedTime]);
 
       useEffect(() => {
          setSelectedTime(alignTime(selectedTime, minutesInterval));
