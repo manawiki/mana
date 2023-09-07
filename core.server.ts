@@ -1,11 +1,10 @@
 import * as path from "node:path";
 
 import {
-   combineGetLoadContexts,
-   createMetronomeGetLoadContext,
    registerMetronome,
+   createRequestHandler
 } from "@metronome-sh/express";
-import { createRequestHandler, type RequestHandler } from "@remix-run/express";
+import { type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
@@ -164,18 +163,18 @@ startCore();
 
 // Create a request handler that uses metronome in production
 function createProductionRequestHandler(): RequestHandler {
-   const buildWithMetronome = registerMetronome(build);
-   const metronomeGetLoadContext = createMetronomeGetLoadContext(
-      //@ts-ignore need to overload the metronome types
-      buildWithMetronome,
-      {
-         config: {
-            ignoredRoutes: [],
-            ignoredPathnames: ["/healthcheck"],
-            ignoreHeadMethod: true,
-         },
-      }
-   );
+   // const buildWithMetronome = registerMetronome(build);
+   // const metronomeGetLoadContext = createMetronomeGetLoadContext(
+   //    //@ts-ignore need to overload the metronome types
+   //    buildWithMetronome,
+   //    {
+   //       config: {
+   //          ignoredRoutes: [],
+   //          ignoredPathnames: ["/healthcheck"],
+   //          ignoreHeadMethod: true,
+   //       },
+   //    }
+   // );
 
    function getLoadContext(req: any, res: any) {
       return {
@@ -186,14 +185,9 @@ function createProductionRequestHandler(): RequestHandler {
    }
 
    return createRequestHandler({
-      //@ts-ignore need to overload the metronome types
-      build: buildWithMetronome,
+      build,
       mode: process.env.NODE_ENV,
-      getLoadContext: combineGetLoadContexts(
-         getLoadContext,
-         // @ts-expect-error huh... metronome isn't happy with itself.
-         metronomeGetLoadContext
-      ),
+      getLoadContext,
    });
 }
 
