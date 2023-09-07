@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import dt from "date-and-time";
@@ -213,7 +213,7 @@ export const action = async ({
    context: { payload, user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
    const { intent } = await zx.parseForm(request, {

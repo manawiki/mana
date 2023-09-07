@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import {
    type ActionFunction,
-   type LoaderArgs,
-   type V2_MetaFunction,
+   type LoaderFunctionArgs,
+   type MetaFunction,
    json,
    redirect,
 } from "@remix-run/node";
@@ -55,7 +55,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { collectionId, siteId } = zx.parseParams(params, {
       collectionId: z.string(),
       siteId: z.string(),
@@ -112,7 +112,7 @@ export async function loader({
    }
 }
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
       ({ id }) => id === "routes/_site+/$siteId+/_layout"
    )?.data?.site.name;

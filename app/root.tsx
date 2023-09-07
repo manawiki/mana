@@ -1,10 +1,10 @@
-import { useEffect, lazy } from "react";
+import { useEffect } from "react";
 
 import { MetronomeLinks } from "@metronome-sh/react";
 import type {
-   V2_MetaFunction,
+   MetaFunction,
    LinksFunction,
-   LoaderArgs,
+   LoaderFunctionArgs,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
@@ -19,7 +19,6 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import rdtStylesheet from "remix-development-tools/stylesheet.css";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -41,13 +40,12 @@ import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 
-const RemixDevTools = lazy(() => import("remix-development-tools"));
 
 export const loader = async ({
    context: { user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
    const session = await getSession(request.headers.get("cookie"));
@@ -74,7 +72,7 @@ export const loader = async ({
    );
 };
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
    { title: settings.title },
    { charSet: "utf-8" },
 ];
@@ -112,10 +110,6 @@ export const links: LinksFunction = () => [
       }.mana.wiki`,
    },
 
-   //Remix Devtools
-   ...(rdtStylesheet && process.env.NODE_ENV === "development"
-      ? [{ rel: "stylesheet", href: rdtStylesheet }]
-      : []),
 ];
 
 export const handle = {
@@ -124,7 +118,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage, isMobileApp } =
+   const { locale, siteTheme, toastMessage } =
       useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
@@ -132,7 +126,7 @@ function App() {
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const {site } = useMatches()?.[1]?.data as {site: Site};
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
    useEffect(() => {
@@ -206,9 +200,6 @@ function App() {
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <LiveReload />
-            {/* {process.env.NODE_ENV === "development" && !isMobileApp && (
-               <RemixDevTools />
-            )} */}
          </body>
       </html>
    );

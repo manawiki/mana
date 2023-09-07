@@ -4,7 +4,7 @@ import {
    json,
    redirect,
    type MetaFunction,
-   type LoaderArgs,
+   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
@@ -32,7 +32,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { postId, siteId, postView } = zx.parseParams(params, {
       postId: z.string(),
       siteId: z.string(),
