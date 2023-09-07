@@ -1,7 +1,6 @@
 import * as path from "node:path";
 
 import {
-   registerMetronome,
    createRequestHandler
 } from "@metronome-sh/express";
 import { type RequestHandler } from "@remix-run/express";
@@ -161,20 +160,8 @@ async function startCore() {
 
 startCore();
 
-// Create a request handler that uses metronome in production
+// Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-   // const buildWithMetronome = registerMetronome(build);
-   // const metronomeGetLoadContext = createMetronomeGetLoadContext(
-   //    //@ts-ignore need to overload the metronome types
-   //    buildWithMetronome,
-   //    {
-   //       config: {
-   //          ignoredRoutes: [],
-   //          ignoredPathnames: ["/healthcheck"],
-   //          ignoreHeadMethod: true,
-   //       },
-   //    }
-   // );
 
    function getLoadContext(req: any, res: any) {
       return {
