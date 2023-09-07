@@ -233,6 +233,7 @@ function createDevRequestHandler(): RequestHandler {
                   res,
                };
             },
+            //@ts-ignore ??? Remix Team Why???
          })(req, res, next);
       } catch (error) {
          next(error);
