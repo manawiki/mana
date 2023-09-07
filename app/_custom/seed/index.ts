@@ -7,8 +7,8 @@ const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your needs
 const data = require("./example.json");
-const filetype = "png"; // either mp3 or png or whatever filetype
-const overwriteexisting = false;
+// const filetype = "png"; // either mp3 or png or whatever filetype
+const overwriteexisting = true; // CHANGE THIS if you wish to overwrite existing images or not.
 const user = "644068fa51c100f909f89e1e";
 var count = 0;
 
@@ -44,7 +44,10 @@ const getData = async () =>
 
 //Uploads image using the id from the JSON object to locate the file
 const seedUploads = async (result: any) => {
-   const id = result.id; //This is the id from the JSON object
+   const filetype = result.id.split(".").pop();
+   const id = result.id.replace("." + filetype,""); //This is the id from the JSON object
+   const checksum = result.checksum;
+   
 
    const existingImage = await payload.find({
       collection: "images",
@@ -54,7 +57,8 @@ const seedUploads = async (result: any) => {
 			},
 		}
    });
-   
+
+
    if (existingImage.docs.length > 0) {
       // Check if file exists! Sometimes uploads fail even though a DB entry goes through.
       // Will attempt reupload of image if the image doesn't exist, otherwise skips.
@@ -64,14 +68,16 @@ const seedUploads = async (result: any) => {
       if (overwriteexisting) {
             const updateItem = await payload.update({
                collection: "images",
-               id: imgid,
+               id: id,
                data: {
-                  id: imgid,
+                  id: id,
+                  createdBy: user,
+                  checksum: checksum,
                },
                filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
             });
             sleep(1000);
-            console.log(`${JSON.stringify(updateItem)} Updated!`);
+            console.log(`${id} Updated!`);
          }
          else {
             console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
@@ -100,6 +106,7 @@ const seedUploads = async (result: any) => {
          data: {
             id: id,
             createdBy: user,
+            checksum: checksum,
          },
          filePath: path.resolve(__dirname, `./images/${id}.${filetype}`),
       });
