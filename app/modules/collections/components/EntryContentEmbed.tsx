@@ -5,9 +5,7 @@ import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
 import { initialValue } from "~/routes/_editor+/functions/utils.ts";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
-const { SoloEditor } = lazily(
-   () => import("~/routes/_editor+/editors+/SoloEditor.tsx")
-);
+const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 const { EntryViewer } = lazily(() => import("./EntryViewer.tsx"));
 
 export const EntryContentEmbed = ({
@@ -37,7 +35,7 @@ export const EntryContentEmbed = ({
          {hasAccess ? (
             <>
                <H2 text={title} />
-               <SoloEditor
+               <ManaEditor
                   intent="customCollectionEmbed"
                   sectionId={sectionId}
                   siteId={siteId}

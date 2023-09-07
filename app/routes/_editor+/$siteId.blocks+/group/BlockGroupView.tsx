@@ -12,16 +12,16 @@ import {
 
 import { Image } from "~/components";
 // eslint-disable-next-line import/no-cycle
-import { Block } from "~/routes/_editor+/blocks/Block";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
 
-import type { GroupElement } from "../types";
+import type { GroupElement } from "../../functions/types";
 
 type Props = {
    element: GroupElement;
 };
 
-export default function GroupView({ element }: Props) {
+export function BlockGroupView({ element }: Props) {
    const editor = useMemo(() => withReact(createEditor()), []);
 
    const groupItems = element.groupItems;
@@ -29,7 +29,7 @@ export default function GroupView({ element }: Props) {
    const itemsViewMode = element.itemsViewMode;
    const content = element.content as Descendant[];
    const renderElement = useCallback((props: RenderElementProps) => {
-      return <Block {...props} />;
+      return <EditorBlocks {...props} />;
    }, []);
    return (
       <section className="my-3">

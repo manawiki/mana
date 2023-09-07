@@ -34,32 +34,30 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 
+import Button from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue, useIsMount } from "~/hooks";
-import { Block, CreateNewBlockFromBlock } from "~/routes/_editor+/blocks/Block";
-import { Leaf } from "~/routes/_editor+/blocks/Leaf";
 import {
-   BlockInlineActions,
-   Button,
-   Toolbar,
-} from "~/routes/_editor+/components";
+   EditorBlocks,
+   CreateNewBlockFromBlock,
+} from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
+import type { CustomElement } from "~/routes/_editor+/functions/types";
+import { BlockType } from "~/routes/_editor+/functions/types";
 import {
    HOTKEYS,
-   PROSE_CONTAINER_ID,
-} from "~/routes/_editor+/functions/constants";
-import {
    removeGlobalCursor,
    setGlobalCursor,
    toggleMark,
    withLayout,
    withNodeId,
 } from "~/routes/_editor+/functions/utils";
-import type { CustomElement } from "~/routes/_editor+/types";
-import { BlockType } from "~/routes/_editor+/types";
 
-import { withLinkify } from "../plugins/link/withLinkify";
-import { indentItem, undentItem } from "../plugins/list/utils";
-import { withLists } from "../plugins/list/withLists";
+import { BlockInlineActions } from "./components/BlockInlineActions";
+import { Toolbar } from "./components/Toolbar";
+import { withLinkify } from "./plugins/link/withLinkify";
+import { indentItem, undentItem } from "./plugins/list/utils";
+import { withLists } from "./plugins/list/withLists";
 
 const LIST_WRAPPER: Record<string, BlockType> = {
    "*": BlockType.BulletedList,
@@ -97,7 +95,7 @@ function isNodeWithId(editor: Editor, id: string) {
    return (node: Node) => Editor.isBlock(editor, node) && node.id === id;
 }
 
-export const SoloEditor = ({
+export function ManaEditor({
    fetcher,
    defaultValue,
    siteId,
@@ -113,7 +111,7 @@ export const SoloEditor = ({
    pageId?: string;
    sectionId?: string;
    intent?: string;
-}) => {
+}) {
    const editor = useEditor();
 
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -138,7 +136,7 @@ export const SoloEditor = ({
                collectionEntity,
                sectionId,
             },
-            { method: "patch", action: "/editors/SoloEditor" }
+            { method: "patch", action: "/editor" }
          );
       }
    }, [debouncedValue]);
@@ -221,7 +219,7 @@ export const SoloEditor = ({
       return isTopLevel ? (
          <SortableElement
             {...props}
-            renderElement={Block}
+            renderElement={EditorBlocks}
             onDelete={() =>
                Transforms.removeNodes(editor, {
                   at: ReactEditor.findPath(editor, props.element),
@@ -231,23 +229,22 @@ export const SoloEditor = ({
                const path = [
                   ReactEditor.findPath(editor, props.element)[0] + 1,
                ];
-
                Transforms.insertNodes(editor, block, {
                   at: path,
                });
 
                // Defer selection to be able to focus the element we just inserted
-               setTimeout(() => {
-                  ReactEditor.focus(editor);
-                  Transforms.select(editor, {
-                     anchor: { path: [path[0], 0], offset: 0 },
-                     focus: { path: [path[0], 0], offset: 0 },
-                  });
-               }, 0);
+               // setTimeout(() => {
+               //    ReactEditor.focus(editor);
+               //    Transforms.select(editor, {
+               //       anchor: { path: [path[0], 0], offset: 0 },
+               //       focus: { path: [path[0], 0], offset: 0 },
+               //    });
+               // }, 0);
             }}
          />
       ) : (
-         <Block {...props} />
+         <EditorBlocks {...props} />
       );
    }, []);
 
@@ -273,11 +270,11 @@ export const SoloEditor = ({
             return;
          }
          //UL and OL key logic
-         if (isHotkey("shift+tab", event)) {
+         if (isKeyHotkey("shift+tab", nativeEvent)) {
             // attempt to un-indent on shift+tab within list
             event.preventDefault();
             undentItem(editor);
-         } else if (isHotkey("tab", event)) {
+         } else if (isKeyHotkey("tab", nativeEvent)) {
             // attempt to indent on tab within list
             event.preventDefault();
             indentItem(editor);
@@ -303,7 +300,6 @@ export const SoloEditor = ({
       <div className="relative pb-4">
          <div
             className="mx-auto max-w-[728px]"
-            id={PROSE_CONTAINER_ID}
             onClick={(e) => e.stopPropagation()}
          >
             <div className="mx-auto w-full">
@@ -371,7 +367,7 @@ export const SoloEditor = ({
          </div>
       </div>
    );
-};
+}
 
 function SortableElement({
    attributes,

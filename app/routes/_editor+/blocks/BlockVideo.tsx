@@ -3,13 +3,13 @@ import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import Placeholder from "../components/Placeholder";
-import type { CustomElement, VideoElement } from "../types";
+import type { CustomElement, VideoElement } from "../functions/types";
 
 type Props = {
    element: VideoElement;
 };
 
-export default function BlockVideo({ element }: Props) {
+export function BlockVideo({ element }: Props) {
    const editor = useSlate();
 
    return (

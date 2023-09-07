@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import { Loader2, Send, Trash } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
@@ -16,16 +16,16 @@ import { zx } from "zodix";
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/components/H2";
+import { useDebouncedValue, useIsMount } from "~/hooks";
+// eslint-disable-next-line import/no-cycle
+import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { onKeyDown } from "~/routes/_editor+/functions/utils";
+import { withLinkify } from "~/routes/_editor+/plugins/link/withLinkify";
 import { isAdding, isProcessing } from "~/utils";
 
-// eslint-disable-next-line import/no-cycle
-import { UpdatesEditor } from "./UpdatesEditor";
-import { Block } from "../../blocks/Block";
-import { Leaf } from "../../blocks/Leaf";
-import { Toolbar } from "../../components";
-import { onKeyDown } from "../../functions/editorCore";
-import { withLinkify } from "../../plugins/link/withLinkify";
-import type { UpdatesElement, CustomElement } from "../../types";
+import { Toolbar } from "../../components/Toolbar";
+import type { UpdatesElement, CustomElement } from "../../functions/types";
 
 type Props = {
    element: UpdatesElement;
@@ -46,16 +46,17 @@ const dateFormat = (dateString: string) =>
       timeZone: "America/Los_Angeles",
    }).format(new Date(dateString));
 
-export const BlockUpdates = ({ element }: Props) => {
+export function BlockUpdates({ element }: Props) {
    //index presume to have results data, might be brittle in the future
    const { updateResults, siteId } = useMatches()?.[2]?.data as {
       updateResults: Update[];
       siteId: string;
    };
 
-   const useEditor = () =>
-      useMemo(() => withLinkify(withReact(withHistory(createEditor()))), []);
-   const editor = useEditor();
+   const editor = useMemo(
+      () => withLinkify(withReact(withHistory(createEditor()))),
+      []
+   );
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
    const addingUpdate = isAdding(fetcher, "createUpdate");
@@ -94,7 +95,7 @@ export const BlockUpdates = ({ element }: Props) => {
                         <Editable
                            className="outline-none"
                            placeholder="Share an update..."
-                           renderElement={Block}
+                           renderElement={EditorBlocks}
                            renderLeaf={Leaf}
                            onKeyDown={(e) => onKeyDown(e, editor)}
                         />
@@ -206,7 +207,7 @@ export const BlockUpdates = ({ element }: Props) => {
          </>
       </section>
    );
-};
+}
 
 export const action = async ({
    context: { payload, user },
@@ -228,7 +229,7 @@ export const action = async ({
          });
 
          const newData = JSON.parse(data);
-         const currentDate = format(new Date(), "MMM-dd-yy");
+         const currentDate = dt.format(new Date(), "MMM-dd-yy");
 
          const update = await payload.find({
             collection: "updates",
@@ -358,3 +359,56 @@ export const action = async ({
       }
    }
 };
+
+export function UpdatesEditor({
+   rowId,
+   entryId,
+   blocks,
+   siteId,
+}: {
+   rowId: string;
+   entryId?: string;
+   blocks?: CustomElement[];
+   siteId: string | undefined;
+}) {
+   const editor = useMemo(
+      () => withLinkify(withReact(withHistory(createEditor()))),
+      []
+   );
+   const isMount = useIsMount();
+   const fetcher = useFetcher();
+   const [value, setValue] = useState("");
+
+   const debouncedValue = useDebouncedValue(value, 500);
+
+   useEffect(() => {
+      if (!isMount) {
+         fetcher.submit(
+            {
+               content: JSON.stringify(debouncedValue),
+               intent: "updateEntry",
+               rowId,
+               entryId: entryId ?? "",
+            },
+            { method: "patch", action: `/${siteId}/blocks/updates` }
+         );
+      }
+   }, [debouncedValue]);
+
+   return (
+      <Slate
+         //@ts-ignore
+         onChange={(e) => setValue(e)}
+         editor={editor}
+         initialValue={blocks as Descendant[]}
+      >
+         <Toolbar />
+         <Editable
+            className="outline-none"
+            renderElement={EditorBlocks}
+            renderLeaf={Leaf}
+            onKeyDown={(e) => onKeyDown(e, editor)}
+         />
+      </Slate>
+   );
+}

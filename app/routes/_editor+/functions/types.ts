@@ -2,6 +2,7 @@ import type { BaseEditor, BaseOperation } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import { type Collection } from "payload/generated-types";
+import type { Time } from "~/components/datepicker/time-picker/types";
 
 declare module "slate" {
    interface CustomTypes {
@@ -37,6 +38,8 @@ export enum BlockType {
    Updates = "updates",
    UpdatesInline = "updatesInline",
    Accordion = "accordion",
+   Events = "events",
+   EventItem = "event-item",
 }
 
 export type TextBlock =
@@ -61,27 +64,55 @@ export type HeadingElement = BlockElement & {
    type: BlockType.H2 | BlockType.H3;
 };
 
-export type ListElement = {
+export type EventItemElement = BlockElement & {
+   type: BlockType.EventItem;
+   label?: string | null;
+   startDate?: Date | null;
+   startTime?: Time;
+   startTimestamp?: Date | null;
+   endDate?: Date | null;
+   endTime?: Time;
+   endTimestamp?: Date | null;
+};
+
+export type EventsElement = {
+   id: string;
+   type: BlockType.Events;
+   children: [
+      {
+         id: string;
+         type: BlockType.EventItem;
+         children: CustomText[];
+      }
+   ];
+};
+
+export type ListElement = BlockElement & {
    type: BlockType.ListItem;
-   children: CustomText[];
 };
 
 export type NumberedListElement = {
    id: string;
    type: BlockType.NumberedList;
-   children: {
-      type: BlockType.ListItem;
-      children: CustomText[];
-   };
+   children: [
+      {
+         id: string;
+         type: BlockType.ListItem;
+         children: CustomText[];
+      }
+   ];
 };
 
 export type BulletedListElement = {
    id: string;
    type: BlockType.BulletedList;
-   children: {
-      type: BlockType.ListItem;
-      children: CustomText[];
-   };
+   children: [
+      {
+         id: string;
+         type: BlockType.ListItem;
+         children: CustomText[];
+      }
+   ];
 };
 
 export type ToDoElement = BlockElement & {
@@ -105,10 +136,6 @@ export type AccordionElement = BlockElement & {
 
 export type UpdatesElement = BlockElement & {
    type: BlockType.Updates;
-};
-
-export type UpdatesInlineElement = BlockElement & {
-   type: BlockType.UpdatesInline;
 };
 
 export type VideoElement = BlockElement & {
@@ -166,8 +193,10 @@ export type CustomElement =
    | LinkElement
    | GroupElement
    | UpdatesElement
-   | UpdatesInlineElement
-   | AccordionElement;
+   | AccordionElement
+   | ListElement
+   | EventsElement
+   | EventItemElement;
 
 export type CustomText = {
    text: string;

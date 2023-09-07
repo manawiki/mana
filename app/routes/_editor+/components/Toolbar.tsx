@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import {
    Bold,
@@ -15,20 +15,18 @@ import {
    Path,
    Range,
    Transforms,
-   Node,
    Element as SlateElement,
 } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
+import Button from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import Button from "./Button";
-import Select from "./Select";
+import type { CustomElement, LinkElement, TextBlock } from "../functions/types";
+import { BlockType } from "../functions/types";
 import { toggleMark, topLevelPath } from "../functions/utils";
-import type { CustomElement, LinkElement, TextBlock } from "../types";
-import { BlockType } from "../types";
 
-export default function Toolbar() {
+export function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);
    const editor = useSlate();
    const inFocus = useFocused();
@@ -50,6 +48,7 @@ export default function Toolbar() {
             SlateElement.isElement(n) &&
             n.type === "link",
       });
+      //@ts-ignore
       const data = link && link[0]?.url;
       return data;
    };
@@ -73,6 +72,7 @@ export default function Toolbar() {
          const link: LinkElement = {
             type: BlockType.Link,
             url,
+            //@ts-ignore
             children: isCollapsed ? [{ text: url }] : [],
          };
 
@@ -117,7 +117,7 @@ export default function Toolbar() {
       el.style.left = `${rect.left + window.scrollX}px`;
    });
 
-   const type = getSelectedElementType(editor);
+   // const type = getSelectedElementType(editor);
 
    const marks = Editor.marks(editor);
 
@@ -317,39 +317,39 @@ export default function Toolbar() {
    }
 }
 
-function getSelectedElementType(editor: Editor): TextBlock | null {
-   if (editor.selection == null) {
-      return null;
-   }
+// function getSelectedElementType(editor: Editor): TextBlock | null {
+//    if (editor.selection == null) {
+//       return null;
+//    }
 
-   // If selection overlap on multiple top element, return null
-   if (
-      Path.compare(
-         topLevelPath(editor.selection.anchor.path),
-         topLevelPath(editor.selection.focus.path)
-      ) !== 0
-   ) {
-      return null;
-   }
+//    // If selection overlap on multiple top element, return null
+//    if (
+//       Path.compare(
+//          topLevelPath(editor.selection.anchor.path),
+//          topLevelPath(editor.selection.focus.path)
+//       ) !== 0
+//    ) {
+//       return null;
+//    }
 
-   const element = editor.children[
-      editor.selection.anchor.path[0]
-   ] as CustomElement;
+//    const element = editor.children[
+//       editor.selection.anchor.path[0]
+//    ] as CustomElement;
 
-   if (!isTextElementType(element.type)) {
-      return null;
-   }
+//    if (!isTextElementType(element.type)) {
+//       return null;
+//    }
 
-   return element.type;
-}
+//    return element.type;
+// }
 
-function isTextElementType(type: string): type is TextBlock {
-   return (
-      type === BlockType.H2 ||
-      type === BlockType.H3 ||
-      type === BlockType.Paragraph ||
-      type === BlockType.BulletedList ||
-      type === BlockType.ToDo ||
-      type === BlockType.Link
-   );
-}
+// function isTextElementType(type: string): type is TextBlock {
+//    return (
+//       type === BlockType.H2 ||
+//       type === BlockType.H3 ||
+//       type === BlockType.Paragraph ||
+//       type === BlockType.BulletedList ||
+//       type === BlockType.ToDo ||
+//       type === BlockType.Link
+//    );
+// }

@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from "react";
 
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { useFetcher, useActionData, Link, useParams } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import {
    Loader2,
    ImageMinus,
@@ -326,12 +326,12 @@ export const PostHeaderEdit = ({
                                                 Last published
                                              </div>
                                              <div className="font-bold">
-                                                {format(
+                                                {dt.format(
                                                    new Date(
                                                       versions?.docs[0]
                                                          .updatedAt as string
                                                    ),
-                                                   "MMMM d, hh:mm aaa"
+                                                   "MMMM D, hh:mm A"
                                                 )}
                                              </div>
                                           </div>

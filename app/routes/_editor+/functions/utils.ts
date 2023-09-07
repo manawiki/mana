@@ -1,17 +1,25 @@
+import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { nanoid } from "nanoid";
 import type { Operation, Path } from "slate";
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms, Range, Element, Node } from "slate";
 
 import {
    BlockType,
    type CustomElement,
    type Format,
    type ParagraphElement,
-} from "../types";
+} from "./types";
 
-export const withNodeId = (editor: Editor) => {
+export const HOTKEYS: Record<string, Format> = {
+   "mod+b": "bold",
+   "mod+i": "italic",
+   "mod+u": "underline",
+   "mod+s": "strikeThrough",
+};
+
+export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
-   const { apply, insertFragment } = editor;
+   const { apply, insertFragment, insertBreak } = editor;
 
    /* 
     Check if we need to re-write the id on paste
@@ -22,7 +30,7 @@ export const withNodeId = (editor: Editor) => {
     3. onPaste
  */
    editor.insertFragment = (fragment) => {
-      fragment.forEach((node) => {
+      fragment.forEach((node: any) => {
          if (node.type) {
             node.id = nanoid();
          }
@@ -39,8 +47,37 @@ export const withNodeId = (editor: Editor) => {
       return apply(operation);
    };
 
+   //Break to paragraph if element is any of the following
+   editor.insertBreak = () => {
+      const { selection } = editor;
+
+      if (selection) {
+         const [title] = Editor.nodes(editor, {
+            match: (n: any) =>
+               !Editor.isEditor(n) &&
+               Element.isElement(n) &&
+               [BlockType.H2, BlockType.H3].includes(n.type),
+         });
+
+         if (title) {
+            Transforms.insertNodes(
+               editor,
+               {
+                  id: nanoid(),
+                  children: [{ text: "" }],
+                  type: BlockType.Paragraph,
+               },
+               { at: [editor.children.length] }
+            );
+            Transforms.move(editor, { distance: 1, unit: "line" });
+            return;
+         }
+      }
+      insertBreak();
+   };
+
    return editor;
-};
+}
 
 export function withLayout(editor: Editor) {
    const { normalizeNode } = editor;
@@ -96,7 +133,7 @@ export function removeGlobalCursor(type: CursorType) {
    document.body.classList.remove(type);
 }
 
-export const initialValue = (): CustomElement[] => {
+export function initialValue(): CustomElement[] {
    const id = nanoid();
 
    return [
@@ -106,4 +143,31 @@ export const initialValue = (): CustomElement[] => {
          children: [{ text: "" }],
       },
    ];
-};
+}
+
+export function onKeyDown(event: any, editor: any) {
+   const { selection } = editor;
+
+   if (selection && Range.isCollapsed(selection)) {
+      const { nativeEvent } = event;
+      if (isKeyHotkey("left", nativeEvent)) {
+         event.preventDefault();
+         Transforms.move(editor, { unit: "offset", reverse: true });
+         return;
+      }
+      if (isKeyHotkey("right", nativeEvent)) {
+         event.preventDefault();
+         Transforms.move(editor, { unit: "offset" });
+         return;
+      }
+   }
+
+   //Render mark commands
+   for (const hotkey in HOTKEYS) {
+      if (isHotkey(hotkey, event as any) && editor.selection) {
+         event.preventDefault();
+         const mark = HOTKEYS[hotkey];
+         toggleMark(editor, mark);
+      }
+   }
+}

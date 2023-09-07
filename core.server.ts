@@ -31,7 +31,7 @@ const chokidar =
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
  */
 const BUILD_PATH = path.resolve("./build/index.js");
-const WATCH_PATH = path.resolve("./build/metafile.server.json");
+const WATCH_PATH = path.resolve("./build/version.txt");
 
 /**
  * Initial build

@@ -14,9 +14,9 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { toast } from "~/components";
-import { SoloEditor } from "~/routes/_editor+/editors+/SoloEditor";
-import type { CustomElement } from "~/routes/_editor+/types";
-import { BlockType } from "~/routes/_editor+/types";
+import { ManaEditor } from "~/routes/_editor+/editor";
+import type { CustomElement } from "~/routes/_editor+/functions/types";
+import { BlockType } from "~/routes/_editor+/functions/types";
 import {
    type FormResponse,
    assertIsPatch,
@@ -129,7 +129,7 @@ export default function PostEditPage() {
    return (
       <main className="relative min-h-screen max-laptop:px-3 max-laptop:pb-20">
          <PostHeaderEdit versions={versions} post={post} />
-         <SoloEditor
+         <ManaEditor
             intent="updatePostContent"
             fetcher={fetcher}
             pageId={postId ?? ""}

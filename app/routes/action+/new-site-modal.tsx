@@ -20,7 +20,7 @@ import {
    safeNanoID,
    type FormResponse,
 } from "~/utils";
-import { BlockType, CustomElement } from "~/routes/_editor+/types";
+import { BlockType, CustomElement } from "~/routes/_editor+/functions/types";
 import { nanoid } from "nanoid";
 
 const SiteSchema = z.object({

@@ -1,25 +1,24 @@
+/* eslint-disable import/no-cycle */
 import { nanoid } from "nanoid";
 import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockAccordion } from "./BlockAccordion";
-import BlockCodeSandbox from "./BlockCodeSandbox";
-// eslint-disable-next-line import/no-cycle
-import { BlockGroup } from "./BlockGroup";
-// eslint-disable-next-line import/no-cycle
-import BlockGroupView from "./BlockGroupView";
-import BlockImage from "./BlockImage";
-import BlockToDo from "./BlockToDo";
-import BlockVideo from "./BlockVideo";
-import { BlockLink } from "../$siteId.blocks+/link/edit";
-import { BlockLinkView } from "../$siteId.blocks+/link/view";
-// eslint-disable-next-line import/no-cycle
-import { BlockUpdates } from "../$siteId.blocks+/updates";
-// eslint-disable-next-line import/no-cycle
-import { BlockUpdatesView } from "../$siteId.blocks+/updates/view";
-import type { CustomElement } from "../types";
-import { BlockType } from "../types";
+import { BlockEventItem, BlockEvents } from "../$siteId.blocks+/events/_events";
+import { BlockEventsView } from "../$siteId.blocks+/events/BlockEventsView";
+import { BlockGroup } from "../$siteId.blocks+/group/_group";
+import { BlockGroupView } from "../$siteId.blocks+/group/BlockGroupView";
+import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
+import { BlockLink } from "../$siteId.blocks+/link/_link";
+import { BlockLinkView } from "../$siteId.blocks+/link/BlockLinkView";
+import { BlockUpdates } from "../$siteId.blocks+/updates/_updates";
+import { BlockUpdatesView } from "../$siteId.blocks+/updates/BlockUpdatesView";
+import { BlockAccordion } from "../blocks//BlockAccordion";
+import { BlockCodeSandbox } from "../blocks//BlockCodeSandbox";
+import { BlockToDo } from "../blocks//BlockToDo";
+import { BlockVideo } from "../blocks/BlockVideo";
+import type { CustomElement } from "../functions/types";
+import { BlockType } from "../functions/types";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created
@@ -35,11 +34,11 @@ export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
 // https://github.com/ianstormtaylor/slate/issues/3930
-export const Block = ({
+export function EditorBlocks({
    element,
    children,
    attributes,
-}: RenderElementProps) => {
+}: RenderElementProps) {
    const readOnly = useReadOnly();
 
    switch (element.type) {
@@ -74,9 +73,6 @@ export const Block = ({
                children={children}
             />
          );
-      }
-      case BlockType.UpdatesInline: {
-         return <div {...attributes}>{children}</div>;
       }
       case BlockType.Paragraph: {
          return (
@@ -135,6 +131,32 @@ export const Block = ({
       case BlockType.ListItem: {
          return <li {...attributes}>{children}</li>;
       }
+      case BlockType.Events: {
+         if (readOnly)
+            return (
+               <BlockEventsView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
+         return (
+            <BlockEvents
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.EventItem: {
+         return (
+            <BlockEventItem
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
       case BlockType.ToDo: {
          return (
             <div {...attributes}>
@@ -176,4 +198,4 @@ export const Block = ({
             />
          );
    }
-};
+}

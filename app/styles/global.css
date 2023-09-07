@@ -114,3 +114,181 @@ html.dark {
 .editor-ul .editor-ul .editor-ul{
    @apply list-[square];
 }
+
+
+/* --------------- Date/Time Picker  ---------------*/
+ 
+/* Time Picker */
+.stp {
+  @apply bg-white dark:bg-bg3Dark p-1.5 items-center border border-color outline-none rounded-lg shadow-1 shadow-sm flex;
+ }
+ 
+ .stp--disabled {
+  @apply pointer-events-none;
+ }
+ 
+ .stp--divider__disabled {
+  @apply opacity-50;
+ }
+ 
+ .stp * {
+  @apply outline-none;
+ }
+ 
+ .stp:focus {
+  @apply ring-1 ring-blue-300;
+ }
+ 
+ .stp > p {
+  @apply my-0 mx-0.5 inline;
+ }
+
+.sassy--select {
+  @apply border-0 align-middle inline rounded px-1;
+ }
+ 
+ .sassy--select__container {
+  @apply rounded relative flex items-center;
+ }
+ 
+ .sassy--select:focus {
+  @apply outline-none ring-blue-300;
+ }
+ 
+ .sassy--select.sassy--select__disabled {
+   opacity: var(--disabled-opacity);
+   pointer-events: none;
+ }
+ 
+ .sassy--select.sassy--select__disabled:focus {
+  @apply shadow-none;
+ }
+ 
+ .sassy--select__dropdown {
+  @apply bg-white dark:bg-bg3Dark top-6 p-2 max-h-[40vh] rounded-lg absolute z-10 shadow shadow-1 border border-color overflow-auto flex flex-col;
+   scrollbar-width: none;
+ }
+ 
+ .sassy--select__dropdown::-webkit-scrollbar {
+  @apply hidden;
+ }
+ 
+ .sassy--select,
+ .sassy--option {
+  @apply text-xs font-bold;
+ }
+ 
+ .sassy--option:focus {
+  @apply outline-none ring-blue-300;
+ }
+ 
+ .sassy--option__disabled {
+  @apply text-zinc-600 dark:text-zinc-500 pointer-events-none;
+ }
+ 
+ .sassy--select:hover {
+  @apply cursor-context-menu;
+ }
+ 
+ .sassy--option {
+  @apply bg-white dark:bg-bg3Dark cursor-pointer py-1 px-2 border-0 rounded mt-1;
+   transition: all 0.1s ease;
+ }
+ 
+ .sassy--option:first-of-type {
+  @apply mt-0;
+ }
+ 
+ .sassy--option__active,
+ .sassy--option:hover {
+  @apply shadow-sm shadow-1 !bg-blue-500 text-white;
+ }
+ 
+ /* Date Picker */
+ .sdp {
+  @apply bg-white dark:bg-bg3Dark border border-color w-full rounded-lg shadow-sm shadow-1 p-3;
+ }
+ 
+ .sdp--disabled {
+  @apply pointer-events-none;
+ }
+ 
+ .sdp:focus,
+ .sdp--month-name:focus,
+ .sdp--square-btn:focus {
+  @apply outline-none ring-1 ring-blue-300 dark:ring-blue-400;
+ }
+ 
+ .sdp--month-name {
+   padding: 0.5rem;
+   border: none;
+   border-radius: 0.5rem;
+ }
+ 
+ .sdp--text {
+   font-weight: 500;
+   margin: 0;
+ }
+ 
+ .sdp--text__inactive {
+  @apply text-zinc-300 dark:text-zinc-500 pointer-events-none;
+   pointer-events: none;
+ }
+ 
+ .sdp--square-btn {
+  @apply bg-white dark:bg-bg3Dark border-0 cursor-pointer rounded-md items-center justify-center flex w-7 h-7;
+   transition: all 0.2s ease-in-out;
+ }
+ 
+ .sdp--square-btn__outlined {
+  @apply border border-color;
+ }
+ 
+ .sdp--square-btn__outlined:focus:hover {
+  @apply border border-color;
+ }
+ 
+ .sdp--square-btn:focus:hover {
+  @apply shadow-none;
+ }
+ 
+ .sdp--square-btn__shadowed {
+  @apply shadow-sm shadow-1;
+ }
+ 
+ .sdp--square-btn__shadowed:focus:hover {
+  @apply shadow-sm shadow-1;
+ }
+ 
+ .sdp--date-btn__selected {
+  @apply !bg-blue-500 text-white shadow-sm shadow-1;
+ }
+ 
+ .sdp--date-btn__selected.sdp--square-btn:focus {
+  @apply shadow-sm shadow-1;
+ }
+ 
+ .sdp--header {
+  @apply flex justify-between items-center;
+ }
+ 
+ .sdp--grid {
+   display: grid;
+   grid-template-columns: repeat(7, 1fr);
+   gap: 4px;
+   margin: 0.5rem 0 0;
+   justify-items: center;
+ }
+ 
+ .sdp--grid > p.sdp--text {
+  @apply py-2 px-0;
+ }
+ 
+ .sdp--header__main {
+  @apply flex justify-center font-bold items-center;
+ }
+ 
+ .sdp--select__month button {
+  @apply text-left;
+ }
+ 

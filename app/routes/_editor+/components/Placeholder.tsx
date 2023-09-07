@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-import Button from "./Button";
+import Button from "~/components/Button";
 
 type Input = {
    type: string;
@@ -48,10 +48,10 @@ export default function Placeholder({
          >
             <PopoverPrimitive.Trigger asChild>
                <button
-                  className="relative border flex dark:border-zinc-600 hover:border-zinc-300 border-zinc-200 border-dotted gap-4 dark:hover:border-zinc-500
-                  items-center w-full font-semibold rounded-lg bg-5 mb-3 p-3 text-sm select-none cursor-pointer"
+                  className="bg-5 relative mb-3 flex w-full cursor-pointer select-none items-center gap-4
+                  rounded-lg border border-dotted border-zinc-200 p-3 text-sm font-semibold hover:border-zinc-300 dark:border-zinc-600 dark:hover:border-zinc-500"
                >
-                  <span className="w-5 flex items-center justify-center text-emerald-500 h-5">
+                  <span className="flex h-5 w-5 items-center justify-center text-emerald-500">
                      <Icon />
                   </span>
                   {text}
@@ -60,7 +60,7 @@ export default function Placeholder({
             <PopoverPrimitive.Anchor />
             <PopoverPrimitive.Portal>
                <PopoverPrimitive.Content
-                  className="w-[320px] laptop:w-[400px] border border-color bg-1 p-5 shadow-lg shadow-1 rounded-xl"
+                  className="border-color bg-1 shadow-1 w-[320px] rounded-xl border p-5 shadow-lg laptop:w-[400px]"
                   sideOffset={-20}
                >
                   <form
@@ -87,7 +87,7 @@ export default function Placeholder({
                         ) => (
                            <div key={name} className="">
                               <label
-                                 className="text-xs uppercase pl-0.5 text-1 font-bold pb-1"
+                                 className="text-1 pb-1 pl-0.5 text-xs font-bold uppercase"
                                  htmlFor={name}
                               >
                                  {label}
@@ -113,7 +113,7 @@ export default function Placeholder({
                      )}
                      <div className="flex justify-end">
                         <Button
-                           className="block h-10 font-bold text-sm w-20 mt-2 text-white bg-emerald-500 rounded-lg"
+                           className="mt-2 block h-10 w-20 rounded-lg bg-emerald-500 text-sm font-bold text-white"
                            ariaLabel="Toggle Strikethrough"
                            type="submit"
                         >

@@ -2,7 +2,7 @@ import LinkifyIt from "linkify-it";
 import { Editor, Element, Range, Transforms } from "slate";
 import tlds from "tlds";
 
-import type { CustomElement } from "~/routes/_editor+/types";
+import type { CustomElement } from "~/routes/_editor+/functions/types";
 
 export const LINK = "link" as const;
 
@@ -15,7 +15,7 @@ linkify.tlds(tlds);
 linkify.tlds(tlds);
 
 //If in link edit mode, double space will exit you out.
-export const moveCursorOut = (editor: Editor) => {
+export function moveCursorOut(editor: Editor) {
    const { selection } = editor;
 
    // check that there is a current selection without highlight
@@ -29,35 +29,35 @@ export const moveCursorOut = (editor: Editor) => {
          Transforms.move(editor, { unit: "offset" });
       }
    }
-};
+}
 
 /**
  * If text contains something similar to link `true` will be returned
  */
 export const isLink = (text: string): boolean => linkify.test(text);
 
-export const isLinkActive = (editor: Editor) => {
+export function isLinkActive(editor: Editor) {
    const [link] = Editor.nodes(editor, {
       match: isLinkifyElement,
    });
    return !!link;
-};
+}
 
 /**
  * We additionally want to return isEdit flag to upper function
  */
-const isEditLink = (editor: Editor): boolean => {
+function isEditLink(editor: Editor): boolean {
    if (isLinkActive(editor)) {
       unwrapLink(editor);
       return true;
    }
    return false;
-};
+}
 
 /**
  * Remove `link` inline from the current caret position
  */
-export const unwrapLink = (editor: Editor): void => {
+export function unwrapLink(editor: Editor): void {
    const [link] = Editor.nodes(editor, {
       match: isLinkifyElement,
    });
@@ -67,12 +67,12 @@ export const unwrapLink = (editor: Editor): void => {
    Transforms.unwrapNodes(editor, {
       match: isLinkifyElement,
    });
-};
+}
 
 /**
  * Wrap underlying text into `link` inline
  */
-export const wrapLink = (editor: Editor, text: string): void => {
+export function wrapLink(editor: Editor, text: string): void {
    const isEdit = isEditLink(editor);
    const isExpanded = Range.isExpanded(editor.selection);
 
@@ -90,18 +90,18 @@ export const wrapLink = (editor: Editor, text: string): void => {
    } else {
       Transforms.insertNodes(editor, link);
    }
-};
+}
 
-export const insertLink = (editor: Editor, url: string): void => {
+export function insertLink(editor: Editor, url: string): void {
    if (editor.selection) {
       wrapLink(editor, url);
    }
-};
+}
 
 /**
  * We are trying to detect links while user typing
  */
-export const tryWrapLink = (editor: Editor): void => {
+export function tryWrapLink(editor: Editor): void {
    /**
     * Find the underlying word under selection
     */
@@ -156,7 +156,7 @@ export const tryWrapLink = (editor: Editor): void => {
    });
    const linkWithSSL = `https://${link.text}`;
    wrapLink(editor, linkWithSSL);
-};
+}
 
 /**
  * Find the word beginning
@@ -164,16 +164,16 @@ export const tryWrapLink = (editor: Editor): void => {
  * @param {string} text
  * @return {number} word beginning position
  */
-const traverseBehind = (index: number, text: string): number => {
+function traverseBehind(index: number, text: string): number {
    if (index > 0 && !isWhitespace(text[index - 1])) {
       return traverseBehind(index - 1, text);
    }
    return index;
-};
+}
 
 /**
  * Whitespace checker
  */
-const isWhitespace = (value: string): boolean => {
+function isWhitespace(value: string): boolean {
    return /[ \f\n\r\t\v\u00A0\u2028\u2029]/.test(value);
-};
+}
