@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { redirect, json } from "@remix-run/node";
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
    Form,
    Link,
@@ -50,7 +50,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
@@ -447,7 +447,7 @@ export const action = async ({
    context: { payload, user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
    const { siteId } = zx.parseParams(params, {

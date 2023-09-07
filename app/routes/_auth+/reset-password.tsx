@@ -1,7 +1,7 @@
 import type {
    ActionFunction,
-   LoaderArgs,
-   V2_MetaFunction,
+   LoaderFunctionArgs,
+   MetaFunction,
 } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { Form, useNavigation, useSearchParams } from "@remix-run/react";
@@ -28,7 +28,7 @@ const PasswordResetSchema = z.object({
    token: z.string(),
 });
 
-export async function loader({ context: { user }, request }: LoaderArgs) {
+export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -37,7 +37,7 @@ export async function loader({ context: { user }, request }: LoaderArgs) {
    return json({ title });
 }
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
    return [
       {
          title: `${data.title} - Mana`,

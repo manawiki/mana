@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
 import { RadioGroup } from "@headlessui/react";
-import { json, type LinksFunction, type LoaderArgs } from "@remix-run/node";
+import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import {
    Link,
    useLoaderData,
    useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
-import type { V2_MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
 import clsx from "clsx";
@@ -36,7 +36,7 @@ import { Top } from "./components/top";
 import indexStyles from "./styles.css";
 import { FollowingListMobile } from "../_site+/$siteId+/components";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
 ];
 
@@ -44,7 +44,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { q, c, page } = zx.parseQuery(request, {
       q: z.string().optional(),
       c: z

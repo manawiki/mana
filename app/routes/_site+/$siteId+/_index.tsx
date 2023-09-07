@@ -9,7 +9,7 @@ import {
 } from "@floating-ui/react";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import { redirect } from "@remix-run/node";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2 } from "lucide-react";
@@ -49,7 +49,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -459,7 +459,7 @@ const fetchHomeContent = async ({
 export async function action({
    context: { payload, user },
    request,
-}: ActionArgs) {
+}: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });

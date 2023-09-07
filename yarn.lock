@@ -2336,22 +2336,6 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@radix-ui/react-accordion@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-accordion/-/react-accordion-1.1.2.tgz#738441f7343e5142273cdef94d12054c3287966f"
-  integrity sha512-fDG7jcoNKVjSK6yfmuAs0EnPDro0WMXIhMtXdTBWqEioVW206ku+4Lw07e+13lUkFkpoEQ2PdeMIAGpdqEAmDg==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
-    "@radix-ui/primitive" "1.0.1"
-    "@radix-ui/react-collapsible" "1.0.3"
-    "@radix-ui/react-collection" "1.0.3"
-    "@radix-ui/react-compose-refs" "1.0.1"
-    "@radix-ui/react-context" "1.0.1"
-    "@radix-ui/react-direction" "1.0.1"
-    "@radix-ui/react-id" "1.0.1"
-    "@radix-ui/react-primitive" "1.0.3"
-    "@radix-ui/react-use-controllable-state" "1.0.1"
-
 "@radix-ui/react-arrow@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-arrow/-/react-arrow-1.0.3.tgz#c24f7968996ed934d57fe6cde5d6ec7266e1d25d"
@@ -2374,32 +2358,6 @@
     "@radix-ui/react-use-controllable-state" "1.0.1"
     "@radix-ui/react-use-previous" "1.0.1"
     "@radix-ui/react-use-size" "1.0.1"
-
-"@radix-ui/react-collapsible@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-collapsible/-/react-collapsible-1.0.3.tgz#df0e22e7a025439f13f62d4e4a9e92c4a0df5b81"
-  integrity sha512-UBmVDkmR6IvDsloHVN+3rtx4Mi5TFvylYXpluuv0f37dtaz3H99bp8No0LGXRigVpl3UAT4l9j6bIchh42S/Gg==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
-    "@radix-ui/primitive" "1.0.1"
-    "@radix-ui/react-compose-refs" "1.0.1"
-    "@radix-ui/react-context" "1.0.1"
-    "@radix-ui/react-id" "1.0.1"
-    "@radix-ui/react-presence" "1.0.1"
-    "@radix-ui/react-primitive" "1.0.3"
-    "@radix-ui/react-use-controllable-state" "1.0.1"
-    "@radix-ui/react-use-layout-effect" "1.0.1"
-
-"@radix-ui/react-collection@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-collection/-/react-collection-1.0.3.tgz#9595a66e09026187524a36c6e7e9c7d286469159"
-  integrity sha512-3SzW+0PW7yBBoQlT8wNcGtaxaD0XSu0uLUFgrtHY08Acx05TaHaOmVLR73c0j/cqpDy53KBMO7s0dx2wmOIDIA==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
-    "@radix-ui/react-compose-refs" "1.0.1"
-    "@radix-ui/react-context" "1.0.1"
-    "@radix-ui/react-primitive" "1.0.3"
-    "@radix-ui/react-slot" "1.0.2"
 
 "@radix-ui/react-compose-refs@1.0.1":
   version "1.0.1"
@@ -2435,13 +2393,6 @@
     "@radix-ui/react-use-controllable-state" "1.0.1"
     aria-hidden "^1.1.1"
     react-remove-scroll "2.5.5"
-
-"@radix-ui/react-direction@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@radix-ui/react-direction/-/react-direction-1.0.1.tgz#9cb61bf2ccf568f3421422d182637b7f47596c9b"
-  integrity sha512-RXcvnXgyvYvBEOhCBuddKecVkoMiI10Jcm5cTI7abJRAHYfFxeu+FBQs/DvdxSYucxR5mna0dNsL6QFlds5TMA==
-  dependencies:
-    "@babel/runtime" "^7.13.10"
 
 "@radix-ui/react-dismissable-layer@1.0.4":
   version "1.0.4"
@@ -2612,10 +2563,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@remix-run/dev@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-2.0.0-pre.8.tgz#8ef3f41fbc2c4a10110696a1334c519b034b227c"
-  integrity sha512-CN7UF5SvRL9jRkvwgc5ctnwqTQpyyp2tzfXgr6XpSvbiUKgC6/XupbCXzQU2rut26MipZvm83Xsy6nqaUabQkg==
+"@remix-run/dev@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-2.0.0-pre.9.tgz#21bb4f71e7e5ce03378241ce32af0b55588d2217"
+  integrity sha512-haIQMtNZfoOwTVD/rw75LL5c5zR20+7oMOfeBh8NBxaJVs2vT6p5d0opnn+v5OdqpSHnx8ekucZavtDJ76l/Hg==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/generator" "^7.21.5"
@@ -2626,7 +2577,7 @@
     "@babel/traverse" "^7.21.5"
     "@mdx-js/mdx" "^2.3.0"
     "@npmcli/package-json" "^4.0.1"
-    "@remix-run/server-runtime" "2.0.0-pre.8"
+    "@remix-run/server-runtime" "2.0.0-pre.9"
     "@types/mdx" "^2.0.5"
     "@vanilla-extract/integration" "^6.2.0"
     arg "^5.0.1"
@@ -2666,10 +2617,10 @@
     tsconfig-paths "^4.0.0"
     ws "^7.4.5"
 
-"@remix-run/eslint-config@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-2.0.0-pre.8.tgz#4f8a561bc4e1d4ac5141dba769b25a92a9220b8e"
-  integrity sha512-InQz6XxccraSyqgPqiSHVagvhswtw9hg2mGDF79jEg+BcnqMguCMMG4/WLowyRXDM/gBqpjy0br6+Gab6XSMqw==
+"@remix-run/eslint-config@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-2.0.0-pre.9.tgz#c6f1a5a388ff88e9d0cbbeb7c105c25641be5941"
+  integrity sha512-4HG6b/Zt3FwejzvyT3sAkj0TvdrVdxEkJhVx8Piqc2jM2xgqU2f3V29Hf/qv66Vq6VpgTUCMNi2JFEoh5jKudQ==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/eslint-parser" "^7.21.8"
@@ -2688,19 +2639,19 @@
     eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-testing-library "^5.10.2"
 
-"@remix-run/express@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-2.0.0-pre.8.tgz#cc88524badd3ceb6d46a77338d071095688cd121"
-  integrity sha512-hBvcIejrtMfLyVdKPEECYO5I1CpzRlgT2Jxft9xCmFWaF6VsZuZlySPYxNli/D3D4mT1M00egwcnQCnDvdHJnQ==
+"@remix-run/express@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-2.0.0-pre.9.tgz#b4e87ce5ce500dfd9a91e194dd846858d30f59d2"
+  integrity sha512-iFlzl3iecUl8cx1M32jUVlyo1jJNoVc+mIDGe0q9M+u/ECCwVirKKpBFEHX63qiDBkUPuWmlsiobNnjYGCK6Ew==
   dependencies:
-    "@remix-run/node" "2.0.0-pre.8"
+    "@remix-run/node" "2.0.0-pre.9"
 
-"@remix-run/node@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-2.0.0-pre.8.tgz#1c105edc0f490dff5c973a31334e71db5f9bb322"
-  integrity sha512-cSk9VsmyH2lafoMTlVohG46LGdY95JZvqfTtW8XQnzpaslm1XdmGutt7WJT7ZQc/0wHISILBISKlY0VSm/81Gg==
+"@remix-run/node@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-2.0.0-pre.9.tgz#84a9e3d406a04d03bb4d533ddeaf351761dc6bb9"
+  integrity sha512-0EsX94PXxQdOWocmmFrpWw1RD4khnvFULy/hVYu5tAf7oig0ZxDvGJ9MIhSu5g4+AoukV+EeANNEYDv7DLjkGA==
   dependencies:
-    "@remix-run/server-runtime" "2.0.0-pre.8"
+    "@remix-run/server-runtime" "2.0.0-pre.9"
     "@remix-run/web-fetch" "^4.4.0-pre.0"
     "@remix-run/web-file" "^3.1.0-pre.0"
     "@remix-run/web-stream" "^1.1.0-pre.0"
@@ -2709,13 +2660,13 @@
     source-map-support "^0.5.21"
     stream-slice "^0.1.2"
 
-"@remix-run/react@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-2.0.0-pre.8.tgz#1d5e6df86439949015fdfbd6baff26dd474b7478"
-  integrity sha512-/QXZKOWPMuG4VQhN6VDQpFMG0so5CY2aksw1BfdSzIFMwByCjHRCOU1/WmeuNNtE9PixBrE6kPZoY3wA51++og==
+"@remix-run/react@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-2.0.0-pre.9.tgz#8d79c252e90dbb79fa0fc9da1933b5ce3b6a8161"
+  integrity sha512-DR2r3N3rb1/2ndqsG7Cw7eAunFIOZ+us2VuKOE+iG6MU0Rb2VDfW2rTFXGI5ugbV7cGSZiMh1YepXz14LcIu2Q==
   dependencies:
     "@remix-run/router" "1.9.0-pre.2"
-    "@remix-run/server-runtime" "2.0.0-pre.8"
+    "@remix-run/server-runtime" "2.0.0-pre.9"
     react-router-dom "6.16.0-pre.2"
 
 "@remix-run/react@>=1.10.0":
@@ -2736,10 +2687,10 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.9.0-pre.2.tgz#60f8d78a6a63734f212a35330a72d256598928ca"
   integrity sha512-SsG5WVdITYKH5VJnsI1yDyNlQjV3TxF9Aeq7ZhrYprCD0x5QqaqvTEbdpuEHybzDbvpU1Ev9eO99RTHoxeHV2w==
 
-"@remix-run/server-runtime@2.0.0-pre.8":
-  version "2.0.0-pre.8"
-  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-2.0.0-pre.8.tgz#56482dd6337e7575530dc4e8b253604c8ae8a1d9"
-  integrity sha512-Y5cXRfRFdc/w9hXBKUFp2dZ4hkSRXeHUpnudCbZ4QiqB73dzz60eZeNc17++s+nMWSpvEPLhogch7GKEOIqI5Q==
+"@remix-run/server-runtime@2.0.0-pre.9":
+  version "2.0.0-pre.9"
+  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-2.0.0-pre.9.tgz#8f29c48add4fdd58973f8c0d9fa7110817a1e724"
+  integrity sha512-MsB609nSWfJR3kbHwOfuGHC1E427fARdzjm83GW24HaImKJJ2dK/jbE1oMcgpDbvZ1plvqAgu8x6p6VIqvtPGA==
   dependencies:
     "@remix-run/router" "1.9.0-pre.2"
     "@types/cookie" "^0.4.1"
@@ -8205,11 +8156,6 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
-lucide-react@^0.252.0:
-  version "0.252.0"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.252.0.tgz#4fd8829c95456a9de6a3377b395dd412bf8345d7"
-  integrity sha512-98hUdm23F3YlC3UN4mzv1FAsWr81YYdxF31cYhm19c51FwOph4dn5B4NjKp45UXBiR1Xx+cKrdmSIZX0ldS8zw==
-
 lucide-react@^0.269.0:
   version "0.269.0"
   resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.269.0.tgz#610a4c85dd60b0e1826842ec563eb9bc9b249be5"
@@ -10876,11 +10822,6 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-json-view-lite@^0.9.6:
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/react-json-view-lite/-/react-json-view-lite-0.9.7.tgz#45b948c23a8ad748c151196dd7b3aced5cad8b35"
-  integrity sha512-JWdrKYWac+sGO8aIFJ0tZw/cTSdgab7pS5Rnmv2yTjt/yEz2Ej4OvKYUe1ZXJlQDj7YaoZPUDF88NTk2Oubucg==
-
 react-lazily@^0.9.2:
   version "0.9.2"
   resolved "https://registry.yarnpkg.com/react-lazily/-/react-lazily-0.9.2.tgz#74596dbde43c8e0f607445da5c4839cf6cc48ab5"
@@ -11045,11 +10986,6 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
-
-react-use-websocket@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/react-use-websocket/-/react-use-websocket-4.3.1.tgz#13cd2fd2e0fb90010482ab2858f8ae81f2ce85c2"
-  integrity sha512-zHPLWrgcqydJaak2O5V9hiz4q2dwkwqNQqpgFVmSuPxLZdsZlnDs8DVHy3WtHH+A6ms/8aHIyX7+7ulOcrnR0Q==
 
 react-zorm@^0.9.0:
   version "0.9.0"
@@ -11218,18 +11154,6 @@ remark-rehype@^10.0.0:
     "@types/mdast" "^3.0.0"
     mdast-util-to-hast "^12.1.0"
     unified "^10.0.0"
-
-remix-development-tools@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-1.1.2.tgz#a8bcece01040be30bcf47af7f833dc7b1fed50fc"
-  integrity sha512-D0gvz/nR9n5e6nOfOiICh+qAsoyffG9CL1URhdLWvE1LsSnzmsTiTXlpxTjWsv3MO3db5oObMdotRpDtbrSiTg==
-  dependencies:
-    "@radix-ui/react-accordion" "^1.1.2"
-    clsx "^1.2.1"
-    lucide-react "^0.252.0"
-    react-json-view-lite "^0.9.6"
-    react-use-websocket "^4.3.1"
-    tailwind-merge "^1.13.2"
 
 remix-flat-routes@^0.5.9:
   version "0.5.10"
@@ -12209,11 +12133,6 @@ tabbable@^6.0.1:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.2.0.tgz#732fb62bc0175cfcec257330be187dcfba1f3b97"
   integrity sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==
-
-tailwind-merge@^1.13.2:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.14.0.tgz#e677f55d864edc6794562c63f5001f45093cdb8b"
-  integrity sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==
 
 tailwindcss-bg-patterns@^0.2.0:
   version "0.2.0"

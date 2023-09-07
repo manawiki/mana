@@ -1,9 +1,9 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export async function loader({ context: { user }, request }: LoaderArgs) {
+export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -11,7 +11,7 @@ export async function loader({ context: { user }, request }: LoaderArgs) {
 }
 
 //TODO Fix server side translation
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Check Email - Mana",

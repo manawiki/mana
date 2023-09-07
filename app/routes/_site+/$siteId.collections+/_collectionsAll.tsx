@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import {
    type ActionFunction,
-   type LoaderArgs,
-   type V2_MetaFunction,
+   type LoaderFunctionArgs,
+   type MetaFunction,
    json,
 } from "@remix-run/node";
 import {
@@ -38,7 +38,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 
 import type { loader as siteDetailsLoader } from "../$siteId+/_layout";
 
-export async function loader({ params, request }: LoaderArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
@@ -67,7 +67,7 @@ const CollectionSchema = z.object({
    icon: z.any(),
 });
 
-export const meta: V2_MetaFunction<
+export const meta: MetaFunction<
    typeof loader,
    { "routes/_site+/$siteId+/_layout": typeof siteDetailsLoader }
 > = ({ matches }) => {

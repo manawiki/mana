@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 import { TrashIcon } from "@heroicons/react/20/solid";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
@@ -27,7 +27,7 @@ import type { CustomElement, LinkElement } from "../../functions/types";
 export async function loader({
    context: { payload, user },
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { linkUrl } = zx.parseQuery(request, {
       linkUrl: z.string(),
    });
@@ -262,7 +262,7 @@ export const action = async ({
    context: { payload, user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
    const { intent } = await zx.parseForm(request, {

@@ -9,7 +9,7 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type ActionArgs, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import isHotkey, { isKeyHotkey } from "is-hotkey";
 import { Trash } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -552,7 +552,7 @@ function withShortcuts(editor: Editor) {
 export async function action({
    context: { payload, user },
    request,
-}: ActionArgs) {
+}: ActionFunctionArgs) {
    const { intent, intentType, siteId, pageId, collectionEntity, sectionId } =
       await zx.parseForm(request, {
          intent: z.string(),
