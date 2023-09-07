@@ -4,7 +4,14 @@ import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
-import { CalendarPlus, ChevronDown, Timer, X } from "lucide-react";
+import dt from "date-and-time";
+import {
+   Calendar,
+   ChevronDown,
+   MoreVertical,
+   MoveRight,
+   X,
+} from "lucide-react";
 import { nanoid } from "nanoid";
 import { useTimer } from "react-timer-hook";
 import { Transforms, Node, Editor } from "slate";
@@ -36,7 +43,7 @@ export function BlockEvents({
 
    return (
       <section className="pb-4">
-         <div className="divide-color shadow-1 border-color bg-3 divide-y rounded-lg border shadow-sm">
+         <div className="divide-color shadow-1 border-color bg-3 divide-y rounded-lg border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg">
             {children}
          </div>
          <div contentEditable={false} className="pt-3">
@@ -107,9 +114,9 @@ export function BlockEventItem({
          );
       }
 
-      const { startTime, endTime, startTimestamp, endTimestamp } = element;
+      const { startTime, endTime } = element;
 
-      Transforms.setNodes<CustomElement>(
+      return Transforms.setNodes<CustomElement>(
          editor,
          {
             ...(key == "startDate" && {
@@ -145,15 +152,36 @@ export function BlockEventItem({
             at: path,
          }
       );
+   }
+   const path = ReactEditor.findPath(editor, element);
+   const updatedParent = Node.parent(editor, path);
 
+   useEffect(() => {
+      const { startTimestamp, endTimestamp } = element;
       if (!startTimestamp || !endTimestamp) return;
-      const updatedParent = Node.parent(editor, path);
       const currentChildren = updatedParent.children;
-      const sortedUpdated = [...currentChildren].sort(
-         //@ts-ignore
-         (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
-      );
-      return sortedUpdated.forEach((row: any) => {
+      const today = new Date();
+      // We separate active events so we can show them on top
+      const activeEvents = currentChildren
+         .filter(
+            (row) =>
+               new Date(row?.startTimestamp) <= today &&
+               new Date(row?.endTimestamp)! > today
+         )
+         .sort(
+            //@ts-ignore
+            (a, b) => new Date(a.endTimestamp) - new Date(b.endTimestamp)
+         );
+
+      const upcomingEvents = currentChildren
+         .filter((row) => new Date(row?.startTimestamp) > today)
+         .sort(
+            //@ts-ignore
+            (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
+         );
+
+      const resultArray = [...activeEvents, ...upcomingEvents];
+      return resultArray.forEach((row: any) => {
          Transforms.moveNodes<CustomElement>(editor, {
             at: [path[0]],
             match: (node: Node) =>
@@ -161,11 +189,11 @@ export function BlockEventItem({
                Editor.isBlock(editor, node) && node.id === row?.id,
             to: [
                path[0],
-               sortedUpdated.findIndex((item: any) => item.id == row.id),
+               resultArray.findIndex((item: any) => item.id == row.id),
             ],
          });
       });
-   }
+   }, [element]);
 
    return (
       <Disclosure key={element.id}>
@@ -173,7 +201,7 @@ export function BlockEventItem({
             <>
                <div
                   contentEditable={false}
-                  className="flex w-full items-center gap-3 bg-zinc-50 p-2.5 pl-4 shadow-sm dark:bg-bg2Dark"
+                  className="flex w-full items-center gap-3 bg-zinc-50 p-2.5 pl-4 shadow-sm first:rounded-t-lg dark:bg-bg2Dark"
                >
                   <input
                      placeholder="Start typing..."
@@ -188,47 +216,82 @@ export function BlockEventItem({
                   <CountdownTimer element={element} />
                   <div className="flex items-center">
                      <section className="relative">
-                        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 transform rounded-full bg-zinc-200 px-1.5 text-[8px] font-bold dark:bg-zinc-700">
-                           Start
-                        </div>
-                        <div className="shadow-1 divide-color border-color flex items-center divide-x rounded-lg border bg-white shadow-sm dark:bg-bg3Dark">
-                           <Popover>
-                              {({ open }) => (
-                                 <>
-                                    <Float
-                                       as={Fragment}
-                                       enter="transition ease-out duration-200"
-                                       enterFrom="opacity-0 translate-y-1"
-                                       enterTo="opacity-100 translate-y-0"
-                                       leave="transition ease-in duration-150"
-                                       leaveFrom="opacity-100 translate-y-0"
-                                       leaveTo="opacity-0 translate-y-1"
-                                       placement="bottom-end"
-                                       offset={6}
+                        <Popover>
+                           {({ open }) => (
+                              <>
+                                 <Float
+                                    as={Fragment}
+                                    enter="transition ease-out duration-200"
+                                    enterFrom="opacity-0 translate-y-1"
+                                    enterTo="opacity-100 translate-y-0"
+                                    leave="transition ease-in duration-150"
+                                    leaveFrom="opacity-100 translate-y-0"
+                                    leaveTo="opacity-0 translate-y-1"
+                                    placement="bottom-end"
+                                    autoUpdate
+                                    offset={6}
+                                 >
+                                    <Popover.Button
+                                       className="rounded-full border border-zinc-100 bg-white p-2.5 focus:outline-none dark:border-zinc-700/50 dark:bg-zinc-800"
+                                       aria-label="Insert block below"
                                     >
-                                       <Popover.Button
-                                          className="p-2 focus:outline-none"
-                                          aria-label="Insert block below"
-                                       >
-                                          {open ? (
-                                             <X className="text-1" size={16} />
-                                          ) : (
-                                             <>
-                                                <CalendarPlus
-                                                   className={`${
-                                                      open
-                                                         ? "rotate-45 text-red-400"
-                                                         : ""
-                                                   } transform transition duration-300 ease-in-out`}
-                                                   size={16}
-                                                />
-                                             </>
-                                          )}
-                                       </Popover.Button>
-                                       <Popover.Panel
-                                          className="border-color min-h-[200px] max-w-[270px] transform
-                               rounded-lg border bg-zinc-50 shadow dark:bg-neutral-800 dark:shadow-zinc-900"
-                                       >
+                                       {open ? (
+                                          <X className="text-1" size={14} />
+                                       ) : (
+                                          <>
+                                             <Calendar
+                                                className={`${
+                                                   open
+                                                      ? "rotate-45 text-red-400"
+                                                      : ""
+                                                } transform transition duration-300 ease-in-out`}
+                                                size={14}
+                                             />
+                                          </>
+                                       )}
+                                    </Popover.Button>
+                                    <Popover.Panel
+                                       className="border-color min-h-[200px] transform
+                               rounded-lg border bg-zinc-50 shadow-lg dark:bg-bg3Dark dark:shadow-zinc-800"
+                                    >
+                                       <section className="border-color flex items-center justify-between border-b">
+                                          <div className="flex w-full items-center justify-between gap-2 p-3">
+                                             <span className="text-1 text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                                Start Time
+                                             </span>
+                                             <TimePicker
+                                                onChange={(e) => {
+                                                   setStartTime(e);
+                                                   updateEditorValue(
+                                                      e,
+                                                      "startTime"
+                                                   );
+                                                }}
+                                                value={startTime}
+                                                minutesInterval={1}
+                                             />
+                                          </div>
+                                          <div className="w-10">
+                                             <MoveRight size={16} />
+                                          </div>
+                                          <div className="flex w-full items-center justify-between gap-2 p-3">
+                                             <span className="text-1 text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                                End Time
+                                             </span>
+                                             <TimePicker
+                                                onChange={(e) => {
+                                                   setEndTime(e);
+                                                   updateEditorValue(
+                                                      e,
+                                                      "endTime"
+                                                   );
+                                                }}
+                                                value={endTime}
+                                                minutesInterval={1}
+                                             />
+                                          </div>
+                                       </section>
+                                       <section className="divide-color flex items-stretch divide-x">
                                           <DatePicker
                                              value={startDate}
                                              onChange={(e) => {
@@ -240,179 +303,22 @@ export function BlockEventItem({
                                              }}
                                              minDate={today}
                                              weekStartsFrom="Monday"
-                                             className="!w-full !border-0 text-xs !shadow-none"
                                           />
-                                       </Popover.Panel>
-                                    </Float>
-                                 </>
-                              )}
-                           </Popover>
-                           <Popover>
-                              {({ open }) => (
-                                 <>
-                                    <Float
-                                       as={Fragment}
-                                       enter="transition ease-out duration-200"
-                                       enterFrom="opacity-0 translate-y-1"
-                                       enterTo="opacity-100 translate-y-0"
-                                       leave="transition ease-in duration-150"
-                                       leaveFrom="opacity-100 translate-y-0"
-                                       leaveTo="opacity-0 translate-y-1"
-                                       placement="bottom-end"
-                                       offset={6}
-                                    >
-                                       <Popover.Button
-                                          className="p-2 focus:outline-none"
-                                          aria-label="Insert block below"
-                                       >
-                                          {open ? (
-                                             <X className="text-1" size={16} />
-                                          ) : (
-                                             <>
-                                                <Timer
-                                                   className={`${
-                                                      open
-                                                         ? "rotate-45 text-red-400"
-                                                         : ""
-                                                   } transform transition duration-300 ease-in-out`}
-                                                   size={16}
-                                                />
-                                             </>
-                                          )}
-                                       </Popover.Button>
-                                       <Popover.Panel
-                                          className="border-color transform
-                               rounded-lg border bg-zinc-50 shadow dark:bg-neutral-800 dark:shadow-zinc-900"
-                                       >
-                                          <TimePicker
-                                             className="!w-full !border-0 !py-2 text-xs !shadow-none"
-                                             onChange={(e) => {
-                                                setStartTime(e);
-                                                updateEditorValue(
-                                                   e,
-                                                   "startTime"
-                                                );
-                                             }}
-                                             value={startTime}
-                                             minutesInterval={1}
-                                          />
-                                       </Popover.Panel>
-                                    </Float>
-                                 </>
-                              )}
-                           </Popover>
-                        </div>
-                     </section>
-                     <div className="h-0.5 w-2 bg-zinc-200 dark:bg-zinc-700"></div>
-                     <section className="relative">
-                        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 transform rounded-full bg-zinc-200 px-1.5 text-[8px] font-bold dark:bg-zinc-700">
-                           End
-                        </div>
-                        <div className="shadow-1 divide-color border-color flex items-center divide-x rounded-lg border bg-white shadow-sm dark:bg-bg3Dark">
-                           <Popover>
-                              {({ open }) => (
-                                 <>
-                                    <Float
-                                       as={Fragment}
-                                       enter="transition ease-out duration-200"
-                                       enterFrom="opacity-0 translate-y-1"
-                                       enterTo="opacity-100 translate-y-0"
-                                       leave="transition ease-in duration-150"
-                                       leaveFrom="opacity-100 translate-y-0"
-                                       leaveTo="opacity-0 translate-y-1"
-                                       placement="bottom-end"
-                                       offset={6}
-                                    >
-                                       <Popover.Button
-                                          className="p-2 focus:outline-none"
-                                          aria-label="Insert block below"
-                                       >
-                                          {open ? (
-                                             <X className="text-1" size={16} />
-                                          ) : (
-                                             <>
-                                                <CalendarPlus
-                                                   className={`${
-                                                      open
-                                                         ? "rotate-45 text-red-400"
-                                                         : ""
-                                                   } transform transition duration-300 ease-in-out`}
-                                                   size={16}
-                                                />
-                                             </>
-                                          )}
-                                       </Popover.Button>
-                                       <Popover.Panel
-                                          className="border-color min-h-[200px] max-w-[270px] transform
-                               rounded-lg border bg-zinc-50 shadow dark:bg-neutral-800 dark:shadow-zinc-900"
-                                       >
                                           <DatePicker
                                              value={endDate}
-                                             onChange={(e: any) => {
+                                             onChange={(e) => {
                                                 setEndDate(e);
                                                 updateEditorValue(e, "endDate");
                                              }}
                                              minDate={startDate}
                                              weekStartsFrom="Monday"
-                                             className="!w-full !border-0 text-xs !shadow-none"
                                           />
-                                       </Popover.Panel>
-                                    </Float>
-                                 </>
-                              )}
-                           </Popover>
-                           <Popover>
-                              {({ open }) => (
-                                 <>
-                                    <Float
-                                       as={Fragment}
-                                       enter="transition ease-out duration-200"
-                                       enterFrom="opacity-0 translate-y-1"
-                                       enterTo="opacity-100 translate-y-0"
-                                       leave="transition ease-in duration-150"
-                                       leaveFrom="opacity-100 translate-y-0"
-                                       leaveTo="opacity-0 translate-y-1"
-                                       placement="bottom-end"
-                                       offset={6}
-                                    >
-                                       <Popover.Button
-                                          className="p-2 focus:outline-none"
-                                          aria-label="Insert block below"
-                                       >
-                                          {open ? (
-                                             <X className="text-1" size={16} />
-                                          ) : (
-                                             <>
-                                                <Timer
-                                                   className={`${
-                                                      open
-                                                         ? "rotate-45 text-red-400"
-                                                         : ""
-                                                   } transform transition duration-300 ease-in-out`}
-                                                   size={16}
-                                                />
-                                             </>
-                                          )}
-                                       </Popover.Button>
-                                       <Popover.Panel
-                                          className="border-color transform
-                               rounded-lg border bg-zinc-50 shadow dark:bg-neutral-800 dark:shadow-zinc-900"
-                                       >
-                                          <TimePicker
-                                             className="!w-full !border-0 !py-2 text-xs !shadow-none"
-                                             onChange={(e) => {
-                                                setEndTime(e);
-                                                updateEditorValue(e, "endTime");
-                                             }}
-                                             value={endTime}
-                                             minutesInterval={1}
-                                          />
-                                       </Popover.Panel>
-                                    </Float>
-                                 </>
-                              )}
-                           </Popover>
-                        </div>
+                                       </section>
+                                    </Popover.Panel>
+                                 </Float>
+                              </>
+                           )}
+                        </Popover>
                      </section>
                   </div>
                   {/* <div className="rounded-full bg-zinc-500 px-2.5 py-1 text-[10px] font-bold text-white">
@@ -424,14 +330,28 @@ export function BlockEventItem({
                   <Disclosure.Button>
                      <div
                         contentEditable={false}
-                        className={clsx(
-                           open ? "rotate-180" : "",
-                           "bg-3 shadow-1 border-color flex h-8 w-8 flex-none transform items-center justify-center rounded-full border pt-0.5 shadow-sm transition duration-300 ease-in-out"
-                        )}
+                        className="bg-3 shadow-1 border-color flex h-8 w-8 flex-none items-center 
+                        justify-center rounded-full border pt-0.5 shadow-sm"
                      >
-                        <ChevronDown size={18} />
+                        <ChevronDown
+                           className={clsx(
+                              open ? "rotate-180" : "",
+                              "transform transition duration-300 ease-in-out"
+                           )}
+                           size={18}
+                        />
                      </div>
                   </Disclosure.Button>
+                  <button
+                     onClick={() => {
+                        Transforms.delete(editor, {
+                           at: path,
+                        });
+                     }}
+                     className="border-color bg-3 -mr-2.5 rounded-md rounded-r-none border border-r-0 py-1"
+                  >
+                     <MoreVertical size={16} />
+                  </button>
                </div>
                <Disclosure.Panel className="px-4 py-3 text-sm" unmount={false}>
                   {children}
@@ -476,19 +396,14 @@ function CountdownTimer({ element }: { element: EventItemElement }) {
       }
    }, [element]);
 
-   const label = isActiveEvent ? "End Date" : "Start Date";
+   const label = isActiveEvent ? "Ends In" : "Starts In";
 
    return (
       <div className="flex items-center gap-4">
          {hasAllFields && (
             <>
                <section>
-                  <div
-                     className={clsx(
-                        isActiveEvent ? "text-sky-500" : "text-blue-500",
-                        "text-right text-[10px] font-bold"
-                     )}
-                  >
+                  <div className="text-right text-[10px] font-bold text-sky-500">
                      {label}
                   </div>
                   <div className="flex items-center justify-end">
@@ -520,8 +435,20 @@ function CountdownTimer({ element }: { element: EventItemElement }) {
                      </div>
                   </div>
                </section>
-               {!isActiveEvent && (
-                  <CountdownTimerEnd expiryTimestamp={displayEndDate} />
+               {displayEndDate && !isActiveEvent && (
+                  <section>
+                     <div className="text-right text-[10px] font-bold text-sky-500">
+                        Ends On
+                     </div>
+                     <div className="flex items-center justify-end">
+                        <time
+                           className="text-1 flex items-center gap-2 text-xs font-bold"
+                           dateTime={`${displayEndDate}`}
+                        >
+                           {dt.format(displayEndDate, "MMM D, hh:mm A")}
+                        </time>
+                     </div>
+                  </section>
                )}
             </>
          )}

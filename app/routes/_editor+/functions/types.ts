@@ -78,13 +78,7 @@ export type EventItemElement = BlockElement & {
 export type EventsElement = {
    id: string;
    type: BlockType.Events;
-   children: [
-      {
-         id: string;
-         type: BlockType.EventItem;
-         children: CustomText[];
-      }
-   ];
+   children: [EventItemElement];
 };
 
 export type ListElement = BlockElement & {
