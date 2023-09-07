@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { MetronomeLinks } from "@metronome-sh/react";
+import { withMetronome } from "@metronome-sh/react";
 import type {
    MetaFunction,
    LinksFunction,
@@ -190,7 +190,6 @@ function App() {
             />
             <Meta />
             <Links />
-            {process.env.NODE_ENV === "production" && <MetronomeLinks />}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
@@ -205,7 +204,7 @@ function App() {
    );
 }
 
-export default function AppWithProviders() {
+export function AppWithProviders() {
    const { siteTheme } = useLoaderData<typeof loader>();
 
    return (
@@ -214,6 +213,8 @@ export default function AppWithProviders() {
       </ThemeProvider>
    );
 }
+
+export default withMetronome(AppWithProviders);
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
