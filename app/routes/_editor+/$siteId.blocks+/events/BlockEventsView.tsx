@@ -1,21 +1,13 @@
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { Disclosure } from "@headlessui/react";
-import type { Descendant } from "slate";
-import { createEditor } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
 
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
-import type {
-   CustomText,
-   EventsElement,
-} from "~/routes/_editor+/functions/types";
+import type { EventsElement } from "~/routes/_editor+/functions/types";
 
 type Props = {
    element: EventsElement;
-   children: CustomText[];
+   children: ReactNode;
 };
 
 export function BlockEventsView({ element, children }: Props) {
@@ -38,6 +30,7 @@ export function BlockEventsView({ element, children }: Props) {
                      {({ open, close }) => (
                         <>
                            <Disclosure.Button
+                              className="flex items-center"
                               onClick={() => handleDisclosureChange(index)}
                            >
                               <span>{row.label}</span>
@@ -57,16 +50,3 @@ export function BlockEventsView({ element, children }: Props) {
       </section>
    );
 }
-
-const EventsEditorView = ({ content }: { content: Descendant[] }) => {
-   const editor = useMemo(() => withReact(createEditor()), []);
-   return (
-      <Slate editor={editor} initialValue={content}>
-         <Editable
-            renderElement={EditorBlocks}
-            renderLeaf={Leaf}
-            readOnly={true}
-         />
-      </Slate>
-   );
-};
