@@ -77,7 +77,7 @@ export function BlockGroup({ element }: Props) {
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    //@ts-expect-error
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 

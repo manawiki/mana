@@ -126,7 +126,7 @@ function App() {
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null};
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
    useEffect(() => {

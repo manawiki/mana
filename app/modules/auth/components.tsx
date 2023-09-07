@@ -31,7 +31,7 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
    if (site && user?.sites?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
@@ -40,7 +40,7 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
 //Is custom site
 export const CustomSite = ({ children }: { children: React.ReactNode }) => {
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
    const isCustom = site.type === "custom";
    return isCustom ? <>{children}</> : null;
 };
@@ -53,7 +53,7 @@ export const NotFollowingSite = ({
    const { user } = useRouteLoaderData("root") as { user: User };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
    if (!user) return null;
    if (user?.sites?.some((e: any) => e.id === site?.id)) return null;
    return <>{children}</>;
