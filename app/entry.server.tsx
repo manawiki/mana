@@ -42,6 +42,7 @@ export default async function handleRequest(
                responseHeaders.set("Content-Type", "text/html");
 
                resolve(
+                  //@ts-ignore Not quite sure how this should be typed?
                   new Response(body, {
                      headers: responseHeaders,
                      status: responseStatusCode,
