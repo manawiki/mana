@@ -64,8 +64,9 @@ const seedUploads = async (result: any) => {
       // Will attempt reupload of image if the image doesn't exist, otherwise skips.
       var fileurl = existingImage.docs?.[0]?.url;
       var imgid = existingImage.docs?.[0]?.id;
+      var imgchksum = existingImage.docs?.[0]?.checksum;
 
-      if (overwriteexisting) {
+      if (overwriteexisting && imgchksum != checksum) {
             const updateItem = await payload.update({
                collection: "images",
                id: id,
@@ -80,7 +81,7 @@ const seedUploads = async (result: any) => {
             console.log(`${id} Updated!`);
          }
          else {
-            console.log(`${JSON.stringify(imgid)} Exists, skipping!`);
+            console.log(`${JSON.stringify(imgid)} Exists and checksum matches, skipping!`);
          }
 
       // if (await URLExists(fileurl)) {

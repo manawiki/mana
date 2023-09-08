@@ -849,6 +849,7 @@ const CharacterInfo = ({
       // Percent Bonuses =
       // - relicperc // Contains both relic and set bonuses
       // - treeperc // Contains all Skill Tree bonuses.
+      // - lcperc // Contains all Light Cone bonuses.
       const relicperc = relicbonuses
          .filter((a: any) => a.name == stat)
          .map((a: any) => a.value)
@@ -859,7 +860,12 @@ const CharacterInfo = ({
          .map((a: any) => a.value)
          ?.reduce((ps: any, a: any) => ps + a, 0);
 
-      const statmod = relicperc + treeperc;
+      const lcperc = lightconebonuses
+         .filter((a: any) => a.name == stat)
+         .map((a: any) => a.value)
+         ?.reduce((ps: any, a: any) => ps + a, 0);
+
+      const statmod = relicperc + treeperc + lcperc;
 
       if (statmod > 0) {
          statVal.push({
@@ -906,7 +912,7 @@ const CharacterInfo = ({
          });
    }, [ref]);
 
-   // I am sorry for this
+   // I am sorry for this -// 9/8/2023 lmao dw this is fine -NorseFTX
    const imageTop = statVal.length > 6 ? (statVal.length - 6) * 20 : 0;
 
    return (
@@ -1072,7 +1078,34 @@ const CharacterInfo = ({
                            {/* Level + Superimposition Levels */}
                            <div className="flex-grow">
                               <div className="relative pb-1.5 font-bold">
-                                 {lcbase.name}
+                                 {/* {lcbase.name} */}
+                                 <Tooltip key={"lightcone_showcase_name"}>
+                                    <TooltipTrigger
+                                       className={` ${lcHighlightStyle}`}
+                                       onMouseOver={() =>
+                                          setHoverStat(lcbonuses)
+                                       }
+                                       onMouseOut={() => setHoverStat([])}
+                                    >
+                                       {lcbase.name}
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                       <div className="w-44">
+                                          <div className="pb-0.5 text-blue-500">
+                                             {lcbase?.name}
+                                          </div>
+                                          <div
+                                             dangerouslySetInnerHTML={{
+                                                __html:
+                                                   lcbase?.skill_data?.[
+                                                      chardata?.equipment
+                                                         ?.promotion - 1
+                                                   ]?.desc,
+                                             }}
+                                          ></div>
+                                       </div>
+                                    </TooltipContent>
+                                 </Tooltip>
                                  {/* <Tooltip
                                  id="relic-set-bonus"
                                  side="top"
@@ -1946,6 +1979,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
            }
            value
          }
+         desc
        }
        id
        name
