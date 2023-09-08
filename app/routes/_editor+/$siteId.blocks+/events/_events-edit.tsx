@@ -27,6 +27,7 @@ import {
    convertTimeToDate,
    getCurrentTime,
 } from "~/components/datepicker/util";
+import { useIsMount } from "~/hooks";
 
 import { CountdownTimer } from "./CountdownTimer";
 import { BlockType } from "../../functions/types";
@@ -175,46 +176,49 @@ export function BlockEventItem({
    }
    const path = ReactEditor.findPath(editor, element);
    const updatedParent = Node.parent(editor, path);
+   const isMount = useIsMount();
 
    useEffect(() => {
-      const { startTimestamp, endTimestamp } = element;
-      if (!startTimestamp || !endTimestamp) return;
-      const currentChildren =
-         updatedParent.children as EventsElement["children"];
-      const today = new Date();
-      // We separate active events so we can show them on top
-      const activeEvents = currentChildren
-         .filter(
-            (row) =>
-               new Date(row?.startTimestamp as Date) <= today &&
-               new Date(row?.endTimestamp as Date)! > today
-         )
-         .sort(
-            //@ts-ignore
-            (a, b) => new Date(a.endTimestamp) - new Date(b.endTimestamp)
-         );
-
-      const upcomingEvents = currentChildren
-         .filter((row) => new Date(row?.startTimestamp as Date) > today)
-         .sort(
-            //@ts-ignore
-            (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
-         );
-
-      const resultArray = [...activeEvents, ...upcomingEvents];
-      return resultArray.forEach((row: any) => {
-         Transforms.moveNodes<CustomElement>(editor, {
-            at: [path[0]],
-            match: (node: Node) =>
+      if (!isMount) {
+         const { startTimestamp, endTimestamp } = element;
+         if (!startTimestamp || !endTimestamp) return;
+         const currentChildren =
+            updatedParent.children as EventsElement["children"];
+         const today = new Date();
+         // We separate active events so we can show them on top
+         const activeEvents = currentChildren
+            .filter(
+               (row) =>
+                  new Date(row?.startTimestamp as Date) <= today &&
+                  new Date(row?.endTimestamp as Date)! > today
+            )
+            .sort(
                //@ts-ignore
-               Editor.isBlock(editor, node) && node.id === row?.id,
-            to: [
-               path[0],
-               resultArray.findIndex((item: any) => item.id == row.id),
-            ],
+               (a, b) => new Date(a.endTimestamp) - new Date(b.endTimestamp)
+            );
+
+         const upcomingEvents = currentChildren
+            .filter((row) => new Date(row?.startTimestamp as Date) > today)
+            .sort(
+               //@ts-ignore
+               (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
+            );
+
+         const resultArray = [...activeEvents, ...upcomingEvents];
+         return resultArray.forEach((row: any) => {
+            Transforms.moveNodes<CustomElement>(editor, {
+               at: [path[0]],
+               match: (node: Node) =>
+                  //@ts-ignore
+                  Editor.isBlock(editor, node) && node.id === row?.id,
+               to: [
+                  path[0],
+                  resultArray.findIndex((item: any) => item.id == row.id),
+               ],
+            });
          });
-      });
-   }, [element]);
+      }
+   }, [startDate, startTime, endDate, endTime]);
 
    return (
       <Disclosure key={element.id}>
@@ -304,6 +308,7 @@ export function BlockEventItem({
                                        </section>
                                        <section className="divide-color flex items-stretch divide-x">
                                           <DatePicker
+                                             minDate={today}
                                              value={startDate}
                                              onChange={(e) => {
                                                 setStartDate(e);
@@ -312,7 +317,6 @@ export function BlockEventItem({
                                                    "startDate"
                                                 );
                                              }}
-                                             minDate={today}
                                              weekStartsFrom="Monday"
                                           />
                                           <DatePicker

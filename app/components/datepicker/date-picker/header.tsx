@@ -3,8 +3,8 @@ import React, { useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { getMonthNameFromNumber } from "./methods";
-import MonthPicker from "./month-picker";
-import YearPicker from "./year-picker";
+import { MonthPicker } from "./month-picker";
+import { YearPicker } from "./year-picker";
 
 export type HeaderProps = {
    month: number;
@@ -18,7 +18,7 @@ export type HeaderProps = {
    disabled: boolean;
 };
 
-const Header: React.FC<HeaderProps> = ({
+export function Header({
    month,
    year,
    minDateValue,
@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
    onMonthChange,
    onYearChange,
    disabled,
-}) => {
+}: HeaderProps) {
    const fromYear = useMemo(
       () => new Date(minDateValue).getFullYear(),
       [minDateValue]
@@ -74,6 +74,4 @@ const Header: React.FC<HeaderProps> = ({
          </button>
       </div>
    );
-};
-
-export default Header;
+}

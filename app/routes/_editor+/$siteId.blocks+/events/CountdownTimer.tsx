@@ -48,7 +48,7 @@ export function CountdownTimer({ element }: { element: EventItemElement }) {
 
    return (
       <div className="flex items-center gap-4 pr-1">
-         {hasAllFields && !isEventComplete ? (
+         {hasAllFields && !isEventComplete && (
             <>
                <section>
                   <div className="text-right text-[10px] font-bold text-zinc-500 underline decoration-zinc-300 underline-offset-2 dark:text-zinc-300 dark:decoration-zinc-600">
@@ -91,7 +91,6 @@ export function CountdownTimer({ element }: { element: EventItemElement }) {
                      </div>
                   </div>
                </section>
-               {isEventComplete && <div>yooo</div>}
                {displayEndDate && !isActiveEvent && !readOnly && (
                   <section>
                      <div className="text-right text-[10px] font-bold text-zinc-500 underline decoration-zinc-300 underline-offset-2 dark:text-zinc-300 dark:decoration-zinc-600">
@@ -108,7 +107,8 @@ export function CountdownTimer({ element }: { element: EventItemElement }) {
                   </section>
                )}
             </>
-         ) : (
+         )}
+         {hasAllFields && isEventComplete && (
             <div className="text-1 text-xs">Event Ended</div>
          )}
       </div>
