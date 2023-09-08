@@ -1,22 +1,25 @@
 import type { ReactNode } from "react";
 import { Fragment, useEffect, useState } from "react";
 
-import { Disclosure, Popover } from "@headlessui/react";
+import { FloatingDelayGroup, offset } from "@floating-ui/react";
+import { Disclosure, Menu, Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
-import dt from "date-and-time";
 import {
    Calendar,
    ChevronDown,
+   Copy,
    MoreVertical,
    MoveRight,
+   Plus,
+   Trash,
    X,
 } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useTimer } from "react-timer-hook";
 import { Transforms, Node, Editor } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import DatePicker from "~/components/datepicker/date-picker";
 import TimePicker from "~/components/datepicker/time-picker";
 import type { Time } from "~/components/datepicker/time-picker/types";
@@ -25,6 +28,7 @@ import {
    getCurrentTime,
 } from "~/components/datepicker/util";
 
+import { CountdownTimer } from "./CountdownTimer";
 import { BlockType } from "../../functions/types";
 import type {
    CustomElement,
@@ -42,32 +46,48 @@ export function BlockEvents({
    const editor = useSlate();
 
    return (
-      <section className="pb-4">
-         <div className="divide-color shadow-1 border-color bg-3 divide-y rounded-lg border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg">
+      <section>
+         <div
+            className="divide-color shadow-1 border-color bg-3 relative  z-10 divide-y rounded-lg  border
+         shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50 
+         [&>*:nth-of-type(4n+1)]:dark:bg-bg2Dark [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-neutral-800/50"
+         >
             {children}
          </div>
-         <div contentEditable={false} className="pt-3">
-            <button
-               className="shadow-1 border-color rounded-lg border bg-zinc-800 px-3 py-2 text-xs font-bold text-white shadow-sm"
-               onClick={() => {
-                  const path = [
-                     ReactEditor.findPath(editor, element),
-                     element.children.length,
-                  ];
-                  Transforms.insertNodes(
-                     editor,
-                     {
-                        id: nanoid(),
-                        type: BlockType.EventItem,
-                        children: [{ text: "" }],
-                     },
-                     //@ts-ignore
-                     { at: path }
-                  );
-               }}
-            >
-               Add
-            </button>
+         <div
+            contentEditable={false}
+            className="relative -mt-1 flex justify-end pr-[19px]"
+         >
+            <Tooltip placement="bottom-end" setDelay={800}>
+               <TooltipTrigger>
+                  <button
+                     className="shadow-1 flex h-9 items-center justify-center gap-2 rounded-b-full border-2 border-zinc-200 bg-neutral-50
+                     px-3 pb-0.5 text-xs font-bold shadow-sm hover:bg-white dark:border-zinc-700 dark:bg-bg3Dark dark:hover:bg-zinc-800"
+                     onClick={() => {
+                        const path = [
+                           ReactEditor.findPath(editor, element),
+                           element.children.length,
+                        ];
+                        Transforms.insertNodes(
+                           editor,
+                           {
+                              id: nanoid(),
+                              type: BlockType.EventItem,
+                              children: [{ text: "" }],
+                           },
+                           //@ts-ignore
+                           { at: path }
+                        );
+                     }}
+                  >
+                     <Plus
+                        className="text-zinc-500 dark:text-zinc-300"
+                        size={16}
+                     />
+                  </button>
+               </TooltipTrigger>
+               <TooltipContent>Add an event</TooltipContent>
+            </Tooltip>
          </div>
       </section>
    );
@@ -159,14 +179,15 @@ export function BlockEventItem({
    useEffect(() => {
       const { startTimestamp, endTimestamp } = element;
       if (!startTimestamp || !endTimestamp) return;
-      const currentChildren = updatedParent.children;
+      const currentChildren =
+         updatedParent.children as EventsElement["children"];
       const today = new Date();
       // We separate active events so we can show them on top
       const activeEvents = currentChildren
          .filter(
             (row) =>
-               new Date(row?.startTimestamp) <= today &&
-               new Date(row?.endTimestamp)! > today
+               new Date(row?.startTimestamp as Date) <= today &&
+               new Date(row?.endTimestamp as Date)! > today
          )
          .sort(
             //@ts-ignore
@@ -174,7 +195,7 @@ export function BlockEventItem({
          );
 
       const upcomingEvents = currentChildren
-         .filter((row) => new Date(row?.startTimestamp) > today)
+         .filter((row) => new Date(row?.startTimestamp as Date) > today)
          .sort(
             //@ts-ignore
             (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
@@ -201,7 +222,7 @@ export function BlockEventItem({
             <>
                <div
                   contentEditable={false}
-                  className="flex w-full items-center gap-3 bg-zinc-50 p-2.5 pl-4 shadow-sm first:rounded-t-lg dark:bg-bg2Dark"
+                  className="flex w-full items-center gap-2 p-2.5 pl-4 shadow-sm first:rounded-t-lg "
                >
                   <input
                      placeholder="Start typing..."
@@ -228,35 +249,25 @@ export function BlockEventItem({
                                     leaveFrom="opacity-100 translate-y-0"
                                     leaveTo="opacity-0 translate-y-1"
                                     placement="bottom-end"
-                                    autoUpdate
                                     offset={6}
                                  >
                                     <Popover.Button
-                                       className="rounded-full border border-zinc-100 bg-white p-2.5 focus:outline-none dark:border-zinc-700/50 dark:bg-zinc-800"
+                                       className="shadow-1 rounded-full border border-zinc-100 bg-white p-2.5 shadow-sm focus:outline-none dark:border-zinc-700/50 dark:bg-zinc-800"
                                        aria-label="Insert block below"
                                     >
                                        {open ? (
                                           <X className="text-1" size={14} />
                                        ) : (
-                                          <>
-                                             <Calendar
-                                                className={`${
-                                                   open
-                                                      ? "rotate-45 text-red-400"
-                                                      : ""
-                                                } transform transition duration-300 ease-in-out`}
-                                                size={14}
-                                             />
-                                          </>
+                                          <Calendar size={14} />
                                        )}
                                     </Popover.Button>
                                     <Popover.Panel
-                                       className="border-color min-h-[200px] transform
-                               rounded-lg border bg-zinc-50 shadow-lg dark:bg-bg3Dark dark:shadow-zinc-800"
+                                       className="border-color shadow-1 min-h-[200px] transform
+                               rounded-lg border bg-white shadow dark:bg-bg3Dark"
                                     >
                                        <section className="border-color flex items-center justify-between border-b">
                                           <div className="flex w-full items-center justify-between gap-2 p-3">
-                                             <span className="text-1 text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                             <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
                                                 Start Time
                                              </span>
                                              <TimePicker
@@ -275,7 +286,7 @@ export function BlockEventItem({
                                              <MoveRight size={16} />
                                           </div>
                                           <div className="flex w-full items-center justify-between gap-2 p-3">
-                                             <span className="text-1 text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
+                                             <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
                                                 End Time
                                              </span>
                                              <TimePicker
@@ -342,16 +353,78 @@ export function BlockEventItem({
                         />
                      </div>
                   </Disclosure.Button>
-                  <button
-                     onClick={() => {
-                        Transforms.delete(editor, {
-                           at: path,
-                        });
-                     }}
-                     className="border-color bg-3 -mr-2.5 rounded-md rounded-r-none border border-r-0 py-1"
-                  >
-                     <MoreVertical size={16} />
-                  </button>
+                  <Menu as="div" className="relative">
+                     {({ open }) => (
+                        <Float
+                           as={Fragment}
+                           enter="transition ease-out duration-100"
+                           enterFrom="transform opacity-0 scale-95"
+                           enterTo="transform opacity-100 scale-100"
+                           leave="transition ease-in duration-75"
+                           leaveFrom="transform opacity-100 scale-100"
+                           leaveTo="transform opacity-0 scale-95"
+                           placement="bottom-end"
+                           middleware={[
+                              offset({
+                                 mainAxis: 4,
+                                 crossAxis: -6,
+                              }),
+                           ]}
+                        >
+                           <Menu.Button className="border-color shadow-1 bg-3 group/menu -mr-2.5 flex h-8 w-4 items-center justify-center rounded-lg rounded-r-none border border-r-0 shadow-sm transition duration-300">
+                              {open ? (
+                                 <X
+                                    size={12}
+                                    className="pl-0.5 transition duration-150 ease-in-out"
+                                 />
+                              ) : (
+                                 <>
+                                    <MoreVertical
+                                       size={16}
+                                       className="pl-0.5 transition duration-150 ease-in-out group-active/menu:translate-y-0.5"
+                                    />
+                                 </>
+                              )}
+                           </Menu.Button>
+                           <Menu.Items className="border-color bg-3 shadow-1 flex flex-col items-center justify-center rounded-lg border shadow">
+                              <FloatingDelayGroup
+                                 delay={{ open: 1000, close: 200 }}
+                              >
+                                 <Menu.Item>
+                                    <Tooltip placement="left">
+                                       <TooltipTrigger>
+                                          <button
+                                             className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-bg4Dark"
+                                             onClick={() => {
+                                                Transforms.delete(editor, {
+                                                   at: path,
+                                                });
+                                             }}
+                                          >
+                                             <Trash
+                                                size={14}
+                                                className="text-red-400"
+                                             />
+                                          </button>
+                                       </TooltipTrigger>
+                                       <TooltipContent>Delete</TooltipContent>
+                                    </Tooltip>
+                                 </Menu.Item>
+                                 <Menu.Item>
+                                    <Tooltip placement="left">
+                                       <TooltipTrigger>
+                                          <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-bg4Dark">
+                                             <Copy size={14} />
+                                          </button>
+                                       </TooltipTrigger>
+                                       <TooltipContent>Copy</TooltipContent>
+                                    </Tooltip>
+                                 </Menu.Item>
+                              </FloatingDelayGroup>
+                           </Menu.Items>
+                        </Float>
+                     )}
+                  </Menu>
                </div>
                <Disclosure.Panel className="px-4 py-3 text-sm" unmount={false}>
                   {children}
@@ -359,144 +432,5 @@ export function BlockEventItem({
             </>
          )}
       </Disclosure>
-   );
-}
-
-function CountdownTimer({ element }: { element: EventItemElement }) {
-   const today = new Date();
-
-   const { startTime, endTime, startDate, endDate } = element;
-
-   const hasStartFields = startTime && startDate;
-   const hasEndFields = endTime && endDate;
-
-   const hasAllFields = hasStartFields && hasEndFields;
-
-   //Combine date with time field
-   const displayStartDate =
-      hasStartFields && convertTimeToDate(startTime, startDate);
-
-   const displayEndDate = hasEndFields && convertTimeToDate(endTime, endDate);
-
-   const isActiveEvent = displayStartDate && today >= displayStartDate;
-
-   //If the event is active, show countdown before event ends, otherwise show countdown before event starts
-   const expirationDate = isActiveEvent ? displayEndDate : displayStartDate;
-
-   const [expiryTime, setExpiryTimestamp] = useState(expirationDate);
-
-   const { minutes, hours, days, restart } = useTimer({
-      expiryTimestamp: expiryTime ?? new Date(),
-   });
-
-   useEffect(() => {
-      if (expirationDate) {
-         setExpiryTimestamp(expirationDate);
-         restart(expirationDate);
-      }
-   }, [element]);
-
-   const label = isActiveEvent ? "Ends In" : "Starts In";
-
-   return (
-      <div className="flex items-center gap-4">
-         {hasAllFields && (
-            <>
-               <section>
-                  <div className="text-right text-[10px] font-bold text-sky-500">
-                     {label}
-                  </div>
-                  <div className="flex items-center justify-end">
-                     <div className="text-1 flex items-center gap-2 text-xs font-bold">
-                        {days ? (
-                           <div className="flex items-center gap-0.5">
-                              <span>{days}</span>
-                              <span className="font-semibold text-zinc-400">
-                                 d
-                              </span>
-                           </div>
-                        ) : null}
-                        {hours ? (
-                           <div className="flex items-center gap-0.5">
-                              <span>{hours}</span>
-                              <span className="font-semibold text-zinc-400">
-                                 h
-                              </span>
-                           </div>
-                        ) : null}
-                        {minutes ? (
-                           <div className="flex items-center gap-0.5">
-                              <span>{minutes}</span>
-                              <span className="font-semibold text-zinc-400">
-                                 m
-                              </span>
-                           </div>
-                        ) : null}
-                     </div>
-                  </div>
-               </section>
-               {displayEndDate && !isActiveEvent && (
-                  <section>
-                     <div className="text-right text-[10px] font-bold text-sky-500">
-                        Ends On
-                     </div>
-                     <div className="flex items-center justify-end">
-                        <time
-                           className="text-1 flex items-center gap-2 text-xs font-bold"
-                           dateTime={`${displayEndDate}`}
-                        >
-                           {dt.format(displayEndDate, "MMM D, hh:mm A")}
-                        </time>
-                     </div>
-                  </section>
-               )}
-            </>
-         )}
-      </div>
-   );
-}
-
-function CountdownTimerEnd({ expiryTimestamp }: { expiryTimestamp: any }) {
-   const [expiryTime, setExpiryTimestamp] = useState(expiryTimestamp);
-
-   const { minutes, hours, days, restart } = useTimer({
-      expiryTimestamp: expiryTime,
-   });
-
-   useEffect(() => {
-      if (expiryTimestamp) {
-         setExpiryTimestamp(expiryTimestamp);
-         restart(expiryTimestamp);
-      }
-   }, [expiryTimestamp, restart]);
-
-   return (
-      <section className="w-24">
-         <div className="text-right text-[10px] font-bold text-purple-400">
-            Duration
-         </div>
-         <div className="flex items-center justify-end">
-            <div className="text-1 flex items-center gap-2 text-xs font-bold">
-               {days ? (
-                  <div className="flex items-center gap-0.5">
-                     <span>{days}</span>
-                     <span className="font-semibold text-zinc-400">d</span>
-                  </div>
-               ) : null}
-               {hours ? (
-                  <div className="flex items-center gap-0.5">
-                     <span>{hours}</span>
-                     <span className="font-semibold text-zinc-400">h</span>
-                  </div>
-               ) : null}
-               {minutes ? (
-                  <div className="flex items-center gap-0.5">
-                     <span>{minutes}</span>
-                     <span className="font-semibold text-zinc-400">m</span>
-                  </div>
-               ) : null}
-            </div>
-         </div>
-      </section>
    );
 }

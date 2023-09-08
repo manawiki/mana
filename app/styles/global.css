@@ -204,12 +204,6 @@ html.dark {
    @apply pointer-events-none;
 }
 
-.sdp:focus,
-.sdp--month-name:focus,
-.sdp--square-btn:focus {
-   @apply outline-none ring-1 ring-blue-300 dark:ring-blue-400;
-}
-
 .sdp--month-name {
    padding: 0.5rem;
    border: none;
@@ -227,7 +221,7 @@ html.dark {
 }
 
 .sdp--square-btn {
-   @apply flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0 bg-white dark:bg-bg3Dark;
+   @apply flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border-0;
    transition: all 0.2s ease-in-out;
 }
 
@@ -252,7 +246,7 @@ html.dark {
 }
 
 .sdp--date-btn__selected {
-   @apply shadow-1 !bg-blue-500 text-white shadow-sm;
+   @apply shadow-1 !bg-zinc-500 text-white shadow-sm;
 }
 
 .sdp--date-btn__selected.sdp--square-btn:focus {
