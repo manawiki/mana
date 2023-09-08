@@ -3,8 +3,8 @@ import React, { forwardRef, useCallback, useMemo, useState } from "react";
 
 import dt from "date-and-time";
 
-import DateButton from "./date-button";
-import Header from "./header";
+import { DateButton } from "./date-button";
+import { Header } from "./header";
 import {
    getDatesOfMonth,
    getDaysOfWeek,

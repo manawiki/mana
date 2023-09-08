@@ -17,13 +17,13 @@ function* generateRange(from: number, to: number, step: number) {
    }
 }
 
-const YearPicker: React.FC<YearPickerProps> = ({
+export function YearPicker({
    fromYear,
    toYear,
    value,
    onChange,
    disabled,
-}) => {
+}: YearPickerProps) {
    const options = useMemo(
       () =>
          Array.from(generateRange(fromYear, toYear, 1)).map(
@@ -45,6 +45,4 @@ const YearPicker: React.FC<YearPickerProps> = ({
          disabled={disabled}
       />
    );
-};
-
-export default YearPicker;
+}
