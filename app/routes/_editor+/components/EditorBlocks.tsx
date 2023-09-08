@@ -4,8 +4,14 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockEventItem, BlockEvents } from "../$siteId.blocks+/events/_events";
-import { BlockEventsView } from "../$siteId.blocks+/events/BlockEventsView";
+import {
+   BlockEventItem,
+   BlockEvents,
+} from "../$siteId.blocks+/events/_events-edit";
+import {
+   BlockEventItemView,
+   BlockEventsView,
+} from "../$siteId.blocks+/events/events-view";
 import { BlockGroup } from "../$siteId.blocks+/group/_group";
 import { BlockGroupView } from "../$siteId.blocks+/group/BlockGroupView";
 import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
@@ -149,6 +155,14 @@ export function EditorBlocks({
          );
       }
       case BlockType.EventItem: {
+         if (readOnly)
+            return (
+               <BlockEventItemView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
          return (
             <BlockEventItem
                element={element}
