@@ -22,9 +22,9 @@ import { useFocused, useSlate } from "slate-react";
 import Button from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement, LinkElement, TextBlock } from "../functions/types";
-import { BlockType } from "../functions/types";
-import { toggleMark, topLevelPath } from "../functions/utils";
+import type { CustomElement, LinkElement, TextBlock } from "../core/types";
+import { BlockType } from "../core/types";
+import { toggleMark, topLevelPath } from "../core/utils";
 
 export function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);

@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
-import type { AccordionElement, CustomElement } from "../functions/types";
+import type { AccordionElement, CustomElement } from "../core/types";
 
 type Props = {
    element: AccordionElement;

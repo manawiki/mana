@@ -22,7 +22,7 @@ import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { swrRestFetcher } from "~/utils";
 
-import type { CustomElement, LinkElement } from "../../functions/types";
+import type { CustomElement, LinkElement } from "../../core/types";
 
 export async function loader({
    context: { payload, user },

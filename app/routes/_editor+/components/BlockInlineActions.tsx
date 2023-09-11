@@ -5,7 +5,7 @@ import Button from "~/components/Button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import { BlockTypeSelector } from "./BlockTypeSelector";
-import type { CustomElement } from "../functions/types";
+import type { CustomElement } from "../core/types";
 
 type Props = {
    blockId: string;

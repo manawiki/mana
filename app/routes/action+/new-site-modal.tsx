@@ -11,8 +11,8 @@ import { z } from "zod";
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-import { BlockType, CustomElement } from "~/routes/_editor+/functions/types";
-import { initialValue } from "~/routes/_editor+/functions/utils";
+import { BlockType, CustomElement } from "~/routes/_editor+/core/types";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import {
    assertIsPost,
    isAdding,

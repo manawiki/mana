@@ -6,7 +6,7 @@ import { useReadOnly } from "slate-react";
 
 import { convertTimeToDate } from "~/components/datepicker/util";
 
-import type { EventItemElement } from "../../functions/types";
+import type { EventItemElement } from "../../core/types";
 
 export function CountdownTimer({ element }: { element: EventItemElement }) {
    const today = new Date();

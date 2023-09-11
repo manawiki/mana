@@ -45,15 +45,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/components/Leaf";
-import { onKeyDown } from "~/routes/_editor+/functions/utils";
+import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { swrRestFetcher } from "~/utils";
 
 import { Toolbar } from "../../components/Toolbar";
-import type {
-   CustomElement,
-   GroupElement,
-   groupItem,
-} from "../../functions/types";
+import type { CustomElement, GroupElement, groupItem } from "../../core/types";
 
 type Props = {
    element: GroupElement;
@@ -77,7 +73,9 @@ export function BlockGroup({ element }: Props) {
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    //@ts-expect-error
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 

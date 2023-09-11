@@ -20,12 +20,12 @@ import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/components/Leaf";
-import { onKeyDown } from "~/routes/_editor+/functions/utils";
+import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { withLinkify } from "~/routes/_editor+/plugins/link/withLinkify";
 import { isAdding, isProcessing } from "~/utils";
 
 import { Toolbar } from "../../components/Toolbar";
-import type { UpdatesElement, CustomElement } from "../../functions/types";
+import type { UpdatesElement, CustomElement } from "../../core/types";
 
 type Props = {
    element: UpdatesElement;

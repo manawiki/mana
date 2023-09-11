@@ -23,8 +23,8 @@ import { nanoid } from "nanoid";
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement } from "../functions/types";
-import { BlockType } from "../functions/types";
+import type { CustomElement } from "../core/types";
+import { BlockType } from "../core/types";
 
 type Props = {
    onSelect: (block: CustomElement) => void;
