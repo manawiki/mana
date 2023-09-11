@@ -30,12 +30,12 @@ import {
 import { useIsMount } from "~/hooks";
 
 import { CountdownTimer } from "./CountdownTimer";
-import { BlockType } from "../../functions/types";
+import { BlockType } from "../../core/types";
 import type {
    CustomElement,
    EventItemElement,
    EventsElement,
-} from "../../functions/types";
+} from "../../core/types";
 
 export function BlockEvents({
    element,

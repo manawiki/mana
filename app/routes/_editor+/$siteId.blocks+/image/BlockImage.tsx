@@ -9,7 +9,7 @@ import { ReactEditor, useSlate } from "slate-react";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
 
-import type { CustomElement, ImageElement } from "../../functions/types";
+import type { CustomElement, ImageElement } from "../../core/types";
 type Props = {
    element: ImageElement;
 };

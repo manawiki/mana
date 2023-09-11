@@ -2,7 +2,7 @@ import LinkifyIt from "linkify-it";
 import { Editor, Element, Range, Transforms } from "slate";
 import tlds from "tlds";
 
-import type { CustomElement } from "~/routes/_editor+/functions/types";
+import type { CustomElement } from "~/routes/_editor+/core/types";
 
 export const LINK = "link" as const;
 

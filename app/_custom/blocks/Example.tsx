@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import type { ListElement } from "~/routes/_editor+/functions/types";
+import type { ListElement } from "~/routes/_editor+/core/types";
 
 type Props = {
    element: ListElement;

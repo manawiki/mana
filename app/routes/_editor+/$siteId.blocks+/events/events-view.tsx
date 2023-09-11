@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 import type {
    EventItemElement,
    EventsElement,
-} from "~/routes/_editor+/functions/types";
+} from "~/routes/_editor+/core/types";
 
 import { CountdownTimer } from "./CountdownTimer";
 

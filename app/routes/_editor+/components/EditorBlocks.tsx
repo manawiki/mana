@@ -23,8 +23,8 @@ import { BlockAccordion } from "../blocks//BlockAccordion";
 import { BlockCodeSandbox } from "../blocks//BlockCodeSandbox";
 import { BlockToDo } from "../blocks//BlockToDo";
 import { BlockVideo } from "../blocks/BlockVideo";
-import type { CustomElement } from "../functions/types";
-import { BlockType } from "../functions/types";
+import type { CustomElement } from "../core/types";
+import { BlockType } from "../core/types";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created

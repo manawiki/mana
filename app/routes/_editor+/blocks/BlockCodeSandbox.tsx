@@ -3,7 +3,7 @@ import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import Placeholder from "../components/Placeholder";
-import type { CustomElement, CodeSandboxElement } from "../functions/types";
+import type { CustomElement, CodeSandboxElement } from "../core/types";
 
 type Props = {
    element: CodeSandboxElement;
