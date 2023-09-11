@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const Items: CollectionConfig = {
-   slug: "items",
-   labels: { singular: "item", plural: "items" },
+export const _Companies: CollectionConfig = {
+   slug: "_companies",
+   labels: { singular: "_company", plural: "_companies" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -25,27 +25,13 @@ export const Items: CollectionConfig = {
          type: "text",
       },
       {
+        name: "desc",
+        type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
-      },
-      {
-         name: "category",
-         type: "relationship",
-         relationTo: "_warehouseCategories",
-      },
-      {
-         name: "rarity",
-         type: "relationship",
-         relationTo: "_rarities",
-      },
-      {
-         name: "desc",
-         type: "text",
-      },
-      {
-         name: "obtain",
-         type: "text",
       },
       {
          name: "checksum",
