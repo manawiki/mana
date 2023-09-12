@@ -45,6 +45,11 @@ export const Dolls: CollectionConfig = {
          relationTo: "_companies",
       },
       {
+         name: "limited",
+         type: "checkbox",
+         defaultValue: false,
+      },
+      {
          name: "fragment",
          type: "relationship",
          relationTo: "items",
@@ -54,12 +59,22 @@ export const Dolls: CollectionConfig = {
          type: "text",
       },
       {
+         name: "model",
+         type: "text",
+      },
+      {
          name: "birthday",
          type: "text",
       },
       {
          name: "career",
          type: "text",
+      },
+      {
+         name: "skins",
+         type: "relationship",
+         relationTo: "skins",
+         hasMany: true,
       },
       {
          name: "liked_gifts",
