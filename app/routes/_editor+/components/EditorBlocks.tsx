@@ -111,7 +111,10 @@ export function EditorBlocks({
       }
       case BlockType.H3: {
          return (
-            <h3 className="flex items-center gap-3 font-header" {...attributes}>
+            <h3
+               className="flex items-center gap-3 py-2 font-header text-lg"
+               {...attributes}
+            >
                <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
