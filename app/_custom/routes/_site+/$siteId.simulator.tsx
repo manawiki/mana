@@ -725,7 +725,7 @@ const SummonSimulator = (data: any) => {
 <br>[Soft Pity Rates:]
 <br>------------------
 <br>
-<br>5* Soft Pity (effective when at pulls 74 ~ 90, inclusive): 
+<br>5* Soft Pity (effective when at pulls 74 ~ 90, inclusive):
 <br>Rate = 0.6% + ((99.4% / 17)*(PULL# - 73))
 <br>- Explanation: The rate of a 5* will increase linearly starting from 0.6% at pull 74 up to 100% at pull 90.
 <br>
@@ -768,7 +768,7 @@ const SummonSimulator = (data: any) => {
 <br>[Soft Pity Rates:]
 <br>------------------
 <br>
-<br>5* Soft Pity (effective when at pulls 63 ~ 77, inclusive): 
+<br>5* Soft Pity (effective when at pulls 63 ~ 77, inclusive):
 <br>Rate = 0.7% + ((99.3% / 15)*(PULL# - 62))
 <br>- Explanation: The rate of a 5* will increase linearly starting from 0.7% at pull 62 up to 100% at pull 77.
 <br>
@@ -810,7 +810,7 @@ const SummonSimulator = (data: any) => {
 <br>[Soft Pity Rates:]
 <br>------------------
 <br>
-<br>5* Soft Pity (effective when at pulls 74 ~ 90, inclusive): 
+<br>5* Soft Pity (effective when at pulls 74 ~ 90, inclusive):
 <br>Rate = 0.6% + ((99.4% / 17)*(PULL# - 73))
 <br>- Explanation: The rate of a 5* will increase linearly starting from 0.6% at pull 74 up to 100% at pull 90.
 <br>
@@ -896,7 +896,7 @@ const SummonSimulator = (data: any) => {
                                     <div className="relative inline-block h-6 w-6 align-middle">
                                        <Image
                                           alt="Icon"
-                                          url="https://static.mana.wiki/starrail/ItemIcon_900001.png"
+                                          url="https://static.mana.wiki/starrail/ItemIcon_900001-1.png"
                                        />
                                     </div>
                                     <div className="inline-block align-middle">
@@ -966,7 +966,7 @@ const SummonSimulator = (data: any) => {
             <div>
                <div className="flex justify-between">
                   <button
-                     className={`m-1 w-full rounded-full 
+                     className={`m-1 w-full rounded-full
                          border border-gray-400 px-2 py-1 dark:border-gray-600 ${
                             isBeginner
                                ? "opacity-50"
@@ -980,7 +980,7 @@ const SummonSimulator = (data: any) => {
                      Warp x1
                   </button>
                   <button
-                     className={`m-1 w-full rounded-full 
+                     className={`m-1 w-full rounded-full
                      border border-gray-400 px-2 py-1 dark:border-gray-600 ${
                         isBeginner && beginnerPulls >= 5
                            ? "opacity-50"

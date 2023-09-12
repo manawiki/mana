@@ -32,7 +32,7 @@ export const Achievement = ({ a }: { a: AchievementType }) => {
          <div className="flex items-center justify-between gap-3 p-2">
             {/* Checkbox section */}
             <div
-               className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center 
+               className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center
                   justify-center rounded-lg border-2 shadow-md hover:bg-green-50 dark:hover:bg-zinc-800 ${
                      checked
                         ? "border-green-300 dark:border-green-800"
@@ -89,7 +89,7 @@ const JadeReward = ({ qty }: { qty: number }) => {
          <a href={`/starrail/collections/materials/900001`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
-                  src="https://static.mana.wiki/starrail/ItemIcon_900001.png"
+                  src="https://static.mana.wiki/starrail/ItemIcon_900001-1.png"
                   className={`color-rarity-5 material-frame object-contain`}
                   alt="Stellar Jade"
                   loading="lazy"
