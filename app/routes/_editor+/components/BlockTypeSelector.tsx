@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 
 import { Dialog, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
@@ -15,10 +15,12 @@ import {
    Plus,
    Type,
    UnfoldVertical,
-   X,
    Youtube,
 } from "lucide-react";
 import { nanoid } from "nanoid";
+import type { Editor } from "slate";
+import { Transforms } from "slate";
+import { ReactEditor } from "slate-react";
 
 import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -27,17 +29,32 @@ import type { CustomElement } from "../core/types";
 import { BlockType } from "../core/types";
 
 type Props = {
-   onSelect: (block: CustomElement) => void;
+   isEditorTrayOpen: any;
+   setEditorTray: any;
+   element: CustomElement;
+   editor: Editor;
 };
 
-export function BlockTypeSelector({ onSelect }: Props) {
+export function BlockTypeSelector({
+   isEditorTrayOpen,
+   setEditorTray,
+   element,
+   editor,
+}: Props) {
+   function onInsertBelow(block: CustomElement) {
+      const path = [ReactEditor.findPath(editor, element)[0] + 1];
+      Transforms.insertNodes(editor, block, {
+         at: path,
+      });
+   }
+
    const primary = [
       {
          label: "Text",
          icon: <Type size={16} />,
          description: "Plain text",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.Paragraph,
                children: [{ text: "" }],
@@ -49,7 +66,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <Heading2 size={16} />,
          description: "Large size heading",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.H2,
                children: [{ text: "" }],
@@ -61,7 +78,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <Heading3 size={16} />,
          description: "Medium size heading",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.H3,
                children: [{ text: "" }],
@@ -73,7 +90,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <List size={16} />,
          description: "A basic bulleted list",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.BulletedList,
                children: [
@@ -91,7 +108,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <ListOrdered size={16} />,
          description: "A basic ordered list",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.NumberedList,
                children: [
@@ -109,7 +126,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
          icon: <CheckSquare size={16} />,
          description: "A basic to do list",
          onSelect: () => {
-            onSelect({
+            onInsertBelow({
                id: nanoid(),
                type: BlockType.ToDo,
                checked: false,
@@ -127,7 +144,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <LayoutList size={20} />,
                description: "Create a group of collections",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      viewMode: "2-col",
                      itemsViewMode: "grid",
@@ -143,7 +160,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <CalendarClock size={20} />,
                description: "Create events with a start and end date",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      type: BlockType.Events,
                      children: [
@@ -161,7 +178,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <UnfoldVertical size={20} />,
                description: "Add an accordion",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      type: BlockType.Accordion,
                      label: "",
@@ -192,7 +209,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <ImagePlus size={20} />,
                description: "Embed an Image",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      type: BlockType.Image,
                      refId: null,
@@ -206,7 +223,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <Youtube size={20} />,
                description: "Embed YouTube video",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      type: BlockType.Video,
                      url: null,
@@ -224,7 +241,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                icon: <Codesandbox size={20} />,
                description: "Embed CodeSandbox project",
                onSelect: () => {
-                  onSelect({
+                  onInsertBelow({
                      id: nanoid(),
                      type: BlockType.CodeSandbox,
                      url: null,
@@ -261,34 +278,34 @@ export function BlockTypeSelector({ onSelect }: Props) {
    // }
 
    //If custom site has blocks, add to select options
-   const customBlocks = CustomBlocksAddConfig(onSelect);
+   const customBlocks = CustomBlocksAddConfig(onInsertBelow);
    if (customBlocks) {
       groups.push(customBlocks);
    }
-   const [isOpen, setIsOpen] = useState(false);
 
-   function closeModal() {
-      setIsOpen(false);
-   }
-
-   function openModal() {
-      setIsOpen(true);
-   }
    return (
-      <Float dialog placement="bottom-start" offset={6}>
+      <Float dialog placement="right-start" offset={13} portal>
          <Float.Reference>
             <button
                type="button"
-               onClick={openModal}
+               onClick={() => setEditorTray(true)}
                className="hover:bg-2 flex h-7 w-7 items-center justify-center focus:outline-none"
                aria-label="Insert block below"
             >
-               <Plus size={16} />
+               <Plus
+                  className={`${
+                     isEditorTrayOpen ? "rotate-45 text-red-400" : ""
+                  } transform transition duration-300 ease-in-out`}
+                  size={16}
+               />
             </button>
          </Float.Reference>
-
-         <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="relative" onClose={closeModal}>
+         <Transition appear show={isEditorTrayOpen} as={Fragment}>
+            <Dialog
+               as="div"
+               className="relative"
+               onClose={() => setEditorTray(false)}
+            >
                <div className="fixed inset-0">
                   <div className="flex min-h-full items-center p-4 text-center">
                      <Float.Content
@@ -302,19 +319,11 @@ export function BlockTypeSelector({ onSelect }: Props) {
                         leaveTo="opacity-0 translate-y-1"
                      >
                         <Dialog.Panel>
-                           <button
-                              type="button"
-                              className="bg-2 absolute -top-[35px] left-3 flex h-9 w-10 items-center justify-center rounded-t-lg
-                              border border-zinc-200 text-xs font-bold drop-shadow-xl hover:bg-white dark:border-zinc-700 dark:shadow-zinc-800 dark:hover:bg-zinc-800"
-                              onClick={closeModal}
-                           >
-                              <X size={16} className="text-red-400" />
-                           </button>
                            <div
-                              className="transform overflow-hidden rounded-b-xl rounded-t-lg border border-zinc-200
-                   bg-white drop-shadow-lg dark:border-zinc-700 dark:bg-neutral-800 laptop:w-screen laptop:max-w-[800px]"
+                              className="relative z-20 transform overflow-hidden rounded-b-xl rounded-t-lg border border-zinc-200
+                   bg-white drop-shadow-lg dark:border-zinc-700 dark:bg-neutral-800 laptop:max-w-[728px]"
                            >
-                              <div className="dark:bg2Dark roudned-t-lg relative z-10 inline-flex w-full gap-3 bg-white p-3 dark:bg-neutral-800">
+                              <div className="dark:bg2Dark relative z-10 inline-flex w-full gap-3 rounded-t-lg bg-white p-3 dark:bg-neutral-800">
                                  {primary?.map((row) => (
                                     <Tooltip key={row.label}>
                                        <TooltipTrigger>
@@ -322,7 +331,7 @@ export function BlockTypeSelector({ onSelect }: Props) {
                                              className="bg-2 shadow-1 border-color flex h-10 w-10 items-center justify-center rounded-lg border text-center shadow-sm"
                                              onClick={() => {
                                                 row.onSelect();
-                                                closeModal();
+                                                setEditorTray(false);
                                              }}
                                           >
                                              {row.icon}
@@ -357,7 +366,9 @@ export function BlockTypeSelector({ onSelect }: Props) {
                                                          key={indexItem}
                                                          onClick={() => {
                                                             item.onSelect();
-                                                            closeModal();
+                                                            setEditorTray(
+                                                               false
+                                                            );
                                                          }}
                                                       >
                                                          {item.icon && (

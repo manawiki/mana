@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
-import { DndContext, DragOverlay } from "@dnd-kit/core";
+import { DndContext, DragOverlay, useDraggable } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
    SortableContext,
@@ -9,19 +9,27 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Trash } from "lucide-react";
+import {
+   safePolygon,
+   useFloating,
+   useHover,
+   useInteractions,
+} from "@floating-ui/react";
+import clsx from "clsx";
+import { GripVertical, Trash } from "lucide-react";
 import type { Editor } from "slate";
 import { Transforms } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Editable, ReactEditor, Slate } from "slate-react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import Button from "~/components/Button";
 
 import { useEditor } from "./plugins";
 import type { CustomElement } from "./types";
 import { isNodeWithId, onKeyDown } from "./utils";
-import { BlockInlineActions } from "../components/BlockInlineActions";
+// eslint-disable-next-line import/no-cycle
+import { BlockTypeSelector } from "../components/BlockTypeSelector";
+// eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "../components/EditorBlocks";
 import { Leaf } from "../components/Leaf";
 
@@ -46,84 +54,133 @@ export function DragOverlayContent({
    );
 }
 
-export function SortableElement({
-   attributes,
+function BlockInlineActions({
    element,
-   children,
-   renderElement,
-   onDelete,
-   onInsertBelow,
-}: RenderElementProps & {
-   renderElement: any;
-   onDelete: () => void;
-   onInsertBelow: (block: CustomElement) => void;
+   editor,
+   isEditorTrayOpen,
+   setEditorTray,
+}: {
+   element: CustomElement;
+   editor: Editor;
+   isEditorTrayOpen: any;
+   setEditorTray: any;
 }) {
-   const sortable = useSortable({ id: element.id });
-
+   const { listeners, setActivatorNodeRef } = useDraggable({
+      id: element.id,
+   });
+   function onDelete(e: any, element: CustomElement) {
+      Transforms.removeNodes(editor, {
+         at: ReactEditor.findPath(editor, element),
+      });
+   }
    return (
       <div
-         className="group relative flex flex-col 
-          border-y border-dashed border-transparent 
-          hover:border-y hover:border-zinc-200 dark:hover:border-zinc-700"
-         {...attributes}
+         className="shadow-1 border-color bg-3 relative z-50
+         flex items-center overflow-hidden rounded-lg border shadow-sm"
       >
-         <div
-            className="outline-none"
-            {...sortable.attributes}
-            ref={sortable.setNodeRef}
-            style={
-               {
-                  transition: sortable.transition,
-                  transform: CSS.Transform.toString(sortable.transform),
-                  pointerEvents: sortable.isSorting ? "none" : undefined,
-                  opacity: sortable.isDragging ? 0 : 1,
-               } as React.CSSProperties /* cast because of css variable */
-            }
+         <Button
+            ariaLabel="Drag to reorder"
+            ref={setActivatorNodeRef}
+            {...listeners}
+            className="hover:bg-2 flex h-7 w-7 cursor-grab items-center justify-center"
          >
-            {renderElement({ element, children })}
-            <div
-               className="absolute -top-10 z-10 select-none pr-3 opacity-0
-                group-hover:opacity-100 laptop:-top-0.5 laptop:left-0 laptop:-translate-x-full laptop:translate-y-0"
-               contentEditable={false}
-            >
-               <BlockInlineActions
-                  blockId={element.id}
-                  onInsertBelow={onInsertBelow}
-               />
-            </div>
-            <div
-               className="absolute -top-10 right-0 z-10 select-none pl-3
-                 opacity-0 group-hover:opacity-100 laptop:-right-11 laptop:-top-0.5"
-               contentEditable={false}
-            >
-               <Tooltip>
-                  <TooltipTrigger>
-                     <Button
-                        className="hover:bg-2 shadow-1 border-color bg-3 flex
-                       h-8 w-8 items-center justify-center rounded-md border shadow-sm"
-                        onClick={onDelete}
-                        ariaLabel="Delete"
-                     >
-                        <Trash className="text-1" size={14} />
-                     </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-               </Tooltip>
-            </div>
-         </div>
+            <GripVertical size={16} />
+         </Button>
+         <Button
+            className="hover:bg-2 flex h-7 w-7 items-center justify-center"
+            onClick={(e) => onDelete(e, element)}
+            ariaLabel="Delete"
+         >
+            <Trash className="text-1" size={14} />
+         </Button>
+         <BlockTypeSelector
+            isEditorTrayOpen={isEditorTrayOpen}
+            setEditorTray={setEditorTray}
+            element={element}
+            editor={editor}
+         />
       </div>
    );
 }
 
-export function EditorWithDnD({
+export function HoverElement({
+   attributes,
+   element,
+   children,
    editor,
-   setActiveId,
-   activeId,
-}: {
+}: RenderElementProps & {
    editor: Editor;
-   setActiveId: (state: string | null) => void;
-   activeId: string | null;
 }) {
+   const [isHoverActive, setHoverState] = useState(false);
+
+   const [isEditorTrayOpen, setEditorTray] = useState(false);
+
+   const sortable = useSortable({ id: element.id });
+
+   const { refs, context } = useFloating({
+      open: isHoverActive,
+      onOpenChange: setHoverState,
+   });
+
+   const hover = useHover(context, {
+      handleClose: safePolygon(),
+   });
+
+   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+
+   return (
+      <section className="relative">
+         <div
+            className="w-full"
+            ref={refs.setReference}
+            {...getReferenceProps()}
+         >
+            <div
+               className="outline-none"
+               {...sortable.attributes}
+               ref={sortable.setNodeRef}
+               style={
+                  {
+                     transition: sortable.transition,
+                     transform: CSS.Transform.toString(sortable.transform),
+                     pointerEvents: sortable.isSorting ? "none" : undefined,
+                     opacity: sortable.isDragging ? 0 : 1,
+                  } as React.CSSProperties /* cast because of css variable */
+               }
+            >
+               <EditorBlocks
+                  attributes={attributes}
+                  element={element}
+                  children={children}
+               />
+            </div>
+            <div
+               contentEditable={false}
+               //If editor tray is also open, we keep the menu open
+               className={clsx(
+                  isHoverActive || isEditorTrayOpen
+                     ? "opacity-100"
+                     : "opacity-0",
+                  "absolute left-0 top-0 z-10 select-none pr-3 laptop:-translate-x-full laptop:translate-y-0"
+               )}
+               ref={refs.setFloating}
+               {...getFloatingProps()}
+            >
+               <BlockInlineActions
+                  isEditorTrayOpen={isEditorTrayOpen}
+                  setEditorTray={setEditorTray}
+                  editor={editor}
+                  element={element}
+               />
+            </div>
+         </div>
+      </section>
+   );
+}
+
+export function EditorWithDnD({ editor }: { editor: Editor }) {
+   const [activeId, setActiveId] = useState<string | null>(null);
+
    function clearSelection(editor: Editor) {
       ReactEditor.blur(editor);
       Transforms.deselect(editor);
@@ -156,28 +213,15 @@ export function EditorWithDnD({
       setActiveId(null);
    }
 
+   const activeElement = editor.children.find(
+      (x) => "id" in x && x.id === activeId
+   ) as CustomElement | undefined;
+
    const renderElement = useCallback((props: RenderElementProps) => {
       const path = ReactEditor.findPath(editor, props.element);
       const isTopLevel = path.length === 1;
-
       return isTopLevel ? (
-         <SortableElement
-            {...props}
-            renderElement={EditorBlocks}
-            onDelete={() =>
-               Transforms.removeNodes(editor, {
-                  at: ReactEditor.findPath(editor, props.element),
-               })
-            }
-            onInsertBelow={(block: CustomElement) => {
-               const path = [
-                  ReactEditor.findPath(editor, props.element)[0] + 1,
-               ];
-               Transforms.insertNodes(editor, block, {
-                  at: path,
-               });
-            }}
-         />
+         <HoverElement editor={editor} {...props} />
       ) : (
          <EditorBlocks {...props} />
       );
@@ -187,10 +231,6 @@ export function EditorWithDnD({
       () => editor.children.map((element: any) => element.id),
       [editor.children]
    );
-
-   const activeElement = editor.children.find(
-      (x) => "id" in x && x.id === activeId
-   ) as CustomElement | undefined;
 
    return (
       <DndContext

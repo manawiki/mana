@@ -1,4 +1,4 @@
-import type { BaseEditor, BaseOperation } from "slate";
+import type { BaseEditor, BaseOperation, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import { type Collection } from "payload/generated-types";
@@ -73,6 +73,7 @@ export type EventItemElement = BlockElement & {
    endDate?: Date | null;
    endTime?: Time;
    endTimestamp?: Date | null;
+   nestedContent?: [Descendant];
 };
 
 export type EventsElement = {
