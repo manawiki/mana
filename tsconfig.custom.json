@@ -1,36 +1,23 @@
 {
    "include": ["custom.server.ts", "payload.custom.config.ts"],
    "compilerOptions": {
-      /* Base Options: */
+      "lib": ["DOM", "DOM.Iterable", "ES2019"],
+      "isolatedModules": true,
       "esModuleInterop": true,
+      "jsx": "react-jsx",
+      "module": "CommonJS",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "strict": false,
+      "allowJs": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
-      "target": "ES2019",
-      "verbatimModuleSyntax": true,
-      "allowJs": true,
-      "resolveJsonModule": true,
-      "moduleDetection": "force",
-
-      /* Strictness */
-      "strict": true,
-      "noUncheckedIndexedAccess": true,
-
-      /* Not ideal, we should fix this at some point */
-      "moduleResolution": "node",
-      "module": "CommonJS",
-
-      /* Misc */
-      "allowImportingTsExtensions": true,
-      "isolatedModules": true,
-      "jsx": "react-jsx",
-
-       /* Paths */
-      "lib": ["DOM", "DOM.Iterable", "ES2019"],
       "outDir": "./dist",
       "baseUrl": ".",
       "paths": {
          "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-custom-types.ts"]
       },
+      "target": "ES2019",
    },
 }
