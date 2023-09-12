@@ -35,7 +35,6 @@ export function ManaEditor({
    //Prevent auto-saving on initial component mount
    const isMount = useIsMount();
 
-   const [activeId, setActiveId] = useState<string | null>(null);
    const [value, setValue] = useState(defaultValue);
    const debouncedValue = useDebouncedValue(value, 1000);
 
@@ -61,11 +60,7 @@ export function ManaEditor({
       <div className="relative mx-auto max-w-[728px] pb-4">
          <Slate onChange={setValue} editor={editor} initialValue={value}>
             <Toolbar />
-            <EditorWithDnD
-               editor={editor}
-               setActiveId={setActiveId}
-               activeId={activeId}
-            />
+            <EditorWithDnD editor={editor} />
          </Slate>
       </div>
    );
@@ -89,7 +84,7 @@ export async function action({
 
    switch (intentType) {
       case "update": {
-         //Group of helper functinos to get real id's from slug
+         //Group of helper functions to get real id's from slug
          const slug = await payload.find({
             collection: "sites",
             where: {

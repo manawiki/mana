@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, Slate, useSlate } from "slate-react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import DatePicker from "~/components/datepicker/date-picker";
@@ -30,12 +30,17 @@ import {
 import { useIsMount } from "~/hooks";
 
 import { CountdownTimer } from "./CountdownTimer";
+// import { Toolbar } from "../../components/Toolbar";
+// eslint-disable-next-line import/no-cycle
+import { EditorWithDnD } from "../../core/dnd";
+import { useEditor } from "../../core/plugins";
 import { BlockType } from "../../core/types";
 import type {
    CustomElement,
    EventItemElement,
    EventsElement,
 } from "../../core/types";
+import { initialValue } from "../../core/utils";
 
 export function BlockEvents({
    element,
@@ -49,15 +54,15 @@ export function BlockEvents({
    return (
       <section>
          <div
-            className="divide-color shadow-1 border-color bg-3 relative  z-10 divide-y rounded-lg  border
-         shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50 
+            className="divide-color shadow-1 border-color bg-3 relative z-10 divide-y  rounded-lg
+         border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
          [&>*:nth-of-type(4n+1)]:dark:bg-bg2Dark [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-neutral-800/50"
          >
             {children}
          </div>
          <div
             contentEditable={false}
-            className="relative -mt-1 flex justify-end pr-[19px]"
+            className="relative  -mt-1 flex justify-end pr-[19px]"
          >
             <Tooltip placement="bottom-end" setDelay={800}>
                <TooltipTrigger>
@@ -336,12 +341,6 @@ export function BlockEventItem({
                         </Popover>
                      </section>
                   </div>
-                  {/* <div className="rounded-full bg-zinc-500 px-2.5 py-1 text-[10px] font-bold text-white">
-                     Live
-                  </div>
-                  <div className="rounded-full bg-zinc-300 px-2.5 py-1 text-[10px] font-bold text-white dark:bg-zinc-700 dark:text-zinc-500">
-                     Live
-                  </div> */}
                   <Disclosure.Button>
                      <div
                         contentEditable={false}
@@ -430,11 +429,53 @@ export function BlockEventItem({
                      )}
                   </Menu>
                </div>
-               <Disclosure.Panel className="px-4 py-3 text-sm" unmount={false}>
-                  {children}
+               <Disclosure.Panel
+                  contentEditable={false}
+                  className="px-4 py-3 text-sm"
+               >
+                  <div className="hidden">{children}</div>
+                  <NestedEventsEditor element={element} editor={editor} />
                </Disclosure.Panel>
             </>
          )}
       </Disclosure>
+   );
+}
+
+function NestedEventsEditor({
+   element,
+   editor,
+}: {
+   element: EventItemElement;
+   editor: Editor;
+}) {
+   const inlineEditor = useEditor();
+
+   const path = ReactEditor.findPath(editor, element);
+
+   function updateEditorValue(event: Time | Date | string | any) {
+      Transforms.setNodes<CustomElement>(
+         editor,
+         {
+            nestedContent: event,
+         },
+         {
+            at: path,
+         }
+      );
+   }
+
+   return (
+      <div className="relative mx-auto max-w-[728px] pb-4">
+         <Slate
+            onChange={updateEditorValue}
+            editor={inlineEditor}
+            initialValue={element.nestedContent ?? initialValue()}
+         >
+            {/* TODO - Toolbar doesn't work atm for nested editors */}
+            {/* <Toolbar /> */}
+            <EditorWithDnD editor={inlineEditor} />
+         </Slate>
+      </div>
    );
 }
