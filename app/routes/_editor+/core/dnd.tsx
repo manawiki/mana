@@ -34,14 +34,13 @@ import { Editable, ReactEditor, Slate } from "slate-react";
 
 import Button from "~/components/Button";
 
+import { BlockSelector } from "./components/BlockSelector";
+// eslint-disable-next-line import/no-cycle
+import { EditorBlocks } from "./components/EditorBlocks";
+import { Leaf } from "./components/Leaf";
 import { useEditor } from "./plugins";
 import type { CustomElement } from "./types";
-import { isNodeWithId, onKeyDown } from "./utils";
-// eslint-disable-next-line import/no-cycle
-import { BlockTypeSelector } from "../components/BlockTypeSelector";
-// eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "../components/EditorBlocks";
-import { Leaf } from "../components/Leaf";
+import { initialValue, isNodeWithId, onKeyDown } from "./utils";
 
 export function EditorWithDnD({ editor }: { editor: Editor }) {
    const [activeId, setActiveId] = useState<string | null>(null);
@@ -205,7 +204,7 @@ function BlockInlineActions({
          >
             <Trash className="text-1" size={14} />
          </Button>
-         <BlockTypeSelector
+         <BlockSelector
             isEditorTrayOpen={isEditorTrayOpen}
             setEditorTray={setEditorTray}
             element={element}
@@ -333,5 +332,45 @@ function HoverElement({
             </div>
          </div>
       </section>
+   );
+}
+
+export function NestedEditor({
+   element,
+   editor,
+   field,
+}: {
+   element: any;
+   editor: Editor;
+   field: string;
+}) {
+   const inlineEditor = useEditor();
+
+   const path = ReactEditor.findPath(editor, element);
+
+   function updateEditorValue(event: any) {
+      Transforms.setNodes<CustomElement>(
+         editor,
+         {
+            [field]: event,
+         },
+         {
+            at: path,
+         }
+      );
+   }
+
+   return (
+      <div className="relative mx-auto max-w-[728px]">
+         <Slate
+            onChange={updateEditorValue}
+            editor={inlineEditor}
+            initialValue={element.nestedContent ?? initialValue()}
+         >
+            {/* TODO - Toolbar doesn't work atm for nested editors */}
+            {/* <Toolbar /> */}
+            <EditorWithDnD editor={inlineEditor} />
+         </Slate>
+      </div>
    );
 }

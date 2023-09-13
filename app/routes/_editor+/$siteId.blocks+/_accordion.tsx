@@ -1,12 +1,13 @@
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
-import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { useSlate } from "slate-react";
 
-import type { AccordionElement, CustomElement } from "../core/types";
+// eslint-disable-next-line import/no-cycle
+import { NestedEditor } from "../core/dnd";
+import type { AccordionElement } from "../core/types";
 
 type Props = {
    element: AccordionElement;
@@ -16,21 +17,8 @@ type Props = {
 
 export function BlockAccordion({ element, children, readOnly }: Props) {
    //Otherwise render as regular a tag for external links
-   const [labelValue, setLabelValue] = useState(element?.label ?? "");
    const editor = useSlate();
 
-   const updateLabelValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         label: event,
-      };
-      setLabelValue(event);
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
    return (
       <Disclosure>
          {({ open }) => (
@@ -51,15 +39,14 @@ export function BlockAccordion({ element, children, readOnly }: Props) {
                         <ChevronRight size={18} />
                      </div>
                      <div className="flex-grow text-left font-bold">
-                        {element.label}
+                        {children}
                      </div>
-                     <div style={{ display: "none" }}>{children}</div>
                   </Disclosure.Button>
                ) : (
                   <div
                      className={clsx(
                         open ? "rounded-b-none" : "mb-2",
-                        "bg-2 border-color shadow-1 flex w-full items-center overflow-hidden rounded-lg border px-3 py-2 shadow-sm"
+                        "bg-2 border-color shadow-1 flex w-full items-center gap-2 overflow-hidden rounded-lg border px-3 py-2 shadow-sm"
                      )}
                   >
                      <Disclosure.Button>
@@ -73,25 +60,24 @@ export function BlockAccordion({ element, children, readOnly }: Props) {
                            <ChevronRight size={18} />
                         </div>
                      </Disclosure.Button>
-                     <input
-                        placeholder="Start typing..."
-                        onChange={(event) =>
-                           updateLabelValue(event.target.value)
-                        }
-                        value={labelValue}
-                        type="text"
-                        className="flex-grow border-0 bg-transparent font-bold focus:ring-0"
-                     />
+                     <div className="flex-grow border-0 bg-transparent font-bold focus:ring-0">
+                        {children}
+                     </div>
                   </div>
                )}
                <Disclosure.Panel
+                  contentEditable={false}
                   unmount={false}
                   className={clsx(
                      open ? "mb-3" : "",
                      "bg-2 border-color shadow-1 rounded-b-lg border border-t-0 p-3 text-sm shadow-sm"
                   )}
                >
-                  {children}
+                  <NestedEditor
+                     field="accordion-content"
+                     element={element}
+                     editor={editor}
+                  />
                </Disclosure.Panel>
             </>
          )}

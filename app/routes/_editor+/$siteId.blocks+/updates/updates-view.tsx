@@ -8,8 +8,8 @@ import { Editable, Slate, withReact } from "slate-react";
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/components/H2";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import type { UpdatesElement } from "~/routes/_editor+/core/types";
 
 type Props = {

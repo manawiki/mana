@@ -5,7 +5,7 @@ import { Editor, Transforms, Range } from "slate";
 
 import { HOTKEYS } from "./constants";
 import { BlockType, type CustomElement, type Format } from "./types";
-import { indentItem, undentItem } from "../plugins/list/utils";
+import { indentItem, undentItem } from "./plugins/list/utils";
 
 //Helpers
 export function topLevelPath(path: Path): Path {

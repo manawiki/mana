@@ -38,8 +38,6 @@
       "@metronome-sh/express": "6.0.1",
       "@metronome-sh/react": "6.0.1",
       "@payloadcms/plugin-cloud-storage": "^1.0.14",
-      "@radix-ui/react-checkbox": "^1.0.3",
-      "@radix-ui/react-popover": "^1.0.5",
       "@remix-run/express": "2.0.0-pre.12",
       "@remix-run/node": "2.0.0-pre.12",
       "@remix-run/react": "2.0.0-pre.12",

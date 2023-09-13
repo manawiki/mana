@@ -43,12 +43,12 @@ import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { swrRestFetcher } from "~/utils";
 
-import { Toolbar } from "../../components/Toolbar";
+import { Toolbar } from "../../core/components/Toolbar";
 import type { CustomElement, GroupElement, groupItem } from "../../core/types";
 
 type Props = {

@@ -21,7 +21,7 @@ type EventItemProps = {
    children: ReactNode;
 };
 
-export function BlockEventsView({ element, children }: EventProps) {
+export function BlockEventsView({ children }: EventProps) {
    return (
       <div
          className="divide-color shadow-1 border-color
