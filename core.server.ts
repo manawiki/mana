@@ -1,9 +1,11 @@
 import * as path from "node:path";
 
 import {
-   createRequestHandler
+   combineGetLoadContexts,
+   createMetronomeGetLoadContext,
+   registerMetronome,
 } from "@metronome-sh/express";
-import { type RequestHandler } from "@remix-run/express";
+import { createRequestHandler, type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
@@ -160,8 +162,20 @@ async function startCore() {
 
 startCore();
 
-// Create a request handler for production
+// Create a request handler that uses metronome in production
 function createProductionRequestHandler(): RequestHandler {
+   const buildWithMetronome = registerMetronome(build);
+   const metronomeGetLoadContext = createMetronomeGetLoadContext(
+      //@ts-ignore need to overload the metronome types
+      buildWithMetronome,
+      {
+         config: {
+            ignoredRoutes: [],
+            ignoredPathnames: ["/healthcheck"],
+            ignoreHeadMethod: true,
+         },
+      }
+   );
 
    function getLoadContext(req: any, res: any) {
       return {
@@ -172,9 +186,14 @@ function createProductionRequestHandler(): RequestHandler {
    }
 
    return createRequestHandler({
-      build,
+      //@ts-ignore need to overload the metronome types
+      build: buildWithMetronome,
       mode: process.env.NODE_ENV,
-      getLoadContext,
+      getLoadContext: combineGetLoadContexts(
+         getLoadContext,
+         // @ts-expect-error huh... metronome isn't happy with itself.
+         metronomeGetLoadContext
+      ),
    });
 }
 
