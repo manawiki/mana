@@ -292,7 +292,7 @@ function HoverElement({
                   insertPosition === Position.After
                      ? "after:-bottom-4 after:left-0 after:right-0 after:h-1"
                      : null,
-                  "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-blue-700/80"
+                  "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-gray-700"
                )}
                {...sortable.attributes}
                ref={sortable.setNodeRef}
