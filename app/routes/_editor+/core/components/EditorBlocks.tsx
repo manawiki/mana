@@ -4,27 +4,24 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
+import { BlockAccordion } from "../../$siteId.blocks+/_accordion";
 import {
    BlockEventItem,
    BlockEvents,
-} from "../$siteId.blocks+/events/_events-edit";
+} from "../../$siteId.blocks+/events/_events-edit";
 import {
    BlockEventItemView,
    BlockEventsView,
-} from "../$siteId.blocks+/events/events-view";
-import { BlockGroup } from "../$siteId.blocks+/group/_group";
-import { BlockGroupView } from "../$siteId.blocks+/group/BlockGroupView";
-import { BlockImage } from "../$siteId.blocks+/image/BlockImage";
-import { BlockLink } from "../$siteId.blocks+/link/_link";
-import { BlockLinkView } from "../$siteId.blocks+/link/BlockLinkView";
-import { BlockUpdates } from "../$siteId.blocks+/updates/_updates";
-import { BlockUpdatesView } from "../$siteId.blocks+/updates/BlockUpdatesView";
-import { BlockAccordion } from "../blocks//BlockAccordion";
-import { BlockCodeSandbox } from "../blocks//BlockCodeSandbox";
-import { BlockToDo } from "../blocks//BlockToDo";
-import { BlockVideo } from "../blocks/BlockVideo";
-import type { CustomElement } from "../core/types";
-import { BlockType } from "../core/types";
+} from "../../$siteId.blocks+/events/events-view";
+import { BlockGroup } from "../../$siteId.blocks+/group/_group";
+import { BlockGroupView } from "../../$siteId.blocks+/group/group-view";
+import { BlockImage } from "../../$siteId.blocks+/image/image-view";
+import { BlockLink } from "../../$siteId.blocks+/link/_link";
+import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
+import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
+import { BlockUpdatesView } from "../../$siteId.blocks+/updates/updates-view";
+import type { CustomElement } from "../types";
+import { BlockType } from "../types";
 
 // If new block created when old block selected, create the following block
 // Example: create checkbox block, press enter, new unchecked checkbox is created
@@ -171,33 +168,10 @@ export function EditorBlocks({
             />
          );
       }
-      case BlockType.ToDo: {
-         return (
-            <div {...attributes}>
-               <BlockToDo element={element}>{children}</BlockToDo>
-            </div>
-         );
-      }
       case BlockType.Image: {
          return (
             <div {...attributes} contentEditable={false} className="embed">
                <BlockImage element={element} />
-               <div style={{ display: "none" }}>{children}</div>
-            </div>
-         );
-      }
-      case BlockType.Video: {
-         return (
-            <div {...attributes} contentEditable={false} className="embed">
-               <BlockVideo element={element} />
-               <div style={{ display: "none" }}>{children}</div>
-            </div>
-         );
-      }
-      case BlockType.CodeSandbox: {
-         return (
-            <div {...attributes} contentEditable={false} className="embed">
-               <BlockCodeSandbox element={element} />
                <div style={{ display: "none" }}>{children}</div>
             </div>
          );

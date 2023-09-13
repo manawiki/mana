@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
-import { ReactEditor, Slate, useSlate } from "slate-react";
+import { ReactEditor, useSlate } from "slate-react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import DatePicker from "~/components/datepicker/date-picker";
@@ -30,17 +30,14 @@ import {
 import { useIsMount } from "~/hooks";
 
 import { CountdownTimer } from "./CountdownTimer";
-// import { Toolbar } from "../../components/Toolbar";
 // eslint-disable-next-line import/no-cycle
-import { EditorWithDnD } from "../../core/dnd";
-import { useEditor } from "../../core/plugins";
+import { NestedEditor } from "../../core/dnd";
 import { BlockType } from "../../core/types";
 import type {
    CustomElement,
    EventItemElement,
    EventsElement,
 } from "../../core/types";
-import { initialValue } from "../../core/utils";
 
 export function BlockEvents({
    element,
@@ -433,49 +430,14 @@ export function BlockEventItem({
                   contentEditable={false}
                   className="px-4 py-3 text-sm"
                >
-                  <div className="hidden">{children}</div>
-                  <NestedEventsEditor element={element} editor={editor} />
+                  <NestedEditor
+                     field="event-details"
+                     element={element}
+                     editor={editor}
+                  />
                </Disclosure.Panel>
             </>
          )}
       </Disclosure>
-   );
-}
-
-function NestedEventsEditor({
-   element,
-   editor,
-}: {
-   element: EventItemElement;
-   editor: Editor;
-}) {
-   const inlineEditor = useEditor();
-
-   const path = ReactEditor.findPath(editor, element);
-
-   function updateEditorValue(event: Time | Date | string | any) {
-      Transforms.setNodes<CustomElement>(
-         editor,
-         {
-            nestedContent: event,
-         },
-         {
-            at: path,
-         }
-      );
-   }
-
-   return (
-      <div className="relative mx-auto max-w-[728px] pb-4">
-         <Slate
-            onChange={updateEditorValue}
-            editor={inlineEditor}
-            initialValue={element.nestedContent ?? initialValue()}
-         >
-            {/* TODO - Toolbar doesn't work atm for nested editors */}
-            {/* <Toolbar /> */}
-            <EditorWithDnD editor={inlineEditor} />
-         </Slate>
-      </div>
    );
 }

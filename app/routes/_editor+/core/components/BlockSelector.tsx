@@ -4,8 +4,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import {
    CalendarClock,
-   CheckSquare,
-   Codesandbox,
    Heading2,
    Heading3,
    ImagePlus,
@@ -15,18 +13,17 @@ import {
    Plus,
    Type,
    UnfoldVertical,
-   Youtube,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Editor } from "slate";
 import { Transforms } from "slate";
 import { ReactEditor } from "slate-react";
 
-import { CustomBlocksAddConfig } from "~/_custom/blocks";
+// import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement } from "../core/types";
-import { BlockType } from "../core/types";
+import type { CustomElement } from "../types";
+import { BlockType } from "../types";
 
 type Props = {
    isEditorTrayOpen: any;
@@ -35,7 +32,7 @@ type Props = {
    editor: Editor;
 };
 
-export function BlockTypeSelector({
+export function BlockSelector({
    isEditorTrayOpen,
    setEditorTray,
    element,
@@ -122,14 +119,15 @@ export function BlockTypeSelector({
          },
       },
       {
-         label: "To do list",
-         icon: <CheckSquare size={16} />,
-         description: "A basic to do list",
+         label: "Image",
+         icon: <ImagePlus size={20} />,
+         description: "Embed an Image",
          onSelect: () => {
             onInsertBelow({
                id: nanoid(),
-               type: BlockType.ToDo,
-               checked: false,
+               type: BlockType.Image,
+               refId: null,
+               url: null,
                children: [{ text: "" }],
             });
          },
@@ -187,101 +185,15 @@ export function BlockTypeSelector({
                   });
                },
             },
-            // {
-            //    label: "Updates",
-            //    icon: <LayoutList size={20} />,
-            //    description: "Create a list of Updates",
-            //    onSelect: () => {
-            //       onSelect({
-            //          id: nanoid(),
-            //          type: BlockType.Updates,
-            //          children: [{ text: "" }],
-            //       });
-            //    },
-            // },
-         ],
-      },
-      {
-         label: "Media",
-         items: [
-            {
-               label: "Image",
-               icon: <ImagePlus size={20} />,
-               description: "Embed an Image",
-               onSelect: () => {
-                  onInsertBelow({
-                     id: nanoid(),
-                     type: BlockType.Image,
-                     refId: null,
-                     url: null,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-            {
-               label: "Youtube Video",
-               icon: <Youtube size={20} />,
-               description: "Embed YouTube video",
-               onSelect: () => {
-                  onInsertBelow({
-                     id: nanoid(),
-                     type: BlockType.Video,
-                     url: null,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
-         ],
-      },
-      {
-         label: "Embeds",
-         items: [
-            {
-               label: "CodeSandbox",
-               icon: <Codesandbox size={20} />,
-               description: "Embed CodeSandbox project",
-               onSelect: () => {
-                  onInsertBelow({
-                     id: nanoid(),
-                     type: BlockType.CodeSandbox,
-                     url: null,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
          ],
       },
    ];
 
-   // const path = [
-   //    ReactEditor.findPath(editor, props.element)[0] + 1,
-   // ];
-
-   // Transforms.insertNodes(editor, block, {
-   //    at: path,
-   // });
-
-   // Transforms.wrapNodes(editor, list, {
-   //    match: (n) => n.type === BlockType.ListItem,
-   // });
-   // {
-   //    id: nanoid(),
-   //    type: BlockType.Events,
-   //    children: [
-   //       {
-   //          id: nanoid(),
-   //          label: "Hello",
-   //          type: BlockType.EventItem,
-   //          children: [{ text: "asd 123" }],
-   //       },
-   //    ],
-   // }
-
    //If custom site has blocks, add to select options
-   const customBlocks = CustomBlocksAddConfig(onInsertBelow);
-   if (customBlocks) {
-      groups.push(customBlocks);
-   }
+   // const customBlocks = CustomBlocksAddConfig(onInsertBelow);
+   // if (customBlocks) {
+   //    groups.push(customBlocks);
+   // }
 
    return (
       <Float dialog placement="right-start" offset={13} portal>

@@ -9,7 +9,7 @@ import { zx } from "zodix";
 
 import { useDebouncedValue, useIsMount } from "~/hooks";
 
-import { Toolbar } from "./components/Toolbar";
+import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
 import { useEditor } from "./core/plugins";
 

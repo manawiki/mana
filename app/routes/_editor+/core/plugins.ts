@@ -7,10 +7,10 @@ import { withHistory } from "slate-history";
 import { withReact } from "slate-react";
 
 import { LIST_WRAPPER, SHORTCUTS } from "./constants";
+import { withLinkify } from "./plugins/link/withLinkify";
+import { withLists } from "./plugins/list/withLists";
 import type { CustomElement, ParagraphElement } from "./types";
 import { BlockType } from "./types";
-import { withLinkify } from "../plugins/link/withLinkify";
-import { withLists } from "../plugins/list/withLists";
 
 export function withNodeId(editor: Editor) {
    const makeNodeId = () => nanoid(16);
