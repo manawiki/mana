@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { withMetronome } from "@metronome-sh/react";
+import { MetronomeLinks } from "@metronome-sh/react";
 import type {
    MetaFunction,
    LinksFunction,
@@ -39,7 +39,6 @@ import { isNativeSSR } from "./utils";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
-
 
 export const loader = async ({
    context: { user },
@@ -109,7 +108,6 @@ export const links: LinksFunction = () => [
          settings.siteId ? `${settings.siteId}-static` : "static"
       }.mana.wiki`,
    },
-
 ];
 
 export const handle = {
@@ -118,15 +116,16 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } =
-      useLoaderData<typeof loader>();
+   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
    useEffect(() => {
@@ -190,6 +189,7 @@ function App() {
             />
             <Meta />
             <Links />
+            {process.env.NODE_ENV === "production" && <MetronomeLinks />}
             <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
@@ -204,7 +204,7 @@ function App() {
    );
 }
 
-export function AppWithProviders() {
+export default function AppWithProviders() {
    const { siteTheme } = useLoaderData<typeof loader>();
 
    return (
@@ -213,8 +213,6 @@ export function AppWithProviders() {
       </ThemeProvider>
    );
 }
-
-export default withMetronome(AppWithProviders);
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
