@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -74,7 +74,7 @@ export async function loader({
    );
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Characters - Honkai: Star Rail",
@@ -131,37 +131,37 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock-1.png",
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsnMage-1.png",
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest-1.png",
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight-1.png",
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue-1.png",
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsShaman-1.png",
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior-1.png",
       },
    ] as FilterOptionType[];
    const elements = [
@@ -447,7 +447,7 @@ const CharacterList = ({ chars }: any) => {
                               <Image
                                  width={80}
                                  height={80}
-                                 options="aspect_ratio=1:1"
+                                 options="aspect_ratio=1:1&height=80&width=80"
                                  url={char.icon?.url}
                                  alt={char?.name}
                               />

@@ -119,37 +119,37 @@ const BlessingList = ({ chars }: any) => {
       {
          id: "1",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight-1.png",
       },
       {
          id: "2",
          name: "Remembrance",
-         icon: "https://static.mana.wiki/starrail/BgPathsMemory.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsMemory-1.png",
       },
       {
          id: "3",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock-1.png",
       },
       {
          id: "4",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest-1.png",
       },
       {
          id: "5",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue-1.png",
       },
       {
          id: "6",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior-1.png",
       },
       {
          id: "7",
          name: "Elation",
-         icon: "https://static.mana.wiki/starrail/BgPathsJoy.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsJoy-1.png",
       },
    ] as FilterOptionType[];
 

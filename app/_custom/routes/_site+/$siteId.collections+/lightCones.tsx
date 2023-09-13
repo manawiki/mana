@@ -117,37 +117,37 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarlock-1.png",
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsnMage-1.png",
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsPirest-1.png",
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsKnight-1.png",
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsRogue-1.png",
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsShaman-1.png",
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: "https://static.mana.wiki/starrail/BgPathsWarrior-1.png",
       },
    ] as FilterOptionType[];
 
