@@ -2,6 +2,8 @@ import { _Classes } from "./_classes";
 import { _Companies } from "./_companies";
 import { _Rarities } from "./_rarities";
 import { _WarehouseCategories } from "./_warehouseCategories";
+import { AchievementCategories } from "./achievementCategories";
+import { Achievements } from "./achievements";
 import { Dolls } from "./dolls";
 import { Items } from "./items";
 import { Skins } from "./skins";
@@ -12,6 +14,8 @@ export const CustomCollections = [
    _Companies,
    _Rarities,
    _WarehouseCategories,
+   AchievementCategories,
+   Achievements,
    Dolls,
    Items,
    Skins,
