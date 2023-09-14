@@ -521,7 +521,7 @@ export const PostHeaderEdit = ({
                      <label
                         className={`${
                            dragActive
-                              ? "border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
+                              ? "dark:bg-dark400 border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600"
                               : "hover:border-dashed hover:border-zinc-300 dark:hover:border-zinc-600 "
                         } bg-2 border-color group flex aspect-[1.91/1] cursor-pointer items-center
                         justify-center overflow-hidden border-y shadow-sm hover:border-2

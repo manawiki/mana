@@ -27,10 +27,16 @@ import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import { GripVertical, Trash } from "lucide-react";
-import type { Editor } from "slate";
-import { Transforms } from "slate";
+import type { Descendant, Editor } from "slate";
+import { Transforms, createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
-import { Editable, ReactEditor, Slate } from "slate-react";
+import {
+   Editable,
+   ReactEditor,
+   Slate,
+   useReadOnly,
+   withReact,
+} from "slate-react";
 
 import Button from "~/components/Button";
 
@@ -38,6 +44,7 @@ import { BlockSelector } from "./components/BlockSelector";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "./components/EditorBlocks";
 import { Leaf } from "./components/Leaf";
+import { Toolbar } from "./components/Toolbar";
 import { useEditor } from "./plugins";
 import type { CustomElement } from "./types";
 import { initialValue, isNodeWithId, onKeyDown } from "./utils";
@@ -115,6 +122,7 @@ export function EditorWithDnD({ editor }: { editor: Editor }) {
       >
          <SortableContext items={items} strategy={verticalListSortingStrategy}>
             <Editable
+               placeholder="Start typing..."
                className="outline-none"
                renderElement={renderElement}
                renderLeaf={Leaf}
@@ -344,11 +352,28 @@ export function NestedEditor({
    editor: Editor;
    field: string;
 }) {
+   const readOnly = useReadOnly();
    const inlineEditor = useEditor();
+   const viewEditor = useMemo(() => withReact(createEditor()), []);
+
+   if (readOnly) {
+      return (
+         <Slate
+            editor={viewEditor}
+            initialValue={element[field] ?? initialValue()}
+         >
+            <Editable
+               renderElement={EditorBlocks}
+               renderLeaf={Leaf}
+               readOnly={true}
+            />
+         </Slate>
+      );
+   }
 
    const path = ReactEditor.findPath(editor, element);
 
-   function updateEditorValue(event: any) {
+   function updateEditorValue(event: Descendant[]) {
       Transforms.setNodes<CustomElement>(
          editor,
          {
@@ -365,10 +390,9 @@ export function NestedEditor({
          <Slate
             onChange={updateEditorValue}
             editor={inlineEditor}
-            initialValue={element.nestedContent ?? initialValue()}
+            initialValue={element[field] ?? initialValue()}
          >
-            {/* TODO - Toolbar doesn't work atm for nested editors */}
-            {/* <Toolbar /> */}
+            <Toolbar />
             <EditorWithDnD editor={inlineEditor} />
          </Slate>
       </div>

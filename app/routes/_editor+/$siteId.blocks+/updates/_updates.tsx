@@ -20,8 +20,8 @@ import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
-import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
+import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils";
 
 import { Toolbar } from "../../core/components/Toolbar";
@@ -78,8 +78,8 @@ export function BlockUpdates({ element }: Props) {
       <section>
          <>
             <H2Default text="Updates" />
-            <div className="divide-color border-color bg-2 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="flex items-center justify-between gap-2 py-1 pr-2.5">
+            <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
+               <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
@@ -141,7 +141,7 @@ export function BlockUpdates({ element }: Props) {
                {updateResults?.map((row) => (
                   <section
                      key={row.id}
-                     className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                     className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
                   >
                      <time
                         className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"

@@ -24,9 +24,9 @@ type EventItemProps = {
 export function BlockEventsView({ children }: EventProps) {
    return (
       <div
-         className="divide-color shadow-1 border-color
-         bg-3 relative z-10 divide-y overflow-hidden rounded-lg border  shadow-sm [&>*:nth-of-type(4n+1)]:bg-zinc-50
-          [&>*:nth-of-type(4n+1)]:dark:bg-bg2Dark [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-neutral-800/50"
+         className="shadow-1 bg-3 divide-color-sub border-color-sub relative z-10 mb-3 divide-y overflow-hidden
+      rounded-lg border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
+   [&>*:nth-of-type(4n+1)]:dark:bg-dark350 [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-bg3Dark"
       >
          {children}
       </div>
@@ -61,7 +61,10 @@ export function BlockEventItemView({ element, children }: EventItemProps) {
                      </Disclosure.Button>
                   </section>
                </div>
-               <Disclosure.Panel className="px-4 py-3 text-sm" unmount={false}>
+               <Disclosure.Panel
+                  className="px-3 pb-1 pt-3 text-sm"
+                  unmount={false}
+               >
                   {children}
                </Disclosure.Panel>
             </>

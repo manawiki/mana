@@ -51,9 +51,9 @@ export function BlockEvents({
    return (
       <section>
          <div
-            className="divide-color shadow-1 border-color bg-3 relative z-10 divide-y  rounded-lg
-         border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
-         [&>*:nth-of-type(4n+1)]:dark:bg-bg2Dark [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-neutral-800/50"
+            className="shadow-1 bg-3 divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border
+            shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
+         [&>*:nth-of-type(4n+1)]:dark:bg-dark400 [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-dark350"
          >
             {children}
          </div>
@@ -394,7 +394,7 @@ export function BlockEventItem({
                                     <Tooltip placement="left">
                                        <TooltipTrigger>
                                           <button
-                                             className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-bg4Dark"
+                                             className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark400"
                                              onClick={() => {
                                                 Transforms.delete(editor, {
                                                    at: path,
@@ -413,7 +413,7 @@ export function BlockEventItem({
                                  <Menu.Item>
                                     <Tooltip placement="left">
                                        <TooltipTrigger>
-                                          <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-bg4Dark">
+                                          <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark400">
                                              <Copy size={14} />
                                           </button>
                                        </TooltipTrigger>
@@ -427,11 +427,12 @@ export function BlockEventItem({
                   </Menu>
                </div>
                <Disclosure.Panel
+                  unmount={false}
                   contentEditable={false}
-                  className="px-4 py-3 text-sm"
+                  className="px-3 pb-1 pt-3 text-sm"
                >
                   <NestedEditor
-                     field="event-details"
+                     field="eventContent"
                      element={element}
                      editor={editor}
                   />

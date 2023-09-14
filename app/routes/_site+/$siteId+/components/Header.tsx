@@ -124,9 +124,9 @@ export const Header = ({
                   </div>
                </LoggedOut>
                <div
-                  className="pattern-opacity-50 pattern-dots absolute left-0 top-0
-                           -z-10 h-full w-full pattern-bg-white pattern-zinc-300
-                           pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
+                  className="pattern-opacity-50 dark:pattern-dark400 pattern-dots absolute left-0
+                           top-0 -z-10 h-full w-full pattern-bg-white
+                           pattern-zinc-300 pattern-size-2 dark:pattern-bg-bg1Dark"
                />
             </header>
          )}

@@ -1,9 +1,11 @@
 import { Fragment } from "react";
 
+import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import {
    CalendarClock,
+   ChevronRight,
    Heading2,
    Heading3,
    ImagePlus,
@@ -12,7 +14,6 @@ import {
    ListOrdered,
    Plus,
    Type,
-   UnfoldVertical,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Editor } from "slate";
@@ -48,8 +49,8 @@ export function BlockSelector({
    const primary = [
       {
          label: "Text",
-         icon: <Type size={16} />,
-         description: "Plain text",
+         icon: <Type size={18} />,
+         description: "Paragraph",
          onSelect: () => {
             onInsertBelow({
                id: nanoid(),
@@ -60,7 +61,7 @@ export function BlockSelector({
       },
       {
          label: "Heading 2",
-         icon: <Heading2 size={16} />,
+         icon: <Heading2 size={18} />,
          description: "Large size heading",
          onSelect: () => {
             onInsertBelow({
@@ -72,7 +73,7 @@ export function BlockSelector({
       },
       {
          label: "Heading 3",
-         icon: <Heading3 size={16} />,
+         icon: <Heading3 size={18} />,
          description: "Medium size heading",
          onSelect: () => {
             onInsertBelow({
@@ -84,7 +85,7 @@ export function BlockSelector({
       },
       {
          label: "Bulleted list",
-         icon: <List size={16} />,
+         icon: <List size={18} />,
          description: "A basic bulleted list",
          onSelect: () => {
             onInsertBelow({
@@ -102,7 +103,7 @@ export function BlockSelector({
       },
       {
          label: "Ordered list",
-         icon: <ListOrdered size={16} />,
+         icon: <ListOrdered size={18} />,
          description: "A basic ordered list",
          onSelect: () => {
             onInsertBelow({
@@ -120,7 +121,7 @@ export function BlockSelector({
       },
       {
          label: "Image",
-         icon: <ImagePlus size={20} />,
+         icon: <ImagePlus size={18} />,
          description: "Embed an Image",
          onSelect: () => {
             onInsertBelow({
@@ -138,9 +139,22 @@ export function BlockSelector({
          label: "Widgets",
          items: [
             {
+               label: "Toggle Block",
+               icon: <ChevronRight size={16} />,
+               description: "Show or hide nested content",
+               onSelect: () => {
+                  onInsertBelow({
+                     id: nanoid(),
+                     type: BlockType.ToggleBlock,
+                     isOpen: false,
+                     children: [{ text: "" }],
+                  });
+               },
+            },
+            {
                label: "Group",
-               icon: <LayoutList size={20} />,
-               description: "Create a group of collections",
+               icon: <LayoutList size={16} />,
+               description: "Embed collection data",
                onSelect: () => {
                   onInsertBelow({
                      id: nanoid(),
@@ -155,8 +169,8 @@ export function BlockSelector({
             },
             {
                label: "Event Timeline",
-               icon: <CalendarClock size={20} />,
-               description: "Create events with a start and end date",
+               icon: <CalendarClock size={16} />,
+               description: "Events with a start and end date",
                onSelect: () => {
                   onInsertBelow({
                      id: nanoid(),
@@ -171,20 +185,6 @@ export function BlockSelector({
                   });
                },
             },
-            {
-               label: "Accordion",
-               icon: <UnfoldVertical size={20} />,
-               description: "Add an accordion",
-               onSelect: () => {
-                  onInsertBelow({
-                     id: nanoid(),
-                     type: BlockType.Accordion,
-                     label: "",
-                     isOpen: true,
-                     children: [{ text: "" }],
-                  });
-               },
-            },
          ],
       },
    ];
@@ -196,7 +196,17 @@ export function BlockSelector({
    // }
 
    return (
-      <Float dialog placement="right-start" offset={13} portal>
+      <Float
+         middleware={[
+            offset({
+               mainAxis: 13,
+               crossAxis: -1,
+            }),
+         ]}
+         dialog
+         placement="right-start"
+         portal
+      >
          <Float.Reference>
             <button
                type="button"
@@ -213,11 +223,7 @@ export function BlockSelector({
             </button>
          </Float.Reference>
          <Transition appear show={isEditorTrayOpen} as={Fragment}>
-            <Dialog
-               as="div"
-               className="relative"
-               onClose={() => setEditorTray(false)}
-            >
+            <Dialog as="div" onClose={() => setEditorTray(false)}>
                <div className="fixed inset-0">
                   <div className="flex min-h-full items-center p-4 text-center">
                      <Float.Content
@@ -232,40 +238,45 @@ export function BlockSelector({
                      >
                         <Dialog.Panel>
                            <div
-                              className="relative z-20 transform overflow-hidden rounded-b-xl rounded-t-lg border border-zinc-200
-                   bg-white drop-shadow-lg dark:border-zinc-700 dark:bg-neutral-800 laptop:max-w-[728px]"
+                              className="border-color-sub relative transform overflow-hidden rounded-b-xl rounded-t-lg border
+                   border-zinc-200 bg-white drop-shadow-lg  dark:bg-dark350 laptop:w-[728px] laptop:max-w-[728px]"
                            >
-                              <div className="dark:bg2Dark relative z-10 inline-flex w-full gap-3 rounded-t-lg bg-white p-3 dark:bg-neutral-800">
-                                 {primary?.map((row) => (
-                                    <Tooltip key={row.label}>
-                                       <TooltipTrigger>
-                                          <button
-                                             className="bg-2 shadow-1 border-color flex h-10 w-10 items-center justify-center rounded-lg border text-center shadow-sm"
-                                             onClick={() => {
-                                                row.onSelect();
-                                                setEditorTray(false);
-                                             }}
-                                          >
-                                             {row.icon}
-                                          </button>
-                                       </TooltipTrigger>
-                                       <TooltipContent>
-                                          {row.label}
-                                       </TooltipContent>
-                                    </Tooltip>
-                                 ))}
+                              <div className="dark:bg2Dark relative z-10 inline-flex w-full gap-3 rounded-t-lg bg-white p-3 dark:bg-dark350">
+                                 <FloatingDelayGroup
+                                    delay={{ open: 1000, close: 200 }}
+                                 >
+                                    {primary?.map((row) => (
+                                       <Tooltip key={row.label}>
+                                          <TooltipTrigger>
+                                             <button
+                                                className="shadow-1 flex h-10 w-10 items-center justify-center rounded-lg border
+                                                bg-zinc-50 text-center shadow-sm dark:border-dark500/50 dark:bg-dark450 dark:hover:bg-dark500"
+                                                onClick={() => {
+                                                   row.onSelect();
+                                                   setEditorTray(false);
+                                                }}
+                                             >
+                                                {row.icon}
+                                             </button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             {row.label}
+                                          </TooltipContent>
+                                       </Tooltip>
+                                    ))}
+                                 </FloatingDelayGroup>
                               </div>
-                              <div className="border-color relative h-12 border-y text-sm">
+                              {/* <div className="border-color relative h-12 border-y text-sm">
                                  <input
                                     className="bg-2 h-full w-full px-4 focus:outline-none"
                                     placeholder="Search..."
                                  />
-                              </div>
-                              <div className="space-y-4 px-3 py-4">
+                              </div> */}
+                              <div className="border-color-sub space-y-4 border-t px-3 py-4">
                                  {groups.map((group, indexGroup) => {
                                     return (
                                        <div key={indexGroup} className="">
-                                          <div className="text-1 pb-2 pl-2 text-left text-xs font-bold">
+                                          <div className="pb-2 pl-2 text-left text-xs font-bold">
                                              {group?.label}
                                           </div>
                                           <div className="grid gap-3 laptop:grid-cols-3">
@@ -273,8 +284,8 @@ export function BlockSelector({
                                                 (item, indexItem) => {
                                                    return (
                                                       <button
-                                                         className="border-color hover:shadow-1 flex cursor-pointer items-center gap-2 rounded-xl border bg-zinc-50 p-2
-                                                   text-left text-xs outline-none hover:shadow-sm dark:border-zinc-700/40 dark:bg-bg2Dark dark:hover:bg-bg3Dark"
+                                                         className="border-color hover:shadow-1 shadow-1 flex cursor-pointer items-center justify-start gap-2 rounded-xl border bg-zinc-50 p-3
+                                                   text-left text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark400 dark:hover:bg-dark450"
                                                          key={indexItem}
                                                          onClick={() => {
                                                             item.onSelect();
@@ -283,19 +294,18 @@ export function BlockSelector({
                                                             );
                                                          }}
                                                       >
-                                                         {item.icon && (
-                                                            <div
-                                                               className="shadow-1 flex h-8 w-8 items-center
-                                                         justify-center rounded-lg bg-white shadow-sm dark:bg-bg3Dark"
-                                                            >
-                                                               {item.icon}
+                                                         <div className="space-y-0.5">
+                                                            <div className="flex items-center gap-1.5 pb-1">
+                                                               {item.icon && (
+                                                                  <div className="shadow-1 border-color flex h-5 w-5 items-center rounded-md border bg-white p-1 dark:border-none dark:bg-dark500">
+                                                                     {item.icon}
+                                                                  </div>
+                                                               )}
+                                                               <div className="font-bold">
+                                                                  {item.label}
+                                                               </div>
                                                             </div>
-                                                         )}
-                                                         <div className="space-y-0.5 truncate">
-                                                            <div className="font-bold text-zinc-500 dark:text-zinc-300">
-                                                               {item.label}
-                                                            </div>
-                                                            <div className="text-1 truncate text-xs">
+                                                            <div className="text-1 text-xs">
                                                                {
                                                                   item.description
                                                                }

@@ -1,10 +1,9 @@
 /* eslint-disable import/no-cycle */
-import { nanoid } from "nanoid";
 import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockAccordion } from "../../$siteId.blocks+/_accordion";
+import { BlockToggleBlock } from "../../$siteId.blocks+/_toggleblock";
 import {
    BlockEventItem,
    BlockEvents,
@@ -20,19 +19,7 @@ import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
 import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
 import { BlockUpdatesView } from "../../$siteId.blocks+/updates/updates-view";
-import type { CustomElement } from "../types";
 import { BlockType } from "../types";
-
-// If new block created when old block selected, create the following block
-// Example: create checkbox block, press enter, new unchecked checkbox is created
-export const CreateNewBlockFromBlock: Record<string, () => CustomElement> = {
-   [BlockType.ToDo]: () => ({
-      type: BlockType.ToDo,
-      checked: false,
-      id: nanoid(),
-      children: [],
-   }),
-};
 
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
@@ -68,9 +55,9 @@ export function EditorBlocks({
             </div>
          );
       }
-      case BlockType.Accordion: {
+      case BlockType.ToggleBlock: {
          return (
-            <BlockAccordion
+            <BlockToggleBlock
                readOnly={readOnly}
                element={element}
                children={children}
@@ -89,7 +76,7 @@ export function EditorBlocks({
             <h2
                {...attributes}
                className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-         border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-bg3Dark"
+         border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350"
             >
                <div
                   className="pattern-dots absolute left-0
@@ -112,7 +99,7 @@ export function EditorBlocks({
                <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
-                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-bg4Dark"
+                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
                ></div>
             </h3>
          );
