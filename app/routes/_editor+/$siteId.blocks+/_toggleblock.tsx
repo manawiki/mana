@@ -27,7 +27,7 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                   <Disclosure.Button
                      className={clsx(
                         open ? "rounded-b-none " : "mb-2.5 shadow-sm",
-                        "shadow-1 border-color-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border bg-zinc-50 px-2 py-3 dark:bg-dark350"
+                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border px-2"
                      )}
                   >
                      <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800">
@@ -47,7 +47,7 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                   <div
                      className={clsx(
                         open ? "rounded-b-none" : "mb-2.5 shadow-sm",
-                        "shadow-1 border-color-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border bg-zinc-50 px-2 py-3 dark:bg-dark350"
+                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border  px-2 py-3"
                      )}
                   >
                      <Disclosure.Button>

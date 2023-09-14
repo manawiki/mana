@@ -238,10 +238,10 @@ export function BlockSelector({
                      >
                         <Dialog.Panel>
                            <div
-                              className="border-color-sub relative transform overflow-hidden rounded-b-xl rounded-t-lg border
+                              className="border-color-sub relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
                    border-zinc-200 bg-white drop-shadow-lg  dark:bg-dark350 laptop:w-[728px] laptop:max-w-[728px]"
                            >
-                              <div className="dark:bg2Dark relative z-10 inline-flex w-full gap-3 rounded-t-lg bg-white p-3 dark:bg-dark350">
+                              <div className="bg-2-sub relative z-10 inline-flex w-full gap-3 p-3">
                                  <FloatingDelayGroup
                                     delay={{ open: 1000, close: 200 }}
                                  >
@@ -272,7 +272,7 @@ export function BlockSelector({
                                     placeholder="Search..."
                                  />
                               </div> */}
-                              <div className="border-color-sub space-y-4 border-t px-3 py-4">
+                              <div className="border-color-sub bg-3-sub space-y-4 border-t px-3 py-4">
                                  {groups.map((group, indexGroup) => {
                                     return (
                                        <div key={indexGroup} className="">
@@ -285,7 +285,7 @@ export function BlockSelector({
                                                    return (
                                                       <button
                                                          className="border-color hover:shadow-1 shadow-1 flex cursor-pointer items-center justify-start gap-2 rounded-xl border bg-zinc-50 p-3
-                                                   text-left text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark400 dark:hover:bg-dark450"
+                                                   text-left text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark350 dark:hover:bg-dark400"
                                                          key={indexItem}
                                                          onClick={() => {
                                                             item.onSelect();

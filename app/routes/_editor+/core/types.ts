@@ -142,15 +142,14 @@ export interface groupItem {
    labelColor?: string;
    iconUrl?: string;
    path?: string;
+   children: [{ text: "" }];
 }
 
 export type GroupElement = BlockElement & {
    type: BlockType.Group;
-   viewMode: "1-col" | "2-col";
    itemsViewMode: "list" | "grid";
    collection?: Collection["id"];
    groupItems: groupItem[];
-   content?: [];
 };
 
 export type CustomElement =

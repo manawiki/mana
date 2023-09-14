@@ -7,6 +7,18 @@
    .rtl {
       direction: rtl;
    }
+   @variants responsive {
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+         display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+         -ms-overflow-style: none; /* IE and Edge */
+         scrollbar-width: none; /* Firefox */
+      }
+   }
 }
 
 @layer base {
@@ -72,8 +84,14 @@ html.dark {
    .bg-2 {
       @apply bg-zinc-50 dark:bg-[#282A2B];
    }
+   .bg-2-sub {
+      @apply bg-zinc-50 dark:bg-dark350;
+   }
    .bg-3 {
       @apply bg-white dark:bg-[#2E3132];
+   }
+   .bg-3-sub {
+      @apply bg-white dark:bg-dark400;
    }
    .bg-4 {
       @apply bg-white dark:bg-[#3D4042];
