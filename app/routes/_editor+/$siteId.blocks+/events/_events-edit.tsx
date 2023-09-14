@@ -258,7 +258,7 @@ export function BlockEventItem({
                                     offset={6}
                                  >
                                     <Popover.Button
-                                       className="shadow-1 rounded-full border border-zinc-100 bg-white p-2.5 shadow-sm focus:outline-none dark:border-zinc-700/50 dark:bg-zinc-800"
+                                       className="shadow-1 border-color-sub bg-2-sub rounded-full border p-2.5 shadow-sm focus:outline-none"
                                        aria-label="Insert block below"
                                     >
                                        {open ? (
@@ -267,10 +267,7 @@ export function BlockEventItem({
                                           <Calendar size={14} />
                                        )}
                                     </Popover.Button>
-                                    <Popover.Panel
-                                       className="border-color shadow-1 min-h-[200px] transform
-                               rounded-lg border bg-white shadow dark:bg-bg3Dark"
-                                    >
+                                    <Popover.Panel className="border-color-sub bg-2 shadow-1 min-h-[200px] transform rounded-lg border shadow">
                                        <section className="border-color flex items-center justify-between border-b">
                                           <div className="flex w-full items-center justify-between gap-2 p-3">
                                              <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
@@ -341,7 +338,7 @@ export function BlockEventItem({
                   <Disclosure.Button>
                      <div
                         contentEditable={false}
-                        className="bg-3 shadow-1 border-color flex h-8 w-8 flex-none items-center 
+                        className="border-color-sub bg-2-sub shadow-1 flex h-8 w-8 flex-none items-center 
                         justify-center rounded-full border pt-0.5 shadow-sm"
                      >
                         <ChevronDown
@@ -371,7 +368,7 @@ export function BlockEventItem({
                               }),
                            ]}
                         >
-                           <Menu.Button className="border-color shadow-1 bg-3 group/menu -mr-2.5 flex h-8 w-4 items-center justify-center rounded-lg rounded-r-none border border-r-0 shadow-sm transition duration-300">
+                           <Menu.Button className="shadow-1 border-color-sub bg-2-sub group/menu -mr-2.5 flex h-8 w-4 items-center justify-center rounded-lg rounded-r-none border border-r-0 shadow-sm transition duration-300">
                               {open ? (
                                  <X
                                     size={12}
@@ -386,7 +383,7 @@ export function BlockEventItem({
                                  </>
                               )}
                            </Menu.Button>
-                           <Menu.Items className="border-color bg-3 shadow-1 flex flex-col items-center justify-center rounded-lg border shadow">
+                           <Menu.Items className="border-color-sub bg-3-sub shadow-1 flex flex-col items-center justify-center rounded-lg border shadow">
                               <FloatingDelayGroup
                                  delay={{ open: 1000, close: 200 }}
                               >
@@ -394,7 +391,7 @@ export function BlockEventItem({
                                     <Tooltip placement="left">
                                        <TooltipTrigger>
                                           <button
-                                             className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark400"
+                                             className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450"
                                              onClick={() => {
                                                 Transforms.delete(editor, {
                                                    at: path,
@@ -413,7 +410,7 @@ export function BlockEventItem({
                                  <Menu.Item>
                                     <Tooltip placement="left">
                                        <TooltipTrigger>
-                                          <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark400">
+                                          <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450">
                                              <Copy size={14} />
                                           </button>
                                        </TooltipTrigger>
