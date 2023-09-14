@@ -95,7 +95,7 @@ export function BlockImage({ element }: Props) {
                      <label
                         className={`${
                            dragActive
-                              ? "border-4 border-zinc-400 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
+                              ? "dark:bg-dark400 border-4 border-zinc-400 bg-white dark:border-zinc-600"
                               : "hover:border-zinc-400 dark:hover:border-zinc-500"
                         } bg-2 group flex cursor-pointer items-center
                         justify-center overflow-hidden rounded-md border-2 border-y-2

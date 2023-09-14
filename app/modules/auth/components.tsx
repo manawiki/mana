@@ -31,7 +31,9 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
    if (site && user?.sites?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
@@ -40,7 +42,9 @@ export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
 //Is custom site
 export const CustomSite = ({ children }: { children: React.ReactNode }) => {
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
    const isCustom = site.type === "custom";
    return isCustom ? <>{children}</> : null;
 };
@@ -53,7 +57,9 @@ export const NotFollowingSite = ({
    const { user } = useRouteLoaderData("root") as { user: User };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
    if (!user) return null;
    if (user?.sites?.some((e: any) => e.id === site?.id)) return null;
    return <>{children}</>;
@@ -86,9 +92,9 @@ export const LoggedOutMobile = () => {
                </span>
             </Link>
             <Link
-               className="flex h-10 w-full items-center justify-center rounded-full
-        border border-zinc-200 bg-zinc-100 text-center text-sm font-bold
-       dark:border-zinc-600 dark:bg-bg4Dark"
+               className="dark:bg-dark400 flex h-10 w-full items-center justify-center
+        rounded-full border border-zinc-200 bg-zinc-100 text-center text-sm
+       font-bold dark:border-zinc-600"
                to={`/login?redirectTo=${location.pathname}`}
             >
                {t("login.action", { ns: "auth" })}

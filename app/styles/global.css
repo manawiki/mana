@@ -17,14 +17,17 @@
    .border-color {
       @apply border-[#ededed] dark:border-[#36393e];
    }
+   .border-color-sub {
+      @apply border-[#ededed] dark:border-zinc-700;
+   }
    table {
       @apply border-collapse;
    }
    th {
-      @apply bg-2 border border-zinc-200 p-3 dark:border-bg4Dark;
+      @apply bg-2 border border-zinc-200 p-3 dark:border-dark400;
    }
    td {
-      @apply bg-3 border border-zinc-200 p-3 dark:border-bg4Dark;
+      @apply bg-3 border border-zinc-200 p-3 dark:border-dark400;
    }
 }
 
@@ -51,6 +54,9 @@ html.dark {
    .divide-color {
       @apply divide-[#ededed] dark:divide-[#36393e];
    }
+   .divide-color-sub {
+      @apply divide-[#ededed] dark:divide-zinc-700;
+   }
    .outline-color {
       @apply outline-[#ededed] dark:outline-[#36393e];
    }
@@ -73,7 +79,7 @@ html.dark {
       @apply bg-white dark:bg-[#3D4042];
    }
    .bg-5 {
-      @apply bg-zinc-50 dark:bg-bg4Dark;
+      @apply bg-zinc-50 dark:bg-dark400;
    }
    .text-1 {
       @apply text-zinc-500 dark:text-zinc-400;

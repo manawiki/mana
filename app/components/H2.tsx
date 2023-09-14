@@ -26,7 +26,7 @@ export const H2Default = ({ text }: { text: string }) => {
    return (
       <h2
          className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-      border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-bg3Dark"
+      border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
       >
          <div
             className="pattern-dots absolute left-0

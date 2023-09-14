@@ -163,7 +163,7 @@ export function BlockGroupView({ element }: Props) {
                               key={row?.id}
                               to={row?.path ?? ""}
                               prefetch="intent"
-                              className="bg-2 border-color shadow-1 group relative flex items-center justify-center rounded-lg border p-3 shadow-sm"
+                              className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-zinc-50 p-3 shadow-sm dark:bg-dark350"
                            >
                               <div className="block truncate">
                                  {row.label && (
