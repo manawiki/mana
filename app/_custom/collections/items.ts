@@ -32,12 +32,12 @@ export const Items: CollectionConfig = {
       {
          name: "category",
          type: "relationship",
-         relationTo: "_warehouseCategories",
+         relationTo: "warehouseCategories",
       },
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
          name: "desc",

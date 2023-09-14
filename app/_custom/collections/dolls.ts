@@ -32,17 +32,17 @@ export const Dolls: CollectionConfig = {
       {
          name: "rarity",
          type: "relationship",
-         relationTo: "_rarities",
+         relationTo: "rarities",
       },
       {
          name: "class",
          type: "relationship",
-         relationTo: "_classes",
+         relationTo: "classes",
       },
       {
          name: "company",
          type: "relationship",
-         relationTo: "_companies",
+         relationTo: "companies",
       },
       {
          name: "limited",
