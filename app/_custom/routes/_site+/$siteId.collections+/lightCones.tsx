@@ -100,54 +100,51 @@ const LightConeList = ({ chars }: any) => {
       {
          id: "Rare",
          name: "3",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars3-1.png",
       },
       {
          id: "VeryRare",
          name: "4",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ] as FilterOptionType[];
    const paths = [
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: chars.find((c: any) => c.path?.id == "Warlock")?.path.icon?.url,
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
+         icon: chars.find((c: any) => c.path?.id == "Mage")?.path.icon?.url,
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: chars.find((c: any) => c.path?.id == "Priest")?.path.icon?.url,
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: chars.find((c: any) => c.path?.id == "Knight")?.path.icon?.url,
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: chars.find((c: any) => c.path?.id == "Rogue")?.path.icon?.url,
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
+         icon: chars.find((c: any) => c.path?.id == "Shaman")?.path.icon?.url,
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: chars.find((c: any) => c.path?.id == "Warrior")?.path.icon?.url,
       },
    ] as FilterOptionType[];
 

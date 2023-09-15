@@ -119,87 +119,92 @@ const CharacterList = ({ chars }: any) => {
       {
          id: "VeryRare",
          name: "4",
-         // icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "SuperRare",
          name: "5",
-         // icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ] as FilterOptionType[];
    const paths = [
       {
          id: "Warlock",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: chars.find((c: any) => c.path?.id == "Warlock")?.path.icon?.url,
       },
       {
          id: "Mage",
          name: "Erudition",
-         icon: "https://static.mana.wiki/starrail/BgPathsnMage.png",
+         icon: chars.find((c: any) => c.path?.id == "Mage")?.path.icon?.url,
       },
       {
          id: "Priest",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: chars.find((c: any) => c.path?.id == "Priest")?.path.icon?.url,
       },
       {
          id: "Knight",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: chars.find((c: any) => c.path?.id == "Knight")?.path.icon?.url,
       },
       {
          id: "Rogue",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: chars.find((c: any) => c.path?.id == "Rogue")?.path.icon?.url,
       },
       {
          id: "Shaman",
          name: "Harmony",
-         icon: "https://static.mana.wiki/starrail/BgPathsShaman.png",
+         icon: chars.find((c: any) => c.path?.id == "Shaman")?.path.icon?.url,
       },
       {
          id: "Warrior",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: chars.find((c: any) => c.path?.id == "Warrior")?.path.icon?.url,
       },
    ] as FilterOptionType[];
    const elements = [
       {
          id: "Physical",
          name: "Physical",
-         icon: "https://static.mana.wiki/starrail/IconAttributePhysical.png",
+         icon: chars.find((c: any) => c.element?.id == "Physical")?.element.icon
+            ?.url,
       },
       {
          id: "Ice",
          name: "Ice",
-         icon: "https://static.mana.wiki/starrail/IconAttributeIce.png",
+         icon: chars.find((c: any) => c.element?.id == "Ice")?.element.icon
+            ?.url,
       },
       {
          id: "Thunder",
          name: "Lightning",
-         icon: "https://static.mana.wiki/starrail/IconAttributeThunder.png",
+         icon: chars.find((c: any) => c.element?.id == "Thunder")?.element.icon
+            ?.url,
       },
       {
          id: "Fire",
          name: "Fire",
-         icon: "https://static.mana.wiki/starrail/IconAttributeFire.png",
+         icon: chars.find((c: any) => c.element?.id == "Fire")?.element.icon
+            ?.url,
       },
 
       {
          id: "Wind",
          name: "Wind",
-         icon: "https://static.mana.wiki/starrail/IconAttributeWind.png",
+         icon: chars.find((c: any) => c.element?.id == "Wind")?.element.icon
+            ?.url,
       },
       {
          id: "Quantum",
          name: "Quantum",
-         icon: "https://static.mana.wiki/starrail/IconAttributeQuantum.png",
+         icon: chars.find((c: any) => c.element?.id == "Quantum")?.element.icon
+            ?.url,
       },
       {
          id: "Imaginary",
          name: "Imaginary",
-         icon: "https://static.mana.wiki/starrail/IconAttributeImaginary.png",
+         icon: chars.find((c: any) => c.element?.id == "Imaginary")?.element
+            .icon?.url,
       },
    ] as FilterOptionType[];
    const campsort = [

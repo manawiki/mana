@@ -102,54 +102,53 @@ const BlessingList = ({ chars }: any) => {
       {
          id: "Normal",
          name: "1",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "NotNormal",
          name: "2",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars4-1.png",
       },
       {
          id: "Rare",
          name: "3",
-         //icon: "https://static.mana.wiki/starrail/rarity_Stars5-1.png",
       },
    ] as FilterOptionType[];
+
+   console.log(chars);
    const paths = [
       {
          id: "1",
          name: "Preservation",
-         icon: "https://static.mana.wiki/starrail/BgPathsKnight.png",
+         icon: chars.find((c: any) => c.aeon?.id == "1")?.aeon.icon_class?.url,
       },
       {
          id: "2",
          name: "Remembrance",
-         icon: "https://static.mana.wiki/starrail/BgPathsMemory.png",
+         icon: chars.find((c: any) => c.aeon?.id == "2")?.aeon.icon_class?.url,
       },
       {
          id: "3",
          name: "Nihility",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarlock.png",
+         icon: chars.find((c: any) => c.aeon?.id == "3")?.aeon.icon_class?.url,
       },
       {
          id: "4",
          name: "Abundance",
-         icon: "https://static.mana.wiki/starrail/BgPathsPirest.png",
+         icon: chars.find((c: any) => c.aeon?.id == "4")?.aeon.icon_class?.url,
       },
       {
          id: "5",
          name: "Hunt",
-         icon: "https://static.mana.wiki/starrail/BgPathsRogue.png",
+         icon: chars.find((c: any) => c.aeon?.id == "5")?.aeon.icon_class?.url,
       },
       {
          id: "6",
          name: "Destruction",
-         icon: "https://static.mana.wiki/starrail/BgPathsWarrior.png",
+         icon: chars.find((c: any) => c.aeon?.id == "6")?.aeon.icon_class?.url,
       },
       {
          id: "7",
          name: "Elation",
-         icon: "https://static.mana.wiki/starrail/BgPathsJoy.png",
+         icon: chars.find((c: any) => c.aeon?.id == "7")?.aeon.icon_class?.url,
       },
    ] as FilterOptionType[];
 
@@ -421,6 +420,9 @@ query {
        }
        aeon {
          id
+         icon_class {
+            url
+         }
        }
        id
        icon {

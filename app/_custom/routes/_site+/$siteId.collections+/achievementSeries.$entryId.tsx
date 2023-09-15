@@ -46,14 +46,20 @@ export async function loader({
    const achievementRaw = await fetchWithCache(url);
    const achievementData = achievementRaw.docs as Achievement[];
 
+   // Get the image URL reference for the Stellar Jade icon lol.
+   const sjurl = `https://${settings.siteId}-db.${settings.domain}/api/images/ItemIcon_900001`;
+   const sjRaw = await fetchWithCache(sjurl);
+   const stellarJadeURL = sjRaw?.url;
+
    // ======================
    // ======================
 
-   return json({ entryDefault, achievementData });
+   return json({ entryDefault, achievementData, stellarJadeURL });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, achievementData } = useLoaderData<typeof loader>();
+   const { entryDefault, achievementData, stellarJadeURL } =
+      useLoaderData<typeof loader>();
 
    return (
       <EntryParent>
@@ -63,7 +69,10 @@ export default function CharacterEntry() {
             <Header pageData={entryDefault} />
 
             {/* Achievement List with Checkbox */}
-            <Achievements pageData={achievementData} />
+            <Achievements
+               pageData={achievementData}
+               stellarJadeURL={stellarJadeURL}
+            />
          </EntryContent>
       </EntryParent>
    );

@@ -37,7 +37,12 @@ export async function loader({
    const lightConeRaw = await fetchWithCache(url);
    const lightCones = lightConeRaw.docs;
 
-   return json({ banners, characters, lightCones });
+   // Get the image URL reference for the Stellar Jade icon lol.
+   url = `https://${settings.siteId}-db.${settings.domain}/api/images/ItemIcon_900001`;
+   const sjRaw = await fetchWithCache(url);
+   const stellarJadeURL = sjRaw?.url;
+
+   return json({ banners, characters, lightCones, stellarJadeURL });
 }
 
 export const meta: V2_MetaFunction = () => {
@@ -55,7 +60,8 @@ export const meta: V2_MetaFunction = () => {
 
 const SummonSimulator = (data: any) => {
    //need banners, weapons, characters
-   const { banners, characters, lightCones } = useLoaderData<typeof loader>();
+   const { banners, characters, lightCones, stellarJadeURL } =
+      useLoaderData<typeof loader>();
 
    // Resort banner by ID numeric
    banners.sort((a: any, b: any) =>
@@ -894,10 +900,7 @@ const SummonSimulator = (data: any) => {
                               <th className={tableStyle}>
                                  <div>
                                     <div className="relative inline-block h-6 w-6 align-middle">
-                                       <Image
-                                          alt="Icon"
-                                          url="https://static.mana.wiki/starrail/ItemIcon_900001.png"
-                                       />
+                                       <Image alt="Icon" url={stellarJadeURL} />
                                     </div>
                                     <div className="inline-block align-middle">
                                        Stellar Jade
