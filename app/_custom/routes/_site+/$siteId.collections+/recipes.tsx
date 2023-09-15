@@ -97,27 +97,32 @@ const RecipeList = ({ chars }: any) => {
       {
          id: "2",
          name: "Consumables",
-         icon: "https://static.mana.wiki/starrail/InventoryConsumablesIcon.png",
+         icon: chars.find((c: any) => c.recipe_type?.id == "2")?.recipe_type
+            .icon?.url,
       },
       {
          id: "12",
          name: "Traces Activation Materials",
-         icon: "https://static.mana.wiki/starrail/InventoryFosterIcon.png",
+         icon: chars.find((c: any) => c.recipe_type?.id == "12")?.recipe_type
+            .icon?.url,
       },
       {
          id: "21",
          name: "Cavern Relic Synthesis",
-         icon: "https://static.mana.wiki/starrail/IconAvatarRelic.png",
+         icon: chars.find((c: any) => c.recipe_type?.id == "21")?.recipe_type
+            .icon?.url,
       },
       {
          id: "22",
          name: "Planar Ornament Synthesis",
-         icon: "https://static.mana.wiki/starrail/IconAvatarRelic.png",
+         icon: chars.find((c: any) => c.recipe_type?.id == "22")?.recipe_type
+            .icon?.url,
       },
       {
          id: "31",
          name: "Material Exchange",
-         icon: "https://static.mana.wiki/starrail/ReplacementIcon.png",
+         icon: chars.find((c: any) => c.recipe_type?.id == "31")?.recipe_type
+            .icon?.url,
       },
    ];
 
@@ -424,6 +429,9 @@ query {
        recipe_type {
          id
          name
+         icon {
+            url
+         }
        }
        result_item {
          rarity {

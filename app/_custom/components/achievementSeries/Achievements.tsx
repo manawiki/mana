@@ -4,17 +4,33 @@ import { Check } from "lucide-react";
 
 import type { Achievement as AchievementType } from "payload/generated-custom-types";
 
-export const Achievements = ({ pageData }: { pageData: AchievementType[] }) => {
+export const Achievements = ({
+   pageData,
+   stellarJadeURL,
+}: {
+   pageData: AchievementType[];
+   stellarJadeURL: string;
+}) => {
    return (
       <section className="divide-color shadow-1 bg-2 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
          {pageData?.map((a: any) => (
-            <Achievement a={a} key={a?.data_key} />
+            <Achievement
+               a={a}
+               key={a?.data_key}
+               stellarJadeURL={stellarJadeURL}
+            />
          ))}
       </section>
    );
 };
 
-export const Achievement = ({ a }: { a: AchievementType }) => {
+export const Achievement = ({
+   a,
+   stellarJadeURL,
+}: {
+   a: AchievementType;
+   stellarJadeURL: string;
+}) => {
    const [checked, setChecked] = useState(false);
 
    useEffect(() => {
@@ -76,6 +92,7 @@ export const Achievement = ({ a }: { a: AchievementType }) => {
                         ? 20
                         : 0
                   }
+                  stellarJadeURL={stellarJadeURL}
                />
             </div>
          </div>
@@ -83,13 +100,19 @@ export const Achievement = ({ a }: { a: AchievementType }) => {
    );
 };
 
-const JadeReward = ({ qty }: { qty: number }) => {
+const JadeReward = ({
+   qty,
+   stellarJadeURL,
+}: {
+   qty: number;
+   stellarJadeURL: string;
+}) => {
    return (
       <div className="relative inline-block text-center" key="900001">
          <a href={`/starrail/collections/materials/900001`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
-                  src="https://static.mana.wiki/starrail/ItemIcon_900001-1.png"
+                  src={stellarJadeURL}
                   className={`color-rarity-5 material-frame object-contain`}
                   alt="Stellar Jade"
                   loading="lazy"
