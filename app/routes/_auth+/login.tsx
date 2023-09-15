@@ -3,8 +3,8 @@ import { useState } from "react";
 import type {
    ActionFunction,
    LinksFunction,
-   LoaderArgs,
-   V2_MetaFunction,
+   LoaderFunctionArgs,
+   MetaFunction,
 } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import {
@@ -55,7 +55,7 @@ const PasswordResetSchema = z.object({
       .transform((email) => email.toLowerCase()),
 });
 
-export async function loader({ context: { user }, request }: LoaderArgs) {
+export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -73,7 +73,7 @@ export const links: LinksFunction = () => {
    return [{ rel: "canonical", href: `${settings.domainFull}/login` }];
 };
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
    return [
       {
          title: `${data.title} - Mana`,

@@ -103,8 +103,8 @@ export const UserMenu = () => {
                      <div className="bg-3 h-full w-60 flex-none">
                         <ul className="p-4">
                            <li
-                              className="flex items-center gap-2 rounded-lg bg-zinc-200/40 
-                                 px-3 py-3 text-sm font-bold dark:bg-bg4Dark"
+                              className="dark:bg-dark400 flex items-center gap-2 rounded-lg 
+                                 bg-zinc-200/40 px-3 py-3 text-sm font-bold"
                            >
                               <Settings size={16} className="text-zinc-400" />
                               Settings

@@ -1,14 +1,14 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -74,7 +74,7 @@ export async function loader({
    );
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Characters - Honkai: Star Rail",
@@ -452,7 +452,7 @@ const CharacterList = ({ chars }: any) => {
                               <Image
                                  width={80}
                                  height={80}
-                                 options="aspect_ratio=1:1"
+                                 options="aspect_ratio=1:1&height=80&width=80"
                                  url={char.icon?.url}
                                  alt={char?.name}
                               />

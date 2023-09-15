@@ -8,9 +8,9 @@ import { Editable, Slate, withReact } from "slate-react";
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/components/H2";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
-import type { UpdatesElement } from "~/routes/_editor+/functions/types";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
+import type { UpdatesElement } from "~/routes/_editor+/core/types";
 
 type Props = {
    element: UpdatesElement;
@@ -34,13 +34,13 @@ export function BlockUpdatesView({ element }: Props) {
             <>
                <H2Default text="Updates" />
                <div
-                  className="divide-color border-color bg-2 shadow-1 divide-y 
+                  className="divide-color-sub border-color-sub bg-3 shadow-1 divide-y 
                overflow-hidden rounded-lg border shadow-sm"
                >
                   {updateResults?.map((row) => (
                      <section
                         key={row.id}
-                        className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                        className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
                      >
                         <time
                            className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"

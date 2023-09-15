@@ -1,22 +1,19 @@
 import { useEffect } from "react";
 
 import {
-   type ActionArgs,
-   type LoaderArgs,
-   type V2_MetaFunction,
+   type ActionFunctionArgs,
+   type LoaderFunctionArgs,
+   type MetaFunction,
    json,
    redirect,
 } from "@remix-run/node";
 import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
-import { nanoid } from "nanoid";
 import { createCustomIssues } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { toast } from "~/components";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import type { CustomElement } from "~/routes/_editor+/functions/types";
-import { BlockType } from "~/routes/_editor+/functions/types";
 import {
    type FormResponse,
    assertIsPatch,
@@ -31,12 +28,14 @@ import {
 
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { postSchema } from "../utils/postSchema";
+import { initialValue } from "~/routes/_editor+/core/utils";
+import { Descendant } from "slate";
 
 export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { postId, siteId } = zx.parseParams(params, {
       postId: z.string(),
       siteId: z.string(),
@@ -81,7 +80,7 @@ export const handle = {
    i18n: "post",
 };
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
       ({ id }) => id === "routes/_site+/$siteId+/_layout"
    )?.data?.site.name;
@@ -94,18 +93,6 @@ export const meta: V2_MetaFunction = ({ data, matches }) => {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
-
-const initialValue: CustomElement[] = [
-   {
-      id: nanoid(),
-      type: BlockType.Paragraph,
-      children: [
-         {
-            text: "",
-         },
-      ],
-   },
-];
 
 export default function PostEditPage() {
    const fetcher = useFetcher();
@@ -125,15 +112,16 @@ export default function PostEditPage() {
    const { post, versions } = useLoaderData<typeof loader>() || {};
 
    const { postId } = useParams();
+   const defaultValue = post.content;
 
    return (
       <main className="relative min-h-screen max-laptop:px-3 max-laptop:pb-20">
          <PostHeaderEdit versions={versions} post={post} />
          <ManaEditor
-            intent="updatePostContent"
             fetcher={fetcher}
             pageId={postId ?? ""}
-            defaultValue={post?.content ?? initialValue}
+            intent="updatePostContent"
+            defaultValue={defaultValue as Descendant[]}
          />
       </main>
    );
@@ -143,7 +131,7 @@ export async function action({
    context: { payload, user },
    request,
    params,
-}: ActionArgs) {
+}: ActionFunctionArgs) {
    const { siteId, postId } = zx.parseParams(params, {
       siteId: z.string(),
       postId: z.string(),

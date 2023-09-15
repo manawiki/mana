@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from "react";
 
 import { Listbox, Menu, Transition } from "@headlessui/react";
 import { redirect, json } from "@remix-run/node";
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
    Form,
    Link,
@@ -10,7 +10,7 @@ import {
    useSearchParams,
    useNavigation,
 } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import {
    ChevronDown,
    ChevronLeft,
@@ -50,7 +50,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
@@ -310,9 +310,9 @@ export default function PostsIndex() {
                                        className="text-1 flex items-center gap-1.5 text-sm"
                                        dateTime={post?.updatedAt}
                                     >
-                                       {format(
+                                       {dt.format(
                                           new Date(post?.updatedAt),
-                                          "MMM dd"
+                                          "MMM D"
                                        )}
                                     </time>
                                     {post._status == "published" ? (
@@ -447,7 +447,7 @@ export const action = async ({
    context: { payload, user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
    const { siteId } = zx.parseParams(params, {

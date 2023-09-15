@@ -1,6 +1,4 @@
-import React, { memo, useCallback, useMemo } from "react";
-
-import dt from "date-and-time";
+import React, { useCallback, useMemo } from "react";
 
 type DateButtonProps = {
    date: Date;
@@ -16,12 +14,12 @@ const dateOptions: Intl.DateTimeFormatOptions = {
    year: "numeric",
 };
 
-const DateButton: React.FC<DateButtonProps> = ({
+export function DateButton({
    date,
    active,
    onClick,
    selected,
-}) => {
+}: DateButtonProps) {
    const handleClick = useCallback(() => {
       onClick(date);
    }, [onClick, date]);
@@ -46,13 +44,4 @@ const DateButton: React.FC<DateButtonProps> = ({
          {date.getDate()}
       </button>
    );
-};
-
-// take care of onClick
-export default memo(
-   DateButton,
-   (p, n) =>
-      dt.isSameDay(p.date, n.date) &&
-      p.active === n.active &&
-      p.selected === n.selected
-);
+}

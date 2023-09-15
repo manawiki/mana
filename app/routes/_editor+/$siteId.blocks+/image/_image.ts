@@ -1,4 +1,4 @@
-import { type ActionArgs, json, redirect } from "@remix-run/node";
+import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -7,7 +7,7 @@ import { assertIsPost, getMultipleFormData, uploadImage } from "~/utils";
 export async function action({
    context: { payload, user },
    request,
-}: ActionArgs) {
+}: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });

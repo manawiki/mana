@@ -63,7 +63,7 @@ export const Top = () => {
                            className="flex items-center justify-center gap-3.5"
                         >
                            <a
-                              href="https://github.com/manawiki/core"
+                              href="https://github.com/manawiki"
                               className="
                          relative inline-flex w-28 items-center justify-center gap-2 rounded-full border border-transparent
                          px-3 py-2.5 text-zinc-100 shadow-sm shadow-black/30 transition duration-150 ease-in-out

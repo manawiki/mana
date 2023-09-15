@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 
 import { TrashIcon } from "@heroicons/react/20/solid";
-import type { LoaderArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import { select, type Select } from "payload-query";
@@ -22,12 +21,12 @@ import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { swrRestFetcher } from "~/utils";
 
-import type { CustomElement, LinkElement } from "../../functions/types";
+import type { CustomElement, LinkElement } from "../../core/types";
 
 export async function loader({
    context: { payload, user },
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { linkUrl } = zx.parseQuery(request, {
       linkUrl: z.string(),
    });
@@ -257,25 +256,6 @@ export function BlockLink({ element, children }: Props) {
       </a>
    );
 }
-
-export const action = async ({
-   context: { payload, user },
-   request,
-   params,
-}: LoaderArgs) => {
-   if (!user || !user.id) throw redirect("/login", { status: 302 });
-
-   const { intent } = await zx.parseForm(request, {
-      intent: z.string(),
-   });
-
-   // const siteId = params?.siteId ?? customConfig?.siteId;
-
-   switch (intent) {
-      case "createUpdate": {
-      }
-   }
-};
 
 const capitalizeFirstLetter = (string: string): string =>
    string.charAt(0).toUpperCase() + string.slice(1);

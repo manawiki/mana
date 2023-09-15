@@ -148,9 +148,9 @@ export const ColumnFour = ({
                   bg-gradient-to-r from-white/40 to-white/80 dark:from-bg2Dark/40 dark:to-bg2Dark/80"
                   />
                   <div
-                     className="pattern-opacity-50 pattern-dots absolute left-0 top-0 -z-20
-                           h-full w-full pattern-bg-white pattern-zinc-300 
-                           pattern-size-2 dark:pattern-bg-bg1Dark dark:pattern-bg4Dark"
+                     className="pattern-opacity-50 dark:pattern-dark400 pattern-dots absolute left-0 top-0
+                           -z-20 h-full w-full pattern-bg-white 
+                           pattern-zinc-300 pattern-size-2 dark:pattern-bg-bg1Dark"
                   />
                </div>
             )}

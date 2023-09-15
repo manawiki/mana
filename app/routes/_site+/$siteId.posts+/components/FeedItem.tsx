@@ -1,5 +1,4 @@
 import { Link } from "@remix-run/react";
-import { formatDistanceStrict } from "date-fns";
 
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
@@ -32,14 +31,14 @@ export const FeedItem = ({ post }: { post: Post }) => {
                   <div className="font-bold">{post.author.username}</div>
                </div>
                <div className="text-xs font-bold uppercase">
-                  {post.publishedAt &&
+                  {/* {post.publishedAt &&
                      formatDistanceStrict(
                         new Date(post.updatedAt ?? ""),
                         new Date(),
                         {
                            addSuffix: true,
                         }
-                     )}
+                     )} */}
                </div>
             </div>
             <div className="flex items-start gap-5">

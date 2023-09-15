@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from "react";
 
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { useFetcher, useActionData, Link, useParams } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import {
    Loader2,
    ImageMinus,
@@ -326,12 +326,12 @@ export const PostHeaderEdit = ({
                                                 Last published
                                              </div>
                                              <div className="font-bold">
-                                                {format(
+                                                {dt.format(
                                                    new Date(
                                                       versions?.docs[0]
                                                          .updatedAt as string
                                                    ),
-                                                   "MMMM d, hh:mm aaa"
+                                                   "MMMM D, hh:mm A"
                                                 )}
                                              </div>
                                           </div>
@@ -521,7 +521,7 @@ export const PostHeaderEdit = ({
                      <label
                         className={`${
                            dragActive
-                              ? "border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
+                              ? "dark:bg-dark400 border-4 border-dashed border-zinc-300 bg-white dark:border-zinc-600"
                               : "hover:border-dashed hover:border-zinc-300 dark:hover:border-zinc-600 "
                         } bg-2 border-color group flex aspect-[1.91/1] cursor-pointer items-center
                         justify-center overflow-hidden border-y shadow-sm hover:border-2

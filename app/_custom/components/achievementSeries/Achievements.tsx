@@ -48,7 +48,7 @@ export const Achievement = ({
          <div className="flex items-center justify-between gap-3 p-2">
             {/* Checkbox section */}
             <div
-               className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center 
+               className={`shadow-1 flex h-8 w-8 flex-none cursor-pointer items-center
                   justify-center rounded-lg border-2 shadow-md hover:bg-green-50 dark:hover:bg-zinc-800 ${
                      checked
                         ? "border-green-300 dark:border-green-800"

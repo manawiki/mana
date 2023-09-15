@@ -4,7 +4,7 @@ import {
    json,
    redirect,
    type MetaFunction,
-   type LoaderArgs,
+   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
@@ -22,8 +22,8 @@ import { settings } from "mana-config";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { PostHeader } from "./components/PostHeader";
@@ -32,7 +32,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { postId, siteId, postView } = zx.parseParams(params, {
       postId: z.string(),
       siteId: z.string(),

@@ -1,7 +1,6 @@
 import { PassThrough } from "stream";
 
 import type { EntryContext } from "@remix-run/node";
-import { Response } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
@@ -43,6 +42,7 @@ export default async function handleRequest(
                responseHeaders.set("Content-Type", "text/html");
 
                resolve(
+                  //@ts-ignore Not quite sure how this should be typed?
                   new Response(body, {
                      headers: responseHeaders,
                      status: responseStatusCode,

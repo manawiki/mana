@@ -1,15 +1,11 @@
 import { Suspense, useCallback, useMemo, useState } from "react";
 
-import {
-   FloatingDelayGroup,
-   autoUpdate,
-   offset,
-   shift,
-   useFloating,
-} from "@floating-ui/react";
+import { FloatingDelayGroup, offset, shift } from "@floating-ui/react";
+import { Float } from "@headlessui-float/react";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import { redirect } from "@remix-run/node";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type { FetcherWithComponents } from "@remix-run/react";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import { Check, History, Loader2 } from "lucide-react";
@@ -33,12 +29,9 @@ import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import {
-   AdminOrStaffOrOwner,
-   useIsStaffOrSiteAdminOrStaffOrOwner,
-} from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR, isProcessing } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -49,7 +42,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -84,34 +77,31 @@ export default function SiteIndexMain() {
    const renderElement = useCallback((props: RenderElementProps) => {
       return <EditorBlocks {...props} />;
    }, []);
-   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
    const fetcher = useFetcher();
-
-   const { refs, floatingStyles } = useFloating({
-      whileElementsMounted: autoUpdate,
-      placement: "right-start",
-      middleware: [
-         shift({
-            padding: {
-               top: 80,
-            },
-         }),
-         offset({
-            mainAxis: 50,
-            crossAxis: 0,
-         }),
-      ],
-   });
+   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
    return (
       <>
-         <main
-            ref={refs.setReference}
-            className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
-         >
-            {hasAccess ? (
-               <AdminOrStaffOrOwner>
+         {hasAccess ? (
+            <Float
+               middleware={[
+                  shift({
+                     padding: {
+                        top: 80,
+                     },
+                  }),
+                  offset({
+                     mainAxis: 30,
+                     crossAxis: 0,
+                  }),
+               ]}
+               zIndex={20}
+               autoUpdate
+               placement="right-start"
+               show
+            >
+               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
                   <div className="relative min-h-screen">
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
@@ -125,36 +115,32 @@ export default function SiteIndexMain() {
                         </Await>
                      </Suspense>
                   </div>
-               </AdminOrStaffOrOwner>
-            ) : (
-               <>
-                  {home && (
-                     <Suspense fallback="Loading...">
-                        <Await resolve={home}>
-                           <Slate
-                              key={siteId}
-                              editor={editor}
-                              initialValue={home as Descendant[]}
-                           >
-                              <Editable
-                                 renderElement={renderElement}
-                                 renderLeaf={Leaf}
-                                 readOnly={true}
-                              />
-                           </Slate>
-                        </Await>
-                     </Suspense>
-                  )}
-               </>
-            )}
-         </main>
-         <AdminOrStaffOrOwner>
-            <EditorCommandBar
-               fetcher={fetcher}
-               refs={refs}
-               floatingStyles={floatingStyles}
-            />
-         </AdminOrStaffOrOwner>
+               </main>
+               <div>
+                  <EditorCommandBar fetcher={fetcher} />
+               </div>
+            </Float>
+         ) : (
+            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
+               <div className="relative min-h-screen">
+                  <Suspense fallback="Loading...">
+                     <Await resolve={home}>
+                        <Slate
+                           key={siteId}
+                           editor={editor}
+                           initialValue={home as Descendant[]}
+                        >
+                           <Editable
+                              renderElement={renderElement}
+                              renderLeaf={Leaf}
+                              readOnly={true}
+                           />
+                        </Slate>
+                     </Await>
+                  </Suspense>
+               </div>
+            </main>
+         )}
       </>
    );
 }
@@ -218,12 +204,8 @@ const fetchHomeUpdates = async ({
 
 const EditorCommandBar = ({
    fetcher,
-   refs,
-   floatingStyles,
 }: {
-   fetcher: any;
-   refs: any;
-   floatingStyles: any;
+   fetcher: FetcherWithComponents<never>;
 }) => {
    const { isChanged, siteId } = useLoaderData<typeof loader>();
 
@@ -239,102 +221,88 @@ const EditorCommandBar = ({
    const [isVersionModalOpen, setVersionModal] = useState(false);
 
    return (
-      <>
-         <HomeVersionModal
-            isVersionModalOpen={isVersionModalOpen}
-            setVersionModal={setVersionModal}
-         />
-         <div
-            ref={refs.setFloating}
-            style={floatingStyles}
-            className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow max-laptop:hidden"
-         >
-            {/* <div className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm">
-            <MoreVertical size={18} />
-         </div> */}
-            <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
-               {isPublishing ? (
-                  <div
-                     className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
+      <div className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow max-laptop:hidden">
+         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
+            {isPublishing ? (
+               <div
+                  className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
                   rounded-full border border-blue-200/80 bg-gradient-to-b
                   from-blue-50 to-blue-100 text-sm font-bold text-white shadow-sm transition
                   dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
                   dark:shadow-blue-950"
-                  >
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
-                  </div>
-               ) : (
-                  <>
-                     {isChanged ? (
-                        <Tooltip placement="left">
-                           <TooltipTrigger>
-                              <button
-                                 className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
+               >
+                  <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
+               </div>
+            ) : (
+               <>
+                  {isChanged ? (
+                     <Tooltip placement="left">
+                        <TooltipTrigger>
+                           <button
+                              className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
                               border border-blue-200/70 bg-gradient-to-b from-blue-50 to-blue-100
                               text-sm font-bold text-blue-500 shadow-sm transition dark:border-blue-900
                               dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-300 
                               dark:shadow-blue-950"
-                                 disabled={disabled}
-                                 onClick={() => {
-                                    fetcher.submit(
-                                       //@ts-ignore
-                                       {
-                                          intent: "homeContent",
-                                          intentType: "publish",
-                                          siteId,
-                                       },
-                                       {
-                                          method: "post",
-                                          action: "/editor",
-                                       }
-                                    );
-                                 }}
-                              >
-                                 <PaperAirplaneIcon className="h-4 w-4" />
-                              </button>
-                           </TooltipTrigger>
-                           <TooltipContent>
-                              Publish latest changes
-                           </TooltipContent>
-                        </Tooltip>
-                     ) : (
-                        <Tooltip placement="left">
-                           <TooltipTrigger>
-                              <div
-                                 className="shadow-1 border-color bg-3 flex h-8
+                              disabled={disabled}
+                              onClick={() => {
+                                 fetcher.submit(
+                                    //@ts-ignore
+                                    {
+                                       intent: "homeContent",
+                                       intentType: "publish",
+                                       siteId,
+                                    },
+                                    {
+                                       method: "post",
+                                       action: "/editor",
+                                    }
+                                 );
+                              }}
+                           >
+                              <PaperAirplaneIcon className="h-4 w-4" />
+                           </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Publish latest changes</TooltipContent>
+                     </Tooltip>
+                  ) : (
+                     <Tooltip placement="left">
+                        <TooltipTrigger>
+                           <div
+                              className="shadow-1 border-color bg-3 flex h-8
                                  w-8 items-center justify-center rounded-full border shadow-sm"
-                              >
-                                 {isAutoSaving ? (
-                                    <Loader2
-                                       size={16}
-                                       className="animate-spin"
-                                    />
-                                 ) : (
-                                    <Check size={16} />
-                                 )}
-                              </div>
-                           </TooltipTrigger>
-                           <TooltipContent>
-                              No changes to publish...
-                           </TooltipContent>
-                        </Tooltip>
-                     )}
-                  </>
-               )}
-               <Tooltip placement="left">
-                  <TooltipTrigger>
-                     <button
-                        className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm"
-                        onClick={() => setVersionModal(true)}
-                     >
-                        <History size={18} />
-                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>History</TooltipContent>
-               </Tooltip>
-            </FloatingDelayGroup>
-         </div>
-      </>
+                           >
+                              {isAutoSaving ? (
+                                 <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                 <Check size={16} />
+                              )}
+                           </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                           No changes to publish...
+                        </TooltipContent>
+                     </Tooltip>
+                  )}
+               </>
+            )}
+            <Tooltip placement="left">
+               <TooltipTrigger>
+                  <button
+                     className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm"
+                     onClick={() => setVersionModal(true)}
+                  >
+                     <History size={18} />
+                  </button>
+               </TooltipTrigger>
+               <TooltipContent>History</TooltipContent>
+            </Tooltip>
+         </FloatingDelayGroup>
+         <HomeVersionModal
+            isVersionModalOpen={isVersionModalOpen}
+            setVersionModal={setVersionModal}
+         />
+      </div>
    );
 };
 
@@ -459,7 +427,7 @@ const fetchHomeContent = async ({
 export async function action({
    context: { payload, user },
    request,
-}: ActionArgs) {
+}: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });

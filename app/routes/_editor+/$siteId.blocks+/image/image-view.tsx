@@ -9,7 +9,7 @@ import { ReactEditor, useSlate } from "slate-react";
 import { Image } from "~/components";
 import { isAdding } from "~/utils";
 
-import type { CustomElement, ImageElement } from "../../functions/types";
+import type { CustomElement, ImageElement } from "../../core/types";
 type Props = {
    element: ImageElement;
 };
@@ -95,11 +95,11 @@ export function BlockImage({ element }: Props) {
                      <label
                         className={`${
                            dragActive
-                              ? "border-4 border-zinc-400 bg-white dark:border-zinc-600 dark:bg-bg4Dark"
-                              : "hover:border-zinc-400 dark:hover:border-zinc-500"
-                        } bg-2 group flex cursor-pointer items-center
-                        justify-center overflow-hidden rounded-md border-2 border-y-2
-                        border-dashed border-zinc-300 p-6 shadow-sm dark:border-zinc-600 `}
+                              ? "border-zinc-400 bg-white dark:border-zinc-600 dark:bg-dark400"
+                              : "hover:border-zinc-200 dark:hover:border-zinc-600"
+                        } bg-2-sub border-color-sub group flex cursor-pointer
+                        items-center justify-center overflow-hidden rounded-md border-2
+                        border-y-2 border-dashed p-6 shadow-sm `}
                      >
                         <div className="text-1 space-y-2">
                            {isImageAdding ? (

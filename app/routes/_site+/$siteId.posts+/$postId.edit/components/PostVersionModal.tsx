@@ -2,7 +2,7 @@ import { useMemo, useCallback, Fragment, useState } from "react";
 
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useSearchParams } from "@remix-run/react";
-import { format } from "date-fns";
+import dt from "date-and-time";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import type { Descendant } from "slate";
 import { createEditor } from "slate";
@@ -10,8 +10,8 @@ import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 
 import { Modal } from "~/components";
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { isAdding } from "~/utils";
 
 import { PostHeader } from "../../components/PostHeader";
@@ -69,9 +69,9 @@ export const PostVersionModal = ({
                         className="bg-3 text-1 border-color fixed left-0 top-0 z-10 
                         mb-3 flex h-12 w-[898px] items-center border-b px-4 text-sm font-bold"
                      >
-                        {format(
+                        {dt.format(
                            new Date(selectedVersion?.updatedAt as string),
-                           "MMMM d, hh:mm aaa"
+                           "MMMM D, hh:mm A"
                         )}
                      </div>
                      {versions?.docs?.map(
@@ -170,11 +170,11 @@ export const PostVersionModal = ({
                                           } flex items-center gap-1.5 text-sm group-hover:underline`}
                                                    dateTime={version?.updatedAt}
                                                 >
-                                                   {format(
+                                                   {dt.format(
                                                       new Date(
                                                          version?.updatedAt as string
                                                       ),
-                                                      "MMMM d, hh:mm aaa"
+                                                      "MMMM D, hh:mm A"
                                                    )}
                                                 </time>
                                                 {checked ? (

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { json, redirect, type ActionFunction } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import { ImagePlus, Loader2, Plus, X } from "lucide-react";
+import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
@@ -10,7 +11,8 @@ import { z } from "zod";
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-import { initialValue } from "~/routes/_editor+/functions/utils";
+import { BlockType, CustomElement } from "~/routes/_editor+/core/types";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import {
    assertIsPost,
    isAdding,
@@ -20,8 +22,6 @@ import {
    safeNanoID,
    type FormResponse,
 } from "~/utils";
-import { BlockType, CustomElement } from "~/routes/_editor+/functions/types";
-import { nanoid } from "nanoid";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),

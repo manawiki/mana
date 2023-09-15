@@ -1,8 +1,8 @@
 import type {
    ActionFunction,
    LinksFunction,
-   LoaderArgs,
-   V2_MetaFunction,
+   LoaderFunctionArgs,
+   MetaFunction,
 } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import {
@@ -28,7 +28,7 @@ import {
 } from "~/utils";
 import { i18nextServer } from "~/utils/i18n";
 
-export async function loader({ context: { user }, request }: LoaderArgs) {
+export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -61,7 +61,7 @@ export const links: LinksFunction = () => {
    return [{ rel: "canonical", href: `${settings.domainFull}/join` }];
 };
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
    return [
       {
          title: `${data.title} - Mana`,
