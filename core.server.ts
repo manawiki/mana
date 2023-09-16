@@ -1,8 +1,6 @@
 import * as path from "node:path";
 
-import {
-   createRequestHandler
-} from "@metronome-sh/express";
+import { createRequestHandler } from "@metronome-sh/express";
 import { type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
@@ -106,7 +104,7 @@ async function startCore() {
       // if they connect once with HTTPS, then they'll connect with HTTPS for the next hundred years
       res.set(
          "Strict-Transport-Security",
-         "max-age=63072000; includeSubDomains; preload"
+         "max-age=63072000; includeSubDomains; preload",
       );
 
       // no ending slashes for SEO reasons
@@ -123,13 +121,13 @@ async function startCore() {
    // Remix fingerprints its assets so we can cache forever.
    app.use(
       "/build",
-      express.static("public/build", { immutable: true, maxAge: "1y" })
+      express.static("public/build", { immutable: true, maxAge: "1y" }),
    );
 
    // Aggressively cache fonts for a year
    app.use(
       "/fonts",
-      express.static("public/fonts", { immutable: true, maxAge: "1y" })
+      express.static("public/fonts", { immutable: true, maxAge: "1y" }),
    );
 
    // Everything else (like favicon.ico) is cached for an hour. You may want to be
@@ -145,7 +143,7 @@ async function startCore() {
       "*",
       process.env.NODE_ENV === "development"
          ? createDevRequestHandler()
-         : createProductionRequestHandler()
+         : createProductionRequestHandler(),
    );
    const port = process.env.PORT || 3000;
 
@@ -162,7 +160,6 @@ startCore();
 
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-
    function getLoadContext(req: any, res: any) {
       return {
          payload: req.payload,
@@ -214,7 +211,6 @@ function createDevRequestHandler(): RequestHandler {
                   res,
                };
             },
-            //@ts-ignore ??? Remix Team Why???
          })(req, res, next);
       } catch (error) {
          next(error);
