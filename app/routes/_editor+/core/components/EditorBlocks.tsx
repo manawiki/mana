@@ -13,7 +13,10 @@ import {
    BlockEventsView,
 } from "../../$siteId.blocks+/events/events-view";
 import { BlockGroup, BlockGroupItem } from "../../$siteId.blocks+/group/_group";
-import { BlockGroupView } from "../../$siteId.blocks+/group/group-view";
+import {
+   BlockGroupItemView,
+   BlockGroupView,
+} from "../../$siteId.blocks+/group/group-view";
 import { BlockImage } from "../../$siteId.blocks+/image/image-view";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
@@ -147,13 +150,20 @@ export function EditorBlocks({
          );
       }
       case BlockType.Group: {
-         if (readOnly) return <BlockGroupView element={element} />;
+         if (readOnly)
+            return (
+               <BlockGroupView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
          return (
             <BlockGroup element={element} children={children} {...attributes} />
          );
       }
       case BlockType.GroupItem: {
-         if (readOnly) return <BlockGroupView element={element} />;
+         if (readOnly) return <BlockGroupItemView element={element} />;
          return (
             <BlockGroupItem
                element={element}
