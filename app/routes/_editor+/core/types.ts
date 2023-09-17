@@ -31,6 +31,7 @@ export enum BlockType {
    Image = "image",
    Link = "link",
    Group = "group",
+   GroupItem = "group-item",
    Updates = "updates",
    ToggleBlock = "toggle-block",
    Events = "events",
@@ -56,6 +57,24 @@ export type ParagraphElement = BlockElement & {
 
 export type HeadingElement = BlockElement & {
    type: BlockType.H2 | BlockType.H3;
+};
+export type GroupItemElement = BlockElement & {
+   isCustomSite?: boolean;
+   refId: string;
+   label?: string;
+   name: string;
+   labelColor?: string;
+   iconUrl?: string;
+   path?: string;
+   groupContent?: [Descendant];
+};
+
+export type GroupElement = {
+   id: string;
+   type: BlockType.Group;
+   itemsViewMode: "list" | "grid";
+   collection?: Collection["id"];
+   children: [GroupItemElement];
 };
 
 export type EventItemElement = BlockElement & {
@@ -88,7 +107,7 @@ export type NumberedListElement = {
          id: string;
          type: BlockType.ListItem;
          children: CustomText[];
-      }
+      },
    ];
 };
 
@@ -100,7 +119,7 @@ export type BulletedListElement = {
          id: string;
          type: BlockType.ListItem;
          children: CustomText[];
-      }
+      },
    ];
 };
 
@@ -133,25 +152,6 @@ export type LinkElement = BlockElement & {
    children: [{ text: "" }];
 };
 
-export interface groupItem {
-   id: string;
-   isCustomSite?: boolean;
-   refId: string;
-   label?: string;
-   name: string;
-   labelColor?: string;
-   iconUrl?: string;
-   path?: string;
-   children: [{ text: "" }];
-}
-
-export type GroupElement = BlockElement & {
-   type: BlockType.Group;
-   itemsViewMode: "list" | "grid";
-   collection?: Collection["id"];
-   groupItems: groupItem[];
-};
-
 export type CustomElement =
    | ParagraphElement
    | HeadingElement
@@ -159,10 +159,11 @@ export type CustomElement =
    | NumberedListElement
    | ImageElement
    | LinkElement
-   | GroupElement
    | UpdatesElement
    | ToggleBlockElement
    | ListElement
+   | GroupElement
+   | GroupItemElement
    | EventsElement
    | EventItemElement;
 

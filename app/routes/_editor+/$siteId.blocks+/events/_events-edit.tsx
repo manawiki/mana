@@ -48,6 +48,23 @@ export function BlockEvents({
 }) {
    const editor = useSlate();
 
+   function handleAddEvent() {
+      const path = [
+         ReactEditor.findPath(editor, element)[0],
+         element.children[0].id ? element.children.length : 0,
+      ];
+      Transforms.insertNodes(
+         editor,
+         {
+            id: nanoid(),
+            type: BlockType.EventItem,
+            children: [{ text: "" }],
+         },
+         //@ts-ignore
+         { at: path },
+      );
+   }
+
    return (
       <section>
          <div
@@ -66,22 +83,7 @@ export function BlockEvents({
                   <button
                      className="shadow-1 flex h-9 items-center justify-center gap-2 rounded-b-full border-2 border-zinc-200 bg-neutral-50
                      px-3 pb-0.5 text-xs font-bold shadow-sm hover:bg-white dark:border-zinc-700 dark:bg-bg3Dark dark:hover:bg-zinc-800"
-                     onClick={() => {
-                        const path = [
-                           ReactEditor.findPath(editor, element),
-                           element.children.length,
-                        ];
-                        Transforms.insertNodes(
-                           editor,
-                           {
-                              id: nanoid(),
-                              type: BlockType.EventItem,
-                              children: [{ text: "" }],
-                           },
-                           //@ts-ignore
-                           { at: path }
-                        );
-                     }}
+                     onClick={handleAddEvent}
                   >
                      <Plus
                         className="text-zinc-500 dark:text-zinc-300"
@@ -96,35 +98,29 @@ export function BlockEvents({
    );
 }
 
-export function BlockEventItem({
-   element,
-   children,
-}: {
-   element: EventItemElement;
-   children: ReactNode;
-}) {
+export function BlockEventItem({ element }: { element: EventItemElement }) {
    const today = new Date();
    const currentTime = getCurrentTime();
 
    const editor = useSlate();
    const [labelValue, setLabelValue] = useState(element?.label ?? "");
    const [startDate, setStartDate] = useState(
-      element?.startDate ? new Date(element?.startDate) : today
+      element?.startDate ? new Date(element?.startDate) : today,
    );
    const [endDate, setEndDate] = useState(
-      element?.endDate ? new Date(element?.endDate) : today
+      element?.endDate ? new Date(element?.endDate) : today,
    );
 
    const [startTime, setStartTime] = useState(
-      element?.startTime ? element?.startTime : currentTime
+      element?.startTime ? element?.startTime : currentTime,
    );
    const [endTime, setEndTime] = useState(
-      element?.endTime ? element?.endTime : currentTime
+      element?.endTime ? element?.endTime : currentTime,
    );
 
    function updateEditorValue(
       event: Time | Date | string | any,
-      key: "startDate" | "startTime" | "endDate" | "endTime" | "label"
+      key: "startDate" | "startTime" | "endDate" | "endTime" | "label",
    ) {
       const path = ReactEditor.findPath(editor, element);
       if (key == "label") {
@@ -133,7 +129,7 @@ export function BlockEventItem({
             { [key]: event },
             {
                at: path,
-            }
+            },
          );
       }
 
@@ -149,7 +145,7 @@ export function BlockEventItem({
                      hours: 0,
                      minutes: 0,
                   },
-                  event
+                  event,
                ),
             }),
             ...(key == "endDate" && {
@@ -159,7 +155,7 @@ export function BlockEventItem({
                      hours: 0,
                      minutes: 0,
                   },
-                  event
+                  event,
                ),
             }),
             ...(key == "startTime" && {
@@ -173,7 +169,7 @@ export function BlockEventItem({
          },
          {
             at: path,
-         }
+         },
       );
    }
    const path = ReactEditor.findPath(editor, element);
@@ -192,18 +188,19 @@ export function BlockEventItem({
             .filter(
                (row) =>
                   new Date(row?.startTimestamp as Date) <= today &&
-                  new Date(row?.endTimestamp as Date)! > today
+                  new Date(row?.endTimestamp as Date)! > today,
             )
             .sort(
                //@ts-ignore
-               (a, b) => new Date(a.endTimestamp) - new Date(b.endTimestamp)
+               (a, b) => new Date(a.endTimestamp) - new Date(b.endTimestamp),
             );
 
          const upcomingEvents = currentChildren
             .filter((row) => new Date(row?.startTimestamp as Date) > today)
             .sort(
-               //@ts-ignore
-               (a, b) => new Date(a.startTimestamp) - new Date(b.startTimestamp)
+               (a, b) =>
+                  //@ts-ignore
+                  new Date(a.startTimestamp) - new Date(b.startTimestamp),
             );
 
          const resultArray = [...activeEvents, ...upcomingEvents];
@@ -278,7 +275,7 @@ export function BlockEventItem({
                                                    setStartTime(e);
                                                    updateEditorValue(
                                                       e,
-                                                      "startTime"
+                                                      "startTime",
                                                    );
                                                 }}
                                                 value={startTime}
@@ -297,7 +294,7 @@ export function BlockEventItem({
                                                    setEndTime(e);
                                                    updateEditorValue(
                                                       e,
-                                                      "endTime"
+                                                      "endTime",
                                                    );
                                                 }}
                                                 value={endTime}
@@ -313,7 +310,7 @@ export function BlockEventItem({
                                                 setStartDate(e);
                                                 updateEditorValue(
                                                    e,
-                                                   "startDate"
+                                                   "startDate",
                                                 );
                                              }}
                                              weekStartsFrom="Monday"
@@ -344,7 +341,7 @@ export function BlockEventItem({
                         <ChevronDown
                            className={clsx(
                               open ? "rotate-180" : "",
-                              "transform transition duration-300 ease-in-out"
+                              "transform transition duration-300 ease-in-out",
                            )}
                            size={18}
                         />

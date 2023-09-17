@@ -1,14 +1,17 @@
-import { Fragment, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 
 import {
    DragOverlay,
    DndContext,
    type DragEndEvent,
    type DragStartEvent,
+   closestCenter,
 } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
    SortableContext,
+   arrayMove,
    rectSortingStrategy,
    useSortable,
    verticalListSortingStrategy,
@@ -16,7 +19,6 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { useMatches, useParams } from "@remix-run/react";
-import { arrayMoveImmutable } from "array-move";
 import clsx from "clsx";
 import {
    ChevronDown,
@@ -31,7 +33,7 @@ import {
    Trash,
 } from "lucide-react";
 import { nanoid } from "nanoid";
-import { Transforms } from "slate";
+import { Transforms, Node, Editor } from "slate";
 import type { BaseEditor } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 import useSWR from "swr";
@@ -42,13 +44,15 @@ import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
+import { useIsMount } from "~/hooks";
 import { swrRestFetcher } from "~/utils";
 
-import type { CustomElement, GroupElement, groupItem } from "../../core/types";
-
-type Props = {
-   element: GroupElement;
-};
+import {
+   BlockType,
+   type CustomElement,
+   type GroupElement,
+   type GroupItemElement,
+} from "../../core/types";
 
 export const GROUP_COLORS = [
    "#a1a1aa",
@@ -61,7 +65,16 @@ export const GROUP_COLORS = [
    "#f472b6",
 ];
 
-export function BlockGroup({ element }: Props) {
+//@ts-ignore
+const GroupDnDContext = React.createContext();
+
+export function BlockGroup({
+   element,
+   children,
+}: {
+   element: GroupElement;
+   children: ReactNode;
+}) {
    const editor = useSlate();
 
    const siteId = useParams()?.siteId ?? customConfig?.siteId;
@@ -78,7 +91,7 @@ export function BlockGroup({ element }: Props) {
    //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `${settings.domainFull}/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
-      swrRestFetcher
+      swrRestFetcher,
    );
 
    const defaultOptions = [
@@ -93,7 +106,7 @@ export function BlockGroup({ element }: Props) {
    const [selected] = useState();
 
    const [selectedCollection, setSelectedCollection] = useState(
-      element.collection
+      element.collection,
    );
 
    const getDataType = () => {
@@ -129,42 +142,24 @@ export function BlockGroup({ element }: Props) {
               item.name
                  .toLowerCase()
                  .replace(/\s+/g, "")
-                 .includes(groupSelectQuery.toLowerCase().replace(/\s+/g, ""))
+                 .includes(groupSelectQuery.toLowerCase().replace(/\s+/g, "")),
            );
 
-   const groupItems = element.groupItems;
-
    //DND kit needs array of strings
-   const itemIds = useMemo(
-      () => groupItems.map((item) => item.id),
-      [groupItems]
-   );
 
-   function handleUpdateCollection(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
+   function handleUpdateCollection(event: any) {
       const path = ReactEditor.findPath(editor, element);
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         collection: event,
-      };
-
       setSelectedCollection(event);
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { collection: event },
+         {
+            at: path,
+         },
+      );
    }
 
-   function handleAddEntry(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const path = ReactEditor.findPath(editor, element);
-
+   function handleAddEntry(event: any) {
       const rowPath = () => {
          switch (selectedCollection) {
             case "site": {
@@ -180,58 +175,64 @@ export function BlockGroup({ element }: Props) {
 
       const isCustomSite = event.type == "custom" ? true : false;
 
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems: [
-            ...element.groupItems,
-            {
-               id: nanoid(),
-               labelColor: GROUP_COLORS["0"],
-               isCustomSite,
-               refId: event.id,
-               name: event.name,
-               path: rowPath(),
-               iconUrl: event?.icon?.url ?? event?.banner?.url,
-            },
-         ],
-      };
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      const path = [
+         ReactEditor.findPath(editor, element)[0],
+         element.children[0].id ? element.children.length : 0,
+      ];
+
+      const nodeId = nanoid();
+
+      Transforms.insertNodes(
+         editor,
+         {
+            id: nodeId,
+            //@ts-ignore
+            type: BlockType.GroupItem,
+            labelColor: GROUP_COLORS["0"],
+            isCustomSite,
+            refId: event.id,
+            name: event.name,
+            path: rowPath(),
+            iconUrl: event?.icon?.url ?? event?.banner?.url,
+            //@ts-ignore
+            children: [{ text: "" }],
+         },
+         { at: path },
+      );
+      //Update DND state after adding item
+      return setGroupItems((items) => [...items, nodeId]);
    }
 
    function handleUpdateItemsViewMode(
       event: any,
       editor: BaseEditor & ReactEditor,
-      element: GroupElement
+      element: GroupElement,
    ) {
       const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         itemsViewMode: event,
-      };
       setItemsViewMode(event);
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { itemsViewMode: event },
+         {
+            at: path,
+         },
+      );
    }
 
    // DND Functions
-
    const [activeId, setActiveId] = useState<string | null>(null);
 
    const activeElement = findNestedObj(
-      editor.children,
+      element.children,
       "id",
-      activeId
-   ) as unknown as groupItem;
+      activeId,
+   ) as unknown as GroupItemElement;
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(
       entireObj: object,
       keyToFind: string,
-      valToFind: string | null
+      valToFind: string | null,
    ) {
       let foundObj;
       JSON.stringify(entireObj, (_, nestedValue) => {
@@ -247,63 +248,26 @@ export function BlockGroup({ element }: Props) {
       setActiveId(event.active.id as string);
    }
 
-   function handleDragEnd(
-      event: DragEndEvent,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
+   const [groupItems, setGroupItems] = useState(
+      element.children.map((item) => item.id),
+   );
+
+   function handleDragEnd(event: DragEndEvent) {
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-         const groupItems = element.groupItems;
+         setGroupItems((items) => {
+            const oldIndex = items.findIndex((x) => {
+               return x === active.id;
+            });
 
-         const oldIndex = groupItems.findIndex((obj) => {
-            return obj.id === active.id;
-         });
+            const newIndex = items.findIndex((x) => {
+               return x === over?.id;
+            });
 
-         const newIndex = groupItems.findIndex((obj) => {
-            return obj.id === over?.id;
-         });
-
-         const updatedGroupItems = arrayMoveImmutable(
-            groupItems,
-            oldIndex,
-            newIndex
-         );
-
-         const path = ReactEditor.findPath(editor, element);
-
-         const newProperties: Partial<CustomElement> = {
-            ...element,
-            groupItems: updatedGroupItems,
-         };
-
-         //Now we update the local SlateJS state
-         return Transforms.setNodes<CustomElement>(editor, newProperties, {
-            at: path,
+            return arrayMove(items, oldIndex, newIndex);
          });
       }
-   }
-
-   function deleteRow(
-      id: string,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const groupItems = element.groupItems;
-
-      const path = ReactEditor.findPath(editor, element);
-
-      const updatedGroupItems = groupItems.filter((item) => item.id !== id);
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems: updatedGroupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
    }
 
    const activeSelectItem = (item: any) =>
@@ -319,12 +283,7 @@ export function BlockGroup({ element }: Props) {
                   h-14 flex-grow items-center justify-between rounded-l-lg rounded-r-xl border pr-3 shadow-sm"
             >
                <div className="flex w-full items-center gap-3">
-                  <Combobox
-                     value={selected}
-                     onChange={(event) =>
-                        handleAddEntry(event, editor, element)
-                     }
-                  >
+                  <Combobox value={selected} onChange={handleAddEntry}>
                      <div className="flex-grow">
                         <div className="bg-2-sub flex items-center gap-3">
                            <Combobox.Button className="group">
@@ -403,9 +362,7 @@ export function BlockGroup({ element }: Props) {
                </div>
                <Listbox
                   value={selectedCollection}
-                  onChange={(event) =>
-                     handleUpdateCollection(event, editor, element)
-                  }
+                  onChange={handleUpdateCollection}
                >
                   <div className="relative z-30 flex-none">
                      <Listbox.Button
@@ -452,7 +409,7 @@ export function BlockGroup({ element }: Props) {
                                        </>
                                     )}
                                  </Listbox.Option>
-                              )
+                              ),
                            )}
                            <Listbox.Option key="post" value="post">
                               {({ selected }) => (
@@ -507,7 +464,7 @@ export function BlockGroup({ element }: Props) {
                               <div
                                  className={clsx(
                                     checked ? "bg-white dark:bg-dark500" : "",
-                                    "flex h-7 w-7 items-center justify-center rounded"
+                                    "flex h-7 w-7 items-center justify-center rounded",
                                  )}
                               >
                                  <RadioGroup.Label className="sr-only">
@@ -534,7 +491,7 @@ export function BlockGroup({ element }: Props) {
                               <div
                                  className={clsx(
                                     checked ? "bg-white dark:bg-dark500" : "",
-                                    "flex h-7 w-7 items-center justify-center rounded"
+                                    "flex h-7 w-7 items-center justify-center rounded",
                                  )}
                               >
                                  <RadioGroup.Label className="sr-only">
@@ -557,51 +514,36 @@ export function BlockGroup({ element }: Props) {
                </RadioGroup>
             </div>
          </section>
-         <section>
+         <section
+            className={clsx(
+               itemsViewMode == "list"
+                  ? `border-color-sub divide-color-sub shadow-1 group relative
+                        mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm`
+                  : "",
+               itemsViewMode == "grid"
+                  ? "grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4"
+                  : "",
+               "",
+            )}
+         >
             <DndContext
                onDragStart={handleDragStart}
-               onDragEnd={(event) => handleDragEnd(event, editor, element)}
+               onDragEnd={handleDragEnd}
+               collisionDetection={closestCenter}
             >
                <SortableContext
-                  items={itemIds}
+                  items={groupItems}
                   strategy={
                      itemsViewMode == "list"
                         ? verticalListSortingStrategy
                         : rectSortingStrategy
                   }
                >
-                  {groupItems?.length === 0 ? null : itemsViewMode == "list" ? (
-                     <div
-                        className="border-color-sub divide-color-sub shadow-1 group relative
-                                 mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm"
-                     >
-                        {groupItems?.map((row) => (
-                           <SortableListItem
-                              editor={editor}
-                              key={row.id}
-                              rowId={row.id}
-                              element={element}
-                              deleteRow={() =>
-                                 deleteRow(row.id, editor, element)
-                              }
-                           />
-                        ))}
-                     </div>
-                  ) : (
-                     <div className="grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4">
-                        {groupItems?.map((row) => (
-                           <SortableGridItem
-                              editor={editor}
-                              key={row.id}
-                              rowId={row.id}
-                              element={element}
-                              deleteRow={() =>
-                                 deleteRow(row.id, editor, element)
-                              }
-                           />
-                        ))}
-                     </div>
-                  )}
+                  <GroupDnDContext.Provider
+                     value={{ groupItems, setGroupItems }}
+                  >
+                     {children}
+                  </GroupDnDContext.Provider>
                </SortableContext>
                <DragOverlay modifiers={[restrictToParentElement]}>
                   {activeElement && itemsViewMode == "list" ? (
@@ -668,17 +610,25 @@ export function BlockGroup({ element }: Props) {
    );
 }
 
-const SortableListItem = ({
-   editor,
-   rowId,
+export function BlockGroupItem({
    element,
-   deleteRow,
+   children,
 }: {
-   editor: BaseEditor & ReactEditor;
-   rowId: string;
-   element: GroupElement;
-   deleteRow: () => void;
-}) => {
+   element: GroupItemElement;
+   children: ReactNode;
+}) {
+   const editor = useSlate();
+
+   const path = ReactEditor.findPath(editor, element);
+
+   const parent = Node.parent(editor, path) as GroupElement;
+
+   const itemsViewMode = parent.itemsViewMode;
+   const isMount = useIsMount();
+
+   //@ts-ignore
+   const { groupItems } = useContext(GroupDnDContext);
+
    const {
       transition,
       attributes,
@@ -688,107 +638,216 @@ const SortableListItem = ({
       setActivatorNodeRef,
       setNodeRef,
       listeners,
+      data,
    } = useSortable({
-      id: rowId,
+      id: element.id,
    });
+   /**
+    * We sort in the Slate Node since we can't
+    * update the child state from the parent
+    */
 
-   const row = element.groupItems.find((obj) => {
-      return obj.id === rowId;
-   });
+   useEffect(() => {
+      if (!isMount && !isDragging && !isSorting) {
+         return groupItems.forEach((row: any) => {
+            Transforms.moveNodes<CustomElement>(editor, {
+               at: [path[0]],
+               match: (node: any) =>
+                  Editor.isBlock(editor, node) && node.id == row,
+               to: [path[0], groupItems.findIndex((item: any) => item == row)],
+            });
+         });
+      }
+   }, [data]);
 
-   const updateLabelColor = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, labelColor: event } : x
+   function updateLabelColor(event: string) {
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { labelColor: event },
+         {
+            at: path,
+         },
       );
+   }
 
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const updateLabelValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, label: event } : x
+   function updateLabelValue(event: string) {
+      Transforms.setNodes<CustomElement>(
+         editor,
+         { label: event },
+         {
+            at: path,
+         },
       );
+      return setLabelValue(event);
+   }
 
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-      setLabelValue(event);
+   const [labelValue, setLabelValue] = useState(element?.label);
 
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const [labelValue, setLabelValue] = useState(row?.label);
-
-   return (
-      <div
-         {...attributes}
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         className="bg-2-sub relative"
-      >
-         <div className="flex items-center justify-between gap-2 p-2.5">
-            <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
-               <div
-                  className="bg-3 border-color-sub shadow-1 flex h-8 w-8
-               items-center justify-between rounded-full border shadow-sm"
-               >
-                  {row?.iconUrl ? (
-                     <Image
-                        width={32}
-                        height={32}
-                        className="overflow-hidden rounded-full"
-                        url={row?.iconUrl}
-                        options="aspect_ratio=1:1&height=80&width=80"
-                        alt={row?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
+   if (itemsViewMode == "list") {
+      return (
+         <div
+            {...attributes}
+            ref={setNodeRef}
+            style={
+               {
+                  transition: transition,
+                  transform: CSS.Transform.toString(transform),
+                  pointerEvents: isSorting ? "none" : undefined,
+                  opacity: isDragging ? 0 : 1,
+               } as React.CSSProperties /* cast because of css variable */
+            }
+            className="bg-2-sub relative"
+         >
+            <div className="hidden">{children}</div>
+            <div className="flex items-center justify-between gap-2 p-2.5">
+               <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
+                  <div
+                     className="bg-3 border-color-sub shadow-1 flex h-8 w-8
+            items-center justify-between rounded-full border shadow-sm"
+                  >
+                     {element?.iconUrl ? (
+                        <Image
+                           width={32}
+                           height={32}
+                           className="overflow-hidden rounded-full"
+                           url={element?.iconUrl}
+                           options="aspect_ratio=1:1&height=80&width=80"
+                           alt={element?.name ?? "Icon"}
+                        />
+                     ) : (
+                        <Component className="text-1 mx-auto" size={18} />
+                     )}
+                  </div>
+                  <span className="truncate text-sm font-bold">
+                     {element?.name}
+                  </span>
                </div>
-               <span className="truncate text-sm font-bold">{row?.name}</span>
-            </div>
-            <div className="absolute left-2 flex items-center gap-3 opacity-0 group-hover:opacity-100">
-               <Tooltip>
-                  <TooltipTrigger>
-                     <button
-                        type="button"
-                        aria-label="Drag to reorder"
-                        ref={setActivatorNodeRef}
-                        {...listeners}
-                        className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
-                     >
-                        <GripVertical className="text-1" size={16} />
-                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Drag to reorder</TooltipContent>
-               </Tooltip>
+               <div className="absolute left-2 flex items-center gap-3 opacity-0 group-hover:opacity-100">
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <button
+                           type="button"
+                           aria-label="Drag to reorder"
+                           ref={setActivatorNodeRef}
+                           {...listeners}
+                           className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
+                        >
+                           <GripVertical className="text-1" size={16} />
+                        </button>
+                     </TooltipTrigger>
+                     <TooltipContent>Drag to reorder</TooltipContent>
+                  </Tooltip>
 
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <button
+                           className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
+                           onClick={() => {
+                              Transforms.delete(editor, {
+                                 at: path,
+                              });
+                           }}
+                           aria-label="Delete"
+                        >
+                           <Trash
+                              className="text-zinc-400 dark:text-zinc-500"
+                              size={16}
+                           />
+                        </button>
+                     </TooltipTrigger>
+                     <TooltipContent>Delete</TooltipContent>
+                  </Tooltip>
+               </div>
+               <div className="flex flex-none items-center justify-center">
+                  <Listbox value={element?.labelColor}>
+                     <Listbox.Button
+                        className="bg-2-sub hidden h-7 w-7 items-center justify-center
+                           rounded-full focus:outline-none group-hover:flex"
+                     >
+                        <div
+                           style={{
+                              backgroundColor: element?.labelColor,
+                           }}
+                           className="h-3 w-3 rounded-full"
+                        />
+                     </Listbox.Button>
+                     <Transition
+                        enter="transition duration-100 ease-out"
+                        enterFrom="transform scale-95 opacity-0"
+                        enterTo="transform scale-100 opacity-100"
+                        leave="transition duration-75 ease-out"
+                        leaveFrom="transform scale-100 opacity-100"
+                        leaveTo="transform scale-95 opacity-0"
+                     >
+                        <Listbox.Options
+                           className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
+                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
+                        >
+                           {GROUP_COLORS?.map(
+                              (color: string, rowIdx: number) => (
+                                 <Listbox.Option
+                                    className="flex items-center justify-center"
+                                    key={rowIdx}
+                                    value={color}
+                                 >
+                                    <button
+                                       type="button"
+                                       onClick={() => updateLabelColor(color)}
+                                       className="h-3.5 w-3.5 rounded-full"
+                                       key={color}
+                                       style={{
+                                          backgroundColor: color,
+                                       }}
+                                    ></button>
+                                 </Listbox.Option>
+                              ),
+                           )}
+                        </Listbox.Options>
+                     </Transition>
+                  </Listbox>
+                  <input
+                     style={{
+                        backgroundColor: `${element?.labelColor}33`,
+                     }}
+                     onChange={(event) => updateLabelValue(event.target.value)}
+                     value={labelValue}
+                     type="text"
+                     className="h-6 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
+                  />
+               </div>
+            </div>
+         </div>
+      );
+   }
+   if (itemsViewMode == "grid") {
+      return (
+         <div
+            {...attributes}
+            ref={setNodeRef}
+            style={
+               {
+                  transition: transition,
+                  transform: CSS.Transform.toString(transform),
+                  pointerEvents: isSorting ? "none" : undefined,
+                  opacity: isDragging ? 0 : 1,
+               } as React.CSSProperties /* cast because of css variable */
+            }
+            className="bg-2-sub border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+         >
+            <div className="hidden">{children}</div>
+            <div
+               className="absolute left-0 top-0 flex w-full select-none 
+      items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100"
+            >
                <Tooltip>
                   <TooltipTrigger>
                      <button
-                        className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
-                        onClick={deleteRow}
+                        className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
+                        onClick={() => {
+                           Transforms.delete(editor, {
+                              at: path,
+                           });
+                        }}
                         aria-label="Delete"
                      >
                         <Trash
@@ -799,16 +858,61 @@ const SortableListItem = ({
                   </TooltipTrigger>
                   <TooltipContent>Delete</TooltipContent>
                </Tooltip>
+
+               <Tooltip>
+                  <TooltipTrigger>
+                     <button
+                        type="button"
+                        aria-label="Drag to reorder"
+                        ref={setActivatorNodeRef}
+                        {...listeners}
+                        className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+                     >
+                        <Move className="text-1" size={16} />
+                     </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Drag to reorder</TooltipContent>
+               </Tooltip>
             </div>
-            <div className="flex flex-none items-center justify-center">
-               <Listbox value={row?.labelColor}>
+            <div className="block truncate">
+               <div className="relative z-20 mx-auto flex w-20 items-center justify-center pt-0.5">
+                  <input
+                     style={{
+                        backgroundColor: `${element?.labelColor}33`,
+                     }}
+                     onChange={(event) => updateLabelValue(event.target.value)}
+                     value={labelValue}
+                     type="text"
+                     className="h-5 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
+                  />
+               </div>
+               <div
+                  className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
+            items-center overflow-hidden rounded-full border-2 shadow"
+               >
+                  {element?.iconUrl ? (
+                     <Image
+                        url={element?.iconUrl}
+                        options="aspect_ratio=1:1&height=120&width=120"
+                        alt={element?.name ?? "Icon"}
+                     />
+                  ) : (
+                     <Component className="text-1 mx-auto" size={18} />
+                  )}
+               </div>
+               <div className="text-1 truncate pt-1 text-center text-sm font-bold">
+                  {element?.name}
+               </div>
+            </div>
+            <div className="absolute bottom-2 left-1 hidden group-hover:block">
+               <Listbox value={element?.labelColor}>
                   <Listbox.Button
-                     className="bg-2-sub hidden h-7 w-7 items-center justify-center
-                              rounded-full focus:outline-none group-hover:flex"
+                     className="bg-2-sub flex h-7 w-7 items-center 
+                           justify-center rounded-full focus:outline-none"
                   >
                      <div
                         style={{
-                           backgroundColor: row?.labelColor,
+                           backgroundColor: element?.labelColor,
                         }}
                         className="h-3 w-3 rounded-full"
                      />
@@ -822,8 +926,8 @@ const SortableListItem = ({
                      leaveTo="transform scale-95 opacity-0"
                   >
                      <Listbox.Options
-                        className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
-                              items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
+                        className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
+                           grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm"
                      >
                         {GROUP_COLORS?.map((color: string, rowIdx: number) => (
                            <Listbox.Option
@@ -845,211 +949,8 @@ const SortableListItem = ({
                      </Listbox.Options>
                   </Transition>
                </Listbox>
-               <input
-                  style={{
-                     backgroundColor: `${row?.labelColor}33`,
-                  }}
-                  onChange={(event) => updateLabelValue(event.target.value)}
-                  value={labelValue}
-                  type="text"
-                  className="h-6 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
-               />
             </div>
          </div>
-      </div>
-   );
-};
-
-const SortableGridItem = ({
-   rowId,
-   element,
-   deleteRow,
-   editor,
-}: {
-   rowId: string;
-   editor: BaseEditor & ReactEditor;
-   element: GroupElement;
-   deleteRow: () => void;
-}) => {
-   const {
-      transition,
-      attributes,
-      transform,
-      isSorting,
-      isDragging,
-      setActivatorNodeRef,
-      setNodeRef,
-      listeners,
-   } = useSortable({
-      id: rowId,
-   });
-
-   const row = element.groupItems.find((obj) => {
-      return obj.id === rowId;
-   });
-
-   const updateLabelColor = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, labelColor: event } : x
       );
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const updateLabelValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, label: event } : x
-      );
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-      setLabelValue(event);
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const [labelValue, setLabelValue] = useState(row?.label);
-
-   return (
-      <div
-         {...attributes}
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         className="bg-2-sub border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
-      >
-         <div
-            className="absolute left-0 top-0 flex w-full select-none 
-         items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100"
-         >
-            <Tooltip>
-               <TooltipTrigger>
-                  <button
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
-                     onClick={deleteRow}
-                     aria-label="Delete"
-                  >
-                     <Trash
-                        className="text-zinc-400 dark:text-zinc-500"
-                        size={16}
-                     />
-                  </button>
-               </TooltipTrigger>
-               <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-               <TooltipTrigger>
-                  <button
-                     type="button"
-                     aria-label="Drag to reorder"
-                     ref={setActivatorNodeRef}
-                     {...listeners}
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
-                  >
-                     <Move className="text-1" size={16} />
-                  </button>
-               </TooltipTrigger>
-               <TooltipContent>Drag to reorder</TooltipContent>
-            </Tooltip>
-         </div>
-         <div className="block truncate">
-            <div className="relative z-20 mx-auto flex w-20 items-center justify-center pt-0.5">
-               <input
-                  style={{
-                     backgroundColor: `${row?.labelColor}33`,
-                  }}
-                  onChange={(event) => updateLabelValue(event.target.value)}
-                  value={labelValue}
-                  type="text"
-                  className="h-5 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
-               />
-            </div>
-            <div
-               className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
-               items-center overflow-hidden rounded-full border-2 shadow"
-            >
-               {row?.iconUrl ? (
-                  <Image
-                     url={row?.iconUrl}
-                     options="aspect_ratio=1:1&height=120&width=120"
-                     alt={row?.name ?? "Icon"}
-                  />
-               ) : (
-                  <Component className="text-1 mx-auto" size={18} />
-               )}
-            </div>
-            <div className="text-1 truncate pt-1 text-center text-sm font-bold">
-               {row?.name}
-            </div>
-         </div>
-         <div className="absolute bottom-2 left-1 hidden group-hover:block">
-            <Listbox value={row?.labelColor}>
-               <Listbox.Button
-                  className="bg-2-sub flex h-7 w-7 items-center 
-                              justify-center rounded-full focus:outline-none"
-               >
-                  <div
-                     style={{
-                        backgroundColor: row?.labelColor,
-                     }}
-                     className="h-3 w-3 rounded-full"
-                  />
-               </Listbox.Button>
-               <Transition
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform scale-95 opacity-0"
-                  enterTo="transform scale-100 opacity-100"
-                  leave="transition duration-75 ease-out"
-                  leaveFrom="transform scale-100 opacity-100"
-                  leaveTo="transform scale-95 opacity-0"
-               >
-                  <Listbox.Options
-                     className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
-                              grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm"
-                  >
-                     {GROUP_COLORS?.map((color: string, rowIdx: number) => (
-                        <Listbox.Option
-                           className="flex items-center justify-center"
-                           key={rowIdx}
-                           value={color}
-                        >
-                           <button
-                              type="button"
-                              onClick={() => updateLabelColor(color)}
-                              className="h-3.5 w-3.5 rounded-full"
-                              key={color}
-                              style={{
-                                 backgroundColor: color,
-                              }}
-                           ></button>
-                        </Listbox.Option>
-                     ))}
-                  </Listbox.Options>
-               </Transition>
-            </Listbox>
-         </div>
-      </div>
-   );
-};
+   }
+}
