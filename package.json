@@ -43,7 +43,6 @@
       "@remix-run/react": "^2.0.0",
       "@remix-run/server-runtime": "^2.0.0",
       "aos": "^3.0.0-beta.6",
-      "array-move": "^4.0.0",
       "cachified": "^3.5.4",
       "chart.js": "^4.4.0",
       "clsx": "^2.0.0",
