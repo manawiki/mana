@@ -12,8 +12,11 @@ import {
    BlockEventItemView,
    BlockEventsView,
 } from "../../$siteId.blocks+/events/events-view";
-import { BlockGroup } from "../../$siteId.blocks+/group/_group";
-import { BlockGroupView } from "../../$siteId.blocks+/group/group-view";
+import { BlockGroup, BlockGroupItem } from "../../$siteId.blocks+/group/_group";
+import {
+   BlockGroupItemView,
+   BlockGroupView,
+} from "../../$siteId.blocks+/group/group-view";
 import { BlockImage } from "../../$siteId.blocks+/image/image-view";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
@@ -36,15 +39,6 @@ export function EditorBlocks({
          if (readOnly)
             return <BlockLinkView element={element} children={children} />;
          return <BlockLink element={element} children={children} />;
-      }
-      case BlockType.Group: {
-         if (readOnly) return <BlockGroupView element={element} />;
-         return (
-            <div {...attributes} contentEditable={false}>
-               <BlockGroup element={element} />
-               <div style={{ display: "none" }}>{children}</div>
-            </div>
-         );
       }
       case BlockType.Updates: {
          if (readOnly) return <BlockUpdatesView element={element} />;
@@ -149,6 +143,29 @@ export function EditorBlocks({
             );
          return (
             <BlockEventItem
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.Group: {
+         if (readOnly)
+            return (
+               <BlockGroupView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
+         return (
+            <BlockGroup element={element} children={children} {...attributes} />
+         );
+      }
+      case BlockType.GroupItem: {
+         if (readOnly) return <BlockGroupItemView element={element} />;
+         return (
+            <BlockGroupItem
                element={element}
                children={children}
                {...attributes}

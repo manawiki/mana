@@ -23,6 +23,7 @@ import { ReactEditor } from "slate-react";
 // import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
+import { GROUP_COLORS } from "../../$siteId.blocks+/group/_group";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
@@ -158,12 +159,16 @@ export function BlockSelector({
                onSelect: () => {
                   onInsertBelow({
                      id: nanoid(),
-                     viewMode: "2-col",
                      itemsViewMode: "grid",
                      type: BlockType.Group,
-                     collection: "",
-                     groupItems: [],
-                     children: [{ text: "" }],
+                     children: [
+                        {
+                           id: nanoid(),
+                           type: BlockType.GroupItem,
+                           labelColor: GROUP_COLORS["0"],
+                           children: [{ text: "" }],
+                        },
+                     ],
                   });
                },
             },
@@ -290,7 +295,7 @@ export function BlockSelector({
                                                          onClick={() => {
                                                             item.onSelect();
                                                             setEditorTray(
-                                                               false
+                                                               false,
                                                             );
                                                          }}
                                                       >
@@ -313,7 +318,7 @@ export function BlockSelector({
                                                          </div>
                                                       </button>
                                                    );
-                                                }
+                                                },
                                              )}
                                           </div>
                                        </div>
