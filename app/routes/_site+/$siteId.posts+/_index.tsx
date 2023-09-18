@@ -31,6 +31,7 @@ import type { Image, Post, Site, User } from "payload/generated-types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import { isLoading, safeNanoID } from "~/utils";
 import { cacheWithSelect } from "~/utils/cache.server";
 
@@ -110,7 +111,7 @@ export default function PostsIndex() {
                         {({ open }) => (
                            <div
                               className=" flex h-10 items-center 
-                              gap-2 rounded-full bg-emerald-500 pl-5 pr-4 text-white"
+                              gap-2 rounded-full bg-zinc-500 pl-5 pr-4 text-white"
                            >
                               <span className="text-sm font-bold">
                                  New Post
@@ -147,10 +148,7 @@ export default function PostsIndex() {
                                        value="createPost"
                                        type="submit"
                                     >
-                                       <File
-                                          size="18"
-                                          className="text-emerald-500"
-                                       />
+                                       <File size="18" />
                                        <span>Blank Post</span>
                                     </button>
                                  </Form>
@@ -180,7 +178,7 @@ export default function PostsIndex() {
                            <Listbox.Button className="text-1 flex items-center gap-2 text-sm font-semibold hover:underline">
                               {selectedStatus}
                               <ChevronsUpDown
-                                 className="text-emerald-500"
+                                 className="text-zinc-500"
                                  size={16}
                               />
                            </Listbox.Button>
@@ -207,17 +205,17 @@ export default function PostsIndex() {
                                                    (searchParams) => {
                                                       searchParams.set(
                                                          "status",
-                                                         "draft"
+                                                         "draft",
                                                       );
                                                       return searchParams;
-                                                   }
+                                                   },
                                                 )
                                              }
                                           >
                                              {selected ? (
                                                 <span
                                                    className="absolute right-2 h-1.5 w-1.5 rounded-full
-                                                 bg-emerald-500"
+                                                 bg-zinc-500"
                                                 />
                                              ) : null}
                                              Draft
@@ -239,17 +237,17 @@ export default function PostsIndex() {
                                                    (searchParams) => {
                                                       searchParams.set(
                                                          "status",
-                                                         "published"
+                                                         "published",
                                                       );
                                                       return searchParams;
-                                                   }
+                                                   },
                                                 )
                                              }
                                           >
                                              {selected ? (
                                                 <span
                                                    className="absolute right-2 h-1.5 w-1.5 rounded-full
-                                                 bg-emerald-500"
+                                                 bg-zinc-500"
                                                 />
                                              ) : null}
                                              Published
@@ -267,17 +265,17 @@ export default function PostsIndex() {
                                                 setSearchParams(
                                                    (searchParams) => {
                                                       searchParams.delete(
-                                                         "status"
+                                                         "status",
                                                       );
                                                       return searchParams;
-                                                   }
+                                                   },
                                                 )
                                              }
                                           >
                                              {selected ? (
                                                 <span
                                                    className="absolute right-2 h-1.5 w-1.5 rounded-full
-                                                 bg-emerald-500"
+                                                 bg-zinc-500"
                                                 />
                                              ) : null}
                                              All
@@ -312,7 +310,7 @@ export default function PostsIndex() {
                                     >
                                        {dt.format(
                                           new Date(post?.updatedAt),
-                                          "MMM D"
+                                          "MMM D",
                                        )}
                                     </time>
                                     {post._status == "published" ? (
@@ -503,6 +501,7 @@ export const action = async ({
                author: user?.id,
                //@ts-ignore
                site: site.id,
+               content: initialValue(),
             },
             user,
             draft: true,
@@ -543,7 +542,7 @@ const Pagination = ({
                      })
                   }
                >
-                  <ChevronLeft size={18} className="text-emerald-500" />
+                  <ChevronLeft size={18} className="text-zinc-500" />
                   Prev
                </button>
             ) : null}
@@ -561,7 +560,7 @@ const Pagination = ({
                   }
                >
                   Next
-                  <ChevronRight size={18} className="text-emerald-500" />
+                  <ChevronRight size={18} className="text-zinc-500" />
                </button>
             ) : null}
          </div>
@@ -642,7 +641,7 @@ const fetchPublishedPosts = async ({
             sort: "-publishedAt",
          }),
       filterAuthorFields,
-      postSelect
+      postSelect,
    );
    return result;
 };
@@ -708,7 +707,7 @@ const fetchMyPosts = async ({
 
 const filterAuthorFields = (
    data: PaginatedDocs<Post>,
-   selectConfig: Partial<Record<keyof any, boolean>>
+   selectConfig: Partial<Record<keyof any, boolean>>,
 ) => {
    const authorSelect: Select<User> = {
       id: false,

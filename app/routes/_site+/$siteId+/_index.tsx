@@ -8,7 +8,7 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
-import { Check, History, Loader2 } from "lucide-react";
+import { Check, Clock9, Loader2 } from "lucide-react";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -67,7 +67,7 @@ export async function loader({
 
    return await deferIf(
       { home, isChanged, updateResults, versions, siteId },
-      isMobileApp
+      isMobileApp,
    );
 }
 
@@ -190,7 +190,7 @@ const fetchHomeUpdates = async ({
          },
          sort: "-createdAt",
       },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
    );
    const updatesUrl = `${settings.domainFull}/api/updates${updatesQuery}`;
 
@@ -221,17 +221,11 @@ const EditorCommandBar = ({
    const [isVersionModalOpen, setVersionModal] = useState(false);
 
    return (
-      <div className="shadow-1 bg-2 border-color z-40 flex w-12 flex-col items-center justify-between gap-3 rounded-full border p-2 shadow max-laptop:hidden">
+      <div className="shadow-1 bg-2-sub border-color-sub z-40 flex w-11 flex-col items-center justify-between gap-2 rounded-full border py-1.5 shadow max-laptop:hidden">
          <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
             {isPublishing ? (
-               <div
-                  className="shadow-1 inline-flex h-8 w-8 items-center justify-center 
-                  rounded-full border border-blue-200/80 bg-gradient-to-b
-                  from-blue-50 to-blue-100 text-sm font-bold text-white shadow-sm transition
-                  dark:border-blue-900 dark:from-blue-950 dark:to-blue-950/80 
-                  dark:shadow-blue-950"
-               >
-                  <Loader2 className="mx-auto h-5 w-5 animate-spin text-blue-500" />
+               <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 bg-zinc-700">
+                  <Loader2 className="mx-auto h-4 w-4 animate-spin text-white dark:text-zinc-900" />
                </div>
             ) : (
                <>
@@ -239,11 +233,7 @@ const EditorCommandBar = ({
                      <Tooltip placement="left">
                         <TooltipTrigger>
                            <button
-                              className="shadow-1 flex h-8 w-8 items-center justify-center rounded-full
-                              border border-blue-200/70 bg-gradient-to-b from-blue-50 to-blue-100
-                              text-sm font-bold text-blue-500 shadow-sm transition dark:border-blue-900
-                              dark:from-blue-950 dark:to-blue-950/80 dark:text-blue-300 
-                              dark:shadow-blue-950"
+                              className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 bg-zinc-700"
                               disabled={disabled}
                               onClick={() => {
                                  fetcher.submit(
@@ -256,28 +246,23 @@ const EditorCommandBar = ({
                                     {
                                        method: "post",
                                        action: "/editor",
-                                    }
+                                    },
                                  );
                               }}
                            >
-                              <PaperAirplaneIcon className="h-4 w-4" />
+                              <PaperAirplaneIcon className="h-4 text-white dark:text-zinc-900 w-4" />
                            </button>
                         </TooltipTrigger>
                         <TooltipContent>Publish latest changes</TooltipContent>
                      </Tooltip>
                   ) : (
                      <Tooltip placement="left">
-                        <TooltipTrigger>
-                           <div
-                              className="shadow-1 border-color bg-3 flex h-8
-                                 w-8 items-center justify-center rounded-full border shadow-sm"
-                           >
-                              {isAutoSaving ? (
-                                 <Loader2 size={16} className="animate-spin" />
-                              ) : (
-                                 <Check size={16} />
-                              )}
-                           </div>
+                        <TooltipTrigger className="flex cursor-default h-8 w-8 items-center justify-center">
+                           {isAutoSaving ? (
+                              <Loader2 size={18} className="animate-spin" />
+                           ) : (
+                              <Check size={18} />
+                           )}
                         </TooltipTrigger>
                         <TooltipContent>
                            No changes to publish...
@@ -287,13 +272,11 @@ const EditorCommandBar = ({
                </>
             )}
             <Tooltip placement="left">
-               <TooltipTrigger>
-                  <button
-                     className="shadow-1 border-color bg-3 flex h-8 w-8 items-center justify-center rounded-full border shadow-sm"
-                     onClick={() => setVersionModal(true)}
-                  >
-                     <History size={18} />
-                  </button>
+               <TooltipTrigger
+                  className="transition duration-100 active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
+                  onClick={() => setVersionModal(true)}
+               >
+                  <Clock9 size={18} />
                </TooltipTrigger>
                <TooltipContent>History</TooltipContent>
             </Tooltip>
@@ -369,7 +352,7 @@ const fetchHomeContent = async ({
                      content: true,
                      _status: true,
                   },
-                  doc.version
+                  doc.version,
                );
 
                //Combine final result
@@ -408,7 +391,7 @@ const fetchHomeContent = async ({
          },
          depth: 1,
       },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
    );
 
    const homeContentUrl = `${settings.domainFull}/api/homeContents${homeContentQuery}`;
