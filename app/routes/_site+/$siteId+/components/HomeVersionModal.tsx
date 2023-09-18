@@ -53,14 +53,14 @@ export const HomeVersionModal = ({
          >
             <section className="bg-3 flex items-start">
                <Tab.Group>
-                  <Tab.Panels className="bg-3 max-h-[90vh] w-[775px] overflow-auto px-4 pb-4">
+                  <Tab.Panels className="bg-3 max-h-[90vh] w-[775px] overflow-auto px-4 pb-4 no-scrollbar">
                      <div
                         className="bg-2 text-1 border-color fixed left-0 top-0 z-10 
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
                         {dt.format(
                            new Date(selectedVersion?.updatedAt as string),
-                           "MMMM D, hh:mm A"
+                           "MMMM D, hh:mm A",
                         )}
                      </div>
                      {versions?.map(
@@ -83,7 +83,7 @@ export const HomeVersionModal = ({
                                     />
                                  </Slate>
                               </Tab.Panel>
-                           )
+                           ),
                      )}
                   </Tab.Panels>
                   <div className="border-color flex h-full max-h-[90vh] min-h-[90vh] w-[300px] flex-col  border-l">
@@ -108,7 +108,7 @@ export const HomeVersionModal = ({
                                                    checked
                                                       ? "bg-zinc-100 font-semibold dark:bg-zinc-700/80"
                                                       : "text-1",
-                                                   "group relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2"
+                                                   "group relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2",
                                                 )}
                                              >
                                                 {/* {index == 0 &&
@@ -123,9 +123,9 @@ export const HomeVersionModal = ({
                                                 >
                                                    {dt.format(
                                                       new Date(
-                                                         row?.updatedAt as string
+                                                         row?.updatedAt as string,
                                                       ),
-                                                      "MMMM D, hh:mm A"
+                                                      "MMMM D, hh:mm A",
                                                    )}
                                                 </time>
                                                 {/* {checked == false  : "asdasd"} */}
@@ -138,7 +138,7 @@ export const HomeVersionModal = ({
                                           )}
                                        </RadioGroup.Option>
                                     </Tab>
-                                 )
+                                 ),
                            )}
                         </RadioGroup>
                         <div className="border-color grid flex-none grid-cols-2 gap-4 border-t p-4">
@@ -153,7 +153,7 @@ export const HomeVersionModal = ({
                                     },
                                     {
                                        method: "patch",
-                                    }
+                                    },
                                  );
                                  setVersionModal(false);
                                  // Not ideal, but theres no good way to update slate state externally

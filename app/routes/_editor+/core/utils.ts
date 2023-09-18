@@ -4,8 +4,8 @@ import type { Path, Node } from "slate";
 import { Editor, Transforms, Range } from "slate";
 
 import { HOTKEYS } from "./constants";
-import { BlockType, type CustomElement, type Format } from "./types";
 import { indentItem, undentItem } from "./plugins/list/utils";
+import { BlockType, type CustomElement, type Format } from "./types";
 
 //Helpers
 export function topLevelPath(path: Path): Path {
@@ -14,7 +14,6 @@ export function topLevelPath(path: Path): Path {
 
 export function initialValue(): CustomElement[] {
    const id = nanoid();
-
    return [
       {
          id,
