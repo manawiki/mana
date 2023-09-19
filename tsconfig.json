@@ -6,7 +6,7 @@
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
       "target": "es2022",
-      //  "verbatimModuleSyntax": true,
+      //  "verbatimModuleSyntax": true, https://twitter.com/mattpocockuk/status/1704041192588001444
       "allowJs": true,
       "resolveJsonModule": true,
        "moduleDetection": "force",
