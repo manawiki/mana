@@ -1,12 +1,13 @@
 {  
    // Extend the root-level config to reuse common options.
    "extends": "./tsconfig.json",
-   "include": ["remix.env.d.ts", "core.server.ts", "payload.config.ts"],
+   "files": ["remix.env.d.ts", "core.server.ts", "app/db/payload.config.ts"],
+   "include": [],
    "compilerOptions": {
       "lib": ["ES2022"],
       "module": "NodeNext",
       "moduleResolution": "NodeNext",
-      "outDir": "./dist",
+      "outDir": "dist",
       "baseUrl": ".",
       "sourceMap": true,
       "noEmit": false
