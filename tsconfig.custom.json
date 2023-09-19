@@ -1,12 +1,12 @@
 {
    "include": ["custom.server.ts", "payload.custom.config.ts"],
    "compilerOptions": {
-      "lib": ["DOM", "DOM.Iterable", "ES2019"],
+      "lib": ["DOM", "DOM.Iterable", "ES2022"],
       "isolatedModules": true,
       "esModuleInterop": true,
       "jsx": "react-jsx",
-      "module": "CommonJS",
-      "moduleResolution": "node",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "resolveJsonModule": true,
       "strict": false,
       "allowJs": true,
@@ -18,6 +18,6 @@
          "~/*": ["./app/*"],
          "payload/generated-types": ["./app/db/payload-custom-types.ts"]
       },
-      "target": "ES2019",
-   },
+      "target": "ES2022"
+   }
 }
