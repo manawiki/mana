@@ -1,16 +1,31 @@
 {
    "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
    "compilerOptions": {
-      "lib": ["DOM", "DOM.Iterable", "ES2022"],
-      "isolatedModules": true,
+      /* Base Options: */
       "esModuleInterop": true,
-      "jsx": "react-jsx",
-      "moduleResolution": "Bundler",
-      "resolveJsonModule": true,
-      "strict": true,
-      "noImplicitAny": true,
-      "allowJs": true,
       "forceConsistentCasingInFileNames": true,
+      "skipLibCheck": true,
+      "target": "es2022",
+      //  "verbatimModuleSyntax": true,
+      "allowJs": true,
+      "resolveJsonModule": true,
+      //  "moduleDetection": "force",
+
+      /* Strictness */
+      "strict": true,
+      //  "noUncheckedIndexedAccess": true,
+
+       /* If your code runs in the DOM: */
+      "lib": ["DOM", "DOM.Iterable", "ES2022"],
+
+      /* If your code runs in Node.js: */
+      "isolatedModules": true,
+      "noImplicitAny": true,
+      "jsx": "react-jsx",
+
+      /* If NOT transpiling with TypeScript: */
+      "moduleResolution": "Bundler",
+      "noEmit": true,
       "baseUrl": ".",
       "paths": {
          "~/*": ["app/*"],
@@ -18,9 +33,6 @@
          "payload/generated-custom-types": ["app/db/payload-custom-types.ts"],
          "mana-config": ["mana.config.ts"]
       },
-      "skipLibCheck": true,
-      "noEmit": true,
-      "target": "ES2022"
    },
    "ts-node": {
       "swc": true
