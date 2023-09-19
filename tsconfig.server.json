@@ -1,25 +1,14 @@
-{
+{  
+   // Extend the root-level config to reuse common options.
+   "extends": "./tsconfig.json",
    "include": ["remix.env.d.ts", "core.server.ts", "payload.config.ts"],
    "compilerOptions": {
       "lib": ["ES2022"],
-      "isolatedModules": true,
-      "esModuleInterop": true,
-      "jsx": "react-jsx",
       "module": "NodeNext",
       "moduleResolution": "NodeNext",
-      "resolveJsonModule": true,
-      "strict": true,
-      //      "noImplicitAny": true,
-      "allowJs": true,
-      "forceConsistentCasingInFileNames": true,
-      "baseUrl": ".",
-      "paths": {
-         "~/*": ["./app/*"],
-         "payload/generated-types": ["./app/db/payload-types.ts"],
-         "payload/generated-custom-types": ["./app/db/payload-custom-types.ts"]
-      },
-      "skipLibCheck": true,
+      "allowImportingTsExtensions": false,
       "outDir": "./dist",
-      "target": "ES2022"
+      "baseUrl": ".",
+      "noEmit": false
    }
 }

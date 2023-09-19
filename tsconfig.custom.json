@@ -1,23 +1,14 @@
 {
+   // Extend the root-level config to reuse common options.
+  "extends": "./tsconfig.json",
    "include": ["custom.server.ts", "payload.custom.config.ts"],
    "compilerOptions": {
       "lib": ["ES2022"],
-      "isolatedModules": true,
-      "esModuleInterop": true,
-      "jsx": "react-jsx",
       "module": "NodeNext",
       "moduleResolution": "NodeNext",
-      "resolveJsonModule": true,
-      "strict": true,
-      "allowJs": true,
-      "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true,
+      "allowImportingTsExtensions": false,
       "outDir": "./dist",
       "baseUrl": ".",
-      "paths": {
-         "~/*": ["./app/*"],
-         "payload/generated-types": ["./app/db/payload-custom-types.ts"]
-      },
-      "target": "ES2022"
+      "noEmit": false
    }
 }
