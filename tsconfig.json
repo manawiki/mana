@@ -9,11 +9,11 @@
       //  "verbatimModuleSyntax": true,
       "allowJs": true,
       "resolveJsonModule": true,
-      //  "moduleDetection": "force",
+       "moduleDetection": "force",
 
       /* Strictness */
       "strict": true,
-      //  "noUncheckedIndexedAccess": true,
+      "noUncheckedIndexedAccess": true,
 
        /* If your code runs in the DOM: */
       "lib": ["DOM", "DOM.Iterable", "ES2022"],
