@@ -46,7 +46,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
             );
          }
       } else {
-         defaultPriority = priority;
+         defaultPriority = priority ?? defaultPriority;
       }
    }
 
