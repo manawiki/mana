@@ -77,7 +77,10 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                         </div>
                      </div>
                   )}
-                  <div className="shadow-1 border-color mx-auto flex h-[60px] w-[60px] items-center overflow-hidden rounded-full border-2 shadow">
+                  <div
+                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
+                  items-center overflow-hidden rounded-full border shadow-sm"
+                  >
                      {element?.iconUrl ? (
                         <Image
                            height={80}
@@ -90,7 +93,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                         <Component className="text-1 mx-auto" size={18} />
                      )}
                   </div>
-                  <div className="text-1 truncate pt-1 text-center text-sm font-bold group-hover:underline">
+                  <div className="text-1 truncate pt-0.5 text-center text-sm font-bold">
                      {element?.name}
                   </div>
                </div>

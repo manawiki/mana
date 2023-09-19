@@ -17,7 +17,7 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { offset } from "@floating-ui/react";
+import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import {
    Combobox,
    Dialog,
@@ -29,6 +29,7 @@ import { Float } from "@headlessui-float/react";
 import { useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import {
+   ArrowLeft,
    ChevronDown,
    Component,
    Database,
@@ -36,6 +37,7 @@ import {
    LayoutGrid,
    List,
    ListPlus,
+   MoreVertical,
    Move,
    Pencil,
    Plus,
@@ -337,22 +339,19 @@ export function BlockGroup({
          >
             <Float.Reference>
                <div className="transition group-hover/group:opacity-100 flex 0 w-10 h-10 opacity-0 laptop:absolute -right-12 top-0">
-                  <Tooltip placement="bottom" setDelay={1000}>
-                     <TooltipTrigger
-                        className="border bg-white bg-2-sub flex items-center justify-center border-color shadow-sm shadow-1 w-8 h-8 rounded-lg"
-                        onClick={() => setElementEditor(true)}
-                        contentEditable={false}
-                     >
-                        <ListPlus
-                           className={clsx(
-                              isElementEditorOpen ? "rotate-45" : "",
-                              "transform transition duration-300 ease-in-out",
-                           )}
-                           size={16}
-                        />
-                     </TooltipTrigger>
-                     <TooltipContent>Add</TooltipContent>
-                  </Tooltip>
+                  <button
+                     className="border bg-white bg-2-sub flex items-center justify-center border-color shadow-sm shadow-1 w-8 h-8 rounded-lg"
+                     onClick={() => setElementEditor(true)}
+                     contentEditable={false}
+                  >
+                     <ListPlus
+                        className={clsx(
+                           isElementEditorOpen ? "rotate-45" : "",
+                           "transform transition duration-300 ease-in-out",
+                        )}
+                        size={16}
+                     />
+                  </button>
                </div>
             </Float.Reference>
             <Transition appear show={isElementEditorOpen} as={Fragment}>
@@ -372,7 +371,7 @@ export function BlockGroup({
                            <Dialog.Panel>
                               <div className="relative laptop:w-[728px] px-4">
                                  <div
-                                    className="flex px-3 py-0.5 shadow-xl border-2 items-center shadow-1 bg-3-sub border-color-sub
+                                    className="flex px-2 py-0.5 shadow-xl border-2 items-center shadow-1 bg-3-sub border-color-sub
                                     justify-center transform rounded-full"
                                  >
                                     <div className="flex w-full items-center gap-3">
@@ -382,8 +381,20 @@ export function BlockGroup({
                                        >
                                           <div className="flex-grow">
                                              <div className="flex items-center gap-3">
-                                                <Combobox.Button className="group">
-                                                   <Plus size={16} />
+                                                <Combobox.Button
+                                                   className="group flex-none shadow-sm border border-color dark:border-zinc-600 rounded-full 
+                                                   w-7 h-7 flex items-center justify-center bg-zinc-50 dark:bg-dark450"
+                                                >
+                                                   {({ open }) => (
+                                                      <Plus
+                                                         className={`${
+                                                            open
+                                                               ? "rotate-45"
+                                                               : ""
+                                                         } transform transition duration-300 ease-in-out`}
+                                                         size={16}
+                                                      />
+                                                   )}
                                                 </Combobox.Button>
                                                 <Combobox.Input
                                                    autoFocus
@@ -406,8 +417,8 @@ export function BlockGroup({
                                                 }
                                              >
                                                 <Combobox.Options
-                                                   className="bg-3 border-color shadow-1 divide-color no-scrollbar absolute left-0 z-30 mt-2 max-h-60
-                                                 w-full divide-y overflow-auto rounded-lg border shadow-xl focus:outline-none"
+                                                   className="dark:bg-dark350 bg-white border-color-sub divide-color-sub no-scrollbar absolute left-0 z-30 mt-2 max-h-60
+                                                 w-full divide-y overflow-auto rounded-xl border drop-shadow-xl focus:outline-none"
                                                 >
                                                    {filteredEntries?.length ===
                                                    0 ? (
@@ -424,7 +435,7 @@ export function BlockGroup({
                                                                }) =>
                                                                   `cursor-default select-none p-2 text-sm font-bold ${
                                                                      active
-                                                                        ? "bg-2"
+                                                                        ? "bg-zinc-50 dark:bg-dark400"
                                                                         : ""
                                                                   } flex items-center gap-2`
                                                                }
@@ -501,7 +512,7 @@ export function BlockGroup({
                                           >
                                              <Listbox.Options
                                                 className="border-color bg-2 shadow-1 absolute right-0
-                                             z-20 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                                             z-20 w-[160px] rounded-lg border p-1.5 shadow-lg"
                                              >
                                                 {collectionData?.docs?.map(
                                                    (
@@ -598,9 +609,9 @@ export function BlockGroup({
                                                    <div
                                                       className={clsx(
                                                          checked
-                                                            ? "bg-white dark:bg-dark500"
+                                                            ? "bg-zinc-50 shadow-sm border border-color-sub shadow-1 dark:bg-dark450"
                                                             : "",
-                                                         "flex h-7 w-7 items-center justify-center rounded",
+                                                         "flex h-7 w-7 items-center justify-center rounded-full",
                                                       )}
                                                    >
                                                       <RadioGroup.Label className="sr-only">
@@ -612,7 +623,7 @@ export function BlockGroup({
                                                                ? "text-zinc-500 dark:text-zinc-300"
                                                                : ""
                                                          }`}
-                                                         size={16}
+                                                         size={14}
                                                       />
                                                    </div>
                                                 </TooltipTrigger>
@@ -629,9 +640,9 @@ export function BlockGroup({
                                                    <div
                                                       className={clsx(
                                                          checked
-                                                            ? "bg-white dark:bg-dark500"
+                                                            ? "bg-zinc-50 shadow-sm border border-color-sub shadow-1 dark:bg-dark450"
                                                             : "",
-                                                         "flex h-7 w-7 items-center justify-center rounded",
+                                                         "flex h-7 w-7 items-center justify-center rounded-full",
                                                       )}
                                                    >
                                                       <RadioGroup.Label className="sr-only">
@@ -643,7 +654,7 @@ export function BlockGroup({
                                                                ? "text-zinc-500 dark:text-zinc-300"
                                                                : ""
                                                          }`}
-                                                         size={16}
+                                                         size={14}
                                                       />
                                                    </div>
                                                 </TooltipTrigger>
@@ -708,6 +719,7 @@ export function BlockGroupItem({
       if (!isMount && !isDragging && !isSorting) {
          return groupItems.forEach((row: any) => {
             Transforms.moveNodes<CustomElement>(editor, {
+               //@ts-ignore
                at: [path[0]],
                match: (node: any) =>
                   Editor.isBlock(editor, node) && node.id == row,
@@ -739,6 +751,8 @@ export function BlockGroupItem({
    }
 
    const [labelValue, setLabelValue] = useState(element?.label);
+
+   const [editMode, setEditMode] = useState(false);
 
    if (itemsViewMode == "list") {
       return (
@@ -794,7 +808,6 @@ export function BlockGroupItem({
                      </TooltipTrigger>
                      <TooltipContent>Drag to reorder</TooltipContent>
                   </Tooltip>
-
                   <Tooltip>
                      <TooltipTrigger>
                         <button
@@ -890,62 +903,77 @@ export function BlockGroupItem({
                   opacity: isDragging ? 0 : 1,
                } as React.CSSProperties /* cast because of css variable */
             }
-            className="bg-2-sub focus:outline-none border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+            className="bg-2-sub focus:outline-none flex items-center justify-center border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
          >
             <div className="hidden">{children}</div>
-            <div
-               className="absolute left-0 top-0 flex w-full select-none 
-      items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100"
-            >
-               <Tooltip>
-                  <TooltipTrigger>
-                     <button
-                        className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
-                        onClick={() => {
-                           Transforms.delete(editor, {
-                              at: path,
-                           });
-                        }}
-                        aria-label="Delete"
-                     >
-                        <Trash
-                           className="text-zinc-400 dark:text-zinc-500"
-                           size={16}
-                        />
-                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-               </Tooltip>
-               <Tooltip>
-                  <TooltipTrigger>
-                     <button
-                        type="button"
-                        aria-label="Drag to reorder"
-                        ref={setActivatorNodeRef}
-                        {...listeners}
-                        className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
-                     >
-                        <Move className="text-1" size={16} />
-                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Drag to reorder</TooltipContent>
-               </Tooltip>
+            <div className="absolute left-0 top-0 flex w-full select-none items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100">
+               <FloatingDelayGroup delay={{ open: 1000 }}>
+                  <Tooltip placement="right-start">
+                     <TooltipTrigger>
+                        <button
+                           type="button"
+                           onClick={() => setEditMode(!editMode)}
+                           className="flex h-7 w-7 items-center text-1 justify-center"
+                        >
+                           {editMode ? (
+                              <ArrowLeft className="mt-1" size={18} />
+                           ) : (
+                              <MoreVertical size={16} />
+                           )}
+                        </button>
+                     </TooltipTrigger>
+                     <TooltipContent>
+                        {editMode ? "Close" : "Edit"}
+                     </TooltipContent>
+                  </Tooltip>
+                  <Tooltip placement="left-start">
+                     <TooltipTrigger>
+                        <button
+                           type="button"
+                           aria-label="Drag to reorder"
+                           ref={setActivatorNodeRef}
+                           {...listeners}
+                           className="flex h-7 w-7 cursor-grab items-center justify-center rounded-md"
+                        >
+                           <Move className="text-1" size={16} />
+                        </button>
+                     </TooltipTrigger>
+                     <TooltipContent>Drag to reorder</TooltipContent>
+                  </Tooltip>
+               </FloatingDelayGroup>
             </div>
             <div className="block truncate">
-               <div className="relative z-20 mx-auto flex w-20 items-center justify-center pt-0.5">
-                  <input
-                     style={{
-                        backgroundColor: `${element?.labelColor}33`,
-                     }}
-                     onChange={(event) => updateLabelValue(event.target.value)}
-                     value={labelValue}
-                     type="text"
-                     className="h-5 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
-                  />
-               </div>
+               {/* Label Editor */}
+               {editMode && (
+                  <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center mb-2">
+                     <input
+                        style={{
+                           backgroundColor: `${element?.labelColor}33`,
+                        }}
+                        onChange={(event) =>
+                           updateLabelValue(event.target.value)
+                        }
+                        value={labelValue}
+                        type="text"
+                        className="h-5 w-20 rounded-full p-0 focus:ring-transparent focus:outline-none border-0 text-center text-[10px] font-bold"
+                     />
+                  </div>
+               )}
+               {element.label && !editMode && (
+                  <div className="flex items-center justify-center pb-2">
+                     <div
+                        className="flex h-5 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                        style={{
+                           backgroundColor: `${element?.labelColor}33`,
+                        }}
+                     >
+                        {element.label}
+                     </div>
+                  </div>
+               )}
                <div
-                  className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
-            items-center overflow-hidden rounded-full border-2 shadow"
+                  className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
+                  items-center overflow-hidden rounded-full border shadow-sm"
                >
                   {element?.iconUrl ? (
                      <Image
@@ -957,56 +985,80 @@ export function BlockGroupItem({
                      <Component className="text-1 mx-auto" size={18} />
                   )}
                </div>
-               <div className="text-1 truncate pt-1 text-center text-sm font-bold">
+               <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
                   {element?.name}
                </div>
             </div>
-            <div className="absolute bottom-2 left-1 hidden group-hover:block">
-               <Listbox value={element?.labelColor}>
-                  <Listbox.Button
-                     className="bg-2-sub flex h-7 w-7 items-center 
+            {editMode && (
+               <>
+                  <div className="absolute bottom-1 w-7 h-7 left-1 hidden group-hover:block">
+                     <Listbox value={element?.labelColor}>
+                        <Listbox.Button
+                           className="bg-2-sub flex h-7 w-7 items-center 
                            justify-center rounded-full focus:outline-none"
-                  >
-                     <div
-                        style={{
-                           backgroundColor: element?.labelColor,
-                        }}
-                        className="h-3 w-3 rounded-full"
-                     />
-                  </Listbox.Button>
-                  <Transition
-                     enter="transition duration-100 ease-out"
-                     enterFrom="transform scale-95 opacity-0"
-                     enterTo="transform scale-100 opacity-100"
-                     leave="transition duration-75 ease-out"
-                     leaveFrom="transform scale-100 opacity-100"
-                     leaveTo="transform scale-95 opacity-0"
-                  >
-                     <Listbox.Options
-                        className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
+                        >
+                           <div
+                              style={{
+                                 backgroundColor: element?.labelColor,
+                              }}
+                              className="h-3 w-3 rounded-full"
+                           />
+                        </Listbox.Button>
+                        <Transition
+                           enter="transition duration-100 ease-out"
+                           enterFrom="transform scale-95 opacity-0"
+                           enterTo="transform scale-100 opacity-100"
+                           leave="transition duration-75 ease-out"
+                           leaveFrom="transform scale-100 opacity-100"
+                           leaveTo="transform scale-95 opacity-0"
+                        >
+                           <Listbox.Options
+                              className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
                            grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm focus:outline-none"
-                     >
-                        {GROUP_COLORS?.map((color: string, rowIdx: number) => (
-                           <Listbox.Option
-                              className="flex items-center justify-center"
-                              key={rowIdx}
-                              value={color}
                            >
-                              <button
-                                 type="button"
-                                 onClick={() => updateLabelColor(color)}
-                                 className="h-3.5 w-3.5 rounded-full"
-                                 key={color}
-                                 style={{
-                                    backgroundColor: color,
-                                 }}
-                              ></button>
-                           </Listbox.Option>
-                        ))}
-                     </Listbox.Options>
-                  </Transition>
-               </Listbox>
-            </div>
+                              {GROUP_COLORS?.map(
+                                 (color: string, rowIdx: number) => (
+                                    <Listbox.Option
+                                       className="flex items-center justify-center"
+                                       key={rowIdx}
+                                       value={color}
+                                    >
+                                       <button
+                                          type="button"
+                                          onClick={() =>
+                                             updateLabelColor(color)
+                                          }
+                                          className="h-3.5 w-3.5 rounded-full"
+                                          key={color}
+                                          style={{
+                                             backgroundColor: color,
+                                          }}
+                                       ></button>
+                                    </Listbox.Option>
+                                 ),
+                              )}
+                           </Listbox.Options>
+                        </Transition>
+                     </Listbox>
+                  </div>
+                  <div className="absolute bottom-0 w-8 h-8 right-0 hidden group-hover:block">
+                     <button
+                        className="shadow-1 flex h-7 w-7 items-center justify-center group rounded-full"
+                        onClick={() => {
+                           Transforms.delete(editor, {
+                              at: path,
+                           });
+                        }}
+                        aria-label="Delete"
+                     >
+                        <Trash
+                           className="text-1 group-hover:text-red-300"
+                           size={14}
+                        />
+                     </button>
+                  </div>
+               </>
+            )}
          </div>
       );
    }

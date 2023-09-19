@@ -72,7 +72,7 @@ export function useTooltip({
          ...interactions,
          ...data,
       }),
-      [open, setOpen, interactions, data]
+      [open, setOpen, interactions, data],
    );
 }
 
@@ -122,7 +122,7 @@ export const TooltipTrigger = React.forwardRef<
             ...props,
             ...children.props,
             "data-state": state.open ? "open" : "closed",
-         })
+         }),
       );
    }
 
@@ -171,7 +171,7 @@ export const TooltipContent = React.forwardRef<
    return (
       <FloatingPortal>
          <div
-            className="dark:bg-dark400 relative z-50 rounded-lg border bg-white px-3 py-2 text-xs font-bold shadow dark:border-zinc-700 dark:shadow-zinc-800"
+            className="dark:bg-dark400 relative z-50 rounded-md border bg-white px-2 py-1 text-[10px] font-bold shadow dark:border-zinc-700 dark:shadow-zinc-800"
             ref={ref}
             style={{
                ...state.floatingStyles,
