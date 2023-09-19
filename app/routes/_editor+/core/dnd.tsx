@@ -18,6 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
+   FloatingDelayGroup,
    safePolygon,
    useFloating,
    useHover,
@@ -26,7 +27,13 @@ import {
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
-import { GripVertical, Trash } from "lucide-react";
+import {
+   ChevronLeft,
+   Copy,
+   GripVertical,
+   MoreVertical,
+   Trash,
+} from "lucide-react";
 import type { Descendant, Editor } from "slate";
 import { Transforms, createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
@@ -38,7 +45,7 @@ import {
    withReact,
 } from "slate-react";
 
-import Button from "~/components/Button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 
 import { BlockSelector } from "./components/BlockSelector";
 // eslint-disable-next-line import/no-cycle
@@ -85,7 +92,7 @@ export function EditorWithDnD({ editor }: { editor: Editor }) {
    }
 
    const activeElement = editor.children.find(
-      (x) => "id" in x && x.id === activeId
+      (x) => "id" in x && x.id === activeId,
    ) as CustomElement | undefined;
 
    const renderElement = useCallback(
@@ -98,12 +105,12 @@ export function EditorWithDnD({ editor }: { editor: Editor }) {
             <EditorBlocks {...props} />
          );
       },
-      [activeId]
+      [activeId],
    );
 
    const items = useMemo(
       () => editor.children.map((element: any) => element.id),
-      [editor.children]
+      [editor.children],
    );
    const measuringConfig = {
       droppable: {
@@ -151,7 +158,7 @@ function BlockInlineActions({
    element: CustomElement;
    editor: Editor;
    sortable: any;
-   isEditorTrayOpen: any;
+   isEditorTrayOpen: boolean;
    setEditorTray: any;
 }) {
    const { listeners, setActivatorNodeRef } = useDraggable({
@@ -164,54 +171,92 @@ function BlockInlineActions({
    }
    return (
       <div
-         className="shadow-1 border-color bg-3 relative z-50
-         flex items-center overflow-hidden rounded-lg border shadow-sm"
+         className="border-color-sub bg-white dark:bg-dark350 relative z-50
+         flex items-center rounded-r-lg rounded-l-md border drop-shadow-sm dark:drop-shadow"
       >
          <Popover>
-            {({ open }) => (
+            {({ open, close }) => (
                <>
                   <Float
                      as={Fragment}
-                     enter="transition ease-out duration-200"
-                     enterFrom="opacity-0 translate-y-1"
-                     enterTo="opacity-100 translate-y-0"
-                     leave="transition ease-in duration-150"
-                     leaveFrom="opacity-100 translate-y-0"
-                     leaveTo="opacity-0 translate-y-1"
+                     enter="transition-opacity duration-75"
+                     enterFrom="opacity-0"
+                     enterTo="opacity-100"
+                     leave="transition-opacity duration-150"
+                     leaveFrom="opacity-100"
+                     leaveTo="opacity-0"
                      placement="right-start"
-                     offset={8}
-                     portal
                   >
-                     <Popover.Button
-                        ref={setActivatorNodeRef}
-                        {...listeners}
-                        className={clsx(
-                           sortable.isDragging
-                              ? "cursor-grabbing"
-                              : "cursor-grab",
-                           "hover:bg-2 flex h-7 w-7 touch-manipulation select-none items-center justify-center"
+                     <Popover.Button className="flex focus:outline-none border-color-sub h-7 w-5 border-r select-none items-center justify-center">
+                        {open ? (
+                           <div>
+                              <ChevronLeft className="text-1" size={14} />
+                           </div>
+                        ) : (
+                           <MoreVertical size={14} />
                         )}
-                        aria-label="Drag to reorder"
-                     >
-                        <GripVertical size={16} />
                      </Popover.Button>
                      <Popover.Panel
-                        className="border-color transform overflow-hidden rounded-lg border
-            bg-zinc-50 shadow dark:bg-neutral-800 dark:shadow-zinc-900 laptop:w-screen laptop:max-w-[736px]"
+                        onMouseLeave={close}
+                        className="h-[30px] divide-x divide-color-sub -mt-[1px] z-20 border-color-sub bg-3-sub border-l-0 rounded-r-md overflow-hidden border flex items-center"
                      >
-                        Hello
+                        <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
+                           <Tooltip>
+                              <TooltipTrigger
+                                 className={clsx(
+                                    sortable.isDragging
+                                       ? "cursor-grabbing"
+                                       : "cursor-move",
+                                    "flex items-center group bg-3-sub w-7 h-full justify-center",
+                                 )}
+                                 aria-label="Drag to reorder"
+                                 ref={setActivatorNodeRef}
+                                 {...listeners}
+                              >
+                                 <GripVertical
+                                    className="group-hover:text-blue-400"
+                                    size={14}
+                                 />
+                              </TooltipTrigger>
+                              <TooltipContent>Move</TooltipContent>
+                           </Tooltip>
+                           <Tooltip>
+                              <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
+                                 <Copy
+                                    className="group-hover:text-green-400"
+                                    size={12}
+                                 />
+                              </TooltipTrigger>
+                              <TooltipContent>Copy</TooltipContent>
+                           </Tooltip>
+                           {/* <Tooltip>
+                              <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
+                                 <Lock
+                                    className="group-hover:text-yellow-400"
+                                    size={12}
+                                 />
+                              </TooltipTrigger>
+                              <TooltipContent>Lock</TooltipContent>
+                           </Tooltip> */}
+                           <Tooltip>
+                              <TooltipTrigger
+                                 className="flex w-7 h-full items-center group justify-center"
+                                 onClick={(e) => onDelete(e, element)}
+                                 aria-label="Delete"
+                              >
+                                 <Trash
+                                    className="group-hover:text-red-400"
+                                    size={12}
+                                 />
+                              </TooltipTrigger>
+                              <TooltipContent>Delete</TooltipContent>
+                           </Tooltip>
+                        </FloatingDelayGroup>
                      </Popover.Panel>
                   </Float>
                </>
             )}
          </Popover>
-         <Button
-            className="hover:bg-2 flex h-7 w-7 items-center justify-center"
-            onClick={(e) => onDelete(e, element)}
-            ariaLabel="Delete"
-         >
-            <Trash className="text-1" size={14} />
-         </Button>
          <BlockSelector
             isEditorTrayOpen={isEditorTrayOpen}
             setEditorTray={setEditorTray}
@@ -274,7 +319,7 @@ function HoverElement({
    const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
    const activeIndex = editor.children.findIndex(
-      (result: any) => result.id === activeId
+      (result: any) => result.id === activeId,
    );
 
    const insertPosition =
@@ -299,7 +344,7 @@ function HoverElement({
                   insertPosition === Position.After
                      ? "after:-bottom-4 after:left-0 after:right-0 after:h-1"
                      : null,
-                  "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-gray-700"
+                  "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-gray-700",
                )}
                {...sortable.attributes}
                ref={sortable.setNodeRef}
@@ -325,7 +370,7 @@ function HoverElement({
                   isHoverActive || isEditorTrayOpen
                      ? "opacity-100"
                      : "opacity-0",
-                  "absolute left-0 top-0 z-10 select-none pr-3 duration-100 ease-in laptop:-translate-x-full laptop:translate-y-0"
+                  "absolute left-0 top-0 z-10 select-none pr-2 duration-100 ease-in laptop:-translate-x-full laptop:translate-y-0",
                )}
                ref={refs.setFloating}
                {...getFloatingProps()}
@@ -381,7 +426,7 @@ export function NestedEditor({
          },
          {
             at: path,
-         }
+         },
       );
    }
 

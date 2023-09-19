@@ -141,13 +141,7 @@ export function EditorBlocks({
                   {...attributes}
                />
             );
-         return (
-            <BlockEventItem
-               element={element}
-               children={children}
-               {...attributes}
-            />
-         );
+         return <BlockEventItem element={element} {...attributes} />;
       }
       case BlockType.Group: {
          if (readOnly)

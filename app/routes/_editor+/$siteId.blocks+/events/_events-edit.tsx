@@ -7,11 +7,11 @@ import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import {
    Calendar,
+   CalendarPlus,
    ChevronDown,
    Copy,
    MoreVertical,
    MoveRight,
-   Plus,
    Trash,
    X,
 } from "lucide-react";
@@ -66,34 +66,29 @@ export function BlockEvents({
    }
 
    return (
-      <section>
+      <section className="group/events pb-3 relative">
          <div
             className="shadow-1 bg-3 divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border
-            shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
+            shadow-sm [&>*:nth-last-child(2)]:rounded-b-md [&>*:nth-of-type(4n+1)]:bg-zinc-50
          [&>*:nth-of-type(4n+1)]:dark:bg-dark400 [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-dark350"
          >
             {children}
          </div>
-         <div
-            contentEditable={false}
-            className="relative  -mt-1 flex justify-end pr-[19px]"
-         >
-            <Tooltip placement="bottom-end" setDelay={800}>
-               <TooltipTrigger>
-                  <button
-                     className="shadow-1 flex h-9 items-center justify-center gap-2 rounded-b-full border-2 border-zinc-200 bg-neutral-50
-                     px-3 pb-0.5 text-xs font-bold shadow-sm hover:bg-white dark:border-zinc-700 dark:bg-bg3Dark dark:hover:bg-zinc-800"
-                     onClick={handleAddEvent}
-                  >
-                     <Plus
-                        className="text-zinc-500 dark:text-zinc-300"
-                        size={16}
-                     />
-                  </button>
-               </TooltipTrigger>
-               <TooltipContent>Add an event</TooltipContent>
-            </Tooltip>
-         </div>
+         <Tooltip placement="bottom" setDelay={800}>
+            <TooltipTrigger
+               contentEditable={false}
+               className="transition group-hover/events:opacity-100 opacity-0 absolute right-2 bottom-[25px] select-none duration-100 ease-in laptop:translate-x-full laptop:translate-y-0"
+            >
+               <button
+                  className="shadow-1 flex h-8 items-center justify-center gap-2 rounded-r-full border-color-sub border bg-white
+                     pl-4 pr-3.5 text-xs font-bold shadow-sm dark:bg-dark400 dark:hover:bg-dark450"
+                  onClick={handleAddEvent}
+               >
+                  <CalendarPlus className="text-1" size={14} />
+               </button>
+            </TooltipTrigger>
+            <TooltipContent>Add an event</TooltipContent>
+         </Tooltip>
       </section>
    );
 }
@@ -224,8 +219,11 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
          {({ open, close }) => (
             <>
                <div
+                  className={clsx(
+                     open ? "!rounded-b-none" : "",
+                     "flex w-full items-center gap-2 p-2.5 pl-4 first:rounded-t-md",
+                  )}
                   contentEditable={false}
-                  className="flex w-full items-center gap-2 p-2.5 pl-4 shadow-sm first:rounded-t-lg "
                >
                   <input
                      placeholder="Start typing..."
@@ -253,9 +251,10 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                     leaveTo="opacity-0 translate-y-1"
                                     placement="bottom-end"
                                     offset={6}
+                                    portal
                                  >
                                     <Popover.Button
-                                       className="shadow-1 border-color-sub bg-2-sub rounded-full border p-2.5 shadow-sm focus:outline-none"
+                                       className="shadow-1 border-color-sub bg-3-sub rounded-full border p-2.5 shadow-sm focus:outline-none"
                                        aria-label="Insert block below"
                                     >
                                        {open ? (
@@ -335,7 +334,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                   <Disclosure.Button>
                      <div
                         contentEditable={false}
-                        className="border-color-sub bg-2-sub shadow-1 flex h-8 w-8 flex-none items-center 
+                        className="border-color-sub bg-3-sub shadow-1 flex h-8 w-8 flex-none items-center 
                         justify-center rounded-full border pt-0.5 shadow-sm"
                      >
                         <ChevronDown
@@ -364,6 +363,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                  crossAxis: -6,
                               }),
                            ]}
+                           portal
                         >
                            <Menu.Button className="shadow-1 border-color-sub bg-2-sub group/menu -mr-2.5 flex h-8 w-4 items-center justify-center rounded-lg rounded-r-none border border-r-0 shadow-sm transition duration-300">
                               {open ? (

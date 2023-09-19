@@ -60,6 +60,7 @@ export type HeadingElement = BlockElement & {
 };
 export type GroupItemElement = BlockElement & {
    isCustomSite?: boolean;
+   type: BlockType.GroupItem;
    refId: string;
    label?: string;
    name: string;

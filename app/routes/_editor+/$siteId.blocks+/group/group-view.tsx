@@ -22,7 +22,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                key={element?.id}
                to={element?.path ?? ""}
                prefetch="intent"
-               className="bg-2 group relative flex items-center gap-2 p-2.5"
+               className="bg-2-sub group relative flex items-center gap-2 p-2.5"
             >
                <div
                   className="shadow-1 border-color flex h-8 w-8 items-center
@@ -61,7 +61,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                key={element?.id}
                to={element?.path ?? ""}
                prefetch="intent"
-               className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-zinc-50 p-3 shadow-sm dark:bg-dark350"
+               className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-2-sub p-3 shadow-sm"
             >
                <div className="block truncate">
                   {element.label && (
@@ -77,10 +77,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                         </div>
                      </div>
                   )}
-                  <div
-                     className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
-                items-center overflow-hidden rounded-full border-2 shadow"
-                  >
+                  <div className="shadow-1 border-color mx-auto flex h-[60px] w-[60px] items-center overflow-hidden rounded-full border-2 shadow">
                      {element?.iconUrl ? (
                         <Image
                            height={80}
