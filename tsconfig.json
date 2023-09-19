@@ -19,7 +19,6 @@
          "mana-config": ["./mana.config.ts"]
       },
       "skipLibCheck": true,
-      "allowImportingTsExtensions": true,
       "noEmit": true,
       "target": "ES2022"
    },
