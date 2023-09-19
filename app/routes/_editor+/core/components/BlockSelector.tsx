@@ -162,6 +162,7 @@ export function BlockSelector({
                      itemsViewMode: "grid",
                      type: BlockType.Group,
                      children: [
+                        //@ts-ignore
                         {
                            id: nanoid(),
                            type: BlockType.GroupItem,
@@ -204,7 +205,7 @@ export function BlockSelector({
       <Float
          middleware={[
             offset({
-               mainAxis: 13,
+               mainAxis: 9,
                crossAxis: -1,
             }),
          ]}
@@ -216,12 +217,12 @@ export function BlockSelector({
             <button
                type="button"
                onClick={() => setEditorTray(true)}
-               className="hover:bg-2 flex h-7 w-7 items-center justify-center focus:outline-none"
+               className="flex h-7 w-7 items-center justify-center focus:outline-none"
                aria-label="Insert block below"
             >
                <Plus
                   className={`${
-                     isEditorTrayOpen ? "rotate-45 text-red-400" : ""
+                     isEditorTrayOpen ? "rotate-45" : ""
                   } transform transition duration-300 ease-in-out`}
                   size={16}
                />

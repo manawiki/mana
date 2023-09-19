@@ -17,7 +17,15 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
+import { offset } from "@floating-ui/react";
+import {
+   Combobox,
+   Dialog,
+   Listbox,
+   RadioGroup,
+   Transition,
+} from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
 import { useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import {
@@ -27,6 +35,7 @@ import {
    GripVertical,
    LayoutGrid,
    List,
+   ListPlus,
    Move,
    Pencil,
    Plus,
@@ -47,6 +56,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useIsMount } from "~/hooks";
 import { swrRestFetcher } from "~/utils";
 
+import { BlockGroupItemView } from "./group-view";
 import {
    BlockType,
    type CustomElement,
@@ -182,23 +192,20 @@ export function BlockGroup({
 
       const nodeId = nanoid();
 
-      Transforms.insertNodes(
-         editor,
-         {
-            id: nodeId,
-            //@ts-ignore
-            type: BlockType.GroupItem,
-            labelColor: GROUP_COLORS["0"],
-            isCustomSite,
-            refId: event.id,
-            name: event.name,
-            path: rowPath(),
-            iconUrl: event?.icon?.url ?? event?.banner?.url,
-            //@ts-ignore
-            children: [{ text: "" }],
-         },
-         { at: path },
-      );
+      const newProperties: Partial<CustomElement> = {
+         id: nodeId,
+         type: BlockType.GroupItem,
+         labelColor: GROUP_COLORS["0"],
+         isCustomSite,
+         refId: event.id,
+         name: event.name,
+         path: rowPath(),
+         iconUrl: event?.icon?.url ?? event?.banner?.url,
+         children: [{ text: "" }],
+      };
+
+      //@ts-ignore
+      Transforms.insertNodes(editor, newProperties, { at: path });
       //Update DND state after adding item
       return setGroupItems((items) => [...items, nodeId]);
    }
@@ -275,245 +282,10 @@ export function BlockGroup({
 
    const [itemsViewMode, setItemsViewMode] = useState(element.itemsViewMode);
 
+   const [isElementEditorOpen, setElementEditor] = useState(false);
+
    return (
-      <div className="my-2">
-         <section className="mb-3 flex items-center justify-between gap-3">
-            <div
-               className="text-1 bg-2-sub border-color-sub shadow-1 relative flex
-                  h-14 flex-grow items-center justify-between rounded-l-lg rounded-r-xl border pr-3 shadow-sm"
-            >
-               <div className="flex w-full items-center gap-3">
-                  <Combobox value={selected} onChange={handleAddEntry}>
-                     <div className="flex-grow">
-                        <div className="bg-2-sub flex items-center gap-3">
-                           <Combobox.Button className="group">
-                              <div
-                                 className="border-color-sub bg-3 -ml-[1px] flex h-[30px] w-[26px]
-                                 items-center justify-center rounded-r-xl border
-                                 "
-                              >
-                                 <Plus size={16} />
-                              </div>
-                           </Combobox.Button>
-                           <Combobox.Input
-                              autoFocus
-                              className="bg-2-sub h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
-                              placeholder="Search..."
-                              onChange={(event) =>
-                                 setGroupSelectQuery(event.target.value)
-                              }
-                           />
-                        </div>
-                        <Transition
-                           as={Fragment}
-                           leave="transition ease-in duration-100"
-                           leaveFrom="opacity-100"
-                           leaveTo="opacity-0"
-                           afterLeave={() => setGroupSelectQuery("")}
-                        >
-                           <Combobox.Options
-                              className="bg-3 border-color shadow-1 divide-color no-scrollbar absolute left-0 z-30 mt-3 max-h-60
-                              w-full divide-y overflow-auto rounded-lg border shadow-xl focus:outline-none"
-                           >
-                              {filteredEntries?.length === 0 ? (
-                                 <div className="relative cursor-default select-none px-4 py-2 text-sm">
-                                    Nothing found.
-                                 </div>
-                              ) : (
-                                 filteredEntries?.map((entry: Entry) => (
-                                    <Combobox.Option
-                                       key={entry.id}
-                                       className={({ active }) =>
-                                          `cursor-default select-none p-2 text-sm font-bold ${
-                                             active ? "bg-2" : ""
-                                          } flex items-center gap-2`
-                                       }
-                                       value={entry}
-                                    >
-                                       <>
-                                          <span
-                                             className="border-color shadow-1 flex h-8 w-8 flex-none items-center
-                                             justify-between overflow-hidden rounded-full border shadow-sm"
-                                          >
-                                             {entry?.icon?.url ? (
-                                                <Image
-                                                   url={entry?.icon?.url}
-                                                   options="aspect_ratio=1:1&height=80&width=80"
-                                                   alt={entry?.name ?? "Icon"}
-                                                />
-                                             ) : (
-                                                <Component
-                                                   className="text-1 mx-auto"
-                                                   size={18}
-                                                />
-                                             )}
-                                          </span>
-                                          <span className="flex-grow">
-                                             {entry.name}
-                                          </span>
-                                       </>
-                                    </Combobox.Option>
-                                 ))
-                              )}
-                           </Combobox.Options>
-                        </Transition>
-                     </div>
-                  </Combobox>
-               </div>
-               <Listbox
-                  value={selectedCollection}
-                  onChange={handleUpdateCollection}
-               >
-                  <div className="relative z-30 flex-none">
-                     <Listbox.Button
-                        className="text-1 flex items-center gap-1.5
-                        p-2 text-sm font-bold hover:underline"
-                     >
-                        {({ value }) => (
-                           <>
-                              {activeSelectItem(value) ?? "Select a Collection"}
-                              <ChevronDown size={20} />
-                           </>
-                        )}
-                     </Listbox.Button>
-                     <Transition
-                        enter="transition duration-100 ease-out"
-                        enterFrom="transform scale-95 opacity-0"
-                        enterTo="transform scale-100 opacity-100"
-                        leave="transition duration-75 ease-out"
-                        leaveFrom="transform scale-100 opacity-100"
-                        leaveTo="transform scale-95 opacity-0"
-                     >
-                        <Listbox.Options
-                           className="border-color bg-2 shadow-1 absolute right-0
-                           z-20 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
-                        >
-                           {collectionData?.docs?.map(
-                              (row: Collection, rowIdx: number) => (
-                                 <Listbox.Option key={rowIdx} value={row.slug}>
-                                    {({ selected }) => (
-                                       <>
-                                          <button
-                                             className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                          >
-                                             {selected ? (
-                                                <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
-                                             ) : null}
-                                             <Database
-                                                className="text-1"
-                                                size={14}
-                                             />
-                                             {row.name}
-                                          </button>
-                                       </>
-                                    )}
-                                 </Listbox.Option>
-                              ),
-                           )}
-                           <Listbox.Option key="post" value="post">
-                              {({ selected }) => (
-                                 <>
-                                    <button
-                                       className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    >
-                                       {selected ? (
-                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
-                                       ) : null}
-                                       <Pencil className="text-1" size={14} />
-                                       Post
-                                    </button>
-                                 </>
-                              )}
-                           </Listbox.Option>
-                           <Listbox.Option key="site" value="site">
-                              {({ selected }) => (
-                                 <>
-                                    <button
-                                       className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    >
-                                       {selected ? (
-                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
-                                       ) : null}
-                                       <Component
-                                          className="text-1"
-                                          size={14}
-                                       />
-                                       Site
-                                    </button>
-                                 </>
-                              )}
-                           </Listbox.Option>
-                        </Listbox.Options>
-                     </Transition>
-                  </div>
-               </Listbox>
-               <RadioGroup
-                  className="flex cursor-pointer items-center gap-1"
-                  value={itemsViewMode}
-                  onChange={(event) =>
-                     handleUpdateItemsViewMode(event, editor, element)
-                  }
-               >
-                  <RadioGroup.Option value="list">
-                     {({ checked }) => (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <div
-                                 className={clsx(
-                                    checked ? "bg-white dark:bg-dark500" : "",
-                                    "flex h-7 w-7 items-center justify-center rounded",
-                                 )}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    List View
-                                 </RadioGroup.Label>
-                                 <List
-                                    className={`${
-                                       checked
-                                          ? "text-zinc-500 dark:text-zinc-300"
-                                          : ""
-                                    }`}
-                                    size={16}
-                                 />
-                              </div>
-                           </TooltipTrigger>
-                           <TooltipContent>List View</TooltipContent>
-                        </Tooltip>
-                     )}
-                  </RadioGroup.Option>
-                  <RadioGroup.Option value="grid">
-                     {({ checked }) => (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <div
-                                 className={clsx(
-                                    checked ? "bg-white dark:bg-dark500" : "",
-                                    "flex h-7 w-7 items-center justify-center rounded",
-                                 )}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    Grid View
-                                 </RadioGroup.Label>
-                                 <LayoutGrid
-                                    className={`${
-                                       checked
-                                          ? "text-zinc-500 dark:text-zinc-300"
-                                          : ""
-                                    }`}
-                                    size={16}
-                                 />
-                              </div>
-                           </TooltipTrigger>
-                           <TooltipContent>Gird View</TooltipContent>
-                        </Tooltip>
-                     )}
-                  </RadioGroup.Option>
-               </RadioGroup>
-            </div>
-         </section>
+      <div contentEditable={false} className="my-2 group/group relative">
          <section
             className={clsx(
                itemsViewMode == "list"
@@ -546,66 +318,351 @@ export function BlockGroup({
                   </GroupDnDContext.Provider>
                </SortableContext>
                <DragOverlay modifiers={[restrictToParentElement]}>
-                  {activeElement && itemsViewMode == "list" ? (
-                     <div className="p-1.5">
-                        <div
-                           className="bg-1 shadow-1 border-color flex items-center
-                               justify-between gap-3 rounded-lg border p-1.5 shadow"
-                        >
-                           <div className="flex items-center gap-3">
-                              <div
-                                 className="shadow-1 flex h-8 w-8 items-center
-                                justify-between overflow-hidden rounded-full border shadow-sm"
-                              >
-                                 {activeElement?.iconUrl ? (
-                                    <Image
-                                       url={activeElement?.iconUrl}
-                                       options="aspect_ratio=1:1&height=80&width=80"
-                                       alt={activeElement?.name ?? "Icon"}
-                                    />
-                                 ) : (
-                                    <Component
-                                       className="text-1 mx-auto"
-                                       size={18}
-                                    />
-                                 )}
-                              </div>
-                              <div className="truncate">
-                                 {activeElement?.name}
-                              </div>
-                           </div>
-                           <div className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow">
-                              <GripVertical className="text-1" size={16} />
-                           </div>
-                        </div>
-                     </div>
-                  ) : itemsViewMode == "grid" ? (
-                     <div className="bg-1 border-color shadow-1 relative rounded-md border p-3 shadow">
-                        <div className="bg-3 shadow-1 absolute right-1 top-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow">
-                           <Move className="text-1" size={16} />
-                        </div>
-                        <div
-                           className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
-                           items-center overflow-hidden rounded-full border-2 shadow-sm"
-                        >
-                           {activeElement?.iconUrl ? (
-                              <Image
-                                 url={activeElement?.iconUrl}
-                                 options="aspect_ratio=1:1&height=80&width=80"
-                                 alt={activeElement?.name ?? "Icon"}
-                              />
-                           ) : (
-                              <Component className="text-1 mx-auto" size={18} />
-                           )}
-                        </div>
-                        <div className="text-1 truncate text-center text-xs font-bold">
-                           {activeElement?.name}
-                        </div>
-                     </div>
-                  ) : null}
+                  {activeElement && (
+                     <BlockGroupItemView element={activeElement} />
+                  )}
                </DragOverlay>
             </DndContext>
          </section>
+         <Float
+            middleware={[
+               offset({
+                  mainAxis: 8,
+                  crossAxis: -22,
+               }),
+            ]}
+            dialog
+            placement="left-start"
+            portal
+         >
+            <Float.Reference>
+               <div className="transition group-hover/group:opacity-100 flex 0 w-10 h-10 opacity-0 laptop:absolute -right-12 top-0">
+                  <Tooltip placement="bottom" setDelay={1000}>
+                     <TooltipTrigger
+                        className="border bg-white bg-2-sub flex items-center justify-center border-color shadow-sm shadow-1 w-8 h-8 rounded-lg"
+                        onClick={() => setElementEditor(true)}
+                        contentEditable={false}
+                     >
+                        <ListPlus
+                           className={clsx(
+                              isElementEditorOpen ? "rotate-45" : "",
+                              "transform transition duration-300 ease-in-out",
+                           )}
+                           size={16}
+                        />
+                     </TooltipTrigger>
+                     <TooltipContent>Add</TooltipContent>
+                  </Tooltip>
+               </div>
+            </Float.Reference>
+            <Transition appear show={isElementEditorOpen} as={Fragment}>
+               <Dialog as="div" onClose={() => setElementEditor(false)}>
+                  <div className="fixed inset-0">
+                     <div className="flex min-h-full items-center p-4 text-center">
+                        <Float.Content
+                           as={Fragment}
+                           transitionChild
+                           enter="transition ease-out duration-300"
+                           enterFrom="opacity-0 translate-y-1"
+                           enterTo="opacity-100 translate-y-0"
+                           leave="transition ease-in duration-150"
+                           leaveFrom="opacity-100 translate-y-0"
+                           leaveTo="opacity-0 translate-y-1"
+                        >
+                           <Dialog.Panel>
+                              <div className="relative laptop:w-[728px] px-4">
+                                 <div
+                                    className="flex px-3 py-0.5 shadow-xl border-2 items-center shadow-1 bg-3-sub border-color-sub
+                                    justify-center transform rounded-full"
+                                 >
+                                    <div className="flex w-full items-center gap-3">
+                                       <Combobox
+                                          value={selected}
+                                          onChange={handleAddEntry}
+                                       >
+                                          <div className="flex-grow">
+                                             <div className="flex items-center gap-3">
+                                                <Combobox.Button className="group">
+                                                   <Plus size={16} />
+                                                </Combobox.Button>
+                                                <Combobox.Input
+                                                   autoFocus
+                                                   className="bg-3-sub h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
+                                                   placeholder="Search..."
+                                                   onChange={(event) =>
+                                                      setGroupSelectQuery(
+                                                         event.target.value,
+                                                      )
+                                                   }
+                                                />
+                                             </div>
+                                             <Transition
+                                                as={Fragment}
+                                                leave="transition ease-in duration-100"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                                afterLeave={() =>
+                                                   setGroupSelectQuery("")
+                                                }
+                                             >
+                                                <Combobox.Options
+                                                   className="bg-3 border-color shadow-1 divide-color no-scrollbar absolute left-0 z-30 mt-2 max-h-60
+                                                 w-full divide-y overflow-auto rounded-lg border shadow-xl focus:outline-none"
+                                                >
+                                                   {filteredEntries?.length ===
+                                                   0 ? (
+                                                      <div className="relative cursor-default select-none px-4 py-2 text-sm">
+                                                         Nothing found.
+                                                      </div>
+                                                   ) : (
+                                                      filteredEntries?.map(
+                                                         (entry: Entry) => (
+                                                            <Combobox.Option
+                                                               key={entry.id}
+                                                               className={({
+                                                                  active,
+                                                               }) =>
+                                                                  `cursor-default select-none p-2 text-sm font-bold ${
+                                                                     active
+                                                                        ? "bg-2"
+                                                                        : ""
+                                                                  } flex items-center gap-2`
+                                                               }
+                                                               value={entry}
+                                                            >
+                                                               <>
+                                                                  <span
+                                                                     className="border-color shadow-1 flex h-8 w-8 flex-none items-center
+                                                                  justify-between overflow-hidden rounded-full border shadow-sm"
+                                                                  >
+                                                                     {entry
+                                                                        ?.icon
+                                                                        ?.url ? (
+                                                                        <Image
+                                                                           url={
+                                                                              entry
+                                                                                 ?.icon
+                                                                                 ?.url
+                                                                           }
+                                                                           options="aspect_ratio=1:1&height=80&width=80"
+                                                                           alt={
+                                                                              entry?.name ??
+                                                                              "Icon"
+                                                                           }
+                                                                        />
+                                                                     ) : (
+                                                                        <Component
+                                                                           className="text-1 mx-auto"
+                                                                           size={
+                                                                              18
+                                                                           }
+                                                                        />
+                                                                     )}
+                                                                  </span>
+                                                                  <span className="flex-grow">
+                                                                     {
+                                                                        entry.name
+                                                                     }
+                                                                  </span>
+                                                               </>
+                                                            </Combobox.Option>
+                                                         ),
+                                                      )
+                                                   )}
+                                                </Combobox.Options>
+                                             </Transition>
+                                          </div>
+                                       </Combobox>
+                                    </div>
+                                    <Listbox
+                                       value={selectedCollection}
+                                       onChange={handleUpdateCollection}
+                                    >
+                                       <div className="relative z-30 flex-none">
+                                          <Listbox.Button
+                                             className="text-1 flex items-center gap-1.5
+                                             p-2 text-sm font-bold hover:underline"
+                                          >
+                                             {({ value }) => (
+                                                <>
+                                                   {activeSelectItem(value) ??
+                                                      "Select a Collection"}
+                                                   <ChevronDown size={20} />
+                                                </>
+                                             )}
+                                          </Listbox.Button>
+                                          <Transition
+                                             enter="transition duration-100 ease-out"
+                                             enterFrom="transform scale-95 opacity-0"
+                                             enterTo="transform scale-100 opacity-100"
+                                             leave="transition duration-75 ease-out"
+                                             leaveFrom="transform scale-100 opacity-100"
+                                             leaveTo="transform scale-95 opacity-0"
+                                          >
+                                             <Listbox.Options
+                                                className="border-color bg-2 shadow-1 absolute right-0
+                                             z-20 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                                             >
+                                                {collectionData?.docs?.map(
+                                                   (
+                                                      row: Collection,
+                                                      rowIdx: number,
+                                                   ) => (
+                                                      <Listbox.Option
+                                                         key={rowIdx}
+                                                         value={row.slug}
+                                                      >
+                                                         {({ selected }) => (
+                                                            <>
+                                                               <button
+                                                                  className="relative flex w-full items-center gap-3 truncate
+                                                               rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                               >
+                                                                  {selected ? (
+                                                                     <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
+                                                                  ) : null}
+                                                                  <Database
+                                                                     className="text-1"
+                                                                     size={14}
+                                                                  />
+                                                                  {row.name}
+                                                               </button>
+                                                            </>
+                                                         )}
+                                                      </Listbox.Option>
+                                                   ),
+                                                )}
+                                                <Listbox.Option
+                                                   key="post"
+                                                   value="post"
+                                                >
+                                                   {({ selected }) => (
+                                                      <>
+                                                         <button
+                                                            className="relative flex w-full items-center gap-3 truncate
+                                                         rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                         >
+                                                            {selected ? (
+                                                               <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
+                                                            ) : null}
+                                                            <Pencil
+                                                               className="text-1"
+                                                               size={14}
+                                                            />
+                                                            Post
+                                                         </button>
+                                                      </>
+                                                   )}
+                                                </Listbox.Option>
+                                                <Listbox.Option
+                                                   key="site"
+                                                   value="site"
+                                                >
+                                                   {({ selected }) => (
+                                                      <>
+                                                         <button
+                                                            className="relative flex w-full items-center gap-3 truncate
+                                                            rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                         >
+                                                            {selected ? (
+                                                               <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
+                                                            ) : null}
+                                                            <Component
+                                                               className="text-1"
+                                                               size={14}
+                                                            />
+                                                            Site
+                                                         </button>
+                                                      </>
+                                                   )}
+                                                </Listbox.Option>
+                                             </Listbox.Options>
+                                          </Transition>
+                                       </div>
+                                    </Listbox>
+                                    <RadioGroup
+                                       className="flex cursor-pointer items-center gap-1"
+                                       value={itemsViewMode}
+                                       onChange={(event) =>
+                                          handleUpdateItemsViewMode(
+                                             event,
+                                             editor,
+                                             element,
+                                          )
+                                       }
+                                    >
+                                       <RadioGroup.Option value="list">
+                                          {({ checked }) => (
+                                             <Tooltip>
+                                                <TooltipTrigger>
+                                                   <div
+                                                      className={clsx(
+                                                         checked
+                                                            ? "bg-white dark:bg-dark500"
+                                                            : "",
+                                                         "flex h-7 w-7 items-center justify-center rounded",
+                                                      )}
+                                                   >
+                                                      <RadioGroup.Label className="sr-only">
+                                                         List View
+                                                      </RadioGroup.Label>
+                                                      <List
+                                                         className={`${
+                                                            checked
+                                                               ? "text-zinc-500 dark:text-zinc-300"
+                                                               : ""
+                                                         }`}
+                                                         size={16}
+                                                      />
+                                                   </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                   List View
+                                                </TooltipContent>
+                                             </Tooltip>
+                                          )}
+                                       </RadioGroup.Option>
+                                       <RadioGroup.Option value="grid">
+                                          {({ checked }) => (
+                                             <Tooltip>
+                                                <TooltipTrigger>
+                                                   <div
+                                                      className={clsx(
+                                                         checked
+                                                            ? "bg-white dark:bg-dark500"
+                                                            : "",
+                                                         "flex h-7 w-7 items-center justify-center rounded",
+                                                      )}
+                                                   >
+                                                      <RadioGroup.Label className="sr-only">
+                                                         Grid View
+                                                      </RadioGroup.Label>
+                                                      <LayoutGrid
+                                                         className={`${
+                                                            checked
+                                                               ? "text-zinc-500 dark:text-zinc-300"
+                                                               : ""
+                                                         }`}
+                                                         size={16}
+                                                      />
+                                                   </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                   Gird View
+                                                </TooltipContent>
+                                             </Tooltip>
+                                          )}
+                                       </RadioGroup.Option>
+                                    </RadioGroup>
+                                 </div>
+                              </div>
+                           </Dialog.Panel>
+                        </Float.Content>
+                     </div>
+                  </div>
+               </Dialog>
+            </Transition>
+         </Float>
       </div>
    );
 }
@@ -822,6 +879,7 @@ export function BlockGroupItem({
    if (itemsViewMode == "grid") {
       return (
          <div
+            contentEditable={false}
             {...attributes}
             ref={setNodeRef}
             style={
@@ -832,7 +890,7 @@ export function BlockGroupItem({
                   opacity: isDragging ? 0 : 1,
                } as React.CSSProperties /* cast because of css variable */
             }
-            className="bg-2-sub border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+            className="bg-2-sub focus:outline-none border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
          >
             <div className="hidden">{children}</div>
             <div
@@ -858,7 +916,6 @@ export function BlockGroupItem({
                   </TooltipTrigger>
                   <TooltipContent>Delete</TooltipContent>
                </Tooltip>
-
                <Tooltip>
                   <TooltipTrigger>
                      <button
@@ -927,7 +984,7 @@ export function BlockGroupItem({
                   >
                      <Listbox.Options
                         className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
-                           grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm"
+                           grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm focus:outline-none"
                      >
                         {GROUP_COLORS?.map((color: string, rowIdx: number) => (
                            <Listbox.Option
