@@ -1,23 +1,5 @@
 {
-   "include": ["custom.server.ts", "payload.custom.config.ts"],
-   "compilerOptions": {
-      "lib": ["DOM", "DOM.Iterable", "ES2019"],
-      "isolatedModules": true,
-      "esModuleInterop": true,
-      "jsx": "react-jsx",
-      "module": "CommonJS",
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "strict": false,
-      "allowJs": true,
-      "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true,
-      "outDir": "./dist",
-      "baseUrl": ".",
-      "paths": {
-         "~/*": ["./app/*"],
-         "payload/generated-types": ["./app/db/payload-custom-types.ts"]
-      },
-      "target": "ES2019",
-   },
+   // Extend the root-level config to reuse common options.
+  "extends": "./tsconfig.server.json",
+   "files": ["custom.server.ts", "app/db/payload.custom.config.ts"],
 }
