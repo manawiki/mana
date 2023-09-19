@@ -8,7 +8,7 @@
       "module": "NodeNext",
       "moduleResolution": "NodeNext",
       "resolveJsonModule": true,
-      "strict": false,
+      "strict": true,
       "allowJs": true,
       "forceConsistentCasingInFileNames": true,
       "skipLibCheck": true,
