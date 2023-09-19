@@ -1,5 +1,5 @@
 {
    // Extend the root-level config to reuse common options.
   "extends": "./tsconfig.server.json",
-   "files": ["custom.server.ts", "payload.custom.config.ts"],
+   "files": ["custom.server.ts", "app/db/payload.custom.config.ts"],
 }
