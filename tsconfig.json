@@ -8,7 +8,7 @@
       "moduleResolution": "Bundler",
       "resolveJsonModule": true,
       "strict": true,
-      //      "noImplicitAny": true,
+      "noImplicitAny": true,
       "allowJs": true,
       "forceConsistentCasingInFileNames": true,
       "baseUrl": ".",

@@ -8,6 +8,7 @@
       "moduleResolution": "NodeNext",
       "outDir": "./dist",
       "baseUrl": ".",
+      "sourceMap": true,
       "noEmit": false
    }
 }

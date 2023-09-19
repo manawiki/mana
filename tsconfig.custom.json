@@ -1,13 +1,5 @@
 {
    // Extend the root-level config to reuse common options.
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.server.json",
    "include": ["custom.server.ts", "payload.custom.config.ts"],
-   "compilerOptions": {
-      "lib": ["ES2022"],
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext",
-      "outDir": "./dist",
-      "baseUrl": ".",
-      "noEmit": false
-   }
 }
