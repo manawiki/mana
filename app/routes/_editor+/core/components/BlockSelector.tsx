@@ -23,7 +23,6 @@ import { ReactEditor } from "slate-react";
 // import { CustomBlocksAddConfig } from "~/_custom/blocks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import { GROUP_COLORS } from "../../$siteId.blocks+/group/_group";
 import type { CustomElement } from "../types";
 import { BlockType } from "../types";
 
@@ -159,17 +158,10 @@ export function BlockSelector({
                onSelect: () => {
                   onInsertBelow({
                      id: nanoid(),
-                     itemsViewMode: "grid",
+                     itemsViewMode: "list",
                      type: BlockType.Group,
-                     children: [
-                        //@ts-ignore
-                        {
-                           id: nanoid(),
-                           type: BlockType.GroupItem,
-                           labelColor: GROUP_COLORS["0"],
-                           children: [{ text: "" }],
-                        },
-                     ],
+                     //@ts-ignore
+                     children: [{ text: "" }],
                   });
                },
             },
