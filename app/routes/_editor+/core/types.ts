@@ -13,14 +13,6 @@ declare module "slate" {
    }
 }
 
-export type UserMeta = {
-   id: string;
-   info: {
-      name: string;
-      avatar: string;
-   };
-};
-
 export enum BlockType {
    H2 = "h2",
    H3 = "h3",
