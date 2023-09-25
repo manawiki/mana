@@ -1,7 +1,6 @@
 import { Tab } from "@headlessui/react";
 
 import type { Character, Image } from "payload/generated-custom-types";
-
 import { H2 } from "~/components/H2";
 
 export const VoiceLines = ({ pageData }: { pageData: Character }) => {

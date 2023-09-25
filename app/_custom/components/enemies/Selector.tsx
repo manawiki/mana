@@ -1,5 +1,4 @@
 import type { Enemy } from "payload/generated-custom-types";
-
 import { H2 } from "~/components/H2";
 
 export const Selector = ({

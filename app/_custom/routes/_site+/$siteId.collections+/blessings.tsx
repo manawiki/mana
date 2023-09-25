@@ -7,8 +7,8 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
 
 // export async function loader({

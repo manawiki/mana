@@ -34,8 +34,8 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 
 // Global Count for total imported Warps
 var count = 0;

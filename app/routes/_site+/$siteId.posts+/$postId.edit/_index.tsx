@@ -9,10 +9,12 @@ import {
 } from "@remix-run/node";
 import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
 import { createCustomIssues } from "react-zorm";
+import type { Descendant } from "slate";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { toast } from "~/components";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import {
    type FormResponse,
@@ -28,8 +30,6 @@ import {
 
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { postSchema } from "../utils/postSchema";
-import { initialValue } from "~/routes/_editor+/core/utils";
-import { Descendant } from "slate";
 
 export async function loader({
    context: { payload, user },

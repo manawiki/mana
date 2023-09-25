@@ -4,13 +4,13 @@ import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import type { Enemy } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
 import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
 import { Drops } from "~/_custom/components/enemies/Drops";
 import { Resistances } from "~/_custom/components/enemies/Resistances";
 import { Selector } from "~/_custom/components/enemies/Selector";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Stats } from "~/_custom/components/enemies/Stats";
+import { H2 } from "~/components/H2";
 import {
    EntryParent,
    EntryHeader,

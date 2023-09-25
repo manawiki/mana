@@ -1,12 +1,13 @@
+import { Suspense } from "react";
+
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
-import { Suspense } from "react";
 
 export async function loader({
    context: { payload },

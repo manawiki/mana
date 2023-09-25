@@ -5,9 +5,9 @@ import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { RelicSet, Relic } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
+import { H2 } from "~/components/H2";
 import {
    EntryParent,
    EntryHeader,

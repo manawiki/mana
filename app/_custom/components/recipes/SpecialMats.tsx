@@ -1,8 +1,8 @@
 import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
 import { Image } from "~/components";
+import { H2 } from "~/components/H2";
 
 export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
    const spec = pageData?.special_material_cost;
