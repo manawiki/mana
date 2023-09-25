@@ -26,22 +26,24 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
+import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import {
-   ArrowLeft,
    ChevronDown,
    ChevronLeft,
    Component,
    Database,
+   FileText,
    LayoutGrid,
    List,
    ListPlus,
+   MoreHorizontal,
    MoreVertical,
    Move,
    Pencil,
    Plus,
-   Trash,
+   X,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
@@ -52,13 +54,15 @@ import useSWR from "swr";
 import { settings } from "mana-config";
 import type { Collection, Entry, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { Image } from "~/components";
+import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/no-cycle
 import { useIsMount } from "~/hooks";
 import { swrRestFetcher } from "~/utils";
 
 import { BlockGroupItemView } from "./group-view";
+// eslint-disable-next-line import/no-cycle
+import { NestedEditor } from "../../core/dnd";
 import {
    BlockType,
    type CustomElement,
@@ -753,342 +757,421 @@ export function BlockGroupItem({
    const [labelValue, setLabelValue] = useState(element?.label);
 
    const [editMode, setEditMode] = useState(false);
+   const [modalStatus, setModalStatus] = useState(false);
 
-   if (itemsViewMode == "list") {
-      return (
-         <div
-            {...attributes}
-            ref={setNodeRef}
-            style={
-               {
-                  transition: transition,
-                  transform: CSS.Transform.toString(transform),
-                  pointerEvents: isSorting ? "none" : undefined,
-                  opacity: isDragging ? 0 : 1,
-               } as React.CSSProperties /* cast because of css variable */
-            }
-            className="bg-2-sub relative"
-         >
-            <div className="hidden">{children}</div>
-            <div className="flex items-center justify-between gap-2 p-2.5">
-               <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
-                  <div className="bg-3 border-color-sub shadow-1 flex h-8 w-8 items-center justify-between rounded-full border shadow-sm">
+   return (
+      <>
+         {itemsViewMode == "list" && (
+            <div
+               {...attributes}
+               ref={setNodeRef}
+               style={
+                  {
+                     transition: transition,
+                     transform: CSS.Transform.toString(transform),
+                     pointerEvents: isSorting ? "none" : undefined,
+                     opacity: isDragging ? 0 : 1,
+                  } as React.CSSProperties /* cast because of css variable */
+               }
+               className="bg-2-sub relative"
+            >
+               <div className="hidden">{children}</div>
+               <div className="flex items-center justify-between gap-2 p-2.5">
+                  <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
+                     <div className="bg-3 border-color-sub shadow-1 flex h-8 w-8 items-center justify-between rounded-full border shadow-sm">
+                        {element?.iconUrl ? (
+                           <Image
+                              width={32}
+                              height={32}
+                              className="overflow-hidden rounded-full"
+                              url={element?.iconUrl}
+                              options="aspect_ratio=1:1&height=80&width=80"
+                              alt={element?.name ?? "Icon"}
+                           />
+                        ) : (
+                           <Component className="text-1 mx-auto" size={18} />
+                        )}
+                     </div>
+                     <span className="truncate text-sm font-bold">
+                        {element?.name}
+                     </span>
+                  </div>
+                  <div
+                     className="absolute bg-white dark:bg-dark450 border dark:border-zinc-600 rounded-md divide-x dark:divide-zinc-600
+                  left-2 flex items-center opacity-0 group-hover:opacity-100 shadow-sm shadow-1"
+                  >
+                     <FloatingDelayGroup delay={{ open: 1000 }}>
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <button
+                                 className="flex h-6 w-5 items-center justify-center"
+                                 onClick={() => setEditMode(!editMode)}
+                              >
+                                 {editMode ? (
+                                    <ChevronLeft size={16} />
+                                 ) : (
+                                    <MoreVertical size={14} />
+                                 )}
+                              </button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              {editMode ? "Close" : "Edit"}
+                           </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <button
+                                 type="button"
+                                 aria-label="Drag to reorder"
+                                 ref={setActivatorNodeRef}
+                                 {...listeners}
+                                 className="cursor-grab h-6 w-7 items-center flex justify-center"
+                              >
+                                 <Move className="text-1" size={12} />
+                              </button>
+                           </TooltipTrigger>
+                           <TooltipContent>Drag to reorder</TooltipContent>
+                        </Tooltip>
+                     </FloatingDelayGroup>
+                  </div>
+                  {editMode && (
+                     <div className="group-hover:flex hidden gap-2 flex-none items-center justify-center">
+                        <button
+                           className="flex h-5 w-5 items-center justify-center"
+                           onClick={() => setModalStatus(true)}
+                           aria-label="Add content"
+                        >
+                           <PencilIcon className="w-3.5 h-3.5 hover:text-blue-500" />
+                        </button>
+                        <button
+                           className="flex h-5 w-5 items-center justify-center"
+                           onClick={() => {
+                              Transforms.delete(editor, {
+                                 at: path,
+                              });
+                           }}
+                           aria-label="Delete"
+                        >
+                           <TrashIcon className="w-3.5 h-3.5 hover:text-red-400" />
+                        </button>
+                        <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center">
+                           <Listbox value={element?.labelColor}>
+                              <Listbox.Button className="hidden h-3 w-3 items-center justify-center rounded-full focus:outline-none group-hover:flex absolute right-1 top-1">
+                                 <div
+                                    style={{
+                                       backgroundColor: element?.labelColor,
+                                    }}
+                                    className="h-3 w-3 rounded-full"
+                                 />
+                              </Listbox.Button>
+                              <Transition
+                                 enter="transition duration-100 ease-out"
+                                 enterFrom="transform scale-95 opacity-0"
+                                 enterTo="transform scale-100 opacity-100"
+                                 leave="transition duration-75 ease-out"
+                                 leaveFrom="transform scale-100 opacity-100"
+                                 leaveTo="transform scale-95 opacity-0"
+                              >
+                                 <Listbox.Options
+                                    className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
+                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
+                                 >
+                                    {GROUP_COLORS?.map(
+                                       (color: string, rowIdx: number) => (
+                                          <Listbox.Option
+                                             className="flex items-center justify-center"
+                                             key={rowIdx}
+                                             value={color}
+                                          >
+                                             <button
+                                                type="button"
+                                                onClick={() =>
+                                                   updateLabelColor(color)
+                                                }
+                                                className="h-3.5 w-3.5 rounded-full"
+                                                key={color}
+                                                style={{
+                                                   backgroundColor: color,
+                                                }}
+                                             ></button>
+                                          </Listbox.Option>
+                                       ),
+                                    )}
+                                 </Listbox.Options>
+                              </Transition>
+                           </Listbox>
+                           <input
+                              style={{
+                                 backgroundColor: `${element?.labelColor}33`,
+                              }}
+                              onChange={(event) =>
+                                 updateLabelValue(event.target.value)
+                              }
+                              value={labelValue}
+                              type="text"
+                              className="h-6 w-20 hidden group-hover:flex items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           />
+                        </div>
+                     </div>
+                  )}
+                  {element.groupContent && !editMode && (
+                     <button
+                        className="flex group/doc h-7 w-7 items-center justify-center"
+                        onClick={() => setModalStatus(true)}
+                        aria-label="Add content"
+                     >
+                        <FileText
+                           className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
+                           size={14}
+                        />
+                     </button>
+                  )}
+                  {element.label && !editMode && (
+                     <div className="flex items-center justify-center">
+                        <div
+                           className="flex h-6 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           style={{
+                              backgroundColor: `${element?.labelColor}33`,
+                           }}
+                        >
+                           {element.label}
+                        </div>
+                     </div>
+                  )}
+               </div>
+            </div>
+         )}
+         {itemsViewMode == "grid" && (
+            <div
+               contentEditable={false}
+               {...attributes}
+               ref={setNodeRef}
+               style={
+                  {
+                     transition: transition,
+                     transform: CSS.Transform.toString(transform),
+                     pointerEvents: isSorting ? "none" : undefined,
+                     opacity: isDragging ? 0 : 1,
+                  } as React.CSSProperties /* cast because of css variable */
+               }
+               className="bg-2-sub focus:outline-none flex items-center justify-center border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+            >
+               {element.groupContent && !editMode && (
+                  <button
+                     className="flex h-7 w-7 absolute group/doc right-1.5 top-1.5 z-20 items-center justify-center"
+                     onClick={() => setModalStatus(true)}
+                     aria-label="Add content"
+                  >
+                     <FileText
+                        className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
+                        size={14}
+                     />
+                  </button>
+               )}
+               <div className="absolute left-0 top-0 h-full flex w-full select-none justify-between gap-1 p-1 opacity-0 group-hover:opacity-100">
+                  <FloatingDelayGroup delay={{ open: 1000 }}>
+                     <div
+                        className={clsx(
+                           editMode ? "justify-end" : "justify-between",
+                           "absolute inset-y-0 left-0 flex flex-col h-full pb-1",
+                        )}
+                     >
+                        {!editMode && (
+                           <Tooltip placement="left-start">
+                              <TooltipTrigger
+                                 type="button"
+                                 aria-label="Drag to reorder"
+                                 ref={setActivatorNodeRef}
+                                 {...listeners}
+                                 className="flex h-7 w-7 pt-1.5 pl-1.5 cursor-grab items-center justify-center rounded-md"
+                              >
+                                 <Move className="text-1" size={16} />
+                              </TooltipTrigger>
+                              <TooltipContent>Drag to reorder</TooltipContent>
+                           </Tooltip>
+                        )}
+                        {editMode && (
+                           <div
+                              className="rounded-md border divide-y divide-color-sub border-color flex items-center flex-col 
+                              dark:border-zinc-700 dark:bg-dark400 bg-white mb-[1px] ml-1.5 w-6"
+                           >
+                              <Tooltip placement="right-start">
+                                 <TooltipTrigger
+                                    type="button"
+                                    aria-label="Delete"
+                                    onClick={() => {
+                                       Transforms.delete(editor, {
+                                          at: path,
+                                       });
+                                    }}
+                                    className="flex group/delete items-center justify-center w-full h-6"
+                                 >
+                                    <TrashIcon className="w-2.5 h-2.5 group-hover/delete:text-red-400" />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Delete</TooltipContent>
+                              </Tooltip>
+                              <Tooltip placement="right-start">
+                                 <TooltipTrigger
+                                    type="button"
+                                    onClick={() => setModalStatus(true)}
+                                    aria-label="Add content"
+                                    className="flex group/edit items-center justify-center w-full h-6"
+                                 >
+                                    <PencilIcon className="w-2.5 h-2.5 group-hover/edit:text-blue-500" />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Add content</TooltipContent>
+                              </Tooltip>
+                           </div>
+                        )}
+                        <button
+                           type="button"
+                           onClick={() => setEditMode(!editMode)}
+                           className="flex px-2 h-6 bg-2-sub pl-2.5 items-center justify-center"
+                        >
+                           {editMode ? (
+                              <X size={14} />
+                           ) : (
+                              <MoreHorizontal size={16} />
+                           )}
+                        </button>
+                     </div>
+                  </FloatingDelayGroup>
+               </div>
+               <div className="block truncate">
+                  {/* Label Editor */}
+                  {editMode && (
+                     <>
+                        <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center mb-2">
+                           <input
+                              style={{
+                                 backgroundColor: `${element?.labelColor}33`,
+                              }}
+                              onChange={(event) =>
+                                 updateLabelValue(event.target.value)
+                              }
+                              value={labelValue}
+                              type="text"
+                              className="h-5 w-20 rounded-full p-0 focus:ring-transparent focus:outline-none border-0 text-center text-[10px] font-bold"
+                           />
+                           <Listbox value={element?.labelColor}>
+                              <Float
+                                 as={Fragment}
+                                 enter="transition duration-100 ease-out"
+                                 enterFrom="transform scale-95 opacity-0"
+                                 enterTo="transform scale-100 opacity-100"
+                                 leave="transition duration-75 ease-out"
+                                 leaveFrom="transform scale-100 opacity-100"
+                                 leaveTo="transform scale-95 opacity-0"
+                                 offset={2}
+                                 placement="bottom"
+                                 portal
+                              >
+                                 <Listbox.Button
+                                    style={{
+                                       backgroundColor: element?.labelColor,
+                                    }}
+                                    className="flex items-center absolute h-3 w-3 rounded-full top-1 right-1 justify-center focus:outline-none"
+                                 />
+                                 <Listbox.Options className="border-color-sub text-1 bg-3-sub shadow-1 grid min-w-[100px] grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm focus:outline-none">
+                                    {GROUP_COLORS?.map(
+                                       (color: string, rowIdx: number) => (
+                                          <Listbox.Option
+                                             className="flex items-center justify-center"
+                                             key={rowIdx}
+                                             value={color}
+                                          >
+                                             <button
+                                                type="button"
+                                                onClick={() =>
+                                                   updateLabelColor(color)
+                                                }
+                                                className="h-3.5 w-3.5 rounded-full"
+                                                key={color}
+                                                style={{
+                                                   backgroundColor: color,
+                                                }}
+                                             ></button>
+                                          </Listbox.Option>
+                                       ),
+                                    )}
+                                 </Listbox.Options>
+                              </Float>
+                           </Listbox>
+                        </div>
+                     </>
+                  )}
+                  {element.label && !editMode && (
+                     <div className="flex items-center justify-center pb-2">
+                        <div
+                           className="flex h-5 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           style={{
+                              backgroundColor: `${element?.labelColor}33`,
+                           }}
+                        >
+                           {element.label}
+                        </div>
+                     </div>
+                  )}
+                  <div
+                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
+                  items-center overflow-hidden rounded-full border shadow-sm"
+                  >
                      {element?.iconUrl ? (
                         <Image
-                           width={32}
-                           height={32}
-                           className="overflow-hidden rounded-full"
                            url={element?.iconUrl}
-                           options="aspect_ratio=1:1&height=80&width=80"
+                           options="aspect_ratio=1:1&height=120&width=120"
                            alt={element?.name ?? "Icon"}
                         />
                      ) : (
                         <Component className="text-1 mx-auto" size={18} />
                      )}
                   </div>
-                  <span className="truncate text-sm font-bold">
+                  <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
                      {element?.name}
-                  </span>
-               </div>
-               <div
-                  className="absolute bg-white dark:bg-dark450 border dark:border-zinc-600 rounded-md divide-x dark:divide-zinc-600
-                  left-2 flex items-center opacity-0 group-hover:opacity-100 shadow-sm shadow-1"
-               >
-                  <FloatingDelayGroup delay={{ open: 1000 }}>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <button
-                              className="flex h-6 w-5 items-center justify-center"
-                              onClick={() => setEditMode(!editMode)}
-                           >
-                              {editMode ? (
-                                 <ChevronLeft size={16} />
-                              ) : (
-                                 <MoreVertical size={14} />
-                              )}
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           {editMode ? "Close" : "Edit"}
-                        </TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <button
-                              type="button"
-                              aria-label="Drag to reorder"
-                              ref={setActivatorNodeRef}
-                              {...listeners}
-                              className="cursor-grab h-6 w-7 items-center flex justify-center"
-                           >
-                              <Move className="text-1" size={12} />
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>Drag to reorder</TooltipContent>
-                     </Tooltip>
-                  </FloatingDelayGroup>
-               </div>
-               {editMode && (
-                  <div className="flex flex-none items-center justify-center">
-                     <button
-                        className="group-hover:flex hidden h-7 w-7 items-center justify-center"
-                        onClick={() => {
-                           Transforms.delete(editor, {
-                              at: path,
-                           });
-                        }}
-                        aria-label="Delete"
-                     >
-                        <Trash className="text-1" size={12} />
-                     </button>
-                     <Listbox value={element?.labelColor}>
-                        <Listbox.Button
-                           className="bg-2-sub hidden h-7 w-7 items-center justify-center
-                           rounded-full focus:outline-none group-hover:flex"
-                        >
-                           <div
-                              style={{
-                                 backgroundColor: element?.labelColor,
-                              }}
-                              className="h-3 w-3 rounded-full"
-                           />
-                        </Listbox.Button>
-                        <Transition
-                           enter="transition duration-100 ease-out"
-                           enterFrom="transform scale-95 opacity-0"
-                           enterTo="transform scale-100 opacity-100"
-                           leave="transition duration-75 ease-out"
-                           leaveFrom="transform scale-100 opacity-100"
-                           leaveTo="transform scale-95 opacity-0"
-                        >
-                           <Listbox.Options
-                              className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
-                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
-                           >
-                              {GROUP_COLORS?.map(
-                                 (color: string, rowIdx: number) => (
-                                    <Listbox.Option
-                                       className="flex items-center justify-center"
-                                       key={rowIdx}
-                                       value={color}
-                                    >
-                                       <button
-                                          type="button"
-                                          onClick={() =>
-                                             updateLabelColor(color)
-                                          }
-                                          className="h-3.5 w-3.5 rounded-full"
-                                          key={color}
-                                          style={{
-                                             backgroundColor: color,
-                                          }}
-                                       ></button>
-                                    </Listbox.Option>
-                                 ),
-                              )}
-                           </Listbox.Options>
-                        </Transition>
-                     </Listbox>
-                     <input
-                        style={{
-                           backgroundColor: `${element?.labelColor}33`,
-                        }}
-                        onChange={(event) =>
-                           updateLabelValue(event.target.value)
-                        }
-                        value={labelValue}
-                        type="text"
-                        className="h-6 w-20 hidden group-hover:flex items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
-                     />
                   </div>
-               )}
-               {element.label && !editMode && (
-                  <div className="flex items-center justify-center">
-                     <div
-                        className="flex h-6 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
-                        style={{
-                           backgroundColor: `${element?.labelColor}33`,
-                        }}
-                     >
-                        {element.label}
-                     </div>
-                  </div>
-               )}
+               </div>
             </div>
-         </div>
-      );
-   }
-   if (itemsViewMode == "grid") {
-      return (
-         <div
-            contentEditable={false}
-            {...attributes}
-            ref={setNodeRef}
-            style={
-               {
-                  transition: transition,
-                  transform: CSS.Transform.toString(transform),
-                  pointerEvents: isSorting ? "none" : undefined,
-                  opacity: isDragging ? 0 : 1,
-               } as React.CSSProperties /* cast because of css variable */
-            }
-            className="bg-2-sub focus:outline-none flex items-center justify-center border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+         )}
+         <Modal
+            onClose={() => {
+               setModalStatus(false);
+            }}
+            unmount={false}
+            show={modalStatus}
          >
-            <div className="hidden">{children}</div>
-            <div className="absolute left-0 top-0 flex w-full select-none items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100">
-               <FloatingDelayGroup delay={{ open: 1000 }}>
-                  <Tooltip placement="right-start">
-                     <TooltipTrigger>
-                        <button
-                           type="button"
-                           onClick={() => setEditMode(!editMode)}
-                           className="flex h-7 w-7 items-center text-1 justify-center"
-                        >
-                           {editMode ? (
-                              <ArrowLeft className="mt-1" size={18} />
-                           ) : (
-                              <MoreVertical size={16} />
-                           )}
-                        </button>
-                     </TooltipTrigger>
-                     <TooltipContent>
-                        {editMode ? "Close" : "Edit"}
-                     </TooltipContent>
-                  </Tooltip>
-                  <Tooltip placement="left-start">
-                     <TooltipTrigger>
-                        <button
-                           type="button"
-                           aria-label="Drag to reorder"
-                           ref={setActivatorNodeRef}
-                           {...listeners}
-                           className="flex h-7 w-7 cursor-grab items-center justify-center rounded-md"
-                        >
-                           <Move className="text-1" size={16} />
-                        </button>
-                     </TooltipTrigger>
-                     <TooltipContent>Drag to reorder</TooltipContent>
-                  </Tooltip>
-               </FloatingDelayGroup>
-            </div>
-            <div className="block truncate">
-               {/* Label Editor */}
-               {editMode && (
-                  <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center mb-2">
-                     <input
-                        style={{
-                           backgroundColor: `${element?.labelColor}33`,
-                        }}
-                        onChange={(event) =>
-                           updateLabelValue(event.target.value)
-                        }
-                        value={labelValue}
-                        type="text"
-                        className="h-5 w-20 rounded-full p-0 focus:ring-transparent focus:outline-none border-0 text-center text-[10px] font-bold"
-                     />
-                  </div>
-               )}
-               {element.label && !editMode && (
-                  <div className="flex items-center justify-center pb-2">
-                     <div
-                        className="flex h-5 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
-                        style={{
-                           backgroundColor: `${element?.labelColor}33`,
-                        }}
-                     >
-                        {element.label}
-                     </div>
-                  </div>
-               )}
-               <div
-                  className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
-                  items-center overflow-hidden rounded-full border shadow-sm"
-               >
-                  {element?.iconUrl ? (
-                     <Image
-                        url={element?.iconUrl}
-                        options="aspect_ratio=1:1&height=120&width=120"
-                        alt={element?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
-               </div>
-               <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
-                  {element?.name}
-               </div>
-            </div>
-            {editMode && (
-               <>
-                  <div className="absolute bottom-1 w-7 h-7 left-1 hidden group-hover:block">
-                     <Listbox value={element?.labelColor}>
-                        <Listbox.Button
-                           className="bg-2-sub flex h-7 w-7 items-center 
-                           justify-center rounded-full focus:outline-none"
-                        >
-                           <div
-                              style={{
-                                 backgroundColor: element?.labelColor,
-                              }}
-                              className="h-3 w-3 rounded-full"
+            <div
+               className="bg-3 w-full max-h-[90vh] min-h-[200px] transform rounded-lg relative
+               text-left align-middle transition-all laptop:w-[760px] no-scrollbar"
+            >
+               <div className="p-4 flex items-center gap-3">
+                  <div className="flex items-center flex-none gap-1.5">
+                     <span className="shadow-1 border-color-sub flex h-7 w-7 items-center overflow-hidden rounded-full border shadow-sm">
+                        {element?.iconUrl ? (
+                           <Image
+                              url={element?.iconUrl}
+                              options="aspect_ratio=1:1&height=120&width=120"
+                              alt={element?.name ?? "Icon"}
                            />
-                        </Listbox.Button>
-                        <Transition
-                           enter="transition duration-100 ease-out"
-                           enterFrom="transform scale-95 opacity-0"
-                           enterTo="transform scale-100 opacity-100"
-                           leave="transition duration-75 ease-out"
-                           leaveFrom="transform scale-100 opacity-100"
-                           leaveTo="transform scale-95 opacity-0"
-                        >
-                           <Listbox.Options
-                              className="border-color-sub text-1 bg-2-sub shadow-1 absolute -top-20 left-2 z-30 grid min-w-[100px]
-                           grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm focus:outline-none"
-                           >
-                              {GROUP_COLORS?.map(
-                                 (color: string, rowIdx: number) => (
-                                    <Listbox.Option
-                                       className="flex items-center justify-center"
-                                       key={rowIdx}
-                                       value={color}
-                                    >
-                                       <button
-                                          type="button"
-                                          onClick={() =>
-                                             updateLabelColor(color)
-                                          }
-                                          className="h-3.5 w-3.5 rounded-full"
-                                          key={color}
-                                          style={{
-                                             backgroundColor: color,
-                                          }}
-                                       ></button>
-                                    </Listbox.Option>
-                                 ),
-                              )}
-                           </Listbox.Options>
-                        </Transition>
-                     </Listbox>
+                        ) : (
+                           <Component className="text-1 mx-auto" size={18} />
+                        )}
+                     </span>
+                     <span className="font-bold font-header text-lg">
+                        {element.name}
+                     </span>
                   </div>
-                  <div className="absolute bottom-0 w-8 h-8 right-0 hidden group-hover:block">
-                     <button
-                        className="shadow-1 flex h-7 w-7 items-center justify-center group rounded-full"
-                        onClick={() => {
-                           Transforms.delete(editor, {
-                              at: path,
-                           });
-                        }}
-                        aria-label="Delete"
-                     >
-                        <Trash
-                           className="text-1 group-hover:text-red-300"
-                           size={14}
-                        />
-                     </button>
-                  </div>
-               </>
-            )}
-         </div>
-      );
-   }
+                  <span className="bg-zinc-100 dark:bg-dark350 rounded-full h-0.5 w-full flex-grow" />
+               </div>
+               <div className="p-4 pt-0">
+                  <NestedEditor
+                     field="groupContent"
+                     element={element}
+                     editor={editor}
+                     readOnly={editMode ? false : true}
+                  />
+               </div>
+            </div>
+         </Modal>
+      </>
+   );
 }
