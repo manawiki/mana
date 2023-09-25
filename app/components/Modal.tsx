@@ -7,14 +7,21 @@ export function Modal({
    show = true,
    onClose,
    children,
+   unmount = true,
 }: {
    show?: boolean;
    onClose?: () => void;
    children?: React.ReactNode;
+   unmount?: boolean;
 }) {
    return (
       <Transition appear show={show} as={Fragment}>
-         <Dialog onClose={onClose} as="div" className="relative z-50">
+         <Dialog
+            unmount={unmount}
+            onClose={onClose}
+            as="div"
+            className="relative z-50"
+         >
             <div className="h-full w-full">
                <Transition.Child
                   //backdrop transition

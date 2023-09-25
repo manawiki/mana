@@ -48,7 +48,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      style={{
                         backgroundColor: `${element?.labelColor}33`,
                      }}
-                     className="flex h-6 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold uppercase"
+                     className="flex h-6 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
                   >
                      {element.label}
                   </div>
@@ -65,10 +65,10 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
             >
                <div className="block truncate">
                   {element.label && (
-                     <div className="flex items-center justify-center">
+                     <div className="flex items-center justify-center mb-2">
                         <div
                            className="flex h-5 w-20 items-center justify-center rounded-full 
-                   border-0 text-center text-[10px] font-bold uppercase"
+                   border-0 text-center text-[10px] font-bold"
                            style={{
                               backgroundColor: `${element?.labelColor}33`,
                            }}

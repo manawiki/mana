@@ -392,16 +392,18 @@ export function NestedEditor({
    element,
    editor,
    field,
+   readOnly = false,
 }: {
    element: any;
    editor: Editor;
    field: string;
+   readOnly?: boolean;
 }) {
-   const readOnly = useReadOnly();
+   const isEditorReadOnlyMode = useReadOnly();
    const inlineEditor = useEditor();
    const viewEditor = useMemo(() => withReact(createEditor()), []);
 
-   if (readOnly) {
+   if (isEditorReadOnlyMode == true || readOnly == true) {
       return (
          <Slate
             editor={viewEditor}
