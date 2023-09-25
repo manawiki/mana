@@ -30,7 +30,7 @@
 
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
@@ -44,11 +44,11 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    return json({ user });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Warp History Submission - Mana",
@@ -282,7 +282,7 @@ const CorrectFile = ({ jsonlist }: any) => {
                   warplist.map((warp: any, i: any) => {
                      setStatus(i + 1);
                      return postWarp(warp);
-                  })
+                  }),
                ).then((r) => {
                   setTotal(count);
                });

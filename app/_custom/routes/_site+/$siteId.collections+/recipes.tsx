@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -15,7 +15,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 // export async function loader({
 //    context: { payload },
 //    request,
-// }: LoaderArgs) {
+// }: LoaderFunctionArgs) {
 //    const characters = await payload.find({
 //       // @ts-ignore
 //       collection: "characters",
@@ -34,7 +34,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { data, errors } = await fetchWithCache(
       `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
       {
@@ -45,7 +45,7 @@ export async function loader({
          body: JSON.stringify({
             query: QUERY_RECIPES,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -56,7 +56,7 @@ export async function loader({
    return json({ recipes: data.recipes.docs });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Recipes - Honkai: Star Rail",
@@ -195,13 +195,13 @@ const RecipeList = ({ chars }: any) => {
                            onClick={(event) => {
                               if (filters.find((a) => a.id == opt.id)) {
                                  setFilters(
-                                    filters.filter((a) => a.id != opt.id)
+                                    filters.filter((a) => a.id != opt.id),
                                  );
                               } else {
                                  setFilters([
                                     // Allows only one filter per category
                                     ...filters.filter(
-                                       (a) => a.field != cat.field
+                                       (a) => a.field != cat.field,
                                     ),
                                     { ...opt, field: cat.field },
                                  ]);

@@ -1,4 +1,4 @@
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 
@@ -12,7 +12,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const BANNERS = `
    query Banners {
       Banners(limit: 100) {
@@ -58,7 +58,7 @@ export async function loader({
          body: JSON.stringify({
             query: BANNERS,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -72,13 +72,13 @@ export async function loader({
          ? -1
          : parseInt(b.banner_id) > parseInt(a.banner_id)
          ? 1
-         : 0
+         : 0,
    );
 
    return json({ banners: data.Banners.docs });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Banners - Honkai: Star Rail",

@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -37,7 +37,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
    });
@@ -63,7 +63,7 @@ export async function loader({
                   charId: entryId,
                },
             }),
-         }
+         },
       ),
    ]);
 

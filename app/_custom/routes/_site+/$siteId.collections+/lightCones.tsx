@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -14,7 +14,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 // export async function loader({
 //    context: { payload },
 //    request,
-// }: LoaderArgs) {
+// }: LoaderFunctionArgs) {
 //    const characters = await payload.find({
 //       // @ts-ignore
 //       collection: "characters",
@@ -33,7 +33,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { data, errors } = await fetchWithCache(
       `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
       {
@@ -44,7 +44,7 @@ export async function loader({
          body: JSON.stringify({
             query: QUERY_LIGHTCONES,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -55,7 +55,7 @@ export async function loader({
    return json({ lightCones: data.lightcones.docs });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Light Cones - Honkai: Star Rail",
@@ -218,13 +218,13 @@ const LightConeList = ({ chars }: any) => {
                            onClick={(event) => {
                               if (filters.find((a) => a.id == opt.id)) {
                                  setFilters(
-                                    filters.filter((a) => a.id != opt.id)
+                                    filters.filter((a) => a.id != opt.id),
                                  );
                               } else {
                                  setFilters([
                                     // Allows only one filter per category
                                     ...filters.filter(
-                                       (a) => a.field != cat.field
+                                       (a) => a.field != cat.field,
                                     ),
                                     { ...opt, field: cat.field },
                                  ]);
@@ -320,7 +320,7 @@ const LightConeList = ({ chars }: any) => {
                   <EntryWithDescription char={char} key={char.id} />
                ) : (
                   <EntryIconOnly char={char} key={char.id} />
-               )
+               ),
             )}
          </div>
       </>

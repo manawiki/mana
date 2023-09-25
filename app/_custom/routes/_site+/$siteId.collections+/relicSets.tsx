@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Search, SortDesc } from "lucide-react";
@@ -13,7 +13,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 // export async function loader({
 //    context: { payload },
 //    request,
-// }: LoaderArgs) {
+// }: LoaderFunctionArgs) {
 //    const characters = await payload.find({
 //       // @ts-ignore
 //       collection: "characters",
@@ -32,7 +32,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { data, errors } = await fetchWithCache(
       `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
       {
@@ -43,7 +43,7 @@ export async function loader({
          body: JSON.stringify({
             query: QUERY_RELIC_SETS,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -54,7 +54,7 @@ export async function loader({
    return json({ relicSets: data.relicSets.docs });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Relic Sets - Honkai: Star Rail",
@@ -179,13 +179,13 @@ const RelicSetList = ({ chars }: any) => {
                               onClick={(event) => {
                                  if (filters.find((a: any) => a.id == opt.id)) {
                                     setFilters(
-                                       filters.filter((a) => a.id != opt.id)
+                                       filters.filter((a) => a.id != opt.id),
                                     );
                                  } else {
                                     setFilters([
                                        // Allows only one filter per category
                                        ...filters.filter(
-                                          (a) => a.field != cat.field
+                                          (a) => a.field != cat.field,
                                        ),
                                        { ...opt, field: cat.field },
                                     ]);

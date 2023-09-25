@@ -1,6 +1,10 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 
-import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type {
+   ActionFunctionArgs,
+   LoaderFunctionArgs,
+   MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
    Form,
@@ -36,7 +40,7 @@ import { fetchShowcase } from "~/utils/showcase-cache.server";
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
 
-export async function loader({ params, request }: LoaderArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
    const { uid } = zx.parseQuery(request, {
       uid: z.string().optional(),
    });
@@ -58,18 +62,18 @@ export async function loader({ params, request }: LoaderArgs) {
    const charids = [
       showcaseSample?.detail_info?.assist_avatar?.avatar_id.toString(),
       ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
-         a.avatar_id.toString()
+         a.avatar_id.toString(),
       ),
    ];
    const lcids = [
       showcaseSample?.detail_info?.assist_avatar?.equipment?.tid.toString(),
-      ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
-         a.equipment?.tid.toString()
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
+         (a: any) => a.equipment?.tid.toString(),
       ),
    ];
    const rids = [
       ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map((a: any) =>
-         a.tid.toString()
+         a.tid.toString(),
       ),
    ];
    const piid = showcaseSample?.detail_info?.head_icon.toString();
@@ -97,7 +101,7 @@ export async function loader({ params, request }: LoaderArgs) {
                playerIconId: piid,
             },
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -117,11 +121,11 @@ export async function loader({ params, request }: LoaderArgs) {
          showcaseData: showcaseData,
          refreshCooldown: refreshCooldown,
       },
-      { headers: { "Cache-Control": "public, s-maxage=60" } }
+      { headers: { "Cache-Control": "public, s-maxage=60" } },
    );
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Character Showcase - Honkai: Star Rail",
@@ -549,7 +553,7 @@ const CharacterInfo = ({
             value: a.value,
          };
          lightconebonuses.push(tempbonus);
-      }
+      },
    );
 
    // Relic data loading
@@ -565,7 +569,7 @@ const CharacterInfo = ({
       // - Get Main Stat Icon / Affix ID / Name
       // - Get Value of Main Stat at level
       const mainstat = rbase[i]?.mainstat_group?.find(
-         (a: any) => a.affix_id == r.main_affix_id
+         (a: any) => a.affix_id == r.main_affix_id,
       );
 
       // Main stats
@@ -582,7 +586,7 @@ const CharacterInfo = ({
       // Sub stats
       const subobj = r.sub_affix_list?.map((s: any) => {
          const ss = rbase[i]?.substat_group?.find(
-            (a: any) => a.affix_id == s.affix_id
+            (a: any) => a.affix_id == s.affix_id,
          );
          const scnt = s.cnt ?? 0;
          const sbase = ss.base_val;
@@ -705,7 +709,7 @@ const CharacterInfo = ({
    for (var sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
       const currpoint = chardata?.skilltree_list[sk];
       var treepoint = skillTrees.find(
-         (a: any) => a.point_id == currpoint.point_id
+         (a: any) => a.point_id == currpoint.point_id,
       );
 
       treepoint.stat_added?.map((a: any) => {
@@ -878,8 +882,8 @@ const CharacterInfo = ({
 
    // Light cone name highlighting if stat bonus is involved
 
-   const lcbonuses = lightconebonuses?.map((b: any) =>
-      b?.name?.replace("%", "")
+   const lcbonuses = lightconebonuses?.map(
+      (b: any) => b?.name?.replace("%", ""),
    );
    const lcHighlightStyle =
       intersect(lcbonuses, hoverStat)?.length > 0
@@ -1151,7 +1155,7 @@ const CharacterInfo = ({
                               <div className="flex items-center gap-2 pt-2">
                                  {wstats?.map((s: any, i: number) => {
                                     const stattype = statTypes.find(
-                                       (a: any) => a.name == s.name
+                                       (a: any) => a.name == s.name,
                                     );
                                     const lcstatname = s.name?.replace("%", "");
 
@@ -1173,7 +1177,7 @@ const CharacterInfo = ({
                                              setHoverStat(
                                                 hoverStat.length > 0
                                                    ? []
-                                                   : [lcstatname]
+                                                   : [lcstatname],
                                              )
                                           }
                                        >
@@ -1189,7 +1193,7 @@ const CharacterInfo = ({
                                              +
                                              {formatStat(
                                                 stattype?.name,
-                                                s?.base
+                                                s?.base,
                                              )}
                                           </div>
                                        </div>
@@ -1203,7 +1207,7 @@ const CharacterInfo = ({
                      <div className="max-desktop:border-color relative max-desktop:border-b">
                         {statVal.map((s: any, i: number) => {
                            const stattype = statTypes.find(
-                              (a: any) => a.name == s.name
+                              (a: any) => a.name == s.name,
                            );
 
                            const statname = s.name?.replace("%", "");
@@ -1222,7 +1226,7 @@ const CharacterInfo = ({
                                  onMouseOut={() => setHoverStat([])}
                                  onClick={() =>
                                     setHoverStat(
-                                       hoverStat.length > 0 ? [] : [statname]
+                                       hoverStat.length > 0 ? [] : [statname],
                                     )
                                  }
                               >
@@ -1360,7 +1364,7 @@ const CharacterInfo = ({
                                        setHoverStat(
                                           hoverStat.length > 0
                                              ? []
-                                             : [mainstatname]
+                                             : [mainstatname],
                                        )
                                     }
                                  >
@@ -1377,7 +1381,7 @@ const CharacterInfo = ({
                                     <div className="text-xs font-bold">
                                        {formatStat(
                                           mainstat?.name,
-                                          mainstat?.value
+                                          mainstat?.value,
                                        )}
                                     </div>
                                  </div>
@@ -1393,11 +1397,11 @@ const CharacterInfo = ({
                                                       ? "."
                                                       : step == 1
                                                       ? ".."
-                                                      : "..."
+                                                      : "...",
                                              );
                                           const statname = sub.name?.replace(
                                              "%",
-                                             ""
+                                             "",
                                           );
                                           return (
                                              <div
@@ -1420,7 +1424,7 @@ const CharacterInfo = ({
                                                    setHoverStat(
                                                       hoverStat.length > 0
                                                          ? []
-                                                         : [statname]
+                                                         : [statname],
                                                    )
                                                 }
                                              >
@@ -1441,7 +1445,7 @@ const CharacterInfo = ({
                                                          +
                                                          {formatStat(
                                                             sub?.name,
-                                                            sub?.value
+                                                            sub?.value,
                                                          )}
                                                       </div>
                                                    </div>
@@ -1449,7 +1453,7 @@ const CharacterInfo = ({
                                                       {steptext?.map(
                                                          (
                                                             st: any,
-                                                            key: number
+                                                            key: number,
                                                          ) => {
                                                             return (
                                                                <div
@@ -1463,13 +1467,13 @@ const CharacterInfo = ({
                                                                   {st}
                                                                </div>
                                                             );
-                                                         }
+                                                         },
                                                       )}
                                                    </div>
                                                 </div>
                                              </div>
                                           );
-                                       }
+                                       },
                                     )}
                                  </div>
                               </div>
@@ -1490,8 +1494,8 @@ const CharacterInfo = ({
                            });
 
                            // Check if any of the stat bonuses in the set apply to the currently highlighted stat.
-                           const sbonuses = set.bonuses?.map((b: any) =>
-                              b.stattype?.name?.replace("%", "")
+                           const sbonuses = set.bonuses?.map(
+                              (b: any) => b.stattype?.name?.replace("%", ""),
                            );
 
                            const highlightStyle =
@@ -1575,7 +1579,7 @@ const CharacterInfo = ({
 };
 
 // Basically the same as laoder, but refetches instead
-export async function action({ request }: ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
    const { uid } = zx.parseQuery(request, {
       uid: z.string().optional(),
    });
@@ -1651,12 +1655,12 @@ const SkillTreeDisplay = ({
 }: any) => {
    var pathkey = path;
    var treelist = skillTrees.filter(
-      (a: any) => a.character.id == data?.avatar_id
+      (a: any) => a.character.id == data?.avatar_id,
    ); // pageData?.attributes?.tree; //skillTreeData;
 
    // Need to sort skill nodes in order from Point01 - 18
    treelist.sort((a: any, b: any) =>
-      a.anchor > b.anchor ? 1 : b.anchor > a.anchor ? -1 : 0
+      a.anchor > b.anchor ? 1 : b.anchor > a.anchor ? -1 : 0,
    );
 
    const connectorcount: any = {
@@ -1671,7 +1675,7 @@ const SkillTreeDisplay = ({
    // Initialize an array of form [1, 2, 3, ... n], where n is the number of connectors for the character's Path (from connectorcount)
    const connectorlist = Array.from(
       { length: connectorcount[pathkey] },
-      (v, k) => k + 1
+      (v, k) => k + 1,
    );
 
    return (
@@ -1690,7 +1694,7 @@ const SkillTreeDisplay = ({
 
             {treelist?.map((node: any, i: number) => {
                const nodelv = data.skilltree_list?.find(
-                  (a: any) => a.point_id == node.point_id
+                  (a: any) => a.point_id == node.point_id,
                )?.level;
 
                // Populate node description tooltip text
@@ -1707,8 +1711,8 @@ const SkillTreeDisplay = ({
                // Check if any of the node's stat_added equal the current highlighted hoverStat
 
                const skillstats =
-                  node?.stat_added?.map((s: any) =>
-                     s.stat_type?.name?.replace("%", "")
+                  node?.stat_added?.map(
+                     (s: any) => s.stat_type?.name?.replace("%", ""),
                   ) ?? [];
 
                const treeHighlight =
@@ -1747,7 +1751,7 @@ const SkillTreeDisplay = ({
                            onMouseOut={() => setHoverStat([])}
                            onClick={() =>
                               setHoverStat(
-                                 hoverStat.length > 0 ? [] : skillstats
+                                 hoverStat.length > 0 ? [] : skillstats,
                               )
                            }
                         >

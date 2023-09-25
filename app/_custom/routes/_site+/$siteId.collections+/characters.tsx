@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -15,7 +15,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const CHARACTERS = `
    query Characters {
       Characters(limit: 100, sort: "name") {
@@ -59,7 +59,7 @@ export async function loader({
          body: JSON.stringify({
             query: CHARACTERS,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -70,7 +70,7 @@ export async function loader({
       { characters: data.Characters.docs },
       {
          headers: { "Cache-Control": "public, s-maxage=60" },
-      }
+      },
    );
 }
 
@@ -308,13 +308,13 @@ const CharacterList = ({ chars }: any) => {
                                  onClick={(event) => {
                                     if (filters.find((a) => a.id == opt.id)) {
                                        setFilters(
-                                          filters.filter((a) => a.id != opt.id)
+                                          filters.filter((a) => a.id != opt.id),
                                        );
                                     } else {
                                        setFilters([
                                           // Allows only one filter per category
                                           ...filters.filter(
-                                             (a) => a.field != cat.field
+                                             (a) => a.field != cat.field,
                                           ),
                                           { ...opt, field: cat.field },
                                        ]);

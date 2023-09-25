@@ -1,4 +1,4 @@
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import type { LightCone } from "payload/generated-custom-types";
@@ -22,7 +22,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const entryDefault = (await getCustomEntryData({
       payload,
       params,

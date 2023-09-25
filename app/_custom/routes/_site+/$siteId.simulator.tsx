@@ -11,7 +11,7 @@
 import { useRef, useEffect, useState } from "react";
 
 import { Disclosure, Combobox } from "@headlessui/react";
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
@@ -24,7 +24,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    let url = `https://${settings.siteId}-db.${settings.domain}/api/banners?limit=500&sort=id`;
    const bannerRaw = await fetchWithCache(url);
    const banners = bannerRaw.docs;
@@ -45,7 +45,7 @@ export async function loader({
    return json({ banners, characters, lightCones, stellarJadeURL });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Warp Simulator - Honkai: Star Rail",
@@ -69,7 +69,7 @@ const SummonSimulator = (data: any) => {
          ? 1
          : parseInt(b.banner_id) > parseInt(a.banner_id)
          ? -1
-         : 0
+         : 0,
    );
    /*
       ========================================================================
@@ -272,11 +272,11 @@ const SummonSimulator = (data: any) => {
                            pool,
                            currPriority,
                            bannerType,
-                           rateupChance
+                           rateupChance,
                         );
                         let finalPool = pool[featuredKey].weapons;
                         let poolIdx = Math.floor(
-                           Math.random() * finalPool.length
+                           Math.random() * finalPool.length,
                         );
                         let currPull = finalPool[poolIdx];
                         if (
@@ -290,7 +290,7 @@ const SummonSimulator = (data: any) => {
                               //give them their target weapon if they pulled two non-target featured weapons
                               //and only do so once
                               console.log(
-                                 "you pulled two non-target featured weapons. here's your target weapon."
+                                 "you pulled two non-target featured weapons. here's your target weapon.",
                               );
                               const targetWeapon =
                                  getWeaponById(targetWeaponId);
@@ -305,7 +305,7 @@ const SummonSimulator = (data: any) => {
                         if (currPriority === "SSR" || currPriority === "SR") {
                            addOrIncrementPulls(
                               currGoodPulls[currPriority].weapons,
-                              currPull
+                              currPull,
                            );
                         }
                         pulls.push(currPull);
@@ -322,7 +322,7 @@ const SummonSimulator = (data: any) => {
                            case "SR":
                               //50/50 chance
                               const pullTypeRoll = Math.floor(
-                                 Math.random() * 2
+                                 Math.random() * 2,
                               );
                               pullType = pullTypeRoll
                                  ? "weapons"
@@ -333,16 +333,16 @@ const SummonSimulator = (data: any) => {
                            pool,
                            currPriority,
                            pullType,
-                           rateupChance
+                           rateupChance,
                         );
                         let finalPool = pool[featuredKey][pullType];
                         let poolIdx = Math.floor(
-                           Math.random() * finalPool.length
+                           Math.random() * finalPool.length,
                         );
                         if (currPriority === "SSR" || currPriority === "SR") {
                            addOrIncrementPulls(
                               currGoodPulls[currPriority][pullType],
-                              finalPool[poolIdx]
+                              finalPool[poolIdx],
                            );
                         }
                         pulls.push(finalPool[poolIdx]);
@@ -358,12 +358,12 @@ const SummonSimulator = (data: any) => {
                         }
                         let finalPool = pool.nonfeatured[pullType];
                         let poolIdx = Math.floor(
-                           Math.random() * finalPool.length
+                           Math.random() * finalPool.length,
                         );
                         if (currPriority === "SSR" || currPriority === "SR") {
                            addOrIncrementPulls(
                               currGoodPulls[currPriority][pullType],
-                              finalPool[poolIdx]
+                              finalPool[poolIdx],
                            );
                         }
                         pulls.push(finalPool[poolIdx]);
@@ -377,11 +377,11 @@ const SummonSimulator = (data: any) => {
                         let finalPool =
                            currRatesDict.current["SSR"].nonfeatured[pullType];
                         let poolIdx = Math.floor(
-                           Math.random() * finalPool.length
+                           Math.random() * finalPool.length,
                         );
                         addOrIncrementPulls(
                            currGoodPulls["SSR"][pullType],
-                           finalPool[poolIdx]
+                           finalPool[poolIdx],
                         );
                         pulls.push(finalPool[poolIdx]);
                      } else {
@@ -391,12 +391,12 @@ const SummonSimulator = (data: any) => {
                         }
                         let finalPool = pool.nonfeatured[pullType];
                         let poolIdx = Math.floor(
-                           Math.random() * finalPool.length
+                           Math.random() * finalPool.length,
                         );
                         if (currPriority === "SSR" || currPriority === "SR") {
                            addOrIncrementPulls(
                               currGoodPulls[currPriority][pullType],
-                              finalPool[poolIdx]
+                              finalPool[poolIdx],
                            );
                         }
                         pulls.push(finalPool[poolIdx]);
@@ -560,7 +560,7 @@ const SummonSimulator = (data: any) => {
                                     number={character[1]}
                                  />
                               );
-                           }
+                           },
                         )}
                      </td>
                      <td>
@@ -1091,27 +1091,27 @@ const SummonSimulator = (data: any) => {
             ? banner.featured_light_cones.map((a) => a.lightcone_id)
             : [];
       const characters = characterIds.map((characterId) =>
-            getCharacterById(characterId)
+            getCharacterById(characterId),
          ),
          weapons = weaponIds.map((weaponId) => getWeaponById(weaponId)),
          featuredCharacters = featuredCharacterIds.map((characterId) =>
-            getCharacterById(characterId)
+            getCharacterById(characterId),
          ),
          featuredWeapons = featuredWeaponIds.map((weaponId) =>
-            getWeaponById(weaponId)
+            getWeaponById(weaponId),
          );
       currRatesDict.current = {
          SSR: {
             featured: {
                weapons: extractRarity(featuredWeapons, "5"),
                characters: Array.prototype.concat(
-                  extractRarity(featuredCharacters, "5")
+                  extractRarity(featuredCharacters, "5"),
                ),
             },
             nonfeatured: {
                weapons: extractRarity(weapons, "5"),
                characters: Array.prototype.concat(
-                  extractRarity(characters, "5")
+                  extractRarity(characters, "5"),
                ),
             },
          },
@@ -1184,14 +1184,14 @@ const SummonSimulator = (data: any) => {
                //roll failed but they were guaranteed one already, so give it to them
                currReceivedGuaranteedRateup[rarity] = true;
                console.log(
-                  "failed rate-up roll, but you were guaranteed one so here you go"
+                  "failed rate-up roll, but you were guaranteed one so here you go",
                );
                return "featured";
             } else if (!currReceivedGuaranteedRateup[rarity]) {
                //roll failed, so guarantee the next one is a rateup
                currGuaranteedRateup[rarity] = true;
                console.log(
-                  "failed rate-up roll for the first time, next one is guaranteed rate-up"
+                  "failed rate-up roll for the first time, next one is guaranteed rate-up",
                );
             }
          }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -14,7 +14,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 // export async function loader({
 //    context: { payload },
 //    request,
-// }: LoaderArgs) {
+// }: LoaderFunctionArgs) {
 //    const characters = await payload.find({
 //       // @ts-ignore
 //       collection: "characters",
@@ -33,7 +33,7 @@ export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { data, errors } = await fetchWithCache(
       `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
       {
@@ -55,7 +55,7 @@ export async function loader({
    return json({ blessings: data.blessings.docs });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Blessings - Honkai: Star Rail",

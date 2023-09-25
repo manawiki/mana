@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import {
@@ -25,14 +25,14 @@ ChartJS.register(
    BarElement,
    Title,
    Tooltip,
-   Legend
+   Legend,
 );
 
 export async function loader({
    context: { payload },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const url = `https://${settings.siteId}-db.${settings.domain}/api/characters?limit=100`;
    const characterRaw = await fetchWithCache(url);
    const characters = characterRaw.docs;
@@ -52,7 +52,7 @@ export async function loader({
    return json({ characters, lightCones, banners, warps });
 }
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: "Characters - Honkai: Star Rail",
@@ -90,7 +90,7 @@ export default function HomePage() {
                   setWarpList(filtWarps);
                   localStorage.setItem(
                      "HSR_manawiki_warphistory_UID",
-                     JSON.stringify(uid)
+                     JSON.stringify(uid),
                   );
                }}
             >
