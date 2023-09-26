@@ -56,12 +56,11 @@ import type { Collection, Entry, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-// eslint-disable-next-line import/no-cycle
 import { useIsMount } from "~/hooks";
 import { swrRestFetcher } from "~/utils";
 
-import { BlockGroupItemView } from "./group-view";
 // eslint-disable-next-line import/no-cycle
+import { BlockGroupItemView } from "./group-view";
 import { NestedEditor } from "../../core/dnd";
 import {
    BlockType,
@@ -1139,9 +1138,20 @@ export function BlockGroupItem({
             unmount={false}
             show={modalStatus}
          >
+            <div className="flex group justify-end pb-2 pr-1">
+               <button
+                  className="flex items-center gap-1"
+                  onClick={() => setModalStatus(false)}
+               >
+                  <span className="text-zinc-200 dark:text-zinc-400 group-hover:underline text-xs">
+                     Close
+                  </span>
+                  <X size={16} className="text-white dark:text-zinc-500" />
+               </button>
+            </div>
             <div
-               className="bg-3 w-full max-h-[90vh] min-h-[200px] transform rounded-lg relative
-               text-left align-middle transition-all laptop:w-[760px] no-scrollbar"
+               className="bg-3 max-tablet:min-w-[100vw] max-h-[70vh] min-h-[200px] transform tablet:rounded-lg relative
+               text-left align-middle transition-all tablet:w-[760px] no-scrollbar"
             >
                <div className="p-4 flex items-center gap-3">
                   <div className="flex items-center flex-none gap-1.5">
