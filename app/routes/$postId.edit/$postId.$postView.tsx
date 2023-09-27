@@ -26,7 +26,7 @@ import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { fetchWithCache } from "~/utils/cache.server";
 
-import { PostHeader } from "./components/PostHeader";
+import { PostHeader } from "../_site+/$siteId.p+/components/PostHeader";
 
 export async function loader({
    context: { payload, user },
@@ -45,7 +45,7 @@ export async function loader({
             headers: {
                cookie: request.headers.get("cookie") ?? "",
             },
-         }
+         },
       )) as Post;
 
       if (post._status == "draft") {
@@ -59,7 +59,7 @@ export async function loader({
 
       return json(
          { post, siteId },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
       );
    } catch (e) {
       console.log(e);
@@ -74,7 +74,7 @@ export const handle = {
 
 export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+      ({ id }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
    const postTitle = data.post.name;
    const postDescription = data.post.subtitle;

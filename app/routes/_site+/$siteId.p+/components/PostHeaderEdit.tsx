@@ -34,8 +34,8 @@ import { isProcessing, isAdding, type FormResponse } from "~/utils";
 import { PostDeleteModal } from "./PostDeleteModal";
 import { PostUnpublishModal } from "./PostUnpublishModal";
 import { PostVersionModal } from "./PostVersionModal";
-import { PostHeader } from "../../components/PostHeader";
-import { postSchema } from "../../utils/postSchema";
+import { PostHeader } from "./PostHeader";
+import { postSchema } from "../utils/postSchema";
 
 export const handle = {
    // i18n key for this route. This will be used to load the correct translation
@@ -84,7 +84,7 @@ export const PostHeaderEdit = ({
       if (!isMount) {
          fetcher.submit(
             { name: debouncedTitle, intent: "updateTitle" },
-            { method: "patch" }
+            { method: "patch" },
          );
       }
    }, [debouncedTitle]);
@@ -93,7 +93,7 @@ export const PostHeaderEdit = ({
       if (!isMount) {
          fetcher.submit(
             { subtitle: debouncedSubtitle, intent: "updateSubtitle" },
-            { method: "patch" }
+            { method: "patch" },
          );
       }
    }, [debouncedSubtitle]);
@@ -329,9 +329,9 @@ export const PostHeaderEdit = ({
                                                 {dt.format(
                                                    new Date(
                                                       versions?.docs[0]
-                                                         .updatedAt as string
+                                                         .updatedAt as string,
                                                    ),
-                                                   "MMMM D, hh:mm A"
+                                                   "MMMM D, hh:mm A",
                                                 )}
                                              </div>
                                           </div>
@@ -380,7 +380,7 @@ export const PostHeaderEdit = ({
                                              items-center justify-center rounded-md"
                                                 onClick={() =>
                                                    navigator.clipboard.writeText(
-                                                      postFullUrl
+                                                      postFullUrl,
                                                    )
                                                 }
                                              >
@@ -490,7 +490,7 @@ export const PostHeaderEdit = ({
                         onClick={() =>
                            fetcher.submit(
                               { intent: "deleteBanner" },
-                              { method: "delete" }
+                              { method: "delete" },
                            )
                         }
                      >

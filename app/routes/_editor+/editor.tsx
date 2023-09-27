@@ -4,9 +4,11 @@ import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
 import { type Descendant } from "slate";
 import { Slate } from "slate-react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import type { Config } from "payload/generated-types";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 
 import { Toolbar } from "./core/components/Toolbar";
@@ -20,7 +22,7 @@ export function ManaEditor({
    collectionEntity,
    pageId,
    sectionId,
-   intent,
+   collectionSlug,
 }: {
    fetcher: FetcherWithComponents<never>;
    defaultValue: Descendant[];
@@ -28,7 +30,7 @@ export function ManaEditor({
    collectionEntity?: string;
    pageId?: string;
    sectionId?: string;
-   intent?: string;
+   collectionSlug?: keyof Config["collections"];
 }) {
    const editor = useEditor();
 
@@ -44,10 +46,10 @@ export function ManaEditor({
             //@ts-ignore
             {
                content: JSON.stringify(debouncedValue),
-               intentType: "update",
+               intent: "update",
                siteId,
                pageId,
-               intent,
+               collectionSlug,
                collectionEntity,
                sectionId,
             },
@@ -70,167 +72,34 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionFunctionArgs) {
-   const { intent, intentType, siteId, pageId, collectionEntity, sectionId } =
-      await zx.parseForm(request, {
-         intent: z.string(),
-         intentType: z.string(),
-         siteId: z.string(),
-         pageId: z.string().optional(),
-         collectionEntity: z.string().optional(),
-         sectionId: z.string().optional(),
-      });
+   const { intent, collectionSlug } = await zx.parseForm(request, {
+      intent: z.enum(["update", "publish", "versionUpdate"]),
+      collectionSlug: z.custom<keyof Config["collections"]>(),
+   });
 
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   if (!user) throw redirect("/login", { status: 302 });
 
-   switch (intentType) {
+   switch (intent) {
+      case "versionUpdate": {
+         const { versionId } = await zx.parseForm(request, {
+            versionId: z.string(),
+         });
+         return await payload.restoreVersion({
+            collection: collectionSlug,
+            id: versionId,
+            overrideAccess: false,
+            user,
+         });
+      }
       case "update": {
-         //Group of helper functions to get real id's from slug
-         const slug = await payload.find({
-            collection: "sites",
-            where: {
-               slug: {
-                  equals: siteId,
-               },
-            },
-            user,
-         });
-         const realSiteId = slug?.docs[0]?.id;
-
-         const collectionSlug = await payload.find({
-            collection: "collections",
-            where: {
-               slug: {
-                  equals: collectionEntity,
-               },
-               site: {
-                  equals: realSiteId,
-               },
-            },
-            user,
-         });
-
-         const realCollectionId = collectionSlug?.docs[0]?.id;
-
-         switch (intent) {
-            case "customCollectionEmbed": {
-               const { content } = await zx.parseForm(request, {
+         switch (collectionSlug) {
+            case "posts": {
+               const { content, pageId } = await zx.parseForm(request, {
                   content: z.string(),
+                  pageId: z.string(),
                });
-
-               const embedId = await payload.find({
-                  collection: "contentEmbeds",
-                  where: {
-                     site: {
-                        equals: realSiteId,
-                     },
-                     relationId: {
-                        equals: pageId,
-                     },
-                     ...(collectionEntity
-                        ? {
-                             collectionEntity: {
-                                equals: realCollectionId,
-                             },
-                          }
-                        : {}),
-                     ...(sectionId
-                        ? {
-                             sectionId: {
-                                equals: sectionId,
-                             },
-                          }
-                        : {}),
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-
-               //If existing embed doesn't exist, create a new one.
-               if (embedId.totalDocs == 0) {
-                  return await payload.create({
-                     collection: "contentEmbeds",
-                     //@ts-expect-error
-                     data: {
-                        content: JSON.parse(content),
-                        relationId: pageId,
-                        sectionId: sectionId,
-                        site: realSiteId as any,
-                        collectionEntity: realCollectionId as any,
-                     },
-                     draft: true,
-                     overrideAccess: false,
-                     user,
-                  });
-               }
-
-               //Otherwise update the existing document
                return await payload.update({
-                  collection: "contentEmbeds",
-                  id: embedId.docs[0].id,
-                  data: {
-                     content: JSON.parse(content),
-                  },
-                  autosave: true,
-                  draft: true,
-                  overrideAccess: false,
-                  user,
-               });
-            }
-
-            case "homeContent": {
-               const { content } = await zx.parseForm(request, {
-                  content: z.string(),
-               });
-
-               const homeContentId = await payload.find({
-                  collection: "homeContents",
-                  where: {
-                     site: {
-                        equals: realSiteId,
-                     },
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-
-               //If existing embed doesn't exist, create a new one.
-               if (homeContentId.totalDocs == 0) {
-                  return await payload.create({
-                     collection: "homeContents",
-                     data: {
-                        content: JSON.parse(content),
-                        //@ts-expect-error
-                        site: realSiteId,
-                     },
-                     draft: true,
-                     overrideAccess: false,
-                     user,
-                  });
-               }
-
-               //Otherwise update the existing document
-               return await payload.update({
-                  collection: "homeContents",
-                  id: homeContentId.docs[0].id,
-                  data: {
-                     content: JSON.parse(content),
-                  },
-                  autosave: true,
-                  draft: true,
-                  overrideAccess: false,
-                  user,
-               });
-            }
-
-            case "updatePostContent": {
-               const { content } = await zx.parseForm(request, {
-                  content: z.string(),
-               });
-
-               //update the existing post
-               return await payload.update({
-                  collection: "posts",
-                  //@ts-expect-error
+                  collection: collectionSlug,
                   id: pageId,
                   data: {
                      content: JSON.parse(content),
@@ -241,16 +110,13 @@ export async function action({
                   user,
                });
             }
-
-            default:
-               return null;
-         }
-      }
-      case "publish": {
-         switch (intent) {
-            case "homeContent": {
-               const homeContent = await payload.find({
-                  collection: "homeContents",
+            case "homeContents": {
+               const { content, siteId } = await zx.parseForm(request, {
+                  siteId: z.string(),
+                  content: z.string(),
+               });
+               const { docs } = await payload.find({
+                  collection: collectionSlug,
                   where: {
                      "site.slug": {
                         equals: siteId,
@@ -259,10 +125,30 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
-
+               invariant(docs[0]);
                return await payload.update({
-                  collection: "homeContents",
-                  id: homeContent.docs[0].id,
+                  collection: collectionSlug,
+                  id: docs[0].id,
+                  data: {
+                     content: JSON.parse(content),
+                  },
+                  autosave: true,
+                  draft: true,
+                  overrideAccess: false,
+                  user,
+               });
+            }
+         }
+      }
+      case "publish": {
+         switch (collectionSlug) {
+            case "posts": {
+               const { pageId } = await zx.parseForm(request, {
+                  pageId: z.string(),
+               });
+               return await payload.update({
+                  collection: collectionSlug,
+                  id: pageId,
                   data: {
                      _status: "published",
                   },
@@ -270,9 +156,31 @@ export async function action({
                   user,
                });
             }
-
-            default:
-               return null;
+            case "homeContents": {
+               const { siteId } = await zx.parseForm(request, {
+                  siteId: z.string(),
+               });
+               const { docs } = await payload.find({
+                  collection: collectionSlug,
+                  where: {
+                     "site.slug": {
+                        equals: siteId,
+                     },
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+               invariant(docs[0]);
+               return await payload.update({
+                  collection: collectionSlug,
+                  id: docs[0].id,
+                  data: {
+                     _status: "published",
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
          }
       }
    }

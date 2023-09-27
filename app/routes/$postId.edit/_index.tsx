@@ -9,6 +9,7 @@ import {
 } from "@remix-run/node";
 import { useLoaderData, useFetcher, useParams } from "@remix-run/react";
 import { createCustomIssues } from "react-zorm";
+import { Descendant } from "slate";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -26,10 +27,9 @@ import {
    slugify,
 } from "~/utils";
 
-import { PostHeaderEdit } from "./components/PostHeaderEdit";
-import { postSchema } from "../utils/postSchema";
+import { PostHeaderEdit } from "../_site+/$siteId.p+/components/PostHeaderEdit";
+import { postSchema } from "../_site+/$siteId.p+/utils/postSchema";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { Descendant } from "slate";
 
 export async function loader({
    context: { payload, user },
@@ -82,7 +82,7 @@ export const handle = {
 
 export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+      ({ id }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
    const postTitle = data?.post?.name ?? "";
 
@@ -120,7 +120,7 @@ export default function PostEditPage() {
          <ManaEditor
             fetcher={fetcher}
             pageId={postId ?? ""}
-            intent="updatePostContent"
+            collectionSlug="posts"
             defaultValue={defaultValue as Descendant[]}
          />
       </main>
@@ -169,7 +169,7 @@ export async function action({
          if (issues.hasIssues()) {
             return json<FormResponse>(
                { serverIssues: issues.toArray() },
-               { status: 400 }
+               { status: 400 },
             );
          }
          // Last resort error message
@@ -198,7 +198,7 @@ export async function action({
          if (issues.hasIssues()) {
             return json<FormResponse>(
                { serverIssues: issues.toArray() },
-               { status: 400 }
+               { status: 400 },
             );
          }
          // Last resort error message
@@ -236,7 +236,7 @@ export async function action({
          if (issues.hasIssues()) {
             return json<FormResponse>(
                { serverIssues: issues.toArray() },
-               { status: 400 }
+               { status: 400 },
             );
          }
          // Last resort error message

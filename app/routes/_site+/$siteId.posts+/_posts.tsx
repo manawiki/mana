@@ -27,15 +27,19 @@ import { select, type Select } from "payload-query";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Image, Post, Site, User } from "payload/generated-types";
+import type {
+   Post,
+   Site,
+   User,
+   Image as PayloadImage,
+} from "payload/generated-types";
+import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { isLoading, safeNanoID } from "~/utils";
 import { cacheWithSelect } from "~/utils/cache.server";
-
-import { FeedItem } from "./components/FeedItem";
 
 type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
@@ -73,11 +77,12 @@ export async function loader({
       user,
    });
 
-   return json({ q, myPosts, publishedPosts });
+   return json({ q, myPosts, publishedPosts, siteId });
 }
 
 export default function PostsIndex() {
-   const { publishedPosts, q, myPosts } = useLoaderData<typeof loader>();
+   const { publishedPosts, q, myPosts, siteId } =
+      useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const transition = useNavigation();
@@ -295,7 +300,7 @@ export default function PostsIndex() {
                         myPosts?.docs?.map((post) => (
                            <Link
                               prefetch="intent"
-                              to={`${post.id}/edit`}
+                              to={`/${siteId}/p/${post.id}`}
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3"
                            >
@@ -394,7 +399,7 @@ export default function PostsIndex() {
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
                {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                   publishedPosts.docs.map((post) => (
-                     <FeedItem key={post.id} post={post} />
+                     <FeedItem key={post.id} siteId={siteId} post={post} />
                   ))
                ) : (
                   <div className="flex items-center justify-between py-3 text-sm">
@@ -715,12 +720,12 @@ const filterAuthorFields = (
       avatar: true,
    };
 
-   const avatarSelect: Select<Image> = {
+   const avatarSelect: Select<PayloadImage> = {
       id: false,
       url: true,
    };
 
-   const bannerSelect: Select<Image> = {
+   const bannerSelect: Select<PayloadImage> = {
       id: false,
       url: true,
    };
@@ -756,3 +761,67 @@ const filterAuthorFields = (
 
    return result;
 };
+
+function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
+   return (
+      <>
+         <Link
+            className="relative block py-4"
+            prefetch="intent"
+            to={`/${siteId}/p/${post.slug}`}
+            key={post.id}
+         >
+            <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
+               <div className="flex items-center gap-3">
+                  <div className="h-6 w-6 overflow-hidden rounded-full">
+                     {post?.author.avatar?.url ? (
+                        <Image
+                           width={20}
+                           height={20}
+                           alt={post.name}
+                           options="aspect_ratio=1:1&height=80&width=80"
+                           className="w-full object-cover laptop:rounded"
+                           url={post?.author.avatar?.url}
+                        />
+                     ) : (
+                        <div className="bg-1 border-color shadow-1 h-6 w-6 overflow-hidden rounded-full border-2 shadow-sm"></div>
+                     )}
+                  </div>
+                  <div className="font-bold">{post.author.username}</div>
+               </div>
+               <div className="text-xs font-bold uppercase">
+                  {/* {post.publishedAt &&
+                     formatDistanceStrict(
+                        new Date(post.updatedAt ?? ""),
+                        new Date(),
+                        {
+                           addSuffix: true,
+                        }
+                     )} */}
+               </div>
+            </div>
+            <div className="flex items-start gap-5">
+               <div className="relative flex-grow">
+                  <div className="pb-2 font-header text-xl font-bold">
+                     {post.name}
+                  </div>
+                  <div className="text-1 text-sm max-laptop:line-clamp-2">
+                     {post.subtitle}
+                  </div>
+               </div>
+               {post.banner && (
+                  <div className="w-32 flex-none overflow-hidden rounded">
+                     <Image
+                        alt={post.name}
+                        options="height=140"
+                        height={200}
+                        className="w-full rounded object-cover"
+                        url={post?.banner?.url}
+                     />
+                  </div>
+               )}
+            </div>
+         </Link>
+      </>
+   );
+}

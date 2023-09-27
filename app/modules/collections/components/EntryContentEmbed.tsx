@@ -36,7 +36,7 @@ export const EntryContentEmbed = ({
             <>
                <H2 text={title} />
                <ManaEditor
-                  intent="customCollectionEmbed"
+                  collectionSlug="customCollectionEmbed"
                   sectionId={sectionId}
                   siteId={siteId}
                   fetcher={fetcher}

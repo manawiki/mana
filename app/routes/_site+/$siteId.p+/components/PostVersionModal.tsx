@@ -14,7 +14,7 @@ import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { isAdding } from "~/utils";
 
-import { PostHeader } from "../../components/PostHeader";
+import { PostHeader } from "./PostHeader";
 
 export const PostVersionModal = ({
    isVersionModalOpen,
@@ -71,7 +71,7 @@ export const PostVersionModal = ({
                      >
                         {dt.format(
                            new Date(selectedVersion?.updatedAt as string),
-                           "MMMM D, hh:mm A"
+                           "MMMM D, hh:mm A",
                         )}
                      </div>
                      {versions?.docs?.map(
@@ -95,7 +95,7 @@ export const PostVersionModal = ({
                                     />
                                  </Slate>
                               </Tab.Panel>
-                           )
+                           ),
                      )}
                   </Tab.Panels>
                   <div className="border-color h-full min-h-[90vh] w-[300px] border-l">
@@ -111,7 +111,7 @@ export const PostVersionModal = ({
                                     },
                                     {
                                        method: "patch",
-                                    }
+                                    },
                                  );
                                  setVersionModal(false);
                               }}
@@ -172,9 +172,9 @@ export const PostVersionModal = ({
                                                 >
                                                    {dt.format(
                                                       new Date(
-                                                         version?.updatedAt as string
+                                                         version?.updatedAt as string,
                                                       ),
-                                                      "MMMM D, hh:mm A"
+                                                      "MMMM D, hh:mm A",
                                                    )}
                                                 </time>
                                                 {checked ? (
@@ -187,7 +187,7 @@ export const PostVersionModal = ({
                                           )}
                                        </RadioGroup.Option>
                                     </Tab>
-                                 )
+                                 ),
                            )}
                         </RadioGroup>
                         <section className="m-4 flex items-center justify-between">
@@ -215,7 +215,7 @@ export const PostVersionModal = ({
                                              setSearchParams((searchParams) => {
                                                 searchParams.set(
                                                    "page",
-                                                   versions.prevPage as any
+                                                   versions.prevPage as any,
                                                 );
                                                 return searchParams;
                                              })
@@ -234,7 +234,7 @@ export const PostVersionModal = ({
                                              setSearchParams((searchParams) => {
                                                 searchParams.set(
                                                    "page",
-                                                   versions.nextPage as any
+                                                   versions.nextPage as any,
                                                 );
                                                 return searchParams;
                                              })
