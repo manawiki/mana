@@ -4,6 +4,7 @@ import { useMemo, useCallback, Fragment, useState } from "react";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
+//@ts-expect-error
 import dt from "date-and-time";
 import { Loader2 } from "lucide-react";
 import type { Descendant } from "slate";
@@ -11,19 +12,21 @@ import { createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Slate, Editable, withReact } from "slate-react";
 
+import type { HomeContent, Config } from "payload/generated-types";
 import { Modal } from "~/components";
-import type { HomeContent } from "~/db/payload-types";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { isAdding } from "~/utils";
 
-export const HomeVersionModal = ({
+export function EditorVersionModal({
    isVersionModalOpen,
    setVersionModal,
+   collectionSlug,
 }: {
    isVersionModalOpen: boolean;
    setVersionModal: Dispatch<SetStateAction<boolean>>;
-}) => {
+   collectionSlug: keyof Config["collections"];
+}) {
    //layout presume to have site data, might be brittle in the future
    //@ts-expect-error
    const versions = useMatches()?.[2]?.data?.versions as HomeContent[];
@@ -148,11 +151,13 @@ export const HomeVersionModal = ({
                                  fetcher.submit(
                                     {
                                        intent: "versionUpdate",
-                                       collectionSlug: "homeContents",
+                                       collectionSlug: collectionSlug,
+                                       //@ts-ignore
                                        versionId: selectedVersion.id,
                                     },
                                     {
                                        method: "patch",
+                                       action: "/editor",
                                     },
                                  );
                                  setVersionModal(false);
@@ -184,4 +189,4 @@ export const HomeVersionModal = ({
          </div>
       </Modal>
    );
-};
+}

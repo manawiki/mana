@@ -1,14 +1,10 @@
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo } from "react";
 
-import { FloatingDelayGroup, offset, shift } from "@floating-ui/react";
+import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
-import { redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import type { FetcherWithComponents } from "@remix-run/react";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
-import { Check, Clock9, Loader2 } from "lucide-react";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -21,6 +17,7 @@ import {
    withReact,
    type RenderElementProps,
 } from "slate-react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -28,15 +25,13 @@ import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import { isNativeSSR, isProcessing } from "~/utils";
+import { isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-
-import { HomeVersionModal } from "./components/HomeVersionModal";
 
 export async function loader({
    context: { payload, user },
@@ -72,7 +67,7 @@ export async function loader({
 }
 
 export default function SiteIndexMain() {
-   const { home, siteId } = useLoaderData<typeof loader>();
+   const { home, siteId, isChanged } = useLoaderData<typeof loader>();
    const editor = useMemo(() => withReact(createEditor()), []);
    const renderElement = useCallback((props: RenderElementProps) => {
       return <EditorBlocks {...props} />;
@@ -106,10 +101,9 @@ export default function SiteIndexMain() {
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
                            <ManaEditor
-                              key={siteId}
+                              collectionSlug="homeContents"
                               fetcher={fetcher}
                               siteId={siteId}
-                              intent="homeContent"
                               defaultValue={home as Descendant[]}
                            />
                         </Await>
@@ -117,7 +111,12 @@ export default function SiteIndexMain() {
                   </div>
                </main>
                <div>
-                  <EditorCommandBar fetcher={fetcher} />
+                  <EditorCommandBar
+                     collectionSlug="homeContents"
+                     siteId={siteId}
+                     fetcher={fetcher}
+                     isChanged={isChanged}
+                  />
                </div>
             </Float>
          ) : (
@@ -145,7 +144,7 @@ export default function SiteIndexMain() {
    );
 }
 
-const fetchHomeUpdates = async ({
+async function fetchHomeUpdates({
    payload,
    siteId,
    user,
@@ -155,7 +154,7 @@ const fetchHomeUpdates = async ({
    siteId: Site["slug"];
    user?: User;
    request: Request;
-}): Promise<Update[]> => {
+}): Promise<Update[]> {
    if (user) {
       const { docs } = await payload.find({
          collection: "updates",
@@ -200,96 +199,9 @@ const fetchHomeUpdates = async ({
       },
    });
    return updateResults;
-};
+}
 
-const EditorCommandBar = ({
-   fetcher,
-}: {
-   fetcher: FetcherWithComponents<never>;
-}) => {
-   const { isChanged, siteId } = useLoaderData<typeof loader>();
-
-   const isAutoSaving =
-      fetcher.state === "submitting" &&
-      fetcher.formData?.get("intentType") === "update";
-
-   const isPublishing =
-      fetcher.state === "submitting" &&
-      fetcher.formData?.get("intentType") === "publish";
-
-   const disabled = isProcessing(fetcher.state);
-   const [isVersionModalOpen, setVersionModal] = useState(false);
-
-   return (
-      <div className="shadow-1 bg-2-sub border-color-sub z-40 flex w-11 flex-col items-center justify-between gap-2 rounded-full border py-1.5 shadow max-laptop:hidden">
-         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
-            {isPublishing ? (
-               <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 bg-zinc-700">
-                  <Loader2 className="mx-auto h-4 w-4 animate-spin text-white dark:text-zinc-900" />
-               </div>
-            ) : (
-               <>
-                  {isChanged ? (
-                     <Tooltip placement="left">
-                        <TooltipTrigger>
-                           <button
-                              className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-zinc-100 bg-zinc-700"
-                              disabled={disabled}
-                              onClick={() => {
-                                 fetcher.submit(
-                                    //@ts-ignore
-                                    {
-                                       intent: "homeContent",
-                                       intentType: "publish",
-                                       siteId,
-                                    },
-                                    {
-                                       method: "post",
-                                       action: "/editor",
-                                    },
-                                 );
-                              }}
-                           >
-                              <PaperAirplaneIcon className="h-4 text-white dark:text-zinc-900 w-4" />
-                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>Publish latest changes</TooltipContent>
-                     </Tooltip>
-                  ) : (
-                     <Tooltip placement="left">
-                        <TooltipTrigger className="flex cursor-default h-8 w-8 items-center justify-center">
-                           {isAutoSaving ? (
-                              <Loader2 size={18} className="animate-spin" />
-                           ) : (
-                              <Check size={18} />
-                           )}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           No changes to publish...
-                        </TooltipContent>
-                     </Tooltip>
-                  )}
-               </>
-            )}
-            <Tooltip placement="left">
-               <TooltipTrigger
-                  className="transition duration-100 active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
-                  onClick={() => setVersionModal(true)}
-               >
-                  <Clock9 size={18} />
-               </TooltipTrigger>
-               <TooltipContent>History</TooltipContent>
-            </Tooltip>
-         </FloatingDelayGroup>
-         <HomeVersionModal
-            isVersionModalOpen={isVersionModalOpen}
-            setVersionModal={setVersionModal}
-         />
-      </div>
-   );
-};
-
-const fetchHomeContent = async ({
+async function fetchHomeContent({
    payload,
    siteId,
    user,
@@ -301,7 +213,7 @@ const fetchHomeContent = async ({
    user?: User;
    request: Request;
    page: number | undefined;
-}) => {
+}) {
    //Use local API and bypass cache for logged in users
    if (user) {
       const { docs } = await payload.find({
@@ -315,6 +227,7 @@ const fetchHomeContent = async ({
       });
 
       const homeData = docs[0];
+      invariant(homeData, "Site has no data");
 
       //If site admin, pull the latest draft and update isChanged
       const hasAccess = isSiteOwnerOrAdmin(user?.id, homeData.site);
@@ -373,7 +286,7 @@ const fetchHomeContent = async ({
       }
 
       //If no access, return content field from original query
-      const home = docs[0].content;
+      const home = docs[0]?.content;
 
       return { home, isChanged: false };
    }
@@ -405,34 +318,4 @@ const fetchHomeContent = async ({
    const home = docs[0].content as HomeContent["content"];
 
    return { home, isChanged: false };
-};
-
-export async function action({
-   context: { payload, user },
-   request,
-}: ActionFunctionArgs) {
-   const { intent } = await zx.parseForm(request, {
-      intent: z.string(),
-   });
-
-   if (!user || !user.id) return redirect("/login", { status: 302 });
-
-   switch (intent) {
-      case "versionUpdate": {
-         const { versionId, collectionSlug } = await zx.parseForm(request, {
-            versionId: z.string(),
-            collectionSlug: z.string(),
-         });
-         return await payload.restoreVersion({
-            //@ts-ignore
-            collection: collectionSlug,
-            id: versionId,
-            overrideAccess: false,
-            user,
-         });
-      }
-
-      default:
-         return null;
-   }
 }

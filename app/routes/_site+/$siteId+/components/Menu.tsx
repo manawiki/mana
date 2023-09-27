@@ -8,7 +8,7 @@ import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/modules/auth";
 import { siteHomePath, siteHomeShouldReload } from "~/utils";
 
-import { pinnedLinkUrlGenerator } from "../utils";
+import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
 
 export const activeStyle = `bg-zinc-200/40 dark:bg-bg3Dark`;
 export const defaultStyle = `bg-2 hover:bg-zinc-100 flex items-center gap-2.5 rounded-full font-bold dark:hover:bg-bg3Dark/70 bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
@@ -102,7 +102,7 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                               }
                               to={pinnedLinkUrlGenerator(
                                  item,
-                                 site?.slug ?? ""
+                                 site?.slug ?? "",
                               )}
                            >
                               <div className="h-5 w-5">
