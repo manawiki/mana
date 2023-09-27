@@ -27,8 +27,10 @@ import {
 } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
-import { useMatches, useParams } from "@remix-run/react";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { useParams } from "@remix-run/react";
 import clsx from "clsx";
+import { request as gqlRequest, gql } from "graphql-request";
 import {
    ChevronDown,
    ChevronLeft,
@@ -46,18 +48,30 @@ import {
    X,
 } from "lucide-react";
 import { nanoid } from "nanoid";
+import type { Select } from "payload-query";
+import { select } from "payload-query";
+import { plural } from "pluralize";
+import qs from "qs";
 import { Transforms, Node, Editor } from "slate";
 import type { BaseEditor } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 import useSWR from "swr";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type { Collection, Entry, Site } from "payload/generated-types";
+import type {
+   Collection,
+   Entry,
+   Image as PayloadImage,
+   Post,
+   Site,
+} from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useIsMount } from "~/hooks";
-import { swrRestFetcher } from "~/utils";
+import { swrRestFetcher, toWords } from "~/utils";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -83,6 +97,206 @@ export const GROUP_COLORS = [
 //@ts-ignore
 const GroupDnDContext = React.createContext();
 
+const defaultOptions = [
+   { slug: "post", name: "Post" },
+   { slug: "site", name: "Site" },
+];
+
+type groupRowData = {
+   id: string;
+   siteId: Site["slug"];
+   name: string;
+   isCustomSite: boolean;
+   slug?: Post["slug"];
+   icon: { url: string };
+};
+
+export async function loader({
+   context: { payload, user },
+   request,
+}: LoaderFunctionArgs) {
+   const { siteId, filterOption, groupSelectQuery } = zx.parseQuery(request, {
+      siteId: z.string(),
+      filterOption: z.string(),
+      groupSelectQuery: z.string(),
+   });
+   const slug = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteId,
+         },
+      },
+      depth: 1,
+      user,
+   });
+   const site = slug?.docs[0];
+
+   //For posts and site
+   if (defaultOptions.some((e) => e.slug === filterOption)) {
+      switch (filterOption) {
+         case "post": {
+            const { docs } = await payload.find({
+               collection: "posts",
+               where: {
+                  site: {
+                     equals: site?.id,
+                  },
+                  _status: {
+                     equals: "published",
+                  },
+                  ...(groupSelectQuery
+                     ? {
+                          name: {
+                             contains: groupSelectQuery,
+                          },
+                       }
+                     : {}),
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            });
+            const postSelect: Select<Post> = {
+               id: true,
+               name: true,
+               slug: true,
+            };
+            const imageSelect: Select<PayloadImage> = {
+               id: false,
+               url: true,
+            };
+            const filtered = docs.map((doc) => {
+               // Use icon field, otherwise default to post banner
+               const icon =
+                  (doc.icon && select(imageSelect, doc.icon)) ??
+                  (doc.banner && select(imageSelect, doc.banner));
+
+               const result = {
+                  ...select(postSelect, doc),
+                  icon,
+                  siteId,
+                  isCustomSite: site?.type == "custom",
+               };
+               return result as groupRowData;
+            });
+            return json(filtered);
+         }
+         case "site": {
+            const { docs } = await payload.find({
+               collection: "sites",
+               where: {
+                  isPublic: {
+                     equals: true,
+                  },
+                  ...(groupSelectQuery
+                     ? {
+                          name: {
+                             contains: groupSelectQuery,
+                          },
+                       }
+                     : {}),
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            });
+            const filtered = docs.map((doc) => {
+               return {
+                  ...select(
+                     {
+                        id: true,
+                        name: true,
+                     },
+                     doc,
+                  ),
+                  isCustomSite: doc?.type == "custom",
+                  siteId,
+                  icon: doc.icon && select({ id: false, url: true }, doc.icon),
+               };
+            });
+            return json(filtered);
+         }
+         default:
+            return null;
+      }
+   }
+   //For entries
+   if (site?.type == "custom") {
+      const formattedName = plural(toWords(filterOption, true));
+      const document = gql`
+         query ($groupSelectQuery: String!) {
+               rows: ${formattedName}(
+                  where: {
+                  name: { contains: $groupSelectQuery }
+                  }
+               ) {
+               docs {
+                  id
+                  name
+                  icon {
+                     url
+                  }
+               }
+            }
+         }
+      `;
+      const endpoint = `https://${site.slug}-db.${
+         site.domain ?? "mana.wiki"
+      }/api/graphql`;
+      const result: any = await gqlRequest(endpoint, document, {
+         groupSelectQuery,
+      });
+      const data = result.rows.docs as groupRowData[];
+      const filtered = data.map((doc) => {
+         return {
+            ...doc,
+            siteId,
+            isCustomSite: site?.type == "custom",
+         };
+      });
+      return json(filtered);
+   }
+   if (site?.type == "core") {
+      const { docs } = await payload.find({
+         collection: "entries",
+         where: {
+            site: {
+               equals: site?.id,
+            },
+            "collectionEntity.slug": {
+               equals: filterOption,
+            },
+            ...(groupSelectQuery
+               ? {
+                    name: {
+                       contains: groupSelectQuery,
+                    },
+                 }
+               : {}),
+         },
+         depth: 1,
+         overrideAccess: false,
+         user,
+      });
+      const filtered = docs.map((doc) => {
+         return {
+            ...select(
+               {
+                  id: true,
+                  name: true,
+               },
+               doc,
+            ),
+            siteId,
+            isCustomSite: site?.type == "custom",
+            icon: doc.icon && select({ id: false, url: true }, doc.icon),
+         };
+      });
+      return json(filtered);
+   }
+}
+
 export function BlockGroup({
    element,
    children,
@@ -95,66 +309,39 @@ export function BlockGroup({
 
    const siteId = useParams()?.siteId ?? customConfig?.siteId;
 
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
-
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
-
-   const siteType = site ? site.type : null;
 
    //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `${settings.domainFull}/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
       swrRestFetcher,
    );
-
-   const defaultOptions = [
-      { slug: "post", name: "Post" },
-      { slug: "site", name: "Site" },
-   ];
-
    const selectOptions = collectionData
       ? [...defaultOptions, ...collectionData?.docs]
       : defaultOptions;
 
    const [selected] = useState();
 
-   const [selectedCollection, setSelectedCollection] = useState(
-      element.collection,
+   const [filterOption, setFilterOption] = useState(element.collection);
+
+   const groupDataQuery = qs.stringify(
+      {
+         siteId,
+         filterOption,
+         groupSelectQuery,
+      },
+      { addQueryPrefix: true },
    );
 
-   const getDataType = () => {
-      //For posts and site
-      if (defaultOptions.some((e) => e.slug === selectedCollection)) {
-         switch (selectedCollection) {
-            case "post": {
-               return `${settings.domainFull}/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
-            }
-            case "site": {
-               return `${settings.domainFull}/api/sites?where[name][contains]=${groupSelectQuery}&depth=1`;
-            }
-            default:
-               return null;
-         }
-      }
-      //For entries
-      if (siteType == "custom") {
-         return `https://${siteId}-db.${settings.domain}/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`;
-      }
-      if (siteType == "core") {
-         return `${settings.domainFull}/api/entries?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${selectedCollection}&where[name][contains]=${groupSelectQuery}&depth=1`;
-      }
-   };
-
-   //Get custom entry data to populate icon and title
-   const { data: entryData } = useSWR(() => getDataType(), swrRestFetcher);
+   const { data: entryData } = useSWR(
+      `/${siteId}/blocks/group${groupDataQuery}`,
+      swrRestFetcher,
+   );
 
    const filteredEntries =
       groupSelectQuery === ""
-         ? entryData?.docs
-         : entryData?.docs.filter((item: Entry) =>
+         ? entryData
+         : entryData?.filter((item: Entry) =>
               item.name
                  .toLowerCase()
                  .replace(/\s+/g, "")
@@ -162,10 +349,9 @@ export function BlockGroup({
            );
 
    //DND kit needs array of strings
-
-   function handleUpdateCollection(event: any) {
+   function handleUpdateFilter(event: any) {
       const path = ReactEditor.findPath(editor, element);
-      setSelectedCollection(event);
+      setFilterOption(event);
       return Transforms.setNodes<CustomElement>(
          editor,
          { collection: event },
@@ -175,21 +361,19 @@ export function BlockGroup({
       );
    }
 
-   function handleAddEntry(event: any) {
+   function handleAddEntry(event: groupRowData) {
       const rowPath = () => {
-         switch (selectedCollection) {
+         switch (filterOption) {
             case "site": {
-               return `/${event.slug}`;
+               return `/${event.siteId}`;
             }
             case "post": {
-               return `/${siteId}/posts/${event.id}/${event.url}`;
+               return `/${event.siteId}/posts/${event.id}/${event.slug}`;
             }
             default:
-               return `/${siteId}/collections/${selectedCollection}/${event.id}`;
+               return `/${event.siteId}/collections/${filterOption}/${event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
          }
       };
-
-      const isCustomSite = event.type == "custom" ? true : false;
       const path = [
          ReactEditor.findPath(editor, element)[0],
          isGroupEmpty ? 0 : element.children.length,
@@ -199,12 +383,13 @@ export function BlockGroup({
       const newProperties: Partial<CustomElement> = {
          id: nodeId,
          type: BlockType.GroupItem,
+         siteId: event.siteId,
          labelColor: GROUP_COLORS["0"],
-         isCustomSite,
+         isCustomSite: event.isCustomSite,
          refId: event.id,
          name: event.name,
          path: rowPath(),
-         iconUrl: event?.icon?.url ?? event?.banner?.url,
+         iconUrl: event?.icon?.url,
          children: [{ text: "" }],
       };
 
@@ -489,8 +674,8 @@ export function BlockGroup({
                                        </Combobox>
                                     </div>
                                     <Listbox
-                                       value={selectedCollection}
-                                       onChange={handleUpdateCollection}
+                                       value={filterOption}
+                                       onChange={handleUpdateFilter}
                                     >
                                        <div className="relative z-30 flex-none">
                                           <Listbox.Button
