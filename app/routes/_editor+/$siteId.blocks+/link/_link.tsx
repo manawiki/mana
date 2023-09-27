@@ -19,7 +19,7 @@ import type {
 } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { swrRestFetcher } from "~/utils";
+import { swrRestFetcher, toWords } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -51,7 +51,7 @@ export async function loader({
          if (pathSection[4]) {
             const entryId = pathSection[4];
             const collectionId = pathSection[3];
-            if (site.type == "custom") {
+            if (site?.type == "custom") {
                const formattedName = singular(toWords(collectionId, true));
                const document = gql`
                   query ($entryId: String!) {
@@ -95,7 +95,7 @@ export async function loader({
                collection: "collections",
                where: {
                   site: {
-                     equals: site.id,
+                     equals: site?.id,
                   },
                   slug: {
                      equals: pathSection[3],
@@ -166,7 +166,7 @@ export function BlockLink({ element, children }: Props) {
       {
          linkUrl: element.url,
       },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
    );
 
    const url = element.url && new URL(element.url).pathname;
@@ -182,7 +182,7 @@ export function BlockLink({ element, children }: Props) {
 
    const { data }: { data: Fields } = useSWR(
       canFetch && `/${siteId}/blocks/link${linkDataQuery}`,
-      swrRestFetcher
+      swrRestFetcher,
    );
 
    // If iconURL property is null and we get data then update
@@ -255,26 +255,4 @@ export function BlockLink({ element, children }: Props) {
          {children}
       </a>
    );
-}
-
-const capitalizeFirstLetter = (string: string): string =>
-   string.charAt(0).toUpperCase() + string.slice(1);
-
-//We need to construct the Graphql label the same way payload does from the slug
-//Following functions are copied over from payload core
-function toWords(inputString: string, joinWords = false): string {
-   const notNullString = inputString || "";
-   const trimmedString = notNullString.trim();
-   const arrayOfStrings = trimmedString.split(/[\s-]/);
-   const splitStringsArray = [] as any;
-   arrayOfStrings.forEach((tempString) => {
-      if (tempString !== "") {
-         const splitWords = tempString.split(/(?=[A-Z])/).join(" ");
-         splitStringsArray.push(capitalizeFirstLetter(splitWords));
-      }
-   });
-
-   return joinWords
-      ? splitStringsArray.join("").replace(/\s/gi, "")
-      : splitStringsArray.join(" ");
 }

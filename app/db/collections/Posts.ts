@@ -67,6 +67,11 @@ export const Posts: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
    ],
    versions: {
       drafts: {

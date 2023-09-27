@@ -1,7 +1,7 @@
 import type { BaseEditor, BaseOperation, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 
-import { type Collection } from "payload/generated-types";
+import type { Site, Collection } from "payload/generated-types";
 import type { Time } from "~/components/datepicker/time-picker/types";
 
 declare module "slate" {
@@ -52,6 +52,7 @@ export type HeadingElement = BlockElement & {
 };
 export type GroupItemElement = BlockElement & {
    isCustomSite?: boolean;
+   siteId: Site["slug"];
    type: BlockType.GroupItem;
    refId: string;
    label?: string;
