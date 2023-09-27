@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 
+import { FloatingDelayGroup } from "@floating-ui/react";
 import {
    Bold,
    Edit,
@@ -112,7 +113,7 @@ export function Toolbar() {
       const rect = domRange.getBoundingClientRect();
 
       el.style.position = "absolute";
-      el.style.opacity = "1";
+      el.style.display = "block";
       el.style.top = `${rect.top + window.scrollY}px`;
       el.style.left = `${rect.left + window.scrollX}px`;
    });
@@ -125,8 +126,8 @@ export function Toolbar() {
       return createPortal(
          <div
             ref={ref}
-            className="border-color shadow-1 bg-1 pointer-events-auto -mt-16
-            rounded-xl border px-3 py-2.5 opacity-0 shadow-lg transition-opacity duration-200 ease-in-out"
+            className="border-color-sub shadow-1 bg-2-sub -mt-12 z-50
+            rounded-xl border px-2 py-1.5 hidden shadow-lg"
             onMouseDown={(e) => {
                // prevent toolbar from taking focus away from editor
                e.preventDefault();
@@ -170,101 +171,106 @@ export function Toolbar() {
                      </div>
                   </>
                )} */}
+
                <div className="flex items-center gap-1">
-                  {!isLinkActive(editor) && (
+                  <FloatingDelayGroup delay={{ open: 1000 }}>
+                     {!isLinkActive(editor) && (
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <Button
+                                 ariaLabel="Add Link"
+                                 onPointerDown={(e) => e.preventDefault()}
+                                 onClick={(e) => {
+                                    e.preventDefault();
+                                    const url = window.prompt(
+                                       "Enter the URL of the link:",
+                                    );
+                                    if (!url) return;
+                                    wrapLink(editor, url);
+                                 }}
+                                 className={`${
+                                    isLinkActive(editor) === true
+                                       ? "bg-zinc-200 dark:bg-dark500"
+                                       : ""
+                                 } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                              >
+                                 <Link2 size={14} />
+                              </Button>
+                           </TooltipTrigger>
+                           <TooltipContent>Add Link</TooltipContent>
+                        </Tooltip>
+                     )}
                      <Tooltip>
                         <TooltipTrigger>
                            <Button
-                              ariaLabel="Add Link"
+                              ariaLabel="Toggle Bold"
                               onPointerDown={(e) => e.preventDefault()}
-                              onClick={(e) => {
-                                 e.preventDefault();
-                                 const url = window.prompt(
-                                    "Enter the URL of the link:"
-                                 );
-                                 if (!url) return;
-                                 wrapLink(editor, url);
-                              }}
+                              onClick={() => toggleMark(editor, "bold")}
                               className={`${
-                                 isLinkActive(editor) === true
-                                    ? "bg-3 border-color border"
+                                 marks && marks["bold"] === true
+                                    ? "bg-zinc-200 dark:bg-dark500"
                                     : ""
-                              } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
-                              <Link2 size={16} />
+                              <Bold size={14} />
                            </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Add Link</TooltipContent>
+                        <TooltipContent>Toggle Bold</TooltipContent>
                      </Tooltip>
-                  )}
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
-                           ariaLabel="Toggle Bold"
-                           onPointerDown={(e) => e.preventDefault()}
-                           onClick={() => toggleMark(editor, "bold")}
-                           className={`${
-                              marks && marks["bold"] === true
-                                 ? "bg-3 border-color border"
-                                 : ""
-                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                        >
-                           <Bold size={16} />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Toggle Bold</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
-                           ariaLabel="Toggle Italic"
-                           onPointerDown={(e) => e.preventDefault()}
-                           onClick={() => toggleMark(editor, "italic")}
-                           className={`${
-                              marks && marks["italic"] === true
-                                 ? "bg-3 border-color border"
-                                 : ""
-                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                        >
-                           <Italic size={16} />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Toggle Italic</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
-                           ariaLabel="Toggle Underline"
-                           onPointerDown={(e) => e.preventDefault()}
-                           onClick={() => toggleMark(editor, "underline")}
-                           className={`${
-                              marks && marks["underline"] === true
-                                 ? "bg-3 border-color border"
-                                 : ""
-                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                        >
-                           <Underline size={16} />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Toggle Underline</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
-                           ariaLabel="Toggle Strikethrough"
-                           onPointerDown={(e) => e.preventDefault()}
-                           onClick={() => toggleMark(editor, "strikeThrough")}
-                           className={`${
-                              marks && marks["strikeThrough"] === true
-                                 ? "bg-3 border-color border"
-                                 : ""
-                           } hover:bg-2 flex h-8 w-8 items-center justify-center rounded-lg`}
-                        >
-                           <Strikethrough size={16} />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Toggle Strikethrough</TooltipContent>
-                  </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <Button
+                              ariaLabel="Toggle Italic"
+                              onPointerDown={(e) => e.preventDefault()}
+                              onClick={() => toggleMark(editor, "italic")}
+                              className={`${
+                                 marks && marks["italic"] === true
+                                    ? "bg-zinc-200 dark:bg-dark500"
+                                    : ""
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                           >
+                              <Italic size={14} />
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Toggle Italic</TooltipContent>
+                     </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <Button
+                              ariaLabel="Toggle Underline"
+                              onPointerDown={(e) => e.preventDefault()}
+                              onClick={() => toggleMark(editor, "underline")}
+                              className={`${
+                                 marks && marks["underline"] === true
+                                    ? "bg-zinc-200 dark:bg-dark500"
+                                    : ""
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                           >
+                              <Underline size={14} />
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Toggle Underline</TooltipContent>
+                     </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <Button
+                              ariaLabel="Toggle Strikethrough"
+                              onPointerDown={(e) => e.preventDefault()}
+                              onClick={() =>
+                                 toggleMark(editor, "strikeThrough")
+                              }
+                              className={`${
+                                 marks && marks["strikeThrough"] === true
+                                    ? "bg-zinc-200 dark:bg-dark500"
+                                    : ""
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                           >
+                              <Strikethrough size={14} />
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Toggle Strikethrough</TooltipContent>
+                     </Tooltip>
+                  </FloatingDelayGroup>
                </div>
             </section>
             {isLinkActive(editor) ? (
@@ -298,7 +304,7 @@ export function Toolbar() {
                            onClick={(e) => {
                               e.preventDefault();
                               const url = window.prompt(
-                                 "Enter the URL of the link:"
+                                 "Enter the URL of the link:",
                               );
                               if (!url) return;
                               wrapLink(editor, url);
@@ -312,7 +318,7 @@ export function Toolbar() {
                </section>
             ) : null}
          </div>,
-         document.body
+         document.body,
       );
    }
 }

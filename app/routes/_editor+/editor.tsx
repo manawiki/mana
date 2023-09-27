@@ -51,7 +51,7 @@ export function ManaEditor({
                collectionEntity,
                sectionId,
             },
-            { method: "patch", action: "/editor" }
+            { method: "patch", action: "/editor" },
          );
       }
    }, [debouncedValue]);
