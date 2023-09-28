@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useMemo } from "react";
+import { Suspense, useEffect } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
@@ -9,13 +9,6 @@ import { deferIf } from "defer-if";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
-import { createEditor } from "slate";
-import {
-   Slate,
-   Editable,
-   withReact,
-   type RenderElementProps,
-} from "slate-react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -25,9 +18,8 @@ import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { toast } from "~/components";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
-import { Leaf } from "~/routes/_editor+/core/components/Leaf";
+import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR } from "~/utils";
 
@@ -61,11 +53,6 @@ export async function loader({
 
 export default function Post() {
    const { post, isChanged } = useLoaderData<typeof loader>();
-   const editor = useMemo(() => withReact(createEditor()), []);
-   const renderElement = useCallback((props: RenderElementProps) => {
-      return <EditorBlocks {...props} />;
-   }, []);
-
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
@@ -133,16 +120,7 @@ export default function Post() {
                <div className="relative min-h-screen">
                   <Suspense fallback="Loading...">
                      <Await resolve={post}>
-                        <Slate
-                           editor={editor}
-                           initialValue={post.content as Descendant[]}
-                        >
-                           <Editable
-                              renderElement={renderElement}
-                              renderLeaf={Leaf}
-                              readOnly={true}
-                           />
-                        </Slate>
+                        <EditorView data={post.content} />
                      </Await>
                   </Suspense>
                </div>
