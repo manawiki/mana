@@ -80,7 +80,7 @@ export async function loader({
    return json({ q, myPosts, publishedPosts, siteId });
 }
 
-export default function PostsIndex() {
+export default function PostsAll() {
    const { publishedPosts, q, myPosts, siteId } =
       useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);

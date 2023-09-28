@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useMemo } from "react";
+import { Suspense } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
@@ -10,13 +10,6 @@ import type { Select } from "payload-query";
 import { select } from "payload-query";
 import qs from "qs";
 import type { Descendant } from "slate";
-import { createEditor } from "slate";
-import {
-   Slate,
-   Editable,
-   withReact,
-   type RenderElementProps,
-} from "slate-react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -26,9 +19,8 @@ import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
-import { Leaf } from "~/routes/_editor+/core/components/Leaf";
+import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -68,10 +60,6 @@ export async function loader({
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
-   const editor = useMemo(() => withReact(createEditor()), []);
-   const renderElement = useCallback((props: RenderElementProps) => {
-      return <EditorBlocks {...props} />;
-   }, []);
 
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
@@ -122,21 +110,7 @@ export default function SiteIndexMain() {
          ) : (
             <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
                <div className="relative min-h-screen">
-                  <Suspense fallback="Loading...">
-                     <Await resolve={home}>
-                        <Slate
-                           key={siteId}
-                           editor={editor}
-                           initialValue={home as Descendant[]}
-                        >
-                           <Editable
-                              renderElement={renderElement}
-                              renderLeaf={Leaf}
-                              readOnly={true}
-                           />
-                        </Slate>
-                     </Await>
-                  </Suspense>
+                  <EditorView data={home} />
                </div>
             </main>
          )}

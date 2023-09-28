@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useMemo, useCallback, Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
@@ -7,16 +7,12 @@ import clsx from "clsx";
 //@ts-expect-error
 import dt from "date-and-time";
 import { Loader2 } from "lucide-react";
-import type { Descendant } from "slate";
-import { createEditor } from "slate";
-import type { RenderElementProps } from "slate-react";
-import { Slate, Editable, withReact } from "slate-react";
 
 import type { HomeContent, Config } from "payload/generated-types";
 import { Modal } from "~/components";
-import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { isAdding } from "~/utils";
+
+import { EditorView } from "./EditorView";
 
 export function EditorVersionModal({
    isVersionModalOpen,
@@ -34,12 +30,6 @@ export function EditorVersionModal({
    const fetcher = useFetcher();
 
    const adding = isAdding(fetcher, "versionUpdate");
-
-   const editor = useMemo(() => withReact(createEditor()), []);
-
-   const renderElement = useCallback((props: RenderElementProps) => {
-      return <EditorBlocks {...props} />;
-   }, []);
 
    const [selectedVersion, setSelectedVersion] = useState(versions[0]);
 
@@ -73,18 +63,7 @@ export function EditorVersionModal({
                                  <h1 className="font-header text-3xl font-bold">
                                     {version.version.name}
                                  </h1>
-                                 <Slate
-                                    editor={editor}
-                                    initialValue={
-                                       version.version?.content as Descendant[]
-                                    }
-                                 >
-                                    <Editable
-                                       renderElement={renderElement}
-                                       renderLeaf={Leaf}
-                                       readOnly={true}
-                                    />
-                                 </Slate>
+                                 <EditorView data={version.version?.content} />
                               </Tab.Panel>
                            ),
                      )}

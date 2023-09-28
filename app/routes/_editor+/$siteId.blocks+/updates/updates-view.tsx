@@ -1,16 +1,12 @@
-import { useMemo } from "react";
-
 import { useMatches } from "@remix-run/react";
 import type { Descendant } from "slate";
-import { createEditor } from "slate";
-import { Editable, Slate, withReact } from "slate-react";
 
 import type { Update } from "payload/generated-types";
 import { H2Default } from "~/components/H2";
-// eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import type { UpdatesElement } from "~/routes/_editor+/core/types";
+
+// eslint-disable-next-line import/no-cycle
+import { EditorView } from "../../core/components/EditorView";
 
 type Props = {
    element: UpdatesElement;
@@ -53,8 +49,8 @@ export function BlockUpdatesView({ element }: Props) {
                               <>
                                  {row.entry?.map((item) => (
                                     <div key={item.id} className="py-3 pr-3">
-                                       <UpdatesEditorView
-                                          content={item.content as Descendant[]}
+                                       <EditorView
+                                          data={item.content as Descendant[]}
                                        />
                                     </div>
                                  ))}
@@ -69,16 +65,3 @@ export function BlockUpdatesView({ element }: Props) {
       </section>
    );
 }
-
-const UpdatesEditorView = ({ content }: { content: Descendant[] }) => {
-   const editor = useMemo(() => withReact(createEditor()), []);
-   return (
-      <Slate editor={editor} initialValue={content}>
-         <Editable
-            renderElement={EditorBlocks}
-            renderLeaf={Leaf}
-            readOnly={true}
-         />
-      </Slate>
-   );
-};
