@@ -325,16 +325,20 @@ export async function action({
                slug: {
                   equals: newSlug,
                },
+               id: {
+                  not_equals: currentPost.id,
+               },
             },
             draft: true,
             overrideAccess: false,
             user,
          });
 
-         //If no collision and the first time we are generating the slug, publish with alias.
+         //If no collision and it's the first time we are generating the slug, publish with alias.
          //Alias is not updated on subsequent title updates.
          //Otherwise the slug already exists so we just update publishedAt.
          //TODO Feature: Allow user to manually set a url alias at publish
+
          if (allPosts.totalDocs == 0) {
             const firstSlug = !currentPost.slug && allPosts.totalDocs == 0;
             return await payload.update({
