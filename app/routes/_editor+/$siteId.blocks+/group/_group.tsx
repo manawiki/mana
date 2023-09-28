@@ -340,7 +340,7 @@ export function BlockGroup({
 
    const filteredEntries =
       groupSelectQuery === ""
-         ? entryData
+         ? [] //TODO Make this pull default set, used to be "entryData"
          : entryData?.filter((item: Entry) =>
               item.name
                  .toLowerCase()
@@ -610,7 +610,7 @@ export function BlockGroup({
                                                 >
                                                    {filteredEntries?.length ===
                                                    0 ? (
-                                                      <div className="relative cursor-default select-none px-4 py-2 text-sm">
+                                                      <div className="relative text-center cursor-default select-none p-3 text-sm">
                                                          Nothing found.
                                                       </div>
                                                    ) : (

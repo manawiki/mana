@@ -59,7 +59,6 @@ export function EditorCommandBar({
                               onClick={() => {
                                  fetcher.submit(submitData, {
                                     method: "post",
-                                    action: "/editor",
                                  });
                               }}
                            >

@@ -2,8 +2,8 @@ import { Suspense, useEffect } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import { redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import type { Payload } from "payload";
@@ -21,7 +21,7 @@ import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import { isNativeSSR } from "~/utils";
+import { assertIsPatch, isNativeSSR, slugify } from "~/utils";
 
 export async function loader({
    context: { payload, user },
@@ -241,4 +241,118 @@ async function fetchPost({
       return { post: authPost, isChanged, versions };
    }
    return { post: authPost, isChanged: false };
+}
+
+export async function action({
+   context: { payload, user },
+   request,
+   params,
+}: ActionFunctionArgs) {
+   const { intent, field } = await zx.parseForm(request, {
+      intent: z.enum(["updateField", "unpublish", "publish"]),
+      field: z.enum(["title"]).optional(),
+   });
+
+   const { p, siteId } = zx.parseParams(params, {
+      p: z.string().length(10),
+      siteId: z.string(),
+   });
+
+   if (!user) throw redirect("/login", { status: 302 });
+
+   switch (intent) {
+      case "updateField": {
+         switch (field) {
+            case "title": {
+               assertIsPatch(request);
+               const result = await zx.parseFormSafe(request, {
+                  name: z
+                     .string()
+                     .min(3, "Title is too short.")
+                     .max(200, "Title is too long.")
+                     .optional(),
+               });
+               if (result.success) {
+                  const { name } = result.data;
+                  return await payload.update({
+                     collection: "posts",
+                     id: p,
+                     data: {
+                        name,
+                     },
+                     autosave: true,
+                     draft: true,
+                     overrideAccess: false,
+                     user,
+                  });
+               }
+               if (result.error)
+                  return json({
+                     error: result.error,
+                  });
+            }
+         }
+      }
+      case "unpublish": {
+         return await payload.update({
+            collection: "posts",
+            id: p,
+            data: {
+               _status: "draft",
+               publishedAt: "",
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+      case "publish": {
+         //Pull post name again to generate a slug
+         const currentPost = await payload.findByID({
+            collection: "posts",
+            id: p,
+            draft: true,
+         });
+
+         const newSlug = slugify(currentPost.name);
+
+         //See if duplicate exists on the same site
+         const allPosts = await payload.find({
+            collection: "posts",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: newSlug,
+               },
+            },
+            draft: true,
+            overrideAccess: false,
+            user,
+         });
+
+         //If no collision and the first time we are generating the slug, publish with alias.
+         //Alias is not updated on subsequent title updates.
+         //Otherwise the slug already exists so we just update publishedAt.
+         //TODO Feature: Allow user to manually set a url alias at publish
+         if (allPosts.totalDocs == 0) {
+            const firstSlug = !currentPost.slug && allPosts.totalDocs == 0;
+            return await payload.update({
+               collection: "posts",
+               id: p,
+               data: {
+                  ...(firstSlug && { slug: newSlug }),
+                  _status: "published",
+                  publishedAt: new Date().toISOString(),
+               },
+               overrideAccess: false,
+               user,
+            });
+         }
+
+         return json({
+            error: "Collision detected, existing alias exists",
+         });
+      }
+   }
 }

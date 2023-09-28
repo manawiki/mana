@@ -73,7 +73,7 @@ export async function action({
    request,
 }: ActionFunctionArgs) {
    const { intent, collectionSlug } = await zx.parseForm(request, {
-      intent: z.enum(["update", "publish", "versionUpdate"]),
+      intent: z.enum(["update", "publish", "versionUpdate", "unpublish"]),
       collectionSlug: z.custom<keyof Config["collections"]>(),
    });
 
@@ -134,49 +134,6 @@ export async function action({
                   },
                   autosave: true,
                   draft: true,
-                  overrideAccess: false,
-                  user,
-               });
-            }
-         }
-      }
-      case "publish": {
-         switch (collectionSlug) {
-            case "posts": {
-               const { pageId } = await zx.parseForm(request, {
-                  pageId: z.string(),
-               });
-               return await payload.update({
-                  collection: collectionSlug,
-                  id: pageId,
-                  data: {
-                     _status: "published",
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            }
-            case "homeContents": {
-               const { siteId } = await zx.parseForm(request, {
-                  siteId: z.string(),
-               });
-               const { docs } = await payload.find({
-                  collection: collectionSlug,
-                  where: {
-                     "site.slug": {
-                        equals: siteId,
-                     },
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-               invariant(docs[0]);
-               return await payload.update({
-                  collection: collectionSlug,
-                  id: docs[0].id,
-                  data: {
-                     _status: "published",
-                  },
                   overrideAccess: false,
                   user,
                });

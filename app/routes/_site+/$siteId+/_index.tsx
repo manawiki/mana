@@ -2,7 +2,11 @@ import { Suspense } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import {
+   redirect,
+   type ActionFunctionArgs,
+   type LoaderFunctionArgs,
+} from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
 import type { Payload } from "payload";
@@ -292,4 +296,43 @@ async function fetchHomeContent({
    const home = docs[0].content as HomeContent["content"];
 
    return { home, isChanged: false };
+}
+
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionFunctionArgs) {
+   const { intent } = await zx.parseForm(request, {
+      intent: z.enum(["publish"]),
+   });
+
+   if (!user) throw redirect("/login", { status: 302 });
+
+   switch (intent) {
+      case "publish": {
+         const { siteId } = await zx.parseForm(request, {
+            siteId: z.string(),
+         });
+         const { docs } = await payload.find({
+            collection: "homeContents",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+            },
+            overrideAccess: false,
+            user,
+         });
+         invariant(docs[0]);
+         return await payload.update({
+            collection: "homeContents",
+            id: docs[0].id,
+            data: {
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+   }
 }
