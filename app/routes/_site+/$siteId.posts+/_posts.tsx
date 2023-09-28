@@ -104,7 +104,6 @@ export default function PostsAll() {
          });
       }
    }, [debouncedValue, setSearchParams]);
-
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
@@ -482,7 +481,6 @@ export const action = async ({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               slug: "untitled",
                name,
                //@ts-ignore
                author: user?.id,
@@ -493,14 +491,13 @@ export const action = async ({
             draft: true,
             overrideAccess: false,
          });
-         return redirect(`/${siteId}/posts/${post.id}/edit`);
+         return redirect(`/${siteId}/p/${post.id}`);
       }
       case "createPost": {
          const post = await payload.create({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               slug: "untitled",
                name: "Untitled",
                //@ts-ignore
                author: user?.id,
@@ -513,7 +510,7 @@ export const action = async ({
             overrideAccess: false,
          });
 
-         return redirect(`/${siteId}/posts/${post.id}/edit`);
+         return redirect(`/${siteId}/p/${post.id}`);
       }
    }
 };

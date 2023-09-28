@@ -4906,10 +4906,10 @@ dataloader@^2.1.0:
   resolved "https://registry.yarnpkg.com/dataloader/-/dataloader-2.2.2.tgz#216dc509b5abe39d43a9b9d97e6e5e473dfbe3e0"
   integrity sha512-8YnDaaf7N3k/q5HnTJVuzSyLETjoZjVmHc4AeKAzOvKHEFQKcn64OKBfzHYtE9zGjctNM7V9I0MfnUVLpi7M5g==
 
-date-and-time@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-3.0.2.tgz#c2231ef98e7702b93cde1505d2d93f4fe602f0b6"
-  integrity sha512-MOqlRertOQmQI7ySbz6dKLM7Rxm9dgcPuBI9IL7NVe0UGqHPK+6hWSKVhLrVHxlSgQQtocE2R7+HFOf5aMz8vw==
+date-and-time@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-3.0.3.tgz#a571a2ca7a47ce08bfe3403d1507530bc432ba02"
+  integrity sha512-CmHCeTixc3KA5pcLTVs9JCFhmJMFTBsmSsgHnNed4YDNw9yUOrjjRn3zALy8eMgqmTO+4U8k5jl1peC7IoezfA==
 
 date-fns@^2.29.1, date-fns@^2.29.3, date-fns@^2.30.0:
   version "2.30.0"
