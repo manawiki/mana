@@ -1,11 +1,16 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import { json, redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import type {
+   ActionFunctionArgs,
+   LoaderFunctionArgs,
+   MetaFunction,
+} from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { deferIf } from "defer-if";
+import { EyeOff, Image, ImageMinus, Trash2 } from "lucide-react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
@@ -16,12 +21,29 @@ import { zx } from "zodix";
 import type { Post, Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { toast } from "~/components";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import { assertIsPatch, isNativeSSR, slugify } from "~/utils";
+import {
+   assertIsDelete,
+   assertIsPatch,
+   assertIsPost,
+   commitSession,
+   getMultipleFormData,
+   getSession,
+   isNativeSSR,
+   setErrorMessage,
+   setSuccessMessage,
+   slugify,
+   uploadImage,
+} from "~/utils";
+
+import { PostDeleteModal } from "./components/PostDeleteModal";
+import { PostHeaderEdit } from "./components/PostHeaderEdit";
+import { PostHeaderView } from "./components/PostHeaderView";
+import { PostUnpublishModal } from "./components/PostUnpublishModal";
 
 export async function loader({
    context: { payload, user },
@@ -51,26 +73,38 @@ export async function loader({
    return await deferIf({ post, isChanged, versions, siteId }, isMobileApp);
 }
 
+export const meta: MetaFunction = ({
+   data,
+   matches,
+}: {
+   data: any;
+   matches: any;
+}) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.name;
+   const postTitle = data?.post?.name;
+   const postStatus = data?.post?._status;
+   const postSubtitle = data?.post?.subtitle;
+
+   return [
+      {
+         title:
+            postStatus == "published"
+               ? `${postTitle} - ${siteName}`
+               : `Edit | ${postTitle} - ${siteName}`,
+         description: postSubtitle,
+      },
+   ];
+};
+
 export default function Post() {
    const { post, isChanged } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-
-   //Server response toast
-   useEffect(() => {
-      if (fetcher.state === "idle" && fetcher.data != null) {
-         //@ts-ignore
-         if (fetcher.data?.success) {
-            //@ts-ignore
-            toast.success(fetcher.data?.success);
-         }
-         //@ts-ignore
-         if (fetcher.data?.error) {
-            //@ts-ignore
-            toast.error(fetcher.data?.error);
-         }
-      }
-   }, [fetcher.state, fetcher.data]);
+   const [isUnpublishOpen, setUnpublishOpen] = useState(false);
+   const [isShowBanner, setIsBannerShowing] = useState(false);
+   const [isDeleteOpen, setDeleteOpen] = useState(false);
 
    return (
       <>
@@ -83,7 +117,7 @@ export default function Post() {
                      },
                   }),
                   offset({
-                     mainAxis: 30,
+                     mainAxis: 50,
                      crossAxis: 0,
                   }),
                ]}
@@ -96,6 +130,10 @@ export default function Post() {
                   <div className="relative min-h-screen">
                      <Suspense fallback="Loading...">
                         <Await resolve={post}>
+                           <PostHeaderEdit
+                              post={post}
+                              isShowBanner={isShowBanner}
+                           />
                            <ManaEditor
                               collectionSlug="posts"
                               fetcher={fetcher}
@@ -112,6 +150,55 @@ export default function Post() {
                      pageId={post.id}
                      fetcher={fetcher}
                      isChanged={isChanged}
+                  >
+                     <EditorCommandBar.PrimaryOptions>
+                        <>
+                           <Tooltip placement="left">
+                              <TooltipTrigger
+                                 onClick={() => setIsBannerShowing((v) => !v)}
+                                 className="transition duration-100 border border-color shadow-sm shadow-1
+                  active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
+                              >
+                                 {isShowBanner ? (
+                                    <ImageMinus size={14} />
+                                 ) : (
+                                    <Image size={14} />
+                                 )}
+                              </TooltipTrigger>
+                              <TooltipContent>Banner</TooltipContent>
+                           </Tooltip>
+                        </>
+                     </EditorCommandBar.PrimaryOptions>
+                     <EditorCommandBar.SecondaryOptions>
+                        <>
+                           {post._status == "published" && (
+                              <button
+                                 className="text-1 flex w-full items-center gap-2 rounded-lg px-2
+                                    py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                 onClick={() => setUnpublishOpen(true)}
+                              >
+                                 <EyeOff className="text-zinc-400" size={12} />
+                                 <span className="text-xs">Unpublish</span>
+                              </button>
+                           )}
+                           <button
+                              className="text-1 flex w-full items-center gap-2 rounded-lg
+                                              px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                              onClick={() => setDeleteOpen(true)}
+                           >
+                              <Trash2 className="text-red-400" size={12} />
+                              <span className="text-xs">Delete</span>
+                           </button>
+                        </>
+                     </EditorCommandBar.SecondaryOptions>
+                  </EditorCommandBar>
+                  <PostDeleteModal
+                     isDeleteOpen={isDeleteOpen}
+                     setDeleteOpen={setDeleteOpen}
+                  />
+                  <PostUnpublishModal
+                     isUnpublishOpen={isUnpublishOpen}
+                     setUnpublishOpen={setUnpublishOpen}
                   />
                </div>
             </Float>
@@ -120,6 +207,7 @@ export default function Post() {
                <div className="relative min-h-screen">
                   <Suspense fallback="Loading...">
                      <Await resolve={post}>
+                        <PostHeaderView post={post} />
                         <EditorView data={post.content} />
                      </Await>
                   </Suspense>
@@ -235,8 +323,7 @@ async function fetchPost({
             return result;
          });
 
-      const isChanged =
-         JSON.stringify(authPost.content) != JSON.stringify(livePost.content);
+      const isChanged = JSON.stringify(authPost) != JSON.stringify(livePost);
 
       return { post: authPost, isChanged, versions };
    }
@@ -248,8 +335,17 @@ export async function action({
    request,
    params,
 }: ActionFunctionArgs) {
-   const { intent, field } = await zx.parseForm(request, {
-      intent: z.enum(["updateField", "unpublish", "publish"]),
+   const { intent } = await zx.parseForm(request, {
+      intent: z.enum([
+         "updateField",
+         "unpublish",
+         "publish",
+         "deletePost",
+         "updateTitle",
+         "updateSubtitle",
+         "updateBanner",
+         "deleteBanner",
+      ]),
       field: z.enum(["title"]).optional(),
    });
 
@@ -260,41 +356,156 @@ export async function action({
 
    if (!user) throw redirect("/login", { status: 302 });
 
+   const session = await getSession(request.headers.get("cookie"));
+
    switch (intent) {
-      case "updateField": {
-         switch (field) {
-            case "title": {
-               assertIsPatch(request);
-               const result = await zx.parseFormSafe(request, {
-                  name: z
-                     .string()
-                     .min(3, "Title is too short.")
-                     .max(200, "Title is too long.")
-                     .optional(),
-               });
-               if (result.success) {
-                  const { name } = result.data;
-                  return await payload.update({
-                     collection: "posts",
-                     id: p,
-                     data: {
-                        name,
-                     },
-                     autosave: true,
-                     draft: true,
-                     overrideAccess: false,
-                     user,
-                  });
-               }
-               if (result.error)
-                  return json({
-                     error: result.error,
-                  });
-            }
+      case "updateTitle": {
+         assertIsPatch(request);
+         const result = await zx.parseFormSafe(request, {
+            name: z
+               .string()
+               .min(3, "Title is too short.")
+               .max(200, "Title is too long."),
+         });
+         if (result.success) {
+            const { name } = result.data;
+            return await payload.update({
+               collection: "posts",
+               id: p,
+               data: {
+                  name,
+               },
+               autosave: true,
+               draft: true,
+               overrideAccess: false,
+               user,
+            });
          }
+         const errorMessage = JSON.parse(result.error.message)
+            .map((item: any) => item.message)
+            .join("\n");
+
+         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
+         return redirect(`/${siteId}/p/${p}`, {
+            headers: { "Set-Cookie": await commitSession(session) },
+         });
+      }
+      case "updateSubtitle": {
+         assertIsPatch(request);
+         const result = await zx.parseFormSafe(request, {
+            subtitle: z.string(),
+         });
+         if (result.success) {
+            const { subtitle } = result.data;
+            return await payload.update({
+               collection: "posts",
+               id: p,
+               data: {
+                  subtitle,
+               },
+               autosave: true,
+               draft: true,
+               overrideAccess: false,
+               user,
+            });
+         }
+         const errorMessage = JSON.parse(result.error.message)
+            .map((item: any) => item.message)
+            .join("\n");
+
+         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
+         return redirect(`/${siteId}/p/${p}`, {
+            headers: { "Set-Cookie": await commitSession(session) },
+         });
+      }
+
+      case "updateBanner": {
+         assertIsPatch(request);
+         const bannerSchema = z.object({
+            postBanner: z
+               .any()
+               .refine((file) => file?.size <= 500000, `Max image size is 5MB.`)
+               .refine(
+                  (file) =>
+                     [
+                        "image/jpeg",
+                        "image/jpg",
+                        "image/png",
+                        "image/webp",
+                     ].includes(file?.type),
+                  "Only .jpg, .jpeg, .png and .webp formats are supported.",
+               )
+               .optional(),
+         });
+
+         const result = await getMultipleFormData({
+            request,
+            prefix: "postBanner",
+            schema: bannerSchema,
+         });
+         if (result.success) {
+            const { postBanner } = result.data;
+            const upload = await uploadImage({
+               payload,
+               image: postBanner,
+               user,
+            });
+            return await payload.update({
+               collection: "posts",
+               id: p,
+               draft: true,
+               data: {
+                  //@ts-expect-error
+                  banner: upload.id,
+               },
+               autosave: true,
+               overrideAccess: false,
+               user,
+            });
+         }
+         const errorMessage = JSON.parse(result.error.message)
+            .map((item: any) => item.message)
+            .join("\n");
+
+         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
+         return redirect(`/${siteId}/p/${p}`, {
+            headers: { "Set-Cookie": await commitSession(session) },
+         });
+      }
+      case "deleteBanner": {
+         assertIsDelete(request);
+         const post = await payload.findByID({
+            collection: "posts",
+            id: p,
+            draft: true,
+            overrideAccess: false,
+            user,
+            depth: 2,
+         });
+         const bannerId = post?.banner?.id;
+         await payload.delete({
+            collection: "images",
+            //@ts-expect-error
+            id: bannerId,
+            overrideAccess: false,
+            user,
+         });
+         return await payload.update({
+            collection: "posts",
+            id: p,
+            draft: true,
+            data: {
+               //@ts-expect-error
+               banner: "",
+            },
+            autosave: true,
+            overrideAccess: false,
+            user,
+         });
       }
       case "unpublish": {
-         return await payload.update({
+         assertIsPost(request);
+         await payload.update({
             collection: "posts",
             id: p,
             data: {
@@ -304,8 +515,13 @@ export async function action({
             overrideAccess: false,
             user,
          });
+         setSuccessMessage(session, "Post successfully unpublished");
+         return redirect(`/${siteId}/p/${p}`, {
+            headers: { "Set-Cookie": await commitSession(session) },
+         });
       }
       case "publish": {
+         assertIsPost(request);
          //Pull post name again to generate a slug
          const currentPost = await payload.findByID({
             collection: "posts",
@@ -338,7 +554,6 @@ export async function action({
          //Alias is not updated on subsequent title updates.
          //Otherwise the slug already exists so we just update publishedAt.
          //TODO Feature: Allow user to manually set a url alias at publish
-
          if (allPosts.totalDocs == 0) {
             const firstSlug = !currentPost.slug && allPosts.totalDocs == 0;
             return await payload.update({
@@ -346,16 +561,39 @@ export async function action({
                id: p,
                data: {
                   ...(firstSlug && { slug: newSlug }),
+                  ...(firstSlug && { publishedAt: new Date().toISOString() }),
                   _status: "published",
-                  publishedAt: new Date().toISOString(),
                },
                overrideAccess: false,
                user,
             });
          }
-
-         return json({
-            error: "Collision detected, existing alias exists",
+         setErrorMessage(session, "Collision detected, existing alias exists");
+         return redirect(`/${siteId}/p/${p}`, {
+            headers: { "Set-Cookie": await commitSession(session) },
+         });
+      }
+      case "deletePost": {
+         assertIsDelete(request);
+         const post = await payload.delete({
+            collection: "posts",
+            id: p,
+            overrideAccess: false,
+            user,
+         });
+         const bannerId = post?.banner?.id;
+         if (bannerId) {
+            await payload.delete({
+               collection: "images",
+               id: bannerId,
+               overrideAccess: false,
+               user,
+            });
+         }
+         const postTitle = post?.name;
+         setSuccessMessage(session, `"${postTitle}" successfully deleted`);
+         return redirect(`/${siteId}/posts`, {
+            headers: { "Set-Cookie": await commitSession(session) },
          });
       }
    }

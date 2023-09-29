@@ -79,7 +79,7 @@ export default function SiteIndexMain() {
                      },
                   }),
                   offset({
-                     mainAxis: 30,
+                     mainAxis: 50,
                      crossAxis: 0,
                   }),
                ]}
