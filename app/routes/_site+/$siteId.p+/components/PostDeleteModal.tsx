@@ -45,7 +45,10 @@ export const PostDeleteModal = ({
                </button>
                <button
                   onClick={() =>
-                     fetcher.submit({ intent: "delete" }, { method: "delete" })
+                     fetcher.submit(
+                        { intent: "deletePost" },
+                        { method: "delete" },
+                     )
                   }
                   className="h-10 w-full rounded-md bg-red-500 text-sm font-bold text-white
                                               focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
