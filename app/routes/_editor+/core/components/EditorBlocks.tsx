@@ -3,11 +3,10 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockToggleBlock } from "../../$siteId.blocks+/_toggleblock";
 import {
    BlockEventItem,
    BlockEvents,
-} from "../../$siteId.blocks+/events/_events-edit";
+} from "../../$siteId.blocks+/events/_events";
 import {
    BlockEventItemView,
    BlockEventsView,
@@ -17,9 +16,11 @@ import {
    BlockGroupItemView,
    BlockGroupView,
 } from "../../$siteId.blocks+/group/group-view";
-import { BlockImage } from "../../$siteId.blocks+/image/image-view";
+import { BlockImage } from "../../$siteId.blocks+/image";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
+import { BlockToggleBlock } from "../../$siteId.blocks+/toggleblock";
+import { BlockTwoColumn } from "../../$siteId.blocks+/two-column";
 import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
 import { BlockUpdatesView } from "../../$siteId.blocks+/updates/updates-view";
 import { BlockType } from "../types";
@@ -52,6 +53,15 @@ export function EditorBlocks({
       case BlockType.ToggleBlock: {
          return (
             <BlockToggleBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+            />
+         );
+      }
+      case BlockType.TwoColumn: {
+         return (
+            <BlockTwoColumn
                readOnly={readOnly}
                element={element}
                children={children}
@@ -168,7 +178,7 @@ export function EditorBlocks({
       }
       case BlockType.Image: {
          return (
-            <div {...attributes} contentEditable={false} className="embed">
+            <div {...attributes} contentEditable={false}>
                <BlockImage element={element} />
                <div style={{ display: "none" }}>{children}</div>
             </div>

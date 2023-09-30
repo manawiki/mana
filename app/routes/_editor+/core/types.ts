@@ -28,6 +28,7 @@ export enum BlockType {
    ToggleBlock = "toggle-block",
    Events = "events",
    EventItem = "event-item",
+   TwoColumn = "two-column",
 }
 
 export type TextBlock =
@@ -131,6 +132,12 @@ export type ToggleBlockElement = BlockElement & {
    toggleBlockContent?: [Descendant];
 };
 
+export type TwoColumnElement = BlockElement & {
+   type: BlockType.TwoColumn;
+   columnOneContent?: [Descendant];
+   columnTwoContent?: [Descendant];
+};
+
 export type UpdatesElement = BlockElement & {
    type: BlockType.Updates;
 };
@@ -159,7 +166,8 @@ export type CustomElement =
    | GroupElement
    | GroupItemElement
    | EventsElement
-   | EventItemElement;
+   | EventItemElement
+   | TwoColumnElement;
 
 export type CustomText = {
    text: string;

@@ -132,7 +132,7 @@ export function PostHeaderEdit({
                </button>
             </div>
          ) : isShowBanner ? (
-            <div className="relative mb-5">
+            <div className="relative mb-5 -mx-3 tablet:-mx-6">
                <fetcher.Form
                   method="patch"
                   encType="multipart/form-data"

@@ -6,6 +6,7 @@ import { Float } from "@headlessui-float/react";
 import {
    CalendarClock,
    ChevronRight,
+   Columns,
    Heading2,
    Heading3,
    ImagePlus,
@@ -40,6 +41,7 @@ export function BlockSelector({
    editor,
 }: Props) {
    function onInsertBelow(block: CustomElement) {
+      //@ts-ignore
       const path = [ReactEditor.findPath(editor, element)[0] + 1];
       Transforms.insertNodes(editor, block, {
          at: path,
@@ -140,7 +142,7 @@ export function BlockSelector({
          items: [
             {
                label: "Toggle Block",
-               icon: <ChevronRight size={16} />,
+               icon: <ChevronRight className="text-purple-500" size={16} />,
                description: "Show or hide nested content",
                onSelect: () => {
                   onInsertBelow({
@@ -152,8 +154,20 @@ export function BlockSelector({
                },
             },
             {
+               label: "Two Column",
+               icon: <Columns className="text-blue-500" size={12} />,
+               description: "Implement a two-column layout",
+               onSelect: () => {
+                  onInsertBelow({
+                     id: nanoid(),
+                     type: BlockType.TwoColumn,
+                     children: [{ text: "" }],
+                  });
+               },
+            },
+            {
                label: "Group",
-               icon: <LayoutList size={16} />,
+               icon: <LayoutList className="text-yellow-500" size={12} />,
                description: "Embed collection data",
                onSelect: () => {
                   onInsertBelow({
@@ -167,7 +181,7 @@ export function BlockSelector({
             },
             {
                label: "Event Timeline",
-               icon: <CalendarClock size={16} />,
+               icon: <CalendarClock className="text-emerald-500" size={12} />,
                description: "Events with a start and end date",
                onSelect: () => {
                   onInsertBelow({
@@ -248,7 +262,7 @@ export function BlockSelector({
                                           <TooltipTrigger>
                                              <button
                                                 className="shadow-1 flex h-10 w-10 items-center justify-center rounded-lg border
-                                                bg-zinc-50 text-center shadow-sm dark:border-dark500/50 dark:bg-dark450 dark:hover:bg-dark500"
+                                                bg-white text-center shadow-sm dark:border-dark500/50 dark:bg-dark450 dark:hover:bg-dark500"
                                                 onClick={() => {
                                                    row.onSelect();
                                                    setEditorTray(false);
@@ -295,7 +309,10 @@ export function BlockSelector({
                                                          <div className="space-y-0.5">
                                                             <div className="flex items-center gap-1.5 pb-1">
                                                                {item.icon && (
-                                                                  <div className="shadow-1 border-color flex h-5 w-5 items-center rounded-md border bg-white p-1 dark:border-none dark:bg-dark500">
+                                                                  <div
+                                                                     className="border-color flex h-5 w-5 items-center justify-center rounded border 
+                                                                     bg-gradient-to-br from-zinc-50 to-white dark:border-none dark:bg-dark500"
+                                                                  >
                                                                      {item.icon}
                                                                   </div>
                                                                )}
