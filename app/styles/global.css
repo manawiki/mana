@@ -120,7 +120,7 @@ html.dark {
 
 /* --------------- Editor  ---------------*/
 .editor-ol {
-   @apply mb-3 list-decimal space-y-1.5 pl-5;
+   @apply mb-3 list-decimal space-y-1.5 pl-6;
 }
 .editor-ol .editor-ol {
    @apply list-[lower-alpha];
@@ -130,7 +130,7 @@ html.dark {
 }
 
 .editor-ul {
-   @apply mb-3 list-disc space-y-1.5 pl-5;
+   @apply mb-3 list-disc space-y-1.5 pl-6;
 }
 .editor-ul .editor-ul {
    @apply list-[circle];

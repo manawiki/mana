@@ -172,7 +172,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      </div>
                      <span className="bg-zinc-100 dark:bg-dark350 rounded-full h-0.5 w-full flex-grow" />
                   </div>
-                  <div className="p-4 pt-0">
+                  <div className="p-4 pb-1.5 pt-0">
                      <NestedEditor
                         field="groupContent"
                         element={element}
@@ -198,12 +198,11 @@ export function BlockGroupView({
          className={clsx(
             element.itemsViewMode == "list"
                ? `border-color-sub divide-color-sub shadow-1 relative
-                  mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm`
+                  mb-3 divide-y overflow-hidden rounded-lg border shadow-sm`
                : "",
             element.itemsViewMode == "grid"
-               ? "grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4"
+               ? "grid grid-cols-2 gap-3 mb-3 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4"
                : "",
-            "my-3",
          )}
       >
          {children}

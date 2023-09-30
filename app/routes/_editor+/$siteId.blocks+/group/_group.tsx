@@ -475,7 +475,7 @@ export function BlockGroup({
    const [isElementEditorOpen, setElementEditor] = useState(isGroupEmpty);
 
    return (
-      <div contentEditable={false} className="my-2 group/group relative">
+      <div contentEditable={false} className="mb-3 group/group relative">
          <section
             className={clsx(
                itemsViewMode == "list"
@@ -1357,7 +1357,7 @@ export function BlockGroupItem({
                   </div>
                   <span className="bg-zinc-100 dark:bg-dark350 rounded-full h-0.5 w-full flex-grow" />
                </div>
-               <div className="p-4 pt-0">
+               <div className="p-4 pb-1.5 pt-0">
                   <NestedEditor
                      field="groupContent"
                      element={element}
