@@ -21,7 +21,7 @@ export function PostHeaderView({ post }: { post: Post }) {
                   <Image
                      alt="Post Banner"
                      className="h-full w-full object-cover"
-                     options="height=440"
+                     options="crop=1200,630&aspect_ratio=1.9:1"
                      url={post?.banner?.url}
                   />
                </div>

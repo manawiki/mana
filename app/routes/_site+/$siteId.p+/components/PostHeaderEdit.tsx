@@ -107,12 +107,12 @@ export function PostHeaderEdit({
                   <Image
                      alt="Post Banner"
                      className="h-full w-full object-cover"
-                     options="height=440"
+                     options="crop=1200,630&aspect_ratio=1.9:1"
                      url={post?.banner?.url}
                   />
                </div>
                <button
-                  className="absolute right-0 top-2.5 flex h-10 w-10 items-center
+                  className="absolute right-0 laptop:-right-3.5 top-2.5 flex h-10 w-10 items-center
                    justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
                   onClick={() =>
                      fetcher.submit(
