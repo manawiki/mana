@@ -73,7 +73,7 @@ export async function loader({
    return await deferIf({ post, isChanged, versions, siteId }, isMobileApp);
 }
 
-export const meta: MetaFunction = ({
+export const meta: MetaFunction<typeof loader> = ({
    data,
    matches,
 }: {
@@ -83,9 +83,21 @@ export const meta: MetaFunction = ({
    const siteName = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
+
    const postTitle = data?.post?.name;
    const postStatus = data?.post?._status;
-   const postSubtitle = data?.post?.subtitle;
+   const postBannerUrl = data?.post?.banner?.url;
+   const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
+   const postDescription = data?.post?.subtitle;
+   const postSlug = data?.post?.slug;
+
+   const site = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site;
+
+   const postUrl = site.domain
+      ? `https://${site.domain}/p/${site.slug}`
+      : `https://mana.wiki/p/${postSlug}`;
 
    return [
       {
@@ -93,8 +105,15 @@ export const meta: MetaFunction = ({
             postStatus == "published"
                ? `${postTitle} - ${siteName}`
                : `Edit | ${postTitle} - ${siteName}`,
-         description: postSubtitle,
       },
+      ...(postDescription
+         ? [
+              { property: "description", content: postDescription },
+              { property: "og:description", content: postDescription },
+           ]
+         : []),
+      ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
+      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
    ];
 };
 

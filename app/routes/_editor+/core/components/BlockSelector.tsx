@@ -307,11 +307,11 @@ export function BlockSelector({
                                                          }}
                                                       >
                                                          <div className="space-y-0.5">
-                                                            <div className="flex items-center gap-1.5 pb-1">
+                                                            <div className="flex items-center gap-2 pb-1">
                                                                {item.icon && (
                                                                   <div
-                                                                     className="border-color flex h-5 w-5 items-center justify-center rounded border 
-                                                                     bg-gradient-to-br from-zinc-50 to-white dark:border-none dark:bg-dark500"
+                                                                     className="flex h-5 w-5 border border-zinc-200 dark:border-transparent 
+                                                                     bg-white items-center justify-center dark:bg-dark450 rounded"
                                                                   >
                                                                      {item.icon}
                                                                   </div>
