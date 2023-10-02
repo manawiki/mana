@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 
-import { TrashIcon } from "@heroicons/react/20/solid";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
+import { Trash } from "lucide-react";
 import { select, type Select } from "payload-query";
 import { singular } from "pluralize";
 import qs from "qs";
@@ -218,7 +218,7 @@ export function BlockLink({ element, children }: Props) {
                   return Transforms.removeNodes(editor, { at: path });
                }}
             >
-               <TrashIcon className="h-3 w-3 text-white" />
+               <Trash className="h-3 w-3 text-white" />
             </button>
             <span
                className="border-color shadow-1 flex h-6 w-6 items-center justify-center

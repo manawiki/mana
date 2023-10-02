@@ -54,7 +54,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       const collections = collectionData.docs;
       return json(
          { collections },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
       );
    } catch (e) {
       throw new Response("Internal Server Error", { status: 500 });
@@ -72,7 +72,7 @@ export const meta: MetaFunction<
    { "routes/_site+/$siteId+/_layout": typeof siteDetailsLoader }
 > = ({ matches }) => {
    const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+      ({ id }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
    return [
       {
@@ -135,22 +135,18 @@ export default function CollectionIndex() {
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
-            <h1 className="border-color mb-2.5 border-b-2 pb-2 font-header text-3xl font-bold">
-               Collections
-            </h1>
-            <ul className="text-1 flex items-center gap-3 pb-5 text-xs uppercase">
-               <li>Changelog</li>
-               <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-               <li>Docs</li>
-            </ul>
-
+            <div className="relative flex items-center pb-6 pt-2 laptop:-ml-0.5 laptop:-mr-1.5">
+               <h1 className="font-header text-3xl font-bold pr-3">
+                  Collections
+               </h1>
+               <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
+            </div>
             <AdminOrStaffOrOwner>
                <fetcher.Form
                   ref={zoCollection.ref}
                   method="post"
                   encType="multipart/form-data"
                   className="pb-5"
-                  replace
                >
                   <div className="flex items-center gap-4">
                      <div>
@@ -234,7 +230,7 @@ export default function CollectionIndex() {
                                     "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20":
                                        isActive,
                                  },
-                                 "border-color bg-2 shadow-1 flex items-center justify-between gap-2 overflow-hidden rounded-xl border pr-2 shadow-sm transition"
+                                 "border-color bg-2 shadow-1 flex items-center justify-between gap-2 overflow-hidden rounded-xl border pr-2 shadow-sm transition",
                               )
                            }
                         >
@@ -310,7 +306,7 @@ export const action: ActionFunction = async ({
          if (issues.hasIssues()) {
             return json<FormResponse>(
                { serverIssues: issues.toArray() },
-               { status: 400 }
+               { status: 400 },
             );
          }
          const siteIcon = await uploadImage({
@@ -354,7 +350,7 @@ export const action: ActionFunction = async ({
       if (issues.hasIssues()) {
          return json<FormResponse>(
             { serverIssues: issues.toArray() },
-            { status: 400 }
+            { status: 400 },
          );
       }
       // Last resort error message
