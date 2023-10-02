@@ -1,7 +1,6 @@
 import { Fragment, useState } from "react";
 
 import { Menu, Transition, Switch } from "@headlessui/react";
-import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import {
@@ -9,6 +8,8 @@ import {
    Settings,
    User as UserLucideIcon,
    Loader2,
+   Moon,
+   Sun,
 } from "lucide-react";
 import { Drawer } from "vaul";
 
@@ -358,9 +359,9 @@ export const ThemeToggleMobile = () => {
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <MoonIcon className="h-3 w-3 text-zinc-400" />
+                     <Moon className="h-3 w-3 text-zinc-400" />
                   ) : (
-                     <SunIcon className="h-4 w-4 text-zinc-500" />
+                     <Sun className="h-4 w-4 text-zinc-500" />
                   )}
                </div>
             </Switch>
@@ -408,9 +409,9 @@ const ThemeToggleDesktop = () => {
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <MoonIcon className="h-2.5 w-2.5 text-zinc-400" />
+                     <Moon className="h-2.5 w-2.5 text-zinc-400" />
                   ) : (
-                     <SunIcon className="h-[13px] w-[13px] text-zinc-500" />
+                     <Sun className="h-[13px] w-[13px] text-zinc-500" />
                   )}
                </div>
             </Switch>

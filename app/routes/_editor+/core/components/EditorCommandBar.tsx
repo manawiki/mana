@@ -4,9 +4,8 @@ import { Children, Fragment, useState } from "react";
 import { FloatingDelayGroup } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { Check, Clock9, Loader2, MoreHorizontal, X } from "lucide-react";
+import { Check, Clock9, Loader2, MoreHorizontal, Send, X } from "lucide-react";
 
 import type { Config } from "payload/generated-types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -89,7 +88,10 @@ export const EditorCommandBar = ({
                               });
                            }}
                         >
-                           <PaperAirplaneIcon className="h-4 text-zinc-700 dark:text-white w-4" />
+                           <Send
+                              size={16}
+                              className="text-zinc-700 pt-0.5 dark:text-white"
+                           />
                         </TooltipTrigger>
                         <TooltipContent>Publish latest changes</TooltipContent>
                      </Tooltip>

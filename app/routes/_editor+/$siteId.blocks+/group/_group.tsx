@@ -26,7 +26,6 @@ import {
    Transition,
 } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useParams } from "@remix-run/react";
 import clsx from "clsx";
@@ -45,6 +44,7 @@ import {
    Move,
    Pencil,
    Plus,
+   Trash,
    X,
 } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -1025,7 +1025,7 @@ export function BlockGroupItem({
                            onClick={() => setModalStatus(true)}
                            aria-label="Add content"
                         >
-                           <PencilIcon className="w-3.5 h-3.5 hover:text-blue-500" />
+                           <Pencil className="w-3.5 h-3.5 hover:text-blue-500" />
                         </button>
                         <button
                            className="flex h-5 w-5 items-center justify-center"
@@ -1036,7 +1036,7 @@ export function BlockGroupItem({
                            }}
                            aria-label="Delete"
                         >
-                           <TrashIcon className="w-3.5 h-3.5 hover:text-red-400" />
+                           <Trash className="w-3.5 h-3.5 hover:text-red-400" />
                         </button>
                         <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center">
                            <Listbox value={element?.labelColor}>
@@ -1190,7 +1190,7 @@ export function BlockGroupItem({
                                     }}
                                     className="flex group/delete items-center justify-center w-full h-6"
                                  >
-                                    <TrashIcon className="w-2.5 h-2.5 group-hover/delete:text-red-400" />
+                                    <Trash className="w-2.5 h-2.5 group-hover/delete:text-red-400" />
                                  </TooltipTrigger>
                                  <TooltipContent>Delete</TooltipContent>
                               </Tooltip>
@@ -1201,7 +1201,7 @@ export function BlockGroupItem({
                                     aria-label="Add content"
                                     className="flex group/edit items-center justify-center w-full h-6"
                                  >
-                                    <PencilIcon className="w-2.5 h-2.5 group-hover/edit:text-blue-500" />
+                                    <Pencil className="w-2.5 h-2.5 group-hover/edit:text-blue-500" />
                                  </TooltipTrigger>
                                  <TooltipContent>Add content</TooltipContent>
                               </Tooltip>

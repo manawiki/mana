@@ -1,6 +1,6 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 
-import { Listbox, Menu, Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import { redirect, json } from "@remix-run/node";
 import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
@@ -12,12 +12,11 @@ import {
 } from "@remix-run/react";
 import dt from "date-and-time";
 import {
-   ChevronDown,
    ChevronLeft,
    ChevronRight,
    ChevronsUpDown,
-   File,
    Loader2,
+   PenSquare,
    Search,
    X,
 } from "lucide-react";
@@ -107,73 +106,28 @@ export default function PostsAll() {
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
-            <div className="border-color relative mb-16 border-b-2 pb-2">
-               <h1 className="font-header text-3xl font-bold">Posts</h1>
+            <div className="relative flex items-center pb-6 pt-2 laptop:-ml-0.5 laptop:-mr-1.5">
+               <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
+               <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
                <AdminOrStaffOrOwner>
-                  <Menu as="div" className="relative">
-                     <Menu.Button className="border-color absolute -top-5 right-0 rounded-full border-8">
-                        {({ open }) => (
-                           <div
-                              className=" flex h-10 items-center 
-                              gap-2 rounded-full bg-zinc-500 pl-5 pr-4 text-white"
-                           >
-                              <span className="text-sm font-bold">
-                                 New Post
-                              </span>
-                              <ChevronDown
-                                 size={18}
-                                 className={`${
-                                    open ? "rotate-180" : ""
-                                 } transform transition  duration-300 ease-in-out`}
-                              />
-                           </div>
-                        )}
-                     </Menu.Button>
-                     <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
+                  <Form method="post">
+                     <button
+                        className="flex py-2.5 items-center text-xs font-bold gap-2 dark:border-zinc-600 dark:hover:border-zinc-500
+                        border border-zinc-200 rounded-full hover:border-zinc-300 bg-zinc-50 dark:bg-dark450 px-4"
+                        name="intent"
+                        value="createPost"
+                        type="submit"
                      >
-                        <Menu.Items
-                           className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
-                                 max-w-[220px] origin-top-right transform transition-all"
-                        >
-                           <div className="border-color bg-2 shadow-1 rounded-lg border p-1.5 shadow">
-                              <Menu.Item>
-                                 <Form method="post">
-                                    <button
-                                       className="text-1 flex w-full items-center gap-3 rounded-lg
-                                 p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                       name="intent"
-                                       value="createPost"
-                                       type="submit"
-                                    >
-                                       <File size="18" />
-                                       <span>Blank Post</span>
-                                    </button>
-                                 </Form>
-                              </Menu.Item>
-                           </div>
-                        </Menu.Items>
-                     </Transition>
-                  </Menu>
+                        <PenSquare className="text-zinc-400" size={13} />
+                        New Post
+                     </button>
+                  </Form>
                </AdminOrStaffOrOwner>
-               <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
-                  <li>Changelog</li>
-                  <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                  <li>Docs</li>
-               </ul>
             </div>
             <AdminOrStaffOrOwner>
-               <section className="pb-6">
+               <section className="pt-3 pb-6">
                   <div className="flex items-center justify-between pb-2">
-                     <div className="text-1 text-xs font-bold uppercase">
-                        Last Edited
-                     </div>
+                     <div className="text-1 text-sm font-bold">Last Edited</div>
                      <Listbox
                         value={selectedStatus}
                         onChange={setSelectedStatus}
@@ -382,9 +336,7 @@ export default function PostsAll() {
                   </>
                ) : (
                   <>
-                     <div className="text-1 text-sm font-bold uppercase">
-                        Latest
-                     </div>
+                     <div className="text-1 font-bold">Latest</div>
                      <button
                         onClick={() => {
                            setSearchToggle(true);
@@ -395,7 +347,7 @@ export default function PostsAll() {
                   </>
                )}
             </div>
-            <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
+            <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
                {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                   publishedPosts.docs.map((post) => (
                      <FeedItem key={post.id} siteId={siteId} post={post} />

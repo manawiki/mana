@@ -1,4 +1,4 @@
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { Moon, Sun } from "lucide-react";
 
 import { Theme, Themed, useTheme } from "~/utils/theme-provider";
 
@@ -7,7 +7,7 @@ export const DarkModeToggle = () => {
 
    const toggleTheme = () => {
       setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT
+         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
       );
    };
 
@@ -20,7 +20,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle dark mode"
                >
-                  <MoonIcon className="text-1 h-4 w-4" />
+                  <Moon size={18} className="text-1" />
                </button>
             }
             light={
@@ -29,7 +29,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle light mode"
                >
-                  <SunIcon className="text-1 h-5 w-5" />
+                  <Sun size={18} className="text-1" />
                </button>
             }
          />
