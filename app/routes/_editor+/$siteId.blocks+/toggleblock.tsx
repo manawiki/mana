@@ -27,14 +27,14 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                   <Disclosure.Button
                      className={clsx(
                         open ? "rounded-b-none " : "mb-2.5 shadow-sm",
-                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border px-2"
+                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border px-2 py-3",
                      )}
                   >
                      <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800">
                         <ChevronRight
                            className={clsx(
                               open ? "rotate-90" : "",
-                              "transform pl-0.5 transition duration-300 ease-in-out"
+                              "transform pl-0.5 transition duration-300 ease-in-out",
                            )}
                            size={16}
                         />
@@ -47,7 +47,7 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                   <div
                      className={clsx(
                         open ? "rounded-b-none" : "mb-2.5 shadow-sm",
-                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border  px-2 py-3"
+                        "shadow-1 border-color-sub bg-2-sub flex w-full items-center gap-2 overflow-hidden rounded-lg border  px-2 py-3",
                      )}
                   >
                      <Disclosure.Button>
@@ -58,7 +58,7 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                            <ChevronRight
                               className={clsx(
                                  open ? "rotate-90" : "",
-                                 "transform pl-0.5 transition duration-300 ease-in-out"
+                                 "transform pl-0.5 transition duration-300 ease-in-out",
                               )}
                               size={16}
                            />
@@ -74,7 +74,7 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                   unmount={false}
                   className={clsx(
                      open ? "mb-3 border-t" : "",
-                     "border-color-sub shadow-1 bg-3 rounded-b-lg border border-t-0 p-3 pb-1 text-sm shadow-sm"
+                     "border-color-sub shadow-1 bg-3 rounded-b-lg border border-t-0 p-3 pb-1 text-sm shadow-sm",
                   )}
                >
                   <NestedEditor
