@@ -53,10 +53,16 @@ import { EditorBlocks } from "./components/EditorBlocks";
 import { Leaf } from "./components/Leaf";
 import { Toolbar } from "./components/Toolbar";
 import { useEditor } from "./plugins";
-import type { CustomElement } from "./types";
+import { BlockType, type CustomElement } from "./types";
 import { initialValue, isNodeWithId, onKeyDown } from "./utils";
 
-export function EditorWithDnD({ editor }: { editor: Editor }) {
+export function EditorWithDnD({
+   editor,
+   isTwoColumn,
+}: {
+   editor: Editor;
+   isTwoColumn?: boolean;
+}) {
    const [activeId, setActiveId] = useState<string | null>(null);
 
    function clearSelection(editor: Editor) {
@@ -100,7 +106,12 @@ export function EditorWithDnD({ editor }: { editor: Editor }) {
          const path = ReactEditor.findPath(editor, props.element);
          const isTopLevel = path.length === 1;
          return isTopLevel ? (
-            <HoverElement editor={editor} activeId={activeId} {...props} />
+            <HoverElement
+               isTwoColumn={isTwoColumn}
+               editor={editor}
+               activeId={activeId}
+               {...props}
+            />
          ) : (
             <EditorBlocks {...props} />
          );
@@ -154,12 +165,14 @@ function BlockInlineActions({
    sortable,
    isEditorTrayOpen,
    setEditorTray,
+   isParentTwoColumn,
 }: {
    element: CustomElement;
    editor: Editor;
    sortable: any;
    isEditorTrayOpen: boolean;
    setEditorTray: any;
+   isParentTwoColumn: boolean;
 }) {
    const { listeners, setActivatorNodeRef } = useDraggable({
       id: element.id,
@@ -186,6 +199,7 @@ function BlockInlineActions({
                      leaveFrom="opacity-100"
                      leaveTo="opacity-0"
                      placement="right-start"
+                     portal={isParentTwoColumn}
                   >
                      <Popover.Button className="flex focus:outline-none border-color-sub h-7 w-5 border-r select-none items-center justify-center">
                         {open ? (
@@ -295,9 +309,11 @@ function HoverElement({
    children,
    editor,
    activeId,
+   isTwoColumn,
 }: RenderElementProps & {
    editor: Editor;
    activeId: string | null;
+   isTwoColumn?: boolean;
 }) {
    const [isHoverActive, setHoverState] = useState(false);
 
@@ -328,6 +344,9 @@ function HoverElement({
             ? Position.After
             : Position.Before
          : undefined;
+
+   const isParentTwoColumn =
+      element.type == BlockType.TwoColumn && !isTwoColumn;
 
    return (
       <section className="relative">
@@ -370,12 +389,15 @@ function HoverElement({
                   isHoverActive || isEditorTrayOpen
                      ? "opacity-100"
                      : "opacity-0",
-                  "absolute left-0 top-0 z-10 select-none pr-2 duration-100 ease-in laptop:-translate-x-full laptop:translate-y-0",
+                  isParentTwoColumn ? "pr-16" : "pr-2",
+                  isTwoColumn ? "z-20" : "z-10",
+                  "absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
                )}
                ref={refs.setFloating}
                {...getFloatingProps()}
             >
                <BlockInlineActions
+                  isParentTwoColumn={isParentTwoColumn}
                   isEditorTrayOpen={isEditorTrayOpen}
                   setEditorTray={setEditorTray}
                   editor={editor}
@@ -393,11 +415,13 @@ export function NestedEditor({
    editor,
    field,
    readOnly = false,
+   isTwoColumn = false,
 }: {
    element: any;
    editor: Editor;
    field: string;
    readOnly?: boolean;
+   isTwoColumn?: boolean;
 }) {
    const isEditorReadOnlyMode = useReadOnly();
    const inlineEditor = useEditor();
@@ -440,7 +464,7 @@ export function NestedEditor({
             initialValue={element[field] ?? initialValue()}
          >
             <Toolbar />
-            <EditorWithDnD editor={inlineEditor} />
+            <EditorWithDnD isTwoColumn={isTwoColumn} editor={inlineEditor} />
          </Slate>
       </div>
    );

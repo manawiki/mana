@@ -1,6 +1,6 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 
-import { Listbox, Menu, Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import { redirect, json } from "@remix-run/node";
 import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
@@ -12,12 +12,11 @@ import {
 } from "@remix-run/react";
 import dt from "date-and-time";
 import {
-   ChevronDown,
    ChevronLeft,
    ChevronRight,
    ChevronsUpDown,
-   File,
    Loader2,
+   PenSquare,
    Search,
    X,
 } from "lucide-react";
@@ -27,15 +26,19 @@ import { select, type Select } from "payload-query";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Image, Post, Site, User } from "payload/generated-types";
+import type {
+   Post,
+   Site,
+   User,
+   Image as PayloadImage,
+} from "payload/generated-types";
+import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { isLoading, safeNanoID } from "~/utils";
 import { cacheWithSelect } from "~/utils/cache.server";
-
-import { FeedItem } from "./components/FeedItem";
 
 type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
@@ -73,11 +76,12 @@ export async function loader({
       user,
    });
 
-   return json({ q, myPosts, publishedPosts });
+   return json({ q, myPosts, publishedPosts, siteId });
 }
 
-export default function PostsIndex() {
-   const { publishedPosts, q, myPosts } = useLoaderData<typeof loader>();
+export default function PostsAll() {
+   const { publishedPosts, q, myPosts, siteId } =
+      useLoaderData<typeof loader>();
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const transition = useNavigation();
@@ -99,77 +103,31 @@ export default function PostsIndex() {
          });
       }
    }, [debouncedValue, setSearchParams]);
-
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
-            <div className="border-color relative mb-16 border-b-2 pb-2">
-               <h1 className="font-header text-3xl font-bold">Posts</h1>
+            <div className="relative flex items-center pb-6 pt-2 laptop:-ml-0.5 laptop:-mr-1.5">
+               <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
+               <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
                <AdminOrStaffOrOwner>
-                  <Menu as="div" className="relative">
-                     <Menu.Button className="border-color absolute -top-5 right-0 rounded-full border-8">
-                        {({ open }) => (
-                           <div
-                              className=" flex h-10 items-center 
-                              gap-2 rounded-full bg-zinc-500 pl-5 pr-4 text-white"
-                           >
-                              <span className="text-sm font-bold">
-                                 New Post
-                              </span>
-                              <ChevronDown
-                                 size={18}
-                                 className={`${
-                                    open ? "rotate-180" : ""
-                                 } transform transition  duration-300 ease-in-out`}
-                              />
-                           </div>
-                        )}
-                     </Menu.Button>
-                     <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
+                  <Form method="post">
+                     <button
+                        className="flex py-2.5 items-center text-xs font-bold gap-2 dark:border-zinc-600 dark:hover:border-zinc-500
+                        border border-zinc-200 rounded-full hover:border-zinc-300 bg-zinc-50 dark:bg-dark450 px-4"
+                        name="intent"
+                        value="createPost"
+                        type="submit"
                      >
-                        <Menu.Items
-                           className="absolute right-0 z-20 mt-10 w-full min-w-[100px]
-                                 max-w-[220px] origin-top-right transform transition-all"
-                        >
-                           <div className="border-color bg-2 shadow-1 rounded-lg border p-1.5 shadow">
-                              <Menu.Item>
-                                 <Form method="post">
-                                    <button
-                                       className="text-1 flex w-full items-center gap-3 rounded-lg
-                                 p-2.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                       name="intent"
-                                       value="createPost"
-                                       type="submit"
-                                    >
-                                       <File size="18" />
-                                       <span>Blank Post</span>
-                                    </button>
-                                 </Form>
-                              </Menu.Item>
-                           </div>
-                        </Menu.Items>
-                     </Transition>
-                  </Menu>
+                        <PenSquare className="text-zinc-400" size={13} />
+                        New Post
+                     </button>
+                  </Form>
                </AdminOrStaffOrOwner>
-               <ul className="text-1 absolute -bottom-7 left-0 flex items-center gap-3 text-xs uppercase">
-                  <li>Changelog</li>
-                  <li className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                  <li>Docs</li>
-               </ul>
             </div>
             <AdminOrStaffOrOwner>
-               <section className="pb-6">
+               <section className="pt-3 pb-6">
                   <div className="flex items-center justify-between pb-2">
-                     <div className="text-1 text-xs font-bold uppercase">
-                        Last Edited
-                     </div>
+                     <div className="text-1 text-sm font-bold">Last Edited</div>
                      <Listbox
                         value={selectedStatus}
                         onChange={setSelectedStatus}
@@ -295,7 +253,7 @@ export default function PostsIndex() {
                         myPosts?.docs?.map((post) => (
                            <Link
                               prefetch="intent"
-                              to={`${post.id}/edit`}
+                              to={`/${siteId}/p/${post.id}`}
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3"
                            >
@@ -378,9 +336,7 @@ export default function PostsIndex() {
                   </>
                ) : (
                   <>
-                     <div className="text-1 text-sm font-bold uppercase">
-                        Latest
-                     </div>
+                     <div className="text-1 font-bold">Latest</div>
                      <button
                         onClick={() => {
                            setSearchToggle(true);
@@ -391,10 +347,10 @@ export default function PostsIndex() {
                   </>
                )}
             </div>
-            <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700">
+            <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
                {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                   publishedPosts.docs.map((post) => (
-                     <FeedItem key={post.id} post={post} />
+                     <FeedItem key={post.id} siteId={siteId} post={post} />
                   ))
                ) : (
                   <div className="flex items-center justify-between py-3 text-sm">
@@ -477,7 +433,6 @@ export const action = async ({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               slug: "untitled",
                name,
                //@ts-ignore
                author: user?.id,
@@ -488,14 +443,13 @@ export const action = async ({
             draft: true,
             overrideAccess: false,
          });
-         return redirect(`/${siteId}/posts/${post.id}/edit`);
+         return redirect(`/${siteId}/p/${post.id}`);
       }
       case "createPost": {
          const post = await payload.create({
             collection: "posts",
             data: {
                id: safeNanoID(),
-               slug: "untitled",
                name: "Untitled",
                //@ts-ignore
                author: user?.id,
@@ -508,7 +462,7 @@ export const action = async ({
             overrideAccess: false,
          });
 
-         return redirect(`/${siteId}/posts/${post.id}/edit`);
+         return redirect(`/${siteId}/p/${post.id}`);
       }
    }
 };
@@ -715,12 +669,12 @@ const filterAuthorFields = (
       avatar: true,
    };
 
-   const avatarSelect: Select<Image> = {
+   const avatarSelect: Select<PayloadImage> = {
       id: false,
       url: true,
    };
 
-   const bannerSelect: Select<Image> = {
+   const bannerSelect: Select<PayloadImage> = {
       id: false,
       url: true,
    };
@@ -756,3 +710,67 @@ const filterAuthorFields = (
 
    return result;
 };
+
+function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
+   return (
+      <>
+         <Link
+            className="relative block py-4"
+            prefetch="intent"
+            to={`/${siteId}/p/${post.slug}`}
+            key={post.id}
+         >
+            <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
+               <div className="flex items-center gap-3">
+                  <div className="h-6 w-6 overflow-hidden rounded-full">
+                     {post?.author.avatar?.url ? (
+                        <Image
+                           width={20}
+                           height={20}
+                           alt={post.name}
+                           options="aspect_ratio=1:1&height=80&width=80"
+                           className="w-full object-cover laptop:rounded"
+                           url={post?.author.avatar?.url}
+                        />
+                     ) : (
+                        <div className="bg-1 border-color shadow-1 h-6 w-6 overflow-hidden rounded-full border-2 shadow-sm"></div>
+                     )}
+                  </div>
+                  <div className="font-bold">{post.author.username}</div>
+               </div>
+               <div className="text-xs font-bold uppercase">
+                  {/* {post.publishedAt &&
+                     formatDistanceStrict(
+                        new Date(post.updatedAt ?? ""),
+                        new Date(),
+                        {
+                           addSuffix: true,
+                        }
+                     )} */}
+               </div>
+            </div>
+            <div className="flex items-start gap-5">
+               <div className="relative flex-grow">
+                  <div className="pb-2 font-header text-xl font-bold">
+                     {post.name}
+                  </div>
+                  <div className="text-1 text-sm max-laptop:line-clamp-2">
+                     {post.subtitle}
+                  </div>
+               </div>
+               {post.banner && (
+                  <div className="w-32 flex-none overflow-hidden rounded">
+                     <Image
+                        alt={post.name}
+                        options="height=140"
+                        height={200}
+                        className="w-full rounded object-cover"
+                        url={post?.banner?.url}
+                     />
+                  </div>
+               )}
+            </div>
+         </Link>
+      </>
+   );
+}

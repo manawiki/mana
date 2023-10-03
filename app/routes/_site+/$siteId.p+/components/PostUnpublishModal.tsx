@@ -9,7 +9,7 @@ export const PostUnpublishModal = ({
    isUnpublishOpen,
    setUnpublishOpen,
 }: {
-   isUnpublishOpen: any;
+   isUnpublishOpen: boolean;
    setUnpublishOpen: any;
 }) => {
    const fetcher = useFetcher();
@@ -55,7 +55,7 @@ export const PostUnpublishModal = ({
                   onClick={() => {
                      fetcher.submit(
                         { intent: "unpublish" },
-                        { method: "post" }
+                        { method: "post" },
                      );
                      setUnpublishOpen(false);
                   }}

@@ -1,15 +1,23 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 
+import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import { Loader2, Upload } from "lucide-react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { Image } from "~/components";
-import { isAdding } from "~/utils";
+import {
+   isAdding,
+   assertIsPost,
+   getMultipleFormData,
+   uploadImage,
+} from "~/utils";
 
-import type { CustomElement, ImageElement } from "../../core/types";
+import type { CustomElement, ImageElement } from "../core/types";
 type Props = {
    element: ImageElement;
 };
@@ -71,7 +79,7 @@ export function BlockImage({ element }: Props) {
    return (
       <div className="relative">
          {element.url ? (
-            <div className="relative my-3 flex h-auto min-h-[50px] w-full justify-center">
+            <div className="relative mb-3 flex h-auto min-h-[50px] w-full justify-center">
                <Image
                   className="w-full rounded-md"
                   alt="Inline"
@@ -80,7 +88,7 @@ export function BlockImage({ element }: Props) {
             </div>
          ) : (
             <>
-               <div className="relative mb-5">
+               <div className="relative mb-3">
                   <fetcher.Form
                      method="post"
                      encType="multipart/form-data"
@@ -138,4 +146,47 @@ export function BlockImage({ element }: Props) {
          )}
       </div>
    );
+}
+
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionFunctionArgs) {
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
+
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
+   switch (intent) {
+      case "addBlockImage": {
+         assertIsPost(request);
+         const result = await getMultipleFormData({
+            request,
+            prefix: "blockImage",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image } = result.data;
+            try {
+               return await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+               });
+            } catch (error) {
+               return json({
+                  error: "Something went wrong...unable to add image.",
+               });
+            }
+         }
+         // Last resort error message
+         return json({
+            error: "Something went wrong...unable to add image.",
+         });
+      }
+
+      default:
+         return null;
+   }
 }
