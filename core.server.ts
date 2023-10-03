@@ -177,9 +177,21 @@ function createProductionRequestHandler(): RequestHandler {
 
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {
+   // setup server RDT (Remix Development Tools)
+   const {
+      withServerDevTools,
+      defineServerConfig,
+   } = require("remix-development-tools/server");
+
+   // Allows you to define the configuration for the dev tools
+   const devToolsConfig = defineServerConfig({});
+
    async function handleServerUpdate() {
       // 1. re-import the server build
       build = await reimportServer();
+
+      // wrap the build with dev tools on re-import
+      build = withServerDevTools(build, devToolsConfig);
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {
@@ -189,6 +201,22 @@ function createDevRequestHandler(): RequestHandler {
 
       // 2. tell dev server that this app server is now up-to-date and ready
       broadcastDevReady(build);
+   }
+
+   // CJS require cache busting
+   /**
+    * @type {() => Promise<ServerBuild>}
+    */
+   async function reimportServer() {
+      // 1. manually remove the server build from the require cache
+      Object.keys(require.cache).forEach((key) => {
+         if (key.startsWith(BUILD_PATH)) {
+            delete require.cache[key];
+         }
+      });
+
+      // 2. re-import the server build
+      return require(BUILD_PATH);
    }
 
    chokidar
@@ -216,20 +244,4 @@ function createDevRequestHandler(): RequestHandler {
          next(error);
       }
    };
-}
-
-// CJS require cache busting
-/**
- * @type {() => Promise<ServerBuild>}
- */
-async function reimportServer() {
-   // 1. manually remove the server build from the require cache
-   Object.keys(require.cache).forEach((key) => {
-      if (key.startsWith(BUILD_PATH)) {
-         delete require.cache[key];
-      }
-   });
-
-   // 2. re-import the server build
-   return require(BUILD_PATH);
 }
