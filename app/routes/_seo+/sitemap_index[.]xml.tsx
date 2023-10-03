@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 
 import { settings } from "mana-config";
 
@@ -14,7 +14,7 @@ const toXmlSitemap = (urls: string[]) => {
     `;
 };
 
-export async function loader({ context: { payload } }: LoaderArgs) {
+export async function loader({ context: { payload } }: LoaderFunctionArgs) {
    try {
       const { docs } = await payload.find({
          collection: "sites",

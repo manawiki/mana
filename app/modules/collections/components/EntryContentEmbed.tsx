@@ -2,12 +2,10 @@ import { lazily } from "react-lazily";
 
 import { H2 } from "~/components/H2.tsx";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
-import { initialValue } from "~/routes/_editor+/functions/utils.ts";
+import { initialValue } from "~/routes/_editor+/core/utils.ts";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
-const { SoloEditor } = lazily(
-   () => import("~/routes/_editor+/editors+/SoloEditor.tsx")
-);
+const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 const { EntryViewer } = lazily(() => import("./EntryViewer.tsx"));
 
 export const EntryContentEmbed = ({
@@ -37,8 +35,8 @@ export const EntryContentEmbed = ({
          {hasAccess ? (
             <>
                <H2 text={title} />
-               <SoloEditor
-                  intent="customCollectionEmbed"
+               <ManaEditor
+                  collectionSlug="customCollectionEmbed"
                   sectionId={sectionId}
                   siteId={siteId}
                   fetcher={fetcher}

@@ -3,8 +3,8 @@ import { Suspense, useEffect, useState } from "react";
 import { json } from "@remix-run/node";
 import type {
    ActionFunction,
-   LoaderArgs,
-   V2_MetaFunction,
+   LoaderFunctionArgs,
+   MetaFunction,
 } from "@remix-run/node";
 import {
    Await,
@@ -42,7 +42,7 @@ export async function loader({
    context: { user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
 
    const { isMobileApp } = isNativeSSR(request);
@@ -75,7 +75,7 @@ export async function loader({
    });
 }
 
-export const meta: V2_MetaFunction = ({ data }) => {
+export const meta: MetaFunction = ({ data }) => {
    return [
       {
          title: data.site.name,

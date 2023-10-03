@@ -1,11 +1,7 @@
 import * as path from "node:path";
 
-import {
-   combineGetLoadContexts,
-   createMetronomeGetLoadContext,
-   registerMetronome,
-} from "@metronome-sh/express";
-import { createRequestHandler, type RequestHandler } from "@remix-run/express";
+import { createRequestHandler } from "@metronome-sh/express";
+import { type RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
@@ -31,7 +27,7 @@ const chokidar =
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
  */
 const BUILD_PATH = path.resolve("./build/index.js");
-const WATCH_PATH = path.resolve("./build/metafile.server.json");
+const WATCH_PATH = path.resolve("./build/version.txt");
 
 /**
  * Initial build
@@ -108,7 +104,7 @@ async function startCore() {
       // if they connect once with HTTPS, then they'll connect with HTTPS for the next hundred years
       res.set(
          "Strict-Transport-Security",
-         "max-age=63072000; includeSubDomains; preload"
+         "max-age=63072000; includeSubDomains; preload",
       );
 
       // no ending slashes for SEO reasons
@@ -125,13 +121,13 @@ async function startCore() {
    // Remix fingerprints its assets so we can cache forever.
    app.use(
       "/build",
-      express.static("public/build", { immutable: true, maxAge: "1y" })
+      express.static("public/build", { immutable: true, maxAge: "1y" }),
    );
 
    // Aggressively cache fonts for a year
    app.use(
       "/fonts",
-      express.static("public/fonts", { immutable: true, maxAge: "1y" })
+      express.static("public/fonts", { immutable: true, maxAge: "1y" }),
    );
 
    // Everything else (like favicon.ico) is cached for an hour. You may want to be
@@ -147,7 +143,7 @@ async function startCore() {
       "*",
       process.env.NODE_ENV === "development"
          ? createDevRequestHandler()
-         : createProductionRequestHandler()
+         : createProductionRequestHandler(),
    );
    const port = process.env.PORT || 3000;
 
@@ -162,21 +158,8 @@ async function startCore() {
 
 startCore();
 
-// Create a request handler that uses metronome in production
+// Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
-   const buildWithMetronome = registerMetronome(build);
-   const metronomeGetLoadContext = createMetronomeGetLoadContext(
-      //@ts-ignore need to overload the metronome types
-      buildWithMetronome,
-      {
-         config: {
-            ignoredRoutes: [],
-            ignoredPathnames: ["/healthcheck"],
-            ignoreHeadMethod: true,
-         },
-      }
-   );
-
    function getLoadContext(req: any, res: any) {
       return {
          payload: req.payload,
@@ -186,14 +169,9 @@ function createProductionRequestHandler(): RequestHandler {
    }
 
    return createRequestHandler({
-      //@ts-ignore need to overload the metronome types
-      build: buildWithMetronome,
+      build,
       mode: process.env.NODE_ENV,
-      getLoadContext: combineGetLoadContexts(
-         getLoadContext,
-         // @ts-expect-error huh... metronome isn't happy with itself.
-         metronomeGetLoadContext
-      ),
+      getLoadContext,
    });
 }
 
