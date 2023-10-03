@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 
 import { Combobox, Transition } from "@headlessui/react";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import {
    Link,
@@ -33,7 +33,7 @@ export async function loader({
    context: { payload, user },
    params,
    request,
-}: LoaderArgs) {
+}: LoaderFunctionArgs) {
    const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });

@@ -1,63 +1,87 @@
-import { Fragment, useMemo, useState } from "react";
+import type { ReactNode } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 
 import {
    DragOverlay,
    DndContext,
    type DragEndEvent,
    type DragStartEvent,
+   closestCenter,
 } from "@dnd-kit/core";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import {
    SortableContext,
+   arrayMove,
    rectSortingStrategy,
    useSortable,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Combobox, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { useMatches, useParams } from "@remix-run/react";
-import { arrayMoveImmutable } from "array-move";
+import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import {
-   Rows,
+   Combobox,
+   Dialog,
+   Listbox,
+   RadioGroup,
+   Transition,
+} from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { useParams } from "@remix-run/react";
+import clsx from "clsx";
+import { request as gqlRequest, gql } from "graphql-request";
+import {
    ChevronDown,
-   Columns,
+   ChevronLeft,
    Component,
    Database,
-   GripVertical,
+   FileText,
    LayoutGrid,
    List,
+   ListPlus,
+   MoreHorizontal,
+   MoreVertical,
    Move,
    Pencil,
    Plus,
    Trash,
+   X,
 } from "lucide-react";
 import { nanoid } from "nanoid";
-import { Transforms, createEditor } from "slate";
+import type { Select } from "payload-query";
+import { select } from "payload-query";
+import { plural } from "pluralize";
+import qs from "qs";
+import { Transforms, Node, Editor } from "slate";
 import type { BaseEditor } from "slate";
-import { Editable, ReactEditor, Slate, useSlate, withReact } from "slate-react";
+import { ReactEditor, useSlate } from "slate-react";
 import useSWR from "swr";
+import { z } from "zod";
+import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type { Collection, Entry, Site } from "payload/generated-types";
-import customConfig from "~/_custom/config.json";
-import { Image } from "~/components";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-// eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
-import { onKeyDown } from "~/routes/_editor+/functions/utils";
-import { swrRestFetcher } from "~/utils";
-
-import { Toolbar } from "../../components/Toolbar";
 import type {
-   CustomElement,
-   GroupElement,
-   groupItem,
-} from "../../functions/types";
+   Collection,
+   Entry,
+   Image as PayloadImage,
+   Post,
+   Site,
+} from "payload/generated-types";
+import customConfig from "~/_custom/config.json";
+import { Image, Modal } from "~/components";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
+import { useIsMount } from "~/hooks";
+import { swrRestFetcher, toWords } from "~/utils";
 
-type Props = {
-   element: GroupElement;
-};
+// eslint-disable-next-line import/no-cycle
+import { BlockGroupItemView } from "./group-view";
+import { NestedEditor } from "../../core/dnd";
+import {
+   BlockType,
+   type CustomElement,
+   type GroupElement,
+   type GroupItemElement,
+} from "../../core/types";
 
 export const GROUP_COLORS = [
    "#a1a1aa",
@@ -70,193 +94,342 @@ export const GROUP_COLORS = [
    "#f472b6",
 ];
 
-export function BlockGroup({ element }: Props) {
+//@ts-ignore
+const GroupDnDContext = React.createContext();
+
+const defaultOptions = [
+   { slug: "post", name: "Post" },
+   { slug: "site", name: "Site" },
+];
+
+type groupRowData = {
+   id: string;
+   siteId: Site["slug"];
+   name: string;
+   isCustomSite: boolean;
+   slug?: Post["slug"];
+   icon: { url: string };
+};
+
+export async function loader({
+   context: { payload, user },
+   request,
+}: LoaderFunctionArgs) {
+   const { siteId, filterOption, groupSelectQuery } = zx.parseQuery(request, {
+      siteId: z.string(),
+      filterOption: z.string(),
+      groupSelectQuery: z.string(),
+   });
+   const slug = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteId,
+         },
+      },
+      depth: 1,
+      user,
+   });
+   const site = slug?.docs[0];
+
+   //For posts and site
+   if (defaultOptions.some((e) => e.slug === filterOption)) {
+      switch (filterOption) {
+         case "post": {
+            const { docs } = await payload.find({
+               collection: "posts",
+               where: {
+                  site: {
+                     equals: site?.id,
+                  },
+                  _status: {
+                     equals: "published",
+                  },
+                  ...(groupSelectQuery
+                     ? {
+                          name: {
+                             contains: groupSelectQuery,
+                          },
+                       }
+                     : {}),
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            });
+            const postSelect: Select<Post> = {
+               id: true,
+               name: true,
+               slug: true,
+            };
+            const imageSelect: Select<PayloadImage> = {
+               id: false,
+               url: true,
+            };
+            const filtered = docs.map((doc) => {
+               // Use icon field, otherwise default to post banner
+               const icon =
+                  (doc.icon && select(imageSelect, doc.icon)) ??
+                  (doc.banner && select(imageSelect, doc.banner));
+
+               const result = {
+                  ...select(postSelect, doc),
+                  icon,
+                  siteId,
+                  isCustomSite: site?.type == "custom",
+               };
+               return result as groupRowData;
+            });
+            return json(filtered);
+         }
+         case "site": {
+            const { docs } = await payload.find({
+               collection: "sites",
+               where: {
+                  isPublic: {
+                     equals: true,
+                  },
+                  ...(groupSelectQuery
+                     ? {
+                          name: {
+                             contains: groupSelectQuery,
+                          },
+                       }
+                     : {}),
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            });
+            const filtered = docs.map((doc) => {
+               return {
+                  ...select(
+                     {
+                        id: true,
+                        name: true,
+                     },
+                     doc,
+                  ),
+                  isCustomSite: doc?.type == "custom",
+                  siteId,
+                  icon: doc.icon && select({ id: false, url: true }, doc.icon),
+               };
+            });
+            return json(filtered);
+         }
+         default:
+            return null;
+      }
+   }
+   //For entries
+   if (site?.type == "custom") {
+      const formattedName = plural(toWords(filterOption, true));
+      const document = gql`
+         query ($groupSelectQuery: String!) {
+               rows: ${formattedName}(
+                  where: {
+                  name: { contains: $groupSelectQuery }
+                  }
+               ) {
+               docs {
+                  id
+                  name
+                  icon {
+                     url
+                  }
+               }
+            }
+         }
+      `;
+      const endpoint = `https://${site.slug}-db.${
+         site.domain ?? "mana.wiki"
+      }/api/graphql`;
+      const result: any = await gqlRequest(endpoint, document, {
+         groupSelectQuery,
+      });
+      const data = result.rows.docs as groupRowData[];
+      const filtered = data.map((doc) => {
+         return {
+            ...doc,
+            siteId,
+            isCustomSite: site?.type == "custom",
+         };
+      });
+      return json(filtered);
+   }
+   if (site?.type == "core") {
+      const { docs } = await payload.find({
+         collection: "entries",
+         where: {
+            site: {
+               equals: site?.id,
+            },
+            "collectionEntity.slug": {
+               equals: filterOption,
+            },
+            ...(groupSelectQuery
+               ? {
+                    name: {
+                       contains: groupSelectQuery,
+                    },
+                 }
+               : {}),
+         },
+         depth: 1,
+         overrideAccess: false,
+         user,
+      });
+      const filtered = docs.map((doc) => {
+         return {
+            ...select(
+               {
+                  id: true,
+                  name: true,
+               },
+               doc,
+            ),
+            siteId,
+            isCustomSite: site?.type == "custom",
+            icon: doc.icon && select({ id: false, url: true }, doc.icon),
+         };
+      });
+      return json(filtered);
+   }
+}
+
+export function BlockGroup({
+   element,
+   children,
+}: {
+   element: GroupElement;
+   children: ReactNode;
+}) {
    const editor = useSlate();
+   const isGroupEmpty = element?.children[0]?.path ? false : true;
 
    const siteId = useParams()?.siteId ?? customConfig?.siteId;
 
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   //@ts-expect-error
-   const site = useMatches()?.[1]?.data?.site as Site;
-
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
-
-   const siteType = site.type;
 
    //Get collection data, used to populate select
    const { data: collectionData } = useSWR(
       `${settings.domainFull}/api/collections?where[site.slug][equals]=${siteId}&[hiddenCollection][equals]=false`,
-      swrRestFetcher
+      swrRestFetcher,
    );
-
-   const defaultOptions = [
-      { slug: "post", name: "Post" },
-      { slug: "site", name: "Site" },
-   ];
-
    const selectOptions = collectionData
       ? [...defaultOptions, ...collectionData?.docs]
       : defaultOptions;
 
    const [selected] = useState();
 
-   const [selectedCollection, setSelectedCollection] = useState(
-      element.collection
+   const [filterOption, setFilterOption] = useState(element.collection);
+
+   const groupDataQuery = qs.stringify(
+      {
+         siteId,
+         filterOption,
+         groupSelectQuery,
+      },
+      { addQueryPrefix: true },
    );
 
-   const getDataType = () => {
-      //For posts and site
-      if (defaultOptions.some((e) => e.slug === selectedCollection)) {
-         switch (selectedCollection) {
-            case "post": {
-               return `${settings.domainFull}/api/posts?where[site.slug][equals]=${siteId}&where[name][contains]=${groupSelectQuery}&depth=1`;
-            }
-            case "site": {
-               return `${settings.domainFull}/api/sites?where[name][contains]=${groupSelectQuery}&depth=1`;
-            }
-            default:
-               return null;
-         }
-      }
-      //For entries
-      if (siteType == "custom") {
-         return `https://${siteId}-db.${settings.domain}/api/${selectedCollection}?where[name][contains]=${groupSelectQuery}&depth=1`;
-      }
-      if (siteType == "core") {
-         return `${settings.domainFull}/api/entries?where[site.slug][equals]=${siteId}&where[collectionEntity.slug][equals]=${selectedCollection}&where[name][contains]=${groupSelectQuery}&depth=1`;
-      }
-   };
-
-   //Get custom entry data to populate icon and title
-   const { data: entryData } = useSWR(() => getDataType(), swrRestFetcher);
+   const { data: entryData } = useSWR(
+      `/${siteId}/blocks/group${groupDataQuery}`,
+      swrRestFetcher,
+   );
 
    const filteredEntries =
       groupSelectQuery === ""
-         ? entryData?.docs
-         : entryData?.docs.filter((item: Entry) =>
+         ? [] //TODO Make this pull default set, used to be "entryData"
+         : entryData?.filter((item: Entry) =>
               item.name
                  .toLowerCase()
                  .replace(/\s+/g, "")
-                 .includes(groupSelectQuery.toLowerCase().replace(/\s+/g, ""))
+                 .includes(groupSelectQuery.toLowerCase().replace(/\s+/g, "")),
            );
 
-   const groupItems = element.groupItems;
-
    //DND kit needs array of strings
-   const itemIds = useMemo(
-      () => groupItems.map((item) => item.id),
-      [groupItems]
-   );
-
-   function handleUpdateCollection(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
+   function handleUpdateFilter(event: any) {
       const path = ReactEditor.findPath(editor, element);
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         collection: event,
-      };
-
-      setSelectedCollection(event);
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      setFilterOption(event);
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { collection: event },
+         {
+            at: path,
+         },
+      );
    }
 
-   function handleAddEntry(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const path = ReactEditor.findPath(editor, element);
-
+   function handleAddEntry(event: groupRowData) {
       const rowPath = () => {
-         switch (selectedCollection) {
+         switch (filterOption) {
             case "site": {
-               return `/${event.slug}`;
+               return `/${event.siteId}`;
             }
             case "post": {
-               return `/${siteId}/posts/${event.id}/${event.url}`;
+               return `/${event.siteId}/posts/${event.id}/${event.slug}`;
             }
             default:
-               return `/${siteId}/collections/${selectedCollection}/${event.id}`;
+               return `/${event.siteId}/collections/${filterOption}/${event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
          }
       };
+      const path = [
+         ReactEditor.findPath(editor, element)[0],
+         isGroupEmpty ? 0 : element.children.length,
+      ];
 
-      const isCustomSite = event.type == "custom" ? true : false;
-
+      const nodeId = nanoid();
       const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems: [
-            ...element.groupItems,
-            {
-               id: nanoid(),
-               labelColor: GROUP_COLORS["0"],
-               isCustomSite,
-               refId: event.id,
-               name: event.name,
-               path: rowPath(),
-               iconUrl: event?.icon?.url ?? event?.banner?.url,
-            },
-         ],
+         id: nodeId,
+         type: BlockType.GroupItem,
+         siteId: event.siteId,
+         labelColor: GROUP_COLORS["0"],
+         isCustomSite: event.isCustomSite,
+         refId: event.id,
+         name: event.name,
+         path: rowPath(),
+         iconUrl: event?.icon?.url,
+         children: [{ text: "" }],
       };
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   }
 
-   function handleUpdateViewMode(
-      event: any,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         viewMode: event,
-      };
-      setViewMode(event);
+      //@ts-ignore
+      Transforms.insertNodes(editor, newProperties, { at: path });
 
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      //Update DND state after adding item
+      return setGroupItems((items) => [...items, nodeId]);
    }
 
    function handleUpdateItemsViewMode(
       event: any,
       editor: BaseEditor & ReactEditor,
-      element: GroupElement
+      element: GroupElement,
    ) {
       const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         itemsViewMode: event,
-      };
       setItemsViewMode(event);
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { itemsViewMode: event },
+         {
+            at: path,
+         },
+      );
    }
 
    // DND Functions
-
    const [activeId, setActiveId] = useState<string | null>(null);
 
    const activeElement = findNestedObj(
-      editor.children,
+      element.children,
       "id",
-      activeId
-   ) as unknown as groupItem;
+      activeId,
+   ) as unknown as GroupItemElement;
 
    //From https://stackoverflow.com/questions/15523514/find-by-key-deep-in-a-nested-array
    function findNestedObj(
       entireObj: object,
       keyToFind: string,
-      valToFind: string | null
+      valToFind: string | null,
    ) {
       let foundObj;
       JSON.stringify(entireObj, (_, nestedValue) => {
@@ -272,614 +445,446 @@ export function BlockGroup({ element }: Props) {
       setActiveId(event.active.id as string);
    }
 
-   function handleDragEnd(
-      event: DragEndEvent,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
+   const [groupItems, setGroupItems] = useState(
+      isGroupEmpty ? [] : element.children.map((item) => item.id),
+   );
+
+   function handleDragEnd(event: DragEndEvent) {
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-         const groupItems = element.groupItems;
+         setGroupItems((items) => {
+            const oldIndex = items.findIndex((x) => {
+               return x === active.id;
+            });
 
-         const oldIndex = groupItems.findIndex((obj) => {
-            return obj.id === active.id;
-         });
+            const newIndex = items.findIndex((x) => {
+               return x === over?.id;
+            });
 
-         const newIndex = groupItems.findIndex((obj) => {
-            return obj.id === over?.id;
-         });
-
-         const updatedGroupItems = arrayMoveImmutable(
-            groupItems,
-            oldIndex,
-            newIndex
-         );
-
-         const path = ReactEditor.findPath(editor, element);
-
-         const newProperties: Partial<CustomElement> = {
-            ...element,
-            groupItems: updatedGroupItems,
-         };
-
-         //Now we update the local SlateJS state
-         return Transforms.setNodes<CustomElement>(editor, newProperties, {
-            at: path,
+            return arrayMove(items, oldIndex, newIndex);
          });
       }
-   }
-
-   function deleteRow(
-      id: string,
-      editor: BaseEditor & ReactEditor,
-      element: GroupElement
-   ) {
-      const groupItems = element.groupItems;
-
-      const path = ReactEditor.findPath(editor, element);
-
-      const updatedGroupItems = groupItems.filter((item) => item.id !== id);
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems: updatedGroupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
    }
 
    const activeSelectItem = (item: any) =>
       selectOptions.find((obj) => obj.slug === item)?.name;
 
-   const [viewMode, setViewMode] = useState(element.viewMode);
    const [itemsViewMode, setItemsViewMode] = useState(element.itemsViewMode);
 
-   return (
-      <div className="my-2">
-         <section className="mb-3 flex items-center justify-between gap-3">
-            <div
-               className="text-1 bg-2 border-color shadow-1 relative flex
-                  h-14 flex-grow items-center justify-between rounded-xl border px-2 shadow-sm"
-            >
-               <div className="flex w-full items-center gap-3">
-                  <Combobox
-                     value={selected}
-                     onChange={(event) =>
-                        handleAddEntry(event, editor, element)
-                     }
-                  >
-                     <div className="flex-grow">
-                        <div className="bg-2 flex items-center gap-3">
-                           <Combobox.Button className="group">
-                              <div
-                                 className="shadow-1 border-color flex h-[30px] w-[30px]
-                                 items-center justify-center rounded-full border bg-white
-                                 shadow-sm group-hover:bg-zinc-50 dark:bg-bg3Dark dark:group-hover:bg-zinc-700/50"
-                              >
-                                 <Plus size={20} />
-                              </div>
-                           </Combobox.Button>
-                           <Combobox.Input
-                              autoFocus
-                              className="bg-2 h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
-                              placeholder="Search..."
-                              onChange={(event) =>
-                                 setGroupSelectQuery(event.target.value)
-                              }
-                           />
-                        </div>
-                        <Transition
-                           as={Fragment}
-                           leave="transition ease-in duration-100"
-                           leaveFrom="opacity-100"
-                           leaveTo="opacity-0"
-                           afterLeave={() => setGroupSelectQuery("")}
-                        >
-                           <Combobox.Options
-                              className="bg-2 border-color shadow-1 absolute left-0 z-30 mt-3 max-h-60
-                              w-full overflow-auto rounded-lg border p-2 shadow-xl focus:outline-none"
-                           >
-                              {filteredEntries?.length === 0 ? (
-                                 <div className="relative cursor-default select-none px-4 py-2 text-sm">
-                                    Nothing found.
-                                 </div>
-                              ) : (
-                                 filteredEntries?.map((entry: Entry) => (
-                                    <Combobox.Option
-                                       key={entry.id}
-                                       className={({ active }) =>
-                                          `cursor-default select-none rounded-md p-2 text-sm font-bold ${
-                                             active
-                                                ? "dark:border-emeald-900 shadow-1 bg-zinc-100 shadow-sm dark:bg-bg1Dark"
-                                                : ""
-                                          } flex items-center gap-2`
-                                       }
-                                       value={entry}
-                                    >
-                                       <>
-                                          <span
-                                             className="border-color shadow-1 flex h-8 w-8 flex-none items-center
-                                             justify-between overflow-hidden rounded-full border-2 shadow-sm"
-                                          >
-                                             {entry?.icon?.url ? (
-                                                <Image
-                                                   url={entry?.icon?.url}
-                                                   options="aspect_ratio=1:1&height=80&width=80"
-                                                   alt={entry?.name ?? "Icon"}
-                                                />
-                                             ) : (
-                                                <Component
-                                                   className="text-1 mx-auto"
-                                                   size={18}
-                                                />
-                                             )}
-                                          </span>
-                                          <span className="flex-grow">
-                                             {entry.name}
-                                          </span>
-                                       </>
-                                    </Combobox.Option>
-                                 ))
-                              )}
-                           </Combobox.Options>
-                        </Transition>
-                     </div>
-                  </Combobox>
-               </div>
-               <Listbox
-                  value={selectedCollection}
-                  onChange={(event) =>
-                     handleUpdateCollection(event, editor, element)
-                  }
-               >
-                  <div className="relative z-30 flex-none">
-                     <Listbox.Button
-                        className="text-1 flex items-center gap-1.5
-                        p-2 text-sm font-bold hover:underline"
-                     >
-                        {({ value }) => (
-                           <>
-                              {activeSelectItem(value) ?? "Select a Collection"}
-                              <ChevronDown size={20} />
-                           </>
-                        )}
-                     </Listbox.Button>
-                     <Transition
-                        enter="transition duration-100 ease-out"
-                        enterFrom="transform scale-95 opacity-0"
-                        enterTo="transform scale-100 opacity-100"
-                        leave="transition duration-75 ease-out"
-                        leaveFrom="transform scale-100 opacity-100"
-                        leaveTo="transform scale-95 opacity-0"
-                     >
-                        <Listbox.Options
-                           className="border-color bg-2 shadow-1 absolute right-0
-                           z-20 mt-1 w-[160px] rounded-lg border p-1.5 shadow-lg"
-                        >
-                           {collectionData?.docs?.map(
-                              (row: Collection, rowIdx: number) => (
-                                 <Listbox.Option key={rowIdx} value={row.slug}>
-                                    {({ selected }) => (
-                                       <>
-                                          <button
-                                             className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                          >
-                                             {selected ? (
-                                                <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
-                                             ) : null}
-                                             <Database
-                                                className="text-1"
-                                                size={14}
-                                             />
-                                             {row.name}
-                                          </button>
-                                       </>
-                                    )}
-                                 </Listbox.Option>
-                              )
-                           )}
-                           <Listbox.Option key="post" value="post">
-                              {({ selected }) => (
-                                 <>
-                                    <button
-                                       className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    >
-                                       {selected ? (
-                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
-                                       ) : null}
-                                       <Pencil className="text-1" size={14} />
-                                       Post
-                                    </button>
-                                 </>
-                              )}
-                           </Listbox.Option>
-                           <Listbox.Option key="site" value="site">
-                              {({ selected }) => (
-                                 <>
-                                    <button
-                                       className="relative flex w-full items-center gap-3 truncate
-                                     rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    >
-                                       {selected ? (
-                                          <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
-                                       ) : null}
-                                       <Component
-                                          className="text-1"
-                                          size={14}
-                                       />
-                                       Site
-                                    </button>
-                                 </>
-                              )}
-                           </Listbox.Option>
-                        </Listbox.Options>
-                     </Transition>
-                  </div>
-               </Listbox>
-               <RadioGroup
-                  className="flex cursor-pointer items-center gap-1"
-                  value={itemsViewMode}
-                  onChange={(event) =>
-                     handleUpdateItemsViewMode(event, editor, element)
-                  }
-               >
-                  <RadioGroup.Option value="list">
-                     {({ checked }) => (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <div
-                                 className={`${
-                                    checked
-                                       ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                       : ""
-                                 }
-                                 flex h-7 w-7 items-center justify-center rounded`}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    List View
-                                 </RadioGroup.Label>
-                                 <List
-                                    className={`${
-                                       checked ? "text-zinc-500" : ""
-                                    }`}
-                                    size={16}
-                                 />
-                              </div>
-                           </TooltipTrigger>
-                           <TooltipContent>List View</TooltipContent>
-                        </Tooltip>
-                     )}
-                  </RadioGroup.Option>
-                  <RadioGroup.Option value="grid">
-                     {({ checked }) => (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <div
-                                 className={`${
-                                    checked
-                                       ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                       : ""
-                                 }
-                           flex h-7 w-7 items-center justify-center rounded`}
-                              >
-                                 <RadioGroup.Label className="sr-only">
-                                    Grid View
-                                 </RadioGroup.Label>
-                                 <LayoutGrid
-                                    className={`${
-                                       checked ? "text-zinc-500" : ""
-                                    }`}
-                                    size={16}
-                                 />
-                              </div>
-                           </TooltipTrigger>
-                           <TooltipContent>Gird View</TooltipContent>
-                        </Tooltip>
-                     )}
-                  </RadioGroup.Option>
-               </RadioGroup>
-            </div>
+   const [isElementEditorOpen, setElementEditor] = useState(isGroupEmpty);
 
-            <RadioGroup
-               className="bg-2 shadow-1 border-color flex h-14 
-                  cursor-pointer items-center gap-1 rounded-lg border px-2.5 shadow-sm"
-               value={viewMode}
-               onChange={(event) =>
-                  handleUpdateViewMode(event, editor, element)
-               }
-            >
-               <RadioGroup.Option value="1-col">
-                  {({ checked }) => (
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <div
-                              className={`${
-                                 checked
-                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                    : ""
-                              }
-                                 flex h-8 w-8 items-center justify-center rounded`}
-                           >
-                              <RadioGroup.Label className="sr-only">
-                                 List View
-                              </RadioGroup.Label>
-                              <Rows
-                                 className={`${checked ? "text-zinc-500" : ""}`}
-                                 size={16}
-                              />
-                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>1-Column</TooltipContent>
-                     </Tooltip>
-                  )}
-               </RadioGroup.Option>
-               <RadioGroup.Option value="2-col">
-                  {({ checked }) => (
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <div
-                              className={`${
-                                 checked
-                                    ? "shadow-1 bg-white shadow dark:bg-zinc-700"
-                                    : ""
-                              }
-                           flex h-8 w-8 items-center justify-center rounded`}
-                           >
-                              <RadioGroup.Label className="sr-only">
-                                 2-Columns
-                              </RadioGroup.Label>
-                              <Columns
-                                 className={`${checked ? "text-zinc-500" : ""}`}
-                                 size={16}
-                              />
-                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent>2-Columns</TooltipContent>
-                     </Tooltip>
-                  )}
-               </RadioGroup.Option>
-            </RadioGroup>
-         </section>
-         <section>
+   return (
+      <div contentEditable={false} className="mb-3 group/group relative">
+         <section
+            className={clsx(
+               itemsViewMode == "list"
+                  ? `border-color-sub divide-color-sub shadow-1 group relative
+                        mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm`
+                  : "",
+               itemsViewMode == "grid"
+                  ? "grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4"
+                  : "",
+               "",
+            )}
+         >
             <DndContext
                onDragStart={handleDragStart}
-               onDragEnd={(event) => handleDragEnd(event, editor, element)}
+               onDragEnd={handleDragEnd}
+               collisionDetection={closestCenter}
             >
                <SortableContext
-                  items={itemIds}
+                  items={groupItems}
                   strategy={
                      itemsViewMode == "list"
                         ? verticalListSortingStrategy
                         : rectSortingStrategy
                   }
                >
-                  {groupItems?.length === 0 ? null : itemsViewMode == "list" ? (
-                     <>
-                        {viewMode == "1-col" && (
-                           <>
-                              <div
-                                 className="border-color divide-color shadow-1 relative
-                                 mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm"
-                              >
-                                 {groupItems?.map((row) => (
-                                    <SortableListItem
-                                       editor={editor}
-                                       key={row.id}
-                                       rowId={row.id}
-                                       element={element}
-                                       deleteRow={() =>
-                                          deleteRow(row.id, editor, element)
-                                       }
-                                    />
-                                 ))}
-                              </div>
-                           </>
-                        )}
-                        {viewMode == "2-col" && (
-                           <div className="grid laptop:grid-cols-2 laptop:gap-4">
-                              <div>
-                                 <div
-                                    className="border-color divide-color shadow-1 relative
-                                    mb-2.5 divide-y overflow-hidden rounded-lg border shadow-sm"
-                                 >
-                                    {groupItems?.map((row) => (
-                                       <SortableListItem
-                                          editor={editor}
-                                          key={row.id}
-                                          rowId={row.id}
-                                          element={element}
-                                          deleteRow={() =>
-                                             deleteRow(row.id, editor, element)
-                                          }
-                                       />
-                                    ))}
-                                 </div>
-                              </div>
-                              <div>
-                                 <InlineEditor
-                                    editor={editor}
-                                    element={element}
-                                 />
-                              </div>
-                           </div>
-                        )}
-                     </>
-                  ) : (
-                     <>
-                        {viewMode == "1-col" && (
-                           <>
-                              <div className="grid grid-cols-2 gap-3 pb-2.5 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4">
-                                 {groupItems?.map((row) => (
-                                    <SortableGridItem
-                                       editor={editor}
-                                       key={row.id}
-                                       rowId={row.id}
-                                       element={element}
-                                       deleteRow={() =>
-                                          deleteRow(row.id, editor, element)
-                                       }
-                                    />
-                                 ))}
-                              </div>
-                           </>
-                        )}
-                        {viewMode == "2-col" && (
-                           <div className="grid laptop:grid-cols-2 laptop:gap-4">
-                              <div>
-                                 <div className="grid grid-cols-2 gap-3 pb-2.5">
-                                    {groupItems?.map((row) => (
-                                       <SortableGridItem
-                                          editor={editor}
-                                          key={row.id}
-                                          rowId={row.id}
-                                          element={element}
-                                          deleteRow={() =>
-                                             deleteRow(row.id, editor, element)
-                                          }
-                                       />
-                                    ))}
-                                 </div>
-                              </div>
-                              <div>
-                                 <InlineEditor
-                                    editor={editor}
-                                    element={element}
-                                 />
-                              </div>
-                           </div>
-                        )}
-                     </>
-                  )}
+                  <GroupDnDContext.Provider
+                     value={{ groupItems, setGroupItems }}
+                  >
+                     {children}
+                  </GroupDnDContext.Provider>
                </SortableContext>
                <DragOverlay modifiers={[restrictToParentElement]}>
-                  {activeElement && itemsViewMode == "list" ? (
-                     <div className="p-1.5">
-                        <div
-                           className="bg-1 shadow-1 border-color flex items-center
-                               justify-between gap-3 rounded-lg border p-1.5 shadow"
-                        >
-                           <div className="flex items-center gap-3">
-                              <div
-                                 className="shadow-1 flex h-8 w-8 items-center
-                                justify-between overflow-hidden rounded-full border shadow-sm"
-                              >
-                                 {activeElement?.iconUrl ? (
-                                    <Image
-                                       url={activeElement?.iconUrl}
-                                       options="aspect_ratio=1:1&height=80&width=80"
-                                       alt={activeElement?.name ?? "Icon"}
-                                    />
-                                 ) : (
-                                    <Component
-                                       className="text-1 mx-auto"
-                                       size={18}
-                                    />
-                                 )}
-                              </div>
-                              <div className="truncate">
-                                 {activeElement?.name}
-                              </div>
-                           </div>
-                           <div className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow">
-                              <GripVertical className="text-1" size={16} />
-                           </div>
-                        </div>
-                     </div>
-                  ) : itemsViewMode == "grid" ? (
-                     <div className="bg-1 border-color shadow-1 relative rounded-md border p-3 shadow">
-                        <div className="bg-3 shadow-1 absolute right-1 top-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow">
-                           <Move className="text-1" size={16} />
-                        </div>
-                        <div
-                           className="shadow-1 mx-auto mb-1.5 flex h-14 w-14
-                           items-center overflow-hidden rounded-full border-2 shadow-sm"
-                        >
-                           {activeElement?.iconUrl ? (
-                              <Image
-                                 url={activeElement?.iconUrl}
-                                 options="aspect_ratio=1:1&height=80&width=80"
-                                 alt={activeElement?.name ?? "Icon"}
-                              />
-                           ) : (
-                              <Component className="text-1 mx-auto" size={18} />
-                           )}
-                        </div>
-                        <div className="text-1 truncate text-center text-xs font-bold">
-                           {activeElement?.name}
-                        </div>
-                     </div>
-                  ) : null}
+                  {activeElement && (
+                     <BlockGroupItemView element={activeElement} />
+                  )}
                </DragOverlay>
             </DndContext>
          </section>
+         <Float
+            middleware={[
+               offset({
+                  mainAxis: 8,
+                  crossAxis: -22,
+               }),
+            ]}
+            dialog
+            placement="left-start"
+            portal
+         >
+            <Float.Reference>
+               <div className="transition group-hover/group:opacity-100 flex 0 w-10 h-10 opacity-0 laptop:absolute -right-12 top-0">
+                  <button
+                     className="border bg-white bg-2-sub flex items-center justify-center border-color shadow-sm shadow-1 w-8 h-8 rounded-lg"
+                     onClick={() => setElementEditor(true)}
+                     contentEditable={false}
+                  >
+                     <ListPlus
+                        className={clsx(
+                           isElementEditorOpen ? "rotate-45" : "",
+                           "transform transition duration-300 ease-in-out",
+                        )}
+                        size={16}
+                     />
+                  </button>
+               </div>
+            </Float.Reference>
+            <Transition appear show={isElementEditorOpen} as={Fragment}>
+               <Dialog as="div" onClose={() => setElementEditor(false)}>
+                  <div className="fixed inset-0">
+                     <div className="flex min-h-full items-center p-4 text-center">
+                        <Float.Content
+                           as={Fragment}
+                           transitionChild
+                           enter="transition ease-out duration-300"
+                           enterFrom="opacity-0 translate-y-1"
+                           enterTo="opacity-100 translate-y-0"
+                           leave="transition ease-in duration-150"
+                           leaveFrom="opacity-100 translate-y-0"
+                           leaveTo="opacity-0 translate-y-1"
+                        >
+                           <Dialog.Panel>
+                              <div className="relative laptop:w-[728px] px-4">
+                                 <div
+                                    className="flex px-2 py-0.5 shadow-xl border-2 items-center shadow-1 bg-3-sub border-color-sub
+                                    justify-center transform rounded-full"
+                                 >
+                                    <div className="flex w-full items-center gap-3">
+                                       <Combobox
+                                          value={selected}
+                                          onChange={handleAddEntry}
+                                       >
+                                          <div className="flex-grow">
+                                             <div className="flex items-center gap-3">
+                                                <Combobox.Button
+                                                   className="group flex-none shadow-sm border border-color dark:border-zinc-600 rounded-full 
+                                                   w-7 h-7 flex items-center justify-center bg-zinc-50 dark:bg-dark450"
+                                                >
+                                                   {({ open }) => (
+                                                      <Plus
+                                                         className={`${
+                                                            open
+                                                               ? "rotate-45"
+                                                               : ""
+                                                         } transform transition duration-300 ease-in-out`}
+                                                         size={16}
+                                                      />
+                                                   )}
+                                                </Combobox.Button>
+                                                <Combobox.Input
+                                                   autoFocus
+                                                   className="bg-3-sub h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
+                                                   placeholder="Search..."
+                                                   onChange={(event) =>
+                                                      setGroupSelectQuery(
+                                                         event.target.value,
+                                                      )
+                                                   }
+                                                />
+                                             </div>
+                                             <Transition
+                                                as={Fragment}
+                                                leave="transition ease-in duration-100"
+                                                leaveFrom="opacity-100"
+                                                leaveTo="opacity-0"
+                                                afterLeave={() =>
+                                                   setGroupSelectQuery("")
+                                                }
+                                             >
+                                                <Combobox.Options
+                                                   className="dark:bg-dark350 bg-white border-color-sub divide-color-sub no-scrollbar absolute left-0 z-30 mt-2 max-h-60
+                                                 w-full divide-y overflow-auto rounded-xl border drop-shadow-xl focus:outline-none"
+                                                >
+                                                   {filteredEntries?.length ===
+                                                   0 ? (
+                                                      <div className="relative text-center cursor-default select-none p-3 text-sm">
+                                                         Nothing found.
+                                                      </div>
+                                                   ) : (
+                                                      filteredEntries?.map(
+                                                         (entry: Entry) => (
+                                                            <Combobox.Option
+                                                               key={entry.id}
+                                                               className={({
+                                                                  active,
+                                                               }) =>
+                                                                  `cursor-default select-none p-2 text-sm font-bold ${
+                                                                     active
+                                                                        ? "bg-zinc-50 dark:bg-dark400"
+                                                                        : ""
+                                                                  } flex items-center gap-2`
+                                                               }
+                                                               value={entry}
+                                                            >
+                                                               <>
+                                                                  <span
+                                                                     className="border-color shadow-1 flex h-8 w-8 flex-none items-center
+                                                                  justify-between overflow-hidden rounded-full border shadow-sm"
+                                                                  >
+                                                                     {entry
+                                                                        ?.icon
+                                                                        ?.url ? (
+                                                                        <Image
+                                                                           url={
+                                                                              entry
+                                                                                 ?.icon
+                                                                                 ?.url
+                                                                           }
+                                                                           options="aspect_ratio=1:1&height=80&width=80"
+                                                                           alt={
+                                                                              entry?.name ??
+                                                                              "Icon"
+                                                                           }
+                                                                        />
+                                                                     ) : (
+                                                                        <Component
+                                                                           className="text-1 mx-auto"
+                                                                           size={
+                                                                              18
+                                                                           }
+                                                                        />
+                                                                     )}
+                                                                  </span>
+                                                                  <span className="flex-grow">
+                                                                     {
+                                                                        entry.name
+                                                                     }
+                                                                  </span>
+                                                               </>
+                                                            </Combobox.Option>
+                                                         ),
+                                                      )
+                                                   )}
+                                                </Combobox.Options>
+                                             </Transition>
+                                          </div>
+                                       </Combobox>
+                                    </div>
+                                    <Listbox
+                                       value={filterOption}
+                                       onChange={handleUpdateFilter}
+                                    >
+                                       <div className="relative z-30 flex-none">
+                                          <Listbox.Button
+                                             className="text-1 flex items-center gap-1.5
+                                             p-2 text-sm font-bold hover:underline"
+                                          >
+                                             {({ value }) => (
+                                                <>
+                                                   {activeSelectItem(value) ??
+                                                      "Select a Collection"}
+                                                   <ChevronDown size={20} />
+                                                </>
+                                             )}
+                                          </Listbox.Button>
+                                          <Transition
+                                             enter="transition duration-100 ease-out"
+                                             enterFrom="transform scale-95 opacity-0"
+                                             enterTo="transform scale-100 opacity-100"
+                                             leave="transition duration-75 ease-out"
+                                             leaveFrom="transform scale-100 opacity-100"
+                                             leaveTo="transform scale-95 opacity-0"
+                                          >
+                                             <Listbox.Options
+                                                className="border-color bg-2 shadow-1 absolute right-0
+                                             z-20 w-[160px] rounded-lg border p-1.5 shadow-lg"
+                                             >
+                                                {collectionData?.docs?.map(
+                                                   (
+                                                      row: Collection,
+                                                      rowIdx: number,
+                                                   ) => (
+                                                      <Listbox.Option
+                                                         key={rowIdx}
+                                                         value={row.slug}
+                                                      >
+                                                         {({ selected }) => (
+                                                            <>
+                                                               <button
+                                                                  className="relative flex w-full items-center gap-3 truncate
+                                                               rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                               >
+                                                                  {selected ? (
+                                                                     <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
+                                                                  ) : null}
+                                                                  <Database
+                                                                     className="text-1"
+                                                                     size={14}
+                                                                  />
+                                                                  {row.name}
+                                                               </button>
+                                                            </>
+                                                         )}
+                                                      </Listbox.Option>
+                                                   ),
+                                                )}
+                                                <Listbox.Option
+                                                   key="post"
+                                                   value="post"
+                                                >
+                                                   {({ selected }) => (
+                                                      <>
+                                                         <button
+                                                            className="relative flex w-full items-center gap-3 truncate
+                                                         rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                         >
+                                                            {selected ? (
+                                                               <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
+                                                            ) : null}
+                                                            <Pencil
+                                                               className="text-1"
+                                                               size={14}
+                                                            />
+                                                            Post
+                                                         </button>
+                                                      </>
+                                                   )}
+                                                </Listbox.Option>
+                                                <Listbox.Option
+                                                   key="site"
+                                                   value="site"
+                                                >
+                                                   {({ selected }) => (
+                                                      <>
+                                                         <button
+                                                            className="relative flex w-full items-center gap-3 truncate
+                                                            rounded-md px-2 py-1 text-sm hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                         >
+                                                            {selected ? (
+                                                               <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
+                                                            ) : null}
+                                                            <Component
+                                                               className="text-1"
+                                                               size={14}
+                                                            />
+                                                            Site
+                                                         </button>
+                                                      </>
+                                                   )}
+                                                </Listbox.Option>
+                                             </Listbox.Options>
+                                          </Transition>
+                                       </div>
+                                    </Listbox>
+                                    <RadioGroup
+                                       className="flex cursor-pointer items-center gap-1"
+                                       value={itemsViewMode}
+                                       onChange={(event) =>
+                                          handleUpdateItemsViewMode(
+                                             event,
+                                             editor,
+                                             element,
+                                          )
+                                       }
+                                    >
+                                       <RadioGroup.Option value="list">
+                                          {({ checked }) => (
+                                             <Tooltip>
+                                                <TooltipTrigger>
+                                                   <div
+                                                      className={clsx(
+                                                         checked
+                                                            ? "bg-zinc-50 shadow-sm border border-color-sub shadow-1 dark:bg-dark450"
+                                                            : "",
+                                                         "flex h-7 w-7 items-center justify-center rounded-full",
+                                                      )}
+                                                   >
+                                                      <RadioGroup.Label className="sr-only">
+                                                         List View
+                                                      </RadioGroup.Label>
+                                                      <List
+                                                         className={`${
+                                                            checked
+                                                               ? "text-zinc-500 dark:text-zinc-300"
+                                                               : ""
+                                                         }`}
+                                                         size={14}
+                                                      />
+                                                   </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                   List View
+                                                </TooltipContent>
+                                             </Tooltip>
+                                          )}
+                                       </RadioGroup.Option>
+                                       <RadioGroup.Option value="grid">
+                                          {({ checked }) => (
+                                             <Tooltip>
+                                                <TooltipTrigger>
+                                                   <div
+                                                      className={clsx(
+                                                         checked
+                                                            ? "bg-zinc-50 shadow-sm border border-color-sub shadow-1 dark:bg-dark450"
+                                                            : "",
+                                                         "flex h-7 w-7 items-center justify-center rounded-full",
+                                                      )}
+                                                   >
+                                                      <RadioGroup.Label className="sr-only">
+                                                         Grid View
+                                                      </RadioGroup.Label>
+                                                      <LayoutGrid
+                                                         className={`${
+                                                            checked
+                                                               ? "text-zinc-500 dark:text-zinc-300"
+                                                               : ""
+                                                         }`}
+                                                         size={14}
+                                                      />
+                                                   </div>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                   Gird View
+                                                </TooltipContent>
+                                             </Tooltip>
+                                          )}
+                                       </RadioGroup.Option>
+                                    </RadioGroup>
+                                 </div>
+                              </div>
+                           </Dialog.Panel>
+                        </Float.Content>
+                     </div>
+                  </div>
+               </Dialog>
+            </Transition>
+         </Float>
       </div>
    );
 }
 
-const InlineEditor = ({
-   editor,
+export function BlockGroupItem({
    element,
+   children,
 }: {
-   editor: BaseEditor & ReactEditor;
-   element: GroupElement;
-}) => {
-   const inlineEditor = useMemo(() => withReact(createEditor()), []);
+   element: GroupItemElement;
+   children: ReactNode;
+}) {
+   const editor = useSlate();
 
-   const updateContentValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         content: event,
-      };
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
+   const path = ReactEditor.findPath(editor, element);
 
-   return (
-      <div>
-         <Slate
-            onChange={(e) => updateContentValue(e)}
-            editor={inlineEditor}
-            // @ts-ignore
-            initialValue={
-               element.content ?? [
-                  {
-                     type: "paragraph",
-                     children: [{ text: "" }],
-                  },
-               ]
-            }
-         >
-            {/* @ts-ignore */}
-            <Toolbar />
-            <Editable
-               placeholder="Start writing..."
-               renderElement={EditorBlocks}
-               renderLeaf={Leaf}
-               onKeyDown={(e) => onKeyDown(e, inlineEditor)}
-            />
-         </Slate>
-      </div>
-   );
-};
+   const parent = Node.parent(editor, path) as GroupElement;
 
-const SortableListItem = ({
-   editor,
-   rowId,
-   element,
-   deleteRow,
-}: {
-   editor: BaseEditor & ReactEditor;
-   rowId: string;
-   element: GroupElement;
-   deleteRow: () => void;
-}) => {
+   const itemsViewMode = parent.itemsViewMode;
+   const isMount = useIsMount();
+
+   //@ts-ignore
+   const { groupItems } = useContext(GroupDnDContext);
+
    const {
       transition,
       attributes,
@@ -889,367 +894,479 @@ const SortableListItem = ({
       setActivatorNodeRef,
       setNodeRef,
       listeners,
+      data,
    } = useSortable({
-      id: rowId,
+      id: element.id,
    });
+   /**
+    * We sort in the Slate Node since we can't
+    * update the child state from the parent
+    */
 
-   const row = element.groupItems.find((obj) => {
-      return obj.id === rowId;
-   });
+   useEffect(() => {
+      if (!isMount && !isDragging && !isSorting) {
+         return groupItems.forEach((row: any) => {
+            Transforms.moveNodes<CustomElement>(editor, {
+               //@ts-ignore
+               at: [path[0]],
+               match: (node: any) =>
+                  Editor.isBlock(editor, node) && node.id == row,
+               to: [path[0], groupItems.findIndex((item: any) => item == row)],
+            });
+         });
+      }
+   }, [data]);
 
-   const updateLabelColor = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, labelColor: event } : x
+   function updateLabelColor(event: string) {
+      return Transforms.setNodes<CustomElement>(
+         editor,
+         { labelColor: event },
+         {
+            at: path,
+         },
       );
+   }
 
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const updateLabelValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, label: event } : x
+   function updateLabelValue(event: string) {
+      Transforms.setNodes<CustomElement>(
+         editor,
+         { label: event },
+         {
+            at: path,
+         },
       );
+      return setLabelValue(event);
+   }
 
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-      setLabelValue(event);
+   const [labelValue, setLabelValue] = useState(element?.label);
 
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const [labelValue, setLabelValue] = useState(row?.label);
+   const [editMode, setEditMode] = useState(false);
+   const [modalStatus, setModalStatus] = useState(false);
 
    return (
-      <div
-         {...attributes}
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         className="bg-2 relative"
-      >
-         <div className="flex items-center justify-between gap-2 p-2.5">
-            <div className="bg-2 flex flex-grow items-center gap-3 truncate hover:underline">
-               <div
-                  className="shadow-1 border-color flex h-8 w-8 items-center
-               justify-between overflow-hidden rounded-full border-2 shadow-sm"
-               >
-                  {row?.iconUrl ? (
-                     <Image
-                        url={row?.iconUrl}
-                        options="aspect_ratio=1:1&height=80&width=80"
-                        alt={row?.name ?? "Icon"}
-                     />
-                  ) : (
-                     <Component className="text-1 mx-auto" size={18} />
-                  )}
-               </div>
-               <span className="text-1 truncate text-sm font-bold">
-                  {row?.name}
-               </span>
-            </div>
-            <div className="absolute left-2 flex items-center gap-3 opacity-0 group-hover:opacity-100">
-               <Tooltip>
-                  <TooltipTrigger> Drag to reorder</TooltipTrigger>
-                  <TooltipContent>
-                     <button
-                        type="button"
-                        aria-label="Drag to reorder"
-                        ref={setActivatorNodeRef}
-                        {...listeners}
-                        className="bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md shadow"
-                     >
-                        <GripVertical className="text-1" size={16} />
-                     </button>
-                  </TooltipContent>
-               </Tooltip>
-
-               <Tooltip>
-                  <TooltipTrigger>
-                     <button
-                        className="bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-md shadow"
-                        onClick={deleteRow}
-                        aria-label="Delete"
-                     >
-                        <Trash
-                           className="text-zinc-400 dark:text-zinc-500"
-                           size={16}
-                        />
-                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
-               </Tooltip>
-            </div>
-            <div className="flex flex-none items-center justify-center">
-               <Listbox value={row?.labelColor}>
-                  <Listbox.Button
-                     className="bg-2 hidden h-7 w-7 items-center justify-center
-                              rounded-full focus:outline-none group-hover:flex"
+      <>
+         {itemsViewMode == "list" && (
+            <div
+               {...attributes}
+               ref={setNodeRef}
+               style={
+                  {
+                     transition: transition,
+                     transform: CSS.Transform.toString(transform),
+                     pointerEvents: isSorting ? "none" : undefined,
+                     opacity: isDragging ? 0 : 1,
+                  } as React.CSSProperties /* cast because of css variable */
+               }
+               className="bg-2-sub relative"
+            >
+               <div className="hidden">{children}</div>
+               <div className="flex items-center justify-between gap-2 p-2.5">
+                  <div className="bg-2-sub flex flex-grow items-center gap-3 hover:underline">
+                     <div className="bg-3 border-color-sub shadow-1 flex h-8 w-8 items-center justify-between rounded-full border shadow-sm">
+                        {element?.iconUrl ? (
+                           <Image
+                              width={32}
+                              height={32}
+                              className="overflow-hidden rounded-full"
+                              url={element?.iconUrl}
+                              options="aspect_ratio=1:1&height=80&width=80"
+                              alt={element?.name ?? "Icon"}
+                           />
+                        ) : (
+                           <Component className="text-1 mx-auto" size={18} />
+                        )}
+                     </div>
+                     <span className="truncate text-sm font-bold">
+                        {element?.name}
+                     </span>
+                  </div>
+                  <div
+                     className="absolute bg-white dark:bg-dark450 border dark:border-zinc-600 rounded-md divide-x dark:divide-zinc-600
+                  left-2 flex items-center opacity-0 group-hover:opacity-100 shadow-sm shadow-1"
                   >
-                     <div
-                        style={{
-                           backgroundColor: row?.labelColor,
-                        }}
-                        className="h-3 w-3 rounded-full"
-                     />
-                  </Listbox.Button>
-                  <Transition
-                     enter="transition duration-100 ease-out"
-                     enterFrom="transform scale-95 opacity-0"
-                     enterTo="transform scale-100 opacity-100"
-                     leave="transition duration-75 ease-out"
-                     leaveFrom="transform scale-100 opacity-100"
-                     leaveTo="transform scale-95 opacity-0"
-                  >
-                     <Listbox.Options
-                        className="border-color text-1 bg-2 shadow-1 absolute -top-4 right-7 z-30 flex
-                              min-w-[100px] items-center justify-center gap-2 rounded-full border p-2"
-                     >
-                        {GROUP_COLORS?.map((color: string, rowIdx: number) => (
-                           <Listbox.Option
-                              className="flex items-center justify-center"
-                              key={rowIdx}
-                              value={color}
-                           >
+                     <FloatingDelayGroup delay={{ open: 1000 }}>
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <button
+                                 className="flex h-6 w-5 items-center justify-center"
+                                 onClick={() => setEditMode(!editMode)}
+                              >
+                                 {editMode ? (
+                                    <ChevronLeft size={16} />
+                                 ) : (
+                                    <MoreVertical size={14} />
+                                 )}
+                              </button>
+                           </TooltipTrigger>
+                           <TooltipContent>
+                              {editMode ? "Close" : "Edit"}
+                           </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger>
                               <button
                                  type="button"
-                                 onClick={() => updateLabelColor(color)}
-                                 className="h-3.5 w-3.5 rounded-full"
-                                 key={color}
-                                 style={{
-                                    backgroundColor: color,
-                                 }}
-                              ></button>
-                           </Listbox.Option>
-                        ))}
-                     </Listbox.Options>
-                  </Transition>
-               </Listbox>
-               <input
-                  style={{
-                     backgroundColor: `${row?.labelColor}33`,
-                  }}
-                  onChange={(event) => updateLabelValue(event.target.value)}
-                  value={labelValue}
-                  type="text"
-                  className="h-6 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
-               />
+                                 aria-label="Drag to reorder"
+                                 ref={setActivatorNodeRef}
+                                 {...listeners}
+                                 className="cursor-grab h-6 w-7 items-center flex justify-center"
+                              >
+                                 <Move className="text-1" size={12} />
+                              </button>
+                           </TooltipTrigger>
+                           <TooltipContent>Drag to reorder</TooltipContent>
+                        </Tooltip>
+                     </FloatingDelayGroup>
+                  </div>
+                  {editMode && (
+                     <div className="group-hover:flex hidden gap-2 flex-none items-center justify-center">
+                        <button
+                           className="flex h-5 w-5 items-center justify-center"
+                           onClick={() => setModalStatus(true)}
+                           aria-label="Add content"
+                        >
+                           <Pencil className="w-3.5 h-3.5 hover:text-blue-500" />
+                        </button>
+                        <button
+                           className="flex h-5 w-5 items-center justify-center"
+                           onClick={() => {
+                              Transforms.delete(editor, {
+                                 at: path,
+                              });
+                           }}
+                           aria-label="Delete"
+                        >
+                           <Trash className="w-3.5 h-3.5 hover:text-red-400" />
+                        </button>
+                        <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center">
+                           <Listbox value={element?.labelColor}>
+                              <Listbox.Button className="hidden h-3 w-3 items-center justify-center rounded-full focus:outline-none group-hover:flex absolute right-1 top-1">
+                                 <div
+                                    style={{
+                                       backgroundColor: element?.labelColor,
+                                    }}
+                                    className="h-3 w-3 rounded-full"
+                                 />
+                              </Listbox.Button>
+                              <Transition
+                                 enter="transition duration-100 ease-out"
+                                 enterFrom="transform scale-95 opacity-0"
+                                 enterTo="transform scale-100 opacity-100"
+                                 leave="transition duration-75 ease-out"
+                                 leaveFrom="transform scale-100 opacity-100"
+                                 leaveTo="transform scale-95 opacity-0"
+                              >
+                                 <Listbox.Options
+                                    className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
+                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
+                                 >
+                                    {GROUP_COLORS?.map(
+                                       (color: string, rowIdx: number) => (
+                                          <Listbox.Option
+                                             className="flex items-center justify-center"
+                                             key={rowIdx}
+                                             value={color}
+                                          >
+                                             <button
+                                                type="button"
+                                                onClick={() =>
+                                                   updateLabelColor(color)
+                                                }
+                                                className="h-3.5 w-3.5 rounded-full"
+                                                key={color}
+                                                style={{
+                                                   backgroundColor: color,
+                                                }}
+                                             ></button>
+                                          </Listbox.Option>
+                                       ),
+                                    )}
+                                 </Listbox.Options>
+                              </Transition>
+                           </Listbox>
+                           <input
+                              style={{
+                                 backgroundColor: `${element?.labelColor}33`,
+                              }}
+                              onChange={(event) =>
+                                 updateLabelValue(event.target.value)
+                              }
+                              value={labelValue}
+                              type="text"
+                              className="h-6 w-20 hidden group-hover:flex items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           />
+                        </div>
+                     </div>
+                  )}
+                  {element.groupContent && !editMode && (
+                     <button
+                        className="flex group/doc h-7 w-7 items-center justify-center"
+                        onClick={() => setModalStatus(true)}
+                        aria-label="Add content"
+                     >
+                        <FileText
+                           className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
+                           size={14}
+                        />
+                     </button>
+                  )}
+                  {element.label && !editMode && (
+                     <div className="flex items-center justify-center">
+                        <div
+                           className="flex h-6 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           style={{
+                              backgroundColor: `${element?.labelColor}33`,
+                           }}
+                        >
+                           {element.label}
+                        </div>
+                     </div>
+                  )}
+               </div>
             </div>
-         </div>
-      </div>
-   );
-};
-
-const SortableGridItem = ({
-   rowId,
-   element,
-   deleteRow,
-   editor,
-}: {
-   rowId: string;
-   editor: BaseEditor & ReactEditor;
-   element: GroupElement;
-   deleteRow: () => void;
-}) => {
-   const {
-      transition,
-      attributes,
-      transform,
-      isSorting,
-      isDragging,
-      setActivatorNodeRef,
-      setNodeRef,
-      listeners,
-   } = useSortable({
-      id: rowId,
-   });
-
-   const row = element.groupItems.find((obj) => {
-      return obj.id === rowId;
-   });
-
-   const updateLabelColor = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, labelColor: event } : x
-      );
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const updateLabelValue = (event: any) => {
-      const path = ReactEditor.findPath(editor, element);
-      const currentGroupItems = element.groupItems;
-      const groupItems = currentGroupItems.map((x) =>
-         x.id === rowId ? { ...x, label: event } : x
-      );
-
-      const newProperties: Partial<CustomElement> = {
-         ...element,
-         groupItems,
-      };
-      setLabelValue(event);
-
-      return Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-   };
-
-   const [labelValue, setLabelValue] = useState(row?.label);
-
-   return (
-      <div
-         {...attributes}
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         className="bg-2 border-color shadow-1 relative rounded-lg border p-3 shadow-sm"
-      >
-         <div
-            className="absolute left-0 top-0 flex w-full select-none 
-         items-center justify-between gap-1 p-1 opacity-0 group-hover:opacity-100"
-         >
-            <Tooltip>
-               <TooltipTrigger>
+         )}
+         {itemsViewMode == "grid" && (
+            <div
+               contentEditable={false}
+               {...attributes}
+               ref={setNodeRef}
+               style={
+                  {
+                     transition: transition,
+                     transform: CSS.Transform.toString(transform),
+                     pointerEvents: isSorting ? "none" : undefined,
+                     opacity: isDragging ? 0 : 1,
+                  } as React.CSSProperties /* cast because of css variable */
+               }
+               className="bg-2-sub focus:outline-none flex items-center justify-center border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+            >
+               {element.groupContent && !editMode && (
                   <button
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 items-center justify-center rounded-full hover:shadow"
-                     onClick={deleteRow}
-                     aria-label="Delete"
+                     className="flex h-7 w-7 absolute group/doc right-1.5 top-1.5 z-20 items-center justify-center"
+                     onClick={() => setModalStatus(true)}
+                     aria-label="Add content"
                   >
-                     <Trash
-                        className="text-zinc-400 dark:text-zinc-500"
-                        size={16}
+                     <FileText
+                        className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
+                        size={14}
                      />
                   </button>
-               </TooltipTrigger>
-               <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-               <TooltipTrigger>
-                  <button
-                     type="button"
-                     aria-label="Drag to reorder"
-                     ref={setActivatorNodeRef}
-                     {...listeners}
-                     className="hover:bg-3 shadow-1 flex h-7 w-7 cursor-grab items-center justify-center rounded-md hover:shadow"
+               )}
+               <div className="absolute left-0 top-0 h-full flex w-full select-none justify-between gap-1 p-1 opacity-0 group-hover:opacity-100">
+                  <FloatingDelayGroup delay={{ open: 1000 }}>
+                     <div
+                        className={clsx(
+                           editMode ? "justify-end" : "justify-between",
+                           "absolute inset-y-0 left-0 flex flex-col h-full pb-1",
+                        )}
+                     >
+                        {!editMode && (
+                           <Tooltip placement="left-start">
+                              <TooltipTrigger
+                                 type="button"
+                                 aria-label="Drag to reorder"
+                                 ref={setActivatorNodeRef}
+                                 {...listeners}
+                                 className="flex h-7 w-7 pt-1.5 pl-1.5 cursor-grab items-center justify-center rounded-md"
+                              >
+                                 <Move className="text-1" size={16} />
+                              </TooltipTrigger>
+                              <TooltipContent>Drag to reorder</TooltipContent>
+                           </Tooltip>
+                        )}
+                        {editMode && (
+                           <div
+                              className="rounded-md border divide-y divide-color-sub border-color flex items-center flex-col 
+                              dark:border-zinc-700 dark:bg-dark400 bg-white mb-[1px] ml-1.5 w-6"
+                           >
+                              <Tooltip placement="right-start">
+                                 <TooltipTrigger
+                                    type="button"
+                                    aria-label="Delete"
+                                    onClick={() => {
+                                       Transforms.delete(editor, {
+                                          at: path,
+                                       });
+                                    }}
+                                    className="flex group/delete items-center justify-center w-full h-6"
+                                 >
+                                    <Trash className="w-2.5 h-2.5 group-hover/delete:text-red-400" />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Delete</TooltipContent>
+                              </Tooltip>
+                              <Tooltip placement="right-start">
+                                 <TooltipTrigger
+                                    type="button"
+                                    onClick={() => setModalStatus(true)}
+                                    aria-label="Add content"
+                                    className="flex group/edit items-center justify-center w-full h-6"
+                                 >
+                                    <Pencil className="w-2.5 h-2.5 group-hover/edit:text-blue-500" />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Add content</TooltipContent>
+                              </Tooltip>
+                           </div>
+                        )}
+                        <button
+                           type="button"
+                           onClick={() => setEditMode(!editMode)}
+                           className="flex px-2 h-6 bg-2-sub pl-2.5 items-center justify-center"
+                        >
+                           {editMode ? (
+                              <X size={14} />
+                           ) : (
+                              <MoreHorizontal size={16} />
+                           )}
+                        </button>
+                     </div>
+                  </FloatingDelayGroup>
+               </div>
+               <div className="block truncate">
+                  {/* Label Editor */}
+                  {editMode && (
+                     <>
+                        <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center mb-2">
+                           <input
+                              style={{
+                                 backgroundColor: `${element?.labelColor}33`,
+                              }}
+                              onChange={(event) =>
+                                 updateLabelValue(event.target.value)
+                              }
+                              value={labelValue}
+                              type="text"
+                              className="h-5 w-20 rounded-full p-0 focus:ring-transparent focus:outline-none border-0 text-center text-[10px] font-bold"
+                           />
+                           <Listbox value={element?.labelColor}>
+                              <Float
+                                 as={Fragment}
+                                 enter="transition duration-100 ease-out"
+                                 enterFrom="transform scale-95 opacity-0"
+                                 enterTo="transform scale-100 opacity-100"
+                                 leave="transition duration-75 ease-out"
+                                 leaveFrom="transform scale-100 opacity-100"
+                                 leaveTo="transform scale-95 opacity-0"
+                                 offset={2}
+                                 placement="bottom"
+                                 portal
+                              >
+                                 <Listbox.Button
+                                    style={{
+                                       backgroundColor: element?.labelColor,
+                                    }}
+                                    className="flex items-center absolute h-3 w-3 rounded-full top-1 right-1 justify-center focus:outline-none"
+                                 />
+                                 <Listbox.Options className="border-color-sub text-1 bg-3-sub shadow-1 grid min-w-[100px] grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm focus:outline-none">
+                                    {GROUP_COLORS?.map(
+                                       (color: string, rowIdx: number) => (
+                                          <Listbox.Option
+                                             className="flex items-center justify-center"
+                                             key={rowIdx}
+                                             value={color}
+                                          >
+                                             <button
+                                                type="button"
+                                                onClick={() =>
+                                                   updateLabelColor(color)
+                                                }
+                                                className="h-3.5 w-3.5 rounded-full"
+                                                key={color}
+                                                style={{
+                                                   backgroundColor: color,
+                                                }}
+                                             ></button>
+                                          </Listbox.Option>
+                                       ),
+                                    )}
+                                 </Listbox.Options>
+                              </Float>
+                           </Listbox>
+                        </div>
+                     </>
+                  )}
+                  {element.label && !editMode && (
+                     <div className="flex items-center justify-center pb-2">
+                        <div
+                           className="flex h-5 w-20 items-center justify-center rounded-full border-0 text-center text-[10px] font-bold"
+                           style={{
+                              backgroundColor: `${element?.labelColor}33`,
+                           }}
+                        >
+                           {element.label}
+                        </div>
+                     </div>
+                  )}
+                  <div
+                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
+                  items-center overflow-hidden rounded-full border shadow-sm"
                   >
-                     <Move className="text-1" size={16} />
-                  </button>
-               </TooltipTrigger>
-               <TooltipContent>Drag to reorder</TooltipContent>
-            </Tooltip>
-         </div>
-         <div className="block truncate">
-            <div className="relative z-20 mx-auto flex w-20 items-center justify-center pt-0.5">
-               <input
-                  style={{
-                     backgroundColor: `${row?.labelColor}33`,
-                  }}
-                  onChange={(event) => updateLabelValue(event.target.value)}
-                  value={labelValue}
-                  type="text"
-                  className="h-5 w-20 rounded-full border-0 text-center text-[10px] font-bold uppercase"
-               />
+                     {element?.iconUrl ? (
+                        <Image
+                           url={element?.iconUrl}
+                           options="aspect_ratio=1:1&height=120&width=120"
+                           alt={element?.name ?? "Icon"}
+                        />
+                     ) : (
+                        <Component className="text-1 mx-auto" size={18} />
+                     )}
+                  </div>
+                  <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
+                     {element?.name}
+                  </div>
+               </div>
+            </div>
+         )}
+         <Modal
+            onClose={() => {
+               setModalStatus(false);
+            }}
+            unmount={false}
+            show={modalStatus}
+         >
+            <div className="flex group justify-end pb-2 pr-1">
+               <button
+                  className="flex items-center gap-1"
+                  onClick={() => setModalStatus(false)}
+               >
+                  <span className="text-zinc-200 dark:text-zinc-400 group-hover:underline text-xs">
+                     Close
+                  </span>
+                  <X size={16} className="text-white dark:text-zinc-500" />
+               </button>
             </div>
             <div
-               className="shadow-1 border-color mx-auto mt-2 flex h-[60px] w-[60px]
-               items-center overflow-hidden rounded-full border-2 shadow"
+               className="bg-3 max-tablet:min-w-[100vw] max-h-[70vh] min-h-[200px] transform tablet:rounded-lg relative
+               text-left align-middle transition-all tablet:w-[760px] no-scrollbar"
             >
-               {row?.iconUrl ? (
-                  <Image
-                     url={row?.iconUrl}
-                     options="aspect_ratio=1:1&height=120&width=120"
-                     alt={row?.name ?? "Icon"}
+               <div className="p-4 flex items-center gap-3">
+                  <div className="flex items-center flex-none gap-1.5">
+                     <span className="shadow-1 border-color-sub flex h-7 w-7 items-center overflow-hidden rounded-full border shadow-sm">
+                        {element?.iconUrl ? (
+                           <Image
+                              url={element?.iconUrl}
+                              options="aspect_ratio=1:1&height=120&width=120"
+                              alt={element?.name ?? "Icon"}
+                           />
+                        ) : (
+                           <Component className="text-1 mx-auto" size={18} />
+                        )}
+                     </span>
+                     <span className="font-bold font-header text-lg">
+                        {element.name}
+                     </span>
+                  </div>
+                  <span className="bg-zinc-100 dark:bg-dark350 rounded-full h-0.5 w-full flex-grow" />
+               </div>
+               <div className="p-4 pb-1.5 pt-0">
+                  <NestedEditor
+                     field="groupContent"
+                     element={element}
+                     editor={editor}
+                     readOnly={editMode ? false : true}
                   />
-               ) : (
-                  <Component className="text-1 mx-auto" size={18} />
-               )}
+               </div>
             </div>
-            <div className="text-1 truncate pt-1 text-center text-sm font-bold">
-               {row?.name}
-            </div>
-         </div>
-         <div className="absolute bottom-2 left-1 hidden group-hover:block">
-            <Listbox value={row?.labelColor}>
-               <Listbox.Button
-                  className="bg-2 flex h-7 w-7 items-center 
-                              justify-center rounded-full focus:outline-none"
-               >
-                  <div
-                     style={{
-                        backgroundColor: row?.labelColor,
-                     }}
-                     className="h-3 w-3 rounded-full"
-                  />
-               </Listbox.Button>
-               <Transition
-                  enter="transition duration-100 ease-out"
-                  enterFrom="transform scale-95 opacity-0"
-                  enterTo="transform scale-100 opacity-100"
-                  leave="transition duration-75 ease-out"
-                  leaveFrom="transform scale-100 opacity-100"
-                  leaveTo="transform scale-95 opacity-0"
-               >
-                  <Listbox.Options
-                     className="border-color text-1 bg-2 shadow-1 absolute -top-20 left-2 z-30 grid
-                              min-w-[100px] grid-cols-4 items-center justify-center gap-2 rounded-lg border p-2"
-                  >
-                     {GROUP_COLORS?.map((color: string, rowIdx: number) => (
-                        <Listbox.Option
-                           className="flex items-center justify-center"
-                           key={rowIdx}
-                           value={color}
-                        >
-                           <button
-                              type="button"
-                              onClick={() => updateLabelColor(color)}
-                              className="h-3.5 w-3.5 rounded-full"
-                              key={color}
-                              style={{
-                                 backgroundColor: color,
-                              }}
-                           ></button>
-                        </Listbox.Option>
-                     ))}
-                  </Listbox.Options>
-               </Transition>
-            </Listbox>
-         </div>
-      </div>
+         </Modal>
+      </>
    );
-};
+}

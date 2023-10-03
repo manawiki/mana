@@ -121,7 +121,7 @@ const Footer = () => {
                      </svg>
                   </a>
                   <a
-                     href="https://github.com/manawiki/core"
+                     href="https://github.com/manawiki"
                      rel="noreferrer"
                      target="_blank"
                      className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"

@@ -4,7 +4,7 @@
 
 ```
 import { useLoaderData } from "@remix-run/react";
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { EntryHeader } from "~/routes/$siteId.collections+/$collectionId.$entryId/EntryHeader";
 import {
    EntryContent,
@@ -17,7 +17,7 @@ import {
 
 export { meta };
 
-export async function loader({ context: { payload }, params }: LoaderArgs) {
+export async function loader({ context: { payload }, params }: LoaderFunctionArgs) {
    // Get custom data here
    const entryDefault = await getDefaultEntryData({ payload, params });
    return json({ entryDefault });

@@ -24,11 +24,7 @@ const months = [
    "December",
 ];
 
-const MonthPicker: React.FC<MonthPickerProps> = ({
-   value,
-   onChange,
-   disabled,
-}) => {
+export function MonthPicker({ value, onChange, disabled }: MonthPickerProps) {
    const options = useMemo(
       () =>
          months.map(
@@ -51,6 +47,4 @@ const MonthPicker: React.FC<MonthPickerProps> = ({
          disabled={disabled}
       />
    );
-};
-
-export default MonthPicker;
+}

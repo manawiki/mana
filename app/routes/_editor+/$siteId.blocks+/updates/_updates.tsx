@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import dt from "date-and-time";
@@ -18,14 +18,14 @@ import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/components/H2";
 import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
-import { EditorBlocks } from "~/routes/_editor+/components/EditorBlocks";
-import { Leaf } from "~/routes/_editor+/components/Leaf";
-import { onKeyDown } from "~/routes/_editor+/functions/utils";
-import { withLinkify } from "~/routes/_editor+/plugins/link/withLinkify";
+import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
+import { Leaf } from "~/routes/_editor+/core/components/Leaf";
+import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
+import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils";
 
-import { Toolbar } from "../../components/Toolbar";
-import type { UpdatesElement, CustomElement } from "../../functions/types";
+import { Toolbar } from "../../core/components/Toolbar";
+import type { UpdatesElement, CustomElement } from "../../core/types";
 
 type Props = {
    element: UpdatesElement;
@@ -78,8 +78,8 @@ export function BlockUpdates({ element }: Props) {
       <section>
          <>
             <H2Default text="Updates" />
-            <div className="divide-color border-color bg-2 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
-               <div className="flex items-center justify-between gap-2 py-1 pr-2.5">
+            <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
+               <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
                      {Intl.DateTimeFormat("en-US", {
                         month: "short",
@@ -141,7 +141,7 @@ export function BlockUpdates({ element }: Props) {
                {updateResults?.map((row) => (
                   <section
                      key={row.id}
-                     className="flex items-start gap-2 even:bg-white dark:even:bg-neutral-800/50"
+                     className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
                   >
                      <time
                         className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
@@ -213,7 +213,7 @@ export const action = async ({
    context: { payload, user },
    request,
    params,
-}: LoaderArgs) => {
+}: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
    const { intent } = await zx.parseForm(request, {

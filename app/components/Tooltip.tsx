@@ -24,12 +24,14 @@ interface TooltipOptions {
    initialOpen?: boolean;
    placement?: Placement;
    open?: boolean;
+   setDelay?: number;
    onOpenChange?: (open: boolean) => void;
 }
 
 export function useTooltip({
    initialOpen = false,
    placement = "top",
+   setDelay = 0,
    open: controlledOpen,
    onOpenChange: setControlledOpen,
 }: TooltipOptions = {}) {
@@ -38,7 +40,7 @@ export function useTooltip({
    const open = controlledOpen ?? uncontrolledOpen;
    const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
-   const { delay } = useDelayGroupContext();
+   const { delay: delayGroup } = useDelayGroupContext();
 
    const data = useFloating({
       placement,
@@ -53,7 +55,7 @@ export function useTooltip({
    const hover = useHover(context, {
       move: false,
       enabled: controlledOpen == null,
-      delay,
+      delay: delayGroup != 0 ? delayGroup : setDelay,
    });
    const focus = useFocus(context, {
       enabled: controlledOpen == null,
@@ -70,7 +72,7 @@ export function useTooltip({
          ...interactions,
          ...data,
       }),
-      [open, setOpen, interactions, data]
+      [open, setOpen, interactions, data],
    );
 }
 
@@ -120,7 +122,7 @@ export const TooltipTrigger = React.forwardRef<
             ...props,
             ...children.props,
             "data-state": state.open ? "open" : "closed",
-         })
+         }),
       );
    }
 
@@ -169,7 +171,7 @@ export const TooltipContent = React.forwardRef<
    return (
       <FloatingPortal>
          <div
-            className="shadow-1 relative z-50 rounded-lg border bg-white px-3 py-2 text-xs font-bold shadow dark:border-zinc-700/90 dark:bg-zinc-900"
+            className="dark:bg-dark400 relative z-50 rounded-md border bg-white px-2 py-1 text-[10px] font-bold shadow dark:border-zinc-700 dark:shadow-zinc-800"
             ref={ref}
             style={{
                ...state.floatingStyles,

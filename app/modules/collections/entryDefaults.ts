@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/mongoose/types";
@@ -161,7 +161,7 @@ export const getCustomEntryData = async ({
    );
 };
 
-export const meta: V2_MetaFunction = ({ matches, data }) => {
+export const meta: MetaFunction = ({ matches, data }) => {
    const siteName = matches.find(
       ({ id }) => id === "routes/_site+/$siteId+/_layout"
    )?.data?.site?.name;

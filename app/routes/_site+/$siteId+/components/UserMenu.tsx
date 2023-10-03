@@ -1,7 +1,6 @@
 import { Fragment, useState } from "react";
 
 import { Menu, Transition, Switch } from "@headlessui/react";
-import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import {
@@ -9,6 +8,8 @@ import {
    Settings,
    User as UserLucideIcon,
    Loader2,
+   Moon,
+   Sun,
 } from "lucide-react";
 import { Drawer } from "vaul";
 
@@ -43,7 +44,7 @@ export const UserMenu = () => {
                      leaveTo="transform opacity-0 scale-95"
                   >
                      <Menu.Items
-                        className="absolute right-0 z-10 mt-1 w-full min-w-[240px]
+                        className="absolute right-0 z-10 mt-1 w-full min-w-[220px]
              max-w-md origin-top-right transform text-sm transition-all"
                      >
                         <div className="border-color bg-3 shadow-1 rounded-lg border font-semibold shadow">
@@ -103,8 +104,8 @@ export const UserMenu = () => {
                      <div className="bg-3 h-full w-60 flex-none">
                         <ul className="p-4">
                            <li
-                              className="flex items-center gap-2 rounded-lg bg-zinc-200/40 
-                                 px-3 py-3 text-sm font-bold dark:bg-bg4Dark"
+                              className="dark:bg-dark400 flex items-center gap-2 rounded-lg 
+                                 bg-zinc-200/40 px-3 py-3 text-sm font-bold"
                            >
                               <Settings size={16} className="text-zinc-400" />
                               Settings
@@ -193,7 +194,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                                                             method: "delete",
                                                             action:
                                                                "/auth-actions",
-                                                         }
+                                                         },
                                                       )
                                                    }
                                                    className="h-10 w-full rounded-md bg-red-500 text-sm font-bold text-white
@@ -302,7 +303,7 @@ const UserDeleteSection = () => {
                            {
                               method: "delete",
                               action: "/auth-actions",
-                           }
+                           },
                         )
                      }
                      className="h-10 w-full rounded-md bg-red-500 text-sm font-bold text-white
@@ -326,7 +327,7 @@ export const ThemeToggleMobile = () => {
 
    const toggleTheme = () => {
       setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT
+         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
       );
       setEnabled(!enabled);
    };
@@ -348,19 +349,19 @@ export const ThemeToggleMobile = () => {
                      theme == Theme.DARK
                         ? "translate-x-8 bg-white"
                         : "translate-x-1.5 bg-zinc-400",
-                     "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition"
+                     "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
                   )}
                />
                <div
                   className={clsx(
                      theme == Theme.DARK ? "left-2" : "right-1.5",
-                     "absolute flex  items-center justify-center"
+                     "absolute flex  items-center justify-center",
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <MoonIcon className="h-3 w-3 text-zinc-400" />
+                     <Moon className="h-3 w-3 text-zinc-400" />
                   ) : (
-                     <SunIcon className="h-4 w-4 text-zinc-500" />
+                     <Sun className="h-4 w-4 text-zinc-500" />
                   )}
                </div>
             </Switch>
@@ -374,7 +375,7 @@ const ThemeToggleDesktop = () => {
 
    const toggleTheme = () => {
       setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT
+         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
       );
       setEnabled(!enabled);
    };
@@ -398,19 +399,19 @@ const ThemeToggleDesktop = () => {
                      theme == Theme.DARK
                         ? "translate-x-[24px] bg-white"
                         : "translate-x-1 bg-zinc-500",
-                     "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition"
+                     "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
                   )}
                />
                <div
                   className={clsx(
                      theme == Theme.DARK ? "left-1.5" : "right-1",
-                     "absolute flex  items-center justify-center"
+                     "absolute flex  items-center justify-center",
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <MoonIcon className="h-2.5 w-2.5 text-zinc-400" />
+                     <Moon className="h-2.5 w-2.5 text-zinc-400" />
                   ) : (
-                     <SunIcon className="h-[13px] w-[13px] text-zinc-500" />
+                     <Sun className="h-[13px] w-[13px] text-zinc-500" />
                   )}
                </div>
             </Switch>

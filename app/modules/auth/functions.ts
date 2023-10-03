@@ -17,7 +17,7 @@ export const useIsStaffOrSiteAdminOrStaffOrOwner = () => {
    const { user } = useRouteLoaderData("root") as { user: User };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const site = useMatches()?.[1]?.data?.site as Site;
+   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
 
    //always false if not logged in
    if (!user || !user?.id) return false;

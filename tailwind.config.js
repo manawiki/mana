@@ -12,7 +12,10 @@ module.exports = {
             bg1Dark: "#212324",
             bg2Dark: "#282A2B",
             bg3Dark: "#2E3132",
-            bg4Dark: "#3D4042",
+            dark350: "#333537",
+            dark400: "#37393B",
+            dark450: "#3F4144",
+            dark500: "#4F5056",
          },
          fontFamily: {
             body: [

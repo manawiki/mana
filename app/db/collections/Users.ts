@@ -38,7 +38,8 @@ export const Users: CollectionConfig = {
          },
       },
       forgotPassword: {
-         generateEmailHTML: ({ token, user }) => {
+         generateEmailHTML: (prop) => {
+            const  token  = prop?.token;
             // Use the token provided to allow your user to verify their account
             const url =
                serverEnv == "development"

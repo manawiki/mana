@@ -2,7 +2,6 @@
 /// <reference types="@remix-run/node/globals" />
 
 import type { ServerBuild } from "@remix-run/node";
-import type { Response } from "express";
 import type { Payload } from "payload";
 
 import type { User } from "payload/generated-types";
@@ -20,19 +19,19 @@ declare module "@remix-run/node" {
 }
 
 //overload the request handler to include the payload and user objects
-interface PayloadRequest extends Express.Request {
+interface PayloadRequest extends Request {
    payload: Payload;
    user?: User;
 }
 
 type GetLoadContextFunction = (
    req: PayloadRequest,
-   res: express.Response
+   res: Response
 ) => Promise<AppLoadContext> | AppLoadContext;
 type RequestHandler = (
-   req: express.Request,
-   res: express.Response,
-   next: express.NextFunction
+   req: Request,
+   res: Response,
+   next: NextFunction
 ) => Promise<void>;
 
 declare module "@remix-run/express" {
