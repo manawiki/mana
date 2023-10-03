@@ -216,16 +216,16 @@ export function AppWithProviders() {
       </ThemeProvider>
    );
 }
-let devTools = null;
+
+// Toggle Remix Dev Tools
+let AppExport = withMetronome(AppWithProviders);
 
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
-   devTools = withDevTools;
+   AppExport = withDevTools(AppExport);
 }
 
-export default devTools
-   ? devTools(AppWithProviders)
-   : withMetronome(AppWithProviders);
+export default AppExport;
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
