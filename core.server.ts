@@ -177,9 +177,34 @@ function createProductionRequestHandler(): RequestHandler {
 
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {
+   // Serverside RDT Remix Dev Tools
+   const { withServerDevTools } = require("remix-development-tools/server");
+   const devToolsConfig = {
+      //        // Sets the ws port for the dev tools to communicate with the client dev tools
+      wsPort: 3002,
+      //  // allows you to not communicate at all with the client dev tools
+      //  withWebsocket: boolean;
+      //  // allows you to not log anything to the console
+      //  silent: boolean;
+      logs: {
+         // allows you to not log cookie logs to the console
+         cookies: true,
+         // allows you to not log defer logs to the console
+         defer: true,
+         // allows you to not log action logs to the console
+         actions: true,
+         // allows you to not log loader logs to the console
+         loaders: true,
+         // allows you to not log cache logs to the console
+         cache: true,
+         // allows you to not log when cache is cleared to the console
+         siteClear: true,
+      },
+   };
+
    async function handleServerUpdate() {
-      // 1. re-import the server build
-      build = await reimportServer();
+      // wrap the build with the dev tools
+      build = withServerDevTools(await reimportServer(), devToolsConfig);
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {
