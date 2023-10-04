@@ -11,8 +11,7 @@ import { z } from "zod";
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
 import { LoggedIn, LoggedOut } from "~/modules/auth";
-import { BlockType, CustomElement } from "~/routes/_editor+/core/types";
-import { initialValue } from "~/routes/_editor+/core/utils";
+import { BlockType } from "~/routes/_editor+/core/types";
 import {
    assertIsPost,
    isAdding,
@@ -31,9 +30,9 @@ const SiteSchema = z.object({
       .refine(
          (file) =>
             ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-               file?.type
+               file?.type,
             ),
-         "Only .jpg, .jpeg, .png and .webp formats are supported."
+         "Only .jpg, .jpeg, .png and .webp formats are supported.",
       ),
 });
 
@@ -263,9 +262,11 @@ export const action: ActionFunction = async ({
             collection: "sites",
             data: {
                name: siteName,
+               //@ts-expect-error
                owner: userId,
                id: siteId,
                slug: siteId,
+               //@ts-expect-error
                icon: icon.id,
                type: "core",
             },
@@ -276,12 +277,12 @@ export const action: ActionFunction = async ({
          const initialValue = [
             {
                id: nanoid(),
-               type: BlockType.Paragraph,
+               type: BlockType.Updates,
                children: [{ text: "" }],
             },
             {
                id: nanoid(),
-               type: BlockType.Updates,
+               type: BlockType.Paragraph,
                children: [{ text: "" }],
             },
          ];
@@ -290,6 +291,7 @@ export const action: ActionFunction = async ({
             collection: "homeContents",
             data: {
                content: initialValue,
+               //@ts-expect-error
                site: siteId,
             },
             overrideAccess: false,
@@ -299,7 +301,7 @@ export const action: ActionFunction = async ({
          //We need to get the current sites of the user, then prepare the new sites array
          const userCurrentSites = user?.sites || [];
          const sites = userCurrentSites.map((site) =>
-            typeof site === "string" ? site : site?.id
+            typeof site === "string" ? site : site?.id,
          );
 
          //Finally we update the user with the new site id
@@ -323,7 +325,7 @@ export const action: ActionFunction = async ({
    if (issues.hasIssues()) {
       return json<FormResponse>(
          { serverIssues: issues.toArray() },
-         { status: 400 }
+         { status: 400 },
       );
    }
    // Last resort error message

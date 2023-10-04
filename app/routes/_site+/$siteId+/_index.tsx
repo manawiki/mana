@@ -64,7 +64,6 @@ export async function loader({
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
-
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
@@ -93,6 +92,7 @@ export default function SiteIndexMain() {
                      <Suspense fallback="Loading...">
                         <Await resolve={home}>
                            <ManaEditor
+                              key={siteId}
                               collectionSlug="homeContents"
                               fetcher={fetcher}
                               siteId={siteId}
@@ -112,11 +112,13 @@ export default function SiteIndexMain() {
                </div>
             </Float>
          ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="relative min-h-screen">
-                  <EditorView data={home} />
-               </div>
-            </main>
+            home && (
+               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
+                  <div className="relative min-h-screen">
+                     <EditorView data={home} />
+                  </div>
+               </main>
+            )
          )}
       </>
    );
@@ -293,7 +295,7 @@ async function fetchHomeContent({
       },
    });
 
-   const home = docs[0].content as HomeContent["content"];
+   const home = docs[0]?.content as HomeContent["content"];
 
    return { home, isChanged: false };
 }
