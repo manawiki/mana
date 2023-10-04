@@ -241,20 +241,20 @@ function createDevRequestHandler(): RequestHandler {
          next(error);
       }
    };
+}
 
-   // CJS require cache busting
-   /**
-    * @type {() => Promise<ServerBuild>}
-    */
-   async function reimportServer() {
-      // 1. manually remove the server build from the require cache
-      Object.keys(require.cache).forEach((key) => {
-         if (key.startsWith(BUILD_PATH)) {
-            delete require.cache[key];
-         }
-      });
+// CJS require cache busting
+/**
+ * @type {() => Promise<ServerBuild>}
+ */
+async function reimportServer() {
+   // 1. manually remove the server build from the require cache
+   Object.keys(require.cache).forEach((key) => {
+      if (key.startsWith(BUILD_PATH)) {
+         delete require.cache[key];
+      }
+   });
 
-      // 2. re-import the server build
-      return require(BUILD_PATH);
-   }
+   // 2. re-import the server build
+   return require(BUILD_PATH);
 }
