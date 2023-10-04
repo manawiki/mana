@@ -217,12 +217,19 @@ export function AppWithProviders() {
    );
 }
 
-// Toggle Remix Dev Tools
 let AppExport = withMetronome(AppWithProviders);
+
+// Toggle Remix Dev Tools
+const devToolsConfig = {
+   // requireUrlFlag: true,
+   // plugins: [],
+   // wsPort: 8080
+};
 
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
-   AppExport = withDevTools(AppExport);
+
+   AppExport = withDevTools(AppExport, devToolsConfig);
 }
 
 export default AppExport;
