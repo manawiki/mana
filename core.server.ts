@@ -181,11 +181,11 @@ function createDevRequestHandler(): RequestHandler {
    const { withServerDevTools } = require("remix-development-tools/server");
    const devToolsConfig = {
       //        // Sets the ws port for the dev tools to communicate with the client dev tools
-      //  wsPort?: number;
+      wsPort: 3002,
       //  // allows you to not communicate at all with the client dev tools
-      //  withWebsocket?: boolean;
+      //  withWebsocket: boolean;
       //  // allows you to not log anything to the console
-      //  silent?: boolean;
+      //  silent: boolean;
       logs: {
          // allows you to not log cookie logs to the console
          cookies: true,
