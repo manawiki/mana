@@ -13,7 +13,7 @@ export const PostDeleteModal = ({
    setDeleteOpen: any;
 }) => {
    const fetcher = useFetcher();
-   const deleting = isAdding(fetcher, "delete");
+   const deleting = isAdding(fetcher, "deletePost");
    const { t } = useTranslation("post");
 
    return (

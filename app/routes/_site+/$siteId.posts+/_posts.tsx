@@ -113,7 +113,7 @@ export default function PostsAll() {
                   <Form method="post">
                      <button
                         className="flex py-2.5 items-center text-xs font-bold gap-2 dark:border-zinc-600 dark:hover:border-zinc-500
-                        border border-zinc-200 rounded-full hover:border-zinc-300 bg-zinc-50 dark:bg-dark450 px-4"
+                        border border-zinc-200 rounded-full hover:border-zinc-300 bg-zinc-50 dark:bg-dark450 px-4 shadow-sm shadow-1"
                         name="intent"
                         value="createPost"
                         type="submit"
@@ -349,7 +349,7 @@ export default function PostsAll() {
             </div>
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
                {publishedPosts && publishedPosts?.docs?.length > 0 ? (
-                  publishedPosts.docs.map((post) => (
+                  publishedPosts.docs.map((post: any) => (
                      <FeedItem key={post.id} siteId={siteId} post={post} />
                   ))
                ) : (
