@@ -1,4 +1,4 @@
-import { lazy, useEffect } from "react";
+import { useEffect } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -19,8 +19,8 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-
 import rdtStylesheet from "remix-development-tools/index.css";
+
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
