@@ -1,0 +1,42 @@
+diff --git a/node_modules/@remix-run/dev/dist/compiler/js/compiler.js b/node_modules/@remix-run/dev/dist/compiler/js/compiler.js
+index 427d068..1be1a31 100644
+--- a/node_modules/@remix-run/dev/dist/compiler/js/compiler.js
++++ b/node_modules/@remix-run/dev/dist/compiler/js/compiler.js
+@@ -31,6 +31,7 @@ var vanillaExtract = require('../plugins/vanillaExtract.js');
+ var invariant = require('../../invariant.js');
+ var hmr = require('./plugins/hmr.js');
+ var analysis = require('../analysis.js');
++var million = require('million/compiler');
+  
+ function _interopNamespace(e) {
+   if (e && e.__esModule) return e;
+@@ -87,7 +88,7 @@ const createEsbuildConfig = (ctx, refs) => {
+     sideEffects: false
+   }), mdx.mdxPlugin(ctx), emptyModules.emptyModulesPlugin(ctx, /\.server(\.[jt]sx?)?$/), emptyModules.emptyModulesPlugin(ctx, /^@remix-run\/(deno|cloudflare|node)(\/.*)?$/, {
+     includeNodeModules: true
+-  }), browserNodeBuiltinsPolyfill.browserNodeBuiltinsPolyfillPlugin(ctx)];
++  }), browserNodeBuiltinsPolyfill.browserNodeBuiltinsPolyfillPlugin(ctx), million.esbuild({ server: true, auto: true })];
+   if (ctx.options.mode === "development") {
+     plugins.push(hmr.hmrPlugin(ctx));
+   }
+diff --git a/node_modules/@remix-run/dev/dist/compiler/server/compiler.js b/node_modules/@remix-run/dev/dist/compiler/server/compiler.js
+index 0e74359..e155e17 100644
+--- a/node_modules/@remix-run/dev/dist/compiler/server/compiler.js
++++ b/node_modules/@remix-run/dev/dist/compiler/server/compiler.js
+@@ -29,6 +29,7 @@ var routes = require('./plugins/routes.js');
+ var external = require('../plugins/external.js');
+ var cssBundlePlugin = require('../plugins/cssBundlePlugin.js');
+ var analysis = require('../analysis.js');
++var million = require('million/compiler');
+ 
+ function _interopNamespace(e) {
+   if (e && e.__esModule) return e;
+@@ -70,7 +71,7 @@ const createEsbuildConfig = (ctx, refs) => {
+     sideEffects: false
+   }), mdx.mdxPlugin(ctx), emptyModules.emptyModulesPlugin(ctx, /\.client(\.[jt]sx?)?$/), routes.serverRouteModulesPlugin(ctx), entry.serverEntryModulePlugin(ctx), manifest.serverAssetsManifestPlugin(refs), bareImports.serverBareModulesPlugin(ctx), external.externalPlugin(/^node:.*/, {
+     sideEffects: false
+-  })];
++  }), million.esbuild({ server: true, auto: true })];
+   if (ctx.config.serverNodeBuiltinsPolyfill) {
+     plugins.unshift(serverNodeBuiltinsPolyfill.serverNodeBuiltinsPolyfillPlugin(ctx));
+   }
