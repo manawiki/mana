@@ -11540,10 +11540,10 @@ slate-react@^0.92.0:
     scroll-into-view-if-needed "^2.2.20"
     tiny-invariant "1.0.6"
 
-slate-react@^0.98.1:
-  version "0.98.3"
-  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.98.3.tgz#5090d269d69186f3ec2a6b5862d2645f01772eda"
-  integrity sha512-p1BnF9eRyRM0i5hkgOb11KgmpWLQm9Zyp6jVkOAj5fPdIGheKhg48Z7aWKrayeJ4nmRyi/NjRZz/io5hQcphmw==
+slate-react@^0.99.0:
+  version "0.99.0"
+  resolved "https://registry.yarnpkg.com/slate-react/-/slate-react-0.99.0.tgz#dc04ef513ecde10f12bed8e25c6e5f31ca678ef7"
+  integrity sha512-E+mU87L5epS/Cj9Z35aRkTEMrBXdX8URbFh8B2zTq2DDQKn+MT6/ag41g1InMdRoQ/kipGsbtcrM8dEicY8o/Q==
   dependencies:
     "@juggle/resize-observer" "^3.4.0"
     "@types/is-hotkey" "^0.1.1"
@@ -12694,10 +12694,10 @@ vary@^1, vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vaul@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.6.1.tgz#78909e171458631ab7a76b3f20d3b987a4a68c9c"
-  integrity sha512-/AMuTlLefi3U9CQJqHbNQeIMrNq5FxYLCXcbuRIf1wiP3fpfvoP0GzgsnREMtGuvhtkwv0BdEC1CvTfU0+W9OQ==
+vaul@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.7.0.tgz#cc34c83c28e935bb70ec2f1e5a4236de40d7fd61"
+  integrity sha512-qhn8oEqvoisxLsebjyatO555DZAnCyRk0+zZlYPOOlUAs8+LWjFCRYg5KjYzVlQiAU/bkwsOqr1YVHztY08H9w==
   dependencies:
     "@radix-ui/react-dialog" "^1.0.4"
 

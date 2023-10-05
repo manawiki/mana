@@ -227,10 +227,10 @@ export default function CollectionIndex() {
                            className={({ isActive }) =>
                               clsx(
                                  {
-                                    "border-yellow-200 bg-yellow-50 dark:border-yellow-900 dark:bg-yellow-900/20":
+                                    "dark:border-zinc-600 dark:bg-dark450 bg-zinc-100 border-zinc-200":
                                        isActive,
                                  },
-                                 "border-color bg-2 shadow-1 flex items-center justify-between gap-2 overflow-hidden rounded-xl border pr-2 shadow-sm transition",
+                                 "border-color-sub bg-white dark:bg-dark350 shadow-1 flex items-center justify-between gap-2 overflow-hidden rounded-xl border pr-2 shadow-sm transition",
                               )
                            }
                         >
@@ -261,7 +261,7 @@ export default function CollectionIndex() {
                            </div>
                            <ChevronRight
                               size={20}
-                              className="flex-none text-yellow-500"
+                              className="flex-none text-1"
                            />
                         </NavLink>
                      ))}

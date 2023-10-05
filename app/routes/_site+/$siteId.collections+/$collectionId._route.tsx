@@ -16,6 +16,7 @@ import {
    Form,
    useActionData,
 } from "@remix-run/react";
+import { request as gqlRequest, gql } from "graphql-request";
 import {
    Component,
    ImagePlus,
@@ -24,17 +25,17 @@ import {
    ChevronRight,
 } from "lucide-react";
 import { nanoid } from "nanoid";
-import type { PaginatedDocs } from "payload/dist/mongoose/types";
+import type { Payload } from "payload";
+import { select } from "payload-query";
+import { plural } from "pluralize";
 import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
-import type { Entry, Collection } from "payload/generated-types";
-import { H2 } from "~/components/H2";
+import type { Entry, Collection, User, Site } from "payload/generated-types";
+import { H2Default } from "~/components/H2";
 import { Image } from "~/components/Image";
-import { useDebouncedValue } from "~/hooks";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import {
    assertIsPost,
@@ -43,12 +44,17 @@ import {
    type FormResponse,
    isAdding,
    isProcessing,
+   toWords,
 } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
 
 const EntrySchema = z.object({
    name: z.string(),
    icon: z.any(),
+});
+
+const CollectionsAllSchema = z.object({
+   q: z.string().optional(),
+   page: z.coerce.number().optional(),
 });
 
 export async function loader({
@@ -61,62 +67,24 @@ export async function loader({
       siteId: z.string(),
    });
 
-   const { q, page } = zx.parseQuery(request, {
-      q: z.string().optional(),
-      page: z.coerce.number().optional(),
+   const { page } = zx.parseQuery(request, CollectionsAllSchema);
+
+   const { entries, collectionName } = await fetchCollections({
+      collectionId,
+      page,
+      payload,
+      siteId,
+      user,
    });
 
-   try {
-      const collectionDataFetchUrl = `${settings.domainFull}/api/collections?where[slug][equals]=${collectionId}&where[site.slug][equals]=${siteId}&depth=0`;
-
-      const collectionData = (await fetchWithCache(collectionDataFetchUrl, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })) as PaginatedDocs<Collection>;
-
-      //We want to grab the immutable id
-      const collection = collectionData?.docs[0];
-
-      // Get custom collection list data
-      if (collection.customDatabase) {
-         const entrylist = await fetchWithCache(
-            `https://${siteId}-db.${
-               settings.domain
-            }/api/${collectionId}?limit=20&depth=1&page=${page ?? 1}`
-         );
-
-         return json(
-            { collection, entrylist, q },
-            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-         );
-      }
-
-      // Get default collection list data
-      const entrylistFetchUrl = `${url}/api/entries?where[collectionEntity][equals]=${
-         collection.id
-      }&where[site.slug][equals]=${siteId}&depth=1&limit=20&page=${page ?? 1}`;
-
-      const entrylist = (await fetchWithCache(entrylistFetchUrl, {
-         headers: {
-            cookie: request.headers.get("cookie") ?? "",
-         },
-      })) as PaginatedDocs<Entry>;
-
-      return json(
-         { collection, entrylist, q },
-         { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
-      );
-   } catch (e) {
-      throw new Response("Internal Server Error", { status: 500 });
-   }
+   return json({ entries, collectionName });
 }
 
 export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+      ({ id }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
-   const collectionName = data.collection.name;
+   const collectionName = data.collectionName;
 
    return [
       {
@@ -131,35 +99,17 @@ export const handle = {
 };
 
 export default function CollectionList() {
-   const { collection, entrylist, q } = useLoaderData<typeof loader>() || {};
+   const { collectionName, entries } = useLoaderData<typeof loader>();
 
-   const entries = entrylist?.docs;
-
-   // Paging Variables!
-   const [query, setQuery] = useState(q);
-   const debouncedValue = useDebouncedValue(query, 500);
+   // Paging Variables
    const [searchParams, setSearchParams] = useSearchParams({});
 
-   const currentEntry = entrylist?.pagingCounter;
-   const totalEntries = entrylist?.totalDocs;
-   const totalPages = entrylist?.totalPages;
-   const limit = entrylist?.limit;
-   const hasNextPage = entrylist?.hasNextPage;
-   const hasPrevPage = entrylist?.hasPrevPage;
-
-   useEffect(() => {
-      if (debouncedValue) {
-         setSearchParams((searchParams) => {
-            searchParams.set("q", debouncedValue);
-            return searchParams;
-         });
-      } else {
-         setSearchParams((searchParams) => {
-            searchParams.delete("q");
-            return searchParams;
-         });
-      }
-   }, [debouncedValue, setSearchParams]);
+   const currentEntry = entries?.pagingCounter;
+   const totalEntries = entries?.totalDocs;
+   const totalPages = entries?.totalPages;
+   const limit = entries?.limit;
+   const hasNextPage = entries?.hasNextPage;
+   const hasPrevPage = entries?.hasPrevPage;
 
    const transition = useNavigation();
    const disabled = isProcessing(transition.state);
@@ -198,7 +148,7 @@ export default function CollectionList() {
       <>
          <Outlet />
          <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:pb-12">
-            <H2 text={collection.name} />
+            <H2Default text={collectionName} />
             <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
@@ -275,19 +225,19 @@ export default function CollectionList() {
                   </div>
                </Form>
             </AdminOrStaffOrOwner>
-            {entries?.length === 0 ? null : (
+            {entries.docs?.length === 0 ? null : (
                <>
-                  <div className="border-color divide-color bg-2 divide-y overflow-hidden rounded-lg border">
-                     {entries?.map((entry: Entry, int) => (
+                  <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+                     {entries.docs?.map((entry: Entry, int: number) => (
                         <Link
                            key={entry.id}
                            to={entry.id}
-                           prefetch="intent"
-                           className="bg-2 flex items-center gap-3 p-2 hover:underline"
+                           // prefetch="intent" Enabling this makes hover perform weird
+                           className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50  group"
                         >
                            <div
-                              className="border-color shadow-1 flex h-8 w-8 items-center justify-between
-                                    overflow-hidden rounded-full border-2 bg-zinc-500 shadow-sm"
+                              className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
+                                    overflow-hidden rounded-full border bg-3-sub shadow-sm"
                            >
                               {entry.icon?.url ? (
                                  <Image /* @ts-ignore */
@@ -303,11 +253,12 @@ export default function CollectionList() {
                                  />
                               )}
                            </div>
-                           <span>{entry.name}</span>
+                           <span className="text-sm font-bold group-hover:underline">
+                              {entry.name}
+                           </span>
                         </Link>
                      ))}
                   </div>
-
                   {/* Pagination Section */}
                   {totalPages > 1 && (
                      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
@@ -330,7 +281,7 @@ export default function CollectionList() {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          entrylist.prevPage as any
+                                          entries.prevPage as any,
                                        );
                                        return searchParams;
                                     })
@@ -338,7 +289,7 @@ export default function CollectionList() {
                               >
                                  <ChevronLeft
                                     size={18}
-                                    className="text-yellow-500"
+                                    className="text-zinc-500"
                                  />
                                  Prev
                               </button>
@@ -353,7 +304,7 @@ export default function CollectionList() {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          entrylist.nextPage as any
+                                          entries.nextPage as any,
                                        );
                                        return searchParams;
                                     })
@@ -362,7 +313,7 @@ export default function CollectionList() {
                                  Next
                                  <ChevronRight
                                     size={18}
-                                    className="text-yellow-500"
+                                    className="text-zinc-500"
                                  />
                               </button>
                            ) : null}
@@ -409,7 +360,7 @@ export const action: ActionFunction = async ({
          if (issues.hasIssues()) {
             return json<FormResponse>(
                { serverIssues: issues.toArray() },
-               { status: 400 }
+               { status: 400 },
             );
          }
          const iconId = await uploadImage({
@@ -454,7 +405,7 @@ export const action: ActionFunction = async ({
       if (issues.hasIssues()) {
          return json<FormResponse>(
             { serverIssues: issues.toArray() },
-            { status: 400 }
+            { status: 400 },
          );
       }
       // Last resort error message
@@ -462,4 +413,106 @@ export const action: ActionFunction = async ({
          error: "Something went wrong...unable to add entry.",
       });
    }
+};
+
+const fetchCollections = async ({
+   page = 1,
+   payload,
+   siteId,
+   user,
+   collectionId,
+}: typeof CollectionsAllSchema._type & {
+   payload: Payload;
+   collectionId: Collection["slug"];
+   siteId: Site["slug"];
+   user?: User;
+}) => {
+   const collectionData = await payload.find({
+      collection: "collections",
+      where: {
+         "site.slug": {
+            equals: siteId,
+         },
+         slug: {
+            equals: collectionId,
+         },
+      },
+      overrideAccess: false,
+      user,
+   });
+
+   const collection = collectionData?.docs[0];
+
+   const collectionName = collection?.name;
+
+   // Get custom collection list data
+   if (collection?.customDatabase) {
+      const formattedName = plural(toWords(collectionId, true));
+
+      const document = gql`
+         query($page: Int!) {
+            entries: ${formattedName}(page: $page, limit: 20) {
+            totalDocs
+            totalPages
+            limit
+            pagingCounter
+            hasPrevPage
+            prevPage
+            nextPage
+            hasNextPage
+            docs {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            }
+         }
+      `;
+
+      const endpoint = `https://${collection?.site.slug}-db.${
+         collection?.site?.domain ?? "mana.wiki"
+      }/api/graphql`;
+
+      const { entries }: any = await gqlRequest(endpoint, document, { page });
+      return { entries, collectionName };
+   }
+
+   //Otherwise pull data from core
+   const data = await payload.find({
+      collection: "entries",
+      where: {
+         site: {
+            equals: collection?.site?.id,
+         },
+         "collectionEntity.slug": {
+            equals: collectionId,
+         },
+      },
+      depth: 1,
+      overrideAccess: false,
+      user,
+   });
+
+   const filtered = data.docs.map((doc) => {
+      return {
+         ...select(
+            {
+               id: true,
+               name: true,
+            },
+            doc,
+         ),
+         icon: doc.icon && select({ id: false, url: true }, doc.icon),
+      };
+   });
+
+   //Extract pagination fields
+   const { docs, ...pagination } = data;
+
+   //Combine filtered docs with pagination info
+   const result = { docs: filtered, ...pagination };
+
+   return { entries: result, collectionName };
 };
