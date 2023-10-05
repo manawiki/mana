@@ -22,8 +22,7 @@
       "clean": "shx rm -rf node_modules distc dist build public/build",
       "seed:core": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts ts-node -T app/_custom/seed/index.ts",
       "seed:custom": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/seed/index.ts",
-      "resave": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T ./scripts/resaveCollection",
-      "postinstall": "patch-package"
+      "resave": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T ./scripts/resaveCollection"
    },
    "dependencies": {
       "@aws-sdk/client-s3": "^3.382.0",
@@ -66,14 +65,11 @@
       "linkify-it": "^4.0.1",
       "lru-cache": "^10.0.0",
       "lucide-react": "^0.277.0",
-      "million": "^2.6.4",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
-      "patch-package": "^8.0.0",
       "payload": "^1.15.6",
       "payload-query": "^1.0.2",
       "pluralize": "^8.0.0",
-      "postinstall-postinstall": "^2.1.0",
       "qs": "^6.11.2",
       "react": "^18.2.0",
       "react-chartjs-2": "^5.2.0",
