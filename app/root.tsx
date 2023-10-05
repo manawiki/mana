@@ -223,7 +223,7 @@ let AppExport = withMetronome(AppWithProviders);
 const devToolsConfig = {
    // requireUrlFlag: true,
    // plugins: [],
-   wsPort: 3002,
+   // wsPort: 3002,
 };
 
 if (process.env.NODE_ENV === "development") {

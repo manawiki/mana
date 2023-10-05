@@ -10994,10 +10994,10 @@ remark-rehype@^10.0.0:
     mdast-util-to-hast "^12.1.0"
     unified "^10.0.0"
 
-remix-development-tools@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-3.2.0.tgz#31eeb8b71a089974c2a62be186fd16c97df9d7f1"
-  integrity sha512-8HsalLUuNdZ+248UkBvCoY5OiGZNQ5vgg3rqq3qCRPgHR25ZKCPZxKPhNL1sFj01lB0kNSh6wi42fZ3a99fq0g==
+remix-development-tools@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-3.2.1.tgz#47498f0403845564785a96c625888f12e39b11ad"
+  integrity sha512-2b6vWT36rDn3N5WXhmJVf6scQzG3pnJXXA13q+PVyFteMIve1Ru2AjdSeJQEkkRf5oyPplA+0aUH8FKQ13JACA==
   dependencies:
     "@radix-ui/react-accordion" "^1.1.2"
     "@radix-ui/react-select" "^1.2.2"
