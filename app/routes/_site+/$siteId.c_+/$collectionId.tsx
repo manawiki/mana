@@ -163,7 +163,7 @@ export default function CollectionList() {
                <h1 className="font-bold font-header text-2xl">
                   {collection?.name}
                </h1>
-               <div className="flex-none border border-color shadow-1 shadow-sm bg-white -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
+               <div className="flex-none border border-color shadow-1 shadow-sm bg-white dark:bg-zinc-800 -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
                   {collection?.icon ? (
                      <Image
                         url={collection.icon}

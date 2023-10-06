@@ -61,7 +61,7 @@ export default function CollectionEntryWiki() {
       <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:pb-12">
          <div className="flex items-center justify-between gap-2 pb-2">
             <h1 className="font-bold font-header text-2xl">{entry?.name}</h1>
-            <div className="flex-none border border-color shadow-1 shadow-sm bg-white -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
+            <div className="flex-none border border-color-sub shadow-1 shadow-sm bg-white dark:bg-zinc-800 -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
                {entry?.icon ? (
                   <Image
                      url={entry.icon.url}
