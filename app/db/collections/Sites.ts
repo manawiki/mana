@@ -35,6 +35,18 @@ export const Sites: CollectionConfig = {
          type: "number",
       },
       {
+         name: "collections",
+         type: "array",
+         fields: [
+            {
+               name: "relation",
+               type: "relationship",
+               relationTo: ["collections"],
+               hasMany: false,
+            },
+         ],
+      },
+      {
          name: "pinned",
          type: "array",
          label: "Pinned",

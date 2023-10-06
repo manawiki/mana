@@ -8,63 +8,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { ContentEmbed } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { cacheThis, fetchWithCache } from "~/utils/cache.server";
-
-type HeaderType = {
-   name?: string;
-   icon?: {
-      url?: string;
-   };
-};
-export const getDefaultEntryData = async ({
-   payload,
-   params,
-   request,
-}: {
-   payload: Payload;
-   params: Params;
-   request: any;
-}) => {
-   const { entryId, siteId } = zx.parseParams(params, {
-      entryId: z.string(),
-      siteId: z.string(),
-   });
-
-   //We must get param from url since we can't access the param for custom templates.
-   const url = new URL(request.url).pathname;
-   const collectionId = url.split("/")[3];
-
-   const collectionData = await cacheThis(() =>
-      payload.find({
-         collection: "collections",
-         where: {
-            slug: {
-               equals: collectionId,
-            },
-         },
-      })
-   );
-
-   const collection = collectionData?.docs[0];
-
-   let data = {} as HeaderType;
-   if (collection.customEntryTemplate) {
-      const entry = await fetchWithCache(
-         `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
-      );
-      data = { name: entry?.name, icon: { url: entry?.icon?.url } };
-      return data;
-   }
-   const entry = await cacheThis(() =>
-      payload.findByID({
-         collection: "entries",
-         id: entryId,
-      })
-   );
-   data = { name: entry.name, icon: { url: entry?.icon?.url } };
-
-   return data;
-};
+import { fetchWithCache } from "~/utils/cache.server";
 
 export const getEmbeddedContent = async ({
    user,
@@ -157,17 +101,17 @@ export const getCustomEntryData = async ({
    });
 
    return fetchWithCache(
-      `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`
+      `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`,
    );
 };
 
 export const meta: MetaFunction = ({ matches, data }) => {
    const siteName = matches.find(
-      ({ id }) => id === "routes/_site+/$siteId+/_layout"
+      ({ id }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site?.name;
    return [
       {
-         title: `${data?.entryDefault?.name} - ${siteName}`,
+         title: `${data?.entry?.name} - ${siteName}`,
       },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];

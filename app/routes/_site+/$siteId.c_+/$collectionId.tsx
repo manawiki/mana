@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
+import { Menu, Transition } from "@headlessui/react";
 import {
    type ActionFunction,
    type LoaderFunctionArgs,
@@ -9,13 +10,15 @@ import {
 } from "@remix-run/node";
 import {
    Link,
-   Outlet,
    useLoaderData,
    useNavigation,
    useSearchParams,
    Form,
    useActionData,
+   useMatches,
+   NavLink,
 } from "@remix-run/react";
+import clsx from "clsx";
 import { request as gqlRequest, gql } from "graphql-request";
 import {
    Component,
@@ -23,6 +26,9 @@ import {
    Loader2,
    ChevronLeft,
    ChevronRight,
+   Database,
+   ChevronDown,
+   Bookmark,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Payload } from "payload";
@@ -34,7 +40,6 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry, Collection, User, Site } from "payload/generated-types";
-import { H2Default } from "~/components/H2";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/modules/auth";
 import {
@@ -69,7 +74,7 @@ export async function loader({
 
    const { page } = zx.parseQuery(request, CollectionsAllSchema);
 
-   const { entries, collectionName } = await fetchCollections({
+   const { entries, collection } = await fetchEntries({
       collectionId,
       page,
       payload,
@@ -77,14 +82,15 @@ export async function loader({
       user,
    });
 
-   return json({ entries, collectionName });
+   return json({ entries, collection });
 }
 
 export const meta: MetaFunction = ({ data, matches }) => {
    const siteName = matches.find(
       ({ id }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site.name;
-   const collectionName = data.collectionName;
+   )?.data?.site?.name;
+   //@ts-ignore
+   const collectionName = data.collection.name;
 
    return [
       {
@@ -99,10 +105,15 @@ export const handle = {
 };
 
 export default function CollectionList() {
-   const { collectionName, entries } = useLoaderData<typeof loader>();
+   const { entries, collection } = useLoaderData<typeof loader>();
+
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
 
    // Paging Variables
-   const [searchParams, setSearchParams] = useSearchParams({});
+   const [, setSearchParams] = useSearchParams({});
 
    const currentEntry = entries?.pagingCounter;
    const totalEntries = entries?.totalDocs;
@@ -119,7 +130,14 @@ export default function CollectionList() {
    const [, setPicture] = useState(null);
    const [imgData, setImgData] = useState(null);
 
-   const onChangePicture = (e: any) => {
+   const adding = isAdding(transition, "addEntry");
+   const formResponse = useActionData<FormResponse>();
+   const zoEntry = useZorm("newEntry", EntrySchema, {
+      //@ts-ignore
+      customIssues: formResponse?.serverIssues,
+   });
+
+   function onChangePicture(e: any) {
       if (e.target.files[0]) {
          setPicture(e.target.files[0]);
          const reader = new FileReader() as any;
@@ -128,13 +146,7 @@ export default function CollectionList() {
          });
          reader.readAsDataURL(e.target.files[0]);
       }
-   };
-   const adding = isAdding(transition, "addEntry");
-   const formResponse = useActionData<FormResponse>();
-   const zoEntry = useZorm("newEntry", EntrySchema, {
-      //@ts-ignore
-      customIssues: formResponse?.serverIssues,
-   });
+   }
 
    useEffect(() => {
       if (!adding) {
@@ -146,15 +158,33 @@ export default function CollectionList() {
 
    return (
       <>
-         <Outlet />
          <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:pb-12">
-            <H2Default text={collectionName} />
+            <div className="flex items-center justify-between gap-2 pb-2">
+               <h1 className="font-bold font-header text-2xl">
+                  {collection?.name}
+               </h1>
+               <div className="flex-none border border-color shadow-1 shadow-sm bg-white -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
+                  {collection?.icon ? (
+                     <Image
+                        url={collection.icon}
+                        options="aspect_ratio=1:1&height=80&width=80"
+                        alt="Collection Icon"
+                     />
+                  ) : (
+                     <Component className="text-1 mx-auto" size={18} />
+                  )}
+               </div>
+            </div>
+            {/* <h1 className="font-bold font-header text-2xl pb-2">
+               {collection.name}
+            </h1> */}
+            <CollectionCrumbs site={site} collection={collection} />
             <AdminOrStaffOrOwner>
                <Form
                   ref={zoEntry.ref}
                   method="post"
                   encType="multipart/form-data"
-                  className="mt-4 pb-3.5"
+                  className="mt-4 pb-3.5 hidden"
                   replace
                >
                   <div className="flex items-center gap-4">
@@ -384,10 +414,10 @@ export const action: ActionFunction = async ({
                data: {
                   name,
                   id: nanoid(12),
-                  author: user?.id,
-                  icon: iconId.id,
-                  collectionEntity: siteId + collectionId,
-                  site: site.id,
+                  author: user?.id as any,
+                  icon: iconId.id as any,
+                  collectionEntity: (siteId + collectionId) as any,
+                  site: site?.id as any,
                },
                user,
                overrideAccess: false,
@@ -415,7 +445,7 @@ export const action: ActionFunction = async ({
    }
 };
 
-const fetchCollections = async ({
+async function fetchEntries({
    page = 1,
    payload,
    siteId,
@@ -426,7 +456,7 @@ const fetchCollections = async ({
    collectionId: Collection["slug"];
    siteId: Site["slug"];
    user?: User;
-}) => {
+}) {
    const collectionData = await payload.find({
       collection: "collections",
       where: {
@@ -441,12 +471,15 @@ const fetchCollections = async ({
       user,
    });
 
-   const collection = collectionData?.docs[0];
+   const collectionEntry = collectionData?.docs[0];
 
-   const collectionName = collection?.name;
+   const collection = {
+      name: collectionEntry?.name,
+      icon: collectionEntry?.icon?.url,
+   };
 
    // Get custom collection list data
-   if (collection?.customDatabase) {
+   if (collectionEntry?.customDatabase) {
       const formattedName = plural(toWords(collectionId, true));
 
       const document = gql`
@@ -471,12 +504,12 @@ const fetchCollections = async ({
          }
       `;
 
-      const endpoint = `https://${collection?.site.slug}-db.${
-         collection?.site?.domain ?? "mana.wiki"
+      const endpoint = `https://${collectionEntry?.site.slug}-db.${
+         collectionEntry?.site?.domain ?? "mana.wiki"
       }/api/graphql`;
 
       const { entries }: any = await gqlRequest(endpoint, document, { page });
-      return { entries, collectionName };
+      return { entries, collection };
    }
 
    //Otherwise pull data from core
@@ -484,7 +517,7 @@ const fetchCollections = async ({
       collection: "entries",
       where: {
          site: {
-            equals: collection?.site?.id,
+            equals: collectionEntry?.site?.id,
          },
          "collectionEntity.slug": {
             equals: collectionId,
@@ -514,5 +547,103 @@ const fetchCollections = async ({
    //Combine filtered docs with pagination info
    const result = { docs: filtered, ...pagination };
 
-   return { entries: result, collectionName };
-};
+   return { entries: result, collection };
+}
+
+export function CollectionCrumbs({
+   site,
+   collection,
+   entry,
+}: {
+   site: Site;
+   collection: Collection;
+   entry?: Entry;
+}) {
+   return (
+      <section className="py-1.5 flex items-center gap-3 border-y dark:border-dark400 border-zinc-100 mb-4">
+         <Link
+            to={`/${site?.slug}/collections`}
+            className="flex items-center gap-2 group"
+         >
+            <Database className="text-zinc-400 dark:text-zinc-500" size={16} />
+         </Link>
+         <span className="text-zinc-200 text-xl dark:text-zinc-700">/</span>
+         <Menu as="div" className="relative">
+            {({ open }) => (
+               <>
+                  <Menu.Button className="flex items-center gap-2 group focus:outline-none">
+                     <span className="font-bold text-1 text-xs group-focus:underline group-hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-4">
+                        {collection.name}
+                     </span>
+                     <span className="w-4 h-4 flex items-center justify-center">
+                        <svg
+                           className={`${
+                              open ? "rotate-180" : ""
+                           } transform transition duration-300 fill-zinc-400 dark:fill-zinc-500 ease-in-out w-3.5 h-3.5`}
+                           viewBox="0 0 320 512"
+                           xmlns="http://www.w3.org/2000/svg"
+                        >
+                           <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
+                        </svg>
+                     </span>
+                  </Menu.Button>
+                  <Transition
+                     as={Fragment}
+                     enter="transition ease-out duration-200"
+                     enterFrom="opacity-0 translate-y-1"
+                     enterTo="opacity-100 translate-y-0"
+                     leave="transition ease-in duration-150"
+                     leaveFrom="opacity-100 translate-y-0"
+                     leaveTo="opacity-0 translate-y-1"
+                  >
+                     <Menu.Items className="absolute left-0 mt-1.5 max-w-sm min-w-[140px] w-full">
+                        <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
+                           {site?.collections?.map((row) => (
+                              <Menu.Item key={row.relation?.value.slug}>
+                                 <NavLink
+                                    end
+                                    className={({ isActive }) =>
+                                       clsx(
+                                          isActive
+                                             ? "bg-zinc-100 dark:bg-dark450"
+                                             : "hover:bg-zinc-50 dark:hover:bg-dark400",
+                                          "flex items-center p-1 rounded-md gap-1.5",
+                                       )
+                                    }
+                                    to={`/${site.slug}/c/${row.relation?.value.slug}`}
+                                 >
+                                    <span className="flex-none flex h-5 w-5 items-center">
+                                       {row.relation?.value?.icon?.url ? (
+                                          <Image
+                                             url={
+                                                row.relation?.value?.icon?.url
+                                             }
+                                             options="aspect_ratio=1:1&height=80&width=80"
+                                             alt="Collection Icon"
+                                          />
+                                       ) : (
+                                          <Component
+                                             className="text-1 mx-auto"
+                                             size={18}
+                                          />
+                                       )}
+                                    </span>
+                                    <span className="text-xs font-semibold text-1">
+                                       {row.relation?.value.name}
+                                    </span>
+                                 </NavLink>
+                              </Menu.Item>
+                           ))}
+                        </div>
+                     </Menu.Items>
+                  </Transition>
+               </>
+            )}
+         </Menu>
+         <span className="text-zinc-200 text-xl dark:text-zinc-700">/</span>
+         <span className="font-bold text-1 text-xs flex items-center gap-2">
+            {entry ? "Entry" : "Collection"}
+         </span>
+      </section>
+   );
+}

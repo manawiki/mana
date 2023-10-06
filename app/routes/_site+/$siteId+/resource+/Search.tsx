@@ -17,6 +17,7 @@ import {
    FileText,
    Layout,
    Loader2,
+   Search as SearchIcon,
    X,
 } from "lucide-react";
 import { z } from "zod";
@@ -54,7 +55,7 @@ export async function loader({
          ).json()) as Search[];
          return json(
             { searchResults },
-            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
          );
       } catch (e) {
          throw new Response("Internal Server Error", { status: 500 });
@@ -73,11 +74,11 @@ export async function loader({
 
          const combineResults = [...coreSearchResults, ...customSearchResults];
          const searchResults = combineResults.sort(
-            (a, b) => b.priority - a.priority
+            (a, b) => b.priority - a.priority,
          );
          return json(
             { searchResults },
-            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+            { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
          );
       } catch (e) {
          throw new Response("Internal Server Error", { status: 500 });
@@ -173,7 +174,7 @@ export function SearchComboBox({
    //leave searchListItems as an empty array until fetcher is loaded
    const searchListItems = useMemo(
       () => fetcher.data?.searchResults ?? [],
-      [fetcher.data?.searchResults]
+      [fetcher.data?.searchResults],
    );
    const navigate = useNavigate();
 
@@ -183,7 +184,7 @@ export function SearchComboBox({
       if (debouncedValue) {
          return fetcher.submit(
             { q: query ?? "", intent: "search", type: siteType },
-            { method: "get", action: loaderRoute }
+            { method: "get", action: loaderRoute },
          );
       }
    }, [debouncedValue]);
@@ -197,13 +198,16 @@ export function SearchComboBox({
 
    return (
       <div className="h-full w-full">
+         <div className="absolute hidden laptop:block left-4 top-5">
+            <SearchIcon className="text-1" size={18} />
+         </div>
          <Combobox onChange={handleChange}>
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
                   className={clsx(
-                     isMobileApp ? "bg-3" : "bg-2",
-                     "h-full w-full border-0 pl-1 outline-none !ring-transparent"
+                     isMobileApp ? "bg-3" : "bg-transparent",
+                     "h-full w-full border-0 laptop:rounded-full p-0 laptop:pl-8 outline-none !ring-transparent",
                   )}
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
@@ -218,8 +222,8 @@ export function SearchComboBox({
                afterLeave={() => setQuery("")}
             >
                <Combobox.Options
-                  className="bg-2 outline-color shadow-1 border-color divide-color absolute left-0 z-20 max-h-80 w-full divide-y
-                  overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 laptop:rounded-lg laptop:outline"
+                  className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
+                  overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
                >
                   {searchListItems.length === 0
                      ? query && (
@@ -232,7 +236,7 @@ export function SearchComboBox({
                              className={({ active }) =>
                                 `relative cursor-default select-none ${
                                    active
-                                      ? "bg-blue-50 dark:bg-bg1Dark"
+                                      ? "bg-zinc-100 dark:bg-dark400"
                                       : "text-1"
                                 }`
                              }
@@ -279,7 +283,7 @@ export function SearchComboBox({
             </Transition>
          </Combobox>
          <button
-            className="absolute right-4 top-[18px]"
+            className="absolute right-4 top-5"
             onClick={() => {
                setSearchToggle(false);
             }}
@@ -287,7 +291,7 @@ export function SearchComboBox({
             {isSearching ? (
                <Loader2 className="mx-auto h-5 w-5 animate-spin" />
             ) : (
-               <X size={22} className="text-red-400" />
+               <X size={20} className="text-zinc-400" />
             )}
          </button>
       </div>
