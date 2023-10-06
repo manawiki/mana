@@ -40,6 +40,7 @@ import { isNativeSSR } from "./utils";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
+import { rdtClientConfig } from "../rdt.config";
 
 export const loader = async ({
    context: { user },
@@ -220,16 +221,10 @@ export function AppWithProviders() {
 let AppExport = withMetronome(AppWithProviders);
 
 // Toggle Remix Dev Tools
-const devToolsConfig = {
-   // requireUrlFlag: true,
-   // plugins: [],
-   // wsPort: 3002,
-};
-
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, devToolsConfig);
+   AppExport = withDevTools(AppExport, rdtClientConfig);
 }
 
 export default AppExport;

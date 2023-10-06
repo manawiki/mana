@@ -13,15 +13,20 @@ import invariant from "tiny-invariant";
 
 import coreBuildConfig from "./app/db/payload.config";
 import { settings, corsConfig } from "./mana.config";
+import { rdtServerConfig } from "./rdt.config";
 
 // patch in Remix runtime globals
 installGlobals();
 require("dotenv").config();
 sourceMapSupport.install();
 
-// We'll make chokidar a dev dependency so it doesn't get bundled in production.
+// Make sure devDependencies don't ship to production
 const chokidar =
    process.env.NODE_ENV === "development" ? require("chokidar") : null;
+const rdt =
+   process.env.NODE_ENV === "development"
+      ? require("remix-development-tools/server")
+      : null;
 
 /**
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
@@ -137,6 +142,9 @@ async function startCore() {
    app.use(morgan("tiny"));
    app.use(payload.authenticate);
 
+   // This makes sure the build is wrapped on reload by RDT
+   if (rdt) build = rdt.withServerDevTools(build, rdtServerConfig);
+
    // Check if the server is running in development mode and reflect realtime changes in the codebase.
    // We'll also inject payload in the remix handler so we can use it in our routes.
    app.all(
@@ -177,34 +185,9 @@ function createProductionRequestHandler(): RequestHandler {
 
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {
-   // Serverside RDT Remix Dev Tools
-   const { withServerDevTools } = require("remix-development-tools/server");
-   const devToolsConfig = {
-      //        // Sets the ws port for the dev tools to communicate with the client dev tools
-      // wsPort: 3002,
-      //  // allows you to not communicate at all with the client dev tools
-      //  withWebsocket: boolean;
-      //  // allows you to not log anything to the console
-      //  silent: boolean;
-      logs: {
-         // allows you to not log cookie logs to the console
-         cookies: true,
-         // allows you to not log defer logs to the console
-         defer: true,
-         // allows you to not log action logs to the console
-         actions: true,
-         // allows you to not log loader logs to the console
-         loaders: true,
-         // allows you to not log cache logs to the console
-         cache: true,
-         // allows you to not log when cache is cleared to the console
-         siteClear: true,
-      },
-   };
-
    async function handleServerUpdate() {
-      // wrap the build with the dev tools
-      build = withServerDevTools(await reimportServer(), devToolsConfig);
+      // This makes sure the build is wrapped on reload by RDT
+      build = rdt.withServerDevTools(await reimportServer(), rdtServerConfig);
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {
