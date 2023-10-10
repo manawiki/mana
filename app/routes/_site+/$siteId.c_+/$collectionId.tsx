@@ -27,8 +27,6 @@ import {
    ChevronLeft,
    ChevronRight,
    Database,
-   ChevronDown,
-   Bookmark,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Payload } from "payload";
@@ -565,7 +563,10 @@ export function CollectionCrumbs({
             to={`/${site?.slug}/collections`}
             className="flex items-center gap-2 group"
          >
-            <Database className="text-zinc-400 dark:text-zinc-500" size={16} />
+            <Database
+               className="hover:text-zinc-500 dark:hover:text-zinc-400 text-zinc-400 dark:text-zinc-500"
+               size={16}
+            />
          </Link>
          <span className="text-zinc-200 text-xl dark:text-zinc-700">/</span>
          <Menu as="div" className="relative">
@@ -599,7 +600,7 @@ export function CollectionCrumbs({
                      <Menu.Items className="absolute left-0 mt-1.5 max-w-sm min-w-[140px] w-full">
                         <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
                            {site?.collections?.map((row) => (
-                              <Menu.Item key={row.relation?.value.slug}>
+                              <Menu.Item key={row.slug}>
                                  <NavLink
                                     end
                                     className={({ isActive }) =>
@@ -610,14 +611,12 @@ export function CollectionCrumbs({
                                           "flex items-center p-1 rounded-md gap-1.5",
                                        )
                                     }
-                                    to={`/${site.slug}/c/${row.relation?.value.slug}`}
+                                    to={`/${site.slug}/c/${row.slug}`}
                                  >
                                     <span className="flex-none flex h-5 w-5 items-center">
-                                       {row.relation?.value?.icon?.url ? (
+                                       {row.icon?.url ? (
                                           <Image
-                                             url={
-                                                row.relation?.value?.icon?.url
-                                             }
+                                             url={row.icon?.url}
                                              options="aspect_ratio=1:1&height=80&width=80"
                                              alt="Collection Icon"
                                           />
@@ -629,7 +628,7 @@ export function CollectionCrumbs({
                                        )}
                                     </span>
                                     <span className="text-xs font-semibold text-1">
-                                       {row.relation?.value.name}
+                                       {row.name}
                                     </span>
                                  </NavLink>
                               </Menu.Item>

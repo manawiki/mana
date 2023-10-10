@@ -367,16 +367,10 @@ const fetchSite = async ({
                      url
                   }
                   collections {
-                     relation {
-                       value {
-                         ... on Collection {
-                           name
-                           slug
-                           icon {
-                             url
-                           }
-                         }
-                       }
+                     name
+                     slug
+                     icon {
+                        url
                      }
                   }
                   pinned {
