@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 import payload from "payload";
 import invariant from "tiny-invariant";
 
-import customBuildConfig from "./app/db/payload.custom.config";
+// import customBuildConfig from "./app/db/payload.custom.config";
 import { settings, corsConfig } from "./mana.config";
 
 require("dotenv").config();
@@ -41,7 +41,7 @@ async function startCustom() {
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
 
    await payload.init({
-      config: customBuildConfig,
+      // config: customBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       express: app,
       onInit: () => {

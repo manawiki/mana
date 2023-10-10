@@ -62,7 +62,7 @@ async function startCore() {
 
    // Initialize Payload
    await payload.init({
-      config: coreBuildConfig,
+      // config: coreBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       express: app,
       onInit: () => {
