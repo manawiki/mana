@@ -39,12 +39,10 @@ async function startCustom() {
    });
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
-   invariant(process.env.CUSTOM_MONGO_URL, "CUSTOM_MONGO_URL is required");
 
    await payload.init({
       config: customBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
-      mongoURL: process.env.CUSTOM_MONGO_URL,
       express: app,
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);

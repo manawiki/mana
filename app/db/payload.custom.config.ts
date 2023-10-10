@@ -44,7 +44,7 @@ export default buildConfig({
          : `https://${settings.siteId}-db.${settings.domain}`,
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: process.env.MONGO_URL ?? false,
+      url: process.env.CUSTOM_MONGO_URL ?? false,
    }),
    admin: {
       bundler: webpackBundler(),
