@@ -36,10 +36,10 @@
       @apply border-collapse;
    }
    th {
-      @apply bg-2 border border-zinc-200 p-3 dark:border-dark400;
+      @apply bg-2-sub border border-zinc-200 p-3 dark:border-zinc-700;
    }
    td {
-      @apply bg-3 border border-zinc-200 p-3 dark:border-dark400;
+      @apply bg-3 border border-zinc-200 p-3 dark:border-zinc-700;
    }
 }
 

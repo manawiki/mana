@@ -27,6 +27,10 @@ export const Entries: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",
