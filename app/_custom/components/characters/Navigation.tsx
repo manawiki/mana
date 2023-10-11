@@ -10,9 +10,9 @@ export const Navigation = ({
                <a
                   key={l.name}
                   href={`#${l.link}`}
-                  className="border-color bg-2 text-1 shadow-1 overflow-hidden
-                  rounded-full border bg-yellow-50 p-2 text-center
-                  text-sm font-bold shadow-sm transition dark:bg-yellow-900/20"
+                  className="border-color-sub text-1 shadow-1 overflow-hidden
+                  rounded-full border  p-2 text-center
+                  text-sm font-bold shadow-sm transition bg-2-sub"
                >
                   {l.name}
                </a>

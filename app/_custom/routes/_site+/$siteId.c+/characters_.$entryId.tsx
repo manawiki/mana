@@ -1,5 +1,5 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -20,15 +20,13 @@ import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterial
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 import {
-   EntryParent,
-   EntryHeader,
    meta,
-   EntryContent,
-   getEmbeddedContent,
-} from "~/modules/collections";
-import { EntryContentEmbed } from "~/modules/collections/components/EntryContentEmbed";
+   getAllEntryData,
+} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export { meta };
@@ -42,46 +40,42 @@ export async function loader({
       entryId: z.string(),
    });
 
-   const [embeddedContent, { data, errors }] = await Promise.all([
-      getEmbeddedContent({
-         collection: "characters",
-         payload,
-         params,
-         request,
-         user,
-      }),
-      fetchWithCache(
-         `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
-         {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-               query: CharacterQuery,
-               variables: {
-                  charId: entryId,
-               },
-            }),
+   const { entry } = await getAllEntryData({
+      payload,
+      params,
+      request,
+      user,
+   });
+
+   const { data, errors } = await fetchWithCache(
+      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
          },
-      ),
-   ]);
+         body: JSON.stringify({
+            query: CharacterQuery,
+            variables: {
+               charId: entryId,
+            },
+         }),
+      },
+   );
 
    if (errors) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console
       // throw new Error();
    }
-
    return json({
+      entry,
       entryDefault: data.character as Character,
       skillTreeData: data.skillTree.docs as SkillTreeType[],
-      embeddedContent,
    });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, skillTreeData, embeddedContent } =
-      useLoaderData<typeof loader>();
+   const { entryDefault, skillTreeData } = useLoaderData<typeof loader>();
 
    const links = [
       { name: "Traces", link: "traces" },
@@ -92,81 +86,63 @@ export default function CharacterEntry() {
       { name: "Profile", link: "profile" },
    ];
 
-   const { siteId, entryId } = useParams();
-   const fetcher = useFetcher();
    return (
-      <EntryParent>
-         <EntryHeader entry={entryDefault} />
-         <EntryContent>
-            {/* Shortcut Navigation */}
-            <Navigation links={links} />
+      <Entry>
+         {/* Shortcut Navigation */}
+         <Navigation links={links} />
 
-            {/* Character Image with Element / Path */}
-            <CharacterStatBlock pageData={entryDefault} />
-            <EntryContentEmbed
-               title="Teams"
-               sectionId="teams"
-               collectionEntity="characters"
-               siteId={siteId}
-               fetcher={fetcher}
-               entryId={entryId}
-               defaultValue={embeddedContent}
-            />
-            <EntryContentEmbed
-               title="Recommended Light Cones"
-               sectionId="light-cones"
-               collectionEntity="characters"
-               siteId={siteId}
-               fetcher={fetcher}
-               entryId={entryId}
-               defaultValue={embeddedContent}
-            />
-            <div id="traces"></div>
-            {/* Traces / Skills */}
-            <H2 text="Traces" />
-            <Traces pageData={entryDefault} skillTreeData={skillTreeData} />
+         {/* Character Image with Element / Path */}
+         <CharacterStatBlock pageData={entryDefault} />
+         <EntryContentEmbed title="Teams" sectionId="teams" />
+         <EntryContentEmbed
+            title="Recommended Light Cones"
+            sectionId="light-cones"
+         />
+         <div id="traces"></div>
+         {/* Traces / Skills */}
+         <H2Default text="Traces" />
+         <Traces pageData={entryDefault} skillTreeData={skillTreeData} />
 
-            <div id="tree"></div>
-            {/* Skill Tree */}
-            <H2 text="Tree" />
-            <SkillTree pageData={entryDefault} skillTreeData={skillTreeData} />
+         <div id="tree"></div>
+         {/* Skill Tree */}
+         <H2Default text="Tree" />
+         <SkillTree pageData={entryDefault} skillTreeData={skillTreeData} />
 
-            <div id="eidolons"></div>
-            {/* Eidolons */}
-            <H2 text="Eidolons" />
-            <Eidolons pageData={entryDefault} />
+         <div id="eidolons"></div>
+         {/* Eidolons */}
+         <H2Default text="Eidolons" />
+         <Eidolons pageData={entryDefault} />
 
-            <div id="promotion"></div>
-            {/* Promotion Costs */}
-            <H2 text="Promotion Cost" />
-            <PromotionCost pageData={entryDefault} />
+         <div id="promotion"></div>
+         {/* Promotion Costs */}
+         <H2Default text="Promotion Cost" />
+         <PromotionCost pageData={entryDefault} />
 
-            {/* Total Materials */}
-            <H2 text="Total Material Cost" />
-            <TotalMaterialCost
-               pageData={entryDefault}
-               skillTreeData={skillTreeData}
-            />
+         {/* Total Materials */}
+         <H2Default text="Total Material Cost" />
+         <TotalMaterialCost
+            pageData={entryDefault}
+            skillTreeData={skillTreeData}
+         />
 
-            <div id="gallery"></div>
-            {/* Image Gallery Section showing all relevant images */}
-            <H2 text="Image Gallery" />
-            <ImageGallery pageData={entryDefault} />
+         <div id="gallery"></div>
+         {/* Image Gallery Section showing all relevant images */}
+         <H2Default text="Image Gallery" />
+         <ImageGallery pageData={entryDefault} />
 
-            {/* Video Section */}
-            <Videos pageData={entryDefault} />
+         {/* Video Section */}
+         <Videos pageData={entryDefault} />
 
-            <div id="profile"></div>
-            {/* Profile Data/CV */}
-            <Profile pageData={entryDefault} />
+         <div id="profile"></div>
+         {/* Profile Data/CV */}
+         <Profile pageData={entryDefault} />
 
-            {/* Story Section with drop downs */}
-            <Story pageData={entryDefault} />
+         {/* Story Section with drop downs */}
+         <Story pageData={entryDefault} />
 
-            {/* Voice Line Section */}
-            <VoiceLines pageData={entryDefault} />
-         </EntryContent>
-      </EntryParent>
+         {/* Voice Line Section */}
+         <VoiceLines pageData={entryDefault} />
+      </Entry>
    );
 }
 

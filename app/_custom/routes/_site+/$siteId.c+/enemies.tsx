@@ -11,6 +11,7 @@ import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
 import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 
 // export async function loader({
 //    context: { payload },
@@ -178,7 +179,7 @@ const EnemyList = ({ chars }: any) => {
    return (
       <>
          {/* Filter Options */}
-         <H2 text="Enemies" />
+         <CollectionHeader />
          <div className="divide-color bg-2 border-color divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
@@ -296,7 +297,7 @@ const EnemyList = ({ chars }: any) => {
                         <Link
                            prefetch="intent"
                            className="flex min-w-[200px] items-center gap-3"
-                           to={`/starrail/collections/${collectionName}/${cid}`}
+                           to={`/starrail/c/${collectionName}/${cid}`}
                         >
                            <div className="flex-none rounded-md ">
                               <Image
@@ -320,10 +321,7 @@ const EnemyList = ({ chars }: any) => {
 const ItemFrameSmall = ({ mat }: { mat: Material }) => {
    return (
       <>
-         <Link
-            prefetch="intent"
-            to={`/starrail/collections/materials/${mat?.id}`}
-         >
+         <Link prefetch="intent" to={`/starrail/c/materials/${mat?.id}`}>
             <div className="relative h-8 w-8 align-middle text-xs">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"
@@ -357,7 +355,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
       <div className="relative inline-block text-center" key={mat?.id}>
          <Link
             prefetch="intent"
-            to={`/starrail/collections/materials/${mat.materials?.id}`}
+            to={`/starrail/c/materials/${mat.materials?.id}`}
          >
             <div className="relative inline-block h-10 w-10 align-middle text-xs laptop:h-12 laptop:w-12">
                <Image

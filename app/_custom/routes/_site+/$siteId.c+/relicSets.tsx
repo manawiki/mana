@@ -7,29 +7,11 @@ import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderFunctionArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
-
 export async function loader({
-   context: { payload },
+   context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
@@ -154,11 +136,11 @@ const RelicSetList = ({ chars }: any) => {
    });
 
    return (
-      <>
+      <div className="max-desktop:pt-14">
          <div className="pb-3 laptop:pb-20">
             {/* Filter Options */}
-            <H2 text="Relic Sets" />
-            <div className="divide-color bg-2 border-color divide-y rounded-md border">
+            <CollectionHeader />
+            <div className="divide-color-sub bg-2-sub border-color-sub divide-y shadow-sm shadow-1 rounded-md border">
                {filterOptions.map((cat) => (
                   <div
                      key={cat.name}
@@ -173,7 +155,7 @@ const RelicSetList = ({ chars }: any) => {
                               key={opt.id}
                               className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
                                  filters.find((a) => a.id == opt.id)
-                                    ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                    ? `bg-zinc-50 dark:bg-zinc-500/10`
                                     : ``
                               }`}
                               onClick={(event) => {
@@ -204,12 +186,12 @@ const RelicSetList = ({ chars }: any) => {
 
             {/* Search Text Box */}
             <div
-               className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
+               className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
                       justify-between gap-3 rounded-lg border px-3 shadow-sm"
             >
-               <Search className="text-yellow-500" size={20} />
+               <Search className="text-zinc-500" size={20} />
                <input
-                  className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+                  className="h-10 w-full border-0 focus:border-0 flex-grow bg-transparent focus:outline-none"
                   placeholder="Search..."
                   value={search}
                   onChange={(event) => {
@@ -224,7 +206,7 @@ const RelicSetList = ({ chars }: any) => {
             {/* Sort Options */}
             <div className="flex items-center justify-between py-3">
                <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-yellow-500" />
+                  <SortDesc size={16} className="text-zinc-500" />
                   Sort
                </div>
                <div className="flex items-center gap-2">
@@ -234,7 +216,7 @@ const RelicSetList = ({ chars }: any) => {
                         className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
-                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
                         onClick={(event) => {
@@ -254,7 +236,7 @@ const RelicSetList = ({ chars }: any) => {
                ))}
             </div>
          </div>
-      </>
+      </div>
    );
 };
 
@@ -266,8 +248,8 @@ const EntryWithDescription = ({ char }: any) => {
       <>
          <Link
             prefetch="intent"
-            className="bg-2 border-color shadow-1 flex items-start gap-3 rounded-lg border shadow-sm"
-            to={`/starrail/collections/relicSets/${cid}`}
+            className="bg-2-sub border-color-sub shadow-1 flex items-start gap-3 rounded-lg border shadow-sm"
+            to={`/starrail/c/relicSets/${cid}`}
          >
             <div className="w-20 flex-none p-3 laptop:w-40">
                {/* Icon */}
@@ -280,13 +262,13 @@ const EntryWithDescription = ({ char }: any) => {
                {/* Name */}
                <div className="pt-1 text-center text-xs">{char.name}</div>
             </div>
-            <div className="divide-color flex-grow divide-y pr-3">
+            <div className="divide-color-sub flex-grow divide-y pr-3">
                {effect?.map((eff: any) => (
                   <div
                      key={eff.req_no}
                      className="flex items-start gap-3 py-3 text-sm"
                   >
-                     <div className="flex-none font-bold text-yellow-600 dark:text-yellow-200">
+                     <div className="flex-none font-bold text-zinc-600 dark:text-zinc-200">
                         {eff.req_no}-pc
                      </div>
                      <div

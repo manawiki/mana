@@ -8,7 +8,7 @@ import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
 
 // export async function loader({
@@ -44,7 +44,7 @@ export async function loader({
          body: JSON.stringify({
             query: QUERY_BLESSINGS,
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -202,10 +202,9 @@ const BlessingList = ({ chars }: any) => {
    });
 
    return (
-      <>
-         {/* Filter Options */}
-         <H2 text="Blessings" />
-         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+      <div className="max-desktop:pt-14 pb-4">
+         <CollectionHeader />
+         <div className="divide-color-sub bg-2-sub shadow-sm shadow-1 border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
                   key={cat.name}
@@ -218,21 +217,21 @@ const BlessingList = ({ chars }: any) => {
                      {cat.options.map((opt) => (
                         <div
                            key={opt.id}
-                           className={`bg-3 border-color rounded-lg border px-2.5 py-1 ${
+                           className={`bg-3 border-color-sub shadow-sm shadow-1 rounded-lg border px-2.5 py-1 ${
                               filters.find((a) => a.id == opt.id)
-                                 ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                 ? `bg-zinc-50 dark:bg-zinc-500/10`
                                  : ``
                            }`}
                            onClick={(event) => {
                               if (filters.find((a) => a.id == opt.id)) {
                                  setFilters(
-                                    filters.filter((a) => a.id != opt.id)
+                                    filters.filter((a) => a.id != opt.id),
                                  );
                               } else {
                                  setFilters([
                                     // Allows only one filter per category
                                     ...filters.filter(
-                                       (a) => a.field != cat.field
+                                       (a) => a.field != cat.field,
                                     ),
                                     { ...opt, field: cat.field },
                                  ]);
@@ -263,12 +262,12 @@ const BlessingList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            className="border-color-sub bg-2-sub shadow-1 mb-2 mt-4 flex h-12 items-center
             justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-yellow-500" size={24} />
+            <Search className="text-zinc-500" size={24} />
             <input
-               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               className="h-10 w-full border-0 flex-grow bg-transparent focus:outline-none"
                placeholder="Search..."
                value={search}
                onChange={(event) => {
@@ -283,7 +282,7 @@ const BlessingList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-yellow-500" />
+               <SortDesc size={16} className="text-zinc-500" />
                Sort
             </div>
             <div className="flex items-center gap-2">
@@ -294,7 +293,7 @@ const BlessingList = ({ chars }: any) => {
                         className={`border-color text-1 relative cursor-pointer 
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
-                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
                         onClick={(event) => {
@@ -309,7 +308,7 @@ const BlessingList = ({ chars }: any) => {
          </div>
 
          {/* List of items with applied sorting */}
-         <div className="grid grid-cols-2 gap-3 pb-16 text-center laptop:grid-cols-3">
+         <div className="grid grid-cols-2 gap-3 text-center laptop:grid-cols-3">
             {cfiltered?.map((char) => {
                // const pathsmall = char?.path?.icon?.url;
                const rarityurl = char?.rarity?.icon?.url;
@@ -332,12 +331,12 @@ const BlessingList = ({ chars }: any) => {
                   <Link
                      key={cid}
                      prefetch="intent"
-                     to={`/starrail/collections/${collectionName}/${cid}`}
-                     className="bg-2 border-color shadow-1 overflow-hidden rounded-lg border shadow-sm"
+                     to={`/starrail/c/${collectionName}/${cid}`}
+                     className="bg-3-sub border-color-sub shadow-1 overflow-hidden rounded-lg border shadow-sm"
                   >
                      <div>
                         <div
-                           className={`relative w-full rounded-t-md bg-gray-100 text-center dark:bg-neutral-900 color-rarity-${rarnum}`}
+                           className={`relative w-full rounded-t-md text-center bg-3-sub color-rarity-${rarnum}`}
                         >
                            {/* Rarity */}
                            <div className="absolute bottom-1 z-20 h-8 w-full text-center">
@@ -376,7 +375,7 @@ const BlessingList = ({ chars }: any) => {
                            </div>
                         </div>
                         <div
-                           className="bg-3 border-color relative w-full border-b px-2 pb-1 pt-2 
+                           className="bg-2-sub border-color-sub relative w-full border-b px-2 pb-1 pt-2 
                               text-center text-sm font-bold"
                            dangerouslySetInnerHTML={{
                               __html: cname,
@@ -393,7 +392,7 @@ const BlessingList = ({ chars }: any) => {
                );
             })}
          </div>
-      </>
+      </div>
    );
 };
 

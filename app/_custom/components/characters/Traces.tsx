@@ -37,23 +37,21 @@ function Trace({
    const activeNode = skillTreeData.find((a) => a.name == trace.name);
 
    return (
-      <div className="border-color bg-2 shadow-1 overflow-hidden rounded-lg border shadow-sm">
+      <div className="border-color-sub bg-2-sub shadow-1 overflow-hidden rounded-lg border shadow-sm">
          {/* Header with Skill Icon and Name */}
-         <div className="bg-1 relative flex items-center gap-3 p-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-700">
-               <div className="h-9 w-8 rounded-full">
-                  <Image
-                     options="aspect_ratio=1:1&height=60&width=60"
-                     className="object-contain"
-                     url={trace?.icon?.url}
-                     alt={trace.name}
-                     loading="lazy"
-                  />
-               </div>
+         <div className="bg-3-sub relative flex items-center gap-3 p-3 border-b border-color-sub">
+            <div className="flex h-11 w-11 items-center justify-center p-1 rounded-full bg-zinc-500 dark:bg-zinc-600">
+               <Image
+                  options="aspect_ratio=1:1&height=80&width=80"
+                  className="object-contain"
+                  url={trace?.icon?.url}
+                  alt={trace.name}
+                  loading="lazy"
+               />
             </div>
             <div className="space-y-1">
                <div className="font-bold">{trace.name}</div>
-               <div className="text-sm font-semibold text-yellow-500">
+               <div className="text-sm font-semibold text-1">
                   {trace.desc_type}
                </div>
             </div>
@@ -71,7 +69,7 @@ function Trace({
                   <input
                      aria-label="Level Slider"
                      className="h-1 flex-grow appearance-none justify-end
-                           rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                           rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                      type="range"
                      min="1"
                      max={trace?.description_per_level?.length}
@@ -86,7 +84,7 @@ function Trace({
 
          {/* Description */}
          <div
-            className="border-color border-t p-3 text-sm"
+            className="border-color-sub border-t p-3 text-sm"
             dangerouslySetInnerHTML={{
                __html:
                   trace?.description_per_level?.[skillLevel - 1]?.description ??
@@ -136,7 +134,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/collections/materials/${mat.materials?.id}`}>
+         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}

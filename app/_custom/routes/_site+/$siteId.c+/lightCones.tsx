@@ -2,32 +2,15 @@ import { useState } from "react";
 
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useMatches } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import type { Site } from "~/db/payload-types";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
-
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderFunctionArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
 
 export async function loader({
    context: { payload },
@@ -65,6 +48,11 @@ export const meta: MetaFunction = () => {
 };
 export default function HomePage() {
    const { lightCones } = useLoaderData<typeof loader>();
+   //site data should live in layout, this may be potentially brittle if we shift site architecture around
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
+   console.log(site);
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
          <LightConeList chars={lightCones} />
@@ -195,9 +183,9 @@ const LightConeList = ({ chars }: any) => {
 
    return (
       <>
+         <CollectionHeader />
          {/* Filter Options */}
-         <H2 text="Light Cones" />
-         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+         <div className="divide-color-sub bg-2-sub border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
                   className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
@@ -212,7 +200,7 @@ const LightConeList = ({ chars }: any) => {
                            key={opt.id}
                            className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
                               filters.find((a) => a.id == opt.id)
-                                 ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                 ? `bg-zinc-50 dark:bg-zinc-500/10`
                                  : ``
                            }`}
                            onClick={(event) => {
@@ -252,12 +240,12 @@ const LightConeList = ({ chars }: any) => {
          </div>
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 shadow-1 mb-2 mt-3 flex h-12 items-center
+            className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
                      justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-yellow-500" size={20} />
+            <Search className="text-zinc-500" size={20} />
             <input
-               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               className="h-10 w-full flex-grow border-0 bg-transparent focus:outline-none"
                placeholder="Search..."
                value={search}
                onChange={(event) => {
@@ -272,7 +260,7 @@ const LightConeList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-yellow-500" />
+               <SortDesc size={16} className="text-zinc-500" />
                Sort
             </div>
             <div className="flex items-center gap-2">
@@ -282,7 +270,7 @@ const LightConeList = ({ chars }: any) => {
                      className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
-                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
                      onClick={(event) => {
@@ -298,9 +286,9 @@ const LightConeList = ({ chars }: any) => {
          {/* Toggle Show Description */}
          <button
             type="button"
-            className={`border-color shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
+            className={`border-color-sub shadow-1 mb-3 block w-full rounded-full border-2 p-2.5 text-sm 
                font-bold underline decoration-zinc-500 underline-offset-2 shadow-sm ${
-                  showDesc ? "bg-3 bg-yellow-50" : "bg-2"
+                  showDesc ? "bg-3-sub bg-zinc-50" : "bg-2-sub"
                }`}
             onClick={() => setShowDesc(!showDesc)}
          >
@@ -352,9 +340,9 @@ const EntryWithDescription = ({ char }: any) => {
    return (
       <>
          <Link
-            className="bg-2 border-color shadow-1 relative mb-2.5 flex rounded-lg border-2 shadow-sm"
+            className="bg-2-sub border-color-sub shadow-1 relative mb-2.5 flex rounded-lg border shadow-sm"
             prefetch="intent"
-            to={`/starrail/collections/characters/${cid}`}
+            to={`/starrail/c/characters/${cid}`}
          >
             <div className="relative rounded-md p-3">
                {/* Icon */}
@@ -407,13 +395,13 @@ const EntryIconOnly = ({ char }: any) => {
       <>
          <Link
             prefetch="intent"
-            className="shadow-1 bg-2 border-color rounded-lg border p-1 shadow-sm"
-            to={`/starrail/collections/lightCones/${cid}`}
+            className="shadow-1 bg-2-sub border-color-sub rounded-lg border p-1 shadow-sm"
+            to={`/starrail/c/lightCones/${cid}`}
          >
             {/* Icon */}
             <div className="relative inline-block h-28 w-28">
                {/* Path + Path Name ? */}
-               <div className="absolute -right-1 -top-1 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
+               <div className="absolute -right-1 top-0 z-20 h-7 w-7 rounded-full bg-gray-800 bg-opacity-50">
                   <Image
                      alt="Icon"
                      className="relative inline-block object-contain"

@@ -1,5 +1,5 @@
 import type { Character } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const Profile = ({ pageData }: { pageData: Character }) => {
    const adata = [
@@ -14,15 +14,15 @@ export const Profile = ({ pageData }: { pageData: Character }) => {
       <>
          {pageData.cv_cn ? (
             <>
-               <H2 text="Profile" />
-               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
+               <H2Default text="Profile" />
+               <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
                   {adata.map((stat, index) => {
                      return (
                         <div
                            className={`${
                               index % 2 == 0
-                                 ? "bg-2 relative block"
-                                 : "bg-1 relative block"
+                                 ? "bg-2-sub relative block"
+                                 : "bg-3-sub relative block"
                            } flex items-center p-3`}
                            key={index}
                         >

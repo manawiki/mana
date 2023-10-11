@@ -6,7 +6,7 @@ export const Eidolons = ({ pageData }: { pageData: Character }) => {
 
    return (
       <div
-         className="bg-2 divide-color border-color shadow-1 mb-4 
+         className="bg-2-sub divide-color-sub border-color-sub shadow-1 mb-4 
       divide-y overflow-hidden rounded-lg border shadow"
       >
          {eidolons?.map((eid, index) => {

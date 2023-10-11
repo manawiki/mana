@@ -31,11 +31,11 @@ import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
+import { fetchShowcase } from "~/_custom/showcase-cache.server";
 import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-import { fetchShowcase } from "~/_custom/showcase-cache.server";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
@@ -214,7 +214,7 @@ const DisplayPlayerInfo = ({
    const revalidator = useRevalidator();
 
    return (
-      <main className="-mt-6 laptop:-mt-14 desktop:pb-16">
+      <main className="desktop:pb-16">
          {/* 1) Header with main information for Profile */}
          <PlayerHeader data={pdata} playerIcon={playerIcon} />
          {/* 2) Character selector for available characters in data */}
@@ -961,7 +961,7 @@ const CharacterInfo = ({
                         <Link
                            className="font-header text-2xl font-bold leading-none hover:underline"
                            prefetch="intent"
-                           to={`/starrail/collections/characters/${charbase?.id}`}
+                           to={`/starrail/c/characters/${charbase?.id}`}
                         >
                            {charbase?.name}
                         </Link>
@@ -1059,7 +1059,7 @@ const CharacterInfo = ({
                            <Link
                               className="block"
                               prefetch="intent"
-                              to={`/starrail/collections/lightCones/${lcbase?.id}`}
+                              to={`/starrail/c/lightCones/${lcbase?.id}`}
                            >
                               <div className="relative overflow-hidden rounded">
                                  <Image
@@ -1609,7 +1609,7 @@ const ItemFrameSquare = ({
       <Link
          className={`relative flex-none text-center align-middle ${style}`}
          key={mat?.id}
-         to={`/starrail/collections/relicSets/${mat?.relicset_id?.id}`}
+         to={`/starrail/c/relicSets/${mat?.relicset_id?.id}`}
       >
          <Image
             options="aspect_ratio=1:1&height=80&width=80"

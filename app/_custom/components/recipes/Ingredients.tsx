@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const Ingredients = ({ pageData }: { pageData: Recipe }) => {
    const mats = pageData?.material_cost;
@@ -11,8 +11,8 @@ export const Ingredients = ({ pageData }: { pageData: Recipe }) => {
       <>
          {mats && mats?.length > 0 ? (
             <>
-               <H2 text="Materials Required" />
-               <div className="bg-2 border-color shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
+               <H2Default text="Materials Required" />
+               <div className="bg-2-sub border-color-sub shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
                   {mats?.map((mat, key) => {
                      return <ItemQtyFrame mat={mat} key={key} />;
                   })}
@@ -41,7 +41,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
       <div className="relative inline-block text-center" key={mat?.id}>
          <Link
             prefetch="intent"
-            to={`/starrail/collections/materials/${mat.materials?.id}`}
+            to={`/starrail/c/materials/${mat.materials?.id}`}
          >
             <div className="relative mr-2 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image

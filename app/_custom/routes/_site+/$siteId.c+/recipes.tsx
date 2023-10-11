@@ -5,11 +5,10 @@ import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
-
-import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
+import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
 
 // export async function loader({
@@ -171,10 +170,10 @@ const RecipeList = ({ chars }: any) => {
    });
 
    return (
-      <>
+      <div className="max-desktop:pt-14">
          {/* Filter Options */}
-         <H2 text="Recipes" />
-         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+         <CollectionHeader />
+         <div className="divide-color-sub bg-2-sub shadow-sm shadow-1 border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
                   key={cat.name}
@@ -187,7 +186,7 @@ const RecipeList = ({ chars }: any) => {
                      {cat.options.map((opt) => (
                         <div
                            key={opt.id}
-                           className={`bg-3 border-color flex h-10 items-center gap-2 rounded-lg border p-1 ${
+                           className={`bg-3 shadow-sm shadow-1 border-color-sub flex h-10 items-center gap-2 rounded-lg border p-1 ${
                               filters.find((a) => a.id == opt.id)
                                  ? `bg-yellow-50 dark:bg-yellow-500/10`
                                  : ``
@@ -230,12 +229,12 @@ const RecipeList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            className="border-color-sub bg-2-sub shadow-1 mb-2 mt-4 flex h-12 items-center
             justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-yellow-500" size={24} />
+            <Search className="text-zinc-500" size={24} />
             <input
-               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               className="h-10 w-full border-0 focus:border-0 flex-grow bg-transparent focus:outline-none"
                placeholder="Search..."
                value={search}
                onChange={(event) => {
@@ -250,7 +249,7 @@ const RecipeList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-yellow-500" />
+               <SortDesc size={16} className="text-zinc-500" />
                Sort
             </div>
             <div className="flex items-center gap-2">
@@ -261,7 +260,7 @@ const RecipeList = ({ chars }: any) => {
                         className={`border-color text-1 relative cursor-pointer 
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
-                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
                         onClick={(event) => {
@@ -276,7 +275,7 @@ const RecipeList = ({ chars }: any) => {
          </div>
 
          {/* List of items with applied sorting */}
-         <div className="bg-2 border-color shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
+         <div className="bg-2-sub border-color-sub shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
             {cfiltered?.map((char) => {
                // const rarityurl = char?.result_item?.rarity?.icon?.url;
                const rarnum = char?.result_item?.rarity?.display_number;
@@ -295,7 +294,7 @@ const RecipeList = ({ chars }: any) => {
                         <Link
                            prefetch="intent"
                            className="flex min-w-[200px] items-center gap-3"
-                           to={`/starrail/collections/${collectionName}/${cid}`}
+                           to={`/starrail/c/${collectionName}/${cid}`}
                         >
                            <div className="h-12 w-12 flex-none rounded-md laptop:h-16 laptop:w-16">
                               <Image
@@ -332,7 +331,7 @@ const RecipeList = ({ chars }: any) => {
                                              ))}
                                           </div>
                                           <div
-                                             className="mt-0.5 w-full rounded-sm bg-bg1Dark
+                                             className="mt-0.5 w-full rounded-sm bg-dark500
                                                 text-center align-middle text-xs font-bold text-white"
                                           >
                                              {specnum}
@@ -348,17 +347,14 @@ const RecipeList = ({ chars }: any) => {
                );
             })}
          </div>
-      </>
+      </div>
    );
 };
 
 const ItemFrameSmall = ({ mat }: { mat: Material }) => {
    return (
       <>
-         <Link
-            prefetch="intent"
-            to={`/starrail/collections/materials/${mat?.id}`}
-         >
+         <Link prefetch="intent" to={`/starrail/c/materials/${mat?.id}`}>
             <div className="relative h-8 w-8 align-middle text-xs">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"
@@ -392,7 +388,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
       <div className="relative inline-block text-center" key={mat?.id}>
          <Link
             prefetch="intent"
-            to={`/starrail/collections/materials/${mat.materials?.id}`}
+            to={`/starrail/c/materials/${mat.materials?.id}`}
          >
             <div className="relative inline-block h-10 w-10 align-middle text-xs laptop:h-12 laptop:w-12">
                <Image
@@ -404,7 +400,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
                   alt={mat.materials?.name}
                />
             </div>
-            <div className="relative w-10 rounded-b-sm bg-bg1Dark align-middle text-xs text-white laptop:w-12">
+            <div className="relative w-10 rounded-b-sm bg-dark500 align-middle text-xs text-white laptop:w-12">
                {mat?.qty}
             </div>
          </Link>

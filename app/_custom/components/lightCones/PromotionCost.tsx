@@ -1,10 +1,10 @@
 import type { LightCone, Material } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
+import { H2, H2Default } from "~/components/H2";
 
 export const PromotionCost = ({ pageData }: { pageData: LightCone }) => {
    return (
       <>
-         <H2 text="Promotion Cost" />
+         <H2Default text="Promotion Cost" />
          <table className="talent-table w-full overflow-auto text-sm">
             <thead>
                <tr className="text-sm">
@@ -47,7 +47,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/collections/materials/${mat.materials?.id}`}>
+         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}

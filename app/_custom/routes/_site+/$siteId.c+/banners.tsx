@@ -6,7 +6,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -84,7 +84,6 @@ export const meta: MetaFunction = () => {
       {
          title: "Banners - Honkai: Star Rail",
       },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
 export default function HomePage() {
@@ -104,19 +103,16 @@ const BannerList = ({ banners }: any) => {
 
    return (
       <>
-         <div className="">
+         <div className="max-desktop:pt-14 pb-6">
             {/* List of Characters with applied sorting */}
-            <H2 text="Banners" />
-            <div className="space-y-2.5 pb-10">
+            <CollectionHeader />
+            <div className="space-y-2.5">
                {banners?.map((b: any) => (
                   <div
                      key={b?.name}
-                     className="border-color shadow-1 bg-1 relative overflow-hidden rounded-lg border bg-zinc-50 shadow-sm"
+                     className="border-color-sub shadow-1 bg-2-sub relative overflow-hidden rounded-lg border shadow-sm"
                   >
-                     <div
-                        className="border-color items-center justify-between border-b 
-                              bg-zinc-100 p-3 dark:bg-bg2Dark max-laptop:space-y-1 laptop:flex"
-                     >
+                     <div className="border-color-sub items-center justify-between border-b bg-3-sub p-3  max-laptop:space-y-1 laptop:flex">
                         <div className="font-bold">{b?.name}</div>
                         <div className="text-1 text-xs">
                            <Suspense
@@ -179,7 +175,7 @@ const CharFrame = ({ char }: any) => {
       <Link
          prefetch="intent"
          className="flex items-center gap-2.5"
-         to={`/starrail/collections/characters/${char?.id}`}
+         to={`/starrail/c/characters/${char?.id}`}
       >
          <div className="h-12 w-12 flex-none">
             <Image
@@ -203,7 +199,7 @@ const LightConeFrame = ({ char }: any) => {
       <Link
          prefetch="intent"
          className="flex items-center gap-2.5"
-         to={`/starrail/collections/lightCones/${char?.id}`}
+         to={`/starrail/c/lightCones/${char?.id}`}
       >
          <div className="h-12 w-12 flex-none">
             <Image

@@ -56,10 +56,10 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
          levelSliderValue +
             (levelAscensionCheck &&
             ["20", "30", "40", "50", "60", "70"].indexOf(
-               levelSliderValue.toString()
+               levelSliderValue.toString(),
             ) > -1
                ? "A"
-               : "")
+               : ""),
       );
 
       if (!statTable || !statIndex || !levels) return "";
@@ -73,7 +73,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
             {/* ======================== */}
             {/* 1) Character Image div */}
             {/* ======================== */}
-            <section className="bg-2 shadow-1 border-color relative w-full overflow-hidden rounded-md border text-center shadow-sm">
+            <section className="bg-2-sub shadow-1 border-color-sub relative w-full overflow-hidden rounded-md border text-center shadow-sm">
                {/* Element Symbol */}
                <div
                   className="absolute left-3 top-3 z-10 h-10 w-10
@@ -125,8 +125,8 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
             <section>
-               <div className="bg-2 shadow-1 border-color mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
-                  <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
+               <div className="bg-2-sub shadow-1 border-color-sub mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
+                  <div className="h-10 w-10 flex-none rounded-full bg-zinc-500">
                      <Image
                         className="relative inline-block object-contain"
                         options="aspect_ratio=1:1&height=80&width=80"
@@ -137,14 +137,14 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                   <div className="font-bold">{pathname}</div>
                </div>
 
-               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
+               <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat, index) => {
                      return (
                         <div
                            className={`${
                               stat.colormod
-                                 ? "bg-2 relative block"
-                                 : "bg-1 relative block"
+                                 ? "bg-2-sub relative block"
+                                 : "bg-3-sub relative block"
                            } flex items-center px-3 py-2.5`}
                            key={index}
                         >
@@ -163,12 +163,14 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                                     />
                                  </div>
                               )}
-                              <div className="text-1 font-bold">
+                              <div className="text-1 text-sm font-bold">
                                  {stat.stat}
                               </div>
                            </div>
                            {/* 2biii) Stat value */}
-                           <div className="">{getStatValue(stat.stat)}</div>
+                           <div className="text-sm">
+                              {getStatValue(stat.stat)}
+                           </div>
 
                            {/* 2bii.a) Show bonus icon if stat is Secondary Stat ? */}
                            {/* 
@@ -193,7 +195,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
          {/* ======================== */}
          {/* 2a) Header for Adjusting Level and Slider */}
          {/* ======================== */}
-         <div className="bg-2 shadow-1 border-color my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
+         <div className="bg-2-sub shadow-1 border-color-sub my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
             <div className="flex w-full items-center justify-between text-center">
                <div className="flex items-center gap-1">
                   {/* Level Label */}
@@ -202,7 +204,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                   </div>
                   {/* Level Input Box */}
                   <input
-                     className="scale-20 level-input-box border-color bg-1 ml-1 mr-2 inline-flex
+                     className="scale-20 level-input-box border-color-sub bg-3-sub ml-1 mr-2 inline-flex
                      w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
                      type="number"
                      aria-label="Level"
@@ -230,13 +232,13 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                   {/* Ascension Checkbox */}
                   <input
                      className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
-                     justify-between rounded-sm align-middle text-yellow-500"
+                     justify-between rounded-sm align-middle text-zinc-500"
                      type="checkbox"
                      aria-label="Ascension"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
                         ["20", "30", "40", "50", "60", "70"].indexOf(
-                           levelSliderValue.toString()
+                           levelSliderValue.toString(),
                         ) > -1
                            ? false
                            : true
@@ -251,7 +253,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
                <input
                   aria-label="Level Slider"
                   className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
-                   rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                   rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                   type="range"
                   min="1"
                   max="80"

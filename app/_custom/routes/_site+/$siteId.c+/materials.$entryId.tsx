@@ -1,4 +1,49 @@
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
+import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
+import {
+   getAllEntryData,
+   getCustomEntryData,
+   meta,
+} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+
+export { meta };
+
+export async function loader({
+   context: { payload, user },
+   params,
+   request,
+}: LoaderFunctionArgs) {
+   const { entry } = await getAllEntryData({
+      payload,
+      params,
+      request,
+      user,
+   });
+   const entryDefault = (await getCustomEntryData({
+      payload,
+      params,
+      request,
+      depth: 3,
+   })) as Material;
+
+   //Feel free to query for more data here
+
+   return json({ entryDefault, entry });
+}
+
+export default function MaterialsEntry() {
+   const { entryDefault } = useLoaderData<typeof loader>();
+
+   return (
+      <Entry>
+         <Header pageData={entryDefault} />
+      </Entry>
+   );
+}
 
 export const Header = ({ pageData }: any) => {
    const iconurl = pageData?.icon?.url;
@@ -17,7 +62,7 @@ export const Header = ({ pageData }: any) => {
             {/* ======================== */}
             <section>
                <div
-                  className="bg-2 border-color shadow-1 relative w-full
+                  className="bg-2-sub border-color-sub shadow-1 relative w-full
                 rounded-lg border text-center shadow-sm"
                >
                   {/* Rarity */}
@@ -57,7 +102,7 @@ export const Header = ({ pageData }: any) => {
                   </div>
                </div> */}
 
-               <div className="divide-color border-color shadow-1 mb-4 divide-y overflow-hidden rounded-md border shadow-sm">
+               <div className="divide-color-sub border-color-sub shadow-1 mb-4 divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (
                         /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
@@ -65,8 +110,8 @@ export const Header = ({ pageData }: any) => {
                            className={`
                       ${
                          index % 2 == 1
-                            ? "bg-1 relative block"
-                            : "bg-2 relative block"
+                            ? "bg-2-sub relative block"
+                            : "bg-3-sub relative block"
                       } flex items-center p-2`}
                            key={index}
                         >
@@ -113,7 +158,7 @@ export const Header = ({ pageData }: any) => {
                   })}
                </div>
 
-               <div className="border-color bg-2 shadow-1 my-2 mb-3 rounded-md border p-3 text-sm shadow-sm">
+               <div className="border-color-sub bg-2-sub shadow-1 my-2 mb-3 rounded-md border p-3 text-sm shadow-sm">
                   <div
                      dangerouslySetInnerHTML={{ __html: pageData?.description }}
                   ></div>

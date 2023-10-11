@@ -8,7 +8,7 @@ import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -82,10 +82,10 @@ export const meta: MetaFunction = () => {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
-export default function HomePage() {
+export default function CharactersList() {
    const { characters } = useLoaderData<typeof loader>();
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
+      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 max-laptop:pt-14">
          <CharacterList chars={characters} />
       </div>
    );
@@ -283,9 +283,8 @@ const CharacterList = ({ chars }: any) => {
 
    return (
       <>
-         {/* Filter Options */}
-         <H2 text="Characters" />
-         <div className="divide-color bg-2 border-color divide-y rounded-md border">
+         <CollectionHeader />
+         <div className="divide-color-sub bg-2-sub border-color-sub divide-y rounded-md border shadow-sm shadow-1">
             {filterOptions.map((cat) => {
                return (
                   <div
@@ -300,9 +299,9 @@ const CharacterList = ({ chars }: any) => {
                            return (
                               <div
                                  key={opt.id}
-                                 className={`bg-3 border-color shadow-1 items-center rounded-lg border px-2.5 py-1 shadow-sm ${
+                                 className={`bg-3 border-color-sub shadow-1 items-center rounded-lg border px-2.5 py-1 shadow-sm ${
                                     filters.find((a) => a.id == opt.id)
-                                       ? `bg-yellow-50 dark:bg-yellow-500/10`
+                                       ? `bg-zinc-50 dark:bg-dark450`
                                        : ``
                                  }`}
                                  onClick={(event) => {
@@ -347,12 +346,12 @@ const CharacterList = ({ chars }: any) => {
 
          {/* Search Text Box */}
          <div
-            className="border-color bg-2 shadow-1 mb-2 mt-4 flex h-12 items-center
+            className="border-color-sub bg-2-sub shadow-1 mb-2 mt-4 flex h-12 items-center
             justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-yellow-500" size={24} />
+            <Search className="text-zinc-500" size={24} />
             <input
-               className="h-10 w-full flex-grow bg-transparent focus:outline-none"
+               className="h-10 w-full border-0 flex-grow bg-transparent focus:outline-none"
                placeholder="Search..."
                value={search}
                onChange={(event) => {
@@ -367,7 +366,7 @@ const CharacterList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-yellow-500" />
+               <SortDesc size={16} className="text-zinc-500" />
                Sort
             </div>
             <div className="flex items-center gap-2">
@@ -378,7 +377,7 @@ const CharacterList = ({ chars }: any) => {
                         className={`border-color text-1 relative cursor-pointer 
                         rounded-full border px-4 py-1 text-center text-xs font-bold ${
                            sort == opt.field
-                              ? `bg-yellow-50 dark:bg-yellow-500/10`
+                              ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
                         onClick={(event) => {
@@ -405,8 +404,8 @@ const CharacterList = ({ chars }: any) => {
                   <Link
                      key={cid}
                      prefetch="intent"
-                     to={`/starrail/collections/characters/${cid}`}
-                     className="bg-2 border-color shadow-1 flex items-center justify-center rounded-md border p-2 shadow-sm"
+                     to={`/starrail/c/characters/${cid}`}
+                     className="bg-2-sub border-color-sub shadow-1 flex items-center justify-center rounded-md border p-2 shadow-sm"
                   >
                      {/* Character Icon */}
                      <div className="relative w-full">

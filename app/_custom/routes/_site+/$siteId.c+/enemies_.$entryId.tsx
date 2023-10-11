@@ -12,12 +12,10 @@ import { Skills } from "~/_custom/components/enemies/Skills";
 import { Stats } from "~/_custom/components/enemies/Stats";
 import { H2 } from "~/components/H2";
 import {
-   EntryParent,
-   EntryHeader,
-   meta,
-   EntryContent,
    getCustomEntryData,
-} from "~/modules/collections";
+   meta,
+} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 
 export { meta };
 
@@ -67,35 +65,32 @@ export default function CharacterEntry() {
    const [version, setVersion] = useState(0);
 
    return (
-      <EntryParent>
-         <EntryHeader entry={entryDefault} />
-         <EntryContent>
-            {/* Selector for Enemy Version */}
-            <Selector
-               pageData={entryDefault}
-               version={version}
-               setVersion={setVersion}
-            />
+      <Entry>
+         {/* Selector for Enemy Version */}
+         <Selector
+            pageData={entryDefault}
+            version={version}
+            setVersion={setVersion}
+         />
 
-            {/* Image */}
-            <Stats pageData={entryDefault} version={version} />
+         {/* Image */}
+         <Stats pageData={entryDefault} version={version} />
 
-            {/* Skill List */}
-            <H2 text="Skills" />
-            <Skills pageData={entryDefault} version={version} />
+         {/* Skill List */}
+         <H2 text="Skills" />
+         <Skills pageData={entryDefault} version={version} />
 
-            {/* Resistances */}
-            <H2 text="Resistances" />
-            <Resistances pageData={entryDefault} version={version} />
+         {/* Resistances */}
+         <H2 text="Resistances" />
+         <Resistances pageData={entryDefault} version={version} />
 
-            {/* Drop Rewards */}
-            <H2 text="Drops" />
-            <Drops pageData={entryDefault} version={version} />
+         {/* Drop Rewards */}
+         <H2 text="Drops" />
+         <Drops pageData={entryDefault} version={version} />
 
-            {/* Additional Data */}
-            <H2 text="Additional Data" />
-            <AdditionalData pageData={entryDefault} version={version} />
-         </EntryContent>
-      </EntryParent>
+         {/* Additional Data */}
+         <H2 text="Additional Data" />
+         <AdditionalData pageData={entryDefault} version={version} />
+      </Entry>
    );
 }

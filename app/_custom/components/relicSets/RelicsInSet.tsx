@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 
 import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { H2, H2Default } from "~/components/H2";
 
 export const RelicsInSet = ({
    pageData,
@@ -50,7 +50,7 @@ export const RelicsInSet = ({
    const activeData = relicData.find(
       (r) =>
          r.name == activeRelic &&
-         r.rarity?.display_number == activeRarity.toString()
+         r.rarity?.display_number == activeRarity.toString(),
    );
 
    // Sort mainstats
@@ -63,7 +63,7 @@ export const RelicsInSet = ({
            b.stattype?.stat_id &&
            b.stattype?.stat_id > a.stattype?.stat_id
          ? -1
-         : 0
+         : 0,
    );
 
    // Sort substats
@@ -76,7 +76,7 @@ export const RelicsInSet = ({
            b.stattype?.stat_id &&
            b.stattype?.stat_id > a.stattype?.stat_id
          ? -1
-         : 0
+         : 0,
    );
 
    // Get currently selected rarity's maxlv
@@ -84,7 +84,7 @@ export const RelicsInSet = ({
 
    return (
       <>
-         <H2 text="Relics in Set" />
+         <H2Default text="Relics in Set" />
          <div className="grid grid-cols-2 gap-3 pb-4 laptop:grid-cols-4">
             {urelics?.map((rname) => {
                // Find the relic's entries in the relicData array
@@ -99,8 +99,8 @@ export const RelicsInSet = ({
                      }}
                      className={`shadow-1 rounded-xl border p-3 shadow ${
                         activeRelic == rname
-                           ? "border-yellow-200 bg-yellow-50 dark:border-zinc-600 dark:bg-zinc-700"
-                           : "bg-2 border-color"
+                           ? "border-zinc-300 bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700"
+                           : "bg-2-sub border-color"
                      }`}
                   >
                      <Image
@@ -122,7 +122,7 @@ export const RelicsInSet = ({
          </div>
 
          {/* Show information for selected Relic */}
-         <div className="shadow-1 bg-2 border-color mb-3 flex w-full justify-between gap-2 rounded-xl border p-2.5 shadow-sm">
+         <div className="shadow-1 bg-2-sub border-color-sub mb-3 flex w-full justify-between gap-2 rounded-xl border p-2.5 shadow-sm">
             {rarities.map((r) => (
                <button
                   key={r}
@@ -139,23 +139,23 @@ export const RelicsInSet = ({
                         (maxlevels.find((rar) => rar.rarity == r)?.maxlv ?? 0)
                      ) {
                         setMainLevel(
-                           maxlevels.find((rar) => rar.rarity == r)?.maxlv ?? 0
+                           maxlevels.find((rar) => rar.rarity == r)?.maxlv ?? 0,
                         );
                      }
                   }}
                >
                   {r}
-                  <Star className="text-yellow-500" size={16} />
+                  <Star className="text-zinc-500" size={16} />
                </button>
             ))}
          </div>
 
-         <div className="border-color bg-2 shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
-            <div className="border-color border-b p-3 font-bold">
+         <div className="border-color-sub bg-2-sub shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
+            <div className="border-color-sub border-b p-3 font-bold">
                Main Stats
             </div>
             {/* Level Slider Section */}
-            <div className="flex items-center justify-center gap-2 bg-white px-3 py-2 dark:bg-bg1Dark">
+            <div className="flex items-center justify-center gap-2 bg-2-sub px-3 py-2">
                <div className="inline-flex justify-between pr-0.5 align-middle">
                   Lv + {mainLevel}
                </div>
@@ -163,7 +163,7 @@ export const RelicsInSet = ({
                <input
                   aria-label="Level Slider"
                   className="h-1 flex-grow appearance-none justify-end
-                  rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                  rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                   type="range"
                   min="0"
                   max={maxlv ?? 15}
@@ -175,7 +175,7 @@ export const RelicsInSet = ({
             </div>
 
             {/* All tiled possible Main Stats with symbol if available */}
-            <div className="divide-color border-color divide-y border-t bg-white dark:bg-bg1Dark">
+            <div className="divide-color-sub border-color-sub divide-y border-t bg-3-sub">
                {mainStatData?.map((stat) => (
                   <div
                      key={stat.stattype?.name}
@@ -196,7 +196,7 @@ export const RelicsInSet = ({
                      <div>
                         {formatStat(
                            (stat?.stats as number[])[mainLevel],
-                           stat.stattype
+                           stat.stattype,
                         )}
                      </div>
                   </div>
@@ -205,10 +205,12 @@ export const RelicsInSet = ({
          </div>
 
          {/* Substat Data */}
-         <div className="border-color bg-2 shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
-            <div className="border-color border-b p-3 font-bold">Sub Stats</div>
+         <div className="border-color-sub bg-2-sub shadow-1 mb-3 overflow-hidden rounded-lg border shadow-sm">
+            <div className="border-color-sub border-b p-3 font-bold">
+               Sub Stats
+            </div>
             {/* All tiled possible Substats, and their three possible rolls */}
-            <div className="divide-color border-color divide-y bg-white dark:bg-bg1Dark">
+            <div className="divide-color-sub border-color-sub divide-y bg-3-sub">
                {subStatData?.map((stat) => (
                   <div
                      key={stat.stattype?.name}
@@ -245,7 +247,7 @@ export const RelicsInSet = ({
 
 function formatStat(
    stat: number,
-   stattype?: { name?: string; property_classify?: number }
+   stattype?: { name?: string; property_classify?: number },
 ) {
    const classify = stattype?.property_classify;
 

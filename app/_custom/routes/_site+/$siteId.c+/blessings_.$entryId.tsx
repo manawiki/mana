@@ -1,5 +1,83 @@
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+
 import type { Blessing } from "payload/generated-custom-types";
 import { Image } from "~/components";
+import { H2Default } from "~/components/H2";
+import {
+   getAllEntryData,
+   getCustomEntryData,
+   meta,
+} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+
+export { meta };
+
+export async function loader({
+   context: { payload, user },
+   params,
+   request,
+}: LoaderFunctionArgs) {
+   const { entry } = await getAllEntryData({
+      payload,
+      params,
+      request,
+      user,
+   });
+
+   const entryDefault = (await getCustomEntryData({
+      payload,
+      params,
+      request,
+      depth: 2,
+   })) as Blessing;
+
+   // Remove html tags from entry name
+   // `<i><unbreak>12</unbreak> Monkeys and Angry Men</i>` to `12 Monkeys and Angry Men`
+   if (entryDefault?.name)
+      entryDefault.name = entryDefault?.name?.replace(/(<([^>]+)>)/gi, "");
+
+   //Feel free to query for more data here
+
+   // ======================
+   // Pull Skill Tree data for character
+   // ======================
+   // const url = new URL(request.url).pathname;
+   // const cid = url.split("/")[4];
+
+   // const skillTreeRaw = await payload.find({
+   //    // @ts-ignore
+   //    collection: `skillTree-lKJ16E5IhH`,
+   //    where: {
+   //       character: {
+   //          equals: "character-" + cid,
+   //       },
+   //    },
+   //    depth: 3,
+   //    limit: 20,
+   // });
+
+   // const skillTreeData = skillTreeRaw.docs;
+
+   // ======================
+   // ======================
+
+   return json({ entryDefault, entry });
+}
+
+export default function BlessingEntry() {
+   const { entryDefault } = useLoaderData<typeof loader>();
+
+   return (
+      <Entry>
+         {/* Image */}
+         <Header pageData={entryDefault} />
+
+         {/* Effect List - Various Levels */}
+         <Effects pageData={entryDefault} />
+      </Entry>
+   );
+}
 
 export const Header = ({ pageData }: { pageData: Blessing }) => {
    const roguebgurl =
@@ -71,7 +149,7 @@ export const Header = ({ pageData }: { pageData: Blessing }) => {
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
             <section>
-               <div className="bg-2 border-color shadow-1 mb-3 flex items-center gap-3 rounded-md border p-2 shadow-sm">
+               <div className="bg-2-sub border-color-sub shadow-1 mb-3 flex items-center gap-3 rounded-md border p-2 shadow-sm">
                   <div className="relative h-10 w-10 rounded-full bg-gray-800">
                      <Image
                         options="aspect_ratio=1:1&height=80&width=80"
@@ -83,11 +161,11 @@ export const Header = ({ pageData }: { pageData: Blessing }) => {
                   <div className="text-1 font-bold">{pathname}</div>
                </div>
 
-               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
+               <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
                   <div
                      className={`
                       ${
-                         1 ? "bg-2 relative block" : "bg-1 relative block"
+                         1 ? "bg-2-sub relative block" : "bg-1 relative block"
                       } flex items-center px-3 py-2.5`}
                   >
                      {/* 2bi) Stat Icon */}
@@ -100,6 +178,33 @@ export const Header = ({ pageData }: { pageData: Blessing }) => {
                </div>
             </section>
          </div>
+      </>
+   );
+};
+
+const Effects = ({ pageData }: { pageData: Blessing }) => {
+   const effects = pageData?.effects;
+
+   return (
+      <>
+         <H2Default text="Effect" />
+         <section className="divide-color-sub shadow-1 bg-2-sub border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
+            {effects?.map((eff, i) => {
+               const lv = eff?.level;
+               const desc = eff?.description;
+               // const descsimple = eff?.description_simple;
+
+               return (
+                  <div key={i} className="p-3">
+                     <div className="pb-1 font-bold"> Lv. {lv}</div>
+                     <div
+                        className="text-1"
+                        dangerouslySetInnerHTML={{ __html: desc ?? "" }}
+                     ></div>
+                  </div>
+               );
+            })}
+         </section>
       </>
    );
 };

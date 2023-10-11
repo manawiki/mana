@@ -1,7 +1,7 @@
 import { Tab } from "@headlessui/react";
 
 import type { Character, Image } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const VoiceLines = ({ pageData }: { pageData: Character }) => {
    const lines = pageData.voice_lines;
@@ -9,7 +9,7 @@ export const VoiceLines = ({ pageData }: { pageData: Character }) => {
       <>
          {lines && lines?.length > 0 ? (
             <>
-               <H2 text="Voice Lines" />
+               <H2Default text="Voice Lines" />
                <table className="mb-3 w-full">
                   <thead></thead>
                   <tbody>
@@ -75,7 +75,7 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                                  <div
                                     className={`${
                                        selected
-                                          ? "bg-yellow-50 dark:bg-yellow-500/10"
+                                          ? "bg-zinc-50 dark:bg-zinc-500/10"
                                           : "bg-white dark:bg-bg2Dark"
                                     } shadow-1 border-color flex h-6 w-full items-center justify-center rounded-full border px-3 shadow-sm`}
                                  >

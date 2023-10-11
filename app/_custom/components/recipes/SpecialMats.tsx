@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
    const spec = pageData?.special_material_cost;
@@ -12,12 +12,12 @@ export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
       <>
          {spec && spec?.length > 0 ? (
             <>
-               <H2 text="Special Materials Required" />
-               <section className="border-color bg-2 shadow-1 rounded-lg border shadow-sm">
-                  <div className="border-color flex items-center gap-2 border-b p-3 text-sm font-bold">
+               <H2Default text="Special Materials Required" />
+               <section className="border-color-sub bg-2-sub shadow-1 rounded-lg border shadow-sm">
+                  <div className="border-color-sub flex items-center gap-2 border-b p-3 text-sm font-bold">
                      <span>Total Required</span>
                      <span
-                        className="bg-3 border-color shadow-1 flex h-6 w-6 
+                        className="bg-3 border-color-sub shadow-1 flex h-6 w-6 
                      items-center justify-center rounded-full border shadow-sm"
                      >
                         {specnum}
@@ -49,7 +49,7 @@ const ItemFrame = ({ mat }: { mat: Material }) => {
          className="relative inline-block text-center"
          key={mat?.id}
          prefetch="intent"
-         to={`/starrail/collections/materials/${mat?.id}`}
+         to={`/starrail/c/materials/${mat?.id}`}
       >
          <div className="relative mr-2 mt-2 inline-block h-16 w-16 align-middle text-xs">
             <Image
@@ -81,7 +81,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <Link to={`/starrail/collections/materials/${mat.materials?.id}`}>
+         <Link to={`/starrail/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"

@@ -28,7 +28,7 @@ export const SkillTree = ({
          ? 1
          : a?.anchor && b?.anchor && b.anchor > a.anchor
          ? -1
-         : 0
+         : 0,
    );
 
    const connectorcount = {
@@ -43,7 +43,7 @@ export const SkillTree = ({
    // Initialize an array of form [1, 2, 3, ... n], where n is the number of connectors for the character's Path (from connectorcount)
    const connectorlist = Array.from(
       { length: connectorcount[pathkey] },
-      (v, k) => k + 1
+      (v, k) => k + 1,
    );
 
    // Used by display for individual nodes when clicked.
@@ -51,10 +51,7 @@ export const SkillTree = ({
 
    return (
       <>
-         <div
-            className="shadow-1 shadow-1 rounded-lg bg-zinc-500 text-center
-          shadow-sm dark:bg-bg2Dark"
-         >
+         <div className="shadow-1 rounded-lg border border-color-sub bg-zinc-500 text-center shadow-sm dark:bg-dark350">
             <div className="canvas mx-auto flex items-center justify-center">
                <div className={`canvas-${pathkey}`}></div>
 
@@ -84,7 +81,7 @@ export const SkillTree = ({
          </div>
          <div className="text-center">
             {treeNode > 0 ? (
-               <div className="-mt-2 inline-block w-full rounded-b-md bg-zinc-500 p-3 dark:bg-bg2Dark">
+               <div className="-mt-2 inline-block w-full rounded-b-md bg-zinc-500 p-3 dark:bg-dark350">
                   {/* Node Name */}
                   <div className="text-lg font-bold text-zinc-100">
                      {activeNode.name}
@@ -103,7 +100,7 @@ export const SkillTree = ({
                            <input
                               aria-label="Level Slider"
                               className="h-1 flex-grow appearance-none justify-end
-                              rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                              rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                               type="range"
                               min="1"
                               max={
@@ -177,7 +174,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/collections/materials/${mat.materials?.id}`}>
+         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
             <div
                className="relative mr-0.5 mt-0.5 inline-block h-11 w-11
             align-middle text-xs"

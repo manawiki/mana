@@ -25,10 +25,10 @@ export const LazyStatsGraph = ({
          {({ open }) => (
             <>
                <Disclosure.Button
-                  className="border-color bg-2 shadow-1 mb-2 flex w-full items-center
+                  className="border-color-sub bg-2-sub shadow-1 mb-2 flex w-full items-center
                          gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                >
-                  <BarChart2 size={20} className="text-yellow-500" />
+                  <BarChart2 size={20} className="text-zinc-500" />
                   Stat Graph
                   <div
                      className={`${
@@ -38,7 +38,7 @@ export const LazyStatsGraph = ({
                      <ChevronDown size={28} />
                   </div>
                </Disclosure.Button>
-               <Disclosure.Panel className="mb-5">
+               <Disclosure.Panel className="mb-5 border-color-sub bg-2-sub">
                   <Suspense fallback={<div>Loading Stats Graph...</div>}>
                      <StatsGraph stats={stats} statsList={statsList} />
                   </Suspense>

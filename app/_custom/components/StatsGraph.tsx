@@ -12,7 +12,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-
 ChartJS.register(
    CategoryScale,
    LinearScale,
@@ -20,7 +19,7 @@ ChartJS.register(
    LineElement,
    Title,
    Tooltip,
-   Legend
+   Legend,
 );
 
 // =====================================
@@ -141,11 +140,11 @@ export const StatsGraph = ({
    };
 
    return (
-      <div className="bg-2 border-color rounded-md border px-4 py-3 text-center text-sm">
+      <div className="bg-2-sub border-color-sub rounded-md border px-4 shadow-sm shadow-1 py-3 text-center text-sm">
          <div className="inline-block px-2 font-bold">Display Stat: </div>
          {/* Stat Select Drop Down */}
          <select
-            className="bg-1 border-color inline-block rounded-lg border"
+            className="bg-3-sub border-color-sub inline-block rounded-lg border"
             name="stats"
             value={graphStat}
             onChange={(event) => setGraphStat(event.target.value)}

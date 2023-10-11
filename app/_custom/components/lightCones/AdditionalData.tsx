@@ -1,5 +1,5 @@
 import type { LightCone } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
    const adata = [
@@ -10,8 +10,8 @@ export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
 
    return (
       <>
-         <H2 text="Additional Data" />
-         <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-lg border shadow-sm">
+         <H2Default text="Additional Data" />
+         <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
             {adata.map((stat, index) => {
                return (
                   <div
@@ -19,8 +19,8 @@ export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
                       /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
                          index % 2 == 0
-                            ? "bg-2 relative block"
-                            : "bg-1 relative block"
+                            ? "bg-2-sub relative block"
+                            : "bg-3-sub relative block"
                       } flex items-center p-3`}
                      key={index}
                   >

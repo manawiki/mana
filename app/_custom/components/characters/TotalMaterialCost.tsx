@@ -27,7 +27,7 @@ export const TotalMaterialCost = ({
          for (let j = 0; j < material_qty.length; j++) {
             const currMat = { ...material_qty?.[j] } as ItemQtyFrameProps;
             const existIndex = promotionTotal.findIndex(
-               (a) => a.materials?.id == currMat.materials?.id
+               (a) => a.materials?.id == currMat.materials?.id,
             );
             if (existIndex == -1) {
                promotionTotal.push(currMat);
@@ -52,7 +52,7 @@ export const TotalMaterialCost = ({
          for (let j = 0; j < material_qty?.length; j++) {
             const currMat = { ...material_qty[j] } as ItemQtyFrameProps;
             const existIndex = skillTreeTotal.findIndex(
-               (a: any) => a.materials?.id == currMat.materials?.id
+               (a: any) => a.materials?.id == currMat.materials?.id,
             );
             if (existIndex == -1) {
                skillTreeTotal.push(currMat);
@@ -69,7 +69,7 @@ export const TotalMaterialCost = ({
    for (let i = 0; i < promotionTotal.length; i++) {
       const currMat = { ...promotionTotal[i] } as ItemQtyFrameProps;
       const existIndex = allTotal.findIndex(
-         (a) => a.materials?.id == currMat.materials?.id
+         (a) => a.materials?.id == currMat.materials?.id,
       );
       if (existIndex == -1) {
          allTotal.push(currMat);
@@ -80,7 +80,7 @@ export const TotalMaterialCost = ({
    for (let i = 0; i < skillTreeTotal.length; i++) {
       const currMat = { ...skillTreeTotal[i] };
       const existIndex = allTotal.findIndex(
-         (a: any) => a.materials?.id == currMat.materials?.id
+         (a: any) => a.materials?.id == currMat.materials?.id,
       );
       if (existIndex == -1) {
          allTotal.push(currMat);
@@ -160,7 +160,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center">
-         <a href={`/starrail/collections/materials/${mat.materials?.id}`}>
+         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}

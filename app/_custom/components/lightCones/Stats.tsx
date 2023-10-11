@@ -47,10 +47,10 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
          levelSliderValue +
             (levelAscensionCheck &&
             ["20", "30", "40", "50", "60", "70"].indexOf(
-               levelSliderValue.toString()
+               levelSliderValue.toString(),
             ) > -1
                ? "A"
-               : "")
+               : ""),
       );
 
       if (!statTable || !statIndex || !levels) return "";
@@ -65,7 +65,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
             {/* 1) Character Image div */}
             {/* ======================== */}
             <div
-               className="bg-2 shadow-1 border-color relative flex items-center justify-center overflow-hidden rounded-md 
+               className="bg-2-sub shadow-1 border-color-sub relative flex items-center justify-center overflow-hidden rounded-md 
                   border text-center shadow-sm max-laptop:mb-3 laptop:w-72"
             >
                {/* Rarity */}
@@ -87,8 +87,8 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
             {/* 2) Character Stat Block Section */}
             {/* ======================== */}
             <div className="flex-grow">
-               <div className="bg-2 shadow-1 border-color mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
-                  <div className="h-10 w-10 flex-none rounded-full bg-bg4Dark">
+               <div className="bg-2-sub shadow-1 border-color-sub mb-3 flex items-center gap-3 rounded-md border p-3 shadow-sm">
+                  <div className="h-10 w-10 bg-zinc-500 flex-none rounded-full">
                      <Image
                         className="relative inline-block object-contain"
                         options="aspect_ratio=1:1&height=80&width=80"
@@ -98,7 +98,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                   </div>
                   <div className="font-bold">{pathname}</div>
                </div>
-               <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
+               <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
                   {statobj.map((stat: any, index) => {
                      return (
                         <div
@@ -106,8 +106,8 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                       /*2b) Alternating background stats for 5 or 6 stats depending on bonus stat */
                       ${
                          stat.colormod
-                            ? "bg-2 relative block"
-                            : "bg-1 relative block"
+                            ? "bg-2-sub relative block"
+                            : "bg-3-sub relative block"
                       } flex items-center p-2`}
                            key={index}
                         >
@@ -146,7 +146,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
          {/* 2a) Header for Adjusting Level and Slider */}
          {/* ======================== */}
          <div className="relative w-full">
-            <div className="bg-2 shadow-1 border-color my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
+            <div className="bg-2-sub shadow-1 border-color-sub my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
                <div className="flex w-full items-center justify-between text-center">
                   {/* Level Label */}
                   <div className="inline-flex justify-between pr-0.5 align-middle">
@@ -154,7 +154,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                   </div>
                   {/* Level Input Box */}
                   <input
-                     className="scale-20 level-input-box border-color bg-1 ml-1 mr-2 inline-flex
+                     className="scale-20 level-input-box border-color-sub bg-3-sub ml-1 mr-2 inline-flex
                      w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
                      type="number"
                      aria-label="Level"
@@ -182,13 +182,13 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                   {/* Ascension Checkbox */}
                   <input
                      className="mr-2 inline-flex h-6 w-6 flex-shrink-0 items-center 
-                     justify-between rounded-sm align-middle text-yellow-500"
+                     justify-between rounded-sm align-middle text-zinc-500"
                      type="checkbox"
                      aria-label="Ascension"
                      disabled={
                         // [20, 40, 60, 70, 80, 90].indexOf(levelSliderValue) < -1
                         ["20", "30", "40", "50", "60", "70"].indexOf(
-                           levelSliderValue.toString()
+                           levelSliderValue.toString(),
                         ) > -1
                            ? false
                            : true
@@ -202,7 +202,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                   <input
                      aria-label="Level Slider"
                      className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
-                     rounded bg-zinc-200 align-middle accent-yellow-500 outline-none dark:bg-zinc-700"
+                     rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                      type="range"
                      min="1"
                      max="80"

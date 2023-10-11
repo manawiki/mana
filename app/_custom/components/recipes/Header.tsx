@@ -35,7 +35,7 @@ export const Header = ({ pageData }: { pageData: Recipe }) => {
 
             <section>
                <div
-                  className="bg-2 border-color shadow-1 relative w-full
+                  className="bg-2-sub border-color-sub shadow-1 relative w-full
                 rounded-lg border text-center shadow-sm"
                >
                   {/* Rarity */}
@@ -62,14 +62,14 @@ export const Header = ({ pageData }: { pageData: Recipe }) => {
             {/* ======================== */}
             <section>
                <div>
-                  <div className="divide-color shadow-1 border-color divide-y overflow-hidden rounded-md border shadow-sm">
+                  <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
                      {stats?.map((stat: any, index: any) => (
                         <div
                            key={stat.name}
                            className={`${
                               index % 2 == 1
-                                 ? "bg-2 relative block"
-                                 : "bg-1 relative block"
+                                 ? "bg-2-sub relative block"
+                                 : "bg-3-sub relative block"
                            } flex items-center px-3 py-2.5`}
                         >
                            {/* 2bi) Stat Icon */}
@@ -83,7 +83,7 @@ export const Header = ({ pageData }: { pageData: Recipe }) => {
                   </div>
 
                   <div
-                     className="bg-2 border-color shadow-1 mt-3 flex items-center justify-between 
+                     className="bg-2-sub border-color-sub shadow-1 mt-3 flex items-center justify-between 
                   gap-3 rounded-md border p-2.5 pl-3 shadow-sm"
                   >
                      <div className="text-1 flex-none font-bold">Tags</div>

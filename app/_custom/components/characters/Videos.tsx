@@ -1,5 +1,5 @@
 import type { Character } from "payload/generated-custom-types";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const Videos = ({ pageData }: { pageData: Character }) => {
    const vids = pageData?.videos;
@@ -7,7 +7,7 @@ export const Videos = ({ pageData }: { pageData: Character }) => {
       <>
          {vids && vids?.length > 0 ? (
             <>
-               <H2 text="Videos" />
+               <H2Default text="Videos" />
                {vids.map((v: any) => {
                   const embedurl = v.url.replace(/.*v=/, "");
 
@@ -24,9 +24,8 @@ export const Videos = ({ pageData }: { pageData: Character }) => {
                                  height="315"
                                  src={`https://www.youtube.com/embed/${embedurl}`}
                                  title="YouTube video player"
-                                 frameborder="0"
                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                 allowfullscreen
+                                 allowFullScreen
                               ></iframe>
                            </div>
                            {/* I have no idea why, but I have to load it at least once first and hide it for the second video player to appear. */}
@@ -37,9 +36,8 @@ export const Videos = ({ pageData }: { pageData: Character }) => {
                                  height="100%"
                                  src={`https://www.youtube.com/embed/${embedurl}`}
                                  title="YouTube video player"
-                                 frameborder="0"
                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                 allowfullscreen
+                                 allowFullScreen
                               ></iframe>
                            </div>
                         </div>

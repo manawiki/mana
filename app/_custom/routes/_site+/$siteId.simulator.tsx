@@ -593,7 +593,7 @@ const SummonSimulator = (data: any) => {
       }
 
       return (
-         <a href={`/collections/${resulttype}/${pull.id}`}>
+         <a href={`/c/${resulttype}/${pull.id}`}>
             <div
                className={`border-color m-0.5 inline-block w-full rounded-md border text-left laptop:w-5/12 ${customcolor}`}
                key={pull.id + "-" + index}
@@ -628,7 +628,7 @@ const SummonSimulator = (data: any) => {
          default:
       }
       return (
-         <a href={`/collections/${resulttype}/${pull.id}`}>
+         <a href={`/c/${resulttype}/${pull.id}`}>
             <div
                className={`border-color m-0.5 rounded-md border text-left ${customcolor}`}
                key={pull.id + "-" + number}

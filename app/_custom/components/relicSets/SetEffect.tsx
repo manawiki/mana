@@ -4,14 +4,12 @@ export const SetEffect = ({ pageData }: { pageData: RelicSet }) => {
    const sets = pageData?.set_effect;
    return (
       <>
-         <div className="border-color divide-color shadow-1 bg-2 divide-y rounded-lg border shadow-sm">
+         <div className="border-color-sub divide-color-sub shadow-1 bg-2-sub divide-y rounded-lg border shadow-sm">
             {sets?.map((eff) => (
-               <div key={eff.req_no} className="px-4 py-3">
-                  <div className="pb-1 font-bold text-yellow-600 dark:text-yellow-200">
-                     {eff.req_no}-Pc
-                  </div>
+               <div key={eff.req_no} className="px-4 py-3 text-sm">
+                  <div className="pb-1 font-bold">{eff.req_no}-Pc</div>
                   <div
-                     className=""
+                     className="text-1"
                      dangerouslySetInnerHTML={{ __html: eff.description ?? "" }}
                   ></div>
                </div>

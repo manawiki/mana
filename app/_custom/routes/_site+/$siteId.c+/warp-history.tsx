@@ -323,7 +323,7 @@ const ResultFrame = ({ entry, type }: any) => {
    }
    return (
       <>
-         <a href={`/starrail/collections/${type}/${entry?.id}`}>
+         <a href={`/starrail/c/${type}/${entry?.id}`}>
             <div
                className={`relative m-1 w-full rounded-md border p-2 dark:border-gray-700 ${customcolor}`}
             >
