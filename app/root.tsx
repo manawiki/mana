@@ -221,11 +221,11 @@ export function AppWithProviders() {
 let AppExport = withMetronome(AppWithProviders);
 
 // Toggle Remix Dev Tools
-// if (process.env.NODE_ENV === "development") {
-//    const { withDevTools } = require("remix-development-tools");
+if (process.env.NODE_ENV === "development") {
+   const { withDevTools } = require("remix-development-tools");
 
-//    AppExport = withDevTools(AppExport, rdtClientConfig);
-// }
+   AppExport = withDevTools(AppExport, rdtClientConfig);
+}
 
 export default AppExport;
 
