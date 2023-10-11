@@ -106,7 +106,7 @@ export default function PostsAll() {
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
-            <div className="relative flex items-center pb-6 pt-2 laptop:-ml-0.5 laptop:-mr-1.5">
+            <div className="relative flex items-center pb-4 pt-20 laptop:pt-12">
                <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
                <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
                <AdminOrStaffOrOwner>

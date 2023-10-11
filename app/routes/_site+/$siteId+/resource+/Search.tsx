@@ -96,23 +96,23 @@ const searchLinkUrlGenerator = (item: any, siteSlug?: string) => {
       }
       case "collections": {
          const slug = item.slug;
-         return `/${siteSlug}/collections/${slug}`;
+         return `/${siteSlug}/c/${slug}`;
       }
       case "entries": {
          const id = item.id;
          const collection = item.collectionEntity;
-         return `/${siteSlug}/collections/${collection}/${id}`;
+         return `/${siteSlug}/c/${collection}/${id}`;
       }
       case "posts": {
          const id = item.id;
          const slug = item.slug;
-         return `/${siteSlug}/posts/${id}/${slug}`;
+         return `/${siteSlug}/p/${id}/${slug}`;
       }
       //Custom site
       default:
          const id = item.doc.value;
          const collection = item.doc.relationTo;
-         return `/${siteSlug}/collections/${collection}/${id}`;
+         return `/${siteSlug}/c/${collection}/${id}`;
    }
 };
 

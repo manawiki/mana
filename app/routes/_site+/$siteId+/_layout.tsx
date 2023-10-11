@@ -367,6 +367,7 @@ const fetchSite = async ({
                      url
                   }
                   collections {
+                     id
                      name
                      slug
                      icon {

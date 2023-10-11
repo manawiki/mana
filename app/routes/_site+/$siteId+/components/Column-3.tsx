@@ -306,7 +306,7 @@ export const ColumnThree = ({
                   </div>
                </div>
             </section>
-            <div className={clsx(isMobileApp ? "pt-3" : "pt-20 laptop:pt-12")}>
+            <div className={clsx(isMobileApp ? "pt-3" : "")}>
                <Outlet />
             </div>
          </section>

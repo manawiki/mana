@@ -7,13 +7,7 @@ import {
    json,
    redirect,
 } from "@remix-run/node";
-import {
-   Link,
-   NavLink,
-   Outlet,
-   useFetcher,
-   useMatches,
-} from "@remix-run/react";
+import { Link, Outlet, useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import {
    ChevronDown,
@@ -22,7 +16,6 @@ import {
    ImagePlus,
    Link as LinkIcon,
    Loader2,
-   Pencil,
    X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -131,8 +124,8 @@ export default function CollectionIndex() {
    return (
       <>
          <main className="mx-auto max-w-[728px] pb-5 max-tablet:px-3">
-            <div className="relative flex items-center pb-4 pt-2">
-               <h1 className="font-header text-3xl font-bold pr-3">
+            <div className="relative flex items-center pb-4 pt-20 laptop:pt-12">
+               <h1 className="font-header text-2xl laptop:text-3xl font-bold pr-3">
                   Collections
                </h1>
                <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
@@ -300,7 +293,6 @@ export default function CollectionIndex() {
                         <Link
                            key={row.slug}
                            to={`/${site.slug}/c/${row.slug}`}
-                           prefetch="intent"
                            className="group relative flex items-center odd:bg-2-sub justify-between gap-2 p-2"
                         >
                            <div className="flex items-center gap-3">
