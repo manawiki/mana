@@ -11,7 +11,7 @@ import payload from "payload";
 import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
-import coreBuildConfig from "./app/db/payload.config";
+// import coreBuildConfig from "./app/db/payload.config";
 import { settings, corsConfig } from "./mana.config";
 import { rdtServerConfig } from "./rdt.config";
 
