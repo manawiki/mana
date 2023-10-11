@@ -35,7 +35,7 @@ import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-import { fetchShowcase } from "~/utils/showcase-cache.server";
+import { fetchShowcase } from "~/_custom/showcase-cache.server";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";

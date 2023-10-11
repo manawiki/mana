@@ -6,7 +6,7 @@ import {
 } from "cachified";
 import { LRUCache } from "lru-cache";
 
-import { remember } from "./remember.server";
+import { remember } from "../utils/remember.server";
 
 // Setup an in memory lru-cache for api calls, this will be cleared on server restart.
 export const lruCache = remember(
@@ -15,7 +15,7 @@ export const lruCache = remember(
       max: 100, // maximum number of items to store in the cache
       // ttl: 10 * 60 * 1000, // how long to live in ms
       // allowStale: true, // allow stale items to be returned until they are removed
-   })
+   }),
 );
 
 export const cache = lruCacheAdapter(lruCache);
