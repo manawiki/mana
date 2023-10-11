@@ -11,7 +11,6 @@ import payload from "payload";
 import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
-import coreBuildConfig from "./app/db/payload.config";
 import { settings, corsConfig } from "./mana.config";
 import { rdtServerConfig } from "./rdt.config";
 
@@ -63,7 +62,6 @@ async function startCore() {
 
    // Initialize Payload
    await payload.init({
-      config: coreBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.MONGO_URL,
       express: app,
