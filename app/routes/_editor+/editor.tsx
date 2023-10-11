@@ -19,17 +19,19 @@ export function ManaEditor({
    fetcher,
    defaultValue,
    siteId,
-   collectionEntity,
    pageId,
    sectionId,
+   entryId,
+   collectionEntity,
    collectionSlug,
 }: {
    fetcher: FetcherWithComponents<never>;
    defaultValue: Descendant[];
    siteId?: string | undefined;
-   collectionEntity?: string;
    pageId?: string;
    sectionId?: string;
+   entryId?: string;
+   collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
 }) {
    const editor = useEditor();
@@ -52,6 +54,7 @@ export function ManaEditor({
                collectionSlug,
                collectionEntity,
                sectionId,
+               entryId,
             },
             { method: "patch", action: "/editor" },
          );
@@ -70,6 +73,7 @@ export function ManaEditor({
 
 export async function action({
    context: { payload, user },
+   params,
    request,
 }: ActionFunctionArgs) {
    const { intent, collectionSlug } = await zx.parseForm(request, {
@@ -137,6 +141,60 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
+            }
+            case "contentEmbeds": {
+               const {
+                  siteId,
+                  content,
+                  pageId,
+                  sectionId,
+                  entryId,
+                  collectionEntity,
+               } = await zx.parseForm(request, {
+                  siteId: z.string(),
+                  content: z.string(),
+                  pageId: z.string(),
+                  sectionId: z.string(),
+                  entryId: z.string(),
+                  collectionEntity: z.string(),
+               });
+
+               try {
+                  //If findById is not wrapped in a try catch, it'll throw and won't create
+                  await payload.findByID({
+                     collection: collectionSlug,
+                     id: pageId,
+                     overrideAccess: false,
+                     user,
+                  });
+
+                  return await payload.update({
+                     collection: collectionSlug,
+                     id: pageId,
+                     data: {
+                        content: JSON.parse(content),
+                     },
+                     autosave: true,
+                     draft: true,
+                     overrideAccess: false,
+                     user,
+                  });
+               } catch (error) {
+                  return await payload.create({
+                     collection: collectionSlug,
+                     //@ts-ignore
+                     data: {
+                        relationId: entryId,
+                        site: siteId as any,
+                        sectionId: sectionId,
+                        collectionEntity: collectionEntity as any,
+                        content: JSON.parse(content),
+                     },
+                     user,
+                     draft: true,
+                     overrideAccess: false,
+                  });
+               }
             }
          }
       }
