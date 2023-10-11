@@ -70,7 +70,7 @@
       "lucide-react": "^0.277.0",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
-      "payload": "^2.0.3",
+      "payload": "^2.0.4",
       "payload-query": "^1.0.2",
       "pluralize": "^8.0.0",
       "qs": "^6.11.2",

@@ -9608,7 +9608,7 @@ payload-query@^1.0.2:
   dependencies:
     ts-powertools "0.0.3"
 
-payload@^2.0.3:
+payload@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/payload/-/payload-2.0.4.tgz#e659f69d342789eab18dfe6d675218aad3796834"
   integrity sha512-Eh75yw2xyDdir4Bfk3Gy6laJ4Q+FFvWkkRgGwJ1oDC60V6ztqMFLbejSdXNxLlfj800GYa9LwnXlFjUDV+2pmQ==
