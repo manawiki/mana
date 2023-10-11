@@ -5,7 +5,6 @@ import nodemailer from "nodemailer";
 import payload from "payload";
 import invariant from "tiny-invariant";
 
-import customBuildConfig from "./app/db/payload.custom.config";
 import { settings, corsConfig } from "./mana.config";
 
 require("dotenv").config();
@@ -42,7 +41,6 @@ async function startCustom() {
    invariant(process.env.CUSTOM_MONGO_URL, "CUSTOM_MONGO_URL is required");
 
    await payload.init({
-      config: customBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.CUSTOM_MONGO_URL,
       express: app,
