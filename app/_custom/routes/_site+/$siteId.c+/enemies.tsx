@@ -387,7 +387,7 @@ function removeTags(str: String) {
 
 const QUERY_ENEMIES = `
 query {
-   enemies: Enemies(limit: 0, sort:"id") {
+   enemies: Enemies(limit: 100, sort:"id") {
      docs {
        camp {
          id

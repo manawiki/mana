@@ -1882,7 +1882,7 @@ function intersect(a: any, b: any) {
 
 const QUERY_SHOWCASE = `
 query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [String!], $skillTreeIdList: [String!], $playerIconId: String!) {
-   relics: Relics(where: { relic_id: {in: $relicIdList } }, limit: 0) {
+   relics: Relics(where: { relic_id: {in: $relicIdList } }, limit: 100) {
       docs {
        relic_id
        mainstat_group {
@@ -1997,7 +1997,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
      }
    }
-   skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 0) {
+   skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 100) {
      docs {
        character {
          id
@@ -2026,7 +2026,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        point_id
      }
    }
-   statTypes: _statTypes(limit: 0) {
+   statTypes: _statTypes(limit: 100) {
      docs {
        name
        icon {

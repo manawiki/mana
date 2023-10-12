@@ -439,7 +439,7 @@ const EntryIconOnly = ({ char }: any) => {
 
 const QUERY_LIGHTCONES = `
 query {
-   lightcones: LightCones(limit: 0) {
+   lightcones: LightCones(limit: 100) {
      docs {
        lightcone_id
        name

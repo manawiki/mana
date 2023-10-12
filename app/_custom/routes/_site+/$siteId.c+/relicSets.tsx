@@ -287,7 +287,7 @@ const EntryWithDescription = ({ char }: any) => {
 
 const QUERY_RELIC_SETS = `
 query {
-   relicSets: RelicSets(limit: 0) {
+   relicSets: RelicSets(limit: 100) {
      docs {
        relicset_id
        name
