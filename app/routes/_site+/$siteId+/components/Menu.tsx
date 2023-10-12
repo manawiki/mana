@@ -88,11 +88,11 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
                <div className="space-y-0.5 pt-6 desktop:pl-3">
-                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-2.5 desktop:pl-2.5">
+                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-3.5 desktop:pl-2.5">
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:hidden" />
                      <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
                         <Pin className="text-zinc-500" size={16} />
-                        <span className="max-desktop:hidden">Pinned</span>
+                        {/* <span className="max-desktop:hidden">Pinned</span> */}
                      </div>
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
                   </div>

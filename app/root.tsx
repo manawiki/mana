@@ -19,6 +19,7 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import rdtStylesheet from "remix-development-tools/index.css";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -39,7 +40,7 @@ import { isNativeSSR } from "./utils";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
-
+import { rdtClientConfig } from "../rdt.config";
 
 export const loader = async ({
    context: { user },
@@ -68,7 +69,7 @@ export const loader = async ({
 
    return json(
       { ...sharedData },
-      { headers: { "Set-Cookie": await commitSession(session) } }
+      { headers: { "Set-Cookie": await commitSession(session) } },
    );
 };
 
@@ -109,7 +110,9 @@ export const links: LinksFunction = () => [
          settings.siteId ? `${settings.siteId}-static` : "static"
       }.mana.wiki`,
    },
-
+   ...(process.env.NODE_ENV === "development"
+      ? [{ rel: "stylesheet", href: rdtStylesheet }]
+      : []),
 ];
 
 export const handle = {
@@ -118,15 +121,16 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } =
-      useLoaderData<typeof loader>();
+   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const  { site } = useMatches()?.[1]?.data as {site: Site | null} ?? {site: null}; 
+   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
+      site: null,
+   };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
    useEffect(() => {
@@ -214,7 +218,16 @@ export function AppWithProviders() {
    );
 }
 
-export default withMetronome(AppWithProviders);
+let AppExport = withMetronome(AppWithProviders);
+
+// Toggle Remix Dev Tools
+if (process.env.NODE_ENV === "development") {
+   const { withDevTools } = require("remix-development-tools");
+
+   AppExport = withDevTools(AppExport, rdtClientConfig);
+}
+
+export default AppExport;
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();

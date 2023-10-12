@@ -1,9 +1,45 @@
-import type { CollectionConfig } from "payload/types";
+import type {
+   CollectionAfterChangeHook,
+   CollectionConfig,
+} from "payload/types";
+import invariant from "tiny-invariant";
 
 import { canMutateAsSiteAdmin } from "../../access/site";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const collectionsSlug = "collections";
+
+const afterChangeHook: CollectionAfterChangeHook = async ({
+   doc,
+   req: { payload },
+   operation, // name of the operation ie. 'create', 'update'
+}) => {
+   try {
+      if (operation === "create") {
+         const siteId = doc.site.id;
+         const currentCollections = await payload.findByID({
+            collection: "sites",
+            id: siteId,
+         });
+         invariant(currentCollections.collections);
+         const prevCollections = currentCollections.collections.map(
+            ({ id }: { id: string }) => id,
+         );
+         payload.update({
+            collection: "sites",
+            id: siteId,
+            data: {
+               collections: [...prevCollections, doc.id],
+            },
+         });
+      }
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
+
+   return doc;
+};
+
 export const Collections: CollectionConfig = {
    slug: collectionsSlug,
    admin: {
@@ -14,6 +50,9 @@ export const Collections: CollectionConfig = {
       read: (): boolean => true,
       update: canMutateAsSiteAdmin("collections"),
       delete: canMutateAsSiteAdmin("collections"),
+   },
+   hooks: {
+      afterChange: [afterChangeHook],
    },
    fields: [
       {
@@ -72,7 +111,8 @@ export const Collections: CollectionConfig = {
          name: "site",
          type: "relationship",
          relationTo: "sites",
-         maxDepth: 0,
+         maxDepth: 1,
+         required: true,
          hasMany: false,
          index: true,
       },

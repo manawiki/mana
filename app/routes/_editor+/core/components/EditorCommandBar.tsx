@@ -16,6 +16,8 @@ export const EditorCommandBar = ({
    isChanged,
    fetcher,
    collectionSlug,
+   collectionId,
+   entryId,
    pageId,
    siteId,
    primaryOptions,
@@ -25,6 +27,8 @@ export const EditorCommandBar = ({
    isChanged: boolean | undefined;
    fetcher: FetcherWithComponents<never>;
    collectionSlug: keyof Config["collections"];
+   collectionId?: string;
+   entryId?: string;
    pageId?: string;
    siteId?: string;
    primaryOptions?: ReactNode;
@@ -47,7 +51,12 @@ export const EditorCommandBar = ({
       intent: "publish",
       ...(pageId && { pageId }),
       ...(siteId && { siteId }),
+      ...(collectionId && { collectionId }),
+      ...(entryId && { entryId }),
    };
+
+   const actionPath =
+      collectionSlug == "contentEmbeds" ? `/${siteId}/c/embed` : undefined;
 
    //@ts-ignore
    let _primaryOptions, _secondaryOptions;
@@ -84,7 +93,8 @@ export const EditorCommandBar = ({
                            disabled={disabled}
                            onClick={() => {
                               fetcher.submit(submitData, {
-                                 method: "post",
+                                 method: "POST",
+                                 action: actionPath,
                               });
                            }}
                         >
@@ -161,6 +171,7 @@ export const EditorCommandBar = ({
             </Popover>
          </FloatingDelayGroup>
          <EditorVersionModal
+            pageId={pageId}
             isVersionModalOpen={isVersionModalOpen}
             setVersionModal={setVersionModal}
             collectionSlug={collectionSlug}

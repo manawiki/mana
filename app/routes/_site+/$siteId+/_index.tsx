@@ -64,7 +64,6 @@ export async function loader({
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
-
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
@@ -88,19 +87,18 @@ export default function SiteIndexMain() {
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <Suspense fallback="Loading...">
-                        <Await resolve={home}>
-                           <ManaEditor
-                              collectionSlug="homeContents"
-                              fetcher={fetcher}
-                              siteId={siteId}
-                              defaultValue={home as Descendant[]}
-                           />
-                        </Await>
-                     </Suspense>
-                  </div>
+               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] laptop:pt-12">
+                  <Suspense fallback="Loading...">
+                     <Await resolve={home}>
+                        <ManaEditor
+                           key={siteId}
+                           collectionSlug="homeContents"
+                           fetcher={fetcher}
+                           siteId={siteId}
+                           defaultValue={home as Descendant[]}
+                        />
+                     </Await>
+                  </Suspense>
                </main>
                <div>
                   <EditorCommandBar
@@ -112,11 +110,11 @@ export default function SiteIndexMain() {
                </div>
             </Float>
          ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="relative min-h-screen">
+            home && (
+               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] laptop:pt-12">
                   <EditorView data={home} />
-               </div>
-            </main>
+               </main>
+            )
          )}
       </>
    );
@@ -293,7 +291,7 @@ async function fetchHomeContent({
       },
    });
 
-   const home = docs[0].content as HomeContent["content"];
+   const home = docs[0]?.content as HomeContent["content"];
 
    return { home, isChanged: false };
 }

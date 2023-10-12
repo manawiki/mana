@@ -1,4 +1,4 @@
-{  
+{
    // Extend the root-level config to reuse common options.
    "extends": "./tsconfig.json",
    "files": ["remix.env.d.ts", "core.server.ts", "app/db/payload.config.ts"],

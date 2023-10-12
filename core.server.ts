@@ -11,17 +11,21 @@ import payload from "payload";
 import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
-import coreBuildConfig from "./app/db/payload.config";
 import { settings, corsConfig } from "./mana.config";
+import { rdtServerConfig } from "./rdt.config";
 
 // patch in Remix runtime globals
 installGlobals();
 require("dotenv").config();
 sourceMapSupport.install();
 
-// We'll make chokidar a dev dependency so it doesn't get bundled in production.
+// Make sure devDependencies don't ship to production
 const chokidar =
    process.env.NODE_ENV === "development" ? require("chokidar") : null;
+const rdt =
+   process.env.NODE_ENV === "development"
+      ? require("remix-development-tools/server")
+      : null;
 
 /**
  * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
@@ -58,7 +62,6 @@ async function startCore() {
 
    // Initialize Payload
    await payload.init({
-      config: coreBuildConfig,
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.MONGO_URL,
       express: app,
@@ -137,6 +140,9 @@ async function startCore() {
    app.use(morgan("tiny"));
    app.use(payload.authenticate);
 
+   // This makes sure the build is wrapped on reload by RDT
+   if (rdt) build = rdt.withServerDevTools(build, rdtServerConfig);
+
    // Check if the server is running in development mode and reflect realtime changes in the codebase.
    // We'll also inject payload in the remix handler so we can use it in our routes.
    app.all(
@@ -178,8 +184,8 @@ function createProductionRequestHandler(): RequestHandler {
 // Create a request handler that watches for changes to the server build during development.
 function createDevRequestHandler(): RequestHandler {
    async function handleServerUpdate() {
-      // 1. re-import the server build
-      build = await reimportServer();
+      // This makes sure the build is wrapped on reload by RDT
+      build = rdt.withServerDevTools(await reimportServer(), rdtServerConfig);
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {

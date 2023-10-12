@@ -2,7 +2,7 @@
    "new": {
       "action": "Add",
       "name": "Collection Name",
-      "namePlaceholder": "Collection name...",
+      "namePlaceholder": "Enter a name...",
       "slugPlaceholder": "Collection slug..."
    }
 }

@@ -4,31 +4,35 @@ import { Fragment, useState } from "react";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-//@ts-expect-error
 import dt from "date-and-time";
 import { Loader2 } from "lucide-react";
 
-import type { HomeContent, Config } from "payload/generated-types";
+import type { Config } from "payload/generated-types";
 import { Modal } from "~/components";
 import { isAdding } from "~/utils";
 
 import { EditorView } from "./EditorView";
 
 export function EditorVersionModal({
+   pageId,
    isVersionModalOpen,
    setVersionModal,
    collectionSlug,
 }: {
+   pageId?: string;
    isVersionModalOpen: boolean;
    setVersionModal: Dispatch<SetStateAction<boolean>>;
    collectionSlug: keyof Config["collections"];
 }) {
-   //layout presume to have site data, might be brittle in the future
-   //@ts-expect-error
-   const versions = useMatches()?.[2]?.data?.versions as HomeContent[];
+   const { data } = useMatches()?.[2] as any;
+
+   const versions =
+      collectionSlug == "contentEmbeds"
+         ? data.entry.embeddedContent.find((item: any) => item?.id === pageId)
+              .versions
+         : data?.versions;
 
    const fetcher = useFetcher();
-
    const adding = isAdding(fetcher, "versionUpdate");
 
    const [selectedVersion, setSelectedVersion] = useState(versions[0]);
@@ -52,7 +56,7 @@ export function EditorVersionModal({
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
                         {dt.format(
-                           new Date(selectedVersion?.updatedAt as string),
+                           new Date(selectedVersion?.updatedAt as any),
                            "MMMM D, hh:mm A",
                         )}
                      </div>
@@ -76,8 +80,7 @@ export function EditorVersionModal({
                            onChange={setSelectedVersion}
                         >
                            {versions?.map(
-                              (row, index) =>
-                                 //@ts-expect-error
+                              (row: any, index: any) =>
                                  row.version?.content && (
                                     <Tab as={Fragment} key={row.id}>
                                        <RadioGroup.Option
@@ -93,12 +96,6 @@ export function EditorVersionModal({
                                                    "group relative flex w-full cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2",
                                                 )}
                                              >
-                                                {/* {index == 0 &&
-                                                   checked(
-                                                      <span className="self-end rounded-full px-2 py-0.5 text-[10px] font-bold dark:bg-zinc-700">
-                                                         hwllo
-                                                      </span>
-                                                   )} */}
                                                 <time
                                                    className="flex items-center gap-1.5 text-sm group-hover:underline"
                                                    dateTime={row?.updatedAt}
@@ -110,7 +107,6 @@ export function EditorVersionModal({
                                                       "MMMM D, hh:mm A",
                                                    )}
                                                 </time>
-                                                {/* {checked == false  : "asdasd"} */}
                                                 {index == 0 && (
                                                    <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-[10px] font-bold uppercase dark:bg-zinc-600 dark:text-white">
                                                       Live
