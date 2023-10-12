@@ -146,8 +146,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
-                     icon: originalDoc?.icon,
+                     site: originalDoc?.site.id,
+                     icon: originalDoc?.icon.id,
                      slug: originalDoc?.slug,
                   };
                }

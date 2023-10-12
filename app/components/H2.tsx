@@ -22,7 +22,7 @@ export const H2 = ({ text }: { text: string }) => {
    );
 };
 
-export const H2Default = ({ text }: { text: string }) => {
+export const H2Default = ({ text }: { text: string | undefined }) => {
    return (
       <h2
          className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg

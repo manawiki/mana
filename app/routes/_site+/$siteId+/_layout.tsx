@@ -286,7 +286,7 @@ export const action: ActionFunction = async ({
                {
                   errors: "Cannot unfollow your own site",
                },
-               { status: 400 }
+               { status: 400 },
             );
          }
          const userCurrentSites = user?.sites || [];
@@ -359,11 +359,20 @@ const fetchSite = async ({
                   isPublic
                   gaTagId
                   domain
+                  followers
                   icon {
                     url
                   }
                   favicon {
                      url
+                  }
+                  collections {
+                     id
+                     name
+                     slug
+                     icon {
+                        url
+                     }
                   }
                   pinned {
                     id
@@ -435,7 +444,7 @@ const fetchSite = async ({
       Object.keys(swaps)
          .map((e) => `(?:"(${e})":)`)
          .join("|"),
-      "g"
+      "g",
    );
 
    const updateKeys = (data: Site) =>
@@ -443,15 +452,15 @@ const fetchSite = async ({
          JSON.stringify(data).replace(
             pattern,
             //@ts-ignore
-            (m) => `"${swaps[m.slice(1, -2)]}":`
-         )
+            (m) => `"${swaps[m.slice(1, -2)]}":`,
+         ),
       );
 
    //Fetch from cache if anon
    if (!user) {
       const { data } = await fetchWithCache(
          `${settings.domainFull}/api/graphql`,
-         QUERY
+         QUERY,
       );
       return updateKeys(data.site.docs[0]);
    }
@@ -459,7 +468,7 @@ const fetchSite = async ({
    //Otherwise fresh pull
    const { data } = await fetch(
       `${settings.domainFull}/api/graphql`,
-      QUERY
+      QUERY,
    ).then((res) => res.json());
    return updateKeys(data.site.docs[0]);
 };
