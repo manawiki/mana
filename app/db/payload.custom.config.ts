@@ -1,6 +1,6 @@
 import path from "path";
 
-import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { viteBundler } from "@payloadcms/bundler-vite";
 import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
@@ -46,7 +46,7 @@ export default buildConfig({
       url: process.env.CUSTOM_MONGO_URL ?? false,
    }),
    admin: {
-      bundler: webpackBundler(),
+      bundler: viteBundler(),
       components: {
          graphics: {
             Icon: Logo,
@@ -59,6 +59,13 @@ export default buildConfig({
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
+      vite: (incomingViteConfig) => ({
+         ...incomingViteConfig,
+         build: {
+            ...incomingViteConfig.build,
+            emptyOutDir: false,
+         },
+      }),
    },
    plugins: [
       cloudStorage({
