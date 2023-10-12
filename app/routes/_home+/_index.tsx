@@ -37,7 +37,7 @@ import { fetchWithCache } from "~/utils/cache.server";
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
 import { LoggedOut, LoggedOutMobile, LoggedIn } from "../_auth+/src/components";
-import { FollowingListMobile } from "../_site+/$siteId+/components";
+import { FollowingListMobile } from "../_site+/$siteId+/src/components";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },

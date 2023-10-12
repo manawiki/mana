@@ -25,7 +25,7 @@ import {
 import { isAdding, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
-import SearchComboBox from "../resource+/Search";
+import SearchComboBox from "../../resource+/Search";
 
 export const ColumnThree = ({
    location,
