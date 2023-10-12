@@ -16,13 +16,12 @@ import { zx } from "zodix";
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { H2Default } from "~/components/H2";
-import { useDebouncedValue, useIsMount } from "~/hooks";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
 import { onKeyDown } from "~/routes/_editor+/core/utils";
-import { isAdding, isProcessing } from "~/utils";
+import { isAdding, isProcessing, useDebouncedValue, useIsMount } from "~/utils";
 
 import { Toolbar } from "../../core/components/Toolbar";
 import type { UpdatesElement, CustomElement } from "../../core/types";
@@ -55,7 +54,7 @@ export function BlockUpdates({ element }: Props) {
 
    const editor = useMemo(
       () => withLinkify(withReact(withHistory(createEditor()))),
-      []
+      [],
    );
    const fetcher = useFetcher();
    const disabled = isProcessing(fetcher.state);
@@ -111,7 +110,7 @@ export function BlockUpdates({ element }: Props) {
                            {
                               method: "post",
                               action: `/${siteId}/blocks/updates`,
-                           }
+                           },
                         );
                      }}
                      disabled={disabled}
@@ -178,7 +177,7 @@ export function BlockUpdates({ element }: Props) {
                                              {
                                                 method: "DELETE",
                                                 action: `/${siteId}/blocks/updates`,
-                                             }
+                                             },
                                           )
                                        }
                                        disabled={disabled}
@@ -274,12 +273,12 @@ export const action = async ({
          }
 
          //Otherwise add entry to an existing update on the same day
-         const updateId = update.docs[0].id;
-         const entryData = update.docs[0].entry;
+         const updateId = update?.docs[0]?.id;
+         const entryData = update?.docs[0]?.entry;
 
          return await payload.update({
             collection: "updates",
-            id: updateId,
+            id: updateId as any,
             data: {
                //@ts-ignore
                entry: [{ content: newData }, ...entryData],
@@ -343,7 +342,7 @@ export const action = async ({
 
          //Update nested entry content for particular date
          const updatedData = entryData?.map((x) =>
-            x.id === entryId ? { ...x, content: JSON.parse(content) } : x
+            x.id === entryId ? { ...x, content: JSON.parse(content) } : x,
          );
 
          return await payload.update({
@@ -373,7 +372,7 @@ export function UpdatesEditor({
 }) {
    const editor = useMemo(
       () => withLinkify(withReact(withHistory(createEditor()))),
-      []
+      [],
    );
    const isMount = useIsMount();
    const fetcher = useFetcher();
@@ -390,7 +389,7 @@ export function UpdatesEditor({
                rowId,
                entryId: entryId ?? "",
             },
-            { method: "patch", action: `/${siteId}/blocks/updates` }
+            { method: "patch", action: `/${siteId}/blocks/updates` },
          );
       }
    }, [debouncedValue]);

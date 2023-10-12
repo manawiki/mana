@@ -6,3 +6,4 @@ export * from "./Logo";
 export * from "./Modal";
 export * from "./Toaster";
 export * from "./Tooltip";
+export * from "./H2";

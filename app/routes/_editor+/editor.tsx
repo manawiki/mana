@@ -9,7 +9,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { useDebouncedValue, useIsMount } from "~/hooks";
+
+import { useDebouncedValue, useIsMount } from "~/utils";
 
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";

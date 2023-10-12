@@ -27,7 +27,7 @@ import {
    convertTimeToDate,
    getCurrentTime,
 } from "~/components/datepicker/util";
-import { useIsMount } from "~/hooks";
+import { useIsMount } from "~/utils";
 
 import { CountdownTimer } from "./CountdownTimer";
 // eslint-disable-next-line import/no-cycle

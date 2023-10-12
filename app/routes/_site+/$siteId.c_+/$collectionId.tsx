@@ -41,7 +41,7 @@ import { zx } from "zodix";
 
 import type { Entry, Collection, User, Site } from "payload/generated-types";
 import { Image } from "~/components/Image";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
    assertIsPost,
    getMultipleFormData,
@@ -52,7 +52,7 @@ import {
    toWords,
 } from "~/utils";
 
-import type { EntryType } from "./$collectionId_.$entryId";
+import type { EntryType } from "./src/functions";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -612,7 +612,7 @@ export function CollectionHeader() {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                      >
-                        <Menu.Items className="absolute left-0 mt-1.5 max-w-sm min-w-[140px] z-20 w-full">
+                        <Menu.Items className="absolute left-0 mt-0.5 max-w-sm min-w-[140px] z-20 w-full">
                            <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
                               {site?.collections?.map((row) => (
                                  <Menu.Item key={row.slug}>

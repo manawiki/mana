@@ -22,7 +22,7 @@ import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";

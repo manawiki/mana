@@ -2,7 +2,11 @@ import { Link } from "@remix-run/react";
 import { Drawer } from "vaul";
 
 import type { Site } from "~/db/payload-types";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
+import {
+   LoggedIn,
+   LoggedOut,
+   LoggedOutMobile,
+} from "~/routes/_auth+/src/components";
 import { siteHomeShouldReload } from "~/utils";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";

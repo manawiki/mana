@@ -70,8 +70,7 @@ import type {
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { useIsMount } from "~/hooks";
-import { swrRestFetcher, toWords } from "~/utils";
+import { swrRestFetcher, toWords, useIsMount } from "~/utils";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";

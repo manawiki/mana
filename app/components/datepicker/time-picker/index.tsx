@@ -7,7 +7,7 @@ import React, {
    useState,
 } from "react";
 
-import { useIsMount } from "~/hooks";
+import { useIsMount } from "~/utils";
 
 import {
    alignTime,
@@ -72,7 +72,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
          minutesInterval = 5,
          ...props
       },
-      ref
+      ref,
    ) => {
       const isMount = useIsMount();
 
@@ -89,12 +89,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
          const d = new Date();
          return alignTime(
             { minutes: d.getMinutes(), hours: d.getHours() },
-            minutesInterval
+            minutesInterval,
          );
       });
 
       const [currentMeridiem, setCurrentMeridiem] = useState<Meridiem>(() =>
-         selectedTime.hours <= 11 ? Meridiem.AM : Meridiem.PM
+         selectedTime.hours <= 11 ? Meridiem.AM : Meridiem.PM,
       );
 
       const handleMinutesChange = useCallback(
@@ -103,7 +103,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
                return alignTime({ ...t, minutes: v }, minutesInterval);
             });
          },
-         [minutesInterval]
+         [minutesInterval],
       );
 
       const handleHoursChange = useCallback(
@@ -116,7 +116,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
                return alignTime({ ...t, hours }, minutesInterval);
             });
          },
-         [minutesInterval, currentMeridiem, displayFormat]
+         [minutesInterval, currentMeridiem, displayFormat],
       );
 
       const handleMeridiemChange = useCallback((v: Meridiem) => {
@@ -138,13 +138,13 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       // the array of options of minutes to select from
       const minuteOptions = useMemo(
          () => generateMinuteOptions(minutesInterval),
-         [minutesInterval]
+         [minutesInterval],
       );
 
       // the array of options of hours to select from
       const hourOptions = useMemo(
          () => generateHourOptions(displayFormat),
-         [displayFormat]
+         [displayFormat],
       );
 
       //
@@ -209,7 +209,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             )}
          </div>
       );
-   }
+   },
 );
 
 TimePicker.displayName = "TimePicker";

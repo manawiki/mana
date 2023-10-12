@@ -11,7 +11,7 @@ import {
 
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
-import { LoggedIn } from "~/modules/auth";
+import { LoggedIn } from "~/routes/_auth+/src/components";
 import { siteHomePath, siteHomeShouldReload } from "~/utils";
 
 import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
