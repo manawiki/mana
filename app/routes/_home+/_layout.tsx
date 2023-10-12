@@ -8,7 +8,7 @@ import {
 import { LogoFull } from "~/components";
 import type { User } from "~/db/payload-types";
 
-import { UserMenu } from "../_site+/$siteId+/components";
+import { UserMenu } from "../_site+/$siteId+/src/components";
 import { LoggedIn, LoggedOut } from "../_auth+/src/components";
 
 export default function IndexLayout() {
