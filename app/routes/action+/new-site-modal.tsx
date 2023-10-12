@@ -10,7 +10,6 @@ import { z } from "zod";
 
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
-import { LoggedIn, LoggedOut } from "~/modules/auth";
 import { BlockType } from "~/routes/_editor+/core/types";
 import {
    assertIsPost,
@@ -21,6 +20,8 @@ import {
    safeNanoID,
    type FormResponse,
 } from "~/utils";
+
+import { LoggedIn, LoggedOut } from "../_auth+/src/components";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),

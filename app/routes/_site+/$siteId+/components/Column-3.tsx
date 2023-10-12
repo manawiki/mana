@@ -17,7 +17,11 @@ import { useTranslation } from "react-i18next";
 
 import { Image } from "~/components";
 import type { Site } from "~/db/payload-types";
-import { FollowingSite, LoggedOut, NotFollowingSite } from "~/modules/auth";
+import {
+   LoggedOut,
+   NotFollowingSite,
+   FollowingSite,
+} from "~/routes/_auth+/src/components";
 import { isAdding, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";

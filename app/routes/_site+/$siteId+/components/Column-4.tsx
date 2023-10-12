@@ -4,7 +4,7 @@ import { Component, Dog, Users } from "lucide-react";
 import { DarkModeToggle, Image, LogoText } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
-import { LoggedOut } from "~/modules/auth";
+import { LoggedOut } from "~/routes/_auth+/src/components";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
@@ -23,7 +23,7 @@ export const ColumnFour = ({
          <div
             className={clsx(
                isMobileApp ? "pb-16" : "",
-               "flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto"
+               "flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto",
             )}
          >
             <div className="border-color border-b laptop:pt-14">

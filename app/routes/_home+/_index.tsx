@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 
 import { RadioGroup } from "@headlessui/react";
-import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
+import {
+   json,
+   type LinksFunction,
+   type LoaderFunctionArgs,
+} from "@remix-run/node";
 import {
    Link,
    useLoaderData,
@@ -27,13 +31,12 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import { Image, Logo } from "~/components";
 import type { Site } from "~/db/payload-types";
-import { useDebouncedValue } from "~/hooks";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
-import { siteHomeShouldReload } from "~/utils";
+import { siteHomeShouldReload, useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
+import { LoggedOut, LoggedOutMobile, LoggedIn } from "../_auth+/src/components";
 import { FollowingListMobile } from "../_site+/$siteId+/components";
 
 export const meta: MetaFunction = () => [
@@ -101,7 +104,7 @@ export async function loader({
                c,
             },
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -112,7 +115,7 @@ export async function loader({
 
    return json(
       { q, sites },
-      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
 
@@ -248,7 +251,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.set("c", value);
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            } else
                               setSearchParams(
@@ -256,7 +259,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.delete("c");
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            setCategory(value);
                         }}
@@ -268,7 +271,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Globe2 size={15} />
@@ -283,7 +286,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Gamepad2 size={16} />
@@ -298,7 +301,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Component size={14} />
@@ -372,7 +375,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.prevPage as any
+                                          sites.prevPage as any,
                                        );
                                        return searchParams;
                                     })
@@ -395,7 +398,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.nextPage as any
+                                          sites.nextPage as any,
                                        );
                                        return searchParams;
                                     })

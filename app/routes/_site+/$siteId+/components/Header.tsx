@@ -3,7 +3,11 @@ import { ChevronDown, Loader2, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import type { Site } from "~/db/payload-types";
-import { LoggedIn, LoggedOut, NotFollowingSite } from "~/modules/auth";
+import {
+   LoggedIn,
+   NotFollowingSite,
+   LoggedOut,
+} from "~/routes/_auth+/src/components";
 import { isAdding, siteHomeShouldReload } from "~/utils";
 
 import { UserMenu } from "./UserMenu";

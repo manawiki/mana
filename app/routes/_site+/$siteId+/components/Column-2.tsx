@@ -4,10 +4,10 @@ import { Database, HardDrive, Home, Lock, PenSquare } from "lucide-react";
 
 import { settings } from "mana-config";
 import type { Site, User } from "~/db/payload-types";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { siteHomeRoot } from "~/utils";
 
 import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 
 export function ColumnTwo({ site, user }: { site: Site; user: User }) {
    return (

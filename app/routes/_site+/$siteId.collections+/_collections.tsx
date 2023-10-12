@@ -26,7 +26,7 @@ import { zx } from "zodix";
 
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
    assertIsPost,
    isProcessing,

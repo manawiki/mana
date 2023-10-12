@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { offset } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
 import {
@@ -10,10 +12,12 @@ import { lazily } from "react-lazily";
 
 import { H2Default } from "~/components/H2";
 import type { Site } from "~/db/payload-types";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
+
+import { CollectionHeader } from "../$collectionId";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
 //@ts-ignore
@@ -104,5 +108,13 @@ export function EntryContentEmbed({
             </>
          )}
       </>
+   );
+}
+export function Entry({ children }: { children: ReactNode }) {
+   return (
+      <div className="mx-auto max-w-[728px] max-laptop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+         <CollectionHeader />
+         {children}
+      </div>
    );
 }

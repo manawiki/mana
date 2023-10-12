@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 
 import { Listbox, Transition } from "@headlessui/react";
 import { redirect, json } from "@remix-run/node";
-import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
+import type {
+   LoaderFunctionArgs,
+   MetaFunction,
+   SerializeFrom,
+} from "@remix-run/node";
 import {
    Form,
    Link,
@@ -34,12 +38,24 @@ import type {
 } from "payload/generated-types";
 import { Image } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { useDebouncedValue } from "~/hooks";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { isLoading, safeNanoID } from "~/utils";
+import { isLoading, safeNanoID, useDebouncedValue } from "~/utils";
 import { cacheWithSelect } from "~/utils/cache.server";
+
 import { mainContainerStyle } from "../$siteId+/_index";
+
+export const meta: MetaFunction = ({ matches }: { matches: any }) => {
+   const site = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   );
+   const siteName = site?.data?.site.name;
+   return [
+      {
+         title: `Posts - ${siteName}`,
+      },
+   ];
+};
 
 type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
