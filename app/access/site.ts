@@ -1,11 +1,11 @@
 import type { Access } from "payload/types";
 
-import type { Site, User } from "payload/generated-types";
+import type { Site } from "payload/generated-types";
 
 //Check if user is a site owner or admin?
-export const isSiteOwnerOrAdmin = (userId: string, site: Site) => {
-   const siteAdmins = site.admins;
-   const siteOwner = site.owner;
+export const isSiteOwnerOrAdmin = (userId: string, site: Site | undefined) => {
+   const siteAdmins = site?.admins;
+   const siteOwner = site?.owner;
    const isSiteOwner = userId == (siteOwner as any);
    //@ts-ignore
    const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
@@ -21,7 +21,7 @@ export const canRead =
          | "posts"
          | "updates"
          | "homeContents"
-         | "contentEmbeds"
+         | "contentEmbeds",
    ): Access =>
    async ({ req: { user, payload }, id }) => {
       if (user && user.roles.includes("staff")) return true;
@@ -63,7 +63,7 @@ export const canMutateAsSiteAdmin =
          | "posts"
          | "updates"
          | "homeContents"
-         | "contentEmbeds"
+         | "contentEmbeds",
    ): Access =>
    async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {

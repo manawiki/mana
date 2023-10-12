@@ -62,65 +62,60 @@ export async function loader({
    );
 }
 
+export const mainContainerStyle =
+   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12";
+
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
-   return (
-      <>
-         {hasAccess ? (
-            <Float
-               middleware={[
-                  shift({
-                     padding: {
-                        top: 80,
-                     },
-                  }),
-                  offset({
-                     mainAxis: 50,
-                     crossAxis: 0,
-                  }),
-               ]}
-               zIndex={20}
-               autoUpdate
-               placement="right-start"
-               show
-            >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <Suspense fallback="Loading...">
-                        <Await resolve={home}>
-                           <ManaEditor
-                              key={siteId}
-                              collectionSlug="homeContents"
-                              fetcher={fetcher}
-                              siteId={siteId}
-                              defaultValue={home as Descendant[]}
-                           />
-                        </Await>
-                     </Suspense>
-                  </div>
-               </main>
-               <div>
-                  <EditorCommandBar
+   return hasAccess ? (
+      <Float
+         middleware={[
+            shift({
+               padding: {
+                  top: 80,
+               },
+            }),
+            offset({
+               mainAxis: 50,
+               crossAxis: 0,
+            }),
+         ]}
+         zIndex={20}
+         autoUpdate
+         placement="right-start"
+         show
+      >
+         <main className={mainContainerStyle}>
+            <Suspense fallback="Loading...">
+               <Await resolve={home}>
+                  <ManaEditor
+                     key={siteId}
                      collectionSlug="homeContents"
-                     siteId={siteId}
                      fetcher={fetcher}
-                     isChanged={isChanged}
+                     siteId={siteId}
+                     defaultValue={home as Descendant[]}
                   />
-               </div>
-            </Float>
-         ) : (
-            home && (
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <EditorView data={home} />
-                  </div>
-               </main>
-            )
-         )}
-      </>
+               </Await>
+            </Suspense>
+         </main>
+         <div>
+            <EditorCommandBar
+               collectionSlug="homeContents"
+               siteId={siteId}
+               fetcher={fetcher}
+               isChanged={isChanged}
+            />
+         </div>
+      </Float>
+   ) : (
+      home && (
+         <main className={mainContainerStyle}>
+            <EditorView data={home} />
+         </main>
+      )
    );
 }
 

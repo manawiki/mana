@@ -10,6 +10,7 @@ import {
    MenuIcon,
    Search,
    Settings2,
+   Users2,
    X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -47,7 +48,7 @@ export const ColumnThree = ({
          <section
             className={clsx(
                isMobileApp ? "pt-16" : "max-laptop:pt-14",
-               "max-laptop:border-color bg-3 max-laptop:border-b"
+               "max-laptop:border-color bg-3 max-laptop:border-b",
             )}
          >
             <section
@@ -55,18 +56,18 @@ export const ColumnThree = ({
                   isMobileApp
                      ? "fixed top-0"
                      : "fixed max-laptop:top-[56px] laptop:sticky laptop:top-6",
-                  "z-40 w-full laptop:z-50"
+                  "z-40 w-full laptop:z-50",
                )}
             >
                <div
                   className={clsx(
                      isMobileApp
                         ? "bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
-                        : "border-color bg-2 shadow-1 border-b shadow-sm",
-                     " relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-xl laptop:border"
+                        : "border-color bg-gradient-to-br dark:from-bg3Dark dark:to-bg2Dark from-white to-gray-50 border-zinc-200 shadow-1 border-b shadow-sm",
+                     " relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-full laptop:border",
                   )}
                >
-                  <div className="relative mx-auto flex h-[58px] items-center justify-between px-3">
+                  <div className="relative mx-auto flex h-[58px] items-center justify-between pl-3 pr-2.5">
                      {searchToggle ? (
                         <SearchComboBox
                            siteType={site.type}
@@ -77,17 +78,15 @@ export const ColumnThree = ({
                            <div
                               className={clsx(
                                  { truncate: !isMobileApp },
-                                 "flex items-center"
+                                 "flex items-center",
                               )}
                            >
                               <Link
                                  prefetch="intent"
                                  to={siteHomeRoot({ site })}
                                  className={clsx(
-                                    isMobileApp
-                                       ? "group mr-3"
-                                       : "hover:bg-3 truncate p-1 pr-4 font-bold",
-                                    "flex items-center rounded-full"
+                                    isMobileApp ? "group mr-3" : "truncate",
+                                    "flex items-center group",
                                  )}
                               >
                                  {!isSiteHome && isMobileApp && (
@@ -98,7 +97,7 @@ export const ColumnThree = ({
                                        isMobileApp
                                           ? "border-color border transition duration-300 group-active:translate-y-0.5"
                                           : "",
-                                       "shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow"
+                                       "shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow",
                                     )}
                                  >
                                     <Image
@@ -112,11 +111,20 @@ export const ColumnThree = ({
                                  <div
                                     className={clsx(
                                        { hidden: isMobileApp },
-                                       "truncate pl-3"
+                                       "truncate pl-3 text-sm",
                                     )}
                                  >
-                                    {site.name}
+                                    <div className="font-bold group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
+                                       {site.name}
+                                    </div>
+                                    <div className="text-[10px] flex items-center gap-1">
+                                       <Users2 className="text-1" size={12} />
+                                       <span className="dark:text-zinc-500 text-zinc-400">
+                                          {site?.followers}
+                                       </span>
+                                    </div>
                                  </div>
+                                 {/* {site.about} */}
                               </Link>
                               {isMobileApp && (
                                  <>
@@ -216,7 +224,7 @@ export const ColumnThree = ({
                                                                size="18"
                                                             />
                                                             {t(
-                                                               "follow.actionUnfollow"
+                                                               "follow.actionUnfollow",
                                                             )}
                                                          </button>
                                                       </fetcher.Form>
@@ -266,7 +274,7 @@ export const ColumnThree = ({
                                  </div>
                               </NotFollowingSite>
                               <button
-                                 className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center
+                                 className="bg-3-sub border-color-sub shadow-1 flex h-10 w-10 items-center justify-center
                                    rounded-full border shadow-sm"
                                  aria-label="Search"
                                  onClick={() => {
@@ -298,9 +306,7 @@ export const ColumnThree = ({
                   </div>
                </div>
             </section>
-            <div className={clsx(isMobileApp ? "pt-3" : "pt-20 laptop:pt-12")}>
-               <Outlet />
-            </div>
+            <Outlet />
          </section>
       </>
    );

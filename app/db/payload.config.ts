@@ -1,13 +1,15 @@
 import path from "path";
 
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import { slateEditor } from "@payloadcms/richtext-slate";
 import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
 
 import { collections } from "./collections";
-import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import { corsConfig, settings } from "../../mana.config";
@@ -31,36 +33,24 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    serverURL: settings.domainFull,
+   editor: slateEditor({}),
+   db: mongooseAdapter({
+      url: process.env.MONGO_URL ?? false,
+   }),
    admin: {
+      bundler: webpackBundler(),
       components: {
-         beforeNavLinks: [BackMana],
          graphics: {
             Icon: Logo,
             Logo: Logo,
          },
       },
-      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
-      webpack: (config) => ({
-         ...config,
-         resolve: {
-            ...config.resolve,
-            alias: {
-               ...config?.resolve?.alias,
-               react: path.join(__dirname, "../../node_modules/react"),
-               "react-dom": path.join(
-                  __dirname,
-                  "../../node_modules/react-dom"
-               ),
-               payload: path.join(__dirname, "../../node_modules/payload"),
-            },
-         },
-      }),
    },
    plugins: [
       async (config) => {
@@ -138,8 +128,8 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site,
-                     icon: originalDoc?.icon,
+                     site: originalDoc?.site.id,
+                     icon: originalDoc?.icon.id,
                      slug: originalDoc?.slug,
                   };
                }

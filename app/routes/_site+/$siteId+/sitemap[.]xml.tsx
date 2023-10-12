@@ -88,9 +88,9 @@ export async function loader({
             const { docs } = await (await fetch(url)).json();
             return docs.map(
                ({ id }: { id: string }) =>
-                  `${settings.domainFull}/${siteId}/collections/${collection.slug}/${id}`
+                  `${settings.domainFull}/${siteId}/c/${collection.slug}/${id}`,
             );
-         })
+         }),
       ));
 
    const customEntries = processCustomEntries
@@ -103,15 +103,14 @@ export async function loader({
          `${settings.domainFull}${siteId}/collections`,
          `${settings.domainFull}/${siteId}/posts`,
          ...posts.map(
-            ({ url, id }) =>
-               `${settings.domainFull}/${siteId}/posts/${id}/${url}`
+            ({ url, id }) => `${settings.domainFull}/${siteId}/p/${id}/${url}`,
          ),
          ...collections.map(
-            ({ slug }) => `${settings.domainFull}/${siteId}/${slug}`
+            ({ slug }) => `${settings.domainFull}/${siteId}/${slug}`,
          ),
          ...entries.map(
             ({ id, collectionEntity }) =>
-               `${settings.domainFull}/${siteId}/collections/${collectionEntity?.slug}/${id}`
+               `${settings.domainFull}/${siteId}/c/${collectionEntity?.slug}/${id}`,
          ),
          ...customEntries,
       ]);

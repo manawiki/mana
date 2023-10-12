@@ -1,13 +1,15 @@
 import path from "path";
 
+import { webpackBundler } from "@payloadcms/bundler-webpack";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import { slateEditor } from "@payloadcms/richtext-slate";
 import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 
 import { Users } from "./collections/CustomUsers";
 import { Images } from "./collections/Images";
-import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import { settings } from "../../mana.config";
@@ -39,15 +41,18 @@ export default buildConfig({
       process.env.NODE_ENV == "development"
          ? "http://localhost:4000"
          : `https://${settings.siteId}-db.${settings.domain}`,
+   editor: slateEditor({}),
+   db: mongooseAdapter({
+      url: process.env.CUSTOM_MONGO_URL ?? false,
+   }),
    admin: {
+      bundler: webpackBundler(),
       components: {
-         beforeNavLinks: [BackMana],
          graphics: {
             Icon: Logo,
             Logo: Logo,
          },
       },
-      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",
