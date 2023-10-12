@@ -10,7 +10,6 @@ import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
 
 import { collections } from "./collections";
-import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import { corsConfig, settings } from "../../mana.config";
@@ -41,34 +40,17 @@ export default buildConfig({
    admin: {
       bundler: webpackBundler(),
       components: {
-         beforeNavLinks: [BackMana],
          graphics: {
             Icon: Logo,
             Logo: Logo,
          },
       },
-      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",
          ogImage: "/og-image.png",
          titleSuffix: "Mana",
       },
-      webpack: (config) => ({
-         ...config,
-         resolve: {
-            ...config.resolve,
-            alias: {
-               ...config?.resolve?.alias,
-               react: path.join(__dirname, "../../node_modules/react"),
-               "react-dom": path.join(
-                  __dirname,
-                  "../../node_modules/react-dom",
-               ),
-               payload: path.join(__dirname, "../../node_modules/payload"),
-            },
-         },
-      }),
    },
    plugins: [
       async (config) => {

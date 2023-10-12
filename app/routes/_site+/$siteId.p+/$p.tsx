@@ -44,6 +44,7 @@ import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
+import { mainContainerStyle } from "../$siteId+/_index";
 
 export async function loader({
    context: { payload, user },
@@ -146,23 +147,21 @@ export default function Post() {
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <Suspense fallback="Loading...">
-                        <Await resolve={post}>
-                           <PostHeaderEdit
-                              post={post}
-                              isShowBanner={isShowBanner}
-                           />
-                           <ManaEditor
-                              collectionSlug="posts"
-                              fetcher={fetcher}
-                              pageId={post.id}
-                              defaultValue={post.content as Descendant[]}
-                           />
-                        </Await>
-                     </Suspense>
-                  </div>
+               <main className={mainContainerStyle}>
+                  <Suspense fallback="Loading...">
+                     <Await resolve={post}>
+                        <PostHeaderEdit
+                           post={post}
+                           isShowBanner={isShowBanner}
+                        />
+                        <ManaEditor
+                           collectionSlug="posts"
+                           fetcher={fetcher}
+                           pageId={post.id}
+                           defaultValue={post.content as Descendant[]}
+                        />
+                     </Await>
+                  </Suspense>
                </main>
                <div>
                   <EditorCommandBar
@@ -223,15 +222,13 @@ export default function Post() {
                </div>
             </Float>
          ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="relative min-h-screen">
-                  <Suspense fallback="Loading...">
-                     <Await resolve={post}>
-                        <PostHeaderView post={post} />
-                        <EditorView data={post.content} />
-                     </Await>
-                  </Suspense>
-               </div>
+            <main className={mainContainerStyle}>
+               <Suspense fallback="Loading...">
+                  <Await resolve={post}>
+                     <PostHeaderView post={post} />
+                     <EditorView data={post.content} />
+                  </Await>
+               </Suspense>
             </main>
          )}
       </>

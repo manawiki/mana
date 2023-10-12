@@ -62,13 +62,13 @@ export async function loader({
    );
 }
 
+export const mainContainerStyle =
+   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12";
+
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-
-   const mainStyle =
-      "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12";
 
    return hasAccess ? (
       <Float
@@ -88,7 +88,7 @@ export default function SiteIndexMain() {
          placement="right-start"
          show
       >
-         <main className={mainStyle}>
+         <main className={mainContainerStyle}>
             <Suspense fallback="Loading...">
                <Await resolve={home}>
                   <ManaEditor
@@ -112,7 +112,7 @@ export default function SiteIndexMain() {
       </Float>
    ) : (
       home && (
-         <main className={mainStyle}>
+         <main className={mainContainerStyle}>
             <EditorView data={home} />
          </main>
       )
