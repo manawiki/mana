@@ -67,56 +67,55 @@ export default function SiteIndexMain() {
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
-   return (
-      <>
-         {hasAccess ? (
-            <Float
-               middleware={[
-                  shift({
-                     padding: {
-                        top: 80,
-                     },
-                  }),
-                  offset({
-                     mainAxis: 50,
-                     crossAxis: 0,
-                  }),
-               ]}
-               zIndex={20}
-               autoUpdate
-               placement="right-start"
-               show
-            >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] laptop:pt-12">
-                  <Suspense fallback="Loading...">
-                     <Await resolve={home}>
-                        <ManaEditor
-                           key={siteId}
-                           collectionSlug="homeContents"
-                           fetcher={fetcher}
-                           siteId={siteId}
-                           defaultValue={home as Descendant[]}
-                        />
-                     </Await>
-                  </Suspense>
-               </main>
-               <div>
-                  <EditorCommandBar
+   const mainStyle =
+      "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12";
+
+   return hasAccess ? (
+      <Float
+         middleware={[
+            shift({
+               padding: {
+                  top: 80,
+               },
+            }),
+            offset({
+               mainAxis: 50,
+               crossAxis: 0,
+            }),
+         ]}
+         zIndex={20}
+         autoUpdate
+         placement="right-start"
+         show
+      >
+         <main className={mainStyle}>
+            <Suspense fallback="Loading...">
+               <Await resolve={home}>
+                  <ManaEditor
+                     key={siteId}
                      collectionSlug="homeContents"
-                     siteId={siteId}
                      fetcher={fetcher}
-                     isChanged={isChanged}
+                     siteId={siteId}
+                     defaultValue={home as Descendant[]}
                   />
-               </div>
-            </Float>
-         ) : (
-            home && (
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] laptop:pt-12">
-                  <EditorView data={home} />
-               </main>
-            )
-         )}
-      </>
+               </Await>
+            </Suspense>
+         </main>
+         <div>
+            <EditorCommandBar
+               collectionSlug="homeContents"
+               siteId={siteId}
+               fetcher={fetcher}
+               isChanged={isChanged}
+            />
+         </div>
+      </Float>
+   ) : (
+      home && (
+         <main className={mainStyle}>
+            <EditorView data={home} />
+         </main>
+      )
    );
 }
 
