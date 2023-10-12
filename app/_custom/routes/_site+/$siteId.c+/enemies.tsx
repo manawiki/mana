@@ -11,7 +11,7 @@ import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
 import { H2 } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
 
 // export async function loader({
 //    context: { payload },

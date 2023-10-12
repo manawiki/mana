@@ -6,7 +6,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/$collectionId";
+import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
