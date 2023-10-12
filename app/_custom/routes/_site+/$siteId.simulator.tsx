@@ -17,7 +17,7 @@ import { useLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -857,7 +857,7 @@ const SummonSimulator = (data: any) => {
             <h2>Select Banner</h2>
             <BannerCombobox />
 
-            <H2 text="Banner Info" />
+            <H2Default text="Banner Info" />
             <h3 className="text-center">{currentBanner.name}</h3>
             <div className="display-contents relative inline-block h-32 w-full px-2 text-center laptop:h-40 ">
                {currentBanner.icon?.url && (

@@ -2,21 +2,20 @@ import { useState } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-
 import type { Enemy } from "payload/generated-custom-types";
+
 import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
 import { Drops } from "~/_custom/components/enemies/Drops";
 import { Resistances } from "~/_custom/components/enemies/Resistances";
 import { Selector } from "~/_custom/components/enemies/Selector";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Stats } from "~/_custom/components/enemies/Stats";
-import { H2 } from "~/components/H2";
+import { H2Default } from "~/components/H2";
+import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getCustomEntryData,
    meta,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 export { meta };
 
 export async function loader({
@@ -77,19 +76,19 @@ export default function CharacterEntry() {
          <Stats pageData={entryDefault} version={version} />
 
          {/* Skill List */}
-         <H2 text="Skills" />
+         <H2Default text="Skills" />
          <Skills pageData={entryDefault} version={version} />
 
          {/* Resistances */}
-         <H2 text="Resistances" />
+         <H2Default text="Resistances" />
          <Resistances pageData={entryDefault} version={version} />
 
          {/* Drop Rewards */}
-         <H2 text="Drops" />
+         <H2Default text="Drops" />
          <Drops pageData={entryDefault} version={version} />
 
          {/* Additional Data */}
-         <H2 text="Additional Data" />
+         <H2Default text="Additional Data" />
          <AdditionalData pageData={entryDefault} version={version} />
       </Entry>
    );

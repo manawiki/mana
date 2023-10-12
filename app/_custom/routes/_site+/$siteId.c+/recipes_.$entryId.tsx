@@ -6,12 +6,12 @@ import { Header } from "~/_custom/components/recipes/Header";
 import { Ingredients } from "~/_custom/components/recipes/Ingredients";
 import { Relics } from "~/_custom/components/recipes/Relics";
 import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
+import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
    meta,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { meta };
 

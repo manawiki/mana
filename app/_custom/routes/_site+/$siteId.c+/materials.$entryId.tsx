@@ -1,14 +1,14 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-
 import type { Material } from "payload/generated-custom-types";
+
 import { Image } from "~/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
    meta,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { meta };
 

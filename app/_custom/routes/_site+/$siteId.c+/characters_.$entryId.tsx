@@ -1,13 +1,13 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { z } from "zod";
-import { zx } from "zodix";
-
-import { settings } from "mana-config";
 import type {
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -22,11 +22,13 @@ import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 import { H2Default } from "~/components/H2";
 import {
-   meta,
+   Entry,
+   EntryContentEmbed,
+} from "~/routes/_site+/$siteId.c_+/src/components";
+import {
    getAllEntryData,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
+   meta,
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export { meta };

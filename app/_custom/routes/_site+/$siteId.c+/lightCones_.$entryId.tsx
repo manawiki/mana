@@ -8,12 +8,12 @@ import { Effect } from "~/_custom/components/lightCones/Effect";
 import { ImageGallery } from "~/_custom/components/lightCones/ImageGallery";
 import { PromotionCost } from "~/_custom/components/lightCones/PromotionCost";
 import { Stats } from "~/_custom/components/lightCones/Stats";
+import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
    meta,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { meta };
 

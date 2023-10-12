@@ -3,22 +3,22 @@ import { useState, useEffect } from "react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Check } from "lucide-react";
-import { z } from "zod";
-import { zx } from "zodix";
-
-import { settings } from "mana-config";
 import type {
    AchievementSery,
    Achievement as AchievementType,
 } from "payload/generated-custom-types";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import { settings } from "mana-config";
+import { Image } from "~/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
    meta,
-} from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
-import { Image } from "~/components";
 
 export { meta };
 
