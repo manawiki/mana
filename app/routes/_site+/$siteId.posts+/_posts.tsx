@@ -39,6 +39,7 @@ import { AdminOrStaffOrOwner } from "~/modules/auth";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { isLoading, safeNanoID } from "~/utils";
 import { cacheWithSelect } from "~/utils/cache.server";
+import { mainContainerStyle } from "../$siteId+/_index";
 
 type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
@@ -105,8 +106,8 @@ export default function PostsAll() {
    }, [debouncedValue, setSearchParams]);
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3">
-            <div className="relative flex items-center pb-4 pt-20 laptop:pt-12">
+         <main className={mainContainerStyle}>
+            <div className="relative flex items-center pb-5">
                <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
                <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
                <AdminOrStaffOrOwner>

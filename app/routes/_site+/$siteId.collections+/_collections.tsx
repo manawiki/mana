@@ -40,6 +40,8 @@ import {
    setErrorMessage,
 } from "~/utils";
 
+import { mainContainerStyle } from "../$siteId+/_index";
+
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),
    slug: z.string().min(1).max(40),
@@ -123,8 +125,8 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-5 max-tablet:px-3">
-            <div className="relative flex items-center pb-4 pt-20 laptop:pt-12">
+         <main className={mainContainerStyle}>
+            <div className="relative flex items-center pb-3">
                <h1 className="font-header text-2xl laptop:text-3xl font-bold pr-3">
                   Collections
                </h1>
