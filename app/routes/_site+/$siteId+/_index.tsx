@@ -94,9 +94,9 @@ export default function SiteIndexMain() {
                   <ManaEditor
                      key={siteId}
                      collectionSlug="homeContents"
-                     fetcher={fetcher}
                      siteId={siteId}
-                     defaultValue={home as Descendant[]}
+                     fetcher={fetcher}
+                     isChanged={isChanged}
                   />
                </Await>
             </Suspense>
