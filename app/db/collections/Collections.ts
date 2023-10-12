@@ -138,6 +138,15 @@ export const Collections: CollectionConfig = {
                name: "name",
                type: "text",
             },
+            {
+               name: "hideTitle",
+               type: "checkbox",
+               label: "Hide Title",
+               defaultValue: false,
+               access: {
+                  update: isStaffFieldLevel,
+               },
+            },
          ],
       },
    ],

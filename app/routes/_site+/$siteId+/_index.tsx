@@ -25,6 +25,7 @@ import { isSiteOwnerOrAdmin } from "~/access/site";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -55,6 +56,8 @@ export async function loader({
       user,
       request,
    });
+
+   console.log(home);
 
    return await deferIf(
       { home, isChanged, updateResults, versions, siteId },
@@ -94,9 +97,9 @@ export default function SiteIndexMain() {
                   <ManaEditor
                      key={siteId}
                      collectionSlug="homeContents"
-                     fetcher={fetcher}
                      siteId={siteId}
-                     defaultValue={home as Descendant[]}
+                     fetcher={fetcher}
+                     defaultValue={(home as Descendant[]) ?? initialValue()}
                   />
                </Await>
             </Suspense>
