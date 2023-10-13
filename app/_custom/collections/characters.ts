@@ -21,6 +21,10 @@ export const Characters: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "character_id",
          type: "text",
       },
@@ -319,7 +323,7 @@ export const Characters: CollectionConfig = {
                name: "url",
                type: "text",
             },
-         ]
+         ],
       },
       {
          name: "checksum",
