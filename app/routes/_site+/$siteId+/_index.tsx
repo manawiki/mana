@@ -57,8 +57,6 @@ export async function loader({
       request,
    });
 
-   console.log(home);
-
    return await deferIf(
       { home, isChanged, updateResults, versions, siteId },
       isMobileApp,
