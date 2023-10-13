@@ -33,7 +33,7 @@ export function EntryContentEmbed({
    title,
    sectionId,
 }: {
-   title: string;
+   title: string | undefined;
    sectionId?: string;
 }) {
    const fetcher = useFetcher();
