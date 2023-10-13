@@ -44,6 +44,7 @@ import {
    isProcessing,
    toWords,
 } from "~/utils";
+
 import { CollectionHeader } from "./src/components";
 
 const EntrySchema = z.object({
@@ -238,7 +239,7 @@ export default function CollectionList() {
                      {entries.docs?.map((entry: Entry, int: number) => (
                         <Link
                            key={entry.id}
-                           to={entry.id}
+                           to={entry.slug ?? entry.id}
                            // prefetch="intent" Enabling this makes hover perform weird
                            className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50  group"
                         >
@@ -506,6 +507,7 @@ async function fetchEntries({
             {
                id: true,
                name: true,
+               slug: true,
             },
             doc,
          ),

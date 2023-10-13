@@ -148,7 +148,7 @@ export function CollectionHeader() {
    );
 
    const entryName = entry?.name;
-   const entryIcon = entry?.icon?.url;
+   const icon = entry?.icon?.url ?? collection?.icon?.url;
 
    return (
       <div className="sticky top-[115px] desktop:top-[60px] bg-3 z-30 -mx-3 px-3 desktop:-mx-0.5 desktop:px-0.5 max-laptop:pt-5 desktop:pt-12">
@@ -157,9 +157,9 @@ export function CollectionHeader() {
                {entryName ?? collection?.name}
             </h1>
             <div className="flex-none border border-color shadow-1 shadow-sm bg-white dark:bg-zinc-800 -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
-               {collection?.icon ? (
+               {icon ? (
                   <Image
-                     url={entryIcon ?? collection.icon.url}
+                     url={icon}
                      options="aspect_ratio=1:1&height=80&width=80"
                      alt="Collection Icon"
                   />

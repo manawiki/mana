@@ -40,9 +40,8 @@ export const meta: MetaFunction = ({
    )?.data?.site?.name;
    return [
       {
-         title: `${data?.entry.name} - ${siteName}`,
+         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
       },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
    ];
 };
 export async function getEmbeddedContent({
@@ -277,6 +276,7 @@ export async function getEntryFields({
          if (entrySlugDataResult) {
             const result = {
                ...entrySlugDataResult,
+               collectionName: collection.name,
                siteId: collection?.site?.id,
             };
             return { entry: result };
@@ -295,6 +295,7 @@ export async function getEntryFields({
 
          const result = {
             ...entryIdData,
+            collectionName: collection.name,
             siteId: collection?.site?.id,
          };
          return { entry: result };
@@ -329,6 +330,7 @@ export async function getEntryFields({
             id: entryData?.id,
             name: entryData?.name,
             icon: { url: entryData?.icon?.url },
+            collectionName: collection?.name,
             siteId: collection?.site.id,
          },
       };
@@ -346,6 +348,7 @@ export async function getEntryFields({
          id: coreEntryById?.id,
          name: coreEntryById?.name,
          icon: { url: coreEntryById?.icon?.url },
+         collectionName: collection?.name,
          siteId: collection?.site.id,
       },
    };
@@ -379,6 +382,7 @@ export async function getAllEntryData({
       entry: {
          id: entry.id,
          siteId: entry.siteId,
+         collectionName: entry.collectionName,
          name: entry.name,
          icon: entry.icon,
          embeddedContent,
