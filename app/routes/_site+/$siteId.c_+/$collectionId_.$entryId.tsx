@@ -1,7 +1,8 @@
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
-import { CollectionHeader } from "./src/components";
+import { CollectionHeader, EntryContentEmbed } from "./src/components";
 import { getAllEntryData } from "./src/functions";
 
 export async function loader({
@@ -37,9 +38,16 @@ export const meta: MetaFunction = ({
 };
 
 export default function CollectionEntryWiki() {
+   const { entry } = useLoaderData<typeof loader>();
+
    return (
       <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 max-desktop:pt-14">
          <CollectionHeader />
+         {entry.sections?.map((row) => (
+            <div key={row?.id}>
+               <EntryContentEmbed sectionId={row.id} title={row?.name} />
+            </div>
+         ))}
       </div>
    );
 }

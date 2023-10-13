@@ -63,6 +63,8 @@ export async function getEmbeddedContent({
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
+   //TODO entryId should be pulled again since the url could be an alias instead of an id
+
    const { docs } = await payload.find({
       collection: "contentEmbeds",
       where: {
@@ -265,44 +267,44 @@ export async function getEntryFields({
       }/api/graphql`;
 
       //Fetch to see if slug exists
-      try {
-         const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
-            await gqlRequest(endpoint, entryQuerySlug, {
-               entryId,
-            });
+      // try {
+      //    const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
+      //       await gqlRequest(endpoint, entryQuerySlug, {
+      //          entryId,
+      //       });
 
-         const entrySlugDataResult = entrySlugData?.docs[0];
+      //    const entrySlugDataResult = entrySlugData?.docs[0];
 
-         //If anon and data exists, return entry data now
-         if (entrySlugDataResult) {
-            const result = {
-               ...entrySlugDataResult,
-               collectionName: collection.name,
-               siteId: collection?.site?.id,
-               sections: collection?.sections,
-            };
-            return { entry: result };
-         }
-      } catch {
-         //Slug is undefined, attempt to fetch with ID
-         const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
-            endpoint,
-            entryQueryId,
-            {
-               entryId,
-            },
-         );
+      //    //If anon and data exists, return entry data now
+      //    if (entrySlugDataResult) {
+      //       const result = {
+      //          ...entrySlugDataResult,
+      //          collectionName: collection.name,
+      //          siteId: collection?.site?.id,
+      //          sections: collection?.sections,
+      //       };
+      //       return { entry: result };
+      //    }
+      // } catch {
+      //Slug is undefined, attempt to fetch with ID
+      const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
+         endpoint,
+         entryQueryId,
+         {
+            entryId,
+         },
+      );
 
-         if (!entryIdData) throw redirect("/404", 404);
+      if (!entryIdData) throw redirect("/404", 404);
 
-         const result = {
-            ...entryIdData,
-            collectionName: collection.name,
-            siteId: collection?.site?.id,
-            sections: collection?.sections,
-         };
-         return { entry: result };
-      }
+      const result = {
+         ...entryIdData,
+         collectionName: collection.name,
+         siteId: collection?.site?.id,
+         sections: collection?.sections,
+      };
+      return { entry: result };
+      // }
    }
 
    //This is a core site, so we use the local api
