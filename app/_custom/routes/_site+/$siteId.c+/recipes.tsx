@@ -420,7 +420,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
 const QUERY_RECIPES = `
 query {
-   recipes: Recipes(limit: 0) {
+   recipes: Recipes(limit: 100) {
      docs {
        recipe_type {
          id

@@ -408,7 +408,7 @@ function removeTags(str: String) {
 
 const QUERY_BLESSINGS = `
 query {
-   blessings: Blessings(limit: 0) {
+   blessings: Blessings(limit: 100) {
      docs {
        rarity {
          id
