@@ -2,14 +2,14 @@ import { redirect } from "@remix-run/node";
 import type { Params, MetaFunction } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
+import type { PaginatedDocs } from "payload/dist/database/types";
 import { select } from "payload-query";
 import { singular } from "pluralize";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type { User } from "payload/generated-types";
+import type { Entry, User } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { toWords } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -221,46 +221,96 @@ export async function getEntryFields({
       user,
       overrideAccess: false,
    });
+
    const collection = collectionData.docs[0];
 
-   // Get custom entry data
+   //Check if customDatabase is selected
    if (collection?.customDatabase) {
       const formattedName = singular(toWords(collection?.slug, true));
-      const document = gql`
-         query ($entryId: String!) {
-            entry: ${formattedName}(id: $entryId) {
-               id
-               name
-               icon {
-                  url
+
+      //Document request if slug does exist
+      const entryQuerySlug = gql`
+               query ($slug: String!) {
+                  entrySlugData: ${formattedName}(
+                        where: {
+                           slug: { equals: $slug }
+                        }
+                     ) {
+                     docs {
+                        id
+                        name
+                        icon {
+                           url
+                        }
+                     }
+                  }
+               }
+         `;
+
+      //Document request for id
+      const entryQueryId = gql`
+            query ($entryId: String!) {
+               entryIdData: ${formattedName}(id: $entryId) {
+                  id
+                  name
+                  icon {
+                     url
+                  }
                }
             }
-         }
-      `;
+         `;
+
       const endpoint = `https://${collection.site.slug}-db.${
          collection.site?.domain ?? "mana.wiki"
       }/api/graphql`;
 
-      const { entry }: { entry: EntryType } = await gqlRequest(
-         endpoint,
-         document,
-         {
-            entryId,
-         },
-      );
-      const result = {
-         ...entry,
-         siteId: collection?.site?.id,
-      };
+      //Fetch to see if slug exists
+      try {
+         const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
+            await gqlRequest(endpoint, entryQuerySlug, {
+               entryId,
+            });
 
-      return { entry: result };
+         const entrySlugDataResult = entrySlugData?.docs[0];
+
+         //If anon and data exists, return entry data now
+         if (entrySlugDataResult) {
+            const result = {
+               ...entrySlugDataResult,
+               siteId: collection?.site?.id,
+            };
+            return { entry: result };
+         }
+      } catch {
+         //Slug is undefined, attempt to fetch with ID
+         const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
+            endpoint,
+            entryQueryId,
+            {
+               entryId,
+            },
+         );
+
+         if (!entryIdData) throw redirect("/404", 404);
+
+         const result = {
+            ...entryIdData,
+            siteId: collection?.site?.id,
+         };
+         return { entry: result };
+      }
    }
 
+   //This is a core site, so we use the local api
+   //Fetch to see if slug exists
    const coreEntryData = await payload.find({
       collection: "entries",
       where: {
          "site.slug": {
             equals: siteId,
+         },
+         "collectionEntity.slug": {
+            equals: collectionId,
          },
          slug: {
             equals: entryId,
@@ -272,44 +322,33 @@ export async function getEntryFields({
 
    const entryData = coreEntryData.docs[0];
 
-   const entry = {
-      id: entryData?.id,
-      name: entryData?.name,
-      icon: { url: entryData?.icon?.url },
-      siteId: collection?.site.id,
-   };
-
-   if (!user) {
-      //If anon and data exists, return entry data now. This means a slug exists.
-      //Attempt to fetch with ID, this means that the entry doesn't have a slug.
-      if (!entryData) {
-         const entryById = await payload.findByID({
-            collection: "entries",
-            id: entryId,
-         });
-
-         if (!entryById) throw redirect("/404", 404);
-         return {
-            entry: {
-               id: entryById?.id,
-               name: entryById?.name,
-               icon: { url: entryById?.icon?.url },
-               siteId: collection?.site.id,
-            },
-         };
-      }
-      return { entry };
-   }
-
-   invariant(user, "Not logged in");
-
-   //If entry is not falsy, then we know the page was accessed with a canonical, as a site admin, we want to use the path with ID instead
+   //Slug exists, return entry
    if (entryData) {
-      throw redirect(
-         `/${entryData?.site?.slug}/c/${entryData.collectionEntity?.slug}/${entryData.id}`,
-      );
+      return {
+         entry: {
+            id: entryData?.id,
+            name: entryData?.name,
+            icon: { url: entryData?.icon?.url },
+            siteId: collection?.site.id,
+         },
+      };
    }
-   return { entry };
+   //Slug is undefined, attempt to fetch with ID
+   const coreEntryById = await payload.findByID({
+      collection: "entries",
+      id: entryId,
+   });
+
+   if (!coreEntryById) throw redirect("/404", 404);
+
+   return {
+      entry: {
+         id: coreEntryById?.id,
+         name: coreEntryById?.name,
+         icon: { url: coreEntryById?.icon?.url },
+         siteId: collection?.site.id,
+      },
+   };
 }
 export async function getAllEntryData({
    payload,

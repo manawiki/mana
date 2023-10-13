@@ -1,8 +1,6 @@
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
-
 import { CollectionHeader } from "./src/components";
 import { getAllEntryData } from "./src/functions";
 
@@ -23,9 +21,7 @@ export async function loader({
 export default function CollectionEntryWiki() {
    return (
       <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:pb-12">
-         <AdminOrStaffOrOwner>
-            <CollectionHeader />
-         </AdminOrStaffOrOwner>
+         <CollectionHeader />
       </div>
    );
 }
