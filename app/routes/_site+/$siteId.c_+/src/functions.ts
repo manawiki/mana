@@ -230,10 +230,10 @@ export async function getEntryFields({
 
       //Document request if slug does exist
       const entryQuerySlug = gql`
-               query ($slug: String!) {
+               query ($entryId: String!) {
                   entrySlugData: ${formattedName}(
                         where: {
-                           slug: { equals: $slug }
+                           slug: { equals: $entryId }
                         }
                      ) {
                      docs {
