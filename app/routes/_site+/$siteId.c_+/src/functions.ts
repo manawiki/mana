@@ -238,6 +238,7 @@ export async function getEntryFields({
                      docs {
                         id
                         name
+                        slug
                         icon {
                            url
                         }
