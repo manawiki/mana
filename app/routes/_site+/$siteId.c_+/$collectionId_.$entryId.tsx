@@ -3,7 +3,6 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 
 import { CollectionHeader } from "./src/components";
 import { getAllEntryData } from "./src/functions";
-import { mainContainerStyle } from "../$siteId+/_index";
 
 export async function loader({
    context: { payload, user },
@@ -39,7 +38,7 @@ export const meta: MetaFunction = ({
 
 export default function CollectionEntryWiki() {
    return (
-      <div className={mainContainerStyle}>
+      <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 max-desktop:pt-14">
          <CollectionHeader />
       </div>
    );
