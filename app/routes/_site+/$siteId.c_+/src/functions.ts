@@ -4,7 +4,7 @@ import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import { select } from "payload-query";
-import { singular } from "pluralize";
+import { plural, singular } from "pluralize";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -225,12 +225,13 @@ export async function getEntryFields({
 
    //Check if customDatabase is selected
    if (collection?.customDatabase) {
-      const formattedName = singular(toWords(collection?.slug, true));
+      const formattedNameSingular = singular(toWords(collection?.slug, true));
+      const formattedNamePlural = plural(toWords(collection?.slug, true));
 
       //Document request if slug does exist
       const entryQuerySlug = gql`
                query ($entryId: String!) {
-                  entrySlugData: ${formattedName}(
+                  entrySlugData: ${formattedNamePlural}(
                         where: {
                            slug: { equals: $entryId }
                         }
@@ -238,7 +239,6 @@ export async function getEntryFields({
                      docs {
                         id
                         name
-                        slug
                         icon {
                            url
                         }
@@ -250,7 +250,7 @@ export async function getEntryFields({
       //Document request for id
       const entryQueryId = gql`
             query ($entryId: String!) {
-               entryIdData: ${formattedName}(id: $entryId) {
+               entryIdData: ${formattedNameSingular}(id: $entryId) {
                   id
                   name
                   icon {
@@ -279,6 +279,7 @@ export async function getEntryFields({
                ...entrySlugDataResult,
                collectionName: collection.name,
                siteId: collection?.site?.id,
+               sections: collection?.sections,
             };
             return { entry: result };
          }
@@ -298,6 +299,7 @@ export async function getEntryFields({
             ...entryIdData,
             collectionName: collection.name,
             siteId: collection?.site?.id,
+            sections: collection?.sections,
          };
          return { entry: result };
       }
@@ -332,6 +334,7 @@ export async function getEntryFields({
             name: entryData?.name,
             icon: { url: entryData?.icon?.url },
             collectionName: collection?.name,
+            sections: collection?.sections,
             siteId: collection?.site.id,
          },
       };
@@ -350,6 +353,7 @@ export async function getEntryFields({
          name: coreEntryById?.name,
          icon: { url: coreEntryById?.icon?.url },
          collectionName: collection?.name,
+         sections: collection?.sections,
          siteId: collection?.site.id,
       },
    };
@@ -384,6 +388,7 @@ export async function getAllEntryData({
          id: entry.id,
          siteId: entry.siteId,
          collectionName: entry.collectionName,
+         sections: entry?.sections,
          name: entry.name,
          icon: entry.icon,
          embeddedContent,
