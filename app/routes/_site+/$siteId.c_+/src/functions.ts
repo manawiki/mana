@@ -18,6 +18,7 @@ export type EntryType = {
    siteId: string;
    id: string;
    name?: string;
+   slug?: string;
    icon?: {
       url?: string;
    };
@@ -171,17 +172,18 @@ export async function getCustomEntryData({
    params,
    request,
    depth = 2,
+   entryId,
 }: {
    payload: Payload;
    params: Params;
    request: any;
    depth: number;
+   entryId: string;
 }) {
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
-   const { entryId, siteId } = zx.parseParams(params, {
-      entryId: z.string(),
+   const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
@@ -240,6 +242,7 @@ export async function getEntryFields({
                      ) {
                      docs {
                         id
+                        slug
                         name
                         icon {
                            url
@@ -255,6 +258,7 @@ export async function getEntryFields({
                entryIdData: ${formattedNameSingular}(id: $entryId) {
                   id
                   name
+                  slug
                   icon {
                      url
                   }
@@ -267,46 +271,50 @@ export async function getEntryFields({
       }/api/graphql`;
 
       //Fetch to see if slug exists
-      // try {
-      //    const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
-      //       await gqlRequest(endpoint, entryQuerySlug, {
-      //          entryId,
-      //       });
-
-      //    const entrySlugDataResult = entrySlugData?.docs[0];
-
-      //    //If anon and data exists, return entry data now
-      //    if (entrySlugDataResult) {
-      //       const result = {
-      //          ...entrySlugDataResult,
-      //          collectionName: collection.name,
-      //          siteId: collection?.site?.id,
-      //          sections: collection?.sections,
-      //       };
-      //       return { entry: result };
-      //    }
-      // } catch {
-      //Slug is undefined, attempt to fetch with ID
-      const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
-         endpoint,
-         entryQueryId,
-         {
+      const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
+         await gqlRequest(endpoint, entryQuerySlug, {
             entryId,
-         },
-      );
+         });
 
-      if (!entryIdData) throw redirect("/404", 404);
+      const entrySlugDataResult = entrySlugData?.docs[0];
 
-      const result = {
-         ...entryIdData,
-         collectionName: collection.name,
-         siteId: collection?.site?.id,
-         sections: collection?.sections,
-      };
-      return { entry: result };
-      // }
+      //If anon and data exists, return entry data now
+      if (entrySlugDataResult) {
+         const result = {
+            ...entrySlugDataResult,
+            collectionName: collection.name,
+            siteId: collection?.site?.id,
+            sections: collection?.sections,
+         };
+         return { entry: result };
+      }
+      if (!entrySlugDataResult) {
+         const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
+            endpoint,
+            entryQueryId,
+            {
+               entryId,
+            },
+         );
+         if (!entryIdData) throw redirect("/404", 404);
+
+         //If there is a slug filled out, we should redirect to the slug page instead of the canonical
+         if (entryIdData?.slug)
+            throw redirect(
+               `/${collection?.site?.slug}/c/${collection.slug}/${entryIdData?.slug}`,
+               301,
+            );
+
+         //Otherwise the slug is undefined and we want to use the id
+         const result = {
+            ...entryIdData,
+            collectionName: collection.name,
+            siteId: collection?.site?.id,
+            sections: collection?.sections,
+         };
+         return { entry: result };
+      }
    }
-
    //This is a core site, so we use the local api
    //Fetch to see if slug exists
    const coreEntryData = await payload.find({
@@ -341,6 +349,7 @@ export async function getEntryFields({
          },
       };
    }
+
    //Slug is undefined, attempt to fetch with ID
    const coreEntryById = await payload.findByID({
       collection: "entries",
@@ -348,6 +357,13 @@ export async function getEntryFields({
    });
 
    if (!coreEntryById) throw redirect("/404", 404);
+
+   //If there is a slug filled out, we should redirect to the slug page instead as the canonical
+   if (coreEntryById?.slug)
+      throw redirect(
+         `/${collection?.site?.slug}/c/${collection?.slug}/${coreEntryById?.slug}`,
+         301,
+      );
 
    return {
       entry: {
