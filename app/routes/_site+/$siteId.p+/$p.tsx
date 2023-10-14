@@ -440,15 +440,32 @@ export async function action({
          const allPosts = await payload.find({
             collection: "posts",
             where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: newSlug,
-               },
-               id: {
-                  not_equals: currentPost.id,
-               },
+               and: [
+                  {
+                     "site.slug": {
+                        equals: siteId,
+                     },
+                     //Check existing slug or id
+                     or: [
+                        {
+                           slug: {
+                              equals: newSlug,
+                           },
+                        },
+                        {
+                           id: {
+                              equals: newSlug,
+                           },
+                        },
+                     ],
+                  },
+                  {
+                     //We don't want to include the current post when checking
+                     id: {
+                        not_equals: currentPost.id,
+                     },
+                  },
+               ],
             },
             draft: true,
             overrideAccess: false,
