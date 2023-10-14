@@ -19,6 +19,10 @@ export const Materials: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "data_key",
          type: "text",
       },

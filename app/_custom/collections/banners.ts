@@ -21,6 +21,10 @@ export const Banners: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "banner_id",
          type: "text",
       },

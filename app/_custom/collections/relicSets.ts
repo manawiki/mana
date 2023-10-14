@@ -21,6 +21,10 @@ export const RelicSets: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "relicset_id",
          type: "text",
       },

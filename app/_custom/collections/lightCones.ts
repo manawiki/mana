@@ -21,6 +21,10 @@ export const LightCones: CollectionConfig = {
          type: "text",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "lightcone_id",
          type: "text",
       },
