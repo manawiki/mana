@@ -241,7 +241,7 @@ const RelicSetList = ({ chars }: any) => {
 };
 
 const EntryWithDescription = ({ char }: any) => {
-   const cid = char?.id;
+   const cid = char?.slug ?? char?.id;
    const effect = char?.set_effect;
 
    return (
@@ -292,6 +292,7 @@ query {
        relicset_id
        name
        id
+       slug
        icon {
          url
        }

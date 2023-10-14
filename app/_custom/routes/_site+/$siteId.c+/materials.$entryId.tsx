@@ -23,11 +23,13 @@ export async function loader({
       request,
       user,
    });
+
    const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
+      entryId: entry.id,
    })) as Material;
 
    //Feel free to query for more data here

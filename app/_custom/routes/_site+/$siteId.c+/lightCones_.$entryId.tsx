@@ -33,6 +33,7 @@ export async function loader({
       params,
       request,
       depth: 3,
+      entryId: entry.id,
    })) as LightCone;
 
    return json({ entryDefault, entry });

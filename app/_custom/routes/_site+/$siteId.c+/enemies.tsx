@@ -286,7 +286,7 @@ const EnemyList = ({ chars }: any) => {
          {/* List of items with applied sorting */}
          <div className="bg-2 border-color shadow-1 divide-color divide-y rounded-lg border shadow-sm laptop:mb-16">
             {cfiltered?.map((char) => {
-               const cid = char?.id;
+               const cid = char.slug ?? char?.id;
                const curl = char.icon?.url;
                const cname = char.name;
 
@@ -396,6 +396,7 @@ query {
             url
          }
        }
+       slug
        id
        icon {
          url

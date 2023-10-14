@@ -33,12 +33,12 @@ export async function loader({
       request,
       user,
    });
-   console.log(entry);
    const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
+      entryId: entry.id,
    })) as AchievementSery;
 
    //Feel free to query for more data here

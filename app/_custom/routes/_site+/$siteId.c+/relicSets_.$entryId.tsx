@@ -35,6 +35,7 @@ export async function loader({
       params,
       request,
       depth: 3,
+      entryId: entry.id,
    })) as RelicSet;
 
    //Feel free to query for more data here

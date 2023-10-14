@@ -279,7 +279,7 @@ const RecipeList = ({ chars }: any) => {
             {cfiltered?.map((char) => {
                // const rarityurl = char?.result_item?.rarity?.icon?.url;
                const rarnum = char?.result_item?.rarity?.display_number;
-               const cid = char?.id;
+               const cid = char.slug ?? char?.id;
                const curl = char.icon?.url;
                const cname = char.name;
 
@@ -438,6 +438,7 @@ query {
          }
        }
        id
+       slug
        icon {
          url
        }

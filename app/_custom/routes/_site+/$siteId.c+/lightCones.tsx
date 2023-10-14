@@ -334,7 +334,7 @@ const EntryWithDescription = ({ char }: any) => {
    const pathsmall = char?.path?.icon?.url;
    const rarityurl = char?.rarity?.icon?.url;
    const raritynum = char?.rarity?.display_number;
-   const cid = char?.id;
+   const cid = char?.slug ?? char?.id;
    const skillinfo = char?.skill_data[char?.skill_data?.length - 1]?.desc;
 
    return (

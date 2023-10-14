@@ -29,7 +29,8 @@ export async function loader({
       payload,
       params,
       request,
-      depth: 2,
+      depth: 3,
+      entryId: entry.id,
    })) as Blessing;
 
    // Remove html tags from entry name

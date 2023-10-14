@@ -22,6 +22,7 @@ export async function loader({
         docs {
           id
           name
+          slug
           element {
             id
             icon {
@@ -398,7 +399,7 @@ const CharacterList = ({ chars }: any) => {
                const pathsmall = char?.path?.icon?.url;
                const rarityurl = char?.rarity?.icon?.url;
                const raritynum = char?.rarity?.display_number;
-               const cid = char?.id;
+               const cid = char.slug ?? char?.id;
 
                return (
                   <Link

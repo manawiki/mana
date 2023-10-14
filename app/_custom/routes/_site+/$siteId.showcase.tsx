@@ -961,7 +961,9 @@ const CharacterInfo = ({
                         <Link
                            className="font-header text-2xl font-bold leading-none hover:underline"
                            prefetch="intent"
-                           to={`/starrail/c/characters/${charbase?.id}`}
+                           to={`/starrail/c/characters/${
+                              charbase?.slug ?? charbase?.id
+                           }`}
                         >
                            {charbase?.name}
                         </Link>
@@ -1059,7 +1061,9 @@ const CharacterInfo = ({
                            <Link
                               className="block"
                               prefetch="intent"
-                              to={`/starrail/c/lightCones/${lcbase?.id}`}
+                              to={`/starrail/c/lightCones/${
+                                 lcbase?.slug ?? lcbase?.id
+                              }`}
                            >
                               <div className="relative overflow-hidden rounded">
                                  <Image
@@ -1953,6 +1957,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
        name
        id
+       slug
        path {
          data_key
        }
@@ -1987,6 +1992,7 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
        id
        name
+       slug
        image_full {
          url
        }

@@ -1,13 +1,12 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+
+import { settings } from "mana-config";
 import type {
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
-import { z } from "zod";
-import { zx } from "zodix";
 
-import { settings } from "mana-config";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -38,10 +37,6 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entryId } = zx.parseParams(params, {
-      entryId: z.string(),
-   });
-
    const { entry } = await getAllEntryData({
       payload,
       params,
@@ -59,7 +54,7 @@ export async function loader({
          body: JSON.stringify({
             query: CharacterQuery,
             variables: {
-               charId: entryId,
+               charId: entry.id,
             },
          }),
       },

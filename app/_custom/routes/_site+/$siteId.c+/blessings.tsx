@@ -318,7 +318,7 @@ const BlessingList = ({ chars }: any) => {
                      : char?.rarity?.display_number == 2
                      ? 3
                      : char?.rarity?.display_number;
-               const cid = char?.id;
+               const cid = char.slug ?? char?.id;
                const curl = char.icon?.url;
                const cname = char.name;
 

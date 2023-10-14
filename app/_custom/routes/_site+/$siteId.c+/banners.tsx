@@ -28,6 +28,7 @@ export async function loader({
           featured_characters {
             id
             name
+            slug
             icon {
               url
             }
@@ -38,6 +39,7 @@ export async function loader({
           featured_light_cones {
             id
             name
+            slug
             icon {
               url
             }
@@ -175,7 +177,7 @@ const CharFrame = ({ char }: any) => {
       <Link
          prefetch="intent"
          className="flex items-center gap-2.5"
-         to={`/starrail/c/characters/${char?.id}`}
+         to={`/starrail/c/characters/${char.slug ?? char?.id}`}
       >
          <div className="h-12 w-12 flex-none">
             <Image
@@ -199,7 +201,7 @@ const LightConeFrame = ({ char }: any) => {
       <Link
          prefetch="intent"
          className="flex items-center gap-2.5"
-         to={`/starrail/c/lightCones/${char?.id}`}
+         to={`/starrail/c/lightCones/${char.slug ?? char?.id}`}
       >
          <div className="h-12 w-12 flex-none">
             <Image

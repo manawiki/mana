@@ -13,21 +13,30 @@ import { Stats } from "~/_custom/components/enemies/Stats";
 import { H2Default } from "~/components/H2";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
+   getAllEntryData,
    getCustomEntryData,
    meta,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 export { meta };
 
 export async function loader({
-   context: { payload },
+   context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
+   const { entry } = await getAllEntryData({
+      payload,
+      params,
+      request,
+      user,
+   });
+
    const entryDefault = (await getCustomEntryData({
       payload,
       params,
       request,
       depth: 3,
+      entryId: entry.id,
    })) as Enemy;
 
    //Feel free to query for more data here
