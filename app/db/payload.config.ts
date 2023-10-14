@@ -1,10 +1,7 @@
 import path from "path";
 
-import { webpackBundler } from "@payloadcms/bundler-webpack";
-import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
-import { slateEditor } from "@payloadcms/richtext-slate";
 import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
@@ -33,12 +30,7 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    serverURL: settings.domainFull,
-   editor: slateEditor({}),
-   db: mongooseAdapter({
-      url: process.env.MONGO_URL ?? false,
-   }),
    admin: {
-      bundler: webpackBundler(),
       components: {
          graphics: {
             Icon: Logo,
