@@ -59,8 +59,7 @@ export async function loader({
          body: JSON.stringify({
             query: CharacterQuery,
             variables: {
-               id: entryId, //this has to be String! for some reason
-               charId: entryId, //this has to be JSON for some reason
+               charId: entryId,
             },
          }),
       },
@@ -80,8 +79,6 @@ export async function loader({
 export default function CharacterEntry() {
    const { entryDefault, skillTreeData } = useLoaderData<typeof loader>();
 
-   console.log(entryDefault);
-
    const links = [
       { name: "Traces", link: "traces" },
       { name: "Skill Tree", link: "tree" },
@@ -90,8 +87,6 @@ export default function CharacterEntry() {
       { name: "Gallery", link: "gallery" },
       { name: "Profile", link: "profile" },
    ];
-
-   return <div>test</div>;
 
    return (
       <Entry>
@@ -154,8 +149,8 @@ export default function CharacterEntry() {
 }
 
 const CharacterQuery = `
-query ($id: String!, $charId: JSON) {
- character: Character(id: $id) {
+query ($charId: String!) {
+ character: Character(id: $charId) {
    id
    name
    image_draw {
