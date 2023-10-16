@@ -2,7 +2,7 @@ import { NavLink } from "@remix-run/react";
 
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
-import { LoggedOut, LoggedIn } from "~/modules/auth";
+import { LoggedOut, LoggedIn } from "~/routes/_auth+/src/components";
 import { siteHomePath, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 // import { NewSiteModal } from "~/routes/action+/new-site-modal";
 

@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { Drawer } from "vaul";
 
 import type { Site } from "~/db/payload-types";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
+import { LoggedIn } from "~/routes/_auth+/src/components";
 import { siteHomeShouldReload } from "~/utils";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
@@ -48,44 +48,16 @@ export const MenuTrayContent = ({
 
 export const FollowingTrayContent = ({
    site,
-   isMobileApp,
    setFollowerMenuOpen,
 }: {
    site: Site;
-   isMobileApp: Boolean;
    setFollowerMenuOpen: any;
 }) => {
    return (
       <>
-         {isMobileApp && (
-            <LoggedOut>
-               <div className="flex w-full flex-col items-center justify-center px-4">
-                  <Link
-                     reloadDocument={siteHomeShouldReload({
-                        site,
-                     })}
-                     className="block w-full rounded-full bg-zinc-800 px-4 py-3 text-center text-sm 
-                     font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
-                     to="/"
-                  >
-                     Explore
-                  </Link>
-                  <div className="flex w-full items-center gap-4 pb-6 pt-8">
-                     <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
-                     <span className="text-sm">or</span>
-                     <span className="h-0.5 flex-grow rounded-full bg-zinc-100 dark:bg-zinc-700/50" />
-                  </div>
-                  <div className="pb-4 text-center text-sm font-semibold">
-                     Login to view the sites you <b>follow</b>
-                  </div>
-                  <LoggedOutMobile />
-               </div>
-            </LoggedOut>
-         )}
          <menu className="flex h-full flex-col">
             <FollowingListMobile
                site={site}
-               isMobileApp={isMobileApp}
                setMenuOpen={setFollowerMenuOpen}
             />
             <LoggedIn>

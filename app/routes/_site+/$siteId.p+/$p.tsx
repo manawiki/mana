@@ -2,14 +2,13 @@ import { Suspense, useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import { redirect } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import type {
    ActionFunctionArgs,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { deferIf } from "defer-if";
 import { EyeOff, Image, ImageMinus, Trash2 } from "lucide-react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
@@ -22,7 +21,7 @@ import type { Post, Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
@@ -33,7 +32,6 @@ import {
    commitSession,
    getMultipleFormData,
    getSession,
-   isNativeSSR,
    setErrorMessage,
    setSuccessMessage,
    slugify,
@@ -44,6 +42,7 @@ import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
+import { mainContainerStyle } from "../$siteId+/_index";
 
 export async function loader({
    context: { payload, user },
@@ -60,8 +59,6 @@ export async function loader({
       p: z.string(),
    });
 
-   const { isMobileApp } = isNativeSSR(request);
-
    const { post, isChanged, versions } = await fetchPost({
       p,
       page,
@@ -70,7 +67,7 @@ export async function loader({
       user,
    });
 
-   return await deferIf({ post, isChanged, versions, siteId }, isMobileApp);
+   return await json({ post, isChanged, versions, siteId });
 }
 
 export const meta: MetaFunction<typeof loader> = ({
@@ -146,23 +143,21 @@ export default function Post() {
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <Suspense fallback="Loading...">
-                        <Await resolve={post}>
-                           <PostHeaderEdit
-                              post={post}
-                              isShowBanner={isShowBanner}
-                           />
-                           <ManaEditor
-                              collectionSlug="posts"
-                              fetcher={fetcher}
-                              pageId={post.id}
-                              defaultValue={post.content as Descendant[]}
-                           />
-                        </Await>
-                     </Suspense>
-                  </div>
+               <main className={mainContainerStyle}>
+                  <Suspense fallback="Loading...">
+                     <Await resolve={post}>
+                        <PostHeaderEdit
+                           post={post}
+                           isShowBanner={isShowBanner}
+                        />
+                        <ManaEditor
+                           collectionSlug="posts"
+                           fetcher={fetcher}
+                           pageId={post.id}
+                           defaultValue={post.content as Descendant[]}
+                        />
+                     </Await>
+                  </Suspense>
                </main>
                <div>
                   <EditorCommandBar
@@ -223,15 +218,13 @@ export default function Post() {
                </div>
             </Float>
          ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="relative min-h-screen">
-                  <Suspense fallback="Loading...">
-                     <Await resolve={post}>
-                        <PostHeaderView post={post} />
-                        <EditorView data={post.content} />
-                     </Await>
-                  </Suspense>
-               </div>
+            <main className={mainContainerStyle}>
+               <Suspense fallback="Loading...">
+                  <Await resolve={post}>
+                     <PostHeaderView post={post} />
+                     <EditorView data={post.content} />
+                  </Await>
+               </Suspense>
             </main>
          )}
       </>
@@ -443,15 +436,32 @@ export async function action({
          const allPosts = await payload.find({
             collection: "posts",
             where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: newSlug,
-               },
-               id: {
-                  not_equals: currentPost.id,
-               },
+               and: [
+                  {
+                     "site.slug": {
+                        equals: siteId,
+                     },
+                     //Check existing slug or id
+                     or: [
+                        {
+                           slug: {
+                              equals: newSlug,
+                           },
+                        },
+                        {
+                           id: {
+                              equals: newSlug,
+                           },
+                        },
+                     ],
+                  },
+                  {
+                     //We don't want to include the current post when checking
+                     id: {
+                        not_equals: currentPost.id,
+                     },
+                  },
+               ],
             },
             draft: true,
             overrideAccess: false,

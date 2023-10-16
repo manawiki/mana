@@ -18,8 +18,8 @@ import {
    LoggedIn,
    LoggedOut,
    LoggedOutMobile,
-   handleLogout,
-} from "~/modules/auth";
+} from "~/routes/_auth+/src/components";
+import { handleLogout } from "~/routes/_auth+/src/functions";
 import { isAdding } from "~/utils";
 import { Theme, useTheme } from "~/utils/theme-provider";
 

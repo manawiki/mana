@@ -29,7 +29,7 @@ export function EditorVersionModal({
    const versions =
       collectionSlug == "contentEmbeds"
          ? data.entry.embeddedContent.find((item: any) => item?.id === pageId)
-              .versions
+              ?.versions ?? []
          : data?.versions;
 
    const fetcher = useFetcher();

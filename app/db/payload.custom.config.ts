@@ -7,7 +7,6 @@ import { buildConfig } from "payload/config";
 
 import { Users } from "./collections/CustomUsers";
 import { Images } from "./collections/Images";
-import { BackMana } from "./components/BackMana";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import { settings } from "../../mana.config";
@@ -41,13 +40,11 @@ export default buildConfig({
          : `https://${settings.siteId}-db.${settings.domain}`,
    admin: {
       components: {
-         beforeNavLinks: [BackMana],
          graphics: {
             Icon: Logo,
             Logo: Logo,
          },
       },
-      css: path.resolve(__dirname, "./db.css"),
       user: "users",
       meta: {
          favicon: "/favicon.ico",

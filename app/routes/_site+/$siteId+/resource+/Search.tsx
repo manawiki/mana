@@ -3,14 +3,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-   Link,
-   useFetcher,
-   useNavigate,
-   useParams,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import { clsx } from "clsx";
+import { Link, useFetcher, useNavigate, useParams } from "@remix-run/react";
 import {
    Component,
    Database,
@@ -27,8 +20,7 @@ import { settings } from "mana-config";
 import type { Search, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { useDebouncedValue } from "~/hooks";
-import { isAdding } from "~/utils";
+import { isAdding, useDebouncedValue } from "~/utils";
 
 export async function loader({
    context: { payload, user },
@@ -194,7 +186,6 @@ export function SearchComboBox({
       return setSearchToggle(false);
    };
    const isSearching = isAdding(fetcher, "search");
-   const { isMobileApp } = useRouteLoaderData("root") as any;
 
    return (
       <div className="h-full w-full">
@@ -205,10 +196,7 @@ export function SearchComboBox({
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
-                  className={clsx(
-                     isMobileApp ? "bg-3" : "bg-transparent",
-                     "h-full w-full border-0 laptop:rounded-full p-0 laptop:pl-8 outline-none !ring-transparent",
-                  )}
+                  className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}
