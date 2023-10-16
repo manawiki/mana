@@ -3,7 +3,6 @@ import { Drawer } from "vaul";
 
 import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/src/components";
-import { siteHomeShouldReload } from "~/utils";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
 
@@ -62,9 +61,7 @@ export const FollowingTrayContent = ({
             />
             <LoggedIn>
                <Link
-                  reloadDocument={siteHomeShouldReload({
-                     site,
-                  })}
+                  reloadDocument={true}
                   className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
                    text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
                   to="/"

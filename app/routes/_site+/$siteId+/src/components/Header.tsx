@@ -8,7 +8,7 @@ import {
    NotFollowingSite,
    LoggedOut,
 } from "~/routes/_auth+/src/components";
-import { isAdding, siteHomeShouldReload } from "~/utils";
+import { isAdding } from "~/utils";
 
 import { UserMenu } from "./UserMenu";
 
@@ -84,9 +84,7 @@ export const Header = ({
             <LoggedOut>
                <Link
                   prefetch="intent"
-                  reloadDocument={siteHomeShouldReload({
-                     site,
-                  })}
+                  reloadDocument={true}
                   to={`/login?redirectTo=/${site.slug}`}
                   className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
