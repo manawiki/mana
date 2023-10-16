@@ -30,7 +30,7 @@ export function EditorVersionModal({
       collectionSlug == "contentEmbeds"
          ? data.entry.embeddedContent.find((item: any) => item?.id === pageId)
               ?.versions ?? []
-         : data?.versions;
+         : data?.versions ?? [];
 
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "versionUpdate");
