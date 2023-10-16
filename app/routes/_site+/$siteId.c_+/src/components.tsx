@@ -77,7 +77,7 @@ export function EntryContentEmbed({
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
+               <main className="mx-auto max-w-[728px] pb-3 laptop:w-[728px]">
                   <H2Default text={title} />
                   <ManaEditor
                      key={data?.id}
@@ -117,6 +117,15 @@ export function EntryContentEmbed({
    );
 }
 export function Entry({ children }: { children: ReactNode }) {
+   return (
+      <div className="mx-auto max-w-[728px] max-laptop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+         <CollectionHeader />
+         {children}
+      </div>
+   );
+}
+
+export function List({ children }: { children: ReactNode }) {
    return (
       <div className="mx-auto max-w-[728px] max-laptop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
