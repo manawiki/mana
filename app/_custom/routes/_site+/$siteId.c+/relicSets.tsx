@@ -1,14 +1,17 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
+
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload, user },
@@ -36,22 +39,10 @@ export async function loader({
    return json({ relicSets: data.relicSets.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Relic Sets - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function HomePage() {
    const { relicSets } = useLoaderData<typeof loader>();
 
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <RelicSetList chars={relicSets} />
-      </div>
-   );
+   return <RelicSetList chars={relicSets} />;
 }
 
 type FilterTypes = {
@@ -136,107 +127,103 @@ const RelicSetList = ({ chars }: any) => {
    });
 
    return (
-      <div className="max-desktop:pt-14">
-         <div className="pb-3 laptop:pb-20">
-            {/* Filter Options */}
-            <CollectionHeader />
-            <div className="divide-color-sub bg-2-sub border-color-sub divide-y shadow-sm shadow-1 rounded-md border">
-               {filterOptions.map((cat) => (
-                  <div
-                     key={cat.name}
-                     className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
-                  >
-                     <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
-                        {cat.name}
-                     </div>
-                     <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
-                        {cat.options.map((opt) => (
-                           <div
-                              key={opt.id}
-                              className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
-                                 filters.find((a) => a.id == opt.id)
-                                    ? `bg-zinc-50 dark:bg-zinc-500/10`
-                                    : ``
-                              }`}
-                              onClick={(event) => {
-                                 if (filters.find((a: any) => a.id == opt.id)) {
-                                    setFilters(
-                                       filters.filter((a) => a.id != opt.id),
-                                    );
-                                 } else {
-                                    setFilters([
-                                       // Allows only one filter per category
-                                       ...filters.filter(
-                                          (a) => a.field != cat.field,
-                                       ),
-                                       { ...opt, field: cat.field },
-                                    ]);
-                                 }
-                              }}
-                           >
-                              <div className="text-1 truncate pt-0.5 text-center text-xs">
-                                 {opt.name}
-                              </div>
-                           </div>
-                        ))}
-                     </div>
+      <List>
+         <div className="divide-color-sub bg-2-sub border-color-sub divide-y shadow-sm shadow-1 rounded-md border">
+            {filterOptions.map((cat) => (
+               <div
+                  key={cat.name}
+                  className="cursor-pointer items-center justify-between gap-3 p-3 laptop:flex"
+               >
+                  <div className="text-1 flex items-center gap-2.5 text-sm font-bold max-laptop:pb-3">
+                     {cat.name}
                   </div>
-               ))}
-            </div>
+                  <div className="items-center justify-between gap-3 max-laptop:grid max-laptop:grid-cols-4 laptop:flex">
+                     {cat.options.map((opt) => (
+                        <div
+                           key={opt.id}
+                           className={`bg-3 shadow-1 border-color rounded-lg border px-2.5 py-1 shadow-sm ${
+                              filters.find((a) => a.id == opt.id)
+                                 ? `bg-zinc-50 dark:bg-zinc-500/10`
+                                 : ``
+                           }`}
+                           onClick={(event) => {
+                              if (filters.find((a: any) => a.id == opt.id)) {
+                                 setFilters(
+                                    filters.filter((a) => a.id != opt.id),
+                                 );
+                              } else {
+                                 setFilters([
+                                    // Allows only one filter per category
+                                    ...filters.filter(
+                                       (a) => a.field != cat.field,
+                                    ),
+                                    { ...opt, field: cat.field },
+                                 ]);
+                              }
+                           }}
+                        >
+                           <div className="text-1 truncate pt-0.5 text-center text-xs">
+                              {opt.name}
+                           </div>
+                        </div>
+                     ))}
+                  </div>
+               </div>
+            ))}
+         </div>
 
-            {/* Search Text Box */}
-            <div
-               className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
+         {/* Search Text Box */}
+         <div
+            className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
                       justify-between gap-3 rounded-lg border px-3 shadow-sm"
-            >
-               <Search className="text-zinc-500" size={20} />
-               <input
-                  className="h-10 w-full border-0 focus:border-0 flex-grow bg-transparent focus:outline-none"
-                  placeholder="Search..."
-                  value={search}
-                  onChange={(event) => {
-                     setSearch(event.target.value);
-                  }}
-               />
-               <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
-                  <span>{cfiltered.length}</span> <span>entries</span>
-               </div>
+         >
+            <Search className="text-zinc-500" size={20} />
+            <input
+               className="h-10 w-full border-0 focus:border-0 flex-grow bg-transparent focus:outline-none"
+               placeholder="Search..."
+               value={search}
+               onChange={(event) => {
+                  setSearch(event.target.value);
+               }}
+            />
+            <div className="text-1 flex items-center gap-1.5 pr-1 text-sm italic">
+               <span>{cfiltered.length}</span> <span>entries</span>
             </div>
+         </div>
 
-            {/* Sort Options */}
-            <div className="flex items-center justify-between py-3">
-               <div className="text-1 flex items-center gap-2 text-sm font-bold">
-                  <SortDesc size={16} className="text-zinc-500" />
-                  Sort
-               </div>
-               <div className="flex items-center gap-2">
-                  {sortOptions.map((opt: any) => (
-                     <div
-                        key={opt.field}
-                        className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
+         {/* Sort Options */}
+         <div className="flex items-center justify-between py-3">
+            <div className="text-1 flex items-center gap-2 text-sm font-bold">
+               <SortDesc size={16} className="text-zinc-500" />
+               Sort
+            </div>
+            <div className="flex items-center gap-2">
+               {sortOptions.map((opt: any) => (
+                  <div
+                     key={opt.field}
+                     className={`border-color text-1 shadow-1 relative cursor-pointer rounded-full 
                         border px-4 py-1 text-center text-sm font-bold shadow ${
                            sort == opt.field
                               ? `bg-zinc-50 dark:bg-zinc-500/10`
                               : ``
                         }`}
-                        onClick={(event) => {
-                           setSort(opt.field);
-                        }}
-                     >
-                        {opt.name}
-                     </div>
-                  ))}
-               </div>
-            </div>
-
-            {/* List with applied sorting */}
-            <div className="space-y-2.5 text-center">
-               {cfiltered?.map((char: any) => (
-                  <EntryWithDescription char={char} key={char.id} />
+                     onClick={(event) => {
+                        setSort(opt.field);
+                     }}
+                  >
+                     {opt.name}
+                  </div>
                ))}
             </div>
          </div>
-      </div>
+
+         {/* List with applied sorting */}
+         <div className="space-y-2.5 text-center">
+            {cfiltered?.map((char: any) => (
+               <EntryWithDescription char={char} key={char.id} />
+            ))}
+         </div>
+      </List>
    );
 };
 

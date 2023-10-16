@@ -1,16 +1,18 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData, useMatches } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import type { Site } from "~/db/payload-types";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
+
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -38,26 +40,10 @@ export async function loader({
    return json({ lightCones: data.lightcones.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Light Cones - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function HomePage() {
    const { lightCones } = useLoaderData<typeof loader>();
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
-   console.log(site);
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <LightConeList chars={lightCones} />
-      </div>
-   );
+
+   return <LightConeList chars={lightCones} />;
 }
 
 type FilterTypes = {
@@ -182,9 +168,7 @@ const LightConeList = ({ chars }: any) => {
    });
 
    return (
-      <>
-         <CollectionHeader />
-         {/* Filter Options */}
+      <List>
          <div className="divide-color-sub bg-2-sub border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
@@ -311,7 +295,7 @@ const LightConeList = ({ chars }: any) => {
                ),
             )}
          </div>
-      </>
+      </List>
    );
 };
 

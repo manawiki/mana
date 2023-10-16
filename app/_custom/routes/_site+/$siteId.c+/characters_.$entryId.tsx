@@ -6,7 +6,6 @@ import type {
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
-
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -25,12 +24,12 @@ import {
    EntryContentEmbed,
 } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
+   customEntryMeta,
    getAllEntryData,
-   meta,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
-export { meta };
+export { customEntryMeta as meta };
 
 export async function loader({
    context: { payload, user },

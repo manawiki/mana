@@ -1,16 +1,16 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { Material } from "payload/generated-custom-types";
 
+import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
-   meta,
+   customEntryMeta,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 
-export { meta };
+export { customEntryMeta as meta };
 
 export async function loader({
    context: { payload, user },

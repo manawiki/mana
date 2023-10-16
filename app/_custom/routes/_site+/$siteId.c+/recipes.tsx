@@ -1,33 +1,19 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
-import type { Material } from "payload/generated-custom-types";
+
 import { settings } from "mana-config";
+import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderFunctionArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -55,22 +41,10 @@ export async function loader({
    return json({ recipes: data.recipes.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Recipes - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function HomePage() {
    const { recipes } = useLoaderData<typeof loader>();
 
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <RecipeList chars={recipes} />
-      </div>
-   );
+   return <RecipeList chars={recipes} />;
 }
 
 type FilterTypes = {
@@ -170,9 +144,7 @@ const RecipeList = ({ chars }: any) => {
    });
 
    return (
-      <div className="max-desktop:pt-14">
-         {/* Filter Options */}
-         <CollectionHeader />
+      <List>
          <div className="divide-color-sub bg-2-sub shadow-sm shadow-1 border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
@@ -347,7 +319,7 @@ const RecipeList = ({ chars }: any) => {
                );
             })}
          </div>
-      </div>
+      </List>
    );
 };
 

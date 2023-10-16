@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -8,26 +8,11 @@ import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderFunctionArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -55,22 +40,10 @@ export async function loader({
    return json({ blessings: data.blessings.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Blessings - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function HomePage() {
    const { blessings } = useLoaderData<typeof loader>();
 
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <BlessingList chars={blessings} />
-      </div>
-   );
+   return <BlessingList chars={blessings} />;
 }
 
 type FilterTypes = {
@@ -202,8 +175,7 @@ const BlessingList = ({ chars }: any) => {
    });
 
    return (
-      <div className="max-desktop:pt-14 pb-4">
-         <CollectionHeader />
+      <List>
          <div className="divide-color-sub bg-2-sub shadow-sm shadow-1 border-color-sub divide-y rounded-md border">
             {filterOptions.map((cat) => (
                <div
@@ -392,7 +364,7 @@ const BlessingList = ({ chars }: any) => {
                );
             })}
          </div>
-      </div>
+      </List>
    );
 };
 

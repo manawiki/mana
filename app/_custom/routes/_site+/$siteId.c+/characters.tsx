@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -8,8 +8,11 @@ import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
+
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -75,21 +78,9 @@ export async function loader({
    );
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Characters - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function CharactersList() {
    const { characters } = useLoaderData<typeof loader>();
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20 max-laptop:pt-14">
-         <CharacterList chars={characters} />
-      </div>
-   );
+   return <CharacterList chars={characters} />;
 }
 
 type FilterTypes = {
@@ -283,8 +274,7 @@ const CharacterList = ({ chars }: any) => {
    });
 
    return (
-      <>
-         <CollectionHeader />
+      <List>
          <div className="divide-color-sub bg-2-sub border-color-sub divide-y rounded-md border shadow-sm shadow-1">
             {filterOptions.map((cat) => {
                return (
@@ -467,7 +457,7 @@ const CharacterList = ({ chars }: any) => {
                );
             })}
          </div>
-      </>
+      </List>
    );
 };
 

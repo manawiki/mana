@@ -1,10 +1,10 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
+import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
 import { H2Default } from "~/components";
@@ -12,11 +12,11 @@ import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
-   meta,
+   customEntryMeta,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
-export { meta };
+export { customEntryMeta as meta };
 
 export async function loader({
    context: { payload, user },

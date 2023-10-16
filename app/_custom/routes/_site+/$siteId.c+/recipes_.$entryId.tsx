@@ -10,10 +10,10 @@ import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    getAllEntryData,
    getCustomEntryData,
-   meta,
+   customEntryMeta,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 
-export { meta };
+export { customEntryMeta as meta };
 
 export async function loader({
    context: { payload, user },

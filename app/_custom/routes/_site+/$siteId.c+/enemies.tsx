@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
@@ -9,27 +9,11 @@ import { Search, SortDesc } from "lucide-react";
 import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2 } from "~/components/H2";
-import { fetchWithCache } from "~/utils/cache.server";
 import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
+import { fetchWithCache } from "~/utils/cache.server";
 
-// export async function loader({
-//    context: { payload },
-//    request,
-// }: LoaderFunctionArgs) {
-//    const characters = await payload.find({
-//       // @ts-ignore
-//       collection: "characters",
-//       where: {
-//          id: {
-//             exists: true,
-//          },
-//       },
-//       depth: 3,
-//       limit: 50,
-//    });
-//    return json({ characters });
-// }
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -57,22 +41,10 @@ export async function loader({
    return json({ enemies: data.enemies.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Enemies - Honkai: Star Rail",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-   ];
-};
 export default function HomePage() {
    const { enemies } = useLoaderData<typeof loader>();
 
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <EnemyList chars={enemies} />
-      </div>
-   );
+   return <EnemyList chars={enemies} />;
 }
 
 type FilterTypes = {

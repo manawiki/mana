@@ -1,13 +1,16 @@
 import { Suspense } from "react";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { CollectionHeader } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
+
+export { customListMeta as meta };
 
 export async function loader({
    context: { payload },
@@ -81,21 +84,10 @@ export async function loader({
    return json({ banners: data.Banners.docs });
 }
 
-export const meta: MetaFunction = () => {
-   return [
-      {
-         title: "Banners - Honkai: Star Rail",
-      },
-   ];
-};
 export default function HomePage() {
    const { banners } = useLoaderData<typeof loader>();
 
-   return (
-      <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <BannerList banners={banners} />
-      </div>
-   );
+   return <BannerList banners={banners} />;
 }
 
 const BannerList = ({ banners }: any) => {
@@ -105,9 +97,7 @@ const BannerList = ({ banners }: any) => {
 
    return (
       <>
-         <div className="max-desktop:pt-14 pb-6">
-            {/* List of Characters with applied sorting */}
-            <CollectionHeader />
+         <List>
             <div className="space-y-2.5">
                {banners?.map((b: any) => (
                   <div
@@ -159,7 +149,7 @@ const BannerList = ({ banners }: any) => {
                   </div>
                ))}
             </div>
-         </div>
+         </List>
       </>
    );
 };
