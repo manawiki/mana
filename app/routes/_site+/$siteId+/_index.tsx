@@ -6,9 +6,9 @@ import {
    redirect,
    type ActionFunctionArgs,
    type LoaderFunctionArgs,
+   json,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { deferIf } from "defer-if";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -27,7 +27,6 @@ import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorComman
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import { isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -39,8 +38,6 @@ export async function loader({
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
    });
-
-   const { isMobileApp } = isNativeSSR(request);
 
    const updateResults = await fetchHomeUpdates({
       payload,
@@ -57,10 +54,7 @@ export async function loader({
       request,
    });
 
-   return await deferIf(
-      { home, isChanged, updateResults, versions, siteId },
-      isMobileApp,
-   );
+   return json({ home, isChanged, updateResults, versions, siteId });
 }
 
 export const mainContainerStyle =

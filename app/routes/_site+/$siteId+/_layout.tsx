@@ -13,7 +13,6 @@ import {
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
-import { deferIf } from "defer-if";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -21,12 +20,11 @@ import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import * as gtag from "~/routes/_site+/$siteId+/src/utils/gtags.client";
-import { assertIsPost, isNativeSSR } from "~/utils";
+import { assertIsPost } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { useIsBot } from "~/utils/isBotProvider";
 
 import {
-   MobileNav,
    MobileTray,
    UserTrayContent,
    ColumnOne,
@@ -36,6 +34,7 @@ import {
    ColumnThree,
    FollowingTrayContent,
 } from "./src/components";
+
 import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/functions";
 
 export async function loader({
@@ -44,8 +43,6 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
-
-   const { isMobileApp } = isNativeSSR(request);
 
    const site = await fetchSite({ siteId, user });
 
@@ -66,13 +63,14 @@ export async function loader({
       });
    }
 
-   return await deferIf({ site }, isMobileApp, {
-      init: {
+   return await json(
+      { site },
+      {
          headers: {
             "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
          },
       },
-   });
+   );
 }
 
 export const meta: MetaFunction = ({ data }) => {
@@ -98,10 +96,6 @@ export default function SiteIndex() {
    const gaTrackingId = site?.gaTagId;
    let isBot = useIsBot();
 
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
-
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
          gtag.pageview(location.pathname, gaTrackingId);
@@ -115,7 +109,6 @@ export default function SiteIndex() {
             location={location}
             site={site}
             fetcher={fetcher}
-            isMobileApp={isMobileApp}
             setFollowerMenuOpen={setFollowerMenuOpen}
             setUserMenuOpen={setUserMenuOpen}
          />
@@ -138,21 +131,13 @@ export default function SiteIndex() {
                            location={location}
                            searchToggle={searchToggle}
                            setSearchToggle={setSearchToggle}
-                           isMobileApp={isMobileApp}
                            site={site}
                            fetcher={fetcher}
                         />
 
                         {/* ==== Right Sidebar ==== */}
-                        <ColumnFour site={site} isMobileApp={isMobileApp} />
+                        <ColumnFour site={site} />
                      </div>
-
-                     {/* ============  Mobile Components ============ */}
-                     <MobileNav
-                        setUserMenuOpen={setUserMenuOpen}
-                        setFollowerMenuOpen={setFollowerMenuOpen}
-                        isMobileApp={isMobileApp}
-                     />
 
                      {/* ==== Follows: Mobile ==== */}
                      <MobileTray
@@ -161,7 +146,6 @@ export default function SiteIndex() {
                      >
                         <FollowingTrayContent
                            site={site}
-                           isMobileApp={isMobileApp}
                            setFollowerMenuOpen={setFollowerMenuOpen}
                         />
                      </MobileTray>
@@ -235,7 +219,7 @@ export const action: ActionFunction = async ({
             },
             user,
          });
-         const siteUID = siteData?.docs[0].id;
+         const siteUID = siteData?.docs[0]?.id;
          await payload.update({
             collection: "users",
             id: userId ?? "",
@@ -272,7 +256,7 @@ export const action: ActionFunction = async ({
             },
             user,
          });
-         const siteUID = siteData?.docs[0].id;
+         const siteUID = siteData?.docs[0]?.id;
          const site = await payload.findByID({
             collection: "sites",
             id: siteUID,

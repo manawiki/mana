@@ -5255,11 +5255,6 @@ defaults@^1.0.3:
   dependencies:
     clone "^1.0.2"
 
-defer-if@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/defer-if/-/defer-if-1.0.5.tgz#3f5a659346941ef60972c8977020c4d3f22d74ba"
-  integrity sha512-C/VhHgsN3614SmaNVoexGI+xmg9pXCzzUIPCogyn8D/8QbG7aOOWQWzJAVG3P9mlT6MxQNyhZxLOY5n1ghLqxA==
-
 define-data-property@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/define-data-property/-/define-data-property-1.1.0.tgz#0db13540704e1d8d479a0656cf781267531b9451"

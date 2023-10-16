@@ -2,9 +2,7 @@ import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { Link, Outlet } from "@remix-run/react";
-import clsx from "clsx";
 import {
-   ChevronLeft,
    Loader2,
    LogOut,
    MenuIcon,
@@ -33,43 +31,24 @@ export const ColumnThree = ({
    setSearchToggle,
    fetcher,
    site,
-   isMobileApp,
 }: {
    location: any;
    searchToggle: any;
    setSearchToggle: any;
    fetcher: any;
    site: Site;
-   isMobileApp: Boolean;
 }) => {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
-   const isSiteHome = location.pathname == `/${site.slug}`;
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
    return (
       <>
-         <section
-            className={clsx(
-               isMobileApp ? "pt-16" : "max-laptop:pt-14",
-               "max-laptop:border-color bg-3 max-laptop:border-b",
-            )}
-         >
-            <section
-               className={clsx(
-                  isMobileApp
-                     ? "fixed top-0"
-                     : "fixed max-laptop:top-[56px] laptop:sticky laptop:top-6",
-                  "z-40 w-full laptop:z-50",
-               )}
-            >
+         <section className="max-laptop:border-color bg-3 max-laptop:border-b max-laptop:pt-14">
+            <section className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] laptop:sticky laptop:top-6">
                <div
-                  className={clsx(
-                     isMobileApp
-                        ? "bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
-                        : "border-color bg-gradient-to-br dark:from-bg3Dark dark:to-bg2Dark from-white to-gray-50 border-zinc-200 shadow-1 border-b shadow-sm",
-                     " relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-full laptop:border",
-                  )}
+                  className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-full laptop:border border-color bg-gradient-to-br dark:from-bg3Dark dark:to-bg2Dark 
+                  from-white to-gray-50 border-zinc-200 shadow-1 border-b shadow-sm"
                >
                   <div className="relative mx-auto flex h-[58px] items-center justify-between pl-3 pr-2.5">
                      {searchToggle ? (
@@ -79,31 +58,13 @@ export const ColumnThree = ({
                         />
                      ) : (
                         <>
-                           <div
-                              className={clsx(
-                                 { truncate: !isMobileApp },
-                                 "flex items-center",
-                              )}
-                           >
+                           <div className="flex items-center">
                               <Link
                                  prefetch="intent"
                                  to={siteHomeRoot({ site })}
-                                 className={clsx(
-                                    isMobileApp ? "group mr-3" : "truncate",
-                                    "flex items-center group",
-                                 )}
+                                 className="flex items-center group truncate"
                               >
-                                 {!isSiteHome && isMobileApp && (
-                                    <ChevronLeft className="mr-1" size={24} />
-                                 )}
-                                 <div
-                                    className={clsx(
-                                       isMobileApp
-                                          ? "border-color border transition duration-300 group-active:translate-y-0.5"
-                                          : "",
-                                       "shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow",
-                                    )}
-                                 >
+                                 <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
                                     <Image
                                        width={40}
                                        height={40}
@@ -112,12 +73,7 @@ export const ColumnThree = ({
                                        alt="Site Logo"
                                     />
                                  </div>
-                                 <div
-                                    className={clsx(
-                                       { hidden: isMobileApp },
-                                       "truncate pl-3 text-sm",
-                                    )}
-                                 >
+                                 <div className="truncate pl-3 text-sm">
                                     <div className="font-bold group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
                                        {site.name}
                                     </div>
@@ -130,45 +86,6 @@ export const ColumnThree = ({
                                  </div>
                                  {/* {site.about} */}
                               </Link>
-                              {isMobileApp && (
-                                 <>
-                                    <LoggedOut>
-                                       <Link
-                                          prefetch="intent"
-                                          reloadDocument={siteHomeShouldReload({
-                                             site,
-                                          })}
-                                          to={`/login?redirectTo=/${site.slug}`}
-                                          className="flex h-8 w-[70px] items-center justify-center rounded-full bg-black
-                                                      text-xs font-bold text-white dark:bg-white dark:text-black"
-                                       >
-                                          Follow
-                                       </Link>
-                                    </LoggedOut>
-                                    <NotFollowingSite>
-                                       <div className="flex items-center">
-                                          <fetcher.Form
-                                             className="w-full"
-                                             method="post"
-                                             action={`/${site.slug}`}
-                                          >
-                                             <button
-                                                name="intent"
-                                                value="followSite"
-                                                className="flex h-8 w-[70px] items-center justify-center rounded-full bg-black
-                                                            text-xs font-bold text-white dark:bg-white dark:text-black"
-                                             >
-                                                {adding ? (
-                                                   <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-                                                ) : (
-                                                   t("follow.actionFollow")
-                                                )}
-                                             </button>
-                                          </fetcher.Form>
-                                       </div>
-                                    </NotFollowingSite>
-                                 </>
-                              )}
                            </div>
                            <div className="flex items-center gap-3 pl-2">
                               <FollowingSite>
@@ -310,7 +227,7 @@ export const ColumnThree = ({
                   </div>
                </div>
             </section>
-            <div className={clsx(isMobileApp ? "pt-3" : "")}>
+            <div>
                <Outlet />
             </div>
          </section>
