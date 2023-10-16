@@ -24,7 +24,7 @@ export async function fetchWithCache(url: string, init?: RequestInit) {
       : url;
 
    const cached = lruCache.get(key);
-   if (cached) {
+   if (cached && process.env.NODE_ENV === "production") {
       return cached;
    }
    return fetch(url, init).then((res) => {
@@ -50,7 +50,7 @@ export async function cacheThis<T>(func: () => Promise<T>) {
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
    const cached = lruCache.get(key);
-   if (cached) {
+   if (cached && process.env.NODE_ENV === "production") {
       return cached as T;
    }
    const result = await func();
@@ -73,7 +73,7 @@ export async function cacheWithSelect<T>(
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
    const cached = lruCache.get(key);
-   if (cached) {
+   if (cached && process.env.NODE_ENV === "production") {
       return cached as T;
    }
    const result = await func();
