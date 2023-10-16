@@ -19,6 +19,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
+import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/functions";
 import * as gtag from "~/routes/_site+/$siteId+/src/utils/gtags.client";
 import { assertIsPost } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -35,7 +36,6 @@ import {
    FollowingTrayContent,
 } from "./src/components";
 
-import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/functions";
 
 export async function loader({
    context: { user },
