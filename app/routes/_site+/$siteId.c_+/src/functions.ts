@@ -63,19 +63,19 @@ export const customEntryMeta: MetaFunction = ({
    ];
 };
 
-export const customListMeta: MetaFunction = ({
-   matches,
-   data,
-}: {
-   matches: any;
-   data: any;
-}) => {
-   const siteName = matches.find(
+export const customListMeta: MetaFunction = ({ matches }: { matches: any }) => {
+   const site = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site?.name;
+   )?.data?.site;
+
+   const collectionId = matches[2].pathname.split("/")[3];
+
+   const collection = site?.collections?.find(
+      (collection: any) => collection.slug === collectionId,
+   );
    return [
       {
-         title: `${data?.entry?.collectionName} - ${siteName}`,
+         title: `${collection.name} | ${site.name}`,
       },
    ];
 };

@@ -127,7 +127,7 @@ export function Entry({ children }: { children: ReactNode }) {
 
 export function List({ children }: { children: ReactNode }) {
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+      <div className="mx-auto max-w-[728px] max-desktop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
          {children}
       </div>
