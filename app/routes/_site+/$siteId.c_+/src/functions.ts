@@ -45,6 +45,41 @@ export const meta: MetaFunction = ({
       },
    ];
 };
+
+export const customEntryMeta: MetaFunction = ({
+   matches,
+   data,
+}: {
+   matches: any;
+   data: any;
+}) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site?.name;
+   return [
+      {
+         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
+      },
+   ];
+};
+
+export const customListMeta: MetaFunction = ({
+   matches,
+   data,
+}: {
+   matches: any;
+   data: any;
+}) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site?.name;
+   return [
+      {
+         title: `${data?.entry?.collectionName} - ${siteName}`,
+      },
+   ];
+};
+
 export async function getEmbeddedContent({
    user,
    payload,
