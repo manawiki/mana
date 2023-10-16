@@ -4,8 +4,6 @@ export * from "./upload-handler.server";
 export * from "./message.server";
 export * from "./nanoid";
 export * from "./slug";
-export * from "./mobile-native.server";
-export * from "./mobile-native.server";
 export * from "./site-routing";
 export * from "./swr-fetchers";
 export * from "./to-words";

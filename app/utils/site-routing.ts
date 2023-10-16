@@ -23,14 +23,12 @@ export function siteHomeShouldReload({
 export function siteHomePath({
    currentSite,
    site,
-   isMobileApp,
 }: {
    currentSite: Site | undefined;
    site: Site;
-   isMobileApp?: Boolean;
 }) {
    //Only rewrite url on web production, mobile will share cookie under a singular domain
-   if (!isMobileApp && process.env.NODE_ENV == "production") {
+   if (process.env.NODE_ENV == "production") {
       if (currentSite?.domain) {
          if (site?.domain) {
             return "/";
