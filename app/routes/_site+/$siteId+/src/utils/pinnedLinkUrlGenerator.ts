@@ -8,17 +8,17 @@ export const pinnedLinkUrlGenerator = (item: any, siteSlug: string) => {
       }
       case "collections": {
          const slug = item.relation?.value.collectionSlug;
-         return `/${siteSlug}/collections/${slug}`;
+         return `/${siteSlug}/c/${slug}`;
       }
       case "entries": {
          const slug = item.relation?.value.slug;
          const id = item.relation?.value.id;
          const collection = item.relation?.value.collectionEntity.slug;
-         return `/${siteSlug}/collections/${collection}/${id}/${slug}`;
+         return `/${siteSlug}/c/${collection}/${id}/${slug}`;
       }
       case "posts": {
          const id = item.relation?.value.id;
-         return `/${siteSlug}/posts/${id}`;
+         return `/${siteSlug}/p/${id}`;
       }
       default:
          return "/";

@@ -70,8 +70,7 @@ import type {
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { useIsMount } from "~/hooks";
-import { swrRestFetcher, toWords } from "~/utils";
+import { swrRestFetcher, toWords, useIsMount } from "~/utils";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -368,10 +367,10 @@ export function BlockGroup({
                return `/${event.siteId}`;
             }
             case "post": {
-               return `/${event.siteId}/posts/${event.id}/${event.slug}`;
+               return `/${event.siteId}/p/${event.id}/${event.slug}`;
             }
             default:
-               return `/${event.siteId}/collections/${filterOption}/${event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
+               return `/${event.siteId}/c/${filterOption}/${event.id}`; //May need to update filterOption to an event variable when we want to siteId to work globally
          }
       };
       const path = [

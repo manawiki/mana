@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { RadioGroup } from "@headlessui/react";
-import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import {
-   Link,
-   useLoaderData,
-   useRouteLoaderData,
-   useSearchParams,
-} from "@remix-run/react";
+   json,
+   type LinksFunction,
+   type LoaderFunctionArgs,
+} from "@remix-run/node";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
@@ -25,16 +24,15 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import { Image, Logo } from "~/components";
+import { Image } from "~/components";
 import type { Site } from "~/db/payload-types";
-import { useDebouncedValue } from "~/hooks";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
-import { siteHomeShouldReload } from "~/utils";
+import { siteHomeShouldReload, useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
-import { FollowingListMobile } from "../_site+/$siteId+/components";
+import { LoggedOut, LoggedIn } from "../_auth+/src/components";
+import { FollowingListMobile } from "../_site+/$siteId+/src/components";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -101,7 +99,7 @@ export async function loader({
                c,
             },
          }),
-      }
+      },
    );
 
    if (errors) {
@@ -112,7 +110,7 @@ export async function loader({
 
    return json(
       { q, sites },
-      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
 
@@ -126,10 +124,6 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
-
    useEffect(() => {
       AOS.init({
          once: true,
@@ -144,28 +138,12 @@ export default function IndexMain() {
          <LoggedOut>
             <Top />
          </LoggedOut>
-         {isMobileApp && (
-            <LoggedOut>
-               <div className="bg-3 relative z-10 px-5 py-10">
-                  <Logo className="mx-auto mb-4 h-7 w-7" />
-                  <div className="pb-4 text-center text-sm font-bold">
-                     Login to view the sites you <b>follow</b>
-                  </div>
-                  <div className="px-10">
-                     <LoggedOutMobile />
-                  </div>
-                  <div className="pt-12 text-center text-sm font-bold">
-                     Explore Discoverable Sites
-                  </div>
-               </div>
-            </LoggedOut>
-         )}
-         <Discover isMobileApp={isMobileApp} />
+         <Discover />
       </>
    );
 }
 
-const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
+const Discover = () => {
    const { q, sites } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
@@ -195,7 +173,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                      <div className="pb-3 pl-1 text-sm font-bold">
                         Following
                      </div>
-                     <FollowingListMobile isMobileApp={isMobileApp} />
+                     <FollowingListMobile />
                      <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
                   </div>
                </div>
@@ -248,7 +226,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.set("c", value);
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            } else
                               setSearchParams(
@@ -256,7 +234,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.delete("c");
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            setCategory(value);
                         }}
@@ -268,7 +246,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Globe2 size={15} />
@@ -283,7 +261,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Gamepad2 size={16} />
@@ -298,7 +276,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
                                        : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Component size={14} />
@@ -372,7 +350,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.prevPage as any
+                                          sites.prevPage as any,
                                        );
                                        return searchParams;
                                     })
@@ -395,7 +373,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.nextPage as any
+                                          sites.nextPage as any,
                                        );
                                        return searchParams;
                                     })

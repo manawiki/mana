@@ -1,17 +1,10 @@
 import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import {
-   Component,
-   Database,
-   PenSquare,
-   Pin,
-   SquareCode,
-   User2,
-} from "lucide-react";
+import { Component, Database, PenSquare, Pin } from "lucide-react";
 
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
-import { LoggedIn } from "~/modules/auth";
+import { LoggedIn } from "~/routes/_auth+/src/components";
 import { siteHomePath, siteHomeShouldReload } from "~/utils";
 
 import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
@@ -21,11 +14,9 @@ export const defaultStyle = `bg-2 hover:bg-zinc-100 flex items-center gap-3 roun
 
 export const FollowingListMobile = ({
    setMenuOpen,
-   isMobileApp,
    site,
 }: {
    setMenuOpen?: any;
-   isMobileApp: Boolean;
    site?: Site;
 }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -48,7 +39,6 @@ export const FollowingListMobile = ({
                         to={siteHomePath({
                            site: item,
                            currentSite: site,
-                           isMobileApp,
                         })}
                      >
                         {({ isActive }) => (
@@ -88,11 +78,11 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
                <div className="space-y-0.5 pt-6 desktop:pl-3">
-                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-2.5 desktop:pl-2.5">
+                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-3.5 desktop:pl-2.5">
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:hidden" />
                      <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
                         <Pin className="text-zinc-500" size={16} />
-                        <span className="max-desktop:hidden">Pinned</span>
+                        {/* <span className="max-desktop:hidden">Pinned</span> */}
                      </div>
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
                   </div>
@@ -254,54 +244,6 @@ export const PrimaryMenuLinks = ({
                </div>
             )}
          </NavLink>
-      </>
-   );
-};
-
-export const MobileNav = ({
-   isMobileApp,
-   setFollowerMenuOpen,
-   setUserMenuOpen,
-}: {
-   isMobileApp: Boolean;
-   setFollowerMenuOpen: any;
-   setUserMenuOpen: any;
-}) => {
-   return (
-      <>
-         {isMobileApp && (
-            <nav
-               className="border-color fixed inset-x-0 bottom-0 z-50 h-16 w-full border-t border-gray-100
-                        bg-white/90 backdrop-blur-lg dark:bg-bg3Dark/80"
-            >
-               <div className="grid grid-cols-2 gap-2">
-                  <button
-                     className="group touch-manipulation space-y-1 p-3"
-                     onClick={() => setFollowerMenuOpen(true)}
-                  >
-                     <SquareCode
-                        className="mx-auto h-6 w-6 text-zinc-700 transition duration-300 group-active:translate-y-0.5 dark:text-zinc-100"
-                        aria-hidden="true"
-                     />
-                     <div className="text-1 text-center text-[9px] font-bold">
-                        Following
-                     </div>
-                  </button>
-                  <button
-                     className="group touch-manipulation space-y-1 p-3"
-                     onClick={() => setUserMenuOpen(true)}
-                  >
-                     <User2
-                        className="mx-auto h-6 w-6 text-zinc-700 transition duration-300 group-active:translate-y-0.5 dark:text-zinc-100"
-                        aria-hidden="true"
-                     />
-                     <div className="text-1 text-center text-[9px] font-bold">
-                        User
-                     </div>
-                  </button>
-               </div>
-            </nav>
-         )}
       </>
    );
 };

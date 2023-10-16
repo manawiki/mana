@@ -1,21 +1,21 @@
+import clsx from "clsx";
 import { Check, X } from "lucide-react";
 import { toast as customToast } from "react-hot-toast";
 
 const success = (message: string) => {
    customToast.custom((t) => (
       <div
-         className={`${
-            t.visible ? "animate-enter" : "animate-leave"
-         } border-color pointer-events-auto flex max-w-sm items-center gap-3 rounded-lg
-              border-2 bg-1 p-3 font-semibold shadow-lg `}
+         className={clsx(
+            t.visible ? "animate-enter" : "animate-leave",
+            "pointer-events-auto max-w-sm mt-6 items-center border border-color-sub relative gap-3 rounded-xl bg-3-sub p-4 font-semibold shadow-2xl shadow-1",
+         )}
       >
-         <div
-            className="flex h-6 w-6 flex-none items-center justify-center
-                           rounded-full bg-green-500 text-white"
-         >
-            <Check size={18} />
+         <div className="flex items-center justify-center absolute left-1/2 -top-3 transform -translate-x-1/2">
+            <div className="flex h-6 w-6 mx-auto items-center justify-center rounded-full bg-green-100 border dark:bg-green-950 dark:border-green-800 border-green-200 text-green-500">
+               <Check size={16} />
+            </div>
          </div>
-         <div>{message}</div>
+         <div className="text-sm">{message}</div>
       </div>
    ));
 };
@@ -23,18 +23,17 @@ const success = (message: string) => {
 const error = (message: string) => {
    customToast.custom((t) => (
       <div
-         className={`${
-            t.visible ? "animate-enter" : "animate-leave"
-         } border-color pointer-events-auto flex max-w-sm items-center gap-3 rounded-lg
-             border-2 bg-1 p-3 font-semibold shadow-lg`}
+         className={clsx(
+            t.visible ? "animate-enter" : "animate-leave",
+            "pointer-events-auto max-w-sm mt-6 items-center border border-color-sub relative gap-3 rounded-xl bg-3-sub p-4 font-semibold shadow-2xl shadow-1",
+         )}
       >
-         <div
-            className="flex h-6 w-6 flex-none items-center justify-center
-                      rounded-full bg-red-500 text-white"
-         >
-            <X size={18} />
+         <div className="flex items-center justify-center absolute left-1/2 -top-3 transform -translate-x-1/2">
+            <div className="flex h-6 w-6 mx-auto items-center justify-center rounded-full bg-red-100 border dark:bg-red-950 dark:border-red-800 border-red-200 text-red-500">
+               <X size={16} />
+            </div>
          </div>
-         <div>{message}</div>
+         <div className="text-sm">{message}</div>
       </div>
    ));
 };

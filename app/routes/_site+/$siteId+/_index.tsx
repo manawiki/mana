@@ -6,9 +6,9 @@ import {
    redirect,
    type ActionFunctionArgs,
    type LoaderFunctionArgs,
+   json,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { deferIf } from "defer-if";
 import type { Payload } from "payload";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -22,11 +22,11 @@ import { settings } from "mana-config";
 import type { HomeContent, Site, Update, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/modules/auth";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
+import { initialValue } from "~/routes/_editor+/core/utils";
 import { ManaEditor } from "~/routes/_editor+/editor";
-import { isNativeSSR } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
@@ -38,8 +38,6 @@ export async function loader({
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
    });
-
-   const { isMobileApp } = isNativeSSR(request);
 
    const updateResults = await fetchHomeUpdates({
       payload,
@@ -56,69 +54,63 @@ export async function loader({
       request,
    });
 
-   return await deferIf(
-      { home, isChanged, updateResults, versions, siteId },
-      isMobileApp,
-   );
+   return json({ home, isChanged, updateResults, versions, siteId });
 }
+
+export const mainContainerStyle =
+   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12";
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
-
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
-   return (
-      <>
-         {hasAccess ? (
-            <Float
-               middleware={[
-                  shift({
-                     padding: {
-                        top: 80,
-                     },
-                  }),
-                  offset({
-                     mainAxis: 50,
-                     crossAxis: 0,
-                  }),
-               ]}
-               zIndex={20}
-               autoUpdate
-               placement="right-start"
-               show
-            >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-                  <div className="relative min-h-screen">
-                     <Suspense fallback="Loading...">
-                        <Await resolve={home}>
-                           <ManaEditor
-                              collectionSlug="homeContents"
-                              fetcher={fetcher}
-                              siteId={siteId}
-                              defaultValue={home as Descendant[]}
-                           />
-                        </Await>
-                     </Suspense>
-                  </div>
-               </main>
-               <div>
-                  <EditorCommandBar
+   return hasAccess ? (
+      <Float
+         middleware={[
+            shift({
+               padding: {
+                  top: 80,
+               },
+            }),
+            offset({
+               mainAxis: 50,
+               crossAxis: 0,
+            }),
+         ]}
+         zIndex={20}
+         autoUpdate
+         placement="right-start"
+         show
+      >
+         <main className={mainContainerStyle}>
+            <Suspense fallback="Loading...">
+               <Await resolve={home}>
+                  <ManaEditor
+                     key={siteId}
                      collectionSlug="homeContents"
                      siteId={siteId}
                      fetcher={fetcher}
-                     isChanged={isChanged}
+                     defaultValue={(home as Descendant[]) ?? initialValue()}
                   />
-               </div>
-            </Float>
-         ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="relative min-h-screen">
-                  <EditorView data={home} />
-               </div>
-            </main>
-         )}
-      </>
+               </Await>
+            </Suspense>
+         </main>
+         <div>
+            <EditorCommandBar
+               collectionSlug="homeContents"
+               siteId={siteId}
+               fetcher={fetcher}
+               isChanged={isChanged}
+            />
+         </div>
+      </Float>
+   ) : (
+      home && (
+         <main className={mainContainerStyle}>
+            <EditorView data={home} />
+         </main>
+      )
    );
 }
 
@@ -293,7 +285,7 @@ async function fetchHomeContent({
       },
    });
 
-   const home = docs[0].content as HomeContent["content"];
+   const home = docs[0]?.content as HomeContent["content"];
 
    return { home, isChanged: false };
 }

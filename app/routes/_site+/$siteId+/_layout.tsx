@@ -13,21 +13,19 @@ import {
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
-import { deferIf } from "defer-if";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/modules/auth";
-import * as gtag from "~/routes/_site+/$siteId+/utils/gtags.client";
-import { assertIsPost, isNativeSSR } from "~/utils";
+import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/functions";
+import * as gtag from "~/routes/_site+/$siteId+/src/utils/gtags.client";
+import { assertIsPost } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 import { useIsBot } from "~/utils/isBotProvider";
 
 import {
-   MobileNav,
    MobileTray,
    UserTrayContent,
    ColumnOne,
@@ -36,7 +34,8 @@ import {
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
-} from "./components";
+} from "./src/components";
+
 
 export async function loader({
    context: { user },
@@ -44,8 +43,6 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
-
-   const { isMobileApp } = isNativeSSR(request);
 
    const site = await fetchSite({ siteId, user });
 
@@ -66,13 +63,14 @@ export async function loader({
       });
    }
 
-   return await deferIf({ site }, isMobileApp, {
-      init: {
+   return await json(
+      { site },
+      {
          headers: {
             "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
          },
       },
-   });
+   );
 }
 
 export const meta: MetaFunction = ({ data }) => {
@@ -98,10 +96,6 @@ export default function SiteIndex() {
    const gaTrackingId = site?.gaTagId;
    let isBot = useIsBot();
 
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
-
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTrackingId) {
          gtag.pageview(location.pathname, gaTrackingId);
@@ -115,7 +109,6 @@ export default function SiteIndex() {
             location={location}
             site={site}
             fetcher={fetcher}
-            isMobileApp={isMobileApp}
             setFollowerMenuOpen={setFollowerMenuOpen}
             setUserMenuOpen={setUserMenuOpen}
          />
@@ -138,21 +131,13 @@ export default function SiteIndex() {
                            location={location}
                            searchToggle={searchToggle}
                            setSearchToggle={setSearchToggle}
-                           isMobileApp={isMobileApp}
                            site={site}
                            fetcher={fetcher}
                         />
 
                         {/* ==== Right Sidebar ==== */}
-                        <ColumnFour site={site} isMobileApp={isMobileApp} />
+                        <ColumnFour site={site} />
                      </div>
-
-                     {/* ============  Mobile Components ============ */}
-                     <MobileNav
-                        setUserMenuOpen={setUserMenuOpen}
-                        setFollowerMenuOpen={setFollowerMenuOpen}
-                        isMobileApp={isMobileApp}
-                     />
 
                      {/* ==== Follows: Mobile ==== */}
                      <MobileTray
@@ -161,7 +146,6 @@ export default function SiteIndex() {
                      >
                         <FollowingTrayContent
                            site={site}
-                           isMobileApp={isMobileApp}
                            setFollowerMenuOpen={setFollowerMenuOpen}
                         />
                      </MobileTray>
@@ -235,7 +219,7 @@ export const action: ActionFunction = async ({
             },
             user,
          });
-         const siteUID = siteData?.docs[0].id;
+         const siteUID = siteData?.docs[0]?.id;
          await payload.update({
             collection: "users",
             id: userId ?? "",
@@ -272,7 +256,7 @@ export const action: ActionFunction = async ({
             },
             user,
          });
-         const siteUID = siteData?.docs[0].id;
+         const siteUID = siteData?.docs[0]?.id;
          const site = await payload.findByID({
             collection: "sites",
             id: siteUID,
@@ -286,7 +270,7 @@ export const action: ActionFunction = async ({
                {
                   errors: "Cannot unfollow your own site",
                },
-               { status: 400 }
+               { status: 400 },
             );
          }
          const userCurrentSites = user?.sites || [];
@@ -359,11 +343,20 @@ const fetchSite = async ({
                   isPublic
                   gaTagId
                   domain
+                  followers
                   icon {
                     url
                   }
                   favicon {
                      url
+                  }
+                  collections {
+                     id
+                     name
+                     slug
+                     icon {
+                        url
+                     }
                   }
                   pinned {
                     id
@@ -435,7 +428,7 @@ const fetchSite = async ({
       Object.keys(swaps)
          .map((e) => `(?:"(${e})":)`)
          .join("|"),
-      "g"
+      "g",
    );
 
    const updateKeys = (data: Site) =>
@@ -443,15 +436,15 @@ const fetchSite = async ({
          JSON.stringify(data).replace(
             pattern,
             //@ts-ignore
-            (m) => `"${swaps[m.slice(1, -2)]}":`
-         )
+            (m) => `"${swaps[m.slice(1, -2)]}":`,
+         ),
       );
 
    //Fetch from cache if anon
    if (!user) {
       const { data } = await fetchWithCache(
          `${settings.domainFull}/api/graphql`,
-         QUERY
+         QUERY,
       );
       return updateKeys(data.site.docs[0]);
    }
@@ -459,7 +452,7 @@ const fetchSite = async ({
    //Otherwise fresh pull
    const { data } = await fetch(
       `${settings.domainFull}/api/graphql`,
-      QUERY
+      QUERY,
    ).then((res) => res.json());
    return updateKeys(data.site.docs[0]);
 };

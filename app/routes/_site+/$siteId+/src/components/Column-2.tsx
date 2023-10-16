@@ -4,7 +4,7 @@ import { Database, HardDrive, Home, Lock, PenSquare } from "lucide-react";
 
 import { settings } from "mana-config";
 import type { Site, User } from "~/db/payload-types";
-import { AdminOrStaffOrOwner } from "~/modules/auth";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import { siteHomeRoot } from "~/utils";
 
 import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";

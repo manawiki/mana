@@ -8,7 +8,7 @@ export const lruCache = remember(
    new LRUCache({
       max: 250, // maximum number of items to store in the cache
       ttl: 5 * 60 * 1000, // how long to live in ms
-   })
+   }),
 );
 
 /**
@@ -64,7 +64,7 @@ export async function cacheThis<T>(func: () => Promise<T>) {
 export async function cacheWithSelect<T>(
    func: () => Promise<T>,
    selectFunction: Function,
-   selectOptions: Partial<Record<keyof any, boolean>>
+   selectOptions: Partial<Record<keyof any, boolean>>,
 ) {
    //the key is the function stringified
    let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
