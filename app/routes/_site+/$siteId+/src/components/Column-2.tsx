@@ -5,7 +5,6 @@ import { Database, HardDrive, Home, Lock, PenSquare } from "lucide-react";
 import { settings } from "mana-config";
 import type { Site, User } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
-import { siteHomeRoot } from "~/utils";
 
 import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
 
@@ -20,7 +19,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   className={({ isActive }) =>
                      clsx(isActive ? activeStyle : "", defaultStyle)
                   }
-                  to={siteHomeRoot({ site })}
+                  to={`/${site.slug}`}
                >
                   {({ isActive }) => (
                      <>

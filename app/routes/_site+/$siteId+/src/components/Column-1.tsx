@@ -3,7 +3,6 @@ import { NavLink } from "@remix-run/react";
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedOut, LoggedIn } from "~/routes/_auth+/src/components";
-import { siteHomePath, siteHomeRoot, siteHomeShouldReload } from "~/utils";
 // import { NewSiteModal } from "~/routes/action+/new-site-modal";
 
 export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
@@ -22,7 +21,7 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                   <NavLink
                      prefetch="intent"
                      className="bg-2 shadow-1 rounded-full shadow"
-                     to={siteHomeRoot({ site })}
+                     to={`/${site.slug}`}
                   >
                      {({ isActive }) => (
                         <>
@@ -89,15 +88,9 @@ export const ColumnOne = ({ site, user }: { site: Site; user: User }) => {
                                  <div className="relative flex items-center justify-center">
                                     <NavLink
                                        prefetch="intent"
-                                       reloadDocument={siteHomeShouldReload({
-                                          site,
-                                          currentSite: item,
-                                       })}
+                                       reloadDocument={true}
                                        className="bg-2 shadow-1 group rounded-full shadow"
-                                       to={siteHomePath({
-                                          site: item,
-                                          currentSite: site,
-                                       })}
+                                       to={`/${item.slug}`}
                                     >
                                        {({ isActive }) => (
                                           <>
