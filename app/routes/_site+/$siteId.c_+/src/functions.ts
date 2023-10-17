@@ -81,25 +81,24 @@ export const customListMeta: MetaFunction = ({ matches }: { matches: any }) => {
 };
 
 export async function getEmbeddedContent({
+   id,
    user,
    payload,
    params,
    request,
 }: {
+   id: string;
    user: any;
    payload: Payload;
    params: Params;
    request: any;
 }) {
-   const { entryId, siteId } = zx.parseParams(params, {
-      entryId: z.string(),
+   const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
-
-   //TODO entryId should be pulled again since the url could be an alias instead of an id
 
    const { docs } = await payload.find({
       collection: "contentEmbeds",
@@ -111,13 +110,14 @@ export async function getEmbeddedContent({
             equals: collectionId,
          },
          relationId: {
-            equals: entryId,
+            equals: id,
          },
       },
       depth: 1,
       overrideAccess: false,
       user,
    });
+   if (!docs) return;
 
    if (user) {
       const hasAccess = isSiteOwnerOrAdmin(user?.id, docs[0]?.site);
@@ -424,28 +424,24 @@ export async function getAllEntryData({
    request: Request;
    user: User | undefined;
 }) {
-   const [{ entry }, embeddedContent] = await Promise.all([
-      getEntryFields({
-         payload,
-         params,
-         request,
-         user,
-      }),
-      getEmbeddedContent({
-         payload,
-         params,
-         request,
-         user,
-      }),
-   ]);
+   const { entry } = await getEntryFields({
+      payload,
+      params,
+      request,
+      user,
+   });
+
+   const embeddedContent = await getEmbeddedContent({
+      id: entry.id,
+      payload,
+      params,
+      request,
+      user,
+   });
+
    return {
       entry: {
-         id: entry.id,
-         siteId: entry.siteId,
-         collectionName: entry.collectionName,
-         sections: entry?.sections,
-         name: entry.name,
-         icon: entry.icon,
+         ...entry,
          embeddedContent,
       },
    };
