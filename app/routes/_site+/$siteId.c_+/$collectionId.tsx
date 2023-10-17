@@ -269,24 +269,14 @@ export const action: ActionFunction = async ({
             siteId: z.string(),
          });
          try {
-            const siteData = await payload.find({
-               collection: "sites",
-               where: {
-                  slug: {
-                     equals: siteId,
-                  },
-               },
-               user,
-            });
-            const site = siteData?.docs[0];
-            await payload.create({
+            return await payload.create({
                collection: "entries",
                data: {
                   name,
                   id: nanoid(12),
                   author: user?.id as any,
                   collectionEntity: collectionId as any,
-                  site: site?.id as any,
+                  site: siteId as any,
                },
                user,
                overrideAccess: false,
