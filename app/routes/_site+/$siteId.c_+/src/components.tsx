@@ -24,6 +24,7 @@ import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
 
 import type { EntryType } from "./functions";
+import { CircleImageUploader } from "./ImageUpload";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
 //@ts-ignore
@@ -77,7 +78,7 @@ export function EntryContentEmbed({
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
+               <main className="mx-auto max-w-[728px] pb-3 laptop:w-[728px]">
                   <H2Default text={title} />
                   <ManaEditor
                      key={data?.id}
@@ -125,6 +126,15 @@ export function Entry({ children }: { children: ReactNode }) {
    );
 }
 
+export function List({ children }: { children: ReactNode }) {
+   return (
+      <div className="mx-auto max-w-[728px] max-desktop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+         <CollectionHeader />
+         {children}
+      </div>
+   );
+}
+
 export function CollectionHeader() {
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
@@ -148,7 +158,20 @@ export function CollectionHeader() {
    );
 
    const entryName = entry?.name;
-   const icon = entry?.icon?.url ?? collection?.icon?.url;
+
+   const isEntry = entry?.name && entry?.id;
+
+   const icon = isEntry
+      ? entry?.icon && entry?.icon
+      : collection?.icon && collection?.icon;
+
+   const intent = isEntry ? "entry" : "collection";
+
+   const entityId = isEntry ? entry?.id : collection?.id;
+
+   const path = isEntry
+      ? `/${site?.name}/c/${collection?.slug}/${entry?.id}`
+      : `/${site?.name}/c/${collection?.slug}`;
 
    return (
       <div className="sticky top-[115px] desktop:top-[60px] bg-3 z-30 -mx-3 px-3 desktop:-mx-0.5 desktop:px-0.5 max-laptop:pt-5 desktop:pt-12">
@@ -156,16 +179,13 @@ export function CollectionHeader() {
             <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                {entryName ?? collection?.name}
             </h1>
-            <div className="flex-none border border-color shadow-1 shadow-sm bg-white dark:bg-zinc-800 -mb-8 flex h-14 w-14 rounded-full overflow-hidden items-center">
-               {icon ? (
-                  <Image
-                     url={icon}
-                     options="aspect_ratio=1:1&height=80&width=80"
-                     alt="Collection Icon"
-                  />
-               ) : (
-                  <Component className="text-1 mx-auto" size={18} />
-               )}
+            <div className="flex-none group relative -mr-0.5 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-8 flex h-16 w-16 rounded-full overflow-hidden items-center">
+               <CircleImageUploader
+                  image={icon}
+                  actionPath={path}
+                  intent={intent}
+                  entityId={entityId}
+               />
             </div>
          </div>
          <section className="py-1 flex items-center border-y dark:border-dark400 border-zinc-100 mb-4">
@@ -259,7 +279,7 @@ export function CollectionHeader() {
             >
                List
             </Link>
-            {entryName ? (
+            {isEntry ? (
                <>
                   <span className="text-zinc-200 text-lg dark:text-zinc-700">
                      /

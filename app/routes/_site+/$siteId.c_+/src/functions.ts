@@ -45,26 +45,60 @@ export const meta: MetaFunction = ({
       },
    ];
 };
+
+export const customEntryMeta: MetaFunction = ({
+   matches,
+   data,
+}: {
+   matches: any;
+   data: any;
+}) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site?.name;
+   return [
+      {
+         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
+      },
+   ];
+};
+
+export const customListMeta: MetaFunction = ({ matches }: { matches: any }) => {
+   const site = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site;
+
+   const collectionId = matches[2].pathname.split("/")[3];
+
+   const collection = site?.collections?.find(
+      (collection: any) => collection.slug === collectionId,
+   );
+   return [
+      {
+         title: `${collection?.name} | ${site?.name}`,
+      },
+   ];
+};
+
 export async function getEmbeddedContent({
+   id,
    user,
    payload,
    params,
    request,
 }: {
+   id: string;
    user: any;
    payload: Payload;
    params: Params;
    request: any;
 }) {
-   const { entryId, siteId } = zx.parseParams(params, {
-      entryId: z.string(),
+   const { siteId } = zx.parseParams(params, {
       siteId: z.string(),
    });
 
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
-
-   //TODO entryId should be pulled again since the url could be an alias instead of an id
 
    const { docs } = await payload.find({
       collection: "contentEmbeds",
@@ -76,13 +110,14 @@ export async function getEmbeddedContent({
             equals: collectionId,
          },
          relationId: {
-            equals: entryId,
+            equals: id,
          },
       },
       depth: 1,
       overrideAccess: false,
       user,
    });
+   if (!docs) return;
 
    if (user) {
       const hasAccess = isSiteOwnerOrAdmin(user?.id, docs[0]?.site);
@@ -245,6 +280,7 @@ export async function getEntryFields({
                         slug
                         name
                         icon {
+                           id
                            url
                         }
                      }
@@ -260,6 +296,7 @@ export async function getEntryFields({
                   name
                   slug
                   icon {
+                     id
                      url
                   }
                }
@@ -342,7 +379,7 @@ export async function getEntryFields({
          entry: {
             id: entryData?.id,
             name: entryData?.name,
-            icon: { url: entryData?.icon?.url },
+            icon: { id: entryData.icon?.id, url: entryData?.icon?.url },
             collectionName: collection?.name,
             sections: collection?.sections,
             siteId: collection?.site.id,
@@ -369,7 +406,7 @@ export async function getEntryFields({
       entry: {
          id: coreEntryById?.id,
          name: coreEntryById?.name,
-         icon: { url: coreEntryById?.icon?.url },
+         icon: { id: coreEntryById?.icon?.id, url: coreEntryById?.icon?.url },
          collectionName: collection?.name,
          sections: collection?.sections,
          siteId: collection?.site.id,
@@ -387,28 +424,24 @@ export async function getAllEntryData({
    request: Request;
    user: User | undefined;
 }) {
-   const [{ entry }, embeddedContent] = await Promise.all([
-      getEntryFields({
-         payload,
-         params,
-         request,
-         user,
-      }),
-      getEmbeddedContent({
-         payload,
-         params,
-         request,
-         user,
-      }),
-   ]);
+   const { entry } = await getEntryFields({
+      payload,
+      params,
+      request,
+      user,
+   });
+
+   const embeddedContent = await getEmbeddedContent({
+      id: entry.id,
+      payload,
+      params,
+      request,
+      user,
+   });
+
    return {
       entry: {
-         id: entry.id,
-         siteId: entry.siteId,
-         collectionName: entry.collectionName,
-         sections: entry?.sections,
-         name: entry.name,
-         icon: entry.icon,
+         ...entry,
          embeddedContent,
       },
    };

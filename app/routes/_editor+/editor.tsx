@@ -25,7 +25,7 @@ export function ManaEditor({
    collectionEntity,
    collectionSlug,
 }: {
-   fetcher: FetcherWithComponents<never>;
+   fetcher: FetcherWithComponents<unknown>;
    defaultValue: Descendant[];
    siteId?: string | undefined;
    pageId?: string;

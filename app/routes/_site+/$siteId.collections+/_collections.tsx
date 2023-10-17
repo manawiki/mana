@@ -1,19 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Switch } from "@headlessui/react";
-import {
-   type ActionFunction,
-   type MetaFunction,
-   json,
-   redirect,
-} from "@remix-run/node";
+import { type ActionFunction, type MetaFunction, json } from "@remix-run/node";
 import { Link, Outlet, useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import {
    ChevronDown,
    ChevronRight,
    Database,
-   ImagePlus,
    Link as LinkIcon,
    Loader2,
    X,
@@ -30,13 +24,9 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
    assertIsPost,
    isProcessing,
-   getMultipleFormData,
-   uploadImage,
    isAdding,
    slugify,
-   setSuccessMessage,
    getSession,
-   commitSession,
    setErrorMessage,
 } from "~/utils";
 
@@ -45,11 +35,11 @@ import { mainContainerStyle } from "../$siteId+/_index";
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),
    slug: z.string().min(1).max(40),
+   siteId: z.string(),
    hiddenCollection: z.coerce.boolean(),
    customListTemplate: z.coerce.boolean(),
    customEntryTemplate: z.coerce.boolean(),
    customDatabase: z.coerce.boolean(),
-   icon: z.any(),
 });
 
 export const meta: MetaFunction = ({ matches }: { matches: any }) => {
@@ -98,20 +88,6 @@ export default function CollectionIndex() {
    const disabled = isProcessing(fetcher.state);
    const adding = isAdding(fetcher, "addCollection");
 
-   //Image preview after upload
-   const [, setPicture] = useState(null);
-   const [imgData, setImgData] = useState(null);
-   const onChangePicture = (e: any) => {
-      if (e.target.files[0]) {
-         setPicture(e.target.files[0]);
-         const reader = new FileReader() as any;
-         reader.addEventListener("load", () => {
-            setImgData(reader.result);
-         });
-         reader.readAsDataURL(e.target.files[0]);
-      }
-   };
-
    const zoCollection = useZorm("newCollection", CollectionSchema);
 
    // Reset the form after submission
@@ -119,7 +95,6 @@ export default function CollectionIndex() {
       if (!adding) {
          zoCollection.refObject.current &&
             zoCollection.refObject.current.reset();
-         setImgData(null);
       }
    }, [adding, zoCollection.refObject]);
 
@@ -167,37 +142,7 @@ export default function CollectionIndex() {
                      className="pb-8"
                   >
                      <div className="flex items-center gap-4">
-                        <div>
-                           <label className="cursor-pointer">
-                              {imgData ? (
-                                 <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full">
-                                    <img
-                                       width={80}
-                                       height={80}
-                                       className="aspect-square object-contain"
-                                       alt="preview"
-                                       src={imgData}
-                                    />
-                                 </div>
-                              ) : (
-                                 <div
-                                    className="flex h-16 w-16 
-                                items-center justify-center rounded-full border-2 border-dashed
-                              border-color-sub bg-2-sub dark:hover:border-zinc-600"
-                                 >
-                                    <ImagePlus className="h-5 w-5 text-zinc-400" />
-                                 </div>
-                              )}
-                              <input
-                                 //@ts-ignore
-                                 name={zoCollection.fields.icon()}
-                                 type="file"
-                                 className="hidden"
-                                 onChange={onChangePicture}
-                              />
-                           </label>
-                        </div>
-                        <div className="flex-grow border-y py-1 border-color">
+                        <div className="flex-grow border shadow-sm relative shadow-1 rounded-lg py-1.5 p-3 border-color">
                            <section className="flex items-center justify-between">
                               <input
                                  placeholder={
@@ -205,8 +150,13 @@ export default function CollectionIndex() {
                                  }
                                  name={zoCollection.fields.name()}
                                  type="text"
-                                 className="input-text bg-3 h-8 focus:bg-3 border-0 p-0 mt-0"
+                                 className="input-text text-sm bg-3 h-8 focus:bg-3 border-0 p-0 mt-0"
                                  disabled={disabled}
+                              />
+                              <input
+                                 value={site?.id}
+                                 name={zoCollection.fields.siteId()}
+                                 type="hidden"
                               />
                               <Popover className="relative">
                                  {({ open }) => (
@@ -263,26 +213,26 @@ export default function CollectionIndex() {
                                  )}
                               </Popover>
                            </section>
-                           <section className="flex items-center justify-between relative">
+                           <section className="flex items-start justify-between relative">
                               <div className="flex items-center gap-2 space-y-1">
                                  <LinkIcon className="text-1" size={11} />
                                  <SlugField zo={zoCollection} />
                               </div>
-                              <button
-                                 className="absolute right-0 -bottom-5 flex py-1.5 items-center text-xs font-bold gap-2 dark:border-zinc-500 dark:hover:border-zinc-400
-                                 border border-zinc-200 rounded-full hover:bg-zinc-50 bg-white dark:bg-dark500 px-3 shadow-sm shadow-1"
-                                 name="intent"
-                                 value="addCollection"
-                                 type="submit"
-                                 disabled={disabled}
-                              >
-                                 {adding ? (
-                                    <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
-                                 ) : (
-                                    t("new.action")
-                                 )}
-                              </button>
                            </section>
+                           <button
+                              className="items-center text-xs -bottom-4 font-bold gap-2 absolute right-3 bg-zinc-100 border-zinc-300 hover:border-zinc-400/60
+                              rounded-full dark:bg-dark400 border shadow shadow-1 dark:hover:border-zinc-500 dark:border-zinc-600 py-1.5 px-4"
+                              name="intent"
+                              value="addCollection"
+                              type="submit"
+                              disabled={disabled}
+                           >
+                              {adding ? (
+                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
+                              ) : (
+                                 t("new.action")
+                              )}
+                           </button>
                         </div>
                      </div>
                   </fetcher.Form>
@@ -347,11 +297,8 @@ export const action: ActionFunction = async ({
    request,
    params,
 }) => {
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
    const { intent } = await zx.parseForm(request, {
-      intent: z.string(),
+      intent: z.enum(["deleteCollection", "updateCollection", "addCollection"]),
    });
 
    const session = await getSession(request.headers.get("cookie"));
@@ -365,98 +312,56 @@ export const action: ActionFunction = async ({
       }
       case "addCollection": {
          assertIsPost(request);
-         const result = await getMultipleFormData({
-            request,
-            prefix: "cIcon",
-            schema: CollectionSchema,
-         });
-
-         if (result.success) {
-            const {
-               name,
-               slug,
-               icon,
-               hiddenCollection,
-               customListTemplate,
-               customEntryTemplate,
-               customDatabase,
-            } = result.data;
-
-            try {
-               //See if duplicate exists on the same site
-               const existingSlug = await payload.find({
-                  collection: "collections",
-                  where: {
-                     "site.slug": {
-                        equals: siteId,
-                     },
-                     slug: {
-                        equals: slug,
-                     },
+         const {
+            name,
+            slug,
+            hiddenCollection,
+            customListTemplate,
+            customEntryTemplate,
+            customDatabase,
+            siteId,
+         } = await zx.parseForm(request, CollectionSchema);
+         try {
+            //See if duplicate exists on the same site
+            const existingSlug = await payload.find({
+               collection: "collections",
+               where: {
+                  site: {
+                     equals: siteId,
                   },
-                  overrideAccess: false,
-                  user,
-               });
-
-               if (existingSlug.totalDocs > 0) {
-                  setErrorMessage(session, "Slug" + slug + "already exists ");
-                  return redirect(`/${siteId}/collections`, {
-                     headers: { "Set-Cookie": await commitSession(session) },
-                  });
-               }
-
-               //We need to get the real site ID from the siteId slug
-               const siteData = await payload.find({
-                  collection: "sites",
-                  where: {
-                     slug: {
-                        equals: siteId,
-                     },
+                  slug: {
+                     equals: slug,
                   },
-                  user,
-               });
-               const immutableSiteId = siteData?.docs[0]?.id;
-
-               const siteIcon = await uploadImage({
-                  payload,
-                  image: icon,
-                  user,
-               });
-
-               if (siteIcon) {
-                  await payload.create({
-                     collection: "collections",
-                     data: {
-                        id: `${siteId}${slug}`,
-                        name,
-                        slug,
-                        icon: siteIcon.id as any,
-                        site: immutableSiteId as any,
-                        hiddenCollection,
-                        customListTemplate,
-                        customEntryTemplate,
-                        customDatabase,
-                     },
-                     user,
-                     overrideAccess: false,
-                  });
-
-                  setSuccessMessage(session, "Collection added");
-                  return redirect(`/${siteId}/collections`, {
-                     headers: { "Set-Cookie": await commitSession(session) },
-                  });
-               }
-            } catch (error) {
-               payload.logger.error(`${error}`);
-               setErrorMessage(
-                  session,
-                  "Something went wrong...unable to add collection.",
-               );
-               return redirect(`/${siteId}/collections`, {
-                  headers: { "Set-Cookie": await commitSession(session) },
-               });
+               },
+               overrideAccess: false,
+               user,
+            });
+            if (existingSlug.totalDocs > 0) {
+               return;
             }
+            return await payload.create({
+               collection: "collections",
+               data: {
+                  id: `${siteId}${slug}`,
+                  name,
+                  slug,
+                  site: siteId as any,
+                  hiddenCollection,
+                  customListTemplate,
+                  customEntryTemplate,
+                  customDatabase,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            payload.logger.error(`${error}`);
+            setErrorMessage(
+               session,
+               "Something went wrong...unable to add collection.",
+            );
          }
+
          // Last resort error message
          return json({
             error: "Something went wrong...unable to add collection.",
