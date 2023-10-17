@@ -355,6 +355,7 @@ const fetchSite = async ({
                      slug
                      customDatabase
                      icon {
+                        id
                         url
                      }
                   }

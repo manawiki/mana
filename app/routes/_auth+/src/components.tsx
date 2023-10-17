@@ -26,6 +26,16 @@ export const AdminOrStaffOrOwner = ({
    return hasAccess ? <>{children}</> : null;
 };
 
+export const NotAdminOrStaffOrOwner = ({
+   children,
+}: {
+   children: React.ReactNode;
+}) => {
+   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
+
+   return !hasAccess ? <>{children}</> : null;
+};
+
 //Render child components if the user is following the site
 export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
    const { user } = useRouteLoaderData("root") as { user: User };
@@ -45,7 +55,7 @@ export const CustomSite = ({ children }: { children: React.ReactNode }) => {
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
       site: null,
    };
-   const isCustom = site.type === "custom";
+   const isCustom = site?.type === "custom";
    return isCustom ? <>{children}</> : null;
 };
 

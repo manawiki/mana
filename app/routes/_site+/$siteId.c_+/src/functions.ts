@@ -75,7 +75,7 @@ export const customListMeta: MetaFunction = ({ matches }: { matches: any }) => {
    );
    return [
       {
-         title: `${collection.name} | ${site.name}`,
+         title: `${collection?.name} | ${site?.name}`,
       },
    ];
 };
@@ -280,6 +280,7 @@ export async function getEntryFields({
                         slug
                         name
                         icon {
+                           id
                            url
                         }
                      }
@@ -295,6 +296,7 @@ export async function getEntryFields({
                   name
                   slug
                   icon {
+                     id
                      url
                   }
                }
@@ -377,7 +379,7 @@ export async function getEntryFields({
          entry: {
             id: entryData?.id,
             name: entryData?.name,
-            icon: { url: entryData?.icon?.url },
+            icon: { id: entryData.icon?.id, url: entryData?.icon?.url },
             collectionName: collection?.name,
             sections: collection?.sections,
             siteId: collection?.site.id,
@@ -404,7 +406,7 @@ export async function getEntryFields({
       entry: {
          id: coreEntryById?.id,
          name: coreEntryById?.name,
-         icon: { url: coreEntryById?.icon?.url },
+         icon: { id: coreEntryById?.icon?.id, url: coreEntryById?.icon?.url },
          collectionName: collection?.name,
          sections: collection?.sections,
          siteId: collection?.site.id,
