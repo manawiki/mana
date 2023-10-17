@@ -120,48 +120,50 @@ export default function CollectionList() {
       <List>
          <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
             <AdminOrStaffOrOwner>
-               <fetcher.Form
-                  ref={zoEntry.ref}
-                  className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
-                  method="post"
-               >
-                  <input
-                     required
-                     placeholder={t("new.namePlaceholder") ?? undefined}
-                     name={zoEntry.fields.name()}
-                     type="text"
-                     className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                  />
-                  <input
-                     value={site?.id}
-                     name={zoEntry.fields.siteId()}
-                     type="hidden"
-                  />
-                  <input
-                     value={collection?.id}
-                     name={zoEntry.fields.collectionId()}
-                     type="hidden"
-                  />
-                  <button
-                     className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
-                     name="intent"
-                     value="addEntry"
-                     type="submit"
+               {collection?.customDatabase && (
+                  <fetcher.Form
+                     ref={zoEntry.ref}
+                     className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
+                     method="post"
                   >
-                     {addingUpdate ? (
-                        <Loader2 size={16} className="animate-spin" />
-                     ) : (
-                        <>
-                           <Plus
-                              className="text-zinc-400 dark:text-zinc-300"
-                              size={14}
-                           />
-                           <span className="text-1 pr-0.5">Add</span>
-                        </>
-                     )}
-                  </button>
-               </fetcher.Form>
+                     <input
+                        required
+                        placeholder={t("new.namePlaceholder") ?? undefined}
+                        name={zoEntry.fields.name()}
+                        type="text"
+                        className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                     />
+                     <input
+                        value={site?.id}
+                        name={zoEntry.fields.siteId()}
+                        type="hidden"
+                     />
+                     <input
+                        value={collection?.id}
+                        name={zoEntry.fields.collectionId()}
+                        type="hidden"
+                     />
+                     <button
+                        className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
+                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                        name="intent"
+                        value="addEntry"
+                        type="submit"
+                     >
+                        {addingUpdate ? (
+                           <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                           <>
+                              <Plus
+                                 className="text-zinc-400 dark:text-zinc-300"
+                                 size={14}
+                              />
+                              <span className="text-1 pr-0.5">Add</span>
+                           </>
+                        )}
+                     </button>
+                  </fetcher.Form>
+               )}
             </AdminOrStaffOrOwner>
             {entries.docs?.length > 0 ? (
                entries.docs?.map((entry: Entry, int: number) => (
