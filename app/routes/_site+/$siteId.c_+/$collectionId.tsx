@@ -34,7 +34,14 @@ import { zx } from "zodix";
 import type { Entry, Collection, User, Site } from "payload/generated-types";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
-import { assertIsPost, isAdding, toWords } from "~/utils";
+import {
+   assertIsDelete,
+   assertIsPost,
+   getMultipleFormData,
+   isAdding,
+   toWords,
+   uploadImage,
+} from "~/utils";
 
 import { List } from "./src/components";
 import { customListMeta } from "./src/functions";
@@ -257,7 +264,11 @@ export const action: ActionFunction = async ({
    if (!user || !user.id) return redirect("/login", { status: 302 });
 
    const { intent } = await zx.parseForm(request, {
-      intent: z.string(),
+      intent: z.enum([
+         "addEntry",
+         "collectionUpdateIcon",
+         "collectionDeleteIcon",
+      ]),
    });
 
    switch (intent) {
@@ -286,6 +297,64 @@ export const action: ActionFunction = async ({
                error: "Something went wrong...unable to add entry.",
             });
          }
+      }
+      case "collectionUpdateIcon": {
+         assertIsPost(request);
+
+         const result = await getMultipleFormData({
+            request,
+            prefix: "collectionIcon",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image, entityId } = result.data;
+            try {
+               const upload = await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+               });
+               return await payload.update({
+                  collection: "collections",
+                  id: entityId,
+                  data: {
+                     icon: upload.id as any,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            } catch (error) {
+               return json({
+                  error: "Something went wrong...unable to add image.",
+               });
+            }
+         }
+         // Last resort error message
+         return json({
+            error: "Something went wrong...unable to add image.",
+         });
+      }
+      case "collectionDeleteIcon": {
+         assertIsDelete(request);
+         const { imageId, entityId } = await zx.parseForm(request, {
+            imageId: z.string(),
+            entityId: z.string(),
+         });
+         await payload.delete({
+            collection: "images",
+            id: imageId,
+            overrideAccess: false,
+            user,
+         });
+         return await payload.update({
+            collection: "collections",
+            id: entityId,
+            data: {
+               icon: "" as any,
+            },
+            overrideAccess: false,
+            user,
+         });
       }
    }
 };

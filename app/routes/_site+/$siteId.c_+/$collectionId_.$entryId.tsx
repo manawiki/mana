@@ -1,6 +1,19 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type {
+   ActionFunction,
+   LoaderFunctionArgs,
+   MetaFunction,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { z } from "zod";
+import { zx } from "zodix";
+
+import {
+   assertIsDelete,
+   assertIsPost,
+   getMultipleFormData,
+   uploadImage,
+} from "~/utils";
 
 import { CollectionHeader, EntryContentEmbed } from "./src/components";
 import { getAllEntryData } from "./src/functions";
@@ -51,3 +64,75 @@ export default function CollectionEntryWiki() {
       </div>
    );
 }
+
+export const action: ActionFunction = async ({
+   context: { payload, user },
+   request,
+}) => {
+   if (!user || !user.id) return redirect("/login", { status: 302 });
+
+   const { intent } = await zx.parseForm(request, {
+      intent: z.enum(["entryUpdateIcon", "entryDeleteIcon"]),
+   });
+
+   switch (intent) {
+      case "entryUpdateIcon": {
+         assertIsPost(request);
+
+         const result = await getMultipleFormData({
+            request,
+            prefix: "entryIcon",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image, entityId } = result.data;
+            try {
+               const upload = await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+               });
+               return await payload.update({
+                  collection: "entries",
+                  id: entityId,
+                  data: {
+                     icon: upload.id as any,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            } catch (error) {
+               return json({
+                  error: "Something went wrong...unable to add image.",
+               });
+            }
+         }
+         // Last resort error message
+         return json({
+            error: "Something went wrong...unable to add image.",
+         });
+      }
+      case "entryDeleteIcon": {
+         assertIsDelete(request);
+         const { imageId, entityId } = await zx.parseForm(request, {
+            imageId: z.string(),
+            entityId: z.string(),
+         });
+         await payload.delete({
+            collection: "images",
+            id: imageId,
+            overrideAccess: false,
+            user,
+         });
+         return await payload.update({
+            collection: "entries",
+            id: entityId,
+            data: {
+               icon: "" as any,
+            },
+            overrideAccess: false,
+            user,
+         });
+      }
+   }
+};
