@@ -1,7 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 
 import { offset } from "@floating-ui/react";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import {
    useFetcher,
@@ -12,9 +12,10 @@ import {
    Link,
 } from "@remix-run/react";
 import clsx from "clsx";
-import { Component, Database } from "lucide-react";
+import { Component, Database, MoreHorizontal, X } from "lucide-react";
 import { lazily } from "react-lazily";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { H2Default } from "~/components/H2";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
@@ -30,11 +31,19 @@ import { CircleImageUploader } from "./ImageUpload";
 //@ts-ignore
 const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 
+export type Section = {
+   id?: string;
+   name?: string;
+   hideTitle?: boolean;
+};
+
 export function EntryContentEmbed({
+   section,
    title,
    sectionId,
 }: {
-   title: string | undefined;
+   section?: Section;
+   title?: string | undefined;
    sectionId?: string;
 }) {
    const fetcher = useFetcher();
@@ -78,8 +87,48 @@ export function EntryContentEmbed({
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] pb-3 laptop:w-[728px]">
-                  <H2Default text={title} />
+               <main className="mx-auto max-w-[728px] laptop:w-[728px] group hover:border-color border-transparent border-y border-dashed relative">
+                  <Popover className="group-hover:block absolute right-0 bottom-1 hidden">
+                     {({ open }) => (
+                        <>
+                           <Float
+                              as={Fragment}
+                              enter="transition ease-out duration-200"
+                              enterFrom="opacity-0 translate-y-1"
+                              enterTo="opacity-100 translate-y-0"
+                              leave="transition ease-in duration-150"
+                              leaveFrom="opacity-100 translate-y-0"
+                              leaveTo="opacity-0 translate-y-1"
+                              placement="top-end"
+                              offset={4}
+                           >
+                              <Popover.Button
+                                 className="flex relative items-center gap-2"
+                                 as="div"
+                              >
+                                 <div className="text-[10px] text-1">
+                                    {title}
+                                 </div>
+                                 <Tooltip placement="left">
+                                    <TooltipTrigger
+                                       className="transition w-7 h-7 duration-100 flex items-center justify-center 
+                                       rounded-full z-20 hover:dark:bg-dark400 hover:bg-zinc-100 active:translate-y-0.5"
+                                    >
+                                       {open ? (
+                                          <X className="text-1" size={14} />
+                                       ) : (
+                                          <MoreHorizontal size={16} />
+                                       )}
+                                    </TooltipTrigger>
+                                    <TooltipContent>Settings</TooltipContent>
+                                 </Tooltip>
+                              </Popover.Button>
+                              <Popover.Panel className="border-color-sub bg-3-sub w-32 shadow-1 p-1 transform rounded-lg border shadow-sm"></Popover.Panel>
+                           </Float>
+                        </>
+                     )}
+                  </Popover>
+                  {title && !section?.hideTitle && <H2Default text={title} />}
                   <ManaEditor
                      key={data?.id}
                      collectionSlug="contentEmbeds"
@@ -108,7 +157,9 @@ export function EntryContentEmbed({
             <>
                {hasContent && (
                   <>
-                     <H2Default text={title} />
+                     {title && !section?.hideTitle && (
+                        <H2Default text={title} />
+                     )}
                      <EditorView data={data?.content} />
                   </>
                )}

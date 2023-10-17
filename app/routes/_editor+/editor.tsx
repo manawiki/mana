@@ -62,12 +62,10 @@ export function ManaEditor({
    }, [debouncedValue]);
 
    return (
-      <div className="relative mx-auto max-w-[728px] pb-4">
-         <Slate onChange={setValue} editor={editor} initialValue={value}>
-            <Toolbar />
-            <EditorWithDnD editor={editor} />
-         </Slate>
-      </div>
+      <Slate onChange={setValue} editor={editor} initialValue={value}>
+         <Toolbar />
+         <EditorWithDnD editor={editor} />
+      </Slate>
    );
 }
 

@@ -20,7 +20,7 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
             collection: "sites",
             id: siteId,
          });
-         if (!currentCollections.collections) {
+         if (!currentCollections?.collections) {
             payload.update({
                collection: "sites",
                id: siteId,
@@ -29,7 +29,7 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
                },
             });
          }
-         if (currentCollections.collections) {
+         if (currentCollections?.collections) {
             const prevCollections = currentCollections.collections.map(
                ({ id }: { id: string }) => id,
             );

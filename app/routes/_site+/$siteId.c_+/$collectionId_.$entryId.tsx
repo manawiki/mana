@@ -58,7 +58,11 @@ export default function CollectionEntryWiki() {
          <CollectionHeader />
          {entry.sections?.map((row) => (
             <div key={row?.id}>
-               <EntryContentEmbed sectionId={row.id} title={row?.name} />
+               <EntryContentEmbed
+                  section={row}
+                  sectionId={row.id}
+                  title={row.name}
+               />
             </div>
          ))}
       </div>

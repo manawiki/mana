@@ -337,6 +337,7 @@ export const action: ActionFunction = async ({
                user,
             });
             if (existingSlug.totalDocs > 0) {
+               //TODO when toast behavior is improved, work on this
                return;
             }
             return await payload.create({
@@ -350,6 +351,7 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
+                  sections: [{ id: "main", name: "Main", hideTitle: true }],
                },
                user,
                overrideAccess: false,
