@@ -136,9 +136,9 @@ export function CircleImageUploader({
                >
                   <div className="text-1 space-y-2">
                      {isImageAdding ? (
-                        <Loader2 size={16} className="mx-auto animate-spin" />
+                        <Loader2 size={18} className="mx-auto animate-spin" />
                      ) : (
-                        <Upload className="mx-auto" size={14} />
+                        <Upload className="mx-auto" size={18} />
                      )}
                   </div>
                   <input name="image" type="file" className="hidden" />
