@@ -120,7 +120,7 @@ export default function CollectionList() {
       <List>
          <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
             <AdminOrStaffOrOwner>
-               {collection?.customDatabase && (
+               {!collection?.customDatabase && (
                   <fetcher.Form
                      ref={zoEntry.ref}
                      className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
