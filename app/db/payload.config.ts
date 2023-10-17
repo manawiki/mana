@@ -121,7 +121,7 @@ export default buildConfig({
                      ...searchDoc,
                      name: originalDoc?.name,
                      site: originalDoc?.site.id,
-                     icon: originalDoc?.icon.id,
+                     icon: originalDoc?.icon?.id,
                      slug: originalDoc?.slug,
                   };
                }
@@ -130,7 +130,7 @@ export default buildConfig({
                      ...searchDoc,
                      name: originalDoc?.name,
                      site: originalDoc?.site.id,
-                     icon: originalDoc?.icon.id,
+                     icon: originalDoc?.icon?.id,
                      collectionEntity: originalDoc?.collectionEntity.id,
                   };
                }
