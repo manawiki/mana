@@ -2,7 +2,6 @@ import type {
    CollectionAfterChangeHook,
    CollectionConfig,
 } from "payload/types";
-import invariant from "tiny-invariant";
 
 import { canMutateAsSiteAdmin } from "../../access/site";
 import { isStaffFieldLevel } from "../../access/user";
@@ -21,17 +20,27 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
             collection: "sites",
             id: siteId,
          });
-         invariant(currentCollections.collections);
-         const prevCollections = currentCollections.collections.map(
-            ({ id }: { id: string }) => id,
-         );
-         payload.update({
-            collection: "sites",
-            id: siteId,
-            data: {
-               collections: [...prevCollections, doc.id],
-            },
-         });
+         if (!currentCollections.collections) {
+            payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  collections: [doc.id],
+               },
+            });
+         }
+         if (currentCollections.collections) {
+            const prevCollections = currentCollections.collections.map(
+               ({ id }: { id: string }) => id,
+            );
+            payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  collections: [...prevCollections, doc.id],
+               },
+            });
+         }
       }
    } catch (err: unknown) {
       payload.logger.error(`${err}`);

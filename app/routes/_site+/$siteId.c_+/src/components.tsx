@@ -179,7 +179,7 @@ export function CollectionHeader() {
             <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                {entryName ?? collection?.name}
             </h1>
-            <div className="flex-none group relative border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-8 flex h-16 w-16 rounded-full overflow-hidden items-center">
+            <div className="flex-none group relative -mr-0.5 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-8 flex h-16 w-16 rounded-full overflow-hidden items-center">
                <CircleImageUploader
                   image={icon}
                   actionPath={path}
