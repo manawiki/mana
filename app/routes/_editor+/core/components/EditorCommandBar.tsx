@@ -25,7 +25,7 @@ export const EditorCommandBar = ({
    children,
 }: {
    isChanged: boolean | undefined;
-   fetcher: FetcherWithComponents<never>;
+   fetcher: FetcherWithComponents<unknown>;
    collectionSlug: keyof Config["collections"];
    collectionId?: string;
    entryId?: string;

@@ -5,7 +5,6 @@ import { Component, Database, PenSquare, Pin } from "lucide-react";
 import { Image } from "~/components";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/src/components";
-import { siteHomePath, siteHomeShouldReload } from "~/utils";
 
 import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
 
@@ -29,17 +28,11 @@ export const FollowingListMobile = ({
                <div className="flex-grow space-y-3">
                   {following?.map((item) => (
                      <NavLink
-                        reloadDocument={siteHomeShouldReload({
-                           site,
-                           currentSite: item,
-                        })}
+                        reloadDocument={true}
                         key={item.id}
                         onClick={() => setMenuOpen(false)}
                         className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                        to={siteHomePath({
-                           site: item,
-                           currentSite: site,
-                        })}
+                        to={`/${item.slug}`}
                      >
                         {({ isActive }) => (
                            <>

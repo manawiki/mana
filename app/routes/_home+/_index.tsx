@@ -26,7 +26,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import { Image } from "~/components";
 import type { Site } from "~/db/payload-types";
-import { siteHomeShouldReload, useDebouncedValue } from "~/utils";
+import { useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
@@ -298,9 +298,7 @@ const Discover = () => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              reloadDocument={siteHomeShouldReload({
-                                 site,
-                              })}
+                              reloadDocument={true}
                               to={`/${site.slug}`}
                               key={site.id}
                               className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"

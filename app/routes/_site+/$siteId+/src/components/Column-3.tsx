@@ -20,7 +20,7 @@ import {
    NotFollowingSite,
    FollowingSite,
 } from "~/routes/_auth+/src/components";
-import { isAdding, siteHomeRoot, siteHomeShouldReload } from "~/utils";
+import { isAdding } from "~/utils";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../../resource+/Search";
@@ -61,7 +61,7 @@ export const ColumnThree = ({
                            <div className="flex items-center">
                               <Link
                                  prefetch="intent"
-                                 to={siteHomeRoot({ site })}
+                                 to={`/${site.slug}`}
                                  className="flex items-center group truncate"
                               >
                                  <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
@@ -161,9 +161,7 @@ export const ColumnThree = ({
                                  <div className="flex items-center">
                                     <Link
                                        prefetch="intent"
-                                       reloadDocument={siteHomeShouldReload({
-                                          site,
-                                       })}
+                                       reloadDocument={true}
                                        to={`/login?redirectTo=/${site.slug}`}
                                        className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
                                text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
