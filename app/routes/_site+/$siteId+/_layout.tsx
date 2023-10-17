@@ -36,7 +36,6 @@ import {
    FollowingTrayContent,
 } from "./src/components";
 
-
 export async function loader({
    context: { user },
    params,
@@ -354,6 +353,7 @@ const fetchSite = async ({
                      id
                      name
                      slug
+                     customDatabase
                      icon {
                         url
                      }
