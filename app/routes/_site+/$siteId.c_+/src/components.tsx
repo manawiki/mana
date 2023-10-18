@@ -39,7 +39,7 @@ import { CircleImageUploader } from "./ImageUpload";
 const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 
 export type Section = {
-   id?: string;
+   id: string;
    name?: string;
    hideTitle?: boolean;
 };

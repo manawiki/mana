@@ -1,5 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+   SortableContext,
+   useSortable,
+   verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
    type ActionFunction,
    type LoaderFunctionArgs,
@@ -14,6 +23,7 @@ import {
    useMatches,
    useParams,
 } from "@remix-run/react";
+import clsx from "clsx";
 import { request as gqlRequest, gql } from "graphql-request";
 import {
    Component,
@@ -21,8 +31,10 @@ import {
    ChevronLeft,
    ChevronRight,
    Plus,
-   X,
    ListPlus,
+   GripVertical,
+   ChevronDown,
+   PlusCircle,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Payload } from "payload";
@@ -45,6 +57,7 @@ import {
    uploadImage,
 } from "~/utils";
 
+import type { Section } from "./src/components";
 import { List } from "./src/components";
 import { customListMeta } from "./src/functions";
 
@@ -94,6 +107,48 @@ export const handle = {
    i18n: "entry",
 };
 
+function SortableSectionItem({ section }: { section: Section }) {
+   const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      isSorting,
+      transition,
+      isDragging,
+      setActivatorNodeRef,
+   } = useSortable({ id: section.id });
+
+   return (
+      <div
+         ref={setNodeRef}
+         style={
+            {
+               transition: transition,
+               transform: CSS.Transform.toString(transform),
+               pointerEvents: isSorting ? "none" : undefined,
+               opacity: isDragging ? 0 : 1,
+            } as React.CSSProperties /* cast because of css variable */
+         }
+         {...attributes}
+         className="flex items-center gap-3 py-2.5"
+      >
+         <div
+            className={clsx(
+               isDragging ? "cursor-grabbing" : "cursor-move",
+               "dark:hover:bg-dark400 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
+            )}
+            aria-label="Drag to reorder"
+            ref={setActivatorNodeRef}
+            {...listeners}
+         >
+            <GripVertical size={14} />
+         </div>
+         <div className="text-1 font-bold text-sm">{section.name}</div>
+      </div>
+   );
+}
+
 export default function CollectionList() {
    const { entries } = useLoaderData<typeof loader>();
 
@@ -135,62 +190,140 @@ export default function CollectionList() {
    const zoSections = useZorm("sections", SectionSchema);
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
+   const [activeId, setActiveId] = useState<string | null>(null);
 
+   function handleDragStart(event: DragStartEvent) {
+      if (event.active) {
+         setActiveId(event.active.id as string);
+      }
+   }
+
+   function handleDragEnd(event: DragEndEvent) {
+      // const { active, over } = event;
+
+      // if (active.id !== over.id) {
+      //   setItems((items) => {
+      //     const oldIndex = items.indexOf(active.id);
+      //     const newIndex = items.indexOf(over.id);
+
+      //     return arrayMove(items, oldIndex, newIndex);
+      //   });
+      // }
+
+      setActiveId(null);
+   }
+
+   const activeElement = collection?.sections?.find(
+      (x) => "id" in x && x.id === activeId,
+   );
+
+   const sectionRows = useMemo(
+      () => collection?.sections?.map((element: any) => element.id) ?? [],
+      [collection],
+   );
+   console.log(sectionRows);
+
+   console.log(collection);
    return (
       <List>
          <section className="relative">
             <AdminOrStaffOrOwner>
                <button
                   onClick={() => setSectionsOpen(!isSectionsOpen)}
-                  className="absolute flex items-center dark:hover:border-zinc-600 gap-2 h-6 justify-center -top-[33px] shadow-1 shadow-sm 
-               z-10 bg-2-sub px-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 right-0 hover:border-zinc-300"
+                  className="absolute flex items-center dark:hover:border-zinc-500/70 gap-2 h-6 justify-center -top-[33px] shadow-1 shadow-sm 
+               z-10 bg-3-sub px-2.5 rounded-lg border border-zinc-200 dark:border-zinc-600 right-0 hover:border-zinc-300/80"
                >
-                  {isSectionsOpen ? (
-                     <X className="text-1" size={12} />
-                  ) : (
+                  <div className="flex items-center gap-1.5">
                      <div className="text-[10px] font-semibold text-1">
                         Sections
                      </div>
-                  )}
+                     <ChevronDown
+                        className={clsx(
+                           isSectionsOpen ? "rotate-180" : "",
+                           "transform transition duration-300 text-1 ease-in-out",
+                        )}
+                        size={12}
+                     />
+                  </div>
                </button>
                {isSectionsOpen && (
-                  <div className="border-b border-color mb-4 pb-0.5">
-                     <fetcher.Form
-                        ref={zoSections.ref}
-                        className="flex items-center justify-between"
-                        method="post"
-                     >
-                        <input
-                           required
-                           placeholder={t("new.namePlaceholder") ?? undefined}
-                           name={zoSections.fields.name()}
-                           type="text"
-                           className="w-full bg-transparent text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
-                        />
-                        <input
-                           name={zoSections.fields.id()}
-                           type="text"
-                           className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
-                        />
-                        <button
-                           className="flex items-center pt-1.5 flex-none gap-2"
-                           name="intent"
-                           value="addSection"
-                           type="submit"
+                  <>
+                     <div className="border-b border-color pb-0.5">
+                        <fetcher.Form
+                           ref={zoSections.ref}
+                           className="flex items-center justify-between"
+                           method="post"
                         >
-                           {addingUpdate ? (
-                              <Loader2 size={16} className="animate-spin" />
-                           ) : (
-                              <>
-                                 <span className="text-1 text-xs font-semibold">
-                                    Add Section
-                                 </span>
-                                 <ListPlus className="text-1" size={16} />
-                              </>
+                           <div className="flex items-center gap-3">
+                              <ListPlus
+                                 className="text-1 flex-none"
+                                 size={16}
+                              />
+                              <input
+                                 required
+                                 placeholder="Section name..."
+                                 name={zoSections.fields.name()}
+                                 type="text"
+                                 className="w-full bg-transparent text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
+                              />
+                           </div>
+                           <input
+                              name={zoSections.fields.id()}
+                              type="text"
+                              className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
+                           />
+                           <button
+                              className="flex items-center pt-1.5 flex-none gap-2"
+                              name="intent"
+                              value="addSection"
+                              type="submit"
+                           >
+                              {addingUpdate ? (
+                                 <Loader2 size={16} className="animate-spin" />
+                              ) : (
+                                 <div className="flex group items-center gap-2">
+                                    <span className="text-1 group-hover:underline text-xs font-bold">
+                                       Add
+                                    </span>
+                                    <PlusCircle
+                                       className="dark:text-zinc-500 text-zinc-400"
+                                       size={14}
+                                    />
+                                 </div>
+                              )}
+                           </button>
+                        </fetcher.Form>
+                     </div>
+                     <DndContext
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        modifiers={[restrictToVerticalAxis]}
+                        collisionDetection={closestCenter}
+                     >
+                        <SortableContext
+                           items={sectionRows}
+                           strategy={verticalListSortingStrategy}
+                        >
+                           <div className="divide-y divide-color border-b border-color mb-4">
+                              {collection?.sections?.map((row) => (
+                                 <SortableSectionItem
+                                    key={row.id}
+                                    section={row}
+                                 />
+                              ))}
+                           </div>
+                        </SortableContext>
+                        <DragOverlay adjustScale={false}>
+                           {activeElement && (
+                              // <DragOverlayContent
+                              //    element={activeElement}
+                              //    renderElement={renderElement}
+                              // />
+                              <></>
                            )}
-                        </button>
-                     </fetcher.Form>
-                  </div>
+                        </DragOverlay>
+                     </DndContext>
+                  </>
                )}
             </AdminOrStaffOrOwner>
             <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
