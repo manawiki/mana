@@ -17,6 +17,7 @@ import {
    json,
    redirect,
 } from "@remix-run/node";
+import type { FetcherWithComponents } from "@remix-run/react";
 import {
    Link,
    useLoaderData,
@@ -42,7 +43,6 @@ import { nanoid } from "nanoid";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import { plural } from "pluralize";
-import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
 import { z } from "zod";
@@ -53,12 +53,15 @@ import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
    assertIsDelete,
+   assertIsPatch,
    assertIsPost,
    getMultipleFormData,
    isAdding,
    slugify,
    toWords,
    uploadImage,
+   useDebouncedValue,
+   useIsMount,
 } from "~/utils";
 
 import type { Section } from "./src/components";
@@ -79,8 +82,8 @@ const CollectionsAllSchema = z.object({
 const SectionSchema = z.object({
    collectionId: z.string(),
    name: z.string(),
-   id: z.string(),
-   hideTitle: z.coerce.boolean(),
+   sectionId: z.string(),
+   showTitle: z.coerce.boolean(),
 });
 
 export { customListMeta as meta };
@@ -108,68 +111,6 @@ export async function loader({
    return json({ entries });
 }
 
-export const handle = {
-   i18n: "entry",
-};
-
-function SortableSectionItem({ section }: { section: Section }) {
-   const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      isSorting,
-      transition,
-      isDragging,
-      setActivatorNodeRef,
-   } = useSortable({ id: section.id });
-
-   return (
-      <div
-         ref={setNodeRef}
-         style={
-            {
-               transition: transition,
-               transform: CSS.Transform.toString(transform),
-               pointerEvents: isSorting ? "none" : undefined,
-               opacity: isDragging ? 0 : 1,
-            } as React.CSSProperties /* cast because of css variable */
-         }
-         {...attributes}
-         className="flex items-center gap-3 py-2.5"
-      >
-         <div
-            className={clsx(
-               isDragging ? "cursor-grabbing" : "cursor-move",
-               "dark:hover:bg-dark400 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
-            )}
-            aria-label="Drag to reorder"
-            ref={setActivatorNodeRef}
-            {...listeners}
-         >
-            <GripVertical size={14} />
-         </div>
-         <div className="text-1 font-bold text-sm">{section.name}</div>
-      </div>
-   );
-}
-
-function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
-   const value = useValue({
-      zorm: zo,
-      name: zo.fields.name(),
-   });
-   return (
-      <input
-         readOnly
-         name={zo.fields.id()}
-         type="text"
-         className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
-         value={slugify(value)}
-      />
-   );
-}
-
 export default function CollectionList() {
    const { entries } = useLoaderData<typeof loader>();
 
@@ -182,8 +123,6 @@ export default function CollectionList() {
    const limit = entries?.limit;
    const hasNextPage = entries?.hasNextPage;
    const hasPrevPage = entries?.hasPrevPage;
-
-   const { t } = useTranslation(handle?.i18n);
 
    //Form/fetcher
    const fetcher = useFetcher();
@@ -219,15 +158,14 @@ export default function CollectionList() {
       const { active, over } = event;
       if (active.id !== over?.id) {
          fetcher.submit(
-            //@ts-ignore
             {
-               collectionId: collection?.id,
+               collectionId: collection?.id ?? "",
                activeId: active?.id,
-               overId: over?.id,
+               overId: over?.id ?? "",
                intent: "updateSectionOrder",
             },
             {
-               method: "post",
+               method: "patch",
             },
          );
       }
@@ -257,11 +195,11 @@ export default function CollectionList() {
             <AdminOrStaffOrOwner>
                <button
                   onClick={() => setSectionsOpen(!isSectionsOpen)}
-                  className="absolute flex items-center dark:hover:border-zinc-500/70 gap-2 h-6 justify-center -top-[33px] shadow-1 shadow-sm 
-               z-10 bg-3-sub px-2.5 rounded-lg border border-zinc-200 dark:border-zinc-600/80 right-0 hover:border-zinc-300/80"
+                  className="absolute flex items-center dark:hover:border-zinc-500/70 gap-2 justify-center -top-[33px] shadow-1 shadow-sm 
+               z-10 bg-3-sub rounded-lg border border-zinc-200 dark:border-zinc-600/80 right-0 hover:border-zinc-300/80 overflow-hidden"
                >
                   <div className="flex items-center gap-1.5">
-                     <div className="text-[10px] font-bold text-1">
+                     <div className="text-[10px] font-bold text-1 pl-2.5">
                         Sections
                      </div>
                      <ChevronDown
@@ -271,11 +209,15 @@ export default function CollectionList() {
                         )}
                         size={14}
                      />
+                     <div className="text-[10px] font-bold border-l border-zinc-200 dark:border-zinc-600 py-1 text-1 bg-zinc-50 px-2 dark:bg-dark350">
+                        {sections?.length}
+                     </div>
                   </div>
                </button>
+               {/* Sections */}
                {isSectionsOpen && (
                   <>
-                     <div className="border-b border-color pb-0.5">
+                     <div className="pb-1">
                         <fetcher.Form
                            ref={zoSections.ref}
                            className="flex items-center gap-4"
@@ -291,7 +233,8 @@ export default function CollectionList() {
                                  placeholder="Type a section name..."
                                  name={zoSections.fields.name()}
                                  type="text"
-                                 className="w-full bg-transparent text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
+                                 className="w-full bg-transparent placeholder:text-zinc-400 dark:placeholder:text-zinc-500 
+                                 font-semibold text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
                               />
                               <input
                                  value={collection?.id}
@@ -305,17 +248,17 @@ export default function CollectionList() {
                                        className="flex-grow cursor-pointer dark:text-zinc-400 text-zinc-500  group-hover:underline 
                                  decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 text-xs w-16"
                                     >
-                                       Hide Title
+                                       Show Title
                                     </Switch.Label>
-                                    <Switch as={Fragment} name="hideTitle">
+                                    <Switch as={Fragment} name="showTitle">
                                        {({ checked }) => (
-                                          <div className="dark:border-zinc-600/60 bg-white dark:bg-dark350 relative flex-none flex h-5 w-[36px] items-center rounded-full border">
+                                          <div className="dark:border-zinc-600/60 bg-2-sub relative flex-none flex h-5 w-[36px] items-center rounded-full border">
                                              <span className="sr-only">
-                                                Hide Title
+                                                Show Title
                                              </span>
                                              <div
                                                 className={clsx(
-                                                   checked
+                                                   !checked
                                                       ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
                                                       : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
                                                    "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
@@ -363,69 +306,83 @@ export default function CollectionList() {
                            items={sections}
                            strategy={verticalListSortingStrategy}
                         >
-                           <div className="divide-y divide-color border-b border-color mb-4">
+                           <div className="divide-y bg-2-sub divide-color-sub border rounded-lg border-color-sub mb-4 shadow-sm shadow-1">
                               {collection?.sections?.map((row) => (
                                  <SortableSectionItem
                                     key={row.id}
                                     section={row}
+                                    fetcher={fetcher}
+                                    collectionId={collection?.id}
                                  />
                               ))}
                            </div>
                         </SortableContext>
                         <DragOverlay adjustScale={false}>
                            {activeSection && (
-                              <SortableSectionItem section={activeSection} />
+                              <SortableSectionItem
+                                 fetcher={fetcher}
+                                 section={activeSection}
+                                 collectionId={collection?.id}
+                              />
                            )}
                         </DragOverlay>
                      </DndContext>
                   </>
                )}
+
+               {/* Add new entry */}
                {!collection?.customDatabase && (
-                  <fetcher.Form
-                     ref={zoEntry.ref}
-                     className="dark:bg-dark350 border focus-within:border-zinc-200 dark:focus-within:border-zinc-600 border-color-sub rounded-lg 
+                  <div className="pt-1">
+                     <fetcher.Form
+                        ref={zoEntry.ref}
+                        className="dark:bg-dark350 border focus-within:border-zinc-200 dark:focus-within:border-zinc-600 border-color-sub rounded-lg 
                      shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
-                     method="post"
-                  >
-                     <input
-                        required
-                        placeholder={t("new.namePlaceholder") ?? undefined}
-                        name={zoEntry.fields.name()}
-                        type="text"
-                        className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                     />
-                     <input
-                        value={site?.id}
-                        name={zoEntry.fields.siteId()}
-                        type="hidden"
-                     />
-                     <input
-                        value={collection?.id}
-                        name={zoEntry.fields.collectionId()}
-                        type="hidden"
-                     />
-                     <button
-                        className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
-                        name="intent"
-                        value="addEntry"
-                        type="submit"
+                        method="post"
                      >
-                        {addingUpdate ? (
-                           <Loader2 size={16} className="animate-spin" />
-                        ) : (
-                           <>
-                              <Plus
-                                 className="text-zinc-400 dark:text-zinc-300"
-                                 size={14}
-                              />
-                              <span className="text-1 pr-0.5">Add</span>
-                           </>
-                        )}
-                     </button>
-                  </fetcher.Form>
+                        <input
+                           required
+                           placeholder="Type an entry name..."
+                           name={zoEntry.fields.name()}
+                           type="text"
+                           className="w-full bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                        />
+                        <input
+                           value={site?.id}
+                           name={zoEntry.fields.siteId()}
+                           type="hidden"
+                        />
+                        <input
+                           value={collection?.id}
+                           name={zoEntry.fields.collectionId()}
+                           type="hidden"
+                        />
+                        <button
+                           className="shadow-1 inline-flex h-[30px] pl-3 pr-3.5 items-center justify-center gap-1.5 bg-white dark:bg-dark450
+                     rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                           name="intent"
+                           value="addEntry"
+                           type="submit"
+                        >
+                           {addingUpdate ? (
+                              <Loader2 size={16} className="animate-spin" />
+                           ) : (
+                              <>
+                                 <Plus
+                                    className="text-zinc-400 dark:text-zinc-300"
+                                    size={14}
+                                 />
+                                 <span className="text-1 pr-0.5">Add</span>
+                              </>
+                           )}
+                        </button>
+                     </fetcher.Form>
+                  </div>
                )}
             </AdminOrStaffOrOwner>
+            {/* <section className="flex items-center justify-between text-sm pb-1.5 pt-2 px-0.5">
+               <div>Filter</div>
+               <div>Sort</div>
+            </section> */}
             <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
                {entries.docs?.length > 0
                   ? entries.docs?.map((entry: Entry, int: number) => (
@@ -524,6 +481,7 @@ export const action: ActionFunction = async ({
          "addSection",
          "collectionUpdateIcon",
          "collectionDeleteIcon",
+         "updateSection",
          "updateSectionOrder",
       ]),
    });
@@ -557,10 +515,8 @@ export const action: ActionFunction = async ({
       }
       case "addSection": {
          assertIsPost(request);
-         const { collectionId, id, name, hideTitle } = await zx.parseForm(
-            request,
-            SectionSchema,
-         );
+         const { collectionId, sectionId, name, showTitle } =
+            await zx.parseForm(request, SectionSchema);
          try {
             const collectionData = await payload.findByID({
                collection: "collections",
@@ -574,7 +530,7 @@ export const action: ActionFunction = async ({
                id: collectionData.id,
                data: {
                   sections: [
-                     { id, name, hideTitle },
+                     { id: sectionId, name, showTitle },
                      //@ts-ignore
                      ...collectionData?.sections,
                   ],
@@ -588,8 +544,56 @@ export const action: ActionFunction = async ({
             });
          }
       }
+      case "updateSection": {
+         assertIsPatch(request);
+         const { collectionId, sectionId, showTitle, name } =
+            await zx.parseForm(request, {
+               collectionId: z.string(),
+               sectionId: z.string(),
+               name: z.string().optional(),
+               showTitle: z.string().optional(),
+            });
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            const section = collectionData?.sections?.find(
+               (section) => section.id === sectionId,
+            );
+
+            const updatedSection = {
+               ...section,
+               ...(name && { name }),
+               ...(showTitle && { showTitle }),
+            };
+
+            const updatedSections =
+               collectionData.sections?.map((item) =>
+                  item.id === sectionId ? updatedSection : item,
+               ) ?? [];
+
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  //@ts-ignore
+                  sections: updatedSections,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
+            });
+         }
+      }
       case "updateSectionOrder": {
-         assertIsPost(request);
+         assertIsPatch(request);
          const { overId, activeId, collectionId } = await zx.parseForm(
             request,
             {
@@ -795,4 +799,163 @@ async function fetchEntries({
    const result = { docs: filtered, ...pagination };
 
    return { entries: result };
+}
+
+function SortableSectionItem({
+   section,
+   fetcher,
+   collectionId,
+}: {
+   section: Section;
+   fetcher: FetcherWithComponents<unknown>;
+   collectionId: Collection["id"] | undefined;
+}) {
+   const sectionFields = {
+      collectionId: collectionId ?? "",
+      sectionId: section?.id,
+   };
+
+   const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      isSorting,
+      transition,
+      isDragging,
+      setActivatorNodeRef,
+   } = useSortable({ id: section.id });
+
+   const [titleVisibility, setTitleVisibility] = useState(section?.showTitle);
+
+   const isMount = useIsMount();
+
+   const [sectionName, setSectionName] = useState(section?.name);
+
+   const debouncedSectionName = useDebouncedValue(sectionName, 500);
+
+   useEffect(() => {
+      if (!isMount) {
+         fetcher.submit(
+            {
+               ...sectionFields,
+               showTitle: titleVisibility ?? null,
+               intent: "updateSection",
+            },
+            {
+               method: "patch",
+            },
+         );
+      }
+   }, [titleVisibility]);
+
+   useEffect(() => {
+      if (!isMount) {
+         fetcher.submit(
+            {
+               ...sectionFields,
+               name: debouncedSectionName ?? "",
+               intent: "updateSection",
+            },
+            { method: "patch" },
+         );
+      }
+   }, [debouncedSectionName]);
+
+   return (
+      <div
+         ref={setNodeRef}
+         style={
+            {
+               transition: transition,
+               transform: CSS.Transform.toString(transform),
+               pointerEvents: isSorting ? "none" : undefined,
+               opacity: isDragging ? 0 : 1,
+            } as React.CSSProperties /* cast because of css variable */
+         }
+         {...attributes}
+         className="flex items-center gap-3 p-2 justify-between"
+      >
+         <div className="flex items-center gap-2.5 flex-grow">
+            <div
+               className={clsx(
+                  isDragging ? "cursor-grabbing" : "cursor-move",
+                  "dark:hover:bg-dark400 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
+               )}
+               aria-label="Drag to reorder"
+               ref={setActivatorNodeRef}
+               {...listeners}
+            >
+               <GripVertical size={14} className="text-1" />
+            </div>
+            <input
+               required
+               value={sectionName}
+               onChange={(event) => setSectionName(event.target.value)}
+               type="text"
+               className="w-full bg-transparent font-semibold text-xs h-6 p-0 focus:border-0 focus:ring-0 border-0"
+            />
+         </div>
+         <div className="text-xs text-zinc-400 dark:text-zinc-500 border-r border-color-sub pr-3">
+            {section.id}
+         </div>
+         <Switch.Group>
+            <div className="flex items-center group gap-2">
+               <Switch.Label
+                  className={clsx(
+                     titleVisibility
+                        ? "text-zinc-400"
+                        : "dark:text-zinc-200 text-zinc-600",
+                     "flex-grow cursor-pointer group-hover:underline font-semibold flex items-center gap-1 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 text-[10px]",
+                  )}
+               >
+                  <span>Title</span>
+               </Switch.Label>
+               <Switch
+                  checked={titleVisibility}
+                  onChange={() => setTitleVisibility(!titleVisibility)}
+                  as={Fragment}
+               >
+                  {({ checked }) => (
+                     <div className="dark:border-zinc-600/60 bg-white dark:bg-dark450 relative flex-none flex h-5 w-[36px] items-center rounded-full border">
+                        <span className="sr-only">Title</span>
+                        <div
+                           className={clsx(
+                              !checked
+                                 ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
+                                 : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
+                              "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
+                           )}
+                        />
+                     </div>
+                  )}
+               </Switch>
+            </div>
+         </Switch.Group>
+      </div>
+   );
+}
+
+function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
+   const value = useValue({
+      zorm: zo,
+      name: zo.fields.name(),
+   });
+   return (
+      <>
+         {value && (
+            <div className="flex items-center gap-1.5 max-laptop:hidden">
+               <div className="text-[10px] font-bold text-1">ID</div>
+               <input
+                  readOnly
+                  name={zo.fields.sectionId()}
+                  type="text"
+                  className="h-6 bg-transparent focus:bg-3 text-left focus:border-0 focus:ring-0 
+                  pb-0.5 text-zinc-400 dark:text-zinc-500 text-xs border-0 p-0 mt-0"
+                  value={slugify(value)}
+               />
+            </div>
+         )}
+      </>
+   );
 }

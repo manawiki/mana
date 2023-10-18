@@ -240,15 +240,17 @@ export default function CollectionIndex() {
             )}
             {site?.collections?.length === 0 ? null : (
                <>
-                  <div className="border-color-sub divide-y shadow-sm shadow-1 overflow-hidden divide-color-sub rounded-lg border">
+                  <div className="space-y-2.5 pb-5">
                      {site?.collections?.map((row, int) => (
                         <Link
                            key={row.slug}
+                           prefetch="intent"
                            to={`/${site.slug}/c/${row.slug}`}
-                           className="group relative flex items-center odd:bg-2-sub justify-between gap-2 p-2"
+                           className="relative flex items-center justify-between shadow-zinc-100 gap-2 dark:bg-dark350 dark:hover:border-zinc-600/70
+                           p-2 border-color-sub shadow-sm shadow-1 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
                         >
                            <div className="flex items-center gap-3">
-                              <div className="border-color-sub border shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">
+                              <div className="border-color-sub border bg-3-sub justify-center shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">
                                  {row.icon?.url ? (
                                     <Image
                                        width={50}
@@ -256,16 +258,15 @@ export default function CollectionIndex() {
                                        alt={row.name ?? "List Icon"}
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        url={row?.icon?.url}
-                                       loading={int > 10 ? "lazy" : undefined}
                                     />
                                  ) : (
                                     <Database
                                        className="text-1 mx-auto"
-                                       size={18}
+                                       size={14}
                                     />
                                  )}
                               </div>
-                              <span className="group-hover:underline truncate text-sm font-bold">
+                              <span className="truncate text-sm font-bold">
                                  {row.name}
                               </span>
                               {/* <AdminOrStaffOrOwner>
@@ -351,7 +352,7 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
-                  sections: [{ id: "main", name: "Main", hideTitle: true }],
+                  sections: [{ id: "main", name: "Main", showTitle: false }],
                },
                user,
                overrideAccess: false,

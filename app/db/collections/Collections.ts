@@ -150,9 +150,9 @@ export const Collections: CollectionConfig = {
                type: "text",
             },
             {
-               name: "hideTitle",
+               name: "showTitle",
                type: "checkbox",
-               label: "Hide Title",
+               label: "Display Title",
                defaultValue: false,
                access: {
                   update: isStaffFieldLevel,
