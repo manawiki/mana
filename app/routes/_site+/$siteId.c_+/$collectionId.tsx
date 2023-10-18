@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
    SortableContext,
+   arrayMove,
    useSortable,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Switch } from "@headlessui/react";
 import {
    type ActionFunction,
    type LoaderFunctionArgs,
@@ -41,7 +43,8 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 import { plural } from "pluralize";
 import { useTranslation } from "react-i18next";
-import { useZorm } from "react-zorm";
+import type { Zorm } from "react-zorm";
+import { useValue, useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -53,6 +56,7 @@ import {
    assertIsPost,
    getMultipleFormData,
    isAdding,
+   slugify,
    toWords,
    uploadImage,
 } from "~/utils";
@@ -73,9 +77,10 @@ const CollectionsAllSchema = z.object({
 });
 
 const SectionSchema = z.object({
+   collectionId: z.string(),
    name: z.string(),
    id: z.string(),
-   hideTitle: z.string(),
+   hideTitle: z.coerce.boolean(),
 });
 
 export { customListMeta as meta };
@@ -149,10 +154,26 @@ function SortableSectionItem({ section }: { section: Section }) {
    );
 }
 
+function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
+   const value = useValue({
+      zorm: zo,
+      name: zo.fields.name(),
+   });
+   return (
+      <input
+         readOnly
+         name={zo.fields.id()}
+         type="text"
+         className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
+         value={slugify(value)}
+      />
+   );
+}
+
 export default function CollectionList() {
    const { entries } = useLoaderData<typeof loader>();
 
-   // Paging Variables
+   //Paging Variables
    const [, setSearchParams] = useSearchParams({});
 
    const currentEntry = entries?.pagingCounter;
@@ -164,7 +185,7 @@ export default function CollectionList() {
 
    const { t } = useTranslation(handle?.i18n);
 
-   // Form/fetcher
+   //Form/fetcher
    const fetcher = useFetcher();
    const addingUpdate = isAdding(fetcher, "addEntry");
    const zoEntry = useZorm("newEntry", EntrySchema);
@@ -179,18 +200,14 @@ export default function CollectionList() {
       (collection) => collection.slug === collectionId,
    );
 
-   useEffect(() => {
-      //Reset form after submission
-      if (!addingUpdate) {
-         zoEntry.refObject.current && zoEntry.refObject.current.reset();
-      }
-   }, [addingUpdate, zoEntry.refObject]);
-
    //Sections
    const zoSections = useZorm("sections", SectionSchema);
+   const addingSection = isAdding(fetcher, "addSection");
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
    const [activeId, setActiveId] = useState<string | null>(null);
+
+   const sections = collection?.sections?.map((item) => item.id) ?? [];
 
    function handleDragStart(event: DragStartEvent) {
       if (event.active) {
@@ -199,28 +216,40 @@ export default function CollectionList() {
    }
 
    function handleDragEnd(event: DragEndEvent) {
-      // const { active, over } = event;
-
-      // if (active.id !== over.id) {
-      //   setItems((items) => {
-      //     const oldIndex = items.indexOf(active.id);
-      //     const newIndex = items.indexOf(over.id);
-
-      //     return arrayMove(items, oldIndex, newIndex);
-      //   });
-      // }
-
+      const { active, over } = event;
+      if (active.id !== over?.id) {
+         fetcher.submit(
+            //@ts-ignore
+            {
+               collectionId: collection?.id,
+               activeId: active?.id,
+               overId: over?.id,
+               intent: "updateSectionOrder",
+            },
+            {
+               method: "post",
+            },
+         );
+      }
       setActiveId(null);
    }
 
-   const activeElement = collection?.sections?.find(
+   const activeSection = collection?.sections?.find(
       (x) => "id" in x && x.id === activeId,
    );
 
-   const sectionRows = useMemo(
-      () => collection?.sections?.map((element: any) => element.id) ?? [],
-      [collection],
-   );
+   //Reset form after submission
+   useEffect(() => {
+      if (!addingUpdate) {
+         zoEntry.refObject.current && zoEntry.refObject.current.reset();
+      }
+   }, [addingUpdate, zoEntry.refObject]);
+
+   useEffect(() => {
+      if (!addingSection) {
+         zoSections.refObject.current && zoSections.refObject.current.reset();
+      }
+   }, [addingSection, zoSections.refObject]);
 
    return (
       <List>
@@ -229,10 +258,10 @@ export default function CollectionList() {
                <button
                   onClick={() => setSectionsOpen(!isSectionsOpen)}
                   className="absolute flex items-center dark:hover:border-zinc-500/70 gap-2 h-6 justify-center -top-[33px] shadow-1 shadow-sm 
-               z-10 bg-3-sub px-2.5 rounded-lg border border-zinc-200 dark:border-zinc-600 right-0 hover:border-zinc-300/80"
+               z-10 bg-3-sub px-2.5 rounded-lg border border-zinc-200 dark:border-zinc-600/80 right-0 hover:border-zinc-300/80"
                >
                   <div className="flex items-center gap-1.5">
-                     <div className="text-[10px] font-semibold text-1">
+                     <div className="text-[10px] font-bold text-1">
                         Sections
                      </div>
                      <ChevronDown
@@ -240,7 +269,7 @@ export default function CollectionList() {
                            isSectionsOpen ? "rotate-180" : "",
                            "transform transition duration-300 text-1 ease-in-out",
                         )}
-                        size={12}
+                        size={14}
                      />
                   </div>
                </button>
@@ -249,46 +278,78 @@ export default function CollectionList() {
                      <div className="border-b border-color pb-0.5">
                         <fetcher.Form
                            ref={zoSections.ref}
-                           className="flex items-center justify-between"
+                           className="flex items-center gap-4"
                            method="post"
                         >
-                           <div className="flex items-center gap-3">
+                           <div className="flex items-center gap-3 pl-0.5 flex-grow">
                               <ListPlus
                                  className="text-1 flex-none"
                                  size={16}
                               />
                               <input
                                  required
-                                 placeholder="Section name..."
+                                 placeholder="Type a section name..."
                                  name={zoSections.fields.name()}
                                  type="text"
                                  className="w-full bg-transparent text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
                               />
+                              <input
+                                 value={collection?.id}
+                                 name={zoSections.fields.collectionId()}
+                                 type="hidden"
+                              />
+                              <SectionIdField zo={zoSections} />
+                              <Switch.Group>
+                                 <div className="flex items-center group">
+                                    <Switch.Label
+                                       className="flex-grow cursor-pointer dark:text-zinc-400 text-zinc-500  group-hover:underline 
+                                 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 text-xs w-16"
+                                    >
+                                       Hide Title
+                                    </Switch.Label>
+                                    <Switch as={Fragment} name="hideTitle">
+                                       {({ checked }) => (
+                                          <div className="dark:border-zinc-600/60 bg-white dark:bg-dark350 relative flex-none flex h-5 w-[36px] items-center rounded-full border">
+                                             <span className="sr-only">
+                                                Hide Title
+                                             </span>
+                                             <div
+                                                className={clsx(
+                                                   checked
+                                                      ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
+                                                      : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
+                                                   "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
+                                                )}
+                                             />
+                                          </div>
+                                       )}
+                                    </Switch>
+                                 </div>
+                              </Switch.Group>
                            </div>
-                           <input
-                              name={zoSections.fields.id()}
-                              type="text"
-                              className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
-                           />
                            <button
-                              className="flex items-center pt-1.5 flex-none gap-2"
+                              className="flex items-center flex-none gap-2 border border-color dark:hover:border-zinc-500 hover:border-zinc-200
+                              rounded-full py-1 dark:bg-zinc-700 dark:border-zinc-600 pl-3 pr-1.5 bg-zinc-100 border-zinc-300 shadow-sm shadow-1"
                               name="intent"
                               value="addSection"
                               type="submit"
                            >
-                              {addingUpdate ? (
-                                 <Loader2 size={16} className="animate-spin" />
-                              ) : (
-                                 <div className="flex group items-center gap-2">
-                                    <span className="text-1 group-hover:underline text-xs font-bold">
-                                       Add
-                                    </span>
+                              <div className="flex items-center gap-2">
+                                 <span className="text-1 text-xs font-bold">
+                                    Add
+                                 </span>
+                                 {addingSection ? (
+                                    <Loader2
+                                       size={14}
+                                       className="animate-spin text-zinc-400"
+                                    />
+                                 ) : (
                                     <PlusCircle
-                                       className="dark:text-zinc-500 text-zinc-400"
+                                       className="text-zinc-400"
                                        size={14}
                                     />
-                                 </div>
-                              )}
+                                 )}
+                              </div>
                            </button>
                         </fetcher.Form>
                      </div>
@@ -299,7 +360,7 @@ export default function CollectionList() {
                         collisionDetection={closestCenter}
                      >
                         <SortableContext
-                           items={sectionRows}
+                           items={sections}
                            strategy={verticalListSortingStrategy}
                         >
                            <div className="divide-y divide-color border-b border-color mb-4">
@@ -312,65 +373,60 @@ export default function CollectionList() {
                            </div>
                         </SortableContext>
                         <DragOverlay adjustScale={false}>
-                           {activeElement && (
-                              // <DragOverlayContent
-                              //    element={activeElement}
-                              //    renderElement={renderElement}
-                              // />
-                              <></>
+                           {activeSection && (
+                              <SortableSectionItem section={activeSection} />
                            )}
                         </DragOverlay>
                      </DndContext>
                   </>
                )}
+               {!collection?.customDatabase && (
+                  <fetcher.Form
+                     ref={zoEntry.ref}
+                     className="dark:bg-dark350 border focus-within:border-zinc-200 dark:focus-within:border-zinc-600 border-color-sub rounded-lg 
+                     shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
+                     method="post"
+                  >
+                     <input
+                        required
+                        placeholder={t("new.namePlaceholder") ?? undefined}
+                        name={zoEntry.fields.name()}
+                        type="text"
+                        className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                     />
+                     <input
+                        value={site?.id}
+                        name={zoEntry.fields.siteId()}
+                        type="hidden"
+                     />
+                     <input
+                        value={collection?.id}
+                        name={zoEntry.fields.collectionId()}
+                        type="hidden"
+                     />
+                     <button
+                        className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
+                     rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                        name="intent"
+                        value="addEntry"
+                        type="submit"
+                     >
+                        {addingUpdate ? (
+                           <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                           <>
+                              <Plus
+                                 className="text-zinc-400 dark:text-zinc-300"
+                                 size={14}
+                              />
+                              <span className="text-1 pr-0.5">Add</span>
+                           </>
+                        )}
+                     </button>
+                  </fetcher.Form>
+               )}
             </AdminOrStaffOrOwner>
             <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
-               <AdminOrStaffOrOwner>
-                  {!collection?.customDatabase && (
-                     <fetcher.Form
-                        ref={zoEntry.ref}
-                        className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
-                        method="post"
-                     >
-                        <input
-                           required
-                           placeholder={t("new.namePlaceholder") ?? undefined}
-                           name={zoEntry.fields.name()}
-                           type="text"
-                           className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                        />
-                        <input
-                           value={site?.id}
-                           name={zoEntry.fields.siteId()}
-                           type="hidden"
-                        />
-                        <input
-                           value={collection?.id}
-                           name={zoEntry.fields.collectionId()}
-                           type="hidden"
-                        />
-                        <button
-                           className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
-                           name="intent"
-                           value="addEntry"
-                           type="submit"
-                        >
-                           {addingUpdate ? (
-                              <Loader2 size={16} className="animate-spin" />
-                           ) : (
-                              <>
-                                 <Plus
-                                    className="text-zinc-400 dark:text-zinc-300"
-                                    size={14}
-                                 />
-                                 <span className="text-1 pr-0.5">Add</span>
-                              </>
-                           )}
-                        </button>
-                     </fetcher.Form>
-                  )}
-               </AdminOrStaffOrOwner>
                {entries.docs?.length > 0
                   ? entries.docs?.map((entry: Entry, int: number) => (
                        <Link
@@ -465,8 +521,10 @@ export const action: ActionFunction = async ({
    const { intent } = await zx.parseForm(request, {
       intent: z.enum([
          "addEntry",
+         "addSection",
          "collectionUpdateIcon",
          "collectionDeleteIcon",
+         "updateSectionOrder",
       ]),
    });
 
@@ -494,6 +552,86 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return json({
                error: "Something went wrong...unable to add entry.",
+            });
+         }
+      }
+      case "addSection": {
+         assertIsPost(request);
+         const { collectionId, id, name, hideTitle } = await zx.parseForm(
+            request,
+            SectionSchema,
+         );
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  sections: [
+                     { id, name, hideTitle },
+                     //@ts-ignore
+                     ...collectionData?.sections,
+                  ],
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
+            });
+         }
+      }
+      case "updateSectionOrder": {
+         assertIsPost(request);
+         const { overId, activeId, collectionId } = await zx.parseForm(
+            request,
+            {
+               collectionId: z.string(),
+               activeId: z.string(),
+               overId: z.string(),
+            },
+         );
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            const oldIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == activeId,
+            );
+
+            const newIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == overId,
+            );
+
+            const sortedArray = arrayMove(
+               //@ts-ignore
+               collectionData?.sections,
+               oldIndex,
+               newIndex,
+            );
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  sections: sortedArray,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
             });
          }
       }
