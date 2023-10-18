@@ -356,7 +356,7 @@ const fetchSite = async ({
                      sections {
                         id
                         name
-                        hideTitle
+                        showTitle
                      }
                      customDatabase
                      icon {

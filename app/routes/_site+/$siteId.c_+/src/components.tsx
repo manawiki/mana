@@ -41,7 +41,7 @@ const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 export type Section = {
    id: string;
    name?: string;
-   hideTitle?: boolean;
+   showTitle?: boolean;
 };
 
 export function EntryContentEmbed({
@@ -135,7 +135,7 @@ export function EntryContentEmbed({
                         </>
                      )}
                   </Popover>
-                  {title && !section?.hideTitle && <H2Default text={title} />}
+                  {title && !section?.showTitle && <H2Default text={title} />}
                   <ManaEditor
                      key={data?.id}
                      collectionSlug="contentEmbeds"
@@ -164,7 +164,7 @@ export function EntryContentEmbed({
             <>
                {hasContent && (
                   <>
-                     {title && !section?.hideTitle && (
+                     {title && !section?.showTitle && (
                         <H2Default text={title} />
                      )}
                      <EditorView data={data?.content} />
@@ -232,7 +232,7 @@ export function CollectionHeader() {
       : `/${site?.name}/c/${collection?.slug}`;
 
    return (
-      <div className="">
+      <div className="pb-5">
          <div className="flex items-center justify-between gap-2 pb-2">
             <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                {entryName ?? collection?.name}
@@ -246,7 +246,7 @@ export function CollectionHeader() {
                />
             </div>
          </div>
-         <section className="py-1 flex items-center border-y dark:border-dark400 border-zinc-100 mb-5">
+         <section className="py-1 flex items-center border-y dark:border-dark400 border-zinc-100">
             <Link
                to={`/${site?.slug}/collections`}
                className="flex items-center gap-2 group pr-3"
