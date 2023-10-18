@@ -357,23 +357,24 @@ export default function CollectionList() {
                            type="hidden"
                         />
                         <button
-                           className="shadow-1 inline-flex h-[30px] pl-3 pr-3.5 items-center justify-center gap-1.5 bg-white dark:bg-dark450
+                           className="shadow-1 inline-flex h-[30px] items-center justify-center gap-1.5 w-[78px] bg-white dark:bg-dark450
                      rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
                            name="intent"
                            value="addEntry"
                            type="submit"
                         >
                            {addingUpdate ? (
-                              <Loader2 size={16} className="animate-spin" />
+                              <Loader2
+                                 size={14}
+                                 className="animate-spin text-zinc-400 dark:text-zinc-300"
+                              />
                            ) : (
-                              <>
-                                 <Plus
-                                    className="text-zinc-400 dark:text-zinc-300"
-                                    size={14}
-                                 />
-                                 <span className="text-1 pr-0.5">Add</span>
-                              </>
+                              <Plus
+                                 className="text-zinc-400 dark:text-zinc-300"
+                                 size={14}
+                              />
                            )}
+                           <span className="text-1 pr-0.5">Add</span>
                         </button>
                      </fetcher.Form>
                   </div>
@@ -383,40 +384,37 @@ export default function CollectionList() {
                <div>Filter</div>
                <div>Sort</div>
             </section> */}
-            <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
-               {entries.docs?.length > 0
-                  ? entries.docs?.map((entry: Entry, int: number) => (
-                       <Link
-                          key={entry.id}
-                          to={entry.slug ?? entry.id}
-                          // prefetch="intent" Enabling this makes hover perform weird
-                          className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
-                       >
-                          <div
-                             className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
+            {entries.docs?.length > 0 ? (
+               <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+                  {entries.docs?.map((entry: Entry, int: number) => (
+                     <Link
+                        key={entry.id}
+                        to={entry.slug ?? entry.id}
+                        // prefetch="intent" Enabling this makes hover perform weird
+                        className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
+                     >
+                        <div
+                           className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
                                     overflow-hidden rounded-full border bg-3-sub shadow-sm"
-                          >
-                             {entry.icon?.url ? (
-                                <Image /* @ts-ignore */
-                                   url={entry.icon?.url}
-                                   options="aspect_ratio=1:1&height=80&width=80"
-                                   alt={entry.name ?? "Entry Icon"}
-                                   loading={int > 10 ? "lazy" : undefined}
-                                />
-                             ) : (
-                                <Component
-                                   className="text-1 mx-auto"
-                                   size={18}
-                                />
-                             )}
-                          </div>
-                          <span className="text-sm font-bold group-hover:underline">
-                             {entry.name}
-                          </span>
-                       </Link>
-                    ))
-                  : null}
-            </div>
+                        >
+                           {entry.icon?.url ? (
+                              <Image /* @ts-ignore */
+                                 url={entry.icon?.url}
+                                 options="aspect_ratio=1:1&height=80&width=80"
+                                 alt={entry.name ?? "Entry Icon"}
+                                 loading={int > 10 ? "lazy" : undefined}
+                              />
+                           ) : (
+                              <Component className="text-1 mx-auto" size={18} />
+                           )}
+                        </div>
+                        <span className="text-sm font-bold group-hover:underline">
+                           {entry.name}
+                        </span>
+                     </Link>
+                  ))}
+               </div>
+            ) : null}
          </section>
          {/* Pagination Section */}
          {totalPages > 1 && (
