@@ -221,9 +221,7 @@ export default function CollectionList() {
       () => collection?.sections?.map((element: any) => element.id) ?? [],
       [collection],
    );
-   console.log(sectionRows);
 
-   console.log(collection);
    return (
       <List>
          <section className="relative">
