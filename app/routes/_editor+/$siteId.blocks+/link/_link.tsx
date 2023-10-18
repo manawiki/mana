@@ -61,7 +61,7 @@ export async function loader({
                user,
             });
 
-            const collection = collectionData.docs[0];
+            const collection = collectionData?.docs[0];
 
             return {
                name: collection?.name,
@@ -134,7 +134,7 @@ export async function loader({
                overrideAccess: false,
             });
 
-            const entryData = coreEntryData.docs[0];
+            const entryData = coreEntryData?.docs[0];
 
             const entry = {
                name: entryData?.name,
