@@ -142,6 +142,8 @@ export const Collections: CollectionConfig = {
             {
                name: "id",
                type: "text",
+               required: true,
+               unique: true,
             },
             {
                name: "name",

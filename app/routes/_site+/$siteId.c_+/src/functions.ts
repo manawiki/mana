@@ -4,7 +4,7 @@ import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import { select } from "payload-query";
-import { plural, singular } from "pluralize";
+import { plural } from "pluralize";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -264,96 +264,54 @@ export async function getEntryFields({
 
    //Check if customDatabase is selected
    if (collection?.customDatabase) {
-      const formattedNameSingular = singular(toWords(collection?.slug, true));
       const formattedNamePlural = plural(toWords(collection?.slug, true));
 
-      //Document request if slug does exist
-      const entryQuerySlug = gql`
-               query ($entryId: String!) {
-                  entrySlugData: ${formattedNamePlural}(
-                        where: {
-                           slug: { equals: $entryId }
-                        }
-                     ) {
-                     docs {
-                        id
-                        slug
-                        name
-                        icon {
-                           id
-                           url
-                        }
-                     }
-                  }
-               }
-         `;
-
-      //Document request for id
-      const entryQueryId = gql`
-            query ($entryId: String!) {
-               entryIdData: ${formattedNameSingular}(id: $entryId) {
+      const entryQuery = gql`
+      query ($entryId: String!) {
+         entryData: ${formattedNamePlural}(
+               where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
+            ) {
+            docs {
+               id
+               slug
+               name
+               icon {
                   id
-                  name
-                  slug
-                  icon {
-                     id
-                     url
-                  }
+                  url
                }
             }
-         `;
+         }
+      }
+      `;
 
       const endpoint = `https://${collection.site.slug}-db.${
          collection.site?.domain ?? "mana.wiki"
       }/api/graphql`;
 
-      //Fetch to see if slug exists
-      const { entrySlugData }: { entrySlugData: PaginatedDocs<Entry> } =
-         await gqlRequest(endpoint, entryQuerySlug, {
+      const { entryData }: { entryData: PaginatedDocs<Entry> } =
+         await gqlRequest(endpoint, entryQuery, {
             entryId,
          });
 
-      const entrySlugDataResult = entrySlugData?.docs[0];
+      const entry = entryData?.docs[0];
 
-      //If anon and data exists, return entry data now
-      if (entrySlugDataResult) {
-         const result = {
-            ...entrySlugDataResult,
-            collectionName: collection.name,
-            siteId: collection?.site?.id,
-            sections: collection?.sections,
-         };
-         return { entry: result };
-      }
-      if (!entrySlugDataResult) {
-         const { entryIdData }: { entryIdData: EntryType } = await gqlRequest(
-            endpoint,
-            entryQueryId,
-            {
-               entryId,
-            },
+      //If there is a slug filled out, we should redirect (ex:redirects ID to slugs)
+      if (entry?.slug && entry?.slug != entryId)
+         throw redirect(
+            `/${collection?.site?.slug}/c/${collection.slug}/${entry?.slug}`,
+            301,
          );
-         if (!entryIdData) throw redirect("/404", 404);
 
-         //If there is a slug filled out, we should redirect to the slug page instead of the canonical
-         if (entryIdData?.slug)
-            throw redirect(
-               `/${collection?.site?.slug}/c/${collection.slug}/${entryIdData?.slug}`,
-               301,
-            );
-
-         //Otherwise the slug is undefined and we want to use the id
-         const result = {
-            ...entryIdData,
+      return {
+         entry: {
+            ...entry,
             collectionName: collection.name,
             siteId: collection?.site?.id,
             sections: collection?.sections,
-         };
-         return { entry: result };
-      }
+         },
+      };
    }
    //This is a core site, so we use the local api
-   //Fetch to see if slug exists
    const coreEntryData = await payload.find({
       collection: "entries",
       where: {
@@ -363,9 +321,18 @@ export async function getEntryFields({
          "collectionEntity.slug": {
             equals: collectionId,
          },
-         slug: {
-            equals: entryId,
-         },
+         or: [
+            {
+               slug: {
+                  equals: entryId,
+               },
+            },
+            {
+               id: {
+                  equals: entryId,
+               },
+            },
+         ],
       },
       user,
       overrideAccess: false,
@@ -373,40 +340,18 @@ export async function getEntryFields({
 
    const entryData = coreEntryData.docs[0];
 
-   //Slug exists, return entry
-   if (entryData) {
-      return {
-         entry: {
-            id: entryData?.id,
-            name: entryData?.name,
-            icon: { id: entryData.icon?.id, url: entryData?.icon?.url },
-            collectionName: collection?.name,
-            sections: collection?.sections,
-            siteId: collection?.site.id,
-         },
-      };
-   }
-
-   //Slug is undefined, attempt to fetch with ID
-   const coreEntryById = await payload.findByID({
-      collection: "entries",
-      id: entryId,
-   });
-
-   if (!coreEntryById) throw redirect("/404", 404);
-
    //If there is a slug filled out, we should redirect to the slug page instead as the canonical
-   if (coreEntryById?.slug)
+   if (entryData?.slug && entryData?.slug != entryId)
       throw redirect(
-         `/${collection?.site?.slug}/c/${collection?.slug}/${coreEntryById?.slug}`,
+         `/${collection?.site?.slug}/c/${collection?.slug}/${entryData?.slug}`,
          301,
       );
 
    return {
       entry: {
-         id: coreEntryById?.id,
-         name: coreEntryById?.name,
-         icon: { id: coreEntryById?.icon?.id, url: coreEntryById?.icon?.url },
+         id: entryData?.id,
+         name: entryData?.name,
+         icon: { id: entryData?.icon?.id, url: entryData?.icon?.url },
          collectionName: collection?.name,
          sections: collection?.sections,
          siteId: collection?.site.id,
@@ -432,7 +377,7 @@ export async function getAllEntryData({
    });
 
    const embeddedContent = await getEmbeddedContent({
-      id: entry.id,
+      id: entry.id as string,
       payload,
       params,
       request,
