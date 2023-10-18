@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
    type ActionFunction,
@@ -21,6 +21,8 @@ import {
    ChevronLeft,
    ChevronRight,
    Plus,
+   X,
+   ListPlus,
 } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Payload } from "payload";
@@ -55,6 +57,12 @@ const EntrySchema = z.object({
 const CollectionsAllSchema = z.object({
    q: z.string().optional(),
    page: z.coerce.number().optional(),
+});
+
+const SectionSchema = z.object({
+   name: z.string(),
+   id: z.string(),
+   hideTitle: z.string(),
 });
 
 export { customListMeta as meta };
@@ -123,85 +131,149 @@ export default function CollectionList() {
       }
    }, [addingUpdate, zoEntry.refObject]);
 
+   //Sections
+   const zoSections = useZorm("sections", SectionSchema);
+
+   const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
+
    return (
       <List>
-         <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+         <section className="relative">
             <AdminOrStaffOrOwner>
-               {!collection?.customDatabase && (
-                  <fetcher.Form
-                     ref={zoEntry.ref}
-                     className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
-                     method="post"
-                  >
-                     <input
-                        required
-                        placeholder={t("new.namePlaceholder") ?? undefined}
-                        name={zoEntry.fields.name()}
-                        type="text"
-                        className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                     />
-                     <input
-                        value={site?.id}
-                        name={zoEntry.fields.siteId()}
-                        type="hidden"
-                     />
-                     <input
-                        value={collection?.id}
-                        name={zoEntry.fields.collectionId()}
-                        type="hidden"
-                     />
-                     <button
-                        className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
-                        name="intent"
-                        value="addEntry"
-                        type="submit"
+               <button
+                  onClick={() => setSectionsOpen(!isSectionsOpen)}
+                  className="absolute flex items-center dark:hover:border-zinc-600 gap-2 h-6 justify-center -top-[33px] shadow-1 shadow-sm 
+               z-10 bg-2-sub px-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 right-0 hover:border-zinc-300"
+               >
+                  {isSectionsOpen ? (
+                     <X className="text-1" size={12} />
+                  ) : (
+                     <div className="text-[10px] font-semibold text-1">
+                        Sections
+                     </div>
+                  )}
+               </button>
+               {isSectionsOpen && (
+                  <div className="border-b border-color mb-4 pb-0.5">
+                     <fetcher.Form
+                        ref={zoSections.ref}
+                        className="flex items-center justify-between"
+                        method="post"
                      >
-                        {addingUpdate ? (
-                           <Loader2 size={16} className="animate-spin" />
-                        ) : (
-                           <>
-                              <Plus
-                                 className="text-zinc-400 dark:text-zinc-300"
-                                 size={14}
-                              />
-                              <span className="text-1 pr-0.5">Add</span>
-                           </>
-                        )}
-                     </button>
-                  </fetcher.Form>
+                        <input
+                           required
+                           placeholder={t("new.namePlaceholder") ?? undefined}
+                           name={zoSections.fields.name()}
+                           type="text"
+                           className="w-full bg-transparent text-sm h-10 p-0 focus:border-0 focus:ring-0 border-0"
+                        />
+                        <input
+                           name={zoSections.fields.id()}
+                           type="text"
+                           className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
+                        />
+                        <button
+                           className="flex items-center pt-1.5 flex-none gap-2"
+                           name="intent"
+                           value="addSection"
+                           type="submit"
+                        >
+                           {addingUpdate ? (
+                              <Loader2 size={16} className="animate-spin" />
+                           ) : (
+                              <>
+                                 <span className="text-1 text-xs font-semibold">
+                                    Add Section
+                                 </span>
+                                 <ListPlus className="text-1" size={16} />
+                              </>
+                           )}
+                        </button>
+                     </fetcher.Form>
+                  </div>
                )}
             </AdminOrStaffOrOwner>
-            {entries.docs?.length > 0
-               ? entries.docs?.map((entry: Entry, int: number) => (
-                    <Link
-                       key={entry.id}
-                       to={entry.slug ?? entry.id}
-                       // prefetch="intent" Enabling this makes hover perform weird
-                       className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
-                    >
-                       <div
-                          className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
-                                    overflow-hidden rounded-full border bg-3-sub shadow-sm"
+            <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+               <AdminOrStaffOrOwner>
+                  {!collection?.customDatabase && (
+                     <fetcher.Form
+                        ref={zoEntry.ref}
+                        className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
+                        method="post"
+                     >
+                        <input
+                           required
+                           placeholder={t("new.namePlaceholder") ?? undefined}
+                           name={zoEntry.fields.name()}
+                           type="text"
+                           className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                        />
+                        <input
+                           value={site?.id}
+                           name={zoEntry.fields.siteId()}
+                           type="hidden"
+                        />
+                        <input
+                           value={collection?.id}
+                           name={zoEntry.fields.collectionId()}
+                           type="hidden"
+                        />
+                        <button
+                           className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
+                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                           name="intent"
+                           value="addEntry"
+                           type="submit"
+                        >
+                           {addingUpdate ? (
+                              <Loader2 size={16} className="animate-spin" />
+                           ) : (
+                              <>
+                                 <Plus
+                                    className="text-zinc-400 dark:text-zinc-300"
+                                    size={14}
+                                 />
+                                 <span className="text-1 pr-0.5">Add</span>
+                              </>
+                           )}
+                        </button>
+                     </fetcher.Form>
+                  )}
+               </AdminOrStaffOrOwner>
+               {entries.docs?.length > 0
+                  ? entries.docs?.map((entry: Entry, int: number) => (
+                       <Link
+                          key={entry.id}
+                          to={entry.slug ?? entry.id}
+                          // prefetch="intent" Enabling this makes hover perform weird
+                          className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
                        >
-                          {entry.icon?.url ? (
-                             <Image /* @ts-ignore */
-                                url={entry.icon?.url}
-                                options="aspect_ratio=1:1&height=80&width=80"
-                                alt={entry.name ?? "Entry Icon"}
-                                loading={int > 10 ? "lazy" : undefined}
-                             />
-                          ) : (
-                             <Component className="text-1 mx-auto" size={18} />
-                          )}
-                       </div>
-                       <span className="text-sm font-bold group-hover:underline">
-                          {entry.name}
-                       </span>
-                    </Link>
-                 ))
-               : null}
-         </div>
+                          <div
+                             className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
+                                    overflow-hidden rounded-full border bg-3-sub shadow-sm"
+                          >
+                             {entry.icon?.url ? (
+                                <Image /* @ts-ignore */
+                                   url={entry.icon?.url}
+                                   options="aspect_ratio=1:1&height=80&width=80"
+                                   alt={entry.name ?? "Entry Icon"}
+                                   loading={int > 10 ? "lazy" : undefined}
+                                />
+                             ) : (
+                                <Component
+                                   className="text-1 mx-auto"
+                                   size={18}
+                                />
+                             )}
+                          </div>
+                          <span className="text-sm font-bold group-hover:underline">
+                             {entry.name}
+                          </span>
+                       </Link>
+                    ))
+                  : null}
+            </div>
+         </section>
          {/* Pagination Section */}
          {totalPages > 1 && (
             <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">

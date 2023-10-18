@@ -225,9 +225,7 @@ export const ColumnThree = ({
                   </div>
                </div>
             </section>
-            <div>
-               <Outlet />
-            </div>
+            <Outlet />
          </section>
       </>
    );

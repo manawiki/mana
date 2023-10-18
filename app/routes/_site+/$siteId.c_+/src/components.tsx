@@ -12,7 +12,14 @@ import {
    Link,
 } from "@remix-run/react";
 import clsx from "clsx";
-import { Component, Database, MoreHorizontal, X } from "lucide-react";
+import {
+   ChevronRight,
+   Component,
+   Database,
+   MoreHorizontal,
+   Slash,
+   X,
+} from "lucide-react";
 import { lazily } from "react-lazily";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
@@ -170,7 +177,7 @@ export function EntryContentEmbed({
 }
 export function Entry({ children }: { children: ReactNode }) {
    return (
-      <div className="mx-auto max-w-[728px] max-laptop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-12 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
          {children}
       </div>
@@ -179,7 +186,7 @@ export function Entry({ children }: { children: ReactNode }) {
 
 export function List({ children }: { children: ReactNode }) {
    return (
-      <div className="mx-auto max-w-[728px] max-desktop:pt-14 max-tablet:px-3 pb-5 laptop:pb-14">
+      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-12 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
          {children}
       </div>
@@ -225,12 +232,12 @@ export function CollectionHeader() {
       : `/${site?.name}/c/${collection?.slug}`;
 
    return (
-      <div className="sticky top-[115px] desktop:top-[60px] bg-3 z-30 -mx-3 px-3 desktop:-mx-0.5 desktop:px-0.5 max-laptop:pt-5 desktop:pt-12">
+      <div className="">
          <div className="flex items-center justify-between gap-2 pb-2">
             <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                {entryName ?? collection?.name}
             </h1>
-            <div className="flex-none group relative -mr-0.5 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-8 flex h-16 w-16 rounded-full overflow-hidden items-center">
+            <div className="flex-none group relative -mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
                <CircleImageUploader
                   image={icon}
                   actionPath={path}
@@ -239,21 +246,24 @@ export function CollectionHeader() {
                />
             </div>
          </div>
-         <section className="py-1 flex items-center border-y dark:border-dark400 border-zinc-100 mb-4">
+         <section className="py-1 flex items-center border-y dark:border-dark400 border-zinc-100 mb-5">
             <Link
                to={`/${site?.slug}/collections`}
-               className="flex items-center gap-2 group pr-4"
+               className="flex items-center gap-2 group pr-3"
             >
                <Database
                   className="hover:text-zinc-500 dark:hover:text-zinc-400 text-zinc-400 dark:text-zinc-500"
                   size={16}
                />
             </Link>
-            <span className="text-zinc-200 text-lg dark:text-zinc-700">/</span>
+            <Slash
+               size={16}
+               className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
+            />
             <Menu as="div" className="relative">
                {({ open }) => (
                   <>
-                     <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-2 pl-2 pr-1.5 py-2 rounded-lg">
+                     <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-2 px-1 py-2 rounded-lg">
                         <span className="font-bold text-1 text-xs">
                            {collection?.name}
                         </span>
@@ -278,7 +288,7 @@ export function CollectionHeader() {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                      >
-                        <Menu.Items className="absolute left-0 mt-0.5 max-w-sm min-w-[140px] z-20 w-full">
+                        <Menu.Items className="absolute left-0 mt-0.5 min-w-[160px] max-w-[240px] z-20 w-full">
                            <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
                               {site?.collections?.map((row) => (
                                  <Menu.Item key={row.slug}>
@@ -308,7 +318,7 @@ export function CollectionHeader() {
                                              />
                                           )}
                                        </span>
-                                       <span className="text-xs font-semibold text-1">
+                                       <span className="text-xs font-semibold text-1 flex-none">
                                           {row.name}
                                        </span>
                                     </NavLink>
@@ -320,22 +330,23 @@ export function CollectionHeader() {
                   </>
                )}
             </Menu>
-            <span className="text-zinc-200 text-lg dark:text-zinc-700">/</span>
+            <Slash
+               size={16}
+               className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
+            />
             <Link
                to={`/${site?.slug}/c/${collection?.slug}`}
                className={clsx(
                   !entryName ? "underline" : "",
-                  "px-4 font-bold text-1 text-xs flex items-center gap-2 hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2",
+                  "pl-4 pr-3 font-bold text-1 text-xs flex items-center gap-2 hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2",
                )}
             >
                List
             </Link>
             {isEntry ? (
                <>
-                  <span className="text-zinc-200 text-lg dark:text-zinc-700">
-                     /
-                  </span>
-                  <span className="font-bold pl-4 text-1 underline text-xs flex items-center gap-2 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2">
+                  <ChevronRight className="text-1" size={12} />
+                  <span className="font-bold pl-3 text-1 underline text-xs flex items-center gap-2 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2">
                      Entry
                   </span>
                </>

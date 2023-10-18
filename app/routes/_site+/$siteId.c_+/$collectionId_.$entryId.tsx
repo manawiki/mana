@@ -15,7 +15,7 @@ import {
    uploadImage,
 } from "~/utils";
 
-import { CollectionHeader, EntryContentEmbed } from "./src/components";
+import { Entry, EntryContentEmbed } from "./src/components";
 import { getAllEntryData } from "./src/functions";
 
 export async function loader({
@@ -54,8 +54,7 @@ export default function CollectionEntryWiki() {
    const { entry } = useLoaderData<typeof loader>();
 
    return (
-      <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 max-desktop:pt-14">
-         <CollectionHeader />
+      <Entry>
          {entry.sections?.map((row) => (
             <div key={row?.id}>
                <EntryContentEmbed
@@ -65,7 +64,7 @@ export default function CollectionEntryWiki() {
                />
             </div>
          ))}
-      </div>
+      </Entry>
    );
 }
 
