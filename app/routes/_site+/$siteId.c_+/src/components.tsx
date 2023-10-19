@@ -263,7 +263,7 @@ export function CollectionHeader() {
             <Menu as="div" className="relative">
                {({ open }) => (
                   <>
-                     <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-2 px-1 py-2 rounded-lg">
+                     <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-1 pl-2 pr-1.5 py-2 rounded-lg">
                         <span className="font-bold text-1 text-xs">
                            {collection?.name}
                         </span>
