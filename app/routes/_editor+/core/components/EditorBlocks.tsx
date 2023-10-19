@@ -3,6 +3,7 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
+import { BlockCodeBlock } from "../../$siteId.blocks+/codeblock";
 import {
    BlockEventItem,
    BlockEvents,
@@ -73,6 +74,16 @@ export function EditorBlocks({
             <p className="mb-3" {...attributes}>
                {children}
             </p>
+         );
+      }
+      case BlockType.CodeBlock: {
+         return (
+            <BlockCodeBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
          );
       }
       case BlockType.H2: {
@@ -180,7 +191,7 @@ export function EditorBlocks({
          return (
             <div {...attributes} contentEditable={false}>
                <BlockImage element={element} />
-               <div style={{ display: "none" }}>{children}</div>
+               <div className="hidden">{children}</div>
             </div>
          );
       }

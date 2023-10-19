@@ -8,3 +8,4 @@ export * from "./swr-fetchers";
 export * from "./to-words";
 export * from "./use-debounce";
 export { gqlEndpoint } from "./fetchers";
+export { delay } from "./delay";
