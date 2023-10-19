@@ -28,7 +28,7 @@ export function BlockCodeBlock({
 
    const path = ReactEditor.findPath(editor, element);
 
-   const [codeBlockValue, setCodeBlockValue] = useState(element?.value);
+   const [codeBlockValue, setCodeBlockValue] = useState(element?.value ?? "");
 
    const [copySuccess, setCopySuccess] = useState(<Copy size={14} />);
 
