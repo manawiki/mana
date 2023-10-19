@@ -29,23 +29,6 @@ export type EntryAllData = EntryType & {
 };
 
 //Used for custom entry pages
-export const meta: MetaFunction = ({
-   matches,
-   data,
-}: {
-   matches: any;
-   data: any;
-}) => {
-   const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site?.name;
-   return [
-      {
-         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
-      },
-   ];
-};
-
 export const customEntryMeta: MetaFunction = ({
    matches,
    data,
@@ -201,30 +184,6 @@ export async function getEmbeddedContent({
       content: item.content,
       sectionId: item.sectionId,
    }));
-}
-export async function getCustomEntryData({
-   payload,
-   params,
-   request,
-   depth = 2,
-   entryId,
-}: {
-   payload: Payload;
-   params: Params;
-   request: any;
-   depth: number;
-   entryId: string;
-}) {
-   const url = new URL(request.url).pathname;
-   const collectionId = url.split("/")[3];
-
-   const { siteId } = zx.parseParams(params, {
-      siteId: z.string(),
-   });
-
-   return fetchWithCache(
-      `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`,
-   );
 }
 
 export async function getEntryFields({
@@ -415,14 +374,13 @@ export async function fetchEntry({
       entry.collectionId
    }/${entry.id}?depth=${rest?.depth ?? 2}`;
 
-   console.log(restPath);
    const GQLorREST = gql?.query
-      ? await gqlRequest(gqlPath, gql?.query, {
+      ? gqlRequest(gqlPath, gql?.query, {
            entryId: entry.id,
            ...gql?.variables,
         })
       : rest?.depth
-      ? await fetchWithCache(restPath)
+      ? fetchWithCache(restPath)
       : undefined;
 
    const [data, embeddedContent] = await Promise.all([
