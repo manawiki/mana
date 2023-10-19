@@ -3,7 +3,6 @@ import { useState } from "react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import type { Enemy } from "payload/generated-custom-types";
 import { AdditionalData } from "~/_custom/components/enemies/AdditionalData";
 import { Drops } from "~/_custom/components/enemies/Drops";
 import { Resistances } from "~/_custom/components/enemies/Resistances";
@@ -13,9 +12,8 @@ import { Stats } from "~/_custom/components/enemies/Stats";
 import { H2Default } from "~/components/H2";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
-   getAllEntryData,
-   getCustomEntryData,
    customEntryMeta,
+   fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 export { customEntryMeta as meta };
 
@@ -24,51 +22,21 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
       user,
+      rest: {
+         depth: 3,
+      },
    });
 
-   const entryDefault = (await getCustomEntryData({
-      payload,
-      params,
-      request,
-      depth: 3,
-      entryId: entry.id,
-   })) as Enemy;
-
-   //Feel free to query for more data here
-
-   // ======================
-   // Pull Skill Tree data for character
-   // ======================
-   // const url = new URL(request.url).pathname;
-   // const cid = url.split("/")[4];
-
-   // const skillTreeRaw = await payload.find({
-   //    // @ts-ignore
-   //    collection: `skillTree-lKJ16E5IhH`,
-   //    where: {
-   //       character: {
-   //          equals: "character-" + cid,
-   //       },
-   //    },
-   //    depth: 3,
-   //    limit: 20,
-   // });
-
-   // const skillTreeData = skillTreeRaw.docs;
-
-   // ======================
-   // ======================
-
-   return json({ entryDefault });
+   return json({ entry });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault } = useLoaderData<typeof loader>();
+   const { entry } = useLoaderData<typeof loader>();
 
    const [version, setVersion] = useState(0);
 
@@ -76,29 +44,29 @@ export default function CharacterEntry() {
       <Entry>
          {/* Selector for Enemy Version */}
          <Selector
-            pageData={entryDefault}
+            pageData={entry.data}
             version={version}
             setVersion={setVersion}
          />
 
          {/* Image */}
-         <Stats pageData={entryDefault} version={version} />
+         <Stats pageData={entry.data} version={version} />
 
          {/* Skill List */}
          <H2Default text="Skills" />
-         <Skills pageData={entryDefault} version={version} />
+         <Skills pageData={entry.data} version={version} />
 
          {/* Resistances */}
          <H2Default text="Resistances" />
-         <Resistances pageData={entryDefault} version={version} />
+         <Resistances pageData={entry.data} version={version} />
 
          {/* Drop Rewards */}
          <H2Default text="Drops" />
-         <Drops pageData={entryDefault} version={version} />
+         <Drops pageData={entry.data} version={version} />
 
          {/* Additional Data */}
          <H2Default text="Additional Data" />
-         <AdditionalData pageData={entryDefault} version={version} />
+         <AdditionalData pageData={entry.data} version={version} />
       </Entry>
    );
 }

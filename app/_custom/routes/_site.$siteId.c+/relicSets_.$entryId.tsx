@@ -1,18 +1,15 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type { RelicSet, Relic } from "payload/generated-custom-types";
+import type { Relic } from "payload/generated-custom-types";
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
 import { H2Default } from "~/components";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
-   getAllEntryData,
-   getCustomEntryData,
    customEntryMeta,
+   fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -23,52 +20,44 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
       user,
+      rest: {
+         depth: 2,
+      },
    });
-
-   const entryDefault = (await getCustomEntryData({
-      payload,
-      params,
-      request,
-      depth: 3,
-      entryId: entry.id,
-   })) as RelicSet;
 
    //Feel free to query for more data here
 
    // ======================
    // Pull Skill Tree data for character
    // ======================
-   const { entryId } = zx.parseParams(params, {
-      entryId: z.string(),
-   });
 
-   const url = `https://${settings.siteId}-db.${settings.domain}/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entryId}`;
+   const url = `https://${settings.siteId}-db.${settings.domain}/api/relics?limit=50&depth=4&where[relicset_id][equals]=${entry.id}`;
    const relicRaw = await fetchWithCache(url);
    const relicData = relicRaw.docs as Relic[];
 
-   return json({ entryDefault, relicData, entry });
+   return json({ entry, relicData });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault } = useLoaderData<typeof loader>();
+   const { entry } = useLoaderData<typeof loader>();
    const { relicData } = useLoaderData<typeof loader>();
 
    return (
       <Entry>
          <H2Default text="Set Effect" />
-         <SetEffect pageData={entryDefault} />
+         <SetEffect pageData={entry.data} />
          {/* Relics in set should have a clickable information pop up (with first selected by default) */}
          {/* Need to collapse all of the same relic (which can have to 5 entries for each rarity) */}
          {/* Tabs contain info: */}
          {/* - Name + Image */}
          {/* - Possible Main and Sub stat distributions per level */}
          {/* - Additional Lore / etc. for that relic */}
-         <RelicsInSet pageData={entryDefault} relicData={relicData} />
+         <RelicsInSet pageData={entry.data} relicData={relicData} />
 
          {/* Relic set's flavor text */}
       </Entry>

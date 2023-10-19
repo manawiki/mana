@@ -6,12 +6,13 @@ import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
-import { settings } from "mana-config";
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
 import { List } from "~/routes/_site+/$siteId.c_+/src/components";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   customListMeta,
+   fetchList,
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { customListMeta as meta };
 
@@ -20,25 +21,15 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: QUERY_RECIPES,
-         }),
+   const { list } = await fetchList({
+      params,
+      gql: {
+         query: QUERY_RECIPES,
       },
-   );
+   });
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
-
-   return json({ recipes: data.recipes.docs });
+   //@ts-ignore
+   return json({ recipes: list.data.recipes.docs });
 }
 
 export default function HomePage() {

@@ -3,79 +3,28 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-// import { characters } from "./characters";
+import { gql } from "graphql-request";
 import { Search, SortDesc } from "lucide-react";
 
-import { settings } from "mana-config";
 import { Image } from "~/components";
 import { List } from "~/routes/_site+/$siteId.c_+/src/components";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   customListMeta,
+   fetchList,
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { customListMeta as meta };
 
-export async function loader({
-   context: { payload },
-   params,
-   request,
-}: LoaderFunctionArgs) {
-   const CHARACTERS = `
-   query Characters {
-      Characters(limit: 100, sort: "name") {
-        docs {
-          id
-          name
-          slug
-          element {
-            id
-            icon {
-              url
-            }
-          }
-          path {
-            id
-            icon {
-              url
-            }
-          }
-          rarity {
-            id
-            display_number
-            icon {
-              url
-            }
-          }
-          icon {
-            url
-          }
-          camp
-        }
-      }
-    }
-   `;
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql?characters`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: CHARACTERS,
-         }),
+export async function loader({ params }: LoaderFunctionArgs) {
+   const { list } = await fetchList({
+      params,
+      gql: {
+         query: CHARACTERS,
       },
-   );
+   });
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
-   return json(
-      { characters: data.Characters.docs },
-      {
-         headers: { "Cache-Control": "public, s-maxage=60" },
-      },
-   );
+   //@ts-ignore
+   return json({ characters: list?.data?.Characters?.docs });
 }
 
 export default function CharactersList() {
@@ -475,3 +424,38 @@ const CharacterList = ({ chars }: any) => {
 
 //    return output;
 // }
+
+const CHARACTERS = gql`
+   query Characters {
+      Characters(limit: 100, sort: "name") {
+         docs {
+            id
+            name
+            slug
+            element {
+               id
+               icon {
+                  url
+               }
+            }
+            path {
+               id
+               icon {
+                  url
+               }
+            }
+            rarity {
+               id
+               display_number
+               icon {
+                  url
+               }
+            }
+            icon {
+               url
+            }
+            camp
+         }
+      }
+   }
+`;

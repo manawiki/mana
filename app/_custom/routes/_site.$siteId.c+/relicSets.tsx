@@ -3,13 +3,15 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { gql } from "graphql-request";
 import { Search, SortDesc } from "lucide-react";
 
-import { settings } from "mana-config";
 import { Image } from "~/components";
 import { List } from "~/routes/_site+/$siteId.c_+/src/components";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   customListMeta,
+   fetchList,
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { customListMeta as meta };
 
@@ -18,25 +20,15 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: QUERY_RELIC_SETS,
-         }),
+   const { list } = await fetchList({
+      params,
+      gql: {
+         query: QUERY_RELIC_SETS,
       },
-   );
+   });
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
-
-   return json({ relicSets: data.relicSets.docs });
+   //@ts-ignore
+   return json({ relicSets: list.data.relicSets.docs });
 }
 
 export default function HomePage() {
@@ -272,22 +264,22 @@ const EntryWithDescription = ({ char }: any) => {
    );
 };
 
-const QUERY_RELIC_SETS = `
-query {
-   relicSets: RelicSets(limit: 100) {
-     docs {
-       relicset_id
-       name
-       id
-       slug
-       icon {
-         url
-       }
-       set_effect {
-         req_no
-         description
-       }
-     }
+const QUERY_RELIC_SETS = gql`
+   query {
+      relicSets: RelicSets(limit: 100) {
+         docs {
+            relicset_id
+            name
+            id
+            slug
+            icon {
+               url
+            }
+            set_effect {
+               req_no
+               description
+            }
+         }
+      }
    }
- }
 `;

@@ -3,12 +3,14 @@ import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import { gql } from "graphql-request";
 
-import { settings } from "mana-config";
 import { Image } from "~/components";
 import { List } from "~/routes/_site+/$siteId.c_+/src/components";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   customListMeta,
+   fetchList,
+} from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { customListMeta as meta };
 
@@ -17,71 +19,24 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const BANNERS = `
-   query Banners {
-      Banners(limit: 100) {
-        docs {
-          name
-          banner_id
-          icon {
-            url
-          }
-          start_date
-          end_date
-          featured_characters {
-            id
-            name
-            slug
-            icon {
-              url
-            }
-            rarity {
-              display_number
-            }
-          }
-          featured_light_cones {
-            id
-            name
-            slug
-            icon {
-              url
-            }
-            rarity {
-              display_number
-            }
-          }
-        }
-      }
-    }
-   `;
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql?banners`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: BANNERS,
-         }),
+   const { list } = await fetchList({
+      params,
+      gql: {
+         query: BANNERS,
       },
-   );
-
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
+   });
 
    // Sort banners by banner_id
-   data.Banners.docs.sort((a: any, b: any) =>
+   //@ts-ignore
+   list?.data.Banners.docs.sort((a: any, b: any) =>
       parseInt(a.banner_id) > parseInt(b.banner_id)
          ? -1
          : parseInt(b.banner_id) > parseInt(a.banner_id)
          ? 1
          : 0,
    );
-
-   return json({ banners: data.Banners.docs });
+   //@ts-ignore
+   return json({ banners: list.data.Banners.docs });
 }
 
 export default function HomePage() {
@@ -207,3 +162,41 @@ const LightConeFrame = ({ char }: any) => {
       </Link>
    );
 };
+
+const BANNERS = gql`
+   query Banners {
+      Banners(limit: 100) {
+         docs {
+            name
+            banner_id
+            icon {
+               url
+            }
+            start_date
+            end_date
+            featured_characters {
+               id
+               name
+               slug
+               icon {
+                  url
+               }
+               rarity {
+                  display_number
+               }
+            }
+            featured_light_cones {
+               id
+               name
+               slug
+               icon {
+                  url
+               }
+               rarity {
+                  display_number
+               }
+            }
+         }
+      }
+   }
+`;

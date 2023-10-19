@@ -3,20 +3,14 @@ import { useState, useEffect } from "react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Check } from "lucide-react";
-import { z } from "zod";
-import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type {
-   AchievementSery,
-   Achievement as AchievementType,
-} from "payload/generated-custom-types";
+import type { Achievement as AchievementType } from "payload/generated-custom-types";
 import { Image } from "~/components";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    customEntryMeta,
-   getAllEntryData,
-   getCustomEntryData,
+   fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -27,62 +21,34 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
       user,
    });
-   const entryDefault = (await getCustomEntryData({
-      payload,
-      params,
-      request,
-      depth: 3,
-      entryId: entry.id,
-   })) as AchievementSery;
-
-   //Feel free to query for more data here
 
    // ======================
    // Pull Achievement list for this Series
    // ======================
-   const { entryId } = zx.parseParams(params, {
-      entryId: z.string(),
-   });
 
-   const url = `https://${settings.siteId}-db.${settings.domain}/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entryId}`;
+   const url = `https://${entry.siteSlug}-db.${settings.domain}/api/achievements?limit=100&depth=3&where[achievement_series][equals]=${entry?.id}`;
    const achievementRaw = await fetchWithCache(url);
    const achievementData = achievementRaw.docs as AchievementType[];
 
    // Get the image URL reference for the Stellar Jade icon lol.
-   const sjurl = `https://${settings.siteId}-db.${settings.domain}/api/images/ItemIcon_900001`;
+   const sjurl = `https://${entry.siteSlug}-db.${settings.domain}/api/images/ItemIcon_900001`;
    const sjRaw = await fetchWithCache(sjurl);
    const stellarJadeURL = sjRaw?.url;
 
-   // ======================
-   // ======================
-
-   return json({ entry, entryDefault, achievementData, stellarJadeURL });
+   return json({ entry, achievementData, stellarJadeURL });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, achievementData, stellarJadeURL } =
-      useLoaderData<typeof loader>();
+   const { achievementData, stellarJadeURL } = useLoaderData<typeof loader>();
 
    return (
       <Entry>
-         <Header pageData={entryDefault} />
-         <Achievements
-            pageData={achievementData}
-            stellarJadeURL={stellarJadeURL}
-         />
-      </Entry>
-   );
-}
-
-function Header({ pageData }: { pageData: Achievement }) {
-   return (
-      <>
          <div className="space-y-1 pb-3 pl-1">
             <div className="font-bold">
                Track Achievement Progress using the Checkboxes below!
@@ -91,7 +57,11 @@ function Header({ pageData }: { pageData: Achievement }) {
                Requires LocalStorage to be enabled
             </div>
          </div>
-      </>
+         <Achievements
+            pageData={achievementData}
+            stellarJadeURL={stellarJadeURL}
+         />
+      </Entry>
    );
 }
 

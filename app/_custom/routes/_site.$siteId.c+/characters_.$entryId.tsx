@@ -1,11 +1,6 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { settings } from "mana-config";
-import type {
-   Character,
-   SkillTree as SkillTreeType,
-} from "payload/generated-custom-types";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -25,9 +20,8 @@ import {
 } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    customEntryMeta,
-   getAllEntryData,
+   fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
-import { fetchWithCache } from "~/utils/cache.server";
 
 export { customEntryMeta as meta };
 
@@ -36,42 +30,23 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
       user,
+      gql: {
+         query: CharacterQuery,
+      },
    });
 
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: CharacterQuery,
-            variables: {
-               charId: entry.id,
-            },
-         }),
-      },
-   );
-
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      // throw new Error();
-   }
    return json({
       entry,
-      entryDefault: data.character as Character,
-      skillTreeData: data.skillTree.docs as SkillTreeType[],
    });
 }
 
 export default function CharacterEntry() {
-   const { entryDefault, skillTreeData } = useLoaderData<typeof loader>();
+   const { entry } = useLoaderData<typeof loader>();
 
    const links = [
       { name: "Traces", link: "traces" },
@@ -88,7 +63,7 @@ export default function CharacterEntry() {
          <Navigation links={links} />
 
          {/* Character Image with Element / Path */}
-         <CharacterStatBlock pageData={entryDefault} />
+         <CharacterStatBlock pageData={entry.data.character} />
          <EntryContentEmbed title="Teams" sectionId="teams" />
          <EntryContentEmbed
             title="Recommended Light Cones"
@@ -97,54 +72,60 @@ export default function CharacterEntry() {
          <div id="traces"></div>
          {/* Traces / Skills */}
          <H2Default text="Traces" />
-         <Traces pageData={entryDefault} skillTreeData={skillTreeData} />
+         <Traces
+            pageData={entry.data.character}
+            skillTreeData={entry.data.skillTree.docs}
+         />
 
          <div id="tree"></div>
          {/* Skill Tree */}
          <H2Default text="Tree" />
-         <SkillTree pageData={entryDefault} skillTreeData={skillTreeData} />
+         <SkillTree
+            pageData={entry.data.character}
+            skillTreeData={entry.data.skillTree.docs}
+         />
 
          <div id="eidolons"></div>
          {/* Eidolons */}
          <H2Default text="Eidolons" />
-         <Eidolons pageData={entryDefault} />
+         <Eidolons pageData={entry.data.character} />
 
          <div id="promotion"></div>
          {/* Promotion Costs */}
          <H2Default text="Promotion Cost" />
-         <PromotionCost pageData={entryDefault} />
+         <PromotionCost pageData={entry.data.character} />
 
          {/* Total Materials */}
          <H2Default text="Total Material Cost" />
          <TotalMaterialCost
-            pageData={entryDefault}
-            skillTreeData={skillTreeData}
+            pageData={entry.data.character}
+            skillTreeData={entry.data.skillTree.docs}
          />
 
          <div id="gallery"></div>
          {/* Image Gallery Section showing all relevant images */}
          <H2Default text="Image Gallery" />
-         <ImageGallery pageData={entryDefault} />
+         <ImageGallery pageData={entry.data.character} />
 
          {/* Video Section */}
-         <Videos pageData={entryDefault} />
+         <Videos pageData={entry.data.character} />
 
          <div id="profile"></div>
          {/* Profile Data/CV */}
-         <Profile pageData={entryDefault} />
+         <Profile pageData={entry.data.character} />
 
          {/* Story Section with drop downs */}
-         <Story pageData={entryDefault} />
+         <Story pageData={entry.data.character} />
 
          {/* Voice Line Section */}
-         <VoiceLines pageData={entryDefault} />
+         <VoiceLines pageData={entry.data.character} />
       </Entry>
    );
 }
 
 const CharacterQuery = `
-query ($charId: String!) {
- character: Character(id: $charId) {
+query ($entryId: String!) {
+ character: Character(id: $entryId) {
    id
    name
    image_draw {
@@ -258,7 +239,7 @@ query ($charId: String!) {
    }
  }
 
- skillTree: SkillTrees(limit: 1000, where: { character: { equals: $charId } }) {
+ skillTree: SkillTrees(limit: 1000, where: { character: { equals: $entryId } }) {
    docs {
      anchor
      icon {

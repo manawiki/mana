@@ -7,8 +7,7 @@ import { H2Default } from "~/components/H2";
 import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
 import {
    customEntryMeta,
-   getAllEntryData,
-   getCustomEntryData,
+   fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/src/functions";
 
 export { customEntryMeta as meta };
@@ -18,64 +17,33 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
       user,
+      rest: {
+         depth: 3,
+      },
    });
-
-   const entryDefault = (await getCustomEntryData({
-      payload,
-      params,
-      request,
-      depth: 3,
-      entryId: entry.id,
-   })) as Blessing;
 
    // Remove html tags from entry name
    // `<i><unbreak>12</unbreak> Monkeys and Angry Men</i>` to `12 Monkeys and Angry Men`
-   if (entryDefault?.name)
-      entryDefault.name = entryDefault?.name?.replace(/(<([^>]+)>)/gi, "");
+   if (entry?.name) entry.name = entry?.name?.replace(/(<([^>]+)>)/gi, "");
 
-   //Feel free to query for more data here
-
-   // ======================
-   // Pull Skill Tree data for character
-   // ======================
-   // const url = new URL(request.url).pathname;
-   // const cid = url.split("/")[4];
-
-   // const skillTreeRaw = await payload.find({
-   //    // @ts-ignore
-   //    collection: `skillTree-lKJ16E5IhH`,
-   //    where: {
-   //       character: {
-   //          equals: "character-" + cid,
-   //       },
-   //    },
-   //    depth: 3,
-   //    limit: 20,
-   // });
-
-   // const skillTreeData = skillTreeRaw.docs;
-
-   // ======================
-   // ======================
-
-   return json({ entryDefault, entry });
+   return json({ entry });
 }
 
 export default function BlessingEntry() {
-   const { entryDefault } = useLoaderData<typeof loader>();
+   const { entry } = useLoaderData<typeof loader>();
 
    return (
       <Entry>
          {/* Image */}
-         <Header pageData={entryDefault} />
+         <Header pageData={entry.data} />
 
          {/* Effect List - Various Levels */}
-         <Effects pageData={entryDefault} />
+         <Effects pageData={entry.data} />
       </Entry>
    );
 }

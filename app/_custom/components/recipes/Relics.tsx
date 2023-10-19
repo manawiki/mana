@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 import type { Recipe } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2, H2Default } from "~/components/H2";
+import { H2Default } from "~/components/H2";
 
 export const Relics = ({ pageData }: { pageData: Recipe }) => {
    // Only return a result if there are relics!
@@ -12,7 +12,7 @@ export const Relics = ({ pageData }: { pageData: Recipe }) => {
       return (
          <>
             <H2Default text="Possible Relics" />
-            <div className="border-color-sub divide-color-sub shadow-1 bg-2 divide-y rounded-md border shadow-sm">
+            <div className="border-color-sub divide-color-sub shadow-1 bg-2-sub divide-y rounded-md border shadow-sm">
                {relics?.map((r) => {
                   // Find the relic's entries in the relicData array
                   const rimg = r?.icon?.url;
