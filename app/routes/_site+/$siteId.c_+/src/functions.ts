@@ -310,6 +310,7 @@ export async function getEntryFields({
             collectionName: collection.name,
             collectionId: collection.slug,
             siteId: collection?.site?.id,
+            siteSlug: collection?.site?.slug,
             sections: collection?.sections,
          },
       };
@@ -359,6 +360,7 @@ export async function getEntryFields({
          collectionId: collection?.slug,
          sections: collection?.sections,
          siteId: collection?.site.id,
+         siteSlug: collection?.site?.slug,
       },
    };
 }
@@ -406,13 +408,14 @@ export async function fetchEntry({
    });
 
    const gqlPath = gqlEndpoint({
-      siteSlug: entry.siteId,
+      siteSlug: entry.siteSlug,
    });
 
-   const restPath = `https://${entry.siteId}-db.${settings.domain}/api/${
+   const restPath = `https://${entry.siteSlug}-db.${settings.domain}/api/${
       entry.collectionId
    }/${entry.id}?depth=${rest?.depth ?? 2}`;
 
+   console.log(restPath);
    const GQLorREST = gql?.query
       ? await gqlRequest(gqlPath, gql?.query, {
            entryId: entry.id,
