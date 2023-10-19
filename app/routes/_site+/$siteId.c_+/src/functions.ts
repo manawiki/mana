@@ -11,7 +11,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import type { Entry, User } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { toWords } from "~/utils";
+import { gqlEndpoint, toWords } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export type EntryType = {
@@ -226,6 +226,7 @@ export async function getCustomEntryData({
       `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=${depth}`,
    );
 }
+
 export async function getEntryFields({
    payload,
    params,
@@ -284,9 +285,10 @@ export async function getEntryFields({
       }
       `;
 
-      const endpoint = `https://${collection.site.slug}-db.${
-         collection.site?.domain ?? "mana.wiki"
-      }/api/graphql`;
+      const endpoint = gqlEndpoint({
+         siteSlug: collection.site.slug,
+         domain: collection.site?.domain,
+      });
 
       const { entryData }: { entryData: PaginatedDocs<Entry> } =
          await gqlRequest(endpoint, entryQuery, {
@@ -306,6 +308,7 @@ export async function getEntryFields({
          entry: {
             ...entry,
             collectionName: collection.name,
+            collectionId: collection.slug,
             siteId: collection?.site?.id,
             sections: collection?.sections,
          },
@@ -353,22 +356,48 @@ export async function getEntryFields({
          name: entryData?.name,
          icon: { id: entryData?.icon?.id, url: entryData?.icon?.url },
          collectionName: collection?.name,
+         collectionId: collection?.slug,
          sections: collection?.sections,
          siteId: collection?.site.id,
       },
    };
 }
-export async function getAllEntryData({
-   payload,
-   params,
-   request,
-   user,
-}: {
+
+// https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist
+type RequireOnlyOneOptional<T, Keys extends keyof T = keyof T> = Pick<
+   T,
+   Exclude<keyof T, Keys>
+> &
+   {
+      [K in Keys]-?: Pick<T, K> & Partial<Record<Exclude<Keys, K>, undefined>>;
+   }[Keys];
+
+type RestOrGraphql = RequireOnlyOneOptional<EntryFetchType, "rest" | "gql">;
+
+interface EntryFetchType {
    payload: Payload;
    params: Params;
    request: Request;
    user: User | undefined;
-}) {
+   rest?: {
+      depth?: number;
+   };
+   gql?: {
+      query: string;
+      variables?: {};
+   };
+}
+
+//Fetches all entry data. Includes
+
+export async function fetchEntry({
+   payload,
+   params,
+   request,
+   user,
+   rest,
+   gql,
+}: RestOrGraphql) {
    const { entry } = await getEntryFields({
       payload,
       params,
@@ -376,18 +405,65 @@ export async function getAllEntryData({
       user,
    });
 
-   const embeddedContent = await getEmbeddedContent({
-      id: entry.id as string,
-      payload,
-      params,
-      request,
-      user,
+   const gqlPath = gqlEndpoint({
+      siteSlug: entry.siteId,
    });
+
+   const restPath = `https://${entry.siteId}-db.${settings.domain}/api/${
+      entry.collectionId
+   }/${entry.id}?depth=${rest?.depth ?? 2}`;
+
+   const GQLorREST = gql?.query
+      ? await gqlRequest(gqlPath, gql?.query, {
+           entryId: entry.id,
+           ...gql?.variables,
+        })
+      : rest?.depth
+      ? await fetchWithCache(restPath)
+      : undefined;
+
+   const [data, embeddedContent] = await Promise.all([
+      await GQLorREST,
+      await getEmbeddedContent({
+         id: entry.id as string,
+         payload,
+         params,
+         request,
+         user,
+      }),
+   ]);
 
    return {
       entry: {
          ...entry,
          embeddedContent,
+         data,
+      },
+   };
+}
+
+interface ListFetchType {
+   params: Params;
+   gql?: {
+      query: string;
+      variables?: {};
+   };
+}
+
+export async function fetchList({ params, gql }: ListFetchType) {
+   const gqlPath = gqlEndpoint({
+      siteSlug: params.siteId,
+   });
+
+   const data = gql?.query
+      ? await gqlRequest(gqlPath, gql?.query, {
+           ...gql?.variables,
+        })
+      : undefined;
+
+   return {
+      list: {
+         data,
       },
    };
 }

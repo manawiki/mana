@@ -16,14 +16,14 @@ import {
 } from "~/utils";
 
 import { Entry, EntryContentEmbed } from "./src/components";
-import { getAllEntryData } from "./src/functions";
+import { fetchEntry } from "./src/functions";
 
 export async function loader({
    context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
