@@ -6,6 +6,7 @@ import { Float } from "@headlessui-float/react";
 import {
    CalendarClock,
    ChevronRight,
+   Code,
    Columns,
    Heading2,
    Heading3,
@@ -118,6 +119,18 @@ export function BlockSelector({
                      children: [{ text: "" }],
                   },
                ],
+            });
+         },
+      },
+      {
+         label: "Code Block",
+         icon: <Code size={18} />,
+         description: "A code block",
+         onSelect: () => {
+            onInsertBelow({
+               id: nanoid(),
+               type: BlockType.CodeBlock,
+               children: [{ text: "" }],
             });
          },
       },
