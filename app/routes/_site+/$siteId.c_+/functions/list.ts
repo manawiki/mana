@@ -105,9 +105,7 @@ export async function fetchListCore({
          }
       `;
 
-      const endpoint = `https://${collectionEntry?.site.slug}-db.${
-         collectionEntry?.site?.domain ?? "mana.wiki"
-      }/api/graphql`;
+      const endpoint = gqlEndpoint({ siteSlug: collectionEntry?.site.slug });
 
       const { entries }: any = await gqlRequest(endpoint, document, { page });
       return { entries };
