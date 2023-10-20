@@ -289,7 +289,6 @@ export async function getEntryFields({
 
       const endpoint = gqlEndpoint({
          siteSlug: collection.site.slug,
-         domain: collection.site?.domain,
       });
 
       const { entryData }: { entryData: PaginatedDocs<Entry> } =
