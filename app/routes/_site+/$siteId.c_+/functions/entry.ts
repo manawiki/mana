@@ -28,40 +28,83 @@ export type EntryAllData = EntryType & {
    embeddedContent: JSON;
 };
 
-//Used for custom entry pages
-export const customEntryMeta: MetaFunction = ({
-   matches,
-   data,
-}: {
-   matches: any;
-   data: any;
-}) => {
-   const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site?.name;
-   return [
-      {
-         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
+// https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist
+type RequireOnlyOneOptional<T, Keys extends keyof T = keyof T> = Pick<
+   T,
+   Exclude<keyof T, Keys>
+> &
+   {
+      [K in Keys]-?: Pick<T, K> & Partial<Record<Exclude<Keys, K>, undefined>>;
+   }[Keys];
+
+type RestOrGraphql = RequireOnlyOneOptional<EntryFetchType, "rest" | "gql">;
+
+interface EntryFetchType {
+   payload: Payload;
+   params: Params;
+   request: Request;
+   user: User | undefined;
+   rest?: {
+      depth?: number;
+   };
+   gql?: {
+      query: string;
+      variables?: {};
+   };
+}
+
+//Fetches all entry data. Includes
+export async function fetchEntry({
+   payload,
+   params,
+   request,
+   user,
+   rest,
+   gql,
+}: RestOrGraphql) {
+   const { entry } = await getEntryFields({
+      payload,
+      params,
+      request,
+      user,
+   });
+
+   const gqlPath = gqlEndpoint({
+      siteSlug: entry.siteSlug,
+   });
+
+   const restPath = `https://${entry.siteSlug}-db.${settings.domain}/api/${
+      entry.collectionId
+   }/${entry.id}?depth=${rest?.depth ?? 2}`;
+
+   const GQLorREST = gql?.query
+      ? gqlRequest(gqlPath, gql?.query, {
+           entryId: entry.id,
+           ...gql?.variables,
+        })
+      : rest?.depth
+      ? fetchWithCache(restPath)
+      : undefined;
+
+   const [data, embeddedContent] = await Promise.all([
+      await GQLorREST,
+      await getEmbeddedContent({
+         id: entry.id as string,
+         payload,
+         params,
+         request,
+         user,
+      }),
+   ]);
+
+   return {
+      entry: {
+         ...entry,
+         embeddedContent,
+         data,
       },
-   ];
-};
-
-export const customListMeta: MetaFunction = ({ matches }: { matches: any }) => {
-   const site = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site;
-
-   const collectionId = matches[2].pathname.split("/")[3];
-
-   const collection = site?.collections?.find(
-      (collection: any) => collection.slug === collectionId,
-   );
-   return [
-      {
-         title: `${collection?.name} | ${site?.name}`,
-      },
-   ];
-};
+   };
+}
 
 export async function getEmbeddedContent({
    id,
@@ -324,107 +367,20 @@ export async function getEntryFields({
    };
 }
 
-// https://stackoverflow.com/questions/40510611/typescript-interface-require-one-of-two-properties-to-exist
-type RequireOnlyOneOptional<T, Keys extends keyof T = keyof T> = Pick<
-   T,
-   Exclude<keyof T, Keys>
-> &
-   {
-      [K in Keys]-?: Pick<T, K> & Partial<Record<Exclude<Keys, K>, undefined>>;
-   }[Keys];
-
-type RestOrGraphql = RequireOnlyOneOptional<EntryFetchType, "rest" | "gql">;
-
-interface EntryFetchType {
-   payload: Payload;
-   params: Params;
-   request: Request;
-   user: User | undefined;
-   rest?: {
-      depth?: number;
-   };
-   gql?: {
-      query: string;
-      variables?: {};
-   };
-}
-
-//Fetches all entry data. Includes
-
-export async function fetchEntry({
-   payload,
-   params,
-   request,
-   user,
-   rest,
-   gql,
-}: RestOrGraphql) {
-   const { entry } = await getEntryFields({
-      payload,
-      params,
-      request,
-      user,
-   });
-
-   const gqlPath = gqlEndpoint({
-      siteSlug: entry.siteSlug,
-   });
-
-   const restPath = `https://${entry.siteSlug}-db.${settings.domain}/api/${
-      entry.collectionId
-   }/${entry.id}?depth=${rest?.depth ?? 2}`;
-
-   const GQLorREST = gql?.query
-      ? gqlRequest(gqlPath, gql?.query, {
-           entryId: entry.id,
-           ...gql?.variables,
-        })
-      : rest?.depth
-      ? fetchWithCache(restPath)
-      : undefined;
-
-   const [data, embeddedContent] = await Promise.all([
-      await GQLorREST,
-      await getEmbeddedContent({
-         id: entry.id as string,
-         payload,
-         params,
-         request,
-         user,
-      }),
-   ]);
-
-   return {
-      entry: {
-         ...entry,
-         embeddedContent,
-         data,
+//Used for custom entry pages
+export const customEntryMeta: MetaFunction = ({
+   matches,
+   data,
+}: {
+   matches: any;
+   data: any;
+}) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site?.name;
+   return [
+      {
+         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
       },
-   };
-}
-
-interface ListFetchType {
-   params: Params;
-   gql?: {
-      query: string;
-      variables?: {};
-   };
-}
-
-export async function fetchList({ params, gql }: ListFetchType) {
-   const gqlPath = gqlEndpoint({
-      siteSlug: params.siteId,
-   });
-
-   const data = gql?.query
-      ? await gqlRequest(gqlPath, gql?.query, {
-           ...gql?.variables,
-        })
-      : undefined;
-
-   return {
-      list: {
-         data,
-      },
-   };
-}
+   ];
+};

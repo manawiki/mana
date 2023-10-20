@@ -3,11 +3,11 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
-import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/components/List";
 import {
    customListMeta,
    fetchList,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/list";
 
 export { customListMeta as meta };
 
@@ -36,7 +36,6 @@ export default function ListPage() {
    );
 }
 
-//The $entryId variable is optional, but always passed in with the query.
 const QUERY = gql`
    query {
       PluralCollectionName(limit: 100, sort: "name") {

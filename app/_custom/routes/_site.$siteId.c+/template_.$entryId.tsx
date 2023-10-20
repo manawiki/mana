@@ -3,11 +3,11 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 
 export { customEntryMeta as meta };
 
@@ -48,7 +48,7 @@ export default function EntryPage() {
 //The $entryId variable is optional, but always passed in with the query.
 const QUERY = gql`
    query ($entryId: String!) { {
-      CollectionName(id: $entryId) {
+      SingularCollectionName(id: $entryId) {
          id
          slug
          name

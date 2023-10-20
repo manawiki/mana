@@ -87,7 +87,7 @@ export function BlockCodeBlock({
                className="w-full resize-none font-mono text-1 focus:ring-0 pl-[31px] overflow-hidden text-sm border-0 bg-transparent p-0"
                defaultValue={codeBlockValue}
                onChange={(event) => updateLabelValue(event.target.value)}
-               placeholder="Add a title..."
+               placeholder="Start typing..."
             />
          )}
          <div className="hidden">{children}</div>
