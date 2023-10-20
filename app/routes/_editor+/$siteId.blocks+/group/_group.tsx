@@ -70,7 +70,7 @@ import type {
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { swrRestFetcher, toWords, useIsMount } from "~/utils";
+import { gqlEndpoint, swrRestFetcher, toWords, useIsMount } from "~/utils";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -240,9 +240,11 @@ export async function loader({
             }
          }
       `;
-      const endpoint = `https://${site.slug}-db.${
-         site.domain ?? "mana.wiki"
-      }/api/graphql`;
+
+      const endpoint = gqlEndpoint({
+         siteSlug: site.slug,
+      });
+
       const result: any = await gqlRequest(endpoint, document, {
          groupSelectQuery,
       });

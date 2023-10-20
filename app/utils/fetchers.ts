@@ -10,3 +10,6 @@ export function gqlEndpoint({
 }) {
    return `https://${siteSlug}-db.${domain ?? settings?.domain}/api/graphql`;
 }
+export function swrRestFetcher(...args: any) {
+   return fetch(args).then((res) => res.json());
+}

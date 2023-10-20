@@ -16,7 +16,7 @@ import { zx } from "zodix";
 import type { Entry } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { swrRestFetcher, toWords } from "~/utils";
+import { gqlEndpoint, swrRestFetcher, toWords } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -79,9 +79,11 @@ export async function loader({
                const formattedNamePlural = plural(
                   toWords(collectionId as string, true),
                );
-               const endpoint = `https://${site.slug}-db.${
-                  site.domain ?? "mana.wiki"
-               }/api/graphql`;
+
+               const endpoint = gqlEndpoint({
+                  siteSlug: site.slug,
+               });
+
                //Document request if slug does exist
                const entryQuery = gql`
                         query ($entryId: String!) {
