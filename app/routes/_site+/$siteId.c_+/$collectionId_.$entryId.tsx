@@ -15,8 +15,9 @@ import {
    uploadImage,
 } from "~/utils";
 
-import { Entry, EntryContentEmbed } from "./src/components";
-import { fetchEntry } from "./src/functions";
+import { Entry } from "./components/Entry";
+import { EntryContentEmbed } from "./components/EntryContentEmbed";
+import { fetchEntry } from "./functions/entry";
 
 export async function loader({
    context: { payload, user },
@@ -50,7 +51,7 @@ export const meta: MetaFunction = ({
    ];
 };
 
-export default function CollectionEntryWiki() {
+export default function CollectionEntry() {
    const { entry } = useLoaderData<typeof loader>();
 
    return (

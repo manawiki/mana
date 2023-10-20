@@ -22,5 +22,4 @@ export const SHORTCUTS: Record<string, BlockType> = {
    "1.": BlockType.ListItem,
    "##": BlockType.H2,
    "###": BlockType.H3,
-   "[]": BlockType.ToDo,
 };
