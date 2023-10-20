@@ -3,13 +3,12 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-// import { characters } from "./characters";
 import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
-import { List } from "~/routes/_site+/$siteId.c_+/src/components";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/src/functions";
+import { List } from "~/routes/_site+/$siteId.c_+/components/List";
+import { customListMeta } from "~/routes/_site+/$siteId.c_+/functions/list";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export { customListMeta as meta };

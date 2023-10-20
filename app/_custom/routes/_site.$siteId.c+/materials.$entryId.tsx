@@ -2,11 +2,11 @@ import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components";
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 
 export { customEntryMeta as meta };
 

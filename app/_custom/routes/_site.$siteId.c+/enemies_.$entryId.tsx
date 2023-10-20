@@ -10,11 +10,12 @@ import { Selector } from "~/_custom/components/enemies/Selector";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Stats } from "~/_custom/components/enemies/Stats";
 import { H2Default } from "~/components/H2";
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
+
 export { customEntryMeta as meta };
 
 export async function loader({

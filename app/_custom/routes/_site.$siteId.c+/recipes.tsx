@@ -8,11 +8,11 @@ import { Search, SortDesc } from "lucide-react";
 
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/components/List";
 import {
    customListMeta,
    fetchList,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/list";
 
 export { customListMeta as meta };
 

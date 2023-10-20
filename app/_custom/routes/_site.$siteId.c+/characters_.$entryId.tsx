@@ -14,14 +14,12 @@ import { Traces } from "~/_custom/components/characters/Traces";
 import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 import { H2Default } from "~/components/H2";
-import {
-   Entry,
-   EntryContentEmbed,
-} from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
+import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 
 export { customEntryMeta as meta };
 

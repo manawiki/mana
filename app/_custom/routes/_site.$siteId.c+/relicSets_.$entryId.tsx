@@ -6,11 +6,11 @@ import type { Relic } from "payload/generated-custom-types";
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
 import { H2Default } from "~/components";
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export { customEntryMeta as meta };

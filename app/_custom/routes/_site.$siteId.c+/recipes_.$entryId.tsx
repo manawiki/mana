@@ -5,12 +5,11 @@ import { Header } from "~/_custom/components/recipes/Header";
 import { Ingredients } from "~/_custom/components/recipes/Ingredients";
 import { Relics } from "~/_custom/components/recipes/Relics";
 import { SpecialMats } from "~/_custom/components/recipes/SpecialMats";
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
-
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 export { customEntryMeta as meta };
 
 export async function loader({

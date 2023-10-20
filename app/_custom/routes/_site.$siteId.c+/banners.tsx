@@ -6,11 +6,11 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
 import { Image } from "~/components";
-import { List } from "~/routes/_site+/$siteId.c_+/src/components";
+import { List } from "~/routes/_site+/$siteId.c_+/components/List";
 import {
    customListMeta,
    fetchList,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/list";
 
 export { customListMeta as meta };
 

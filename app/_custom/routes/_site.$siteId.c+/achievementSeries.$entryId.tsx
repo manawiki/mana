@@ -7,11 +7,11 @@ import { Check } from "lucide-react";
 import { settings } from "mana-config";
 import type { Achievement as AchievementType } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { Entry } from "~/routes/_site+/$siteId.c_+/src/components";
+import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
    fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/src/functions";
+} from "~/routes/_site+/$siteId.c_+/functions/entry";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export { customEntryMeta as meta };
