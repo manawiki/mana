@@ -20,6 +20,7 @@ import {
    Search,
    X,
 } from "lucide-react";
+import { Icon } from "~/components/Icon";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -264,7 +265,11 @@ const Discover = () => {
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Gamepad2 size={16} />
+                                 {/* <Gamepad2 size={16} /> */}
+                                 <Icon
+                                    href="/icons/gamepad-2.svg"
+                                    className="h-4 w-4"
+                                 />
                                  <span>Gaming</span>
                               </div>
                            )}
