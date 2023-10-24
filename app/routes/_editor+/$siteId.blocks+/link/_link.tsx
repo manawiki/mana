@@ -5,7 +5,6 @@ import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import { Component, Trash } from "lucide-react";
 import type { PaginatedDocs } from "payload/dist/database/types";
-import { plural } from "pluralize";
 import qs from "qs";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -16,7 +15,7 @@ import { zx } from "zodix";
 import type { Entry } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { gqlEndpoint, swrRestFetcher, toWords } from "~/utils";
+import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -76,10 +75,7 @@ export async function loader({
             const entryId = pathSection[4];
             const collectionId = pathSection[3];
             if (site?.type == "custom") {
-               const formattedNamePlural = plural(
-                  toWords(collectionId as string, true),
-               );
-
+               const label = gqlFormat(collectionId ?? "", "list");
                const endpoint = gqlEndpoint({
                   siteSlug: site.slug,
                });
@@ -87,7 +83,7 @@ export async function loader({
                //Document request if slug does exist
                const entryQuery = gql`
                         query ($entryId: String!) {
-                           entryData: ${formattedNamePlural}(
+                           entryData: ${label}(
                                  where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
                               ) {
                               docs {

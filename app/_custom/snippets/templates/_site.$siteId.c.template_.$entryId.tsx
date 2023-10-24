@@ -47,7 +47,7 @@ export default function EntryPage() {
 
 //The $entryId variable is optional, but always passed in with the query.
 const QUERY = gql`
-   query ($entryId: String!) { {
+   query ($entryId: String!) {
       SingularCollectionName(id: $entryId) {
          id
          slug
@@ -55,7 +55,7 @@ const QUERY = gql`
          icon {
             id
             url
-         } 
+         }
       }
    }
 `;
