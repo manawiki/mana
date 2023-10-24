@@ -31,7 +31,7 @@ export function BlockCodeBlock({
    const [codeBlockValue, setCodeBlockValue] = useState(element?.value ?? "");
 
    const [copySuccess, setCopySuccess] = useState(
-      <Icon name="check" size={14} />,
+      <Icon name="copy" size={14} />,
    );
 
    const [editMode, setEditMode] = useState(false);
@@ -43,7 +43,7 @@ export function BlockCodeBlock({
             <Icon name="copy-check" className="text-green-500" size={14} />,
          );
          await delay(2000);
-         setCopySuccess(<Icon name="check" size={14} />);
+         setCopySuccess(<Icon name="copy" size={14} />);
       } catch (err) {
          setCopySuccess(<Icon name="copy-x" size={14} />);
       }
