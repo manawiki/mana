@@ -2,10 +2,9 @@ import type { MetaFunction, Params } from "@remix-run/react";
 import { gql, request as gqlRequest } from "graphql-request";
 import type { Payload } from "payload";
 import { select } from "payload-query";
-import { plural } from "pluralize";
 
 import type { Site, User, Collection } from "~/db/payload-types";
-import { gqlEndpoint, toWords } from "~/utils";
+import { gqlFormat, gqlEndpoint } from "~/utils";
 
 import type { CollectionsAllSchema } from "../$collectionId";
 
@@ -81,11 +80,11 @@ export async function fetchListCore({
 
    // Get custom collection list data
    if (collectionEntry?.customDatabase) {
-      const formattedName = plural(toWords(collectionId, true));
+      const label = gqlFormat(collectionId, "list");
 
       const document = gql`
          query($page: Int!) {
-            entries: ${formattedName}(page: $page, limit: 20) {
+            entries: ${label}(page: $page, limit: 20) {
             totalDocs
             totalPages
             limit
