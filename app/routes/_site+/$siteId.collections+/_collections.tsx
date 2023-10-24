@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
+import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -25,7 +26,6 @@ import {
    assertIsPost,
    isProcessing,
    isAdding,
-   slugify,
    getSession,
    setErrorMessage,
 } from "~/utils";
@@ -69,7 +69,7 @@ function SlugField({ zo }: { zo: Zorm<typeof CollectionSchema> }) {
          name={zo.fields.slug()}
          type="text"
          className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
-         value={slugify(value)}
+         value={urlSlug(value)}
       />
    );
 }

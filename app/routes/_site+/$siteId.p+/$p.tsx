@@ -14,6 +14,7 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
+import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -34,7 +35,6 @@ import {
    getSession,
    setErrorMessage,
    setSuccessMessage,
-   slugify,
    uploadImage,
 } from "~/utils";
 
@@ -430,7 +430,7 @@ export async function action({
             draft: true,
          });
 
-         const newSlug = slugify(currentPost.name);
+         const newSlug = urlSlug(currentPost.name);
 
          //See if duplicate exists on the same site
          const allPosts = await payload.find({

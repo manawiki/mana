@@ -27,10 +27,11 @@ import {
 } from "lucide-react";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
+import urlSlug from "url-slug";
 import { z } from "zod";
 
 import type { Collection, Site } from "~/db/payload-types";
-import { isAdding, slugify, useDebouncedValue, useIsMount } from "~/utils";
+import { isAdding, useDebouncedValue, useIsMount } from "~/utils";
 
 export type Section = {
    id: string;
@@ -255,7 +256,7 @@ export function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
                   type="text"
                   className="h-6 bg-transparent focus:bg-3 text-left focus:border-0 focus:ring-0 
                   pb-0.5 text-zinc-400 dark:text-zinc-500 text-xs border-0 p-0 mt-0"
-                  value={slugify(value)}
+                  value={urlSlug(value)}
                />
             </div>
          )}
