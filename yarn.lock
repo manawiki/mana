@@ -2050,10 +2050,10 @@
   dependencies:
     which "^3.0.0"
 
-"@payloadcms/plugin-cloud-storage@^1.0.14":
-  version "1.0.19"
-  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-cloud-storage/-/plugin-cloud-storage-1.0.19.tgz#96d5239715909101552fefa1aeebf1c3ef97d5e3"
-  integrity sha512-D0sKZ9NQB0Wia42TE++GM3XyyZiqY/W5+1wvg4jLUegG6Nv4W8dpNnS9RcoLePfS/pbEXQ5t2krSU3HdV6s8Rw==
+"@payloadcms/plugin-cloud-storage@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-cloud-storage/-/plugin-cloud-storage-1.1.1.tgz#823d0d8316ba11d2b212eec0778f6f6d282a8c0f"
+  integrity sha512-WFqfZcT7R1LD+FfKKKYNsJPDRE+0VlYEMxzGuPKeUQn9w9sqTy2UD01YCEl0Zcyuq8fD9mRUjeLitSo1aAUimQ==
   dependencies:
     range-parser "^1.2.1"
 
@@ -8027,11 +8027,6 @@ lru-queue@^0.1.0:
   dependencies:
     es5-ext "~0.10.2"
 
-lucide-react@^0.263.1:
-  version "0.263.1"
-  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.263.1.tgz#a456ee0d171aa373929bd3ee20d6f9fb4429c301"
-  integrity sha512-keqxAx97PlaEN89PXZ6ki1N8nRjGWtDa4021GFYLNj0RgruM5odbpl8GHTExj0hhPq3sF6Up0gnxt6TSHu+ovw==
-
 lucide-react@^0.277.0:
   version "0.277.0"
   resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.277.0.tgz#82857117f81d16aae4f7b3b6a60009f31bb83aa1"
@@ -11006,10 +11001,10 @@ remark-rehype@^10.0.0:
     mdast-util-to-hast "^12.1.0"
     unified "^10.0.0"
 
-remix-development-tools@^3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-3.2.2.tgz#64b4dd8300137818228211398fcddd0c43ca736c"
-  integrity sha512-W57DH+FM4Tsam5JJVdwKreHIxjF4Rmcabbt0ZXe9JCFdOmYakJVxVOmsfhk/NZvdPaRaHvWlML20KOoEypEQiA==
+remix-development-tools@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/remix-development-tools/-/remix-development-tools-3.3.0.tgz#6208c89cb97c49e30efab3161cafafcce463b167"
+  integrity sha512-ldEi+H8kt2nca1Ejeuq93qCd9RhuM6ipH9HteHQPD3Qx7I8InKUKXW0azem6ikQzXiC6jidc7pHKP/ymQw99Cg==
   dependencies:
     "@radix-ui/react-accordion" "^1.1.2"
     "@radix-ui/react-select" "^1.2.2"
@@ -11020,7 +11015,6 @@ remix-development-tools@^3.2.2:
     d3-shape "^3.2.0"
     d3-zoom "^3.0.0"
     date-fns "^2.30.0"
-    lucide-react "^0.263.1"
     tailwind-merge "^1.14.0"
     uuid "^9.0.1"
     ws "^8.14.2"
@@ -12570,6 +12564,11 @@ url-loader@^4.1.1:
     loader-utils "^2.0.0"
     mime-types "^2.1.27"
     schema-utils "^3.0.0"
+
+url-slug@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/url-slug/-/url-slug-4.0.1.tgz#e6c52589d671598339fe97a32edc415687a3489a"
+  integrity sha512-OkHgffjR6bce7jNTp5BUDBhg2IcnqSAi9DEhLH8Rhxrq84uPBMbHFzvOxniEIRpSSGBcG13LhrtNR5XzUdztfQ==
 
 use-callback-ref@^1.3.0:
   version "1.3.0"

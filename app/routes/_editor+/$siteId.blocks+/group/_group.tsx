@@ -50,7 +50,6 @@ import {
 import { nanoid } from "nanoid";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
-import { plural } from "pluralize";
 import qs from "qs";
 import { Transforms, Node, Editor } from "slate";
 import type { BaseEditor } from "slate";
@@ -70,7 +69,7 @@ import type {
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { swrRestFetcher, toWords, useIsMount } from "~/utils";
+import { gqlEndpoint, gqlFormat, swrRestFetcher, useIsMount } from "~/utils";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -222,10 +221,11 @@ export async function loader({
    }
    //For entries
    if (site?.type == "custom") {
-      const formattedName = plural(toWords(filterOption, true));
+      const label = gqlFormat(filterOption, "list");
+
       const document = gql`
          query ($groupSelectQuery: String!) {
-               rows: ${formattedName}(
+               rows: ${label}(
                   where: {
                   name: { contains: $groupSelectQuery }
                   }
@@ -240,9 +240,11 @@ export async function loader({
             }
          }
       `;
-      const endpoint = `https://${site.slug}-db.${
-         site.domain ?? "mana.wiki"
-      }/api/graphql`;
+
+      const endpoint = gqlEndpoint({
+         siteSlug: site.slug,
+      });
+
       const result: any = await gqlRequest(endpoint, document, {
          groupSelectQuery,
       });
