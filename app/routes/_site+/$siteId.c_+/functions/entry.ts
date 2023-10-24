@@ -266,7 +266,7 @@ export async function getEntryFields({
 
    //Check if customDatabase is selected
    if (collection?.customDatabase) {
-      const label = gqlFormat(collection?.slug, "single");
+      const label = gqlFormat(collection?.slug, "list");
 
       const entryQuery = gql`
       query ($entryId: String!) {
