@@ -353,7 +353,7 @@ export function SortableSectionItem({
                ref={setActivatorNodeRef}
                {...listeners}
             >
-               <Icon name="layout-grid" className="text-1" />
+               <Icon name="grip-vertical" className="text-1" />
             </div>
             <input
                required
