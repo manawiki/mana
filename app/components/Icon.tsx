@@ -1,5 +1,7 @@
 import type { SVGProps } from "react";
 
+import { type IconName } from "./icons";
+
 /**
  * Renders an SVG icon. The icon defaults to the size of the font. To make it
  * align vertically with neighboring text, you can pass the text as a child of
@@ -9,19 +11,18 @@ import type { SVGProps } from "react";
  * display "flex" (or "inline-flex") with "items-center" and a reasonable gap.
  */
 export function Icon({
-   href,
+   name,
    className,
-   name = "icon",
    children,
    ...props
 }: SVGProps<SVGSVGElement> & {
    href: string;
-   name?: string;
+   name?: IconName;
 }) {
    if (children) {
       return (
          <span className="inline-flex items-center gap-1.5">
-            <Icon name={name} href={href} className={className} {...props} />
+            <Icon name={name} className={className} {...props} />
             {children}
          </span>
       );
@@ -41,7 +42,7 @@ export function Icon({
          className={"inline self-center " + className}
          {...props}
       >
-         <use href={href + "#" + name} />
+         <use href={`/icons/${name}.svg#${name}`} />
       </svg>
    );
 }

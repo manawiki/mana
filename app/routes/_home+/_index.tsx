@@ -266,10 +266,7 @@ const Discover = () => {
                                  )}
                               >
                                  {/* <Gamepad2 size={16} /> */}
-                                 <Icon
-                                    href="/icons/gamepad-2.svg"
-                                    className="h-4 w-4"
-                                 />
+                                 <Icon name="gamepad-2" className="h-4 w-4" />
                                  <span>Gaming</span>
                               </div>
                            )}

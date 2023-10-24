@@ -18,8 +18,6 @@ export default function transformIcon(input: string, meta: Meta): string {
       meta.source.split("/").pop()?.split(".")[0] || "icon",
    );
 
-   console.log(name);
-
    const svg = input.replace(/<svg/, `<svg\n  id=${name}`);
 
    //Read the iconTypeFile from file system, add name to the type
