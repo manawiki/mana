@@ -72,6 +72,4 @@ export type IconName =
    | "calendar-plus"
    | "calendar-clock"
    | "bold"
-   | "arrow-left"
-   | "activity-square"
-   | "accessibility";
+   | "arrow-left";
