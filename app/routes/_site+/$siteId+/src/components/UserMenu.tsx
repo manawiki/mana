@@ -3,9 +3,9 @@ import { Fragment, useState } from "react";
 import { Menu, Transition, Switch } from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-
 import { Drawer } from "vaul";
 
+import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
 import {
    LoggedIn,
@@ -15,7 +15,6 @@ import {
 import { handleLogout } from "~/routes/_auth+/src/functions";
 import { isAdding } from "~/utils";
 import { Theme, useTheme } from "~/utils/theme-provider";
-import { Icon } from "~/components/Icon";
 
 export const UserMenu = () => {
    const [isMenuOpen, setMenuOpen] = useState(false);
