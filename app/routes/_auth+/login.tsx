@@ -15,7 +15,6 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
-import { ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
@@ -24,6 +23,7 @@ import { zx } from "zodix";
 import { settings } from "mana-config";
 import { DotLoader } from "~/components/DotLoader";
 import { FormLabel } from "~/components/Forms";
+import { Icon } from "~/components/Icon";
 import {
    type FormResponse,
    assertIsPost,
@@ -55,7 +55,10 @@ const PasswordResetSchema = z.object({
       .transform((email) => email.toLowerCase()),
 });
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -120,8 +123,9 @@ export default function Login() {
                         rounded-full py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
                   onClick={() => setIsReset(false)}
                >
-                  <ArrowLeft className="text-blue-500" size={20} />
-                  Back
+                  <Icon name="arrow-left" className="text-blue-500" size={24}>
+                     Back
+                  </Icon>
                </button>
             </div>
          ) : (
@@ -272,7 +276,7 @@ export const action: ActionFunction = async ({
                const session = await getSession(request.headers.get("cookie"));
                setSuccessMessage(
                   session,
-                  "We sent you an email with a link to reset your password"
+                  "We sent you an email with a link to reset your password",
                );
                return redirect("/login", {
                   headers: { "Set-Cookie": await commitSession(session) },
@@ -280,7 +284,7 @@ export const action: ActionFunction = async ({
             }
             setErrorMessage(
                session,
-               "This email doesn't exist, do you want to create a new account?"
+               "This email doesn't exist, do you want to create a new account?",
             );
             return redirect("/login", {
                headers: { "Set-Cookie": await commitSession(session) },
@@ -312,7 +316,7 @@ export const action: ActionFunction = async ({
          } catch (error) {
             setErrorMessage(
                session,
-               "The email or password provided is incorrect"
+               "The email or password provided is incorrect",
             );
             return redirect(`/login${signUpEmail ? `?email=${email}` : ""}`, {
                headers: { "Set-Cookie": await commitSession(session) },
