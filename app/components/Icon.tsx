@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
 
 import { type IconName } from "./icons";
+import React from "react";
 
 /**
  * Renders an SVG icon. The icon defaults to the size of the font. To make it
@@ -13,15 +14,29 @@ import { type IconName } from "./icons";
 export function Icon({
    name,
    className,
+   size,
+   title,
    children,
    ...props
 }: SVGProps<SVGSVGElement> & {
    name: IconName;
+   size?: number;
+   title?: string; // for accessibility
 }) {
    if (children) {
       return (
          <span className="inline-flex items-center gap-1.5">
-            <Icon name={name} className={className} {...props} />
+            <Icon
+               name={name}
+               className={className}
+               size={size}
+               title={
+                  typeof children === "string"
+                     ? children.toString().trim()
+                     : title
+               }
+               {...props}
+            />
             {children}
          </span>
       );
@@ -29,18 +44,13 @@ export function Icon({
 
    return (
       <svg
-         xmlns="http://www.w3.org/2000/svg"
-         width="24"
-         height="24"
          viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         strokeWidth="2"
-         strokeLinecap="round"
-         strokeLinejoin="round"
-         className={className}
+         className={
+            size ? `${className} w-[${size}px] h-[${size}px]` : className
+         }
          {...props}
       >
+         <title>{title ?? name}</title>
          <use href={`/icons/${name}.svg#${name}`} />
       </svg>
    );
