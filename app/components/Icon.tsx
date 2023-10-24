@@ -16,8 +16,7 @@ export function Icon({
    children,
    ...props
 }: SVGProps<SVGSVGElement> & {
-   href: string;
-   name?: IconName;
+   name: IconName;
 }) {
    if (children) {
       return (
@@ -39,7 +38,7 @@ export function Icon({
          strokeWidth="2"
          strokeLinecap="round"
          strokeLinejoin="round"
-         className={"inline self-center " + className}
+         className={className}
          {...props}
       >
          <use href={`/icons/${name}.svg#${name}`} />
