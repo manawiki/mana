@@ -1,6 +1,5 @@
-import { Github } from "lucide-react";
-
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";
@@ -59,7 +58,7 @@ export const Top = () => {
                          [background:linear-gradient(theme(colors.zinc.800),_theme(colors.zinc.800))_padding-box,_conic-gradient(theme(colors.zinc.400),_theme(colors.zinc.700)_25%,_theme(colors.zinc.700)_75%,_theme(colors.zinc.400)_100%)_border-box]
                          before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-zinc-800/30 hover:text-white"
                         >
-                           <Github size={16} />
+                           <Icon name="github" size={16} />
                            <span className="pt-0.5 text-sm font-bold">
                               Github
                            </span>

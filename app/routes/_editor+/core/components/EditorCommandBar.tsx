@@ -5,9 +5,9 @@ import { FloatingDelayGroup } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { Check, Clock9, Loader2, MoreHorizontal, Send, X } from "lucide-react";
 
 import type { Config } from "payload/generated-types";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { EditorVersionModal } from "~/routes/_editor+/core/components/EditorVersionModal";
 import { isProcessing } from "~/utils";
@@ -78,7 +78,8 @@ export const EditorCommandBar = ({
          <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
             {isPublishing ? (
                <div className="flex h-8 w-8 items-center justify-center rounded-full dark:bg-dark500 border dark:border-zinc-500 bg-zinc-200 border-zinc-300">
-                  <Loader2
+                  <Icon
+                     name="loader-2"
                      size={16}
                      className="mx-auto animate-spin text-zinc-700 dark:text-white"
                   />
@@ -98,7 +99,8 @@ export const EditorCommandBar = ({
                               });
                            }}
                         >
-                           <Send
+                           <Icon
+                              name="send"
                               size={16}
                               className="text-zinc-700 pt-0.5 dark:text-white"
                            />
@@ -109,9 +111,13 @@ export const EditorCommandBar = ({
                      <Tooltip placement="left">
                         <TooltipTrigger className="flex cursor-default h-8 w-8 items-center justify-center">
                            {isAutoSaving ? (
-                              <Loader2 size={18} className="animate-spin" />
+                              <Icon
+                                 name="loader-2"
+                                 size={18}
+                                 className="animate-spin"
+                              />
                            ) : (
-                              <Check size={18} />
+                              <Icon name="check" size={18} />
                            )}
                         </TooltipTrigger>
                         <TooltipContent>
@@ -127,7 +133,7 @@ export const EditorCommandBar = ({
                   active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
                   onClick={() => setVersionModal(true)}
                >
-                  <Clock9 size={16} />
+                  <Icon name="clock-9" size={16} />
                </TooltipTrigger>
                <TooltipContent>History</TooltipContent>
             </Tooltip>
@@ -153,9 +159,13 @@ export const EditorCommandBar = ({
                                  active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
                               >
                                  {open ? (
-                                    <X className="text-1" size={14} />
+                                    <Icon
+                                       name="x"
+                                       className="text-1"
+                                       size={14}
+                                    />
                                  ) : (
-                                    <MoreHorizontal size={16} />
+                                    <Icon name="more-vertical" size={16} />
                                  )}
                               </TooltipTrigger>
                               <TooltipContent>Settings</TooltipContent>

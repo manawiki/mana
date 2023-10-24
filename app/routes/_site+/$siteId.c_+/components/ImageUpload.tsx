@@ -2,8 +2,8 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 
 import { useFetcher, useMatches } from "@remix-run/react";
-import { ImageMinus, Loader2, Component, Upload } from "lucide-react";
 
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import {
@@ -89,12 +89,14 @@ export function CircleImageUploader({
                   }
                >
                   {isImageDeleting ? (
-                     <Loader2
+                     <Icon
+                        name="loader-2"
                         size={16}
                         className="mx-auto animate-spin text-red-500 dark:text-red-100"
                      />
                   ) : (
-                     <ImageMinus
+                     <Icon
+                        name="image-minus"
                         size={16}
                         className="text-red-500 dark:text-red-100"
                      />
@@ -136,9 +138,13 @@ export function CircleImageUploader({
                >
                   <div className="text-1 space-y-2">
                      {isImageAdding ? (
-                        <Loader2 size={18} className="mx-auto animate-spin" />
+                        <Icon
+                           name="loader-2"
+                           size={18}
+                           className="mx-auto animate-spin"
+                        />
                      ) : (
-                        <Upload className="mx-auto" size={18} />
+                        <Icon name="upload" className="mx-auto" size={18} />
                      )}
                   </div>
                   <input name="image" type="file" className="hidden" />
@@ -165,7 +171,7 @@ export function CircleImageUploader({
             </fetcher.Form>
          </AdminOrStaffOrOwner>
          <NotAdminOrStaffOrOwner>
-            <Component className="text-1 mx-auto" size={20} />
+            <Icon name="component" className="text-1 mx-auto" size={20} />
          </NotAdminOrStaffOrOwner>
       </>
    );

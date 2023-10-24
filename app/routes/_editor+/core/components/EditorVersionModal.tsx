@@ -5,10 +5,10 @@ import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
-import { Loader2 } from "lucide-react";
 
 import type { Config } from "payload/generated-types";
 import { Modal } from "~/components";
+import { Icon } from "~/components/Icon";
 import { isAdding } from "~/utils";
 
 import { EditorView } from "./EditorView";
@@ -142,7 +142,10 @@ export function EditorVersionModal({
                               }}
                            >
                               {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin"
+                                 />
                               ) : (
                                  "Restore"
                               )}

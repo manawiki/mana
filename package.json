@@ -64,7 +64,6 @@
       "isbot": "^3.6.5",
       "linkify-it": "^4.0.1",
       "lru-cache": "^10.0.0",
-      "lucide-react": "^0.277.0",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
       "payload": "^1.15.6",

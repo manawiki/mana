@@ -2,13 +2,14 @@ import { useState } from "react";
 
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
-import { Component, FileText, X } from "lucide-react";
 import { Node } from "slate";
 import { ReactEditor, useSlateStatic } from "slate-react";
 
 import { Image, Modal } from "~/components";
 
 // eslint-disable-next-line import/no-cycle
+import { Icon } from "~/components/Icon";
+
 import { NestedEditor } from "../../core/dnd";
 import type { GroupElement, GroupItemElement } from "../../core/types";
 
@@ -43,7 +44,11 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                            alt={element?.name ?? "Icon"}
                         />
                      ) : (
-                        <Component className="text-1 mx-auto" size={18} />
+                        <Icon
+                           name="component"
+                           className="text-1 mx-auto"
+                           size={18}
+                        />
                      )}
                   </div>
                   <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
@@ -56,7 +61,8 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      onClick={() => setModalStatus(true)}
                      aria-label="Add content"
                   >
-                     <FileText
+                     <Icon
+                        name="file-text"
                         className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
                         size={14}
                      />
@@ -82,7 +88,8 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      onClick={() => setModalStatus(true)}
                      aria-label="Add content"
                   >
-                     <FileText
+                     <Icon
+                        name="file-text"
                         className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
                         size={14}
                      />
@@ -124,7 +131,11 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                            alt={element?.name ?? "Icon"}
                         />
                      ) : (
-                        <Component className="text-1 mx-auto" size={18} />
+                        <Icon
+                           name="component"
+                           className="text-1 mx-auto"
+                           size={18}
+                        />
                      )}
                   </div>
                   <div className="text-1 truncate pt-0.5 text-center text-sm font-bold">
@@ -149,7 +160,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      <span className="text-1 group-hover:underline text-xs">
                         Close
                      </span>
-                     <X size={16} />
+                     <Icon name="x" size={16} />
                   </button>
                </div>
                <div className="bg-3 max-tablet:min-w-[100vw] max-h-[70vh] min-h-[200px] transform tablet:rounded-lg relative text-left align-middle transition-all tablet:w-[760px] overflow-auto">
@@ -163,7 +174,11 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                                  alt={element?.name ?? "Icon"}
                               />
                            ) : (
-                              <Component className="text-1 mx-auto" size={18} />
+                              <Icon
+                                 name="component"
+                                 className="text-1 mx-auto"
+                                 size={18}
+                              />
                            )}
                         </span>
                         <span className="font-bold font-header text-lg">
