@@ -13,7 +13,6 @@ import { type IconName } from "./icons";
  */
 export function Icon({
    name,
-   className,
    size,
    title,
    children,
@@ -28,7 +27,6 @@ export function Icon({
          <span className="inline-flex items-center gap-1.5">
             <Icon
                name={name}
-               className={className}
                size={size}
                title={
                   typeof children === "string"
@@ -43,13 +41,7 @@ export function Icon({
    }
 
    return (
-      <svg
-         viewBox="0 0 24 24"
-         className={
-            size ? `${className} w-[${size}px] h-[${size}px]` : className
-         }
-         {...props}
-      >
+      <svg viewBox="0 0 24 24" width={size} height={size} {...props}>
          <title>{title ?? name}</title>
          <use href={`/icons/${name}.svg#${name}`} />
       </svg>
