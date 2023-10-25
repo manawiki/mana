@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
-import { ChevronDown, Loader2, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import {
    LoggedIn,
@@ -52,7 +52,10 @@ export const Header = ({
                                                 px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
                               >
                                  {adding ? (
-                                    <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                    <Icon
+                                       name="loader-2"
+                                       className="mx-auto h-5 w-5 animate-spin"
+                                    />
                                  ) : (
                                     t("follow.actionFollow")
                                  )}
@@ -67,7 +70,11 @@ export const Header = ({
                      >
                         <div className="pr-2 text-xs">My Follows</div>
                         <div className="flex h-5 w-5 items-center justify-center rounded-full dark:bg-zinc-700">
-                           <ChevronDown className="dark:text-white" size={14} />
+                           <Icon
+                              name="chevron-down"
+                              className="dark:text-white"
+                              size={14}
+                           />
                         </div>
                      </button>
                   </div>
@@ -76,7 +83,7 @@ export const Header = ({
                      justify-center rounded-xl border shadow-sm"
                      onClick={() => setUserMenuOpen(true)}
                   >
-                     <User size={20} />
+                     <Icon name="user" size={20} />
                   </button>
                </div>
             </LoggedIn>

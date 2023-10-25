@@ -5,16 +5,6 @@ import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import { Disclosure, Menu, Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
-import {
-   Calendar,
-   CalendarPlus,
-   ChevronDown,
-   Copy,
-   MoreVertical,
-   MoveRight,
-   Trash,
-   X,
-} from "lucide-react";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -27,6 +17,7 @@ import {
    convertTimeToDate,
    getCurrentTime,
 } from "~/components/datepicker/util";
+import { Icon } from "~/components/Icon";
 import { useIsMount } from "~/utils";
 
 import { CountdownTimer } from "./CountdownTimer";
@@ -84,7 +75,7 @@ export function BlockEvents({
                      pl-4 pr-3.5 text-xs font-bold shadow-sm dark:bg-dark400 dark:hover:bg-dark450"
                   onClick={handleAddEvent}
                >
-                  <CalendarPlus className="text-1" size={14} />
+                  <Icon name="calendar-plus" className="text-1" size={14} />
                </button>
             </TooltipTrigger>
             <TooltipContent>Add an event</TooltipContent>
@@ -258,9 +249,13 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                        aria-label="Insert block below"
                                     >
                                        {open ? (
-                                          <X className="text-1" size={14} />
+                                          <Icon
+                                             name="x"
+                                             className="text-1"
+                                             size={14}
+                                          />
                                        ) : (
-                                          <Calendar size={14} />
+                                          <Icon name="calendar" size={14} />
                                        )}
                                     </Popover.Button>
                                     <Popover.Panel className="border-color-sub bg-2 shadow-1 min-h-[200px] transform rounded-lg border shadow">
@@ -282,7 +277,10 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                              />
                                           </div>
                                           <div className="w-10">
-                                             <MoveRight size={16} />
+                                             <Icon
+                                                name="move-right"
+                                                size={16}
+                                             />
                                           </div>
                                           <div className="flex w-full items-center justify-between gap-2 p-3">
                                              <span className="text-xs font-bold underline decoration-zinc-200 underline-offset-2 dark:decoration-zinc-600">
@@ -337,7 +335,8 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                         className="border-color-sub bg-3-sub shadow-1 flex h-8 w-8 flex-none items-center 
                         justify-center rounded-full border pt-0.5 shadow-sm"
                      >
-                        <ChevronDown
+                        <Icon
+                           name="chevron-down"
                            className={clsx(
                               open ? "rotate-180" : "",
                               "transform transition duration-300 ease-in-out",
@@ -367,13 +366,15 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                         >
                            <Menu.Button className="shadow-1 border-color-sub bg-2-sub group/menu -mr-2.5 flex h-8 w-4 items-center justify-center rounded-lg rounded-r-none border border-r-0 shadow-sm transition duration-300">
                               {open ? (
-                                 <X
+                                 <Icon
+                                    name="x"
                                     size={12}
                                     className="pl-0.5 transition duration-150 ease-in-out"
                                  />
                               ) : (
                                  <>
-                                    <MoreVertical
+                                    <Icon
+                                       name="more-vertical"
                                        size={16}
                                        className="pl-0.5 transition duration-150 ease-in-out group-active/menu:translate-y-0.5"
                                     />
@@ -395,7 +396,8 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                                 });
                                              }}
                                           >
-                                             <Trash
+                                             <Icon
+                                                name="trash"
                                                 size={14}
                                                 className="text-red-400"
                                              />
@@ -408,7 +410,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                     <Tooltip placement="left">
                                        <TooltipTrigger>
                                           <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450">
-                                             <Copy size={14} />
+                                             <Icon name="copy" size={14} />
                                           </button>
                                        </TooltipTrigger>
                                        <TooltipContent>Copy</TooltipContent>

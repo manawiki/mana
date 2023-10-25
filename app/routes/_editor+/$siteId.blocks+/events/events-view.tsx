@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
-import { ChevronDown } from "lucide-react";
 
+import { Icon } from "~/components/Icon";
 import type {
    EventItemElement,
    EventsElement,
@@ -50,10 +50,11 @@ export function BlockEventItemView({ element, children }: EventItemProps) {
                            className="bg-3 shadow-1 border-color flex h-8 w-8 flex-none items-center 
                         justify-center rounded-full border pt-0.5 shadow-sm"
                         >
-                           <ChevronDown
+                           <Icon
+                              name="chevron-down"
                               className={clsx(
                                  open ? "rotate-180" : "",
-                                 "transform transition duration-300 ease-in-out"
+                                 "transform transition duration-300 ease-in-out",
                               )}
                               size={18}
                            />

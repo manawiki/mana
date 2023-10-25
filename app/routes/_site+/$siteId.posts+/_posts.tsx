@@ -15,15 +15,6 @@ import {
    useNavigation,
 } from "@remix-run/react";
 import dt from "date-and-time";
-import {
-   ChevronLeft,
-   ChevronRight,
-   ChevronsUpDown,
-   Loader2,
-   PenSquare,
-   Search,
-   X,
-} from "lucide-react";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import { select, type Select } from "payload-query";
@@ -37,6 +28,7 @@ import type {
    Image as PayloadImage,
 } from "payload/generated-types";
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import { initialValue } from "~/routes/_editor+/core/utils";
@@ -135,7 +127,11 @@ export default function PostsAll() {
                         value="createPost"
                         type="submit"
                      >
-                        <PenSquare className="text-zinc-400" size={13} />
+                        <Icon
+                           name="pen-square"
+                           className="text-zinc-400"
+                           size={13}
+                        />
                         New Post
                      </button>
                   </Form>
@@ -152,7 +148,8 @@ export default function PostsAll() {
                         <div className="relative z-10">
                            <Listbox.Button className="text-1 flex items-center gap-2 text-sm font-semibold hover:underline">
                               {selectedStatus}
-                              <ChevronsUpDown
+                              <Icon
+                                 name="chevrons-up-down"
                                  className="text-zinc-500"
                                  size={16}
                               />
@@ -323,9 +320,12 @@ export default function PostsAll() {
                      <div className="relative flex w-full items-center gap-2">
                         <span className="absolute left-0">
                            {isSearching ? (
-                              <Loader2 className="h-6 w-6 animate-spin text-zinc-500" />
+                              <Icon
+                                 name="loader-2"
+                                 className="h-6 w-6 animate-spin text-zinc-500"
+                              />
                            ) : (
-                              <Search size={20} className="text-zinc-500" />
+                              <Icon name="search" className="text-zinc-500" />
                            )}
                         </span>
                         <input
@@ -348,7 +348,7 @@ export default function PostsAll() {
                            setSearchToggle(false);
                         }}
                      >
-                        <X size={22} className="text-red-500" />
+                        <Icon name="x" size={22} className="text-red-500" />
                      </button>
                   </>
                ) : (
@@ -359,7 +359,11 @@ export default function PostsAll() {
                            setSearchToggle(true);
                         }}
                      >
-                        <Search size={22} className="text-zinc-500" />
+                        <Icon
+                           name="search"
+                           size={22}
+                           className="text-zinc-500"
+                        />
                      </button>
                   </>
                )}
@@ -395,7 +399,8 @@ export default function PostsAll() {
                                     <span className="font-bold text-zinc-500 underline-offset-2 group-hover:underline">
                                        New Post
                                     </span>
-                                    <ChevronRight
+                                    <Icon
+                                       name="chevron-right"
                                        className="text-zinc-400"
                                        size={18}
                                     />
@@ -513,8 +518,9 @@ const Pagination = ({
                      })
                   }
                >
-                  <ChevronLeft size={18} className="text-zinc-500" />
-                  Prev
+                  <Icon name="chevron-left" size={18} className="text-zinc-500">
+                     Prev
+                  </Icon>
                </button>
             ) : null}
             {myPosts.hasNextPage && myPosts.hasPrevPage && (
@@ -531,7 +537,12 @@ const Pagination = ({
                   }
                >
                   Next
-                  <ChevronRight size={18} className="text-zinc-500" />
+                  <Icon
+                     name="chevron-right"
+                     title="Next"
+                     size={18}
+                     className="text-zinc-500"
+                  />
                </button>
             ) : null}
          </div>

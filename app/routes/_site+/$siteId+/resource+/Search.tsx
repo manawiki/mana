@@ -4,15 +4,6 @@ import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useFetcher, useNavigate, useParams } from "@remix-run/react";
-import {
-   Component,
-   Database,
-   FileText,
-   Layout,
-   Loader2,
-   Search as SearchIcon,
-   X,
-} from "lucide-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -20,6 +11,7 @@ import { settings } from "mana-config";
 import type { Search, Site } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import { isAdding, useDebouncedValue } from "~/utils";
 
 export async function loader({
@@ -112,20 +104,20 @@ const SearchType = ({ type }: { type: any }) => {
    const searchType = type.doc?.relationTo;
    switch (searchType) {
       case "customPages": {
-         return <Layout className="text-1 mr-2" size={14} />;
+         return <Icon name="layout" className="text-1 mr-2" size={14} />;
       }
       case "collections": {
-         return <Database className="text-1 mr-2" size={14} />;
+         return <Icon name="database" className="text-1 mr-2" size={14} />;
       }
       case "entries": {
-         return <Component className="text-1 mr-2" size={14} />;
+         return <Icon name="component" className="text-1 mr-2" size={14} />;
       }
       case "posts": {
-         return <FileText className="text-1 mr-2" size={14} />;
+         return <Icon name="file-text" className="text-1 mr-2" size={14} />;
       }
       //Custom site
       default:
-         return <Component className="text-1 mr-2" size={14} />;
+         return <Icon name="component" className="text-1 mr-2" size={14} />;
    }
 };
 
@@ -190,7 +182,7 @@ export function SearchComboBox({
    return (
       <div className="h-full w-full">
          <div className="absolute hidden laptop:block left-4 top-5">
-            <SearchIcon className="text-1" size={18} />
+            <Icon name="search" className="text-1" size={18} />
          </div>
          <Combobox onChange={handleChange}>
             <div className="relative h-full w-full focus:outline-none">
@@ -249,7 +241,8 @@ export function SearchComboBox({
                                                alt="Search Result Icon"
                                             />
                                          ) : (
-                                            <Component
+                                            <Icon
+                                               name="component"
                                                className="text-1 mx-auto"
                                                size={18}
                                             />
@@ -277,9 +270,9 @@ export function SearchComboBox({
             }}
          >
             {isSearching ? (
-               <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+               <Icon name="loader-2" className="mx-auto h-5 w-5 animate-spin" />
             ) : (
-               <X size={20} className="text-zinc-400" />
+               <Icon name="x" size={20} className="text-zinc-400" />
             )}
          </button>
       </div>

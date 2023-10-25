@@ -9,8 +9,8 @@ import {
    Link,
 } from "@remix-run/react";
 import clsx from "clsx";
-import { ChevronRight, Component, Database, Slash } from "lucide-react";
 
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 
@@ -75,12 +75,14 @@ export function CollectionHeader() {
                to={`/${site?.slug}/collections`}
                className="flex items-center gap-2 group pr-3"
             >
-               <Database
+               <Icon
+                  name="database"
                   className="hover:text-zinc-500 dark:hover:text-zinc-400 text-zinc-400 dark:text-zinc-500"
                   size={16}
                />
             </Link>
-            <Slash
+            <Icon
+               name="slash"
                size={16}
                className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
             />
@@ -136,7 +138,8 @@ export function CollectionHeader() {
                                                 alt="Collection Icon"
                                              />
                                           ) : (
-                                             <Component
+                                             <Icon
+                                                name="component"
                                                 className="text-1 mx-auto"
                                                 size={18}
                                              />
@@ -154,7 +157,8 @@ export function CollectionHeader() {
                   </>
                )}
             </Menu>
-            <Slash
+            <Icon
+               name="slash"
                size={16}
                className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
             />
@@ -169,7 +173,12 @@ export function CollectionHeader() {
             </Link>
             {isEntry ? (
                <>
-                  <ChevronRight className="text-1" size={12} />
+                  <Icon
+                     name="chevron-right"
+                     title="Entry"
+                     className="text-1"
+                     size={12}
+                  />
                   <span className="font-bold pl-3 text-1 underline text-xs flex items-center gap-2 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2">
                      Entry
                   </span>

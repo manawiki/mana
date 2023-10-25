@@ -3,26 +3,13 @@ import { Fragment } from "react";
 import { FloatingDelayGroup, offset } from "@floating-ui/react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import {
-   CalendarClock,
-   ChevronRight,
-   Code,
-   Columns,
-   Heading2,
-   Heading3,
-   ImagePlus,
-   LayoutList,
-   List,
-   ListOrdered,
-   Plus,
-   Type,
-} from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Editor } from "slate";
 import { Transforms } from "slate";
 import { ReactEditor } from "slate-react";
 
 // import { CustomBlocksAddConfig } from "~/_custom/blocks";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import type { CustomElement } from "../types";
@@ -52,7 +39,7 @@ export function BlockSelector({
    const primary = [
       {
          label: "Text",
-         icon: <Type size={18} />,
+         icon: <Icon name="type" size={18} />,
          description: "Paragraph",
          onSelect: () => {
             onInsertBelow({
@@ -64,7 +51,7 @@ export function BlockSelector({
       },
       {
          label: "Heading 2",
-         icon: <Heading2 size={18} />,
+         icon: <Icon name="heading-2" size={18} />,
          description: "Large size heading",
          onSelect: () => {
             onInsertBelow({
@@ -76,7 +63,7 @@ export function BlockSelector({
       },
       {
          label: "Heading 3",
-         icon: <Heading3 size={18} />,
+         icon: <Icon name="heading-3" size={18} />,
          description: "Medium size heading",
          onSelect: () => {
             onInsertBelow({
@@ -88,7 +75,7 @@ export function BlockSelector({
       },
       {
          label: "Bulleted list",
-         icon: <List size={18} />,
+         icon: <Icon name="list" size={18} />,
          description: "A basic bulleted list",
          onSelect: () => {
             onInsertBelow({
@@ -106,7 +93,7 @@ export function BlockSelector({
       },
       {
          label: "Ordered list",
-         icon: <ListOrdered size={18} />,
+         icon: <Icon name="list-ordered" size={18} />,
          description: "A basic ordered list",
          onSelect: () => {
             onInsertBelow({
@@ -124,7 +111,7 @@ export function BlockSelector({
       },
       {
          label: "Code Block",
-         icon: <Code size={18} />,
+         icon: <Icon name="code" size={18} />,
          description: "A code block",
          onSelect: () => {
             onInsertBelow({
@@ -136,7 +123,7 @@ export function BlockSelector({
       },
       {
          label: "Image",
-         icon: <ImagePlus size={18} />,
+         icon: <Icon name="image-plus" size={18} />,
          description: "Embed an Image",
          onSelect: () => {
             onInsertBelow({
@@ -155,7 +142,14 @@ export function BlockSelector({
          items: [
             {
                label: "Toggle Block",
-               icon: <ChevronRight className="text-purple-500" size={16} />,
+               icon: (
+                  <Icon
+                     name="chevron-right"
+                     title="Toggle Block"
+                     className="text-purple-500"
+                     size={16}
+                  />
+               ),
                description: "Show or hide nested content",
                onSelect: () => {
                   onInsertBelow({
@@ -168,7 +162,14 @@ export function BlockSelector({
             },
             {
                label: "Two Column",
-               icon: <Columns className="text-blue-500" size={12} />,
+               icon: (
+                  <Icon
+                     name="columns"
+                     title="Two Columns"
+                     className="text-blue-500"
+                     size={12}
+                  />
+               ),
                description: "Implement a two-column layout",
                onSelect: () => {
                   onInsertBelow({
@@ -180,7 +181,14 @@ export function BlockSelector({
             },
             {
                label: "Group",
-               icon: <LayoutList className="text-yellow-500" size={12} />,
+               icon: (
+                  <Icon
+                     name="layout-list"
+                     title="Group"
+                     className="text-yellow-500"
+                     size={12}
+                  />
+               ),
                description: "Embed collection data",
                onSelect: () => {
                   onInsertBelow({
@@ -194,7 +202,14 @@ export function BlockSelector({
             },
             {
                label: "Event Timeline",
-               icon: <CalendarClock className="text-emerald-500" size={12} />,
+               icon: (
+                  <Icon
+                     name="calendar-clock"
+                     title="Event Timeline"
+                     className="text-emerald-500"
+                     size={12}
+                  />
+               ),
                description: "Events with a start and end date",
                onSelect: () => {
                   onInsertBelow({
@@ -239,7 +254,8 @@ export function BlockSelector({
                className="flex h-7 w-7 items-center justify-center focus:outline-none"
                aria-label="Insert block below"
             >
-               <Plus
+               <Icon
+                  name="plus"
                   className={`${
                      isEditorTrayOpen ? "rotate-45" : ""
                   } transform transition duration-300 ease-in-out`}

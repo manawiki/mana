@@ -30,23 +30,6 @@ import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { request as gqlRequest, gql } from "graphql-request";
-import {
-   ChevronDown,
-   ChevronLeft,
-   Component,
-   Database,
-   FileText,
-   LayoutGrid,
-   List,
-   ListPlus,
-   MoreHorizontal,
-   MoreVertical,
-   Move,
-   Pencil,
-   Plus,
-   Trash,
-   X,
-} from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Select } from "payload-query";
 import { select } from "payload-query";
@@ -68,6 +51,7 @@ import type {
 } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image, Modal } from "~/components";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { gqlEndpoint, gqlFormat, swrRestFetcher, useIsMount } from "~/utils";
 
@@ -533,7 +517,8 @@ export function BlockGroup({
                      onClick={() => setElementEditor(true)}
                      contentEditable={false}
                   >
-                     <ListPlus
+                     <Icon
+                        name="list-plus"
                         className={clsx(
                            isElementEditorOpen ? "rotate-45" : "",
                            "transform transition duration-300 ease-in-out",
@@ -575,7 +560,8 @@ export function BlockGroup({
                                                    w-7 h-7 flex items-center justify-center bg-zinc-50 dark:bg-dark450"
                                                 >
                                                    {({ open }) => (
-                                                      <Plus
+                                                      <Icon
+                                                         name="plus"
                                                          className={`${
                                                             open
                                                                ? "rotate-45"
@@ -651,7 +637,8 @@ export function BlockGroup({
                                                                            }
                                                                         />
                                                                      ) : (
-                                                                        <Component
+                                                                        <Icon
+                                                                           name="component"
                                                                            className="text-1 mx-auto"
                                                                            size={
                                                                               18
@@ -687,7 +674,10 @@ export function BlockGroup({
                                                 <>
                                                    {activeSelectItem(value) ??
                                                       "Select a Collection"}
-                                                   <ChevronDown size={20} />
+                                                   <Icon
+                                                      name="chevron-down"
+                                                      size={20}
+                                                   />
                                                 </>
                                              )}
                                           </Listbox.Button>
@@ -721,7 +711,8 @@ export function BlockGroup({
                                                                   {selected ? (
                                                                      <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
                                                                   ) : null}
-                                                                  <Database
+                                                                  <Icon
+                                                                     name="database"
                                                                      className="text-1"
                                                                      size={14}
                                                                   />
@@ -745,7 +736,8 @@ export function BlockGroup({
                                                             {selected ? (
                                                                <span className="absolute right-2 h-1.5 w-1.5 rounded-full" />
                                                             ) : null}
-                                                            <Pencil
+                                                            <Icon
+                                                               name="pencil"
                                                                className="text-1"
                                                                size={14}
                                                             />
@@ -767,7 +759,8 @@ export function BlockGroup({
                                                             {selected ? (
                                                                <span className="absolute right-2 h-1.5 w-1.5 rounded-full bg-zinc-500" />
                                                             ) : null}
-                                                            <Component
+                                                            <Icon
+                                                               name="component"
                                                                className="text-1"
                                                                size={14}
                                                             />
@@ -806,7 +799,8 @@ export function BlockGroup({
                                                       <RadioGroup.Label className="sr-only">
                                                          List View
                                                       </RadioGroup.Label>
-                                                      <List
+                                                      <Icon
+                                                         name="list"
                                                          className={`${
                                                             checked
                                                                ? "text-zinc-500 dark:text-zinc-300"
@@ -837,7 +831,8 @@ export function BlockGroup({
                                                       <RadioGroup.Label className="sr-only">
                                                          Grid View
                                                       </RadioGroup.Label>
-                                                      <LayoutGrid
+                                                      <Icon
+                                                         name="layout-grid"
                                                          className={`${
                                                             checked
                                                                ? "text-zinc-500 dark:text-zinc-300"
@@ -974,7 +969,11 @@ export function BlockGroupItem({
                               alt={element?.name ?? "Icon"}
                            />
                         ) : (
-                           <Component className="text-1 mx-auto" size={18} />
+                           <Icon
+                              name="component"
+                              className="text-1 mx-auto"
+                              size={18}
+                           />
                         )}
                      </div>
                      <span className="truncate text-sm font-bold">
@@ -993,9 +992,9 @@ export function BlockGroupItem({
                                  onClick={() => setEditMode(!editMode)}
                               >
                                  {editMode ? (
-                                    <ChevronLeft size={16} />
+                                    <Icon name="chevron-left" size={16} />
                                  ) : (
-                                    <MoreVertical size={14} />
+                                    <Icon name="more-vertical" size={14} />
                                  )}
                               </button>
                            </TooltipTrigger>
@@ -1012,7 +1011,11 @@ export function BlockGroupItem({
                                  {...listeners}
                                  className="cursor-grab h-6 w-7 items-center flex justify-center"
                               >
-                                 <Move className="text-1" size={12} />
+                                 <Icon
+                                    name="move"
+                                    className="text-1"
+                                    size={12}
+                                 />
                               </button>
                            </TooltipTrigger>
                            <TooltipContent>Drag to reorder</TooltipContent>
@@ -1026,7 +1029,10 @@ export function BlockGroupItem({
                            onClick={() => setModalStatus(true)}
                            aria-label="Add content"
                         >
-                           <Pencil className="w-3.5 h-3.5 hover:text-blue-500" />
+                           <Icon
+                              name="pencil"
+                              className="w-3.5 h-3.5 hover:text-blue-500"
+                           />
                         </button>
                         <button
                            className="flex h-5 w-5 items-center justify-center"
@@ -1037,7 +1043,10 @@ export function BlockGroupItem({
                            }}
                            aria-label="Delete"
                         >
-                           <Trash className="w-3.5 h-3.5 hover:text-red-400" />
+                           <Icon
+                              name="trash"
+                              className="w-3.5 h-3.5 hover:text-red-400"
+                           />
                         </button>
                         <div className="relative h-5 z-20 mx-auto flex w-20 items-center justify-center">
                            <Listbox value={element?.labelColor}>
@@ -1105,7 +1114,8 @@ export function BlockGroupItem({
                         onClick={() => setModalStatus(true)}
                         aria-label="Add content"
                      >
-                        <FileText
+                        <Icon
+                           name="file-text"
                            className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
                            size={14}
                         />
@@ -1147,7 +1157,8 @@ export function BlockGroupItem({
                      onClick={() => setModalStatus(true)}
                      aria-label="Add content"
                   >
-                     <FileText
+                     <Icon
+                        name="file-text"
                         className="text-zinc-400 dark:text-zinc-500 group-hover/doc:text-zinc-500 group-hover/doc:dark:text-zinc-200"
                         size={14}
                      />
@@ -1170,7 +1181,11 @@ export function BlockGroupItem({
                                  {...listeners}
                                  className="flex h-7 w-7 pt-1.5 pl-1.5 cursor-grab items-center justify-center rounded-md"
                               >
-                                 <Move className="text-1" size={16} />
+                                 <Icon
+                                    name="move"
+                                    className="text-1"
+                                    size={16}
+                                 />
                               </TooltipTrigger>
                               <TooltipContent>Drag to reorder</TooltipContent>
                            </Tooltip>
@@ -1191,7 +1206,10 @@ export function BlockGroupItem({
                                     }}
                                     className="flex group/delete items-center justify-center w-full h-6"
                                  >
-                                    <Trash className="w-2.5 h-2.5 group-hover/delete:text-red-400" />
+                                    <Icon
+                                       name="trash"
+                                       className="w-2.5 h-2.5 group-hover/delete:text-red-400"
+                                    />
                                  </TooltipTrigger>
                                  <TooltipContent>Delete</TooltipContent>
                               </Tooltip>
@@ -1202,7 +1220,10 @@ export function BlockGroupItem({
                                     aria-label="Add content"
                                     className="flex group/edit items-center justify-center w-full h-6"
                                  >
-                                    <Pencil className="w-2.5 h-2.5 group-hover/edit:text-blue-500" />
+                                    <Icon
+                                       name="pencil"
+                                       className="w-2.5 h-2.5 group-hover/edit:text-blue-500"
+                                    />
                                  </TooltipTrigger>
                                  <TooltipContent>Add content</TooltipContent>
                               </Tooltip>
@@ -1214,9 +1235,9 @@ export function BlockGroupItem({
                            className="flex px-2 h-6 bg-2-sub pl-2.5 items-center justify-center"
                         >
                            {editMode ? (
-                              <X size={14} />
+                              <Icon name="x" size={14} />
                            ) : (
-                              <MoreHorizontal size={16} />
+                              <Icon name="more-horizontal" size={16} />
                            )}
                         </button>
                      </div>
@@ -1308,7 +1329,11 @@ export function BlockGroupItem({
                            alt={element?.name ?? "Icon"}
                         />
                      ) : (
-                        <Component className="text-1 mx-auto" size={18} />
+                        <Icon
+                           name="component"
+                           className="text-1 mx-auto"
+                           size={18}
+                        />
                      )}
                   </div>
                   <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
@@ -1332,7 +1357,11 @@ export function BlockGroupItem({
                   <span className="text-zinc-200 dark:text-zinc-400 group-hover:underline text-xs">
                      Close
                   </span>
-                  <X size={16} className="text-white dark:text-zinc-500" />
+                  <Icon
+                     name="x"
+                     size={16}
+                     className="text-white dark:text-zinc-500"
+                  />
                </button>
             </div>
             <div
@@ -1349,7 +1378,11 @@ export function BlockGroupItem({
                               alt={element?.name ?? "Icon"}
                            />
                         ) : (
-                           <Component className="text-1 mx-auto" size={18} />
+                           <Icon
+                              name="component"
+                              className="text-1 mx-auto"
+                              size={18}
+                           />
                         )}
                      </span>
                      <span className="font-bold font-header text-lg">

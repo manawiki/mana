@@ -3,16 +3,9 @@ import { Fragment, useState } from "react";
 import { Menu, Transition, Switch } from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-import {
-   LogOut,
-   Settings,
-   User as UserLucideIcon,
-   Loader2,
-   Moon,
-   Sun,
-} from "lucide-react";
 import { Drawer } from "vaul";
 
+import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
 import {
    LoggedIn,
@@ -32,7 +25,7 @@ export const UserMenu = () => {
             <section className="z-50 flex h-14 w-full items-center justify-end gap-2.5 max-laptop:hidden">
                <Menu as="div" className="relative">
                   <Menu.Button className="bg-3 shadow-1 border-color flex h-9 w-9 items-center justify-center rounded-xl border shadow-sm">
-                     <UserLucideIcon size={20} />
+                     <Icon name="user" size={20} />
                   </Menu.Button>
                   <Transition
                      as={Fragment}
@@ -58,7 +51,8 @@ export const UserMenu = () => {
                                     <div className="flex-grow text-left">
                                        Settings
                                     </div>
-                                    <Settings
+                                    <Icon
+                                       name="settings"
                                        size={18}
                                        className="text-zinc-500 dark:text-zinc-400"
                                     />
@@ -78,7 +72,8 @@ export const UserMenu = () => {
                                     <div className="flex-grow text-left">
                                        Logout
                                     </div>
-                                    <LogOut
+                                    <Icon
+                                       name="log-out"
                                        size={16}
                                        className="text-zinc-500 dark:text-zinc-400"
                                     />
@@ -107,7 +102,11 @@ export const UserMenu = () => {
                               className="dark:bg-dark400 flex items-center gap-2 rounded-lg 
                                  bg-zinc-200/40 px-3 py-3 text-sm font-bold"
                            >
-                              <Settings size={16} className="text-zinc-400" />
+                              <Icon
+                                 name="settings"
+                                 size={16}
+                                 className="text-zinc-400"
+                              />
                               Settings
                            </li>
                         </ul>
@@ -201,7 +200,10 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                                      focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
                                                 >
                                                    {deleting ? (
-                                                      <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                                                      <Icon
+                                                         name="loader-2"
+                                                         className="mx-auto h-5 w-5 animate-spin text-red-200"
+                                                      />
                                                    ) : (
                                                       "Delete"
                                                    )}
@@ -233,7 +235,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                   justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
                >
                   <div className="font-bold">Logout</div>
-                  <LogOut size={18} className="text-zinc-400" />
+                  <Icon name="log-out" size={18} className="text-zinc-400" />
                </button>
             </LoggedIn>
          </div>
@@ -359,9 +361,17 @@ export const ThemeToggleMobile = () => {
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <Moon className="h-3 w-3 text-zinc-400" />
+                     <Icon
+                        name="moon"
+                        title="Dark Mode"
+                        className="h-3 w-3 text-zinc-400"
+                     />
                   ) : (
-                     <Sun className="h-4 w-4 text-zinc-500" />
+                     <Icon
+                        name="sun"
+                        title="Light Mode"
+                        className="h-4 w-4 text-zinc-500"
+                     />
                   )}
                </div>
             </Switch>
@@ -409,9 +419,17 @@ const ThemeToggleDesktop = () => {
                   )}
                >
                   {theme == Theme.DARK ? (
-                     <Moon className="h-2.5 w-2.5 text-zinc-400" />
+                     <Icon
+                        name="moon"
+                        title="Dark Mode"
+                        className="h-2.5 w-2.5 text-zinc-400"
+                     />
                   ) : (
-                     <Sun className="h-[13px] w-[13px] text-zinc-500" />
+                     <Icon
+                        name="sun"
+                        title="Light Mode"
+                        className="h-[13px] w-[13px] text-zinc-500"
+                     />
                   )}
                </div>
             </Switch>

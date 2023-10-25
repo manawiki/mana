@@ -15,19 +15,13 @@ import {
    useMatches,
    useParams,
 } from "@remix-run/react";
-import {
-   Component,
-   Loader2,
-   ChevronLeft,
-   ChevronRight,
-   Plus,
-} from "lucide-react";
 import { nanoid } from "nanoid";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry, Site } from "payload/generated-types";
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
@@ -152,12 +146,14 @@ export default function CollectionList() {
                            type="submit"
                         >
                            {addingUpdate ? (
-                              <Loader2
+                              <Icon
+                                 name="loader-2"
                                  size={14}
                                  className="animate-spin text-zinc-400 dark:text-zinc-300"
                               />
                            ) : (
-                              <Plus
+                              <Icon
+                                 name="plus"
                                  className="text-zinc-400 dark:text-zinc-300"
                                  size={14}
                               />
@@ -193,7 +189,11 @@ export default function CollectionList() {
                                  loading={int > 10 ? "lazy" : undefined}
                               />
                            ) : (
-                              <Component className="text-1 mx-auto" size={18} />
+                              <Icon
+                                 name="component"
+                                 className="text-1 mx-auto"
+                                 size={18}
+                              />
                            )}
                         </div>
                         <span className="text-sm font-bold group-hover:underline">
@@ -227,8 +227,13 @@ export default function CollectionList() {
                            })
                         }
                      >
-                        <ChevronLeft size={18} className="text-zinc-500" />
-                        Prev
+                        <Icon
+                           name="chevron-left"
+                           size={18}
+                           className="text-zinc-500"
+                        >
+                           Prev
+                        </Icon>
                      </button>
                   ) : null}
                   {hasNextPage && hasPrevPage && (
@@ -245,7 +250,12 @@ export default function CollectionList() {
                         }
                      >
                         Next
-                        <ChevronRight size={18} className="text-zinc-500" />
+                        <Icon
+                           name="chevron-right"
+                           title="Next"
+                           size={18}
+                           className="text-zinc-500"
+                        />
                      </button>
                   ) : null}
                </div>

@@ -1,15 +1,6 @@
 import { useEffect, useRef } from "react";
 
 import { FloatingDelayGroup } from "@floating-ui/react";
-import {
-   Bold,
-   Edit,
-   Italic,
-   Link2,
-   Link2Off,
-   Strikethrough,
-   Underline,
-} from "lucide-react";
 import { createPortal } from "react-dom";
 import {
    Editor,
@@ -21,6 +12,7 @@ import {
 import { useFocused, useSlate } from "slate-react";
 
 import Button from "~/components/Button";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
 import type { CustomElement, LinkElement, TextBlock } from "../types";
@@ -194,7 +186,7 @@ export function Toolbar() {
                                        : ""
                                  } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                               >
-                                 <Link2 size={14} />
+                                 <Icon name="link-2" size={14} />
                               </Button>
                            </TooltipTrigger>
                            <TooltipContent>Add Link</TooltipContent>
@@ -212,7 +204,7 @@ export function Toolbar() {
                                     : ""
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
-                              <Bold size={14} />
+                              <Icon name="bold" size={14} />
                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>Toggle Bold</TooltipContent>
@@ -229,7 +221,7 @@ export function Toolbar() {
                                     : ""
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
-                              <Italic size={14} />
+                              <Icon name="italic" size={14} />
                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>Toggle Italic</TooltipContent>
@@ -246,7 +238,7 @@ export function Toolbar() {
                                     : ""
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
-                              <Underline size={14} />
+                              <Icon name="underline" size={14} />
                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>Toggle Underline</TooltipContent>
@@ -265,7 +257,7 @@ export function Toolbar() {
                                     : ""
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
-                              <Strikethrough size={14} />
+                              <Icon name="strikethrough" size={14} />
                            </Button>
                         </TooltipTrigger>
                         <TooltipContent>Toggle Strikethrough</TooltipContent>
@@ -290,7 +282,11 @@ export function Toolbar() {
                               }
                            }}
                         >
-                           <Link2Off className="text-red-400" size={16} />
+                           <Icon
+                              name="link-2-off"
+                              className="text-red-400"
+                              size={16}
+                           />
                         </Button>
                      </TooltipTrigger>
                      <TooltipContent>Remove Link</TooltipContent>
@@ -310,7 +306,11 @@ export function Toolbar() {
                               wrapLink(editor, url);
                            }}
                         >
-                           <Edit className="text-blue-400" size={14} />
+                           <Icon
+                              name="link-2"
+                              className="text-blue-400"
+                              size={14}
+                           />
                         </Button>
                      </TooltipTrigger>
                      <TooltipContent>Update Link</TooltipContent>
