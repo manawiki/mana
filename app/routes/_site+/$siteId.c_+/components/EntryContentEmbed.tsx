@@ -9,11 +9,11 @@ import {
    useMatches,
    useParams,
 } from "@remix-run/react";
-import { MoreHorizontal, X } from "lucide-react";
 import { lazily } from "react-lazily";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { H2Default } from "~/components/H2";
+import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
@@ -104,9 +104,16 @@ export function EntryContentEmbed({
                                        rounded-full z-20 hover:dark:bg-dark400 hover:bg-zinc-100 active:translate-y-0.5"
                                     >
                                        {open ? (
-                                          <X className="text-1" size={14} />
+                                          <Icon
+                                             name="x"
+                                             className="text-1"
+                                             size={14}
+                                          />
                                        ) : (
-                                          <MoreHorizontal size={16} />
+                                          <Icon
+                                             name="more-horizontal"
+                                             size={16}
+                                          />
                                        )}
                                     </TooltipTrigger>
                                     <TooltipContent>Settings</TooltipContent>

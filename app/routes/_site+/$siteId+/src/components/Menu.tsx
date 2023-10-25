@@ -1,8 +1,8 @@
 import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { Component, Database, PenSquare, Pin } from "lucide-react";
 
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/src/components";
 
@@ -74,7 +74,12 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                   <div className="flex items-center gap-1.5 pb-2 desktop:gap-3.5 desktop:pl-2.5">
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:hidden" />
                      <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
-                        <Pin className="text-zinc-500" size={16} />
+                        <Icon
+                           name="pin"
+                           title="Pinned"
+                           className="text-zinc-500"
+                           size={16}
+                        />
                         {/* <span className="max-desktop:hidden">Pinned</span> */}
                      </div>
                      <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
@@ -105,7 +110,8 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                                        alt="Pinned Icon"
                                     />
                                  ) : (
-                                    <Component
+                                    <Icon
+                                       name="component"
                                        className="text-1 mx-auto"
                                        size={24}
                                     />
@@ -138,7 +144,12 @@ export const PinnedList = ({
       site?.pinned?.length > 1 && (
          <>
             <div className="flex items-center gap-2 pb-2.5 pl-2 pt-5">
-               <Pin className="text-zinc-500" size={14} />
+               <Icon
+                  name="pin"
+                  title="Pinned"
+                  className="text-zinc-500"
+                  size={14}
+               />
                <span className="text-1 text-sm font-bold">Pinned</span>
             </div>
             <ul className="space-y-2">
@@ -163,7 +174,8 @@ export const PinnedList = ({
                                     alt="Pinned Icon"
                                  />
                               ) : (
-                                 <Component
+                                 <Icon
+                                    name="component"
                                     className="text-1 mx-auto"
                                     size={24}
                                  />
@@ -201,7 +213,8 @@ export const PrimaryMenuLinks = ({
                   className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
-                  <PenSquare
+                  <Icon
+                     name="pen-square"
                      size={15}
                      className={clsx(
                         isActive
@@ -209,8 +222,9 @@ export const PrimaryMenuLinks = ({
                            : "text-zinc-400 dark:text-zinc-500",
                         "desktop:mr-1",
                      )}
-                  />
-                  <span>Posts</span>
+                  >
+                     Posts
+                  </Icon>
                </div>
             )}
          </NavLink>
@@ -224,7 +238,9 @@ export const PrimaryMenuLinks = ({
                   className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
-                  <Database
+                  <Icon
+                     name="database"
+                     title="collections"
                      size={15}
                      className={clsx(
                         isActive
@@ -232,8 +248,9 @@ export const PrimaryMenuLinks = ({
                            : "text-zinc-400 dark:text-zinc-500",
                         "desktop:mr-1",
                      )}
-                  />
-                  <span>Collections</span>
+                  >
+                     Collections
+                  </Icon>
                </div>
             )}
          </NavLink>

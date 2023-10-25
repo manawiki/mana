@@ -18,18 +18,12 @@ import {
    useParams,
 } from "@remix-run/react";
 import clsx from "clsx";
-import {
-   ChevronDown,
-   GripVertical,
-   ListPlus,
-   Loader2,
-   PlusCircle,
-} from "lucide-react";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
 import urlSlug from "url-slug";
 import { z } from "zod";
 
+import { Icon } from "~/components/Icon";
 import type { Collection, Site } from "~/db/payload-types";
 import { isAdding, useDebouncedValue, useIsMount } from "~/utils";
 
@@ -117,7 +111,8 @@ export function Sections() {
                <div className="text-[10px] font-bold text-1 pl-2.5">
                   Sections
                </div>
-               <ChevronDown
+               <Icon
+                  name="chevron-down"
                   className={clsx(
                      isSectionsOpen ? "rotate-180" : "",
                      "transform transition duration-300 text-1 ease-in-out",
@@ -139,7 +134,11 @@ export function Sections() {
                      method="post"
                   >
                      <div className="flex items-center gap-3 pl-0.5 flex-grow">
-                        <ListPlus className="text-1 flex-none" size={16} />
+                        <Icon
+                           name="list-plus"
+                           className="text-1 flex-none"
+                           size={16}
+                        />
                         <input
                            required
                            placeholder="Type a section name..."
@@ -192,12 +191,17 @@ export function Sections() {
                         <div className="flex items-center gap-2">
                            <span className="text-1 text-xs font-bold">Add</span>
                            {addingSection ? (
-                              <Loader2
+                              <Icon
+                                 name="loader-2"
                                  size={14}
                                  className="animate-spin text-zinc-400"
                               />
                            ) : (
-                              <PlusCircle className="text-zinc-400" size={14} />
+                              <Icon
+                                 name="plus-circle"
+                                 className="text-zinc-400"
+                                 size={14}
+                              />
                            )}
                         </div>
                      </button>
@@ -349,7 +353,7 @@ export function SortableSectionItem({
                ref={setActivatorNodeRef}
                {...listeners}
             >
-               <GripVertical size={14} className="text-1" />
+               <Icon name="grip-vertical" className="text-1" />
             </div>
             <input
                required

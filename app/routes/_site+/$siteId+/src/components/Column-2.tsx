@@ -1,8 +1,8 @@
 import { NavLink } from "@remix-run/react";
 import clsx from "clsx";
-import { Database, HardDrive, Home, Lock, PenSquare } from "lucide-react";
 
 import { settings } from "mana-config";
+import { Icon } from "~/components/Icon";
 import type { Site, User } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 
@@ -22,18 +22,18 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   to={`/${site.slug}`}
                >
                   {({ isActive }) => (
-                     <>
-                        <Home
-                           size={15}
-                           className={clsx(
-                              isActive
-                                 ? "dark:text-zinc-400 text-zinc-500"
-                                 : "text-zinc-400 dark:text-zinc-500",
-                              "desktop:mr-0.5",
-                           )}
-                        />
+                     <Icon
+                        name="home"
+                        title="Home"
+                        className={clsx(
+                           isActive
+                              ? "dark:text-zinc-400 text-zinc-500"
+                              : "text-zinc-400 dark:text-zinc-500",
+                           "desktop:mr-0.5 w-[15px] h-[15px]",
+                        )}
+                     >
                         <span className="max-desktop:hidden">Home</span>
-                     </>
+                     </Icon>
                   )}
                </NavLink>
                <NavLink
@@ -44,18 +44,19 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   to={`/${site.slug}/posts`}
                >
                   {({ isActive }) => (
-                     <>
-                        <PenSquare
-                           size={15}
-                           className={clsx(
-                              isActive
-                                 ? "dark:text-zinc-400 text-zinc-500"
-                                 : "text-zinc-400 dark:text-zinc-500",
-                              "desktop:mr-0.5",
-                           )}
-                        />
+                     <Icon
+                        name="pen-square"
+                        title="Posts"
+                        size={15}
+                        className={clsx(
+                           isActive
+                              ? "dark:text-zinc-400 text-zinc-500"
+                              : "text-zinc-400 dark:text-zinc-500",
+                           "desktop:mr-0.5",
+                        )}
+                     >
                         <span className="max-desktop:hidden">Posts</span>
-                     </>
+                     </Icon>
                   )}
                </NavLink>
                <NavLink
@@ -66,18 +67,18 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   to={`/${site.slug}/collections`}
                >
                   {({ isActive }) => (
-                     <>
-                        <Database
-                           size={15}
-                           className={clsx(
-                              isActive
-                                 ? "dark:text-zinc-400 text-zinc-500"
-                                 : "text-zinc-400 dark:text-zinc-500",
-                              "desktop:mr-0.5",
-                           )}
-                        />
+                     <Icon
+                        name="database"
+                        title="Collections"
+                        className={clsx(
+                           isActive
+                              ? "dark:text-zinc-400 text-zinc-500"
+                              : "text-zinc-400 dark:text-zinc-500",
+                           "desktop:mr-0.5 w-[15px] h-[15px]",
+                        )}
+                     >
                         <span className="max-desktop:hidden">Collections</span>
-                     </>
+                     </Icon>
                   )}
                </NavLink>
             </div>
@@ -89,21 +90,30 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                         className={defaultStyle}
                         href={`https://${site.slug}-db.${settings.domain}/admin`}
                      >
-                        <HardDrive
-                           className="text-zinc-400 dark:text-zinc-500"
-                           size={15}
-                        />
-                        <span className="max-desktop:hidden text-xs">Site</span>
+                        <Icon
+                           name="hard-drive"
+                           title="Site"
+                           className="text-zinc-400 dark:text-zinc-500 w-[15px] h-[15px]"
+                        >
+                           <span className="max-desktop:hidden text-xs">
+                              Site
+                           </span>
+                        </Icon>
                      </a>
                   )}
                </AdminOrStaffOrOwner>
                {user?.roles?.includes("staff") && (
                   <a className={defaultStyle} href="/admin">
-                     <Lock
+                     <Icon
+                        name="lock"
+                        title="Staff"
                         className="text-zinc-400 dark:text-zinc-500"
                         size={15}
-                     />
-                     <span className="max-desktop:hidden text-xs">Staff</span>
+                     >
+                        <span className="max-desktop:hidden text-xs">
+                           Staff
+                        </span>
+                     </Icon>
                   </a>
                )}
             </div>

@@ -4,14 +4,6 @@ import { Popover, Switch } from "@headlessui/react";
 import { type ActionFunction, type MetaFunction, json } from "@remix-run/node";
 import { Link, Outlet, useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import {
-   ChevronDown,
-   ChevronRight,
-   Database,
-   Link as LinkIcon,
-   Loader2,
-   X,
-} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
@@ -19,6 +11,7 @@ import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
@@ -116,7 +109,11 @@ export default function CollectionIndex() {
                         type="submit"
                         onClick={() => setCollectionToggle(!collectionToggle)}
                      >
-                        <Database className="text-zinc-400" size={13} />
+                        <Icon
+                           name="database"
+                           className="text-zinc-400"
+                           size={13}
+                        />
                         New Collection
                      </button>
                   )}
@@ -128,7 +125,7 @@ export default function CollectionIndex() {
                         value="createPost"
                         onClick={() => setCollectionToggle(!collectionToggle)}
                      >
-                        <X className="text-zinc-400" size={16} />
+                        <Icon name="x" className="text-zinc-400" size={16} />
                      </button>
                   )}
                </AdminOrStaffOrOwner>
@@ -165,7 +162,8 @@ export default function CollectionIndex() {
                                           <div className="text-xs group-hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 font-semibold">
                                              Advanced
                                           </div>
-                                          <ChevronDown
+                                          <Icon
+                                             name="chevron-down"
                                              className={clsx(
                                                 open ? "rotate-180" : "",
                                                 "transform transition duration-300 ease-in-out w-3.5 h-3.5",
@@ -215,7 +213,11 @@ export default function CollectionIndex() {
                            </section>
                            <section className="flex items-start justify-between relative">
                               <div className="flex items-center gap-2 space-y-1">
-                                 <LinkIcon className="text-1" size={11} />
+                                 <Icon
+                                    name="link"
+                                    className="text-1"
+                                    size={11}
+                                 />
                                  <SlugField zo={zoCollection} />
                               </div>
                            </section>
@@ -228,7 +230,10 @@ export default function CollectionIndex() {
                               disabled={disabled}
                            >
                               {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin text-zinc-300"
+                                 />
                               ) : (
                                  t("new.action")
                               )}
@@ -260,7 +265,8 @@ export default function CollectionIndex() {
                                        url={row?.icon?.url}
                                     />
                                  ) : (
-                                    <Database
+                                    <Icon
+                                       name="database"
                                        className="text-1 mx-auto"
                                        size={14}
                                     />
@@ -278,7 +284,8 @@ export default function CollectionIndex() {
                                  </button>
                               </AdminOrStaffOrOwner> */}
                            </div>
-                           <ChevronRight
+                           <Icon
+                              name="chevron-right"
                               size={20}
                               className="flex-none text-1"
                            />

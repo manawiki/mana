@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Icon } from "~/components/Icon";
 
 import { getMonthNameFromNumber } from "./methods";
 import { MonthPicker } from "./month-picker";
@@ -31,11 +31,11 @@ export function Header({
 }: HeaderProps) {
    const fromYear = useMemo(
       () => new Date(minDateValue).getFullYear(),
-      [minDateValue]
+      [minDateValue],
    );
    const toYear = useMemo(
       () => new Date(maxDateValue).getFullYear(),
-      [maxDateValue]
+      [maxDateValue],
    );
 
    return (
@@ -47,7 +47,7 @@ export function Header({
             type="button"
             disabled={disabled}
          >
-            <ChevronLeft size={16} />
+            <Icon name="chevron-left" size={16} />
          </button>
          <div className="sdp--header__main">
             <MonthPicker
@@ -70,7 +70,7 @@ export function Header({
             type="button"
             disabled={disabled}
          >
-            <ChevronRight size={16} />
+            <Icon name="chevron-right" size={16} />
          </button>
       </div>
    );

@@ -9,7 +9,6 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { EyeOff, Image, ImageMinus, Trash2 } from "lucide-react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
@@ -22,6 +21,7 @@ import type { Post, Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
+import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
@@ -175,9 +175,9 @@ export default function Post() {
                   active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
                               >
                                  {isShowBanner ? (
-                                    <ImageMinus size={14} />
+                                    <Icon name="image-minus" size={14} />
                                  ) : (
-                                    <Image size={14} />
+                                    <Icon name="image" size={14} />
                                  )}
                               </TooltipTrigger>
                               <TooltipContent>Banner</TooltipContent>
@@ -192,7 +192,11 @@ export default function Post() {
                                     py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                  onClick={() => setUnpublishOpen(true)}
                               >
-                                 <EyeOff className="text-zinc-400" size={12} />
+                                 <Icon
+                                    name="eye-off"
+                                    className="text-zinc-400"
+                                    size={12}
+                                 />
                                  <span className="text-xs">Unpublish</span>
                               </button>
                            )}
@@ -201,7 +205,11 @@ export default function Post() {
                                               px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                               onClick={() => setDeleteOpen(true)}
                            >
-                              <Trash2 className="text-red-400" size={12} />
+                              <Icon
+                                 name="trash-2"
+                                 className="text-red-400"
+                                 size={12}
+                              />
                               <span className="text-xs">Delete</span>
                            </button>
                         </>

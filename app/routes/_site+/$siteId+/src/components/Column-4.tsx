@@ -1,7 +1,5 @@
-import clsx from "clsx";
-import { Component, Dog, Users } from "lucide-react";
-
 import { DarkModeToggle, Image, LogoText } from "~/components";
+import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
 import { LoggedOut } from "~/routes/_auth+/src/components";
@@ -23,7 +21,7 @@ export const ColumnFour = ({ site }: { site: Site }) => {
                {site.about && (
                   <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
                      <div className="flex items-center gap-1.5 pb-2.5">
-                        <Component size={14} />
+                        <Icon name="component" title="About" size={14} />
                         <span className="text-1 text-sm font-bold">About</span>
                      </div>
                      <div className="text-1 text-sm">{site.about}</div>
@@ -31,7 +29,7 @@ export const ColumnFour = ({ site }: { site: Site }) => {
                )}
                <section className="p-4 px-4 tablet:px-0 laptop:p-4">
                   <div className="flex items-center gap-1.5 pb-3">
-                     <Users size={14} />
+                     <Icon name="users" title="Contributors" size={14} />
                      <span className="text-1 text-sm font-bold">
                         Contributors
                      </span>
@@ -53,7 +51,11 @@ export const ColumnFour = ({ site }: { site: Site }) => {
                                              alt="User Avatar"
                                           />
                                        ) : (
-                                          <Dog className="text-1" size={20} />
+                                          <Icon
+                                             name="dog"
+                                             className="text-1"
+                                             size={20}
+                                          />
                                        )}
                                     </div>
                                  </TooltipTrigger>
@@ -79,7 +81,11 @@ export const ColumnFour = ({ site }: { site: Site }) => {
                                           className="bg-3 shadow-1 flex h-9 w-9 items-center
                                                 justify-center overflow-hidden rounded-full shadow-sm dark:border-zinc-700"
                                        >
-                                          <Dog className="text-1" size={20} />
+                                          <Icon
+                                             name="dog"
+                                             className="text-1"
+                                             size={20}
+                                          />
                                        </div>
                                     )}
                                  </div>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { json, redirect, type ActionFunction } from "@remix-run/node";
 import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
-import { ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
@@ -10,6 +9,7 @@ import { z } from "zod";
 
 import { Modal } from "~/components";
 import { FormLabel } from "~/components/Forms";
+import { Icon } from "~/components/Icon";
 import { BlockType } from "~/routes/_editor+/core/types";
 import {
    assertIsPost,
@@ -88,7 +88,7 @@ export function NewSiteModal() {
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}
             >
-               <Plus size={20} />
+               <Icon name="plus" size={20} />
             </button>
          </div>
          <Modal
@@ -175,7 +175,10 @@ export function NewSiteModal() {
                                                             border-zinc-500 bg-white hover:border-zinc-700 hover:bg-zinc-100
                                                             dark:bg-zinc-600 dark:hover:border-zinc-400"
                               >
-                                 <ImagePlus className="h-5 w-5 text-zinc-400" />
+                                 <Icon
+                                    name="image-plus"
+                                    className="h-5 w-5 text-zinc-400"
+                                 />
                               </div>
                            )}
                            <input
@@ -212,7 +215,10 @@ export function NewSiteModal() {
                         disabled={disabled}
                      >
                         {adding ? (
-                           <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
+                           <Icon
+                              name="loader-2"
+                              className="mx-auto h-5 w-5 animate-spin text-zinc-300"
+                           />
                         ) : (
                            t("new.action")
                         )}
@@ -228,7 +234,7 @@ export function NewSiteModal() {
                             hover:bg-red-50 dark:hover:bg-zinc-700"
                   onClick={() => setIsOpen(false)}
                >
-                  <X className="h-6 w-6 text-red-400" />
+                  <Icon name="x" className="h-6 w-6 text-red-400" />
                </button>
             </div>
          </Modal>

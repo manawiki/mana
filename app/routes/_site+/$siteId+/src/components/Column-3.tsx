@@ -2,18 +2,10 @@ import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { Link, Outlet } from "@remix-run/react";
-import {
-   Loader2,
-   LogOut,
-   MenuIcon,
-   Search,
-   Settings2,
-   Users2,
-   X,
-} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import {
    LoggedOut,
@@ -78,7 +70,10 @@ export const ColumnThree = ({
                                        {site.name}
                                     </div>
                                     <div className="text-[10px] flex items-center gap-1">
-                                       <Users2 className="text-1" size={12} />
+                                       <Icon
+                                          name="users-2"
+                                          className="text-1 w-3 h-3"
+                                       />
                                        <span className="dark:text-zinc-500 text-zinc-400">
                                           {site?.followers}
                                        </span>
@@ -97,17 +92,17 @@ export const ColumnThree = ({
                                        items-center justify-center rounded-full transition duration-300 active:translate-y-0.5"
                                           >
                                              {open ? (
-                                                <X
-                                                   size={20}
+                                                <Icon
+                                                   name="x"
                                                    className={`${
                                                       open && "text-red-500"
-                                                   } transition duration-150 ease-in-out`}
+                                                   } transition duration-150 ease-in-out w-5 h-5`}
                                                 />
                                              ) : (
                                                 <>
-                                                   <Settings2
-                                                      size={20}
-                                                      className="transition duration-150 ease-in-out"
+                                                   <Icon
+                                                      name="settings-2"
+                                                      className="transition duration-150 ease-in-out w-5 h-5"
                                                    />
                                                 </>
                                              )}
@@ -140,9 +135,9 @@ export const ColumnThree = ({
                                                             className="text-1 flex w-full items-center gap-3 rounded-lg
                                                       px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                          >
-                                                            <LogOut
-                                                               className="text-red-400"
-                                                               size="18"
+                                                            <Icon
+                                                               name="log-out"
+                                                               className="text-red-400 w-4.5 h-4.5"
                                                             />
                                                             {t(
                                                                "follow.actionUnfollow",
@@ -184,7 +179,10 @@ export const ColumnThree = ({
                                   px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
                                        >
                                           {adding ? (
-                                             <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                             <Icon
+                                                name="loader-2"
+                                                className="mx-auto h-5 w-5 animate-spin"
+                                             />
                                           ) : (
                                              t("follow.actionFollow")
                                           )}
@@ -200,7 +198,7 @@ export const ColumnThree = ({
                                     setSearchToggle(true);
                                  }}
                               >
-                                 <Search size={20} />
+                                 <Icon name="search" className="w-5 h-5" />
                               </button>
                               <button
                                  className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
@@ -208,7 +206,7 @@ export const ColumnThree = ({
                                  aria-label="Menu"
                                  onClick={() => setPrimaryMenuOpen(true)}
                               >
-                                 <MenuIcon size={20} />
+                                 <Icon name="menu" className="w-5 h-5" />
                               </button>
                               <MobileTray
                                  onOpenChange={setPrimaryMenuOpen}
