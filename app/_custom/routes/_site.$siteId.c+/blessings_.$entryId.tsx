@@ -3,7 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 
 import type { Blessing } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
@@ -156,7 +156,7 @@ const Effects = ({ pageData }: { pageData: Blessing }) => {
 
    return (
       <>
-         <H2Default text="Effect" />
+         <H2 text="Effect" />
          <section className="divide-color-sub shadow-1 bg-2-sub border-color-sub divide-y overflow-hidden rounded-md border shadow-sm">
             {effects?.map((eff, i) => {
                const lv = eff?.level;

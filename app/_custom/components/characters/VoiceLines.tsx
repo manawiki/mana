@@ -1,7 +1,7 @@
 import { Tab } from "@headlessui/react";
 
 import type { Character, Image } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const VoiceLines = ({ pageData }: { pageData: Character }) => {
    const lines = pageData.voice_lines;
@@ -9,7 +9,7 @@ export const VoiceLines = ({ pageData }: { pageData: Character }) => {
       <>
          {lines && lines?.length > 0 ? (
             <>
-               <H2Default text="Voice Lines" />
+               <H2 text="Voice Lines" />
                <table className="mb-3 w-full">
                   <thead></thead>
                   <tbody>

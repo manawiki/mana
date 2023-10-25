@@ -1,5 +1,5 @@
 import type { LightCone } from "payload/generated-custom-types";
-import { H2, H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const Description = ({ pageData }: { pageData: LightCone }) => {
    const description = pageData.description;
@@ -7,7 +7,7 @@ export const Description = ({ pageData }: { pageData: LightCone }) => {
 
    return (
       <>
-         <H2Default text="Description" />
+         <H2 text="Description" />
          {/* Description */}
          <section className="border-color-sub shadow-1 overflow-hidden rounded-lg border shadow-sm">
             <div className="bg-3-sub border-color-sub border-b p-3 text-base">

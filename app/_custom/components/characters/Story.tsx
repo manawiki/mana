@@ -1,7 +1,7 @@
 import { Disclosure } from "@headlessui/react";
 
 import type { Character } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 
 export const Story = ({ pageData }: { pageData: Character }) => {
@@ -10,7 +10,7 @@ export const Story = ({ pageData }: { pageData: Character }) => {
       <>
          {stories && stories?.length > 0 ? (
             <>
-               <H2Default text="Story" />
+               <H2 text="Story" />
                {stories?.map((story, index) => (
                   <div key={index}>
                      <Disclosure>

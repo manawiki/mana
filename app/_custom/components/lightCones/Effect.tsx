@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { LightCone } from "payload/generated-custom-types";
-import { H2, H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const Effect = ({ pageData }: { pageData: LightCone }) => {
    const [skillLevel, setSkillLevel] = useState(1);
@@ -10,7 +10,7 @@ export const Effect = ({ pageData }: { pageData: LightCone }) => {
 
    return (
       <>
-         <H2Default text="Effect" />
+         <H2 text="Effect" />
          <div
             className="bg-2-sub divide-color-sub border-color-sub shadow-1 mb-4 
       divide-y-4 overflow-hidden rounded-lg border shadow-sm"

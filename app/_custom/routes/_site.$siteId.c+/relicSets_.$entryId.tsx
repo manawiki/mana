@@ -5,7 +5,7 @@ import { settings } from "mana-config";
 import type { Relic } from "payload/generated-custom-types";
 import { RelicsInSet } from "~/_custom/components/relicSets/RelicsInSet";
 import { SetEffect } from "~/_custom/components/relicSets/SetEffect";
-import { H2Default } from "~/components";
+import { H2 } from "~/components";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
@@ -49,7 +49,7 @@ export default function CharacterEntry() {
 
    return (
       <Entry>
-         <H2Default text="Set Effect" />
+         <H2 text="Set Effect" />
          <SetEffect pageData={entry.data} />
          {/* Relics in set should have a clickable information pop up (with first selected by default) */}
          {/* Need to collapse all of the same relic (which can have to 5 entries for each rarity) */}

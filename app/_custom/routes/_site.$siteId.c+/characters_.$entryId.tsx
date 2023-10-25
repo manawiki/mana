@@ -13,7 +13,7 @@ import { TotalMaterialCost } from "~/_custom/components/characters/TotalMaterial
 import { Traces } from "~/_custom/components/characters/Traces";
 import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
 import {
@@ -69,7 +69,7 @@ export default function CharacterEntry() {
          />
          <div id="traces"></div>
          {/* Traces / Skills */}
-         <H2Default text="Traces" />
+         <H2 text="Traces" />
          <Traces
             pageData={entry.data.character}
             skillTreeData={entry.data.skillTree.docs}
@@ -77,7 +77,7 @@ export default function CharacterEntry() {
 
          <div id="tree"></div>
          {/* Skill Tree */}
-         <H2Default text="Tree" />
+         <H2 text="Tree" />
          <SkillTree
             pageData={entry.data.character}
             skillTreeData={entry.data.skillTree.docs}
@@ -85,16 +85,16 @@ export default function CharacterEntry() {
 
          <div id="eidolons"></div>
          {/* Eidolons */}
-         <H2Default text="Eidolons" />
+         <H2 text="Eidolons" />
          <Eidolons pageData={entry.data.character} />
 
          <div id="promotion"></div>
          {/* Promotion Costs */}
-         <H2Default text="Promotion Cost" />
+         <H2 text="Promotion Cost" />
          <PromotionCost pageData={entry.data.character} />
 
          {/* Total Materials */}
-         <H2Default text="Total Material Cost" />
+         <H2 text="Total Material Cost" />
          <TotalMaterialCost
             pageData={entry.data.character}
             skillTreeData={entry.data.skillTree.docs}
@@ -102,7 +102,7 @@ export default function CharacterEntry() {
 
          <div id="gallery"></div>
          {/* Image Gallery Section showing all relevant images */}
-         <H2Default text="Image Gallery" />
+         <H2 text="Image Gallery" />
          <ImageGallery pageData={entry.data.character} />
 
          {/* Video Section */}

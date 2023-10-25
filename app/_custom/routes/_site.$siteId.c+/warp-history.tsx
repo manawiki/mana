@@ -16,7 +16,7 @@ import { Bar } from "react-chartjs-2";
 
 import type { Material } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { fetchWithCache } from "~/utils/cache.server";
 
 ChartJS.register(
@@ -74,7 +74,7 @@ export default function HomePage() {
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <H2Default text="Warp History" />
+         <H2 text="Warp History" />
          <div className="justify-left flex items-center gap-x-1">
             <input
                className="my-2 inline-flex rounded-sm border p-2 dark:bg-neutral-800"

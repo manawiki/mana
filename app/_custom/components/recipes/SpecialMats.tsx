@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
    const spec = pageData?.special_material_cost;
@@ -12,7 +12,7 @@ export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
       <>
          {spec && spec?.length > 0 ? (
             <>
-               <H2Default text="Special Materials Required" />
+               <H2 text="Special Materials Required" />
                <section className="border-color-sub bg-2-sub shadow-1 rounded-lg border shadow-sm">
                   <div className="border-color-sub flex items-center gap-2 border-b p-3 text-sm font-bold">
                      <span>Total Required</span>

@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const Ingredients = ({ pageData }: { pageData: Recipe }) => {
    const mats = pageData?.material_cost;
@@ -11,7 +11,7 @@ export const Ingredients = ({ pageData }: { pageData: Recipe }) => {
       <>
          {mats && mats?.length > 0 ? (
             <>
-               <H2Default text="Materials Required" />
+               <H2 text="Materials Required" />
                <div className="bg-2-sub border-color-sub shadow-1 my-1 justify-between rounded-md border p-3 shadow-sm">
                   {mats?.map((mat, key) => {
                      return <ItemQtyFrame mat={mat} key={key} />;

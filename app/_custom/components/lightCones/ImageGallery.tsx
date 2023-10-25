@@ -1,6 +1,6 @@
 import type { LightCone } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2, H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const ImageGallery = ({ pageData }: { pageData: LightCone }) => {
    var galleryname = ["Icon", "Full Image"];
@@ -8,7 +8,7 @@ export const ImageGallery = ({ pageData }: { pageData: LightCone }) => {
 
    return (
       <>
-         <H2Default text="Image Gallery" />
+         <H2 text="Image Gallery" />
          <div className="mb-3 grid w-full grid-cols-3 gap-2">
             {galleryname.map((img: any, i) => (
                <div

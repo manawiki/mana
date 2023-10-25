@@ -1,10 +1,10 @@
 import type { LightCone, Material } from "payload/generated-custom-types";
-import { H2, H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const PromotionCost = ({ pageData }: { pageData: LightCone }) => {
    return (
       <>
-         <H2Default text="Promotion Cost" />
+         <H2 text="Promotion Cost" />
          <table className="talent-table w-full overflow-auto text-sm">
             <thead>
                <tr className="text-sm">

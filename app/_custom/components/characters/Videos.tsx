@@ -1,5 +1,6 @@
 import type { Character } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+
+import { H2 } from "~/components/Headers";
 
 export const Videos = ({ pageData }: { pageData: Character }) => {
    const vids = pageData?.videos;
@@ -7,7 +8,7 @@ export const Videos = ({ pageData }: { pageData: Character }) => {
       <>
          {vids && vids?.length > 0 ? (
             <>
-               <H2Default text="Videos" />
+               <H2 text="Videos" />
                {vids.map((v: any) => {
                   const embedurl = v.url.replace(/.*v=/, "");
 

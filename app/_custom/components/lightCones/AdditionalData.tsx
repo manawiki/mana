@@ -1,5 +1,5 @@
 import type { LightCone } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
    const adata = [
@@ -10,7 +10,7 @@ export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
 
    return (
       <>
-         <H2Default text="Additional Data" />
+         <H2 text="Additional Data" />
          <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
             {adata.map((stat, index) => {
                return (

@@ -1,5 +1,5 @@
 import type { Enemy } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 export const Selector = ({
    pageData,
@@ -20,7 +20,7 @@ export const Selector = ({
    });
    return (
       <>
-         <H2Default text="Select Enemy Version" />
+         <H2 text="Select Enemy Version" />
          <select
             className="mb-2 w-full rounded-md dark:bg-neutral-800"
             onChange={(e) => setVersion(parseInt(e.target.value))}

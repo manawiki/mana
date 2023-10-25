@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 
 export const RelicsInSet = ({
@@ -83,7 +83,7 @@ export const RelicsInSet = ({
 
    return (
       <>
-         <H2Default text="Relics in Set" />
+         <H2 text="Relics in Set" />
          <div className="grid grid-cols-2 gap-3 pb-4 laptop:grid-cols-4">
             {urelics?.map((rname) => {
                // Find the relic's entries in the relicData array

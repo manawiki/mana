@@ -35,7 +35,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
 import { Image } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 
 // Global Count for total imported Warps
 var count = 0;
@@ -75,7 +75,7 @@ export default function WarpSubmission() {
 
    return (
       <div className="mx-auto max-w-[728px] max-laptop:p-3 laptop:pb-20">
-         <H2Default text="How to upload Warp History information" />
+         <H2 text="How to upload Warp History information" />
          <div>
             <Instructions />
 

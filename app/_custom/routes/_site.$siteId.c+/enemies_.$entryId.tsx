@@ -9,7 +9,7 @@ import { Resistances } from "~/_custom/components/enemies/Resistances";
 import { Selector } from "~/_custom/components/enemies/Selector";
 import { Skills } from "~/_custom/components/enemies/Skills";
 import { Stats } from "~/_custom/components/enemies/Stats";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
@@ -54,19 +54,19 @@ export default function CharacterEntry() {
          <Stats pageData={entry.data} version={version} />
 
          {/* Skill List */}
-         <H2Default text="Skills" />
+         <H2 text="Skills" />
          <Skills pageData={entry.data} version={version} />
 
          {/* Resistances */}
-         <H2Default text="Resistances" />
+         <H2 text="Resistances" />
          <Resistances pageData={entry.data} version={version} />
 
          {/* Drop Rewards */}
-         <H2Default text="Drops" />
+         <H2 text="Drops" />
          <Drops pageData={entry.data} version={version} />
 
          {/* Additional Data */}
-         <H2Default text="Additional Data" />
+         <H2 text="Additional Data" />
          <AdditionalData pageData={entry.data} version={version} />
       </Entry>
    );

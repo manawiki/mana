@@ -1,5 +1,6 @@
 import type { Character } from "payload/generated-custom-types";
-import { H2Default } from "~/components/H2";
+
+import { H2 } from "~/components/Headers";
 
 export const Profile = ({ pageData }: { pageData: Character }) => {
    const adata = [
@@ -14,7 +15,7 @@ export const Profile = ({ pageData }: { pageData: Character }) => {
       <>
          {pageData.cv_cn ? (
             <>
-               <H2Default text="Profile" />
+               <H2 text="Profile" />
                <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
                   {adata.map((stat, index) => {
                      return (
