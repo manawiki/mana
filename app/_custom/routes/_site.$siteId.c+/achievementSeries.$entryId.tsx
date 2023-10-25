@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { Check } from "lucide-react";
 
 import { settings } from "mana-config";
 import type { Achievement as AchievementType } from "payload/generated-custom-types";
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
 import {
    customEntryMeta,
@@ -125,7 +125,7 @@ function Achievement({
                }}
             >
                {checked ? (
-                  <Check className="text-green-500" size={16} />
+                  <Icon name="check" className="text-green-500" size={16} />
                ) : (
                   <></>
                )}

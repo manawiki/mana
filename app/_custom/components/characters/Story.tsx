@@ -1,8 +1,8 @@
 import { Disclosure } from "@headlessui/react";
-import { ChevronDown } from "lucide-react";
 
 import type { Character } from "payload/generated-custom-types";
 import { H2Default } from "~/components/H2";
+import { Icon } from "~/components/Icon";
 
 export const Story = ({ pageData }: { pageData: Character }) => {
    const stories = pageData.story;
@@ -33,7 +33,8 @@ export const Story = ({ pageData }: { pageData: Character }) => {
                                           : "text-gray-400"
                                     } ml-auto inline-block `}
                                  >
-                                    <ChevronDown
+                                    <Icon
+                                       name="chevron-down"
                                        className="text-zinc-500"
                                        size={28}
                                     />

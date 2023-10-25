@@ -3,10 +3,10 @@ import { useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { Search, SortDesc } from "lucide-react";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import { List } from "~/routes/_site+/$siteId.c_+/components/List";
 import { customListMeta } from "~/routes/_site+/$siteId.c_+/functions/list";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -226,7 +226,7 @@ const LightConeList = ({ chars }: any) => {
             className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
                      justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-zinc-500" size={20} />
+            <Icon name="search" className="text-zinc-500" size={20} />
             <input
                className="h-10 w-full flex-grow border-0 bg-transparent focus:outline-none"
                placeholder="Search..."
@@ -243,8 +243,9 @@ const LightConeList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-zinc-500" />
-               Sort
+               <Icon name="sort" size={16} className="text-zinc-500">
+                  Sort
+               </Icon>
             </div>
             <div className="flex items-center gap-2">
                {sortOptions.map((opt) => (

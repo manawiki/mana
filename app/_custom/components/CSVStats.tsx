@@ -1,5 +1,6 @@
 import { Disclosure } from "@headlessui/react";
-import { Binary, ChevronDown } from "lucide-react";
+
+import { Icon } from "~/components/Icon";
 
 // =====================================
 // Collapsible CSV Stat Text box
@@ -12,14 +13,14 @@ export const CSVStats = ({ statsCSV }: { statsCSV?: string }) =>
                   className="border-color-sub bg-2-sub shadow-1 mb-2 flex w-full items-center
                          gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                >
-                  <Binary size={20} className="text-zinc-500" />
+                  <Icon name="binary" size={20} className="text-zinc-500" />
                   Raw Stats for all Levels
                   <div
                      className={`${
                         open ? "font-bol rotate-180 transform" : ""
                      } ml-auto inline-block `}
                   >
-                     <ChevronDown size={28} />
+                     <Icon name="chevron-down" size={28} />
                   </div>
                </Disclosure.Button>
                <Disclosure.Panel className="">

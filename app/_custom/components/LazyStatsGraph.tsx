@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 
 import { Disclosure } from "@headlessui/react";
-import { BarChart2, ChevronDown } from "lucide-react";
 import { lazily } from "react-lazily";
+
+import { Icon } from "~/components/Icon";
 
 import type { StatsType } from "./StatsGraph";
 
@@ -28,14 +29,15 @@ export const LazyStatsGraph = ({
                   className="border-color-sub bg-2-sub shadow-1 mb-2 flex w-full items-center
                          gap-3 rounded-lg border px-4 py-3 font-bold shadow-sm"
                >
-                  <BarChart2 size={20} className="text-zinc-500" />
-                  Stat Graph
+                  <Icon name="bar-chart-2" size={20} className="text-zinc-500">
+                     Stat Graph
+                  </Icon>
                   <div
                      className={`${
                         open ? "font-bol rotate-180 transform" : ""
                      } ml-auto inline-block `}
                   >
-                     <ChevronDown size={28} />
+                     <Icon name="chevron-down" size={28} />
                   </div>
                </Disclosure.Button>
                <Disclosure.Panel className="mb-5 border-color-sub bg-2-sub">

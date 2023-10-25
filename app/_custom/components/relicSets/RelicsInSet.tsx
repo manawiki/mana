@@ -1,10 +1,9 @@
 import { useState } from "react";
 
-import { Star } from "lucide-react";
-
 import type { RelicSet, Relic } from "payload/generated-custom-types";
 import { Image } from "~/components";
-import { H2, H2Default } from "~/components/H2";
+import { H2Default } from "~/components/H2";
+import { Icon } from "~/components/Icon";
 
 export const RelicsInSet = ({
    pageData,
@@ -145,7 +144,7 @@ export const RelicsInSet = ({
                   }}
                >
                   {r}
-                  <Star className="text-zinc-500" size={16} />
+                  <Icon name="star" className="text-zinc-500" size={16} />
                </button>
             ))}
          </div>

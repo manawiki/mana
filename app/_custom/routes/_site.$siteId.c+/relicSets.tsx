@@ -4,9 +4,9 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
-import { Search, SortDesc } from "lucide-react";
 
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import { List } from "~/routes/_site+/$siteId.c_+/components/List";
 import {
    customListMeta,
@@ -169,7 +169,7 @@ const RelicSetList = ({ chars }: any) => {
             className="border-color-sub bg-2-sub shadow-1 mb-2 mt-3 flex h-12 items-center
                       justify-between gap-3 rounded-lg border px-3 shadow-sm"
          >
-            <Search className="text-zinc-500" size={20} />
+            <Icon name="search" className="text-zinc-500" size={20} />
             <input
                className="h-10 w-full border-0 focus:border-0 flex-grow bg-transparent focus:outline-none"
                placeholder="Search..."
@@ -186,8 +186,9 @@ const RelicSetList = ({ chars }: any) => {
          {/* Sort Options */}
          <div className="flex items-center justify-between py-3">
             <div className="text-1 flex items-center gap-2 text-sm font-bold">
-               <SortDesc size={16} className="text-zinc-500" />
-               Sort
+               <Icon name="sort" size={16} className="text-zinc-500">
+                  Sort
+               </Icon>
             </div>
             <div className="flex items-center gap-2">
                {sortOptions.map((opt: any) => (
