@@ -4,14 +4,13 @@ import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import { select } from "payload-query";
-import { plural } from "pluralize";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import type { Entry, User } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
-import { gqlEndpoint, toWords } from "~/utils";
+import { gqlFormat, gqlEndpoint } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export type EntryType = {
@@ -267,11 +266,11 @@ export async function getEntryFields({
 
    //Check if customDatabase is selected
    if (collection?.customDatabase) {
-      const formattedNamePlural = plural(toWords(collection?.slug, true));
+      const label = gqlFormat(collection?.slug, "list");
 
       const entryQuery = gql`
       query ($entryId: String!) {
-         entryData: ${formattedNamePlural}(
+         entryData: ${label}(
                where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
             ) {
             docs {
