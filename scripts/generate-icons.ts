@@ -38,7 +38,7 @@ export default function transformIcon(input: string, meta: Meta): string {
       //If it doesn't exist, create it
       fs.writeFileSync(
          iconTypeFile,
-         `export type IconName =\n  | ${name}`,
+         `export type IconName =\n   | ${name}`,
          "utf8",
       );
    }
