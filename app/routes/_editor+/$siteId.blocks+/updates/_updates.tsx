@@ -14,9 +14,9 @@ import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { H2Default } from "~/components/H2";
-// eslint-disable-next-line import/no-cycle
+import { H2 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
+// eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
@@ -76,7 +76,7 @@ export function BlockUpdates({ element }: Props) {
    return (
       <section>
          <>
-            <H2Default text="Updates" />
+            <H2 text="Updates" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
                <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
