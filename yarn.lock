@@ -2050,12 +2050,10 @@
   dependencies:
     which "^3.0.0"
 
-"@payloadcms/plugin-cloud-storage@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-cloud-storage/-/plugin-cloud-storage-1.1.1.tgz#823d0d8316ba11d2b212eec0778f6f6d282a8c0f"
-  integrity sha512-WFqfZcT7R1LD+FfKKKYNsJPDRE+0VlYEMxzGuPKeUQn9w9sqTy2UD01YCEl0Zcyuq8fD9mRUjeLitSo1aAUimQ==
-  dependencies:
-    range-parser "^1.2.1"
+"@payloadcms/plugin-cloud-storage@1.0.14":
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/@payloadcms/plugin-cloud-storage/-/plugin-cloud-storage-1.0.14.tgz#5cb18c6dfb4547b1a4e3ad5a0bd24f52fcc0ff81"
+  integrity sha512-4At5tdbgxt+GLw9Tg8ovAOmblQeTr0Ar1t/C0bIDgDLys+EyxNIJikxAnS7w30tBdIqqHvCPAZcoZQs6AH1m8w==
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
