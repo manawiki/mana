@@ -12,7 +12,7 @@ import {
 import { lazily } from "react-lazily";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
@@ -124,7 +124,7 @@ export function EntryContentEmbed({
                         </>
                      )}
                   </Popover>
-                  {title && !section?.showTitle && <H2Default text={title} />}
+                  {title && !section?.showTitle && <H2 text={title} />}
                   <ManaEditor
                      key={data?.id}
                      collectionSlug="contentEmbeds"
@@ -153,9 +153,7 @@ export function EntryContentEmbed({
             <>
                {hasContent && (
                   <>
-                     {title && !section?.showTitle && (
-                        <H2Default text={title} />
-                     )}
+                     {title && !section?.showTitle && <H2 text={title} />}
                      <EditorView data={data?.content} />
                   </>
                )}
