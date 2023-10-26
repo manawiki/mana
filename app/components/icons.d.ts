@@ -8,6 +8,7 @@ export type IconName =
    | "bar-chart-2"
    | "arrow-right"
    | "arrow-down-wide-narrow"
+   | "sort"
    | "accessibility"
    | "x"
    | "users"
