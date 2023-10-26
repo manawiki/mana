@@ -44,7 +44,7 @@ export async function loader({
          const site = slug?.docs[0];
 
          //List
-         if (pathSection[3]) {
+         if (pathSection[3] && pathSection[4] == null) {
             const collectionData = await payload.find({
                collection: "collections",
                where: {
