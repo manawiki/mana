@@ -92,13 +92,21 @@ export const meta: MetaFunction<typeof loader> = ({
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site;
 
-   const postUrl = site.domain
-      ? `https://${site.domain}/p/${site.slug}`
-      : `https://mana.wiki/p/${postSlug}`;
+   //todo this is producing bad canonical urls
+   // const postUrl = site.domain
+   //    ? `https://${site.domain}/p/${site.slug}`
+   //    : `https://mana.wiki/p/${postSlug}`;
 
    return [
       {
          title:
+            postStatus == "published"
+               ? `${postTitle} - ${siteName}`
+               : `Edit | ${postTitle} - ${siteName}`,
+      },
+      {
+         property: "og:title",
+         content:
             postStatus == "published"
                ? `${postTitle} - ${siteName}`
                : `Edit | ${postTitle} - ${siteName}`,
@@ -111,7 +119,7 @@ export const meta: MetaFunction<typeof loader> = ({
            ]
          : []),
       ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+      // ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
    ];
 };
 

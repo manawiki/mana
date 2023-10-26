@@ -7,6 +7,7 @@ export type IconName =
    | "download"
    | "bar-chart-2"
    | "arrow-right"
+   | "arrow-down-wide-narrow"
    | "sort"
    | "accessibility"
    | "x"
