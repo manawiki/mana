@@ -104,6 +104,13 @@ export const meta: MetaFunction<typeof loader> = ({
                ? `${postTitle} - ${siteName}`
                : `Edit | ${postTitle} - ${siteName}`,
       },
+      {
+         property: "og:title",
+         content:
+            postStatus == "published"
+               ? `${postTitle} - ${siteName}`
+               : `Edit | ${postTitle} - ${siteName}`,
+      },
       { property: "og:site_name", content: site.name },
       ...(postDescription
          ? [
