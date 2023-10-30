@@ -8,35 +8,22 @@ import { settings } from "mana-config";
 import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
 import { List } from "~/routes/_site+/$siteId.c_+/components/List";
-import { customListMeta } from "~/routes/_site+/$siteId.c_+/functions/list";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   customListMeta,
+   fetchList,
+} from "~/routes/_site+/$siteId.c_+/functions/list";
 
 export { customListMeta as meta };
 
-export async function loader({
-   context: { payload },
-   params,
-   request,
-}: LoaderFunctionArgs) {
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: QUERY_LIGHTCONES,
-         }),
+export async function loader({ params }: LoaderFunctionArgs) {
+   const { list } = await fetchList({
+      params,
+      gql: {
+         query: QUERY_LIGHTCONES,
       },
-   );
+   });
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
-
-   return json({ lightCones: data.lightcones.docs });
+   return json({ lightCones: list?.data?.lightcones?.docs });
 }
 
 export default function HomePage() {
