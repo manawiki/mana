@@ -240,7 +240,7 @@ export function BlockSelector({
                   onInsertBelow({
                      id: nanoid(),
                      type: BlockType.Tabs,
-                     tabs: ["First Tab", "Second Tab"],
+                     tabs: ["Tab 1", "Tab 2"],
                      children: [
                         {
                            id: nanoid(),
