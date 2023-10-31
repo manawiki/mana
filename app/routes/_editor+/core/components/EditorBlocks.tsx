@@ -62,7 +62,13 @@ export function EditorBlocks({
          );
       }
       case BlockType.Tabs: {
-         return <BlockTabs element={element} children={children} />;
+         return (
+            <BlockTabs
+               readOnly={readOnly}
+               element={element}
+               children={children}
+            />
+         );
       }
       case BlockType.TabsItem: {
          return <BlockTabsItem element={element} children={children} />;
