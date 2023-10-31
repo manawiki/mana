@@ -19,12 +19,12 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import rdtStylesheet from "remix-development-tools/index.css";
+import rdtStylesheet from "remix-development-tools/index.css?url";
 
 import { settings } from "mana-config";
-import customStylesheetUrl from "~/_custom/styles.css";
+import customStylesheetUrl from "~/_custom/styles.css?url";
 import type { Site } from "~/db/payload-types";
-import fonts from "~/styles/fonts.css";
+import fonts from "~/styles/fonts.css?url";
 import { useIsBot } from "~/utils/isBotProvider";
 import {
    ThemeBody,
@@ -35,7 +35,7 @@ import {
 import { getThemeSession } from "~/utils/theme.server";
 
 import { toast } from "./components/Toaster";
-import tailwindStylesheetUrl from "./styles/global.css";
+import tailwindStylesheetUrl from "./styles/global.css?url";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
