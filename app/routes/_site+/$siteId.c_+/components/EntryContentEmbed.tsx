@@ -76,7 +76,7 @@ export function EntryContentEmbed({
                placement="right-start"
                show
             >
-               <main className="mx-auto max-w-[728px] laptop:w-[728px] group hover:border-color border-transparent border-y border-dashed relative">
+               <main className="mx-auto max-w-[728px] group hover:border-color border-transparent border-y border-dashed relative">
                   <Popover className="group-hover:block absolute right-0 bottom-1 hidden">
                      {({ open }) => (
                         <>

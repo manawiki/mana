@@ -20,6 +20,7 @@ import {
 import { BlockImage } from "../../$siteId.blocks+/image";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
+import { BlockTabs, BlockTabsItem } from "../../$siteId.blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../$siteId.blocks+/toggleblock";
 import { BlockTwoColumn } from "../../$siteId.blocks+/two-column";
 import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
@@ -59,6 +60,12 @@ export function EditorBlocks({
                children={children}
             />
          );
+      }
+      case BlockType.Tabs: {
+         return <BlockTabs element={element} children={children} />;
+      }
+      case BlockType.TabsItem: {
+         return <BlockTabsItem element={element} children={children} />;
       }
       case BlockType.TwoColumn: {
          return (
