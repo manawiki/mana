@@ -26,6 +26,8 @@ export enum BlockType {
    GroupItem = "group-item",
    Updates = "updates",
    ToggleBlock = "toggle-block",
+   Tabs = "tabs",
+   TabsItem = "tabs-item",
    Events = "events",
    EventItem = "event-item",
    TwoColumn = "two-column",
@@ -94,6 +96,18 @@ export type EventsElement = {
    id: string;
    type: BlockType.Events;
    children: [EventItemElement];
+};
+
+export type TabsItemElement = BlockElement & {
+   type: BlockType.TabsItem;
+   tabContent?: [Descendant];
+};
+
+export type TabsElement = {
+   id: string;
+   type: BlockType.Tabs;
+   tabs: string[];
+   children: [TabsItemElement];
 };
 
 export type ListElement = BlockElement & {
@@ -168,6 +182,8 @@ export type CustomElement =
    | LinkElement
    | UpdatesElement
    | ToggleBlockElement
+   | TabsElement
+   | TabsItemElement
    | ListElement
    | GroupElement
    | GroupItemElement

@@ -1,4 +1,5 @@
 export type IconName =
+  | "rectangle-horizontal"
    | "hourglass"
    | "binary"
    | "star"

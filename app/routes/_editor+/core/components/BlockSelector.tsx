@@ -225,6 +225,37 @@ export function BlockSelector({
                   });
                },
             },
+            {
+               label: "Tabs",
+               icon: (
+                  <Icon
+                     name="rectangle-horizontal"
+                     title="Tabs"
+                     className="text-orange-500"
+                     size={12}
+                  />
+               ),
+               description: "Group elements with tabs",
+               onSelect: () => {
+                  onInsertBelow({
+                     id: nanoid(),
+                     type: BlockType.Tabs,
+                     tabs: ["First Tab", "Second Tab"],
+                     children: [
+                        {
+                           id: nanoid(),
+                           type: BlockType.TabsItem,
+                           children: [{ text: "" }],
+                        },
+                        {
+                           id: nanoid(),
+                           type: BlockType.TabsItem,
+                           children: [{ text: "" }],
+                        },
+                     ],
+                  });
+               },
+            },
          ],
       },
    ];
