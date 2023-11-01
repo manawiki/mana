@@ -39,6 +39,10 @@ export const ContentEmbeds: CollectionConfig = {
          type: "text",
       },
       {
+         name: "subSectionId",
+         type: "text",
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",
