@@ -1,8 +1,8 @@
-import * as path from "node:path";
+// import { rdtServerConfig } from "./rdt.config";
 
-import { createRequestHandler } from "@metronome-sh/express";
-import { type RequestHandler } from "@remix-run/express";
-import { broadcastDevReady, installGlobals } from "@remix-run/node";
+import { unstable_createViteServer } from "@remix-run/dev";
+import { createRequestHandler } from "@remix-run/express";
+import { installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
 import morgan from "morgan";
@@ -12,7 +12,6 @@ import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
 import { settings, corsConfig } from "./mana.config";
-import { rdtServerConfig } from "./rdt.config";
 
 // patch in Remix runtime globals
 installGlobals();
@@ -20,24 +19,10 @@ require("dotenv").config();
 sourceMapSupport.install();
 
 // Make sure devDependencies don't ship to production
-const chokidar =
-   process.env.NODE_ENV === "development" ? require("chokidar") : null;
-const rdt =
-   process.env.NODE_ENV === "development"
-      ? require("remix-development-tools/server")
-      : null;
-
-/**
- * @typedef {import('@remix-run/node').ServerBuild} ServerBuild
- */
-const BUILD_PATH = path.resolve("./build/index.js");
-const WATCH_PATH = path.resolve("./build/version.txt");
-
-/**
- * Initial build
- * @type {ServerBuild}
- */
-let build = require(BUILD_PATH);
+// const rdt =
+//    process.env.NODE_ENV === "development"
+//       ? require("remix-development-tools/server")
+//       : null;
 
 const cors = require("cors");
 
@@ -57,6 +42,7 @@ async function startCore() {
    const { corsOrigins } = await corsConfig();
    app.use(cors({ origin: corsOrigins }));
 
+   // Start payload
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");
 
@@ -84,6 +70,23 @@ async function startCore() {
               },
            }),
    });
+
+   app.use(payload.authenticate);
+
+   // handle asset requests
+   let vite =
+      process.env.NODE_ENV === "production"
+         ? undefined
+         : await unstable_createViteServer();
+
+   if (vite) {
+      app.use(vite.middlewares);
+   } else {
+      app.use(
+         "/build",
+         express.static("public/build", { immutable: true, maxAge: "1y" }),
+      );
+   }
 
    app.use(compression());
 
@@ -142,104 +145,29 @@ async function startCore() {
    app.use(express.static("public", { maxAge: "1h" }));
 
    app.use(morgan("tiny"));
-   app.use(payload.authenticate);
 
-   // This makes sure the build is wrapped on reload by RDT
-   if (rdt) build = rdt.withServerDevTools(build, rdtServerConfig);
-
-   // Check if the server is running in development mode and reflect realtime changes in the codebase.
-   // We'll also inject payload in the remix handler so we can use it in our routes.
+   // handle SSR requests
    app.all(
       "*",
-      process.env.NODE_ENV === "development"
-         ? createDevRequestHandler()
-         : createProductionRequestHandler(),
+      createRequestHandler({
+         // @ts-ignore
+         build: vite
+            ? () => {
+                 if (vite) return unstable_loadViteServerBuild(vite);
+              }
+            : await import("./build/index.js"),
+         getLoadContext(req, res) {
+            return {
+               payload: req.payload,
+               user: req?.user,
+               res,
+            };
+         },
+      }),
    );
+
    const port = process.env.PORT || 3000;
-
-   app.listen(port, () => {
-      console.log(`Express server listening on port http://localhost:${port}`);
-
-      if (process.env.NODE_ENV === "development") {
-         broadcastDevReady(build);
-      }
-   });
+   console.log(`Express server listening on port http://localhost:${port}`);
 }
 
 startCore();
-
-// Create a request handler for production
-function createProductionRequestHandler(): RequestHandler {
-   function getLoadContext(req: any, res: any) {
-      return {
-         payload: req.payload,
-         user: req?.user,
-         res,
-      };
-   }
-
-   return createRequestHandler({
-      build,
-      mode: process.env.NODE_ENV,
-      getLoadContext,
-   });
-}
-
-// Create a request handler that watches for changes to the server build during development.
-function createDevRequestHandler(): RequestHandler {
-   async function handleServerUpdate() {
-      // This makes sure the build is wrapped on reload by RDT
-      build = rdt.withServerDevTools(await reimportServer(), rdtServerConfig);
-
-      // Add debugger to assist in v2 dev debugging
-      if (build?.assets === undefined) {
-         console.log(build.assets);
-         debugger;
-      }
-
-      // 2. tell dev server that this app server is now up-to-date and ready
-      broadcastDevReady(build);
-   }
-
-   chokidar
-      .watch(WATCH_PATH, {
-         ignoreInitial: true,
-      })
-      .on("add", handleServerUpdate)
-      .on("change", handleServerUpdate);
-
-   // wrap request handler to make sure its recreated with the latest build for every request
-   return async (req, res, next) => {
-      try {
-         return createRequestHandler({
-            build,
-            mode: "development",
-            getLoadContext(req, res) {
-               return {
-                  payload: req.payload,
-                  user: req?.user,
-                  res,
-               };
-            },
-         })(req, res, next);
-      } catch (error) {
-         next(error);
-      }
-   };
-}
-
-// CJS require cache busting
-/**
- * @type {() => Promise<ServerBuild>}
- */
-async function reimportServer() {
-   // 1. manually remove the server build from the require cache
-   Object.keys(require.cache).forEach((key) => {
-      if (key.startsWith(BUILD_PATH)) {
-         delete require.cache[key];
-      }
-   });
-
-   // 2. re-import the server build
-   return require(BUILD_PATH);
-}

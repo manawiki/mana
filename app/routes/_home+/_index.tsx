@@ -9,7 +9,7 @@ import {
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
-import aosStyles from "aos/dist/aos.css";
+import aosStyles from "aos/dist/aos.css?url";
 import clsx from "clsx";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -22,7 +22,7 @@ import { useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
-import indexStyles from "./styles.css";
+import indexStyles from "./styles.css?url";
 import { LoggedOut, LoggedIn } from "../_auth+/src/components";
 import { FollowingListMobile } from "../_site+/$siteId+/src/components";
 

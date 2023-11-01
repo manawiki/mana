@@ -39,7 +39,7 @@ import tailwindStylesheetUrl from "./styles/global.css?url";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
-import { rdtClientConfig } from "../rdt.config";
+// import { rdtClientConfig } from "../rdt.config";
 
 export const loader = async ({
    context: { user },
@@ -212,11 +212,11 @@ export function AppWithProviders() {
 let AppExport = withMetronome(AppWithProviders);
 
 // Toggle Remix Dev Tools
-if (process.env.NODE_ENV === "development") {
-   const { withDevTools } = require("remix-development-tools");
+// if (process.env.NODE_ENV === "development") {
+//    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, rdtClientConfig);
-}
+//    AppExport = withDevTools(AppExport, rdtClientConfig);
+// }
 
 export default AppExport;
 
