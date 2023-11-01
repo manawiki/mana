@@ -1,3 +1,4 @@
+import mdx from "@mdx-js/rollup";
 import { unstable_vitePlugin as remix } from "@remix-run/dev";
 import { flatRoutes } from "remix-flat-routes";
 import { defineConfig } from "vite";
@@ -20,10 +21,11 @@ export default defineConfig({
          publicPath: process.env.STATIC_URL
             ? `${process.env.STATIC_URL}/build/`
             : "/build/",
-         //  serverDependenciesToBundle: ["nanoid", "react-code-block"],
+         // serverDependenciesToBundle: ["nanoid", "react-code-block"],
          routes: manaRoutes,
       }),
       tsconfigPaths(),
+      mdx(),
    ],
 });
 

@@ -96,6 +96,7 @@
       "zodix": "^0.4.4"
    },
    "devDependencies": {
+      "@mdx-js/rollup": "^3.0.0",
       "@remix-run/dev": "^2.2.0",
       "@remix-run/eslint-config": "^2.2.0",
       "@sly-cli/sly": "^1.4.10",

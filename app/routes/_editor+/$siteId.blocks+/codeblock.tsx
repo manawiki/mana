@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 import { themes } from "prism-react-renderer";
-import { CodeBlock } from "react-code-block";
+import { CodeBlock } from "node_modules/react-code-block/dist/code-block.js";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";

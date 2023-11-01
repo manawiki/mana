@@ -35,11 +35,13 @@ import {
 import { getThemeSession } from "~/utils/theme.server";
 
 import { toast } from "./components/Toaster";
-import tailwindStylesheetUrl from "./styles/global.css?url";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 // import { rdtClientConfig } from "../rdt.config";
+
+//import tailwind as side-effect
+import "./styles/global.css";
 
 export const loader = async ({
    context: { user },
@@ -72,11 +74,9 @@ export const meta: MetaFunction = () => [
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
    { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
-   { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
 
    { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
-   { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
    //add preconnects to cdn to improve first bits
