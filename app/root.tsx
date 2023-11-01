@@ -22,9 +22,7 @@ import { useTranslation } from "react-i18next";
 // import rdtStylesheet from "remix-development-tools/index.css?url";
 
 import { settings } from "mana-config";
-import customStylesheetUrl from "~/_custom/styles.css?url";
 import type { Site } from "~/db/payload-types";
-import fonts from "~/styles/fonts.css?url";
 import { useIsBot } from "~/utils/isBotProvider";
 import {
    ThemeBody,
@@ -40,8 +38,10 @@ import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 // import { rdtClientConfig } from "../rdt.config";
 
-//import tailwind as side-effect
+//css should be imported as side effect for vite
 import "./styles/global.css";
+import "~/_custom/styles.css";
+import "~/styles/fonts.css";
 
 export const loader = async ({
    context: { user },
@@ -72,13 +72,6 @@ export const meta: MetaFunction = () => [
 ];
 
 export const links: LinksFunction = () => [
-   //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
-   { rel: "preload", href: customStylesheetUrl, as: "style" },
-
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
-   { rel: "stylesheet", href: customStylesheetUrl },
-
    //add preconnects to cdn to improve first bits
    {
       rel: "preconnect",

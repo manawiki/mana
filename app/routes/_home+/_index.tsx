@@ -9,7 +9,6 @@ import {
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
-import aosStyles from "aos/dist/aos.css?url";
 import clsx from "clsx";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -22,9 +21,11 @@ import { useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
-import indexStyles from "./styles.css?url";
 import { LoggedOut, LoggedIn } from "../_auth+/src/components";
 import { FollowingListMobile } from "../_site+/$siteId+/src/components";
+
+import "aos/dist/aos.css";
+import "./styles.css";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -105,15 +106,6 @@ export async function loader({
       { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
-
-export const links: LinksFunction = () => [
-   //preload css makes it nonblocking to html renders
-   { rel: "preload", href: indexStyles, as: "style" },
-   { rel: "stylesheet", href: indexStyles },
-
-   { rel: "preload", href: aosStyles, as: "style" },
-   { rel: "stylesheet", href: aosStyles },
-];
 
 export default function IndexMain() {
    useEffect(() => {
