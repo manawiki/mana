@@ -185,8 +185,8 @@ function App() {
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
-            {isBot ? null : <Scripts />}
             <LiveReload />
+            {isBot ? null : <Scripts />}
          </body>
       </html>
    );
