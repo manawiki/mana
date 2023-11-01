@@ -19,7 +19,7 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import rdtStylesheet from "remix-development-tools/index.css?url";
+// import rdtStylesheet from "remix-development-tools/index.css?url";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css?url";
@@ -101,9 +101,9 @@ export const links: LinksFunction = () => [
          settings.siteId ? `${settings.siteId}-static` : "static"
       }.mana.wiki`,
    },
-   ...(process.env.NODE_ENV === "development"
-      ? [{ rel: "stylesheet", href: rdtStylesheet }]
-      : []),
+   // ...(process.env.NODE_ENV === "development"
+   //    ? [{ rel: "stylesheet", href: rdtStylesheet }]
+   //    : []),
 ];
 
 export const handle = {
