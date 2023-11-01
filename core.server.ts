@@ -1,6 +1,7 @@
-// import { rdtServerConfig } from "./rdt.config";
-
-import { unstable_createViteServer } from "@remix-run/dev";
+import {
+   unstable_createViteServer,
+   unstable_loadViteServerBuild,
+} from "@remix-run/dev";
 import { createRequestHandler } from "@remix-run/express";
 import { installGlobals } from "@remix-run/node";
 import compression from "compression";
@@ -18,12 +19,6 @@ installGlobals();
 require("dotenv").config();
 sourceMapSupport.install();
 
-// Make sure devDependencies don't ship to production
-// const rdt =
-//    process.env.NODE_ENV === "development"
-//       ? require("remix-development-tools/server")
-//       : null;
-
 const cors = require("cors");
 
 const transport = nodemailer.createTransport({
@@ -37,8 +32,9 @@ const transport = nodemailer.createTransport({
 });
 
 //Start core site (remix + payload instance)
-async function startCore() {
+async function start() {
    const app = express();
+
    const { corsOrigins } = await corsConfig();
    app.use(cors({ origin: corsOrigins }));
 
@@ -170,4 +166,4 @@ async function startCore() {
    console.log(`Express server listening on port http://localhost:${port}`);
 }
 
-startCore();
+start();
