@@ -169,7 +169,7 @@ export function Sections() {
                                        </span>
                                        <div
                                           className={clsx(
-                                             !checked
+                                             checked
                                                 ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
                                                 : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
                                              "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
@@ -353,7 +353,7 @@ export function SortableSectionItem({
                ref={setActivatorNodeRef}
                {...listeners}
             >
-               <Icon name="grip-vertical" className="text-1" />
+               <Icon name="grip-vertical" size={14} className="text-1" />
             </div>
             <input
                required
@@ -370,7 +370,7 @@ export function SortableSectionItem({
             <div className="flex items-center group gap-2">
                <Switch.Label
                   className={clsx(
-                     titleVisibility
+                     !titleVisibility
                         ? "text-zinc-400"
                         : "dark:text-zinc-200 text-zinc-600",
                      "flex-grow cursor-pointer group-hover:underline font-semibold flex items-center gap-1 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 text-[10px]",
@@ -379,17 +379,17 @@ export function SortableSectionItem({
                   <span>Title</span>
                </Switch.Label>
                <Switch
-                  checked={titleVisibility}
+                  checked={!titleVisibility}
                   onChange={() => setTitleVisibility(!titleVisibility)}
                   as={Fragment}
                >
                   {({ checked }) => (
-                     <div className="dark:border-zinc-600/60 bg-white dark:bg-dark450 relative flex-none flex h-5 w-[36px] items-center rounded-full border">
+                     <div className="dark:border-zinc-600/60 bg-white dark:bg-dark450 relative flex-none flex h-5 w-[34px] items-center rounded-full border">
                         <span className="sr-only">Title</span>
                         <div
                            className={clsx(
                               !checked
-                                 ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
+                                 ? "translate-x-[16px] dark:bg-zinc-300 bg-zinc-400"
                                  : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
                               "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
                            )}
