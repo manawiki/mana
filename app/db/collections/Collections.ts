@@ -154,9 +154,53 @@ export const Collections: CollectionConfig = {
                type: "checkbox",
                label: "Display Title",
                defaultValue: false,
-               access: {
-                  update: isStaffFieldLevel,
-               },
+            },
+            {
+               name: "subSections",
+               type: "array",
+               label: "Sub-Sections",
+               defaultValue: [
+                  {
+                     id: "main",
+                     name: "Main",
+                     type: "editor",
+                  },
+               ],
+               fields: [
+                  {
+                     name: "id",
+                     type: "text",
+                     required: true,
+                     unique: true,
+                  },
+                  {
+                     name: "name",
+                     type: "text",
+                  },
+                  {
+                     name: "type",
+                     type: "select",
+                     required: true,
+                     options: [
+                        {
+                           label: "Editor",
+                           value: "editor",
+                        },
+                        {
+                           label: "Custom Template",
+                           value: "customTemplate",
+                        },
+                        {
+                           label: "Q & A",
+                           value: "qna",
+                        },
+                        {
+                           label: "Comments",
+                           value: "comments",
+                        },
+                     ],
+                  },
+               ],
             },
          ],
       },
