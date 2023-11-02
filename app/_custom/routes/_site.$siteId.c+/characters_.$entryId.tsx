@@ -15,7 +15,6 @@ import { Videos } from "~/_custom/components/characters/Videos";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 import { H2 } from "~/components/Headers";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
 import {
    customEntryMeta,
    fetchEntry,
@@ -62,11 +61,6 @@ export default function CharacterEntry() {
 
          {/* Character Image with Element / Path */}
          <CharacterStatBlock pageData={entry.data.character} />
-         <EntryContentEmbed title="Teams" sectionId="teams" />
-         <EntryContentEmbed
-            title="Recommended Light Cones"
-            sectionId="light-cones"
-         />
          <div id="traces"></div>
          {/* Traces / Skills */}
          <H2 text="Traces" />
