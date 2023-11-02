@@ -95,7 +95,8 @@ export const ColumnThree = ({
                                                 <Icon
                                                    name="x"
                                                    className={`${
-                                                      open && "text-red-500"
+                                                      open &&
+                                                      "tet-zinc-400 dark:text-zinc-500"
                                                    } transition duration-150 ease-in-out w-5 h-5`}
                                                 />
                                              ) : (
@@ -117,11 +118,11 @@ export const ColumnThree = ({
                                              leaveTo="transform opacity-0 scale-95"
                                           >
                                              <Menu.Items
-                                                className="absolute right-0 z-30 mt-1.5 w-full min-w-[200px]
+                                                className="absolute -right-1 z-30 mt-1.5 w-full min-w-[140px]
                                         max-w-md origin-top-right transform transition-all"
                                              >
                                                 <div
-                                                   className="border-color bg-2 shadow-1 rounded-lg border
+                                                   className="border-color-sub bg-2-sub shadow-1 rounded-lg border
                                             p-1.5 shadow-sm"
                                                 >
                                                    <Menu.Item>
@@ -132,16 +133,19 @@ export const ColumnThree = ({
                                                          <button
                                                             name="intent"
                                                             value="unfollow"
-                                                            className="text-1 flex w-full items-center gap-3 rounded-lg
-                                                      px-2.5 py-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                            className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
+                                                      px-2 py-1.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                          >
+                                                            <div className="flex-grow">
+                                                               {t(
+                                                                  "follow.actionUnfollow",
+                                                               )}
+                                                            </div>
                                                             <Icon
+                                                               size={16}
                                                                name="log-out"
-                                                               className="text-red-400 w-4.5 h-4.5"
+                                                               className="text-zinc-400 w-4.5 h-4.5"
                                                             />
-                                                            {t(
-                                                               "follow.actionUnfollow",
-                                                            )}
                                                          </button>
                                                       </fetcher.Form>
                                                    </Menu.Item>
