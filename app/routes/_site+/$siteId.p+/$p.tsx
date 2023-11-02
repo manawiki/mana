@@ -23,7 +23,10 @@ import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
-import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
+import {
+   EditorCommandBar,
+   command_button,
+} from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import {
@@ -179,8 +182,7 @@ export default function Post() {
                            <Tooltip placement="left">
                               <TooltipTrigger
                                  onClick={() => setIsBannerShowing((v) => !v)}
-                                 className="transition duration-100 border border-color shadow-sm shadow-1
-                  active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
+                                 className={command_button}
                               >
                                  {isShowBanner ? (
                                     <Icon name="image-minus" size={14} />

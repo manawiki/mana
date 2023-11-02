@@ -333,7 +333,7 @@ function HoverElement({
       handleClose: safePolygon(),
    });
 
-   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+   const { getReferenceProps } = useInteractions([hover]);
 
    const activeIndex = editor.children.findIndex(
       (result: any) => result.id === activeId,
@@ -394,8 +394,6 @@ function HoverElement({
                   isTwoColumn ? "z-20" : "z-10",
                   "absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
                )}
-               ref={refs.setFloating}
-               {...getFloatingProps()}
             >
                <BlockInlineActions
                   isParentTwoColumn={isParentTwoColumn}
