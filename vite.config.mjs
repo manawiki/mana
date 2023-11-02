@@ -6,9 +6,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const customConfig = "./app/_custom/config.json";
 
 export default defineConfig({
-   optimizeDeps: {
-      include: ["react", "react-dom/client"],
-   },
    plugins: [
       remix({
          ignoredRouteFiles: ["**/.*"],
