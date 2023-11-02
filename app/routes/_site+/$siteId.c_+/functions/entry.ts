@@ -198,7 +198,7 @@ export async function getEmbeddedContent({
 
                const isChanged =
                   JSON.stringify(draftEmbed.content) !=
-                  JSON.stringify(item.content);
+                     JSON.stringify(item.content) || versions.length == 0;
 
                return {
                   id: item.id,

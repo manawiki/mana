@@ -1,15 +1,13 @@
 import { Fragment, useEffect, useMemo } from "react";
 
 import { offset } from "@floating-ui/react";
-import { Popover, Tab } from "@headlessui/react";
+import { Tab } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { Link, useFetcher, useLocation, useMatches } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 import { lazily } from "react-lazily";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
-import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
@@ -260,51 +258,7 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
          placement="right-start"
          show
       >
-         <main className="mx-auto max-w-[728px] group hover:border-color border-transparent border-y border-dashed relative">
-            <Popover className="group-hover:block absolute right-0 bottom-1 hidden">
-               {({ open }) => (
-                  <>
-                     <Float
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
-                        leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
-                        placement="top-end"
-                        offset={4}
-                     >
-                        <Popover.Button
-                           className="flex relative items-center gap-2"
-                           as="div"
-                        >
-                           <div className="text-[10px] text-1">
-                              {subSection?.name}
-                           </div>
-                           <Tooltip placement="left">
-                              <TooltipTrigger
-                                 className="transition w-7 h-7 duration-100 flex items-center justify-center
-                           rounded-full z-20 hover:dark:bg-dark400 hover:bg-zinc-100 active:translate-y-0.5"
-                              >
-                                 {open ? (
-                                    <Icon
-                                       name="x"
-                                       className="text-1"
-                                       size={14}
-                                    />
-                                 ) : (
-                                    <Icon name="more-horizontal" size={16} />
-                                 )}
-                              </TooltipTrigger>
-                              <TooltipContent>Settings</TooltipContent>
-                           </Tooltip>
-                        </Popover.Button>
-                        <Popover.Panel className="border-color-sub bg-3-sub w-32 shadow-1 p-1 transform rounded-lg border shadow-sm"></Popover.Panel>
-                     </Float>
-                  </>
-               )}
-            </Popover>
+         <main className="mx-auto max-w-[728px] group relative">
             <ManaEditor
                key={data?.id}
                fetcher={fetcher}
