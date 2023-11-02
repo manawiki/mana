@@ -27,6 +27,9 @@ export default defineConfig({
       tsconfigPaths(),
       mdx(),
    ],
+   ssr: {
+      noExternal: ["react-code-block", "remix-i18next"],
+   },
 });
 
 // flat routes with mana characteristics

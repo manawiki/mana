@@ -4,7 +4,7 @@ import type { EntryContext } from "@remix-run/node";
 import { createInstance } from "i18next";
 import Backend from "i18next-fs-backend";
 import { initReactI18next } from "react-i18next";
-import { RemixI18Next } from "node_modules/remix-i18next/browser/server.js";
+import { RemixI18Next } from "remix-i18next";
 
 import { config } from "./config"; // your i18n configuration file
 
