@@ -20,16 +20,16 @@ export function ManaEditor({
    defaultValue,
    siteId,
    pageId,
-   sectionId,
+   subSectionId,
    entryId,
    collectionEntity,
    collectionSlug,
 }: {
    fetcher: FetcherWithComponents<unknown>;
-   defaultValue: Descendant[];
+   defaultValue: unknown[];
    siteId?: string | undefined;
    pageId?: string;
-   sectionId?: string;
+   subSectionId?: string | undefined;
    entryId?: string;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
@@ -53,7 +53,7 @@ export function ManaEditor({
                pageId,
                collectionSlug,
                collectionEntity,
-               sectionId,
+               subSectionId,
                entryId,
             },
             { method: "patch", action: "/editor" },
@@ -62,7 +62,11 @@ export function ManaEditor({
    }, [debouncedValue]);
 
    return (
-      <Slate onChange={setValue} editor={editor} initialValue={value}>
+      <Slate
+         onChange={setValue}
+         editor={editor}
+         initialValue={value as Descendant[]}
+      >
          <Toolbar />
          <EditorWithDnD editor={editor} />
       </Slate>
@@ -145,14 +149,14 @@ export async function action({
                   siteId,
                   content,
                   pageId,
-                  sectionId,
+                  subSectionId,
                   entryId,
                   collectionEntity,
                } = await zx.parseForm(request, {
                   siteId: z.string(),
                   content: z.string(),
                   pageId: z.string(),
-                  sectionId: z.string(),
+                  subSectionId: z.string(),
                   entryId: z.string(),
                   collectionEntity: z.string(),
                });
@@ -165,7 +169,6 @@ export async function action({
                      overrideAccess: false,
                      user,
                   });
-
                   return await payload.update({
                      collection: collectionSlug,
                      id: pageId,
@@ -184,7 +187,7 @@ export async function action({
                      data: {
                         relationId: entryId,
                         site: siteId as any,
-                        sectionId: sectionId,
+                        subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
                         content: JSON.parse(content),
                      },

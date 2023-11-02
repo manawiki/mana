@@ -52,7 +52,7 @@ interface EntryFetchType {
    };
 }
 
-//Fetches all entry data. Includes
+//Fetches all entry data.
 export async function fetchEntry({
    payload,
    params,
@@ -73,7 +73,7 @@ export async function fetchEntry({
    });
 
    const restPath = `https://${entry.siteSlug}-db.${settings.domain}/api/${
-      entry.collectionId
+      entry.collectionSlug
    }/${entry.id}?depth=${rest?.depth ?? 2}`;
 
    const GQLorREST = gql?.query
@@ -203,7 +203,7 @@ export async function getEmbeddedContent({
                return {
                   id: item.id,
                   content: draftEmbed.content,
-                  sectionId: item.sectionId,
+                  subSectionId: item.subSectionId,
                   isChanged,
                   versions,
                };
@@ -217,14 +217,15 @@ export async function getEmbeddedContent({
          isChanged: false,
          id: item.id,
          content: item.content,
-         sectionId: item.sectionId,
+         subSectionId: item.subSectionId,
       }));
    }
 
    return docs.map((item) => ({
+      isChanged: false,
       id: item.id,
       content: item.content,
-      sectionId: item.sectionId,
+      subSectionId: item.subSectionId,
    }));
 }
 
@@ -308,7 +309,8 @@ export async function getEntryFields({
          entry: {
             ...entry,
             collectionName: collection.name,
-            collectionId: collection.slug,
+            collectionSlug: collection?.slug,
+            collectionEntity: collection?.id,
             siteId: collection?.site?.id,
             siteSlug: collection?.site?.slug,
             sections: collection?.sections,
@@ -357,7 +359,8 @@ export async function getEntryFields({
          name: entryData?.name,
          icon: { id: entryData?.icon?.id, url: entryData?.icon?.url },
          collectionName: collection?.name,
-         collectionId: collection?.slug,
+         collectionSlug: collection?.slug,
+         collectionEntity: collection?.id,
          sections: collection?.sections,
          siteId: collection?.site.id,
          siteSlug: collection?.site?.slug,
