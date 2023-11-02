@@ -6,6 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const customConfig = "./app/_custom/config.json";
 
 export default defineConfig({
+   logLevel: "warn",
    plugins: [
       remix({
          ignoredRouteFiles: ["**/.*"],
