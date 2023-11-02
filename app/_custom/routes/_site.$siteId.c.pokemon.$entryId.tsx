@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
-import { Listbox, Tab, Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -8,7 +8,6 @@ import clsx from "clsx";
 import { gql } from "graphql-request";
 
 import {
-   H2,
    H3,
    Image,
    Tooltip,
@@ -18,7 +17,6 @@ import {
 import { Icon } from "~/components/Icon";
 import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
 import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import { EntryContentEmbed } from "~/routes/_site+/$siteId.c_+/components/EntryContentEmbed";
 import {
    customEntryMeta,
    fetchEntry,
@@ -54,23 +52,22 @@ export async function loader({
    });
 }
 
+const SECTIONS = {
+   main: Main,
+   ratings: Ratings,
+   moves: Moves,
+   other: OtherInfo,
+};
+
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
 
    const pokemon = entry.data.pokemon as PokemonType;
 
-   return (
-      <Entry>
-         <Main pokemon={pokemon} />
-         <Ratings pokemon={pokemon} />
-         <Moves pokemon={pokemon} />
-         <MovesAnalysis pokemon={pokemon} />
-         <OtherInfo pokemon={pokemon} />
-      </Entry>
-   );
+   return <Entry customComponents={SECTIONS} customData={pokemon} />;
 }
 
-function Main({ pokemon }: { pokemon: PokemonType }) {
+function Main({ data: pokemon }: { data: PokemonType }) {
    const images = [
       {
          id: pokemon?.images?.goImage?.id,
@@ -281,7 +278,7 @@ function Main({ pokemon }: { pokemon: PokemonType }) {
    );
 }
 
-function Ratings({ pokemon }: { pokemon: PokemonType }) {
+function Ratings({ data: pokemon }: { data: PokemonType }) {
    const exists =
       pokemon.ratings?.attackerRating ||
       pokemon.ratings?.greatLeagueRating ||
@@ -289,7 +286,6 @@ function Ratings({ pokemon }: { pokemon: PokemonType }) {
       pokemon.ratings?.masterLeagueRating;
    return (
       <>
-         {exists ? <H2 text="Pokemon Ratings" /> : undefined}
          <div
             className={clsx(
                exists
@@ -405,10 +401,9 @@ function Ratings({ pokemon }: { pokemon: PokemonType }) {
    );
 }
 
-function Moves({ pokemon }: { pokemon: PokemonType }) {
+function Moves({ data: pokemon }: { data: PokemonType }) {
    return (
       <>
-         <H2 text="Moves" />
          <H3 text="Fast" />
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden mb-3">
             {pokemon.fastMoves?.map((row) => (
@@ -513,60 +508,9 @@ function Moves({ pokemon }: { pokemon: PokemonType }) {
    );
 }
 
-function MovesAnalysis({ pokemon }: { pokemon: PokemonType }) {
+function OtherInfo({ data: pokemon }: { data: PokemonType }) {
    return (
       <>
-         <H2 text="Moveset Analysis" />
-         <Tab.Group
-            as="div"
-            className="border border-color-sub rounded-lg shadow-sm shadow-1"
-         >
-            <Tab.List className="flex items-center bg-2-sub justify-between border-b border-color-sub p-3 rounded-t-md">
-               <Tab as={Fragment}>
-                  {({ selected }) => (
-                     <button
-                        className={clsx(
-                           selected
-                              ? "bg-3-sub shadow-sm shadow-1 rounded-lg border focus-visible:outline-none border-zinc-200 dark:border-zinc-700"
-                              : "",
-                           "w-full p-1.5 font-bold",
-                        )}
-                     >
-                        PvE
-                     </button>
-                  )}
-               </Tab>
-               <Tab as={Fragment}>
-                  {({ selected }) => (
-                     <button
-                        className={clsx(
-                           selected
-                              ? "bg-3-sub shadow-sm shadow-1 rounded-lg border focus-visible:outline-none border-zinc-200 dark:border-zinc-700"
-                              : "",
-                           "w-full p-1.5 font-bold",
-                        )}
-                     >
-                        PvP
-                     </button>
-                  )}
-               </Tab>
-            </Tab.List>
-            <Tab.Panels className="p-3">
-               <Tab.Panel>
-                  <H3 text="PVE Offensive Moves Explanation" />
-                  <EntryContentEmbed sectionId="pve-moves-analysis" />
-               </Tab.Panel>
-               <Tab.Panel>Content 2</Tab.Panel>
-            </Tab.Panels>
-         </Tab.Group>
-      </>
-   );
-}
-
-function OtherInfo({ pokemon }: { pokemon: PokemonType }) {
-   return (
-      <>
-         <H2 text="Other" />
          <div className={`${InfoBlock_Container} mb-3`}>
             <div className={InfoBlock_Row}>
                <div className={InfoBlock_Label}>Purification Cost</div>
