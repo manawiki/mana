@@ -20,11 +20,10 @@ sourceMapSupport.install();
 async function start() {
    const app = express();
 
-   // Start payload
+   // Start Payload CMS
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
    invariant(process.env.MONGO_URL, "MONGO_URL is required");
 
-   // Initialize Payload
    await payload.init({
       secret: process.env.PAYLOADCMS_SECRET,
       mongoURL: process.env.MONGO_URL,
@@ -36,7 +35,19 @@ async function start() {
 
    app.use(payload.authenticate);
 
-   // handle asset requests
+   // Express Server setup
+   app.use(compression());
+
+   // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
+   app.disable("x-powered-by");
+
+   // Everything else (like favicon.ico) is cached for an hour. You may want to be
+   // more aggressive with this caching.
+   app.use(express.static("public", { maxAge: "1h" }));
+
+   app.use(morgan("tiny"));
+
+   // handle Remix asset requests
    let vite =
       process.env.NODE_ENV === "production"
          ? undefined
@@ -51,18 +62,7 @@ async function start() {
       );
    }
 
-   app.use(compression());
-
-   // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
-   app.disable("x-powered-by");
-
-   // Everything else (like favicon.ico) is cached for an hour. You may want to be
-   // more aggressive with this caching.
-   app.use(express.static("public", { maxAge: "1h" }));
-
-   app.use(morgan("tiny"));
-
-   // handle SSR requests
+   // handle Remix SSR requests
    app.all(
       "*",
       createRequestHandler({
@@ -82,7 +82,7 @@ async function start() {
       }),
    );
 
-   const port = 3000;
+   const port = process.env.PORT || 3000;
    app.listen(port, () =>
       console.log("Express server listening on http://localhost:" + port),
    );
