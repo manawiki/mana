@@ -83,7 +83,7 @@ function SectionParent({
             id={section?.id}
             className="scroll-mt-36 laptop:scroll-mt-[100px]"
          >
-            {!isEmbedEmpty && <SectionTitle section={section} />}
+            <SectionTitle section={section} />
             {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
             {isSingle || (isEmbedEmpty && !hasAccess) ? (
                <SubSection
