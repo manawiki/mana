@@ -10,9 +10,7 @@ import {
 } from "~/routes/_auth+/src/components";
 import { isAdding } from "~/utils";
 
-import { UserMenu } from "./UserMenu";
-
-export const Header = ({
+export function MobileHeader({
    location,
    site,
    fetcher,
@@ -24,15 +22,15 @@ export const Header = ({
    fetcher: any;
    setFollowerMenuOpen: any;
    setUserMenuOpen: any;
-}) => {
+}) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
 
    return (
       <>
          <header
-            className="bg-2 border-color shadow-1 fixed top-0 z-50 flex 
-                        h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm"
+            className="dark:bg-dark350 bg-white dark:border-zinc-700 laptop:dark:border-zinc-700/20 dark:shadow-zinc-800 fixed top-0 z-30 flex 
+                        h-14 w-full items-center justify-between border-b px-3 laptop:shadow-sm laptop:hidden"
          >
             <LoggedIn>
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
@@ -64,7 +62,7 @@ export const Header = ({
                         </div>
                      </NotFollowingSite>
                      <button
-                        className="bg-3 shadow-1 border-color flex items-center justify-center
+                        className="bg-3-sub shadow-1 border-color-sub flex items-center justify-center
                                        gap-1 rounded-full border p-1.5 pl-3 text-sm font-bold shadow-sm"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
@@ -79,7 +77,7 @@ export const Header = ({
                      </button>
                   </div>
                   <button
-                     className="bg-3 shadow-1 border-color flex h-9 w-9 items-center
+                     className="bg-3-sub shadow-1 border-color-sub flex h-9 w-9 items-center
                      justify-center rounded-xl border shadow-sm"
                      onClick={() => setUserMenuOpen(true)}
                   >
@@ -87,7 +85,6 @@ export const Header = ({
                   </button>
                </div>
             </LoggedIn>
-            <UserMenu />
             <LoggedOut>
                <Link
                   prefetch="intent"
@@ -98,8 +95,7 @@ export const Header = ({
                >
                   Follow
                </Link>
-
-               <div className="relative z-10 flex w-full items-center justify-end gap-3">
+               <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4 border-b border-color">
                   <Link
                      prefetch="intent"
                      to="/join"
@@ -127,11 +123,11 @@ export const Header = ({
                </div>
             </LoggedOut>
             <div
-               className="pattern-opacity-50 dark:pattern-dark400 pattern-dots absolute left-0
-                           top-0 -z-10 h-full w-full pattern-bg-white
-                           pattern-zinc-300 pattern-size-2 dark:pattern-bg-bg1Dark"
+               className="pattern-opacity-50 dark:pattern-dark350 pattern-dots absolute left-0
+                           top-0 -z-10 h-full w-full pattern-bg-white 
+                           pattern-zinc-200 pattern-size-2 dark:pattern-bg-bg2Dark"
             />
          </header>
       </>
    );
-};
+}

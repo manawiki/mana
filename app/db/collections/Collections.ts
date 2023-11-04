@@ -161,7 +161,6 @@ export const Collections: CollectionConfig = {
                label: "Sub-Sections",
                defaultValue: [
                   {
-                     id: "main",
                      name: "Main",
                      type: "editor",
                   },

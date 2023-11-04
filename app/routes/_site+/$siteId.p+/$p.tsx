@@ -179,7 +179,7 @@ export default function Post() {
                   >
                      <EditorCommandBar.PrimaryOptions>
                         <>
-                           <Tooltip placement="left">
+                           <Tooltip placement="right">
                               <TooltipTrigger
                                  onClick={() => setIsBannerShowing((v) => !v)}
                                  className={command_button}
