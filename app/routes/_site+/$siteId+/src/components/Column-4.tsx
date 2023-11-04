@@ -1,35 +1,57 @@
-import { DarkModeToggle, Image, LogoText } from "~/components";
+import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
-import { LoggedOut } from "~/routes/_auth+/src/components";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
-export const ColumnFour = ({ site }: { site: Site }) => {
+export function ColumnFour({ site }: { site: Site }) {
    return (
-      <section
-         className="bg-2 border-color relative z-20 max-laptop:mx-auto
-                        max-laptop:max-w-[728px] laptop:block laptop:border-l laptop:border-r-0"
-      >
-         <div className="flex flex-col laptop:fixed laptop:h-full laptop:w-[334px] laptop:overflow-y-auto">
-            <div className="border-color border-b laptop:pt-14">
+      <section className="relative z-40 laptop:block max-laptop:bg-2-sub">
+         <div
+            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub max-laptop:max-w-[728px]
+            laptop:w-[334px] laptop:dark:bg-dark350/50 laptop:dark:border-zinc-700 laptop:border-zinc-200/60 laptop:overflow-y-auto max-laptop:mx-auto"
+         >
+            <div className="laptop:h-full">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                   <PrimaryMenuLinks site={site} />
                   <PinnedList site={site} />
                </section>
-               {site.about && (
-                  <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
-                     <div className="flex items-center gap-1.5 pb-2.5">
-                        <Icon name="component" title="About" size={14} />
-                        <span className="text-1 text-sm font-bold">About</span>
+
+               {site?.banner && (
+                  <div className="border-b border-color">
+                     <div className="bg-3-sub flex items-center justify-center bg-zinc-100 h-40 relative overflow-hidden">
+                        <span
+                           className="bg-gradient-to-b dark:from-dark350/80 dark:via-dark350/20 
+                               from-white/30 via-white/10 to-white/20
+                               dark:to-dark350/90  w-full h-full absolute top-0 left-0 z-10"
+                        />
+                        <Image
+                           url={site?.banner?.url}
+                           options="aspect_ratio=2:1&height=260"
+                           alt="Site Banner"
+                        />
                      </div>
-                     <div className="text-1 text-sm">{site.about}</div>
-                  </section>
+                  </div>
                )}
-               <section className="p-4 px-4 tablet:px-0 laptop:p-4">
-                  <div className="flex items-center gap-1.5 pb-3">
-                     <Icon name="users" title="Contributors" size={14} />
+               <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
+                  <div className="flex items-center gap-2 pl-0.5">
+                     <Icon
+                        className="text-1"
+                        name="users"
+                        title="Contributors"
+                        size={14}
+                     />
+                     <span className="text-xs font-semibold">
+                        {site.followers}
+                     </span>
+                  </div>
+                  {site.about && (
+                     <div className="text-1 text-xs pt-3">{site.about}</div>
+                  )}
+               </section>
+               <section className="p-4 px-4 tablet:px-0 laptop:p-4 border-b border-color">
+                  <div className="flex items-center pb-3">
                      <span className="text-1 text-sm font-bold">
                         Contributors
                      </span>
@@ -109,42 +131,11 @@ export const ColumnFour = ({ site }: { site: Site }) => {
                      </Tooltip>
                   </div>
                </section>
-            </div>
-            <div className="flex-grow"></div>
-            <div className="border-color relative border-t p-4 dark:border-zinc-700/40">
-               <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                     {/* <a
-                           className="border-color shadow-1 bg-3 rounded-lg border px-3 py-2 text-xs font-semibold shadow-sm"
-                           href="https://mana.wiki"
-                        >
-                           Get the app
-                        </a> */}
-                     <LoggedOut>
-                        <DarkModeToggle />
-                     </LoggedOut>
-                  </div>
-                  <a className="text-xs" href="https://mana.wiki">
-                     <div className="-mb-[1px] text-[8px] font-bold text-zinc-400 dark:text-zinc-500">
-                        Powered by
-                     </div>
-                     <div className="flex justify-end">
-                        <LogoText className="w-10 text-zinc-500 dark:text-zinc-400" />
-                     </div>
-                  </a>
-               </div>
-
-               <div
-                  className="absolute left-0 top-0 -z-10 h-full w-full 
-                  bg-gradient-to-r from-white/40 to-white/80 dark:from-bg2Dark/40 dark:to-bg2Dark/80"
-               />
-               <div
-                  className="pattern-opacity-50 dark:pattern-dark400 pattern-dots absolute left-0 top-0
-                           -z-20 h-full w-full pattern-bg-white 
-                           pattern-zinc-300 pattern-size-2 dark:pattern-bg-bg1Dark"
-               />
+               {/* <div className="border-t border-color p-4">
+                  <div className="bg-3-sub rounded-xl h-[250px]" />
+               </div> */}
             </div>
          </div>
       </section>
    );
-};
+}

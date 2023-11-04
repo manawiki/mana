@@ -7,7 +7,7 @@ import { Sections } from "./Sections";
 
 export function List({ children }: { children: ReactNode }) {
    return (
-      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-12 max-tablet:px-3 pb-5 laptop:pb-14">
+      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-6 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
          <AdminOrStaffOrOwner>
             <Sections />
