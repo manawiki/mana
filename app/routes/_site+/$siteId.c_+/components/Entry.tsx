@@ -15,7 +15,7 @@ export function Entry({
    //We bypass and use the custom defined user layout
    if (children) {
       return (
-         <div className="mx-auto max-w-[728px] pt-20 laptop:pt-12 max-tablet:px-3 pb-5 laptop:pb-14">
+         <div className="mx-auto max-w-[728px] pt-20 laptop:pt-6 max-tablet:px-3 pb-5 laptop:pb-14">
             <CollectionHeader />
             {children}
          </div>
@@ -24,7 +24,7 @@ export function Entry({
 
    //Otherwise render sections normally
    return (
-      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-12 max-tablet:px-3 pb-5 laptop:pb-14">
+      <div className="mx-auto max-w-[728px] pt-20 laptop:pt-6 max-tablet:px-3 pb-5 laptop:pb-14">
          <CollectionHeader />
          <Section customData={customData} customComponents={customComponents} />
       </div>

@@ -1,121 +1,135 @@
 import { NavLink } from "@remix-run/react";
 import clsx from "clsx";
 
-import { settings } from "mana-config";
 import { Icon } from "~/components/Icon";
 import type { Site, User } from "~/db/payload-types";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 
-import { PinnedSideMenu, activeStyle, defaultStyle } from "./Menu";
+import { PinnedSideMenu } from "./Menu";
 
 export function ColumnTwo({ site, user }: { site: Site; user: User }) {
    return (
-      <section className="bg-2 border-color shadow-1 z-50 border-r">
-         <div className="fixed bottom-0 top-0 z-50 mx-auto h-full overflow-y-auto py-4 shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[220px]">
-            <div className="space-y-1 px-3">
+      <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
+         <div className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[219px]">
+            <div className="flex-grow">
                <NavLink
                   prefetch="intent"
                   end
                   className={({ isActive }) =>
-                     clsx(isActive ? activeStyle : "", defaultStyle)
+                     clsx(
+                        isActive ? "underline" : "",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2",
+                        "relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                        "hover:underline dark:decoration-zinc-700 decoration-zinc-200 underline-offset-4",
+                     )
                   }
                   to={`/${site.slug}`}
                >
                   {({ isActive }) => (
-                     <Icon
-                        name="home"
-                        title="Home"
-                        className={clsx(
-                           isActive
-                              ? "dark:text-zinc-400 text-zinc-500"
-                              : "text-zinc-400 dark:text-zinc-500",
-                           "desktop:mr-0.5 w-[15px] h-[15px]",
-                        )}
-                     >
-                        <span className="max-desktop:hidden">Home</span>
-                     </Icon>
+                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                        <div className="max-desktop:hidden flex-grow font-bold text-sm">
+                           Home
+                        </div>
+                        <div
+                           className={clsx(
+                              isActive
+                                 ? "dark:bg-bg3Dark bg-zinc-200/50 rounded-full"
+                                 : "",
+                              "p-[9px] flex items-center justify-center",
+                           )}
+                        >
+                           <Icon
+                              name="home"
+                              title="Home"
+                              size={14}
+                              className={clsx(
+                                 isActive
+                                    ? "dark:text-zinc-400 text-zinc-500"
+                                    : "text-zinc-400 dark:text-zinc-500",
+                              )}
+                           />
+                        </div>
+                     </div>
                   )}
                </NavLink>
                <NavLink
                   prefetch="intent"
                   className={({ isActive }) =>
-                     clsx(isActive ? activeStyle : "", defaultStyle)
+                     clsx(
+                        isActive ? "underline" : "",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2",
+                        "relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                        "hover:underline dark:decoration-zinc-700 decoration-zinc-200 underline-offset-4",
+                     )
                   }
                   to={`/${site.slug}/posts`}
                >
                   {({ isActive }) => (
-                     <Icon
-                        name="pen-square"
-                        title="Posts"
-                        size={15}
-                        className={clsx(
-                           isActive
-                              ? "dark:text-zinc-400 text-zinc-500"
-                              : "text-zinc-400 dark:text-zinc-500",
-                           "desktop:mr-0.5",
-                        )}
-                     >
-                        <span className="max-desktop:hidden">Posts</span>
-                     </Icon>
+                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                        <div className="max-desktop:hidden text-sm font-bold flex-grow">
+                           Posts
+                        </div>
+                        <div
+                           className={clsx(
+                              isActive
+                                 ? "dark:bg-bg3Dark bg-zinc-200/50 rounded-full"
+                                 : "",
+                              "p-[9px] flex items-center justify-center",
+                           )}
+                        >
+                           <Icon
+                              name="pen-square"
+                              title="Posts"
+                              size={14}
+                              className={clsx(
+                                 isActive
+                                    ? "dark:text-zinc-400 text-zinc-500"
+                                    : "text-zinc-400 dark:text-zinc-500",
+                              )}
+                           />
+                        </div>
+                     </div>
                   )}
                </NavLink>
                <NavLink
                   prefetch="intent"
                   className={({ isActive }) =>
-                     clsx(isActive ? activeStyle : "", defaultStyle)
+                     clsx(
+                        isActive ? "underline" : "",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2",
+                        "relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                        "hover:underline dark:decoration-zinc-700 decoration-zinc-200 underline-offset-4",
+                     )
                   }
                   to={`/${site.slug}/collections`}
                >
                   {({ isActive }) => (
-                     <Icon
-                        name="database"
-                        title="Collections"
-                        className={clsx(
-                           isActive
-                              ? "dark:text-zinc-400 text-zinc-500"
-                              : "text-zinc-400 dark:text-zinc-500",
-                           "desktop:mr-0.5 w-[15px] h-[15px]",
-                        )}
-                     >
-                        <span className="max-desktop:hidden">Collections</span>
-                     </Icon>
+                     <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                        <div className="max-desktop:hidden flex-grow text-sm font-bold">
+                           Collections
+                        </div>
+                        <div
+                           className={clsx(
+                              isActive
+                                 ? "dark:bg-bg3Dark bg-zinc-200/50 rounded-full"
+                                 : "",
+                              "p-[9px] flex items-center justify-center",
+                           )}
+                        >
+                           <Icon
+                              name="database"
+                              title="Collections"
+                              size={14}
+                              className={clsx(
+                                 isActive
+                                    ? "dark:text-zinc-400 text-zinc-500"
+                                    : "text-zinc-400 dark:text-zinc-500",
+                              )}
+                           />
+                        </div>
+                     </div>
                   )}
                </NavLink>
-            </div>
-            <PinnedSideMenu site={site} />
-            <div className="text-1 space-y-0.5 p-3">
-               <AdminOrStaffOrOwner>
-                  {site.type == "custom" && (
-                     <a
-                        className={defaultStyle}
-                        href={`https://${site.slug}-db.${settings.domain}/admin`}
-                     >
-                        <Icon
-                           name="hard-drive"
-                           title="Site"
-                           className="text-zinc-400 dark:text-zinc-500 w-[15px] h-[15px]"
-                        >
-                           <span className="max-desktop:hidden text-xs">
-                              Site
-                           </span>
-                        </Icon>
-                     </a>
-                  )}
-               </AdminOrStaffOrOwner>
-               {user?.roles?.includes("staff") && (
-                  <a className={defaultStyle} href="/admin">
-                     <Icon
-                        name="lock"
-                        title="Staff"
-                        className="text-zinc-400 dark:text-zinc-500"
-                        size={15}
-                     >
-                        <span className="max-desktop:hidden text-xs">
-                           Staff
-                        </span>
-                     </Icon>
-                  </a>
-               )}
+               <PinnedSideMenu site={site} />
             </div>
          </div>
       </section>

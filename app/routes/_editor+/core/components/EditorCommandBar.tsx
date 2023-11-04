@@ -174,7 +174,7 @@ export const EditorCommandBar = ({
                className="flex flex-col"
             >
                <span className="h-3 w-0.5 bg-zinc-200 dark:bg-dark450 mx-auto" />
-               <Tooltip placement="left">
+               <Tooltip placement="right">
                   <TooltipTrigger
                      className={command_button}
                      onClick={() => setVersionModal(true)}
@@ -207,7 +207,7 @@ export const EditorCommandBar = ({
                                  offset={4}
                               >
                                  <Popover.Button as="div">
-                                    <Tooltip placement="left">
+                                    <Tooltip placement="right">
                                        <TooltipTrigger
                                           className={command_button}
                                        >

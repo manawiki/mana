@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 
-import { Menu, Transition, Switch } from "@headlessui/react";
+import { Switch, Tab } from "@headlessui/react";
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Drawer } from "vaul";
@@ -16,74 +16,20 @@ import { handleLogout } from "~/routes/_auth+/src/functions";
 import { isAdding } from "~/utils";
 import { Theme, useTheme } from "~/utils/theme-provider";
 
-export const UserMenu = () => {
+export function UserDesktopMenu() {
    const [isMenuOpen, setMenuOpen] = useState(false);
 
    return (
       <>
          <LoggedIn>
-            <section className="z-50 flex h-14 w-full items-center justify-end gap-2.5 max-laptop:hidden">
-               <Menu as="div" className="relative">
-                  <Menu.Button className="bg-3 shadow-1 border-color flex h-9 w-9 items-center justify-center rounded-xl border shadow-sm">
-                     <Icon name="user" size={20} />
-                  </Menu.Button>
-                  <Transition
-                     as={Fragment}
-                     enter="transition ease-out duration-100"
-                     enterFrom="transform opacity-0 scale-95"
-                     enterTo="transform opacity-100 scale-100"
-                     leave="transition ease-in duration-75"
-                     leaveFrom="transform opacity-100 scale-100"
-                     leaveTo="transform opacity-0 scale-95"
-                  >
-                     <Menu.Items
-                        className="absolute right-0 z-10 mt-1 w-full min-w-[220px]
-             max-w-md origin-top-right transform text-sm transition-all"
-                     >
-                        <div className="border-color bg-3 shadow-1 rounded-lg border font-semibold shadow">
-                           <div className="p-1">
-                              <Menu.Item>
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                               p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    onClick={() => setMenuOpen(true)}
-                                 >
-                                    <div className="flex-grow text-left">
-                                       Settings
-                                    </div>
-                                    <Icon
-                                       name="settings"
-                                       size={18}
-                                       className="text-zinc-500 dark:text-zinc-400"
-                                    />
-                                 </button>
-                              </Menu.Item>
-                              <Menu.Item>
-                                 <ThemeToggleDesktop />
-                              </Menu.Item>
-                           </div>
-                           <div className="border-color border-t p-1">
-                              <Menu.Item>
-                                 <button
-                                    className="text-1 flex w-full items-center gap-3 rounded-lg
-                               p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    onClick={handleLogout}
-                                 >
-                                    <div className="flex-grow text-left">
-                                       Logout
-                                    </div>
-                                    <Icon
-                                       name="log-out"
-                                       size={16}
-                                       className="text-zinc-500 dark:text-zinc-400"
-                                    />
-                                 </button>
-                              </Menu.Item>
-                           </div>
-                        </div>
-                     </Menu.Items>
-                  </Transition>
-               </Menu>
+            <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
+               <button
+                  onClick={() => setMenuOpen(true)}
+                  className="border border-color transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
+                  rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow-sm shadow-1 hover:border-zinc-200"
+               >
+                  <Icon name="user" size={20} />
+               </button>
             </section>
             <Modal
                onClose={() => {
@@ -92,33 +38,75 @@ export const UserMenu = () => {
                show={isMenuOpen}
             >
                <section
-                  className="bg-2 h-[80vh] max-h-[600px] min-h-full w-full transform overflow-hidden rounded-md
+                  className="bg-2-sub h-[80vh] max-h-[600px] min-h-full w-full transform overflow-hidden rounded-xl
                text-left align-middle transition-all laptop:w-[1000px] laptop:max-w-[1000px]"
                >
-                  <div className="flex h-full gap-5">
-                     <div className="bg-3 h-full w-60 flex-none">
-                        <ul className="p-4">
-                           <li
-                              className="dark:bg-dark400 flex items-center gap-2 rounded-lg 
-                                 bg-zinc-200/40 px-3 py-3 text-sm font-bold"
-                           >
-                              <Icon
-                                 name="settings"
-                                 size={16}
-                                 className="text-zinc-400"
-                              />
-                              Settings
-                           </li>
-                        </ul>
+                  <Tab.Group
+                     vertical
+                     as="div"
+                     className="flex items-start h-full"
+                  >
+                     <div className="bg-3 flex flex-col h-full w-64 p-4">
+                        <Tab.List className="flex-grow space-y-1">
+                           <Tab as={Fragment}>
+                              {({ selected }) => (
+                                 <button
+                                    className={clsx(
+                                       selected
+                                          ? "dark:bg-dark400 bg-zinc-100"
+                                          : "",
+                                       "px-3 py-2.5 text-sm text-left font-bold w-full rounded-lg",
+                                    )}
+                                 >
+                                    Settings
+                                 </button>
+                              )}
+                           </Tab>
+                           <Tab as={Fragment}>
+                              {({ selected }) => (
+                                 <button
+                                    className={clsx(
+                                       selected
+                                          ? "dark:bg-dark400 bg-zinc-100"
+                                          : "",
+                                       "px-3 py-2.5 text-sm text-left font-bold w-full rounded-lg",
+                                    )}
+                                 >
+                                    Advanced
+                                 </button>
+                              )}
+                           </Tab>
+                        </Tab.List>
+                        <button
+                           onClick={() => {
+                              handleLogout();
+                           }}
+                           type="submit"
+                           className="px-3 bg-zinc-50 group dark:bg-dark350 text-left py-2.5 text-sm font-bold w-full flex items-center rounded-lg"
+                        >
+                           <div className="font-bold flex-grow">Logout</div>
+                           <Icon
+                              name="log-out"
+                              size={16}
+                              className="text-zinc-400 dark:group-hover:text-zinc-300 group-hover:text-zinc-500"
+                           />
+                        </button>
                      </div>
-                     <UserDeleteSection />
-                  </div>
+                     <Tab.Panels className="w-full py-7 px-6">
+                        <Tab.Panel>
+                           <ThemeToggleDesktop />
+                        </Tab.Panel>
+                        <Tab.Panel>
+                           <UserDeleteSection />
+                        </Tab.Panel>
+                     </Tab.Panels>
+                  </Tab.Group>
                </section>
             </Modal>
          </LoggedIn>
       </>
    );
-};
+}
 
 export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
    const fetcher = useFetcher();
@@ -135,7 +123,8 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                   justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
                      >
                         <div className="font-bold">Settings</div>
-                        <Settings size={18} className="text-zinc-400" />
+
+                        {/* <Settings size={18} className="text-zinc-400" /> */}
                      </Drawer.Trigger>
                      <Drawer.Portal>
                         <Drawer.Overlay className="fixed inset-0 z-40 min-h-[100vh] bg-black/40" />
@@ -255,11 +244,11 @@ const UserDeleteSection = () => {
 
    return (
       <div className="relative z-50 w-full">
-         <div className="flex h-full flex-grow flex-col justify-end p-4 pb-8 pr-8">
+         <div className="flex h-full flex-grow flex-col border-b pb-4 self-end border-color justify-end">
             <div className="items-center justify-between gap-8 laptop:flex">
                <div className="max-laptop:pb-4">
                   <div className="pb-0.5 font-bold">Delete your account</div>
-                  <div className="text-1 text-sm">
+                  <div className="text-1 text-xs">
                      Permanently delete your account information
                   </div>
                </div>
@@ -312,8 +301,9 @@ const UserDeleteSection = () => {
                                      focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
                   >
                      {deleting ? (
-                        <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                        <></>
                      ) : (
+                        // <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
                         "Delete"
                      )}
                   </button>
@@ -393,28 +383,31 @@ const ThemeToggleDesktop = () => {
 
    return (
       <Switch.Group>
-         <div
-            className="text-1 w-ful flex items-center gap-3 rounded-lg
-            p-2 hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-         >
-            <Switch.Label className="flex-grow">Theme</Switch.Label>
+         <div className="border-b pb-4 border-color flex items-center">
+            <div className="flex-grow">
+               <Switch.Label className="font-bold pb-0.5 block">
+                  Theme
+               </Switch.Label>
+               <div className="text-1 text-xs">Change the site theme</div>
+            </div>
             <Switch
                checked={enabled}
                onChange={toggleTheme}
-               className="border-color bg-2 relative inline-flex h-5 w-[42px] items-center rounded-full border"
+               className="border-zinc-200 bg-white dark:border-zinc-500/60 dark:bg-dark500 relative 
+               shadow-sm shadow-1 inline-flex h-7 w-[51px] items-center rounded-full border"
             >
                <span className="sr-only">Theme</span>
                <div
                   className={clsx(
                      theme == Theme.DARK
-                        ? "translate-x-[24px] bg-white"
-                        : "translate-x-1 bg-zinc-500",
-                     "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
+                        ? "translate-x-7 bg-white"
+                        : "translate-x-1.5 bg-zinc-500",
+                     "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
                   )}
                />
                <div
                   className={clsx(
-                     theme == Theme.DARK ? "left-1.5" : "right-1",
+                     theme == Theme.DARK ? "left-1.5" : "right-1.5",
                      "absolute flex  items-center justify-center",
                   )}
                >
@@ -422,13 +415,13 @@ const ThemeToggleDesktop = () => {
                      <Icon
                         name="moon"
                         title="Dark Mode"
-                        className="h-2.5 w-2.5 text-zinc-400"
+                        className="h-3.5 w-3.5 text-zinc-400"
                      />
                   ) : (
                      <Icon
                         name="sun"
                         title="Light Mode"
-                        className="h-[13px] w-[13px] text-zinc-500"
+                        className="h-3.5 w-3.5 text-zinc-500"
                      />
                   )}
                </div>
