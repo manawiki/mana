@@ -113,7 +113,7 @@ export function MobileHeader({
                   </Link>
                   <Link
                      prefetch="intent"
-                     className="border-color bg-3 shadow-1 flex h-8 items-center
+                     className="dark:border-zinc-600 dark:bg-dark450 shadow-1 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"
                      to={`/login?redirectTo=${location.pathname}`}

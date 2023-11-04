@@ -116,8 +116,8 @@ export default function SiteIndex() {
                {({ site }) => (
                   <main>
                      <div
-                        className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_344px] 
-                     laptop:grid-flow-col desktop:auto-cols-[76px_220px_1fr_334px]"
+                        className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
+                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
                      >
                         {/* ==== Desktop Following Menu ==== */}
                         <ColumnOne site={site} user={user} />
