@@ -67,15 +67,15 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
       <>
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
-               <div className="flex items-center text-xs text-1 pb-3 desktop:pb-2 pt-4 font-semibold px-4 bg-white/50 dark:bg-zinc-800/20">
+               <div className="flex items-center text-xs text-1 pb-3 desktop:pb-2 pt-4 font-semibold px-4">
                   <div className="flex items-center w-full gap-1 max-desktop:justify-center">
                      <div className="flex-grow text-zinc-500 max-desktop:hidden">
                         Pinned
                      </div>
                      <Icon
                         name="pin"
-                        className="desktop-hidden text-zinc-500"
-                        size={16}
+                        className="desktop:hidden text-zinc-400 dark:text-zinc-500"
+                        size={14}
                      />
                   </div>
                </div>
@@ -87,17 +87,14 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                      <li key={item.id}>
                         <NavLink
                            prefetch="intent"
-                           className={({ isActive }) =>
-                              clsx(
-                                 isActive ? "underline" : "",
-                                 `flex items-center hover:underline relative decoration-zinc-200 underline-offset-2 
-                                    dark:decoration-zinc-700 gap-3 py-2.5 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center`,
-                              )
-                           }
+                           className="flex items-center relative gap-3 py-3 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center"
                            to={pinnedLinkUrlGenerator(item, site?.slug ?? "")}
                         >
                            {({ isActive }) => (
                               <>
+                                 {isActive && (
+                                    <div className="w-3 h-3 absolute -left-[22px] rounded-full dark:bg-zinc-600 bg-zinc-300" />
+                                 )}
                                  <div className="truncate max-desktop:hidden flex-grow">
                                     {item.relation.value.name}
                                  </div>
@@ -159,8 +156,8 @@ export const PinnedList = ({
                      >
                         <div
                            onClick={() => onOpenChange(false)}
-                           className="shadow-1 bg-3 border-color relative flex items-center gap-3
-                          rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
+                           className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3
+                          rounded-xl border p-3 text-sm font-bold shadow-sm"
                         >
                            <div className="h-5 w-5">
                               {item.relation?.value?.icon?.url ? (
@@ -208,7 +205,7 @@ export const PrimaryMenuLinks = ({
          >
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon
@@ -220,9 +217,8 @@ export const PrimaryMenuLinks = ({
                            : "text-zinc-400 dark:text-zinc-500",
                         "desktop:mr-1",
                      )}
-                  >
-                     Posts
-                  </Icon>
+                  />
+                  <span>Posts</span>
                </div>
             )}
          </NavLink>
@@ -233,7 +229,7 @@ export const PrimaryMenuLinks = ({
          >
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon
@@ -246,9 +242,8 @@ export const PrimaryMenuLinks = ({
                            : "text-zinc-400 dark:text-zinc-500",
                         "desktop:mr-1",
                      )}
-                  >
-                     Collections
-                  </Icon>
+                  />
+                  <span>Collections</span>
                </div>
             )}
          </NavLink>
