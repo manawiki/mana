@@ -1,9 +1,4 @@
-import {
-   Link,
-   NavLink,
-   useNavigation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Image } from "~/components";
@@ -104,23 +99,15 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
 };
 
 function PinnedMenuLink({ item, to }: { item: any; to: string }) {
-   const navigation = useNavigation();
-
-   //opportunistically update the active state of the link
-   const opportunistic = (isActive: boolean, to: string) =>
-      navigation?.state === "loading"
-         ? navigation?.location?.pathname === to
-         : isActive;
-
    return (
       <NavLink
          prefetch="intent"
          className="flex items-center relative gap-3 py-3 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center"
          to={to}
       >
-         {({ isActive }) => (
+         {({ isActive, isPending }) => (
             <>
-               {opportunistic(isActive, to) && (
+               {(isActive || isPending) && (
                   <div className="w-3 h-3 absolute -left-[22px] rounded-full dark:bg-zinc-600 bg-zinc-300" />
                )}
                <div className="truncate max-desktop:hidden flex-grow">

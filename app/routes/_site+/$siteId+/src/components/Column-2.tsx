@@ -26,9 +26,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {opportunistic(isActive, `/${site.slug}`) && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
@@ -40,7 +40,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Home"
                               size={14}
                               className={clsx(
-                                 opportunistic(isActive, `/${site.slug}`)
+                                 isActive || isPending
                                     ? "dark:text-zinc-300 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}
@@ -55,9 +55,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}/posts`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {opportunistic(isActive, `/${site.slug}/posts`) && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
@@ -69,7 +69,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Posts"
                               size={14}
                               className={clsx(
-                                 opportunistic(isActive, `/${site.slug}/posts`)
+                                 isActive || isPending
                                     ? "dark:text-zinc-400 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}
@@ -84,12 +84,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}/collections`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {opportunistic(
-                           isActive,
-                           `/${site.slug}/collections`,
-                        ) && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow text-sm font-bold">
@@ -101,10 +98,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Collections"
                               size={14}
                               className={clsx(
-                                 opportunistic(
-                                    isActive,
-                                    `/${site.slug}/collections`,
-                                 )
+                                 isActive || isPending
                                     ? "dark:text-zinc-400 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}
