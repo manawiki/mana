@@ -102,7 +102,7 @@ export async function loader({
    const sites = data.sites;
 
    return json(
-      { q, sites },
+      { q, sites, dev: process.env.NODE_ENV === "development" ?? undefined },
       { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
@@ -128,7 +128,7 @@ export default function IndexMain() {
 }
 
 const Discover = () => {
-   const { q, sites } = useLoaderData<typeof loader>() || {};
+   const { q, sites, dev } = useLoaderData<typeof loader>() || {};
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const [searchParams, setSearchParams] = useSearchParams({});
@@ -290,7 +290,7 @@ const Discover = () => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              reloadDocument={true}
+                              reloadDocument={!dev}
                               to={`/${site.slug}`}
                               key={site.id}
                               className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
