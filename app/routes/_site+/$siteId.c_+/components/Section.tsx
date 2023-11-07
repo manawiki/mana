@@ -1,13 +1,15 @@
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import { offset } from "@floating-ui/react";
-import { Tab } from "@headlessui/react";
+import { Popover, Tab, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { Link, useFetcher, useLocation, useMatches } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 import { lazily } from "react-lazily";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
+import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
@@ -16,6 +18,7 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import type { loader as entryLoaderType } from "~/routes/_site+/$siteId.c_+/$collectionId_.$entryId";
 
 import type { Section } from "./Sections";
+import { TableOfContents } from "./TableOfContents";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
 //@ts-ignore
@@ -39,14 +42,48 @@ export function Section({
    const { entry } = useMatches()?.[2]?.data as SerializeFrom<
       typeof entryLoaderType
    >;
+   const [activeSection, setActiveSection] = useState(null);
+   const sections = useRef([]);
+
+   const handleScroll = () => {
+      const pageYOffset = window.scrollY;
+      let newActiveSection = null;
+
+      sections.current.forEach((section: any) => {
+         const sectionOffsetTop = section.offsetTop - 130;
+         const sectionHeight = section.offsetHeight + 130;
+
+         if (
+            pageYOffset >= sectionOffsetTop &&
+            pageYOffset < sectionOffsetTop + sectionHeight
+         ) {
+            newActiveSection = section.id;
+         }
+      });
+
+      setActiveSection(newActiveSection);
+   };
+
+   useEffect(() => {
+      //@ts-ignore
+      sections.current = document.querySelectorAll("[data-section]");
+      window.addEventListener("scroll", handleScroll);
+
+      return () => {
+         window.removeEventListener("scroll", handleScroll);
+      };
+   }, []);
 
    return (
       <>
+         <TableOfContents sections={entry.sections} />
          {entry.sections?.map((section) => (
             <SectionParent
+               activeSection={activeSection}
                key={section.id}
                entry={entry}
                section={section}
+               sections={entry.sections}
                customData={customData}
                customComponents={customComponents}
             />
@@ -58,46 +95,165 @@ export function Section({
 
 function SectionParent({
    section,
+   sections,
    customData,
    customComponents,
    entry,
+   activeSection,
 }: {
    section: Flatten<Collection["sections"]>;
+   sections: Collection["sections"];
    customData: unknown;
    customComponents: unknown;
    entry: SerializeFrom<typeof entryLoaderType>["entry"];
+   activeSection: string | null;
 }) {
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
-   if (section?.subSections) {
+   if (sections && section?.subSections) {
       const isSingle =
          section?.subSections && section?.subSections?.length == 1;
 
       const isEmbedEmpty =
          !entry?.embeddedContent || entry?.embeddedContent.length == 0;
 
+      const isActiveSection = activeSection === section?.id;
+
+      const activeSectionName = sections?.find(
+         (element) => isActiveSection && element.id === activeSection,
+      )?.name;
+
+      const activeSectionIndex = sections?.findIndex(
+         (element) => isActiveSection && element.id === activeSection,
+      );
+
+      const prevToCItem =
+         sections[
+            (activeSectionIndex + sections?.length - 1) % sections?.length
+         ];
+
+      const nextToCItem = sections[(activeSectionIndex + 1) % sections?.length];
+
+      const showToBottomArrow = activeSectionIndex == 0;
+
+      const showToTopArrow = activeSectionIndex == sections?.length - 1;
+
       return (
-         <div
-            id={section?.id}
-            className="scroll-mt-36 laptop:scroll-mt-[100px]"
-         >
-            <SectionTitle section={section} />
-            {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
-            {isSingle || (isEmbedEmpty && !hasAccess) ? (
-               <SubSection
-                  subSection={section?.subSections[0]}
-                  customData={customData}
-                  customComponents={customComponents}
-               />
-            ) : (
-               <SubSectionTabs
-                  section={section}
-                  entry={entry}
-                  customData={customData}
-                  customComponents={customComponents}
-               />
+         <>
+            {isActiveSection && (
+               <div className="fixed top-[108px] max-tablet:left-0 max-tablet:px-3 laptop:top-[50px] flex items-center h-[76px] bg-3 w-full tablet:w-[736px] laptop:-mx-1 z-30">
+                  <div className="flex items-center w-full justify-between bg-3-sub shadow shadow-1 px-2.5 py-2 border rounded-xl dark:border-zinc-600/50 mt-3">
+                     <div className="flex items-center gap-2.5">
+                        <Popover>
+                           {({ open }) => (
+                              <>
+                                 <Popover.Button className="w-6 h-6 dark:bg-dark450 bg-zinc-100 hover:bg-zinc-200 dark:hover:bg-dark500 flex items-center justify-center rounded-md">
+                                    {open ? (
+                                       <Icon
+                                          name="chevron-left"
+                                          className="text-1"
+                                          size={14}
+                                       />
+                                    ) : (
+                                       <Icon
+                                          name="list"
+                                          size={16}
+                                          className="text-1"
+                                       />
+                                    )}
+                                 </Popover.Button>
+                                 <Transition
+                                    as={Fragment}
+                                    enter="transition ease-out duration-200"
+                                    enterFrom="opacity-0 translate-y-1"
+                                    enterTo="opacity-100 translate-y-0"
+                                    leave="transition ease-in duration-150"
+                                    leaveFrom="opacity-100 translate-y-0"
+                                    leaveTo="opacity-0 translate-y-1"
+                                 >
+                                    <Popover.Panel className="max-laptop:px-3 absolute w-full mt-4 drop-shadow-xl left-0 transform">
+                                       <TableOfContents sections={sections} />
+                                    </Popover.Panel>
+                                 </Transition>
+                              </>
+                           )}
+                        </Popover>
+                        <div className="font-bold text-sm">
+                           {activeSectionName}
+                        </div>
+                     </div>
+                     {isActiveSection && (
+                        <div className="flex items-center gap-1">
+                           <Tooltip setDelay={1000} placement="top">
+                              <TooltipTrigger as="div">
+                                 <Link
+                                    to={`#${prevToCItem?.id}`}
+                                    className="p-1.5 block rounded-md hover:bg-zinc-100 dark:hover:bg-dark450"
+                                 >
+                                    <Icon
+                                       name={
+                                          showToBottomArrow
+                                             ? "chevrons-down"
+                                             : "arrow-up"
+                                       }
+                                       size={16}
+                                       className="text-1"
+                                    />
+                                 </Link>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                 {showToBottomArrow ? "To Last" : "To Previous"}
+                              </TooltipContent>
+                           </Tooltip>
+                           <Tooltip setDelay={1000} placement="top">
+                              <TooltipTrigger as="div">
+                                 <Link
+                                    to={`#${nextToCItem?.id}`}
+                                    className="p-1.5 block rounded-md hover:bg-zinc-100 dark:hover:bg-dark450"
+                                 >
+                                    <Icon
+                                       name={
+                                          showToTopArrow
+                                             ? "chevrons-up"
+                                             : "arrow-down"
+                                       }
+                                       size={16}
+                                       className="text-1"
+                                    />
+                                 </Link>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                 {showToTopArrow ? "To First" : "To Next"}
+                              </TooltipContent>
+                           </Tooltip>
+                        </div>
+                     )}
+                  </div>
+               </div>
             )}
-         </div>
+            <div
+               data-section
+               id={section?.id}
+               className="scroll-mt-32 laptop:scroll-mt-[126px]"
+            >
+               <SectionTitle section={section} />
+               {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
+               {isSingle || (isEmbedEmpty && !hasAccess) ? (
+                  <SubSection
+                     subSection={section?.subSections[0]}
+                     customData={customData}
+                     customComponents={customComponents}
+                  />
+               ) : (
+                  <SubSectionTabs
+                     section={section}
+                     entry={entry}
+                     customData={customData}
+                     customComponents={customComponents}
+                  />
+               )}
+            </div>
+         </>
       );
    }
 }
