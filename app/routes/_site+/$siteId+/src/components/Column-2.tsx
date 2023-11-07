@@ -1,4 +1,4 @@
-import { NavLink } from "@remix-run/react";
+import { NavLink, useNavigation } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
@@ -7,6 +7,14 @@ import type { Site, User } from "~/db/payload-types";
 import { PinnedSideMenu } from "./Menu";
 
 export function ColumnTwo({ site, user }: { site: Site; user: User }) {
+   const navigation = useNavigation();
+
+   //opportunistically update the active state of the link
+   const opportunistic = (isActive: boolean, to: string) =>
+      navigation?.state === "loading"
+         ? navigation?.location?.pathname === to
+         : isActive;
+
    return (
       <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
          <div className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[230px]">
@@ -18,9 +26,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {isActive && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
@@ -32,7 +40,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Home"
                               size={14}
                               className={clsx(
-                                 isActive
+                                 isActive || isPending
                                     ? "dark:text-zinc-300 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}
@@ -47,9 +55,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}/posts`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {isActive && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
@@ -61,7 +69,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Posts"
                               size={14}
                               className={clsx(
-                                 isActive
+                                 isActive || isPending
                                     ? "dark:text-zinc-400 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}
@@ -76,9 +84,9 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                   relative border-b border-zinc-200/50 dark:border-zinc-700/40"
                   to={`/${site.slug}/collections`}
                >
-                  {({ isActive }) => (
+                  {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
-                        {isActive && (
+                        {(isActive || isPending) && (
                            <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
                         )}
                         <div className="max-desktop:hidden flex-grow text-sm font-bold">
@@ -90,7 +98,7 @@ export function ColumnTwo({ site, user }: { site: Site; user: User }) {
                               title="Collections"
                               size={14}
                               className={clsx(
-                                 isActive
+                                 isActive || isPending
                                     ? "dark:text-zinc-400 text-zinc-500"
                                     : "text-zinc-400 dark:text-zinc-500",
                               )}

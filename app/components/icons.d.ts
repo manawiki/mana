@@ -1,4 +1,8 @@
 export type IconName =
+  | "chevrons-up"
+  | "chevrons-down"
+  | "arrow-up"
+  | "arrow-down"
   | "rectangle-horizontal"
    | "hourglass"
    | "binary"

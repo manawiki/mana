@@ -85,39 +85,10 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
                >
                   {site.pinned?.map((item: any) => (
                      <li key={item.id}>
-                        <NavLink
-                           prefetch="intent"
-                           className="flex items-center relative gap-3 py-3 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center"
+                        <PinnedMenuLink
+                           item={item}
                            to={pinnedLinkUrlGenerator(item, site?.slug ?? "")}
-                        >
-                           {({ isActive }) => (
-                              <>
-                                 {isActive && (
-                                    <div className="w-3 h-3 absolute -left-[22px] rounded-full dark:bg-zinc-600 bg-zinc-300" />
-                                 )}
-                                 <div className="truncate max-desktop:hidden flex-grow">
-                                    {item.relation.value.name}
-                                 </div>
-                                 <div className="h-6 w-6 laptop:w-5 laptop:h-5 flex items-center justify-center">
-                                    {item.relation?.value?.icon?.url ? (
-                                       <Image
-                                          width={80}
-                                          height={80}
-                                          url={item.relation?.value?.icon?.url}
-                                          options="aspect_ratio=1:1&height=80&width=80"
-                                          alt="Pinned Icon"
-                                       />
-                                    ) : (
-                                       <Icon
-                                          name="component"
-                                          className="text-1 mx-auto"
-                                          size={24}
-                                       />
-                                    )}
-                                 </div>
-                              </>
-                           )}
-                        </NavLink>
+                        />
                      </li>
                   ))}
                </ul>
@@ -126,6 +97,44 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
       </>
    );
 };
+
+function PinnedMenuLink({ item, to }: { item: any; to: string }) {
+   return (
+      <NavLink
+         prefetch="intent"
+         className="flex items-center relative gap-3 py-3 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center"
+         to={to}
+      >
+         {({ isActive, isPending }) => (
+            <>
+               {(isActive || isPending) && (
+                  <div className="w-3 h-3 absolute -left-[22px] rounded-full dark:bg-zinc-600 bg-zinc-300" />
+               )}
+               <div className="truncate max-desktop:hidden flex-grow">
+                  {item?.relation?.value?.name}
+               </div>
+               <div className="h-6 w-6 laptop:w-5 laptop:h-5 flex items-center justify-center">
+                  {item.relation?.value?.icon?.url ? (
+                     <Image
+                        width={80}
+                        height={80}
+                        url={item.relation?.value?.icon?.url}
+                        options="aspect_ratio=1:1&height=80&width=80"
+                        alt="Pinned Icon"
+                     />
+                  ) : (
+                     <Icon
+                        name="component"
+                        className="text-1 mx-auto"
+                        size={24}
+                     />
+                  )}
+               </div>
+            </>
+         )}
+      </NavLink>
+   );
+}
 
 export const PinnedList = ({
    site,
