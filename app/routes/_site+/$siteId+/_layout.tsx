@@ -36,6 +36,8 @@ import {
    RampScripts,
 } from "./src/components";
 
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
 export async function loader({
    context: { user },
    params,

@@ -1,7 +1,10 @@
 import path from "path";
 
+import { viteBundler } from "@payloadcms/bundler-vite";
+import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
+import { slateEditor } from "@payloadcms/richtext-slate";
 import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 
@@ -38,7 +41,20 @@ export default buildConfig({
       process.env.NODE_ENV == "development"
          ? "http://localhost:4000"
          : `https://${settings.siteId}-db.${settings.domain}`,
+   editor: slateEditor({}),
+   db: mongooseAdapter({
+      url: process.env.CUSTOM_MONGO_URL ?? false,
+   }),
    admin: {
+      bundler: viteBundler(),
+      //Ensure that the build directory is not emptied on build
+      vite: (incomingViteConfig) => ({
+         ...incomingViteConfig,
+         build: {
+            ...incomingViteConfig.build,
+            emptyOutDir: false,
+         },
+      }),
       components: {
          graphics: {
             Icon: Logo,
