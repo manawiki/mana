@@ -15,11 +15,11 @@ import {
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
+import type { Material } from "payload/generated-custom-types";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import type { Material } from "payload/generated-custom-types";
 import { fetchShowcase } from "~/_custom/showcase-cache.server";
 import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
@@ -29,6 +29,32 @@ import { fetchWithCache } from "~/utils/cache.server";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
+
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+async function fetchGQL(query: string, variables?: Record<string, any>) {
+   const { data, errors } = await fetchWithCache(
+      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query,
+            variables,
+         }),
+      },
+   );
+
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      // throw new Error();
+   }
+   console.log(variables, data);
+
+   return data;
+}
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
    const { uid } = zx.parseQuery(request, {
@@ -74,40 +100,31 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       });
    });
 
-   const { data, errors } = await fetchWithCache(
-      `https://${settings.siteId}-db.mana.wiki/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: QUERY_SHOWCASE,
-            variables: {
-               relicIdList: rids,
-               characterIdList: charids,
-               lightconeIdList: lcids,
-               skillTreeIdList: charids,
-               playerIconId: piid,
-            },
-         }),
-      },
-   );
-
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
+   const [
+      { relics },
+      { characters },
+      { lightcones },
+      { skillTrees },
+      { statTypes },
+      { playerIcon },
+   ] = await Promise.all([
+      fetchGQL(RelicQuery, { relicIdList: rids }),
+      fetchGQL(CharacterQuery, { characterIdList: charids }),
+      fetchGQL(LightConeQuery, { lightconeIdList: lcids }),
+      fetchGQL(SkillTreeQuery, { skillTreeIdList: charids }),
+      fetchGQL(StatTypeQuery),
+      fetchGQL(PlayerIconQuery, { playerIconId: piid }),
+   ]);
 
    return json(
       {
          uid: uid,
-         relics: data.relics.docs,
-         characters: data.characters.docs,
-         lightCones: data.lightcones.docs,
-         skillTrees: data.skillTrees.docs,
-         statTypes: data.statTypes.docs,
-         playerIcon: data.playerIcon,
+         relics: relics.docs,
+         characters: characters.docs,
+         lightCones: lightcones.docs,
+         skillTrees: skillTrees.docs,
+         statTypes: statTypes.docs,
+         playerIcon: playerIcon,
          showcaseData: showcaseData,
          refreshCooldown: refreshCooldown,
       },
@@ -1886,8 +1903,8 @@ function intersect(a: any, b: any) {
    return result;
 }
 
-const QUERY_SHOWCASE = `
-query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [String!], $skillTreeIdList: [String!], $playerIconId: String!) {
+const RelicQuery = `
+query ($relicIdList: [String]) {
    relics: Relics(where: { relic_id: {in: $relicIdList } }, limit: 100) {
       docs {
        relic_id
@@ -1942,7 +1959,12 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
      }  
    }
-   characters: Characters(where: { character_id: { in: $characterIdList } }) {
+}
+`;
+
+const CharacterQuery = `
+query ($characterIdList: [String]) {
+      characters: Characters(where: { character_id: { in: $characterIdList } }) {
      docs {
        character_id
        icon {
@@ -1972,6 +1994,11 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
      }
    }
+}
+`;
+
+const LightConeQuery = `
+query ($lightconeIdList: [String]) {
    lightcones: LightCones(where: { lightcone_id: { in: $lightconeIdList } }) {
      docs {
        lightcone_id
@@ -2005,6 +2032,11 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
      }
    }
+}
+`;
+
+const SkillTreeQuery = `
+query ($skillTreeIdList: [JSON]) {
    skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 100) {
      docs {
        character {
@@ -2034,6 +2066,11 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        point_id
      }
    }
+}
+`;
+
+const StatTypeQuery = `
+query {
    statTypes: _statTypes(limit: 100) {
      docs {
        name
@@ -2042,6 +2079,11 @@ query ($relicIdList: [String!], $characterIdList: [String!], $lightconeIdList: [
        }
      }
    } 
+}
+`;
+
+const PlayerIconQuery = `
+query ($playerIconId: String!) {
    playerIcon: PlayerIcon(id: $playerIconId) {
      icon {
        url

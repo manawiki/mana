@@ -1,6 +1,8 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import type { SkillTree as SkillTreeType } from "payload/generated-custom-types";
 
+import { settings } from "mana-config";
 import { CharacterStatBlock } from "~/_custom/components/characters/CharacterStatBlock";
 import { Eidolons } from "~/_custom/components/characters/Eidolons";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
@@ -19,15 +21,40 @@ import {
    customEntryMeta,
    fetchEntry,
 } from "~/routes/_site+/$siteId.c_+/functions/entry";
+import { fetchWithCache } from "~/utils/cache.server";
 
 export { customEntryMeta as meta };
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+async function fetchGQL(query: string, variables?: Record<string, any>) {
+   const { data, errors } = await fetchWithCache(
+      `https://${settings.siteId}-db.${settings.domain}/api/graphql`,
+      {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+            query,
+            variables,
+         }),
+      },
+   );
+
+   if (errors) {
+      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
+      // throw new Error();
+   }
+
+   return data;
+}
 
 export async function loader({
    context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await fetchEntry({
+   const fetchCharacterData = fetchEntry({
       payload,
       params,
       request,
@@ -37,13 +64,23 @@ export async function loader({
       },
    });
 
+   const fetchSkillTreeData = fetchGQL(SkillTreeQuery, {
+      charId: params.entryId,
+   });
+
+   const [{ entry }, data] = await Promise.all([
+      fetchCharacterData,
+      fetchSkillTreeData,
+   ]);
+
    return json({
       entry,
+      skillTreeData: data.skillTree.docs as SkillTreeType[],
    });
 }
 
 export default function CharacterEntry() {
-   const { entry } = useLoaderData<typeof loader>();
+   const { entry, skillTreeData } = useLoaderData<typeof loader>();
 
    const links = [
       { name: "Traces", link: "traces" },
@@ -66,7 +103,7 @@ export default function CharacterEntry() {
          <H2 text="Traces" />
          <Traces
             pageData={entry.data.character}
-            skillTreeData={entry.data.skillTree.docs}
+            skillTreeData={skillTreeData}
          />
 
          <div id="tree"></div>
@@ -74,7 +111,7 @@ export default function CharacterEntry() {
          <H2 text="Tree" />
          <SkillTree
             pageData={entry.data.character}
-            skillTreeData={entry.data.skillTree.docs}
+            skillTreeData={skillTreeData}
          />
 
          <div id="eidolons"></div>
@@ -91,7 +128,7 @@ export default function CharacterEntry() {
          <H2 text="Total Material Cost" />
          <TotalMaterialCost
             pageData={entry.data.character}
-            skillTreeData={entry.data.skillTree.docs}
+            skillTreeData={skillTreeData}
          />
 
          <div id="gallery"></div>
@@ -230,7 +267,11 @@ query ($entryId: String!) {
      }
    }
  }
+}
+`;
 
+const SkillTreeQuery = `
+query ($entryId: JSON) {
  skillTree: SkillTrees(limit: 1000, where: { character: { equals: $entryId } }) {
    docs {
      anchor
