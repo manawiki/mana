@@ -13,7 +13,7 @@ export function ColumnFour({ site }: { site: Site }) {
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub max-laptop:max-w-[728px]
             laptop:w-[334px] laptop:dark:bg-dark350/50 laptop:dark:border-zinc-700 laptop:border-zinc-200/60 laptop:overflow-y-auto max-laptop:mx-auto"
          >
-            <div className="laptop:h-full">
+            <div className="laptop:h-full flex flex-col">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                   <PrimaryMenuLinks site={site} />
                   <PinnedList site={site} />
@@ -131,9 +131,14 @@ export function ColumnFour({ site }: { site: Site }) {
                      </Tooltip>
                   </div>
                </section>
-               <div className="border-t border-color p-4 h-80">
-                  <AdUnit adId="pwDeskMedRectAtf" />
-               </div>
+               {site.enableAds && (
+                  <>
+                     <div className="flex-grow h-full" />
+                     <div className="border-t border-color p-4">
+                        <AdUnit adId="pwDeskMedRectAtf" />
+                     </div>
+                  </>
+               )}
             </div>
          </div>
       </section>

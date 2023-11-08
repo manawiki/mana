@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { useLocation, useSearchParams } from "@remix-run/react";
+import { useLocation } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
 
 type AdUnitType =
@@ -71,14 +71,18 @@ export function RampScripts() {
                      `,
             }}
          />
+         <script
+            data-cfasync="false"
+            async
+            src="//cdn.intergient.com/ramp_core.js"
+         />
       </>
    );
 }
 
 function AdUnitSelector({ adId }: { adId: AdUnitType }) {
-   const adsInitialised = useRef(false);
+   const adsInit = useRef(false);
    const { pathname } = useLocation();
-   const searchParams = useSearchParams();
 
    const units = [
       {
@@ -92,9 +96,8 @@ function AdUnitSelector({ adId }: { adId: AdUnitType }) {
       window.ramp
          .addUnits(units)
          .then(() => {
-            adsInitialised.current = true;
+            adsInit.current = true;
             //@ts-ignore
-
             window.ramp.displayUnits();
          })
          .catch((e: any) => {
@@ -104,28 +107,45 @@ function AdUnitSelector({ adId }: { adId: AdUnitType }) {
          });
    };
    //@ts-ignore
-   if (!adsInitialised.current && window.ramp) {
+   if (!adsInit.current) {
       //@ts-ignore
-      window.ramp.que.push(init);
+      window.ramp && window.ramp.que.push(init);
    }
 
    useEffect(() => {
-      //@ts-ignore
-      if (!adsInitialised.current && window.ramp) {
+      if (adsInit.current === true) {
          //@ts-ignore
-         window.ramp.que.push(init);
-      }
-   }, [units, pathname, searchParams]);
+         // possible that component was removed before first ad was created
+         if (!window.ramp.settings || !window.ramp.settings.slots) return;
 
-   useEffect(() => {
-      if (adsInitialised.current === true) {
+         let slotToRemove = null;
          //@ts-ignore
-         window.ramp.destroyUnits(["all"]);
+         Object.entries(window.ramp.settings.slots).forEach(
+            ([slotName, slot]) => {
+               if (
+                  //@ts-ignore
+                  slot.element &&
+                  //@ts-ignore
+                  slot.element.parentElement &&
+                  //@ts-ignore
+                  slot.element.parentElement.id === adId
+               ) {
+                  slotToRemove = slotName;
+               }
+            },
+         );
+
+         if (slotToRemove) {
+            //@ts-ignore
+            window.ramp.destroyUnits(slotToRemove);
+            //@ts-ignore
+            window.ramp.que.push(init);
+         }
       }
-   }, [pathname, searchParams]);
+   }, [pathname]);
 
    //@ts-ignore
-   return <div ref={adsInitialised} id={adId}></div>;
+   return <div ref={adsInit} id={adId}></div>;
 }
 
 export const AdUnit = ({ adId }: { adId: AdUnitType }) => {

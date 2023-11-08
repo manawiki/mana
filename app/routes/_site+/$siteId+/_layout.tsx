@@ -33,8 +33,8 @@ import {
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
+   RampScripts,
 } from "./src/components";
-import { RampScripts } from "./src/components/Ramp";
 
 export async function loader({
    context: { user },
