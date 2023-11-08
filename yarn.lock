@@ -11067,6 +11067,13 @@ remix-utils@^6.0.0:
     type-fest "^2.5.2"
     uuid "^8.3.2"
 
+remix-utils@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/remix-utils/-/remix-utils-7.1.0.tgz#e42dccef9157099888a2130b13c09ba7db60c5a2"
+  integrity sha512-cceintceWvmNvgLLFeAUkWRcdWuOHGDLaWh0aeL0bLGWnMPBilIyT74Rira1az/ImS9owfh8tjLL4w/22AXJiA==
+  dependencies:
+    type-fest "^4.3.3"
+
 renderkid@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/renderkid/-/renderkid-3.0.0.tgz#5fd823e4d6951d37358ecc9a58b1f06836b6268a"
@@ -12374,6 +12381,11 @@ type-fest@^2.5.2:
   version "2.19.0"
   resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-2.19.0.tgz#88068015bb33036a598b952e55e9311a60fd3a9b"
   integrity sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==
+
+type-fest@^4.3.3:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-4.6.0.tgz#9c575f7e20530defef4f9cdc5e2c85d6e4ea0fc9"
+  integrity sha512-rLjWJzQFOq4xw7MgJrCZ6T1jIOvvYElXT12r+y0CC6u67hegDHaxcPqb2fZHOGlqxugGQPNB1EnTezjBetkwkw==
 
 type-is@~1.6.18:
   version "1.6.18"

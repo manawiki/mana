@@ -2,6 +2,7 @@ import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Site } from "~/db/payload-types";
+import { AdUnit } from "~/routes/_site+/$siteId+/src/components/Ramp";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
@@ -12,17 +13,16 @@ export function ColumnFour({ site }: { site: Site }) {
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub max-laptop:max-w-[728px]
             laptop:w-[334px] laptop:dark:bg-dark350/50 laptop:dark:border-zinc-700 laptop:border-zinc-200/60 laptop:overflow-y-auto max-laptop:mx-auto"
          >
-            <div className="laptop:h-full">
+            <div className="laptop:h-full flex flex-col">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
                   <PrimaryMenuLinks site={site} />
                   <PinnedList site={site} />
                </section>
-
                {site?.banner && (
                   <div className="border-b border-color">
                      <div className="bg-3-sub flex items-center justify-center bg-zinc-100 h-40 relative overflow-hidden">
                         <span
-                           className="bg-gradient-to-b dark:from-dark350/80 dark:via-dark350/20 
+                           className="bg-gradient-to-b dark:from-dark350/80 dark:via-dark350/40 
                                from-white/30 via-white/10 to-white/20
                                dark:to-dark350/90  w-full h-full absolute top-0 left-0 z-10"
                         />
@@ -131,9 +131,14 @@ export function ColumnFour({ site }: { site: Site }) {
                      </Tooltip>
                   </div>
                </section>
-               {/* <div className="border-t border-color p-4">
-                  <div className="bg-3-sub rounded-xl h-[250px]" />
-               </div> */}
+               {site.enableAds && (
+                  <>
+                     <div className="flex-grow h-full" />
+                     <div className="border-t border-color p-4">
+                        <AdUnit adId="pwDeskMedRectAtf" />
+                     </div>
+                  </>
+               )}
             </div>
          </div>
       </section>
