@@ -2,7 +2,7 @@ import { useMatches } from "@remix-run/react";
 import type { Descendant } from "slate";
 
 import type { Update } from "payload/generated-types";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
 import type { UpdatesElement } from "~/routes/_editor+/core/types";
 
 // eslint-disable-next-line import/no-cycle
@@ -28,7 +28,7 @@ export function BlockUpdatesView({ element }: Props) {
       <section className="my-6">
          {updateResults && updateResults?.length === 0 ? null : (
             <>
-               <H2Default text="Updates" />
+               <H2 text="Updates" />
                <div
                   className="divide-color-sub border-color-sub bg-3 shadow-1 divide-y 
                overflow-hidden rounded-lg border shadow-sm"

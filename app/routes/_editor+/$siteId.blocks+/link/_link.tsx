@@ -3,9 +3,7 @@ import type { ReactNode } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
-import { Component, Trash } from "lucide-react";
 import type { PaginatedDocs } from "payload/dist/database/types";
-import { plural } from "pluralize";
 import qs from "qs";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -16,7 +14,8 @@ import { zx } from "zodix";
 import type { Entry } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { swrRestFetcher, toWords } from "~/utils";
+import { Icon } from "~/components/Icon";
+import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -45,7 +44,7 @@ export async function loader({
          const site = slug?.docs[0];
 
          //List
-         if (pathSection[3]) {
+         if (pathSection[3] && pathSection[4] == null) {
             const collectionData = await payload.find({
                collection: "collections",
                where: {
@@ -76,16 +75,15 @@ export async function loader({
             const entryId = pathSection[4];
             const collectionId = pathSection[3];
             if (site?.type == "custom") {
-               const formattedNamePlural = plural(
-                  toWords(collectionId as string, true),
-               );
-               const endpoint = `https://${site.slug}-db.${
-                  site.domain ?? "mana.wiki"
-               }/api/graphql`;
+               const label = gqlFormat(collectionId ?? "", "list");
+               const endpoint = gqlEndpoint({
+                  siteSlug: site.slug,
+               });
+
                //Document request if slug does exist
                const entryQuery = gql`
                         query ($entryId: String!) {
-                           entryData: ${formattedNamePlural}(
+                           entryData: ${label}(
                                  where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
                               ) {
                               docs {
@@ -241,7 +239,7 @@ export function BlockLink({ element, children }: Props) {
                   return Transforms.removeNodes(editor, { at: path });
                }}
             >
-               <Trash className="h-3 w-3 text-white" />
+               <Icon name="trash" className="h-3 w-3 text-white" />
             </button>
             <span
                className="border-color-sub shadow-1 flex h-6 w-6 items-center justify-center
@@ -255,7 +253,7 @@ export function BlockLink({ element, children }: Props) {
                      options="aspect_ratio=1:1&height=40&width=40"
                   />
                ) : (
-                  <Component className="text-1 mx-auto" size={12} />
+                  <Icon name="component" className="text-1 mx-auto" size={12} />
                )}
             </span>
             {children}

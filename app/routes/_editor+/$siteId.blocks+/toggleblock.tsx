@@ -2,10 +2,11 @@ import { type ReactNode } from "react";
 
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
-import { ChevronRight } from "lucide-react";
 import { useSlate } from "slate-react";
 
 // eslint-disable-next-line import/no-cycle
+import { Icon } from "~/components/Icon";
+
 import { NestedEditor } from "../core/dnd";
 import type { ToggleBlockElement } from "../core/types";
 
@@ -31,7 +32,8 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                      )}
                   >
                      <div className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800">
-                        <ChevronRight
+                        <Icon
+                           name="chevron-right"
                            className={clsx(
                               open ? "rotate-90" : "",
                               "transform pl-0.5 transition duration-300 ease-in-out",
@@ -55,7 +57,8 @@ export function BlockToggleBlock({ element, children, readOnly }: Props) {
                            contentEditable={false}
                            className="flex h-7 w-7 flex-none items-center justify-center rounded-full border bg-white shadow-sm shadow-zinc-200  dark:border-zinc-600/30 dark:bg-dark450 dark:shadow-zinc-800"
                         >
-                           <ChevronRight
+                           <Icon
+                              name="chevron-right"
                               className={clsx(
                                  open ? "rotate-90" : "",
                                  "transform pl-0.5 transition duration-300 ease-in-out",

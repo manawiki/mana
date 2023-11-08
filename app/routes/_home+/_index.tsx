@@ -11,20 +11,12 @@ import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
 import clsx from "clsx";
-import {
-   ChevronLeft,
-   ChevronRight,
-   Component,
-   Gamepad2,
-   Globe2,
-   Search,
-   X,
-} from "lucide-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import { useDebouncedValue } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
@@ -109,7 +101,7 @@ export async function loader({
    const sites = data.sites;
 
    return json(
-      { q, sites },
+      { q, sites, dev: process.env.NODE_ENV === "development" ?? undefined },
       { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
@@ -144,7 +136,8 @@ export default function IndexMain() {
 }
 
 const Discover = () => {
-   const { q, sites } = useLoaderData<typeof loader>() || {};
+   const { q, sites, dev } = useLoaderData<typeof loader>() || {};
+
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const [searchParams, setSearchParams] = useSearchParams({});
@@ -185,7 +178,8 @@ const Discover = () => {
                         <>
                            <div className="relative flex h-full w-full items-center gap-2">
                               <span className="absolute left-[16px] top-[17px]">
-                                 <Search size={20} />
+                                 {/* <Search size={20} /> */}
+                                 <Icon name="search" className="h-5 w-5" />
                               </span>
                               <input
                                  type="text"
@@ -209,7 +203,10 @@ const Discover = () => {
                                     setQuery("");
                                  }}
                               >
-                                 <X size={22} className="text-red-500" />
+                                 <Icon
+                                    name="x"
+                                    className="text-red-500 w-[22px] h-[22px]"
+                                 />
                               </button>
                            )}
                         </>
@@ -249,8 +246,9 @@ const Discover = () => {
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Globe2 size={15} />
-                                 <span>All</span>
+                                 <Icon name="globe-2" className="h-3.5 w-3.5">
+                                    All
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -264,8 +262,10 @@ const Discover = () => {
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Gamepad2 size={16} />
-                                 <span>Gaming</span>
+                                 {/* <Gamepad2 size={16} /> */}
+                                 <Icon name="gamepad-2" className="h-4 w-4">
+                                    Gaming
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -279,8 +279,9 @@ const Discover = () => {
                                     "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Component size={14} />
-                                 <span>Other</span>
+                                 <Icon name="component" className="h-3.5 w-3.5">
+                                    Other
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -298,7 +299,8 @@ const Discover = () => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              reloadDocument={true}
+                              //don't reload document on dev
+                              reloadDocument={!dev}
                               to={`/${site.slug}`}
                               key={site.id}
                               className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
@@ -354,9 +356,9 @@ const Discover = () => {
                                     })
                                  }
                               >
-                                 <ChevronLeft
-                                    size={18}
-                                    className="text-zinc-500"
+                                 <Icon
+                                    name="chevron-left"
+                                    className="text-zinc-500 w-4.5 h-4.5"
                                  />
                                  Prev
                               </button>
@@ -378,9 +380,9 @@ const Discover = () => {
                                  }
                               >
                                  Next
-                                 <ChevronRight
-                                    size={18}
-                                    className="text-zinc-500"
+                                 <Icon
+                                    name="chevron-right"
+                                    className="text-zinc-500 w-4.5 h-4.5"
                                  />
                               </button>
                            ) : null}

@@ -1,6 +1,7 @@
-import { Component } from "lucide-react";
 import { nanoid } from "nanoid";
 import { DefaultElement, useReadOnly } from "slate-react";
+
+import { Icon } from "~/components/Icon";
 
 import { ExampleBlock } from "./Example";
 enum BlockType {
@@ -37,7 +38,7 @@ export const CustomBlocksAddConfig = (onSelect: any) => {
       items: [
          {
             label: "Sample Component",
-            icon: <Component size={20} />,
+            icon: <Icon name="component" size={20} />,
             description: "Sample component description",
             onSelect: () => {
                onSelect({

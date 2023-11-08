@@ -46,7 +46,7 @@ interface RemixDevToolsProps {
 
 export const rdtClientConfig: RemixDevToolsProps = {
    //Requires rdt=true to be present in the URL search to open the Remix Development Tools. Defaults to false.
-   // requireUrlFlag: false,
+   requireUrlFlag: true,
    // Allows you to provide additional tabs (plugins) to the Remix Development Tools. Defaults to [].
    // plugins: [],
    // wsPort: Allows you to specify over which port the client dev tools will communicate with the server dev tools. Defaults to 8080.

@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { Check, X } from "lucide-react";
 import { toast as customToast } from "react-hot-toast";
+
+import { Icon } from "./Icon";
 
 const success = (message: string) => {
    customToast.custom((t) => (
@@ -12,7 +13,7 @@ const success = (message: string) => {
       >
          <div className="flex items-center justify-center absolute left-1/2 -top-3 transform -translate-x-1/2">
             <div className="flex h-6 w-6 mx-auto items-center justify-center rounded-full bg-green-100 border dark:bg-green-950 dark:border-green-800 border-green-200 text-green-500">
-               <Check size={16} />
+               <Icon name="check" size={16} />
             </div>
          </div>
          <div className="text-sm">{message}</div>
@@ -30,7 +31,7 @@ const error = (message: string) => {
       >
          <div className="flex items-center justify-center absolute left-1/2 -top-3 transform -translate-x-1/2">
             <div className="flex h-6 w-6 mx-auto items-center justify-center rounded-full bg-red-100 border dark:bg-red-950 dark:border-red-800 border-red-200 text-red-500">
-               <X size={16} />
+               <Icon name="x" size={16} />
             </div>
          </div>
          <div className="text-sm">{message}</div>

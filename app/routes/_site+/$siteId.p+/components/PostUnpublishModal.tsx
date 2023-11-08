@@ -1,7 +1,7 @@
 import { useFetcher } from "@remix-run/react";
-import { Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
 import { isAdding } from "~/utils";
 
@@ -41,7 +41,7 @@ export const PostUnpublishModal = ({
          hover:bg-red-50 dark:border-zinc-600 dark:hover:bg-zinc-700"
                onClick={() => setUnpublishOpen(false)}
             >
-               <X className="h-5 w-5 text-red-400" />
+               <Icon name="x" className="h-5 w-5 text-red-400" />
             </button>
             <div className="grid grid-cols-2 gap-4">
                <button
@@ -63,7 +63,10 @@ export const PostUnpublishModal = ({
                                         focus:bg-zinc-400 dark:bg-zinc-600 dark:focus:bg-zinc-500"
                >
                   {unpublishing ? (
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                     <Icon
+                        name="loader-2"
+                        className="mx-auto h-5 w-5 animate-spin text-red-200"
+                     />
                   ) : (
                      t("actions.unpublish")
                   )}

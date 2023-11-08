@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
-import { Copy, CopyCheck, CopyX } from "lucide-react";
 import { themes } from "prism-react-renderer";
 import { CodeBlock } from "react-code-block";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
+import { Icon } from "~/components/Icon";
 import { delay } from "~/utils";
 import { useTheme } from "~/utils/theme-provider";
 
@@ -30,18 +30,22 @@ export function BlockCodeBlock({
 
    const [codeBlockValue, setCodeBlockValue] = useState(element?.value ?? "");
 
-   const [copySuccess, setCopySuccess] = useState(<Copy size={14} />);
+   const [copySuccess, setCopySuccess] = useState(
+      <Icon name="copy" size={14} />,
+   );
 
    const [editMode, setEditMode] = useState(false);
 
    async function copyToClipBoard(copyMe: string) {
       try {
          await navigator.clipboard.writeText(copyMe);
-         setCopySuccess(<CopyCheck className="text-green-500" size={14} />);
+         setCopySuccess(
+            <Icon name="copy-check" className="text-green-500" size={14} />,
+         );
          await delay(2000);
-         setCopySuccess(<Copy size={14} />);
+         setCopySuccess(<Icon name="copy" size={14} />);
       } catch (err) {
-         setCopySuccess(<CopyX size={14} />);
+         setCopySuccess(<Icon name="copy-x" size={14} />);
       }
    }
 
@@ -87,7 +91,7 @@ export function BlockCodeBlock({
                className="w-full resize-none font-mono text-1 focus:ring-0 pl-[31px] overflow-hidden text-sm border-0 bg-transparent p-0"
                defaultValue={codeBlockValue}
                onChange={(event) => updateLabelValue(event.target.value)}
-               placeholder="Add a title..."
+               placeholder="Start typing..."
             />
          )}
          <div className="hidden">{children}</div>

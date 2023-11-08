@@ -130,6 +130,10 @@ async function startCore() {
       "/fonts",
       express.static("public/fonts", { immutable: true, maxAge: "1y" }),
    );
+   app.use(
+      "/icons",
+      express.static("public/icons", { immutable: true, maxAge: "1y" }),
+   );
 
    // Everything else (like favicon.ico) is cached for an hour. You may want to be
    // more aggressive with this caching.
@@ -152,7 +156,7 @@ async function startCore() {
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {
-      console.log(`Express server listening on port ${port}`);
+      console.log(`Express server listening on port http://localhost:${port}`);
 
       if (process.env.NODE_ENV === "development") {
          broadcastDevReady(build);

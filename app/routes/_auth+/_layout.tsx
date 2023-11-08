@@ -1,5 +1,6 @@
 import { Link, Outlet } from "@remix-run/react";
-import { ArrowLeft } from "lucide-react";
+
+import { Icon } from "~/components/Icon";
 export default function AuthLayout() {
    return (
       <main>
@@ -18,8 +19,9 @@ export default function AuthLayout() {
                   className="bg-2 border-color shadow-1 flex items-center gap-2 rounded-full border py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
                   to="/"
                >
-                  <ArrowLeft className="text-1" size={16} />
-                  <span>Back</span>
+                  <Icon name="arrow-left" size={16} className="text-1">
+                     Back
+                  </Icon>
                </Link>
             </div>
          </div>

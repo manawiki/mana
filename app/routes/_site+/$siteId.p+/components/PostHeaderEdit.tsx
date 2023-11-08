@@ -2,10 +2,10 @@ import type { FormEvent } from "react";
 import { useState, useEffect } from "react";
 
 import { useFetcher } from "@remix-run/react";
-import { Loader2, ImageMinus, Upload } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import type { Post } from "payload/generated-types";
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { isAdding, useDebouncedValue, useIsMount } from "~/utils";
 
@@ -121,9 +121,13 @@ export function PostHeaderEdit({
                   }
                >
                   {isBannerDeleting ? (
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                     <Icon
+                        name="loader-2"
+                        className="mx-auto h-5 w-5 animate-spin text-red-200"
+                     />
                   ) : (
-                     <ImageMinus
+                     <Icon
+                        name="image-minus"
                         className="text-red-500 dark:text-red-300"
                         size={20}
                      />
@@ -154,12 +158,13 @@ export function PostHeaderEdit({
                   >
                      <div className="text-1 space-y-2">
                         {isBannerAdding ? (
-                           <Loader2
+                           <Icon
+                              name="loader-2"
                               size={30}
                               className="mx-auto animate-spin"
                            />
                         ) : (
-                           <Upload className="mx-auto" size={30} />
+                           <Icon name="upload" className="mx-auto" size={30} />
                         )}
 
                         <div className="text-center font-bold group-hover:underline">

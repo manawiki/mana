@@ -27,13 +27,6 @@ import {
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
-import {
-   ChevronLeft,
-   Copy,
-   GripVertical,
-   MoreVertical,
-   Trash,
-} from "lucide-react";
 import type { Descendant, Editor } from "slate";
 import { Transforms, createEditor } from "slate";
 import type { RenderElementProps } from "slate-react";
@@ -46,6 +39,7 @@ import {
 } from "slate-react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
+import { Icon } from "~/components/Icon";
 
 import { BlockSelector } from "./components/BlockSelector";
 // eslint-disable-next-line import/no-cycle
@@ -204,10 +198,14 @@ function BlockInlineActions({
                      <Popover.Button className="flex focus:outline-none border-color-sub h-7 w-5 border-r select-none items-center justify-center">
                         {open ? (
                            <div>
-                              <ChevronLeft className="text-1" size={14} />
+                              <Icon
+                                 name="chevron-left"
+                                 className="text-1"
+                                 size={14}
+                              />
                            </div>
                         ) : (
-                           <MoreVertical size={14} />
+                           <Icon name="more-vertical" size={14} />
                         )}
                      </Popover.Button>
                      <Popover.Panel
@@ -227,7 +225,8 @@ function BlockInlineActions({
                                  ref={setActivatorNodeRef}
                                  {...listeners}
                               >
-                                 <GripVertical
+                                 <Icon
+                                    name="grip-vertical"
                                     className="group-hover:text-blue-400"
                                     size={14}
                                  />
@@ -236,7 +235,8 @@ function BlockInlineActions({
                            </Tooltip>
                            <Tooltip>
                               <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
-                                 <Copy
+                                 <Icon
+                                    name="copy"
                                     className="group-hover:text-green-400"
                                     size={12}
                                  />
@@ -258,7 +258,8 @@ function BlockInlineActions({
                                  onClick={(e) => onDelete(e, element)}
                                  aria-label="Delete"
                               >
-                                 <Trash
+                                 <Icon
+                                    name="trash"
                                     className="group-hover:text-red-400"
                                     size={12}
                                  />
@@ -332,7 +333,7 @@ function HoverElement({
       handleClose: safePolygon(),
    });
 
-   const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+   const { getReferenceProps } = useInteractions([hover]);
 
    const activeIndex = editor.children.findIndex(
       (result: any) => result.id === activeId,
@@ -393,8 +394,6 @@ function HoverElement({
                   isTwoColumn ? "z-20" : "z-10",
                   "absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
                )}
-               ref={refs.setFloating}
-               {...getFloatingProps()}
             >
                <BlockInlineActions
                   isParentTwoColumn={isParentTwoColumn}

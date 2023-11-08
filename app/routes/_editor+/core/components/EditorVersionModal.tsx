@@ -5,10 +5,10 @@ import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
-import { Loader2 } from "lucide-react";
 
 import type { Config } from "payload/generated-types";
 import { Modal } from "~/components";
+import { Icon } from "~/components/Icon";
 import { isAdding } from "~/utils";
 
 import { EditorView } from "./EditorView";
@@ -45,25 +45,26 @@ export function EditorVersionModal({
          show={isVersionModalOpen}
       >
          <div
-            className="bg-2 border-color min-h-full w-full transform overflow-hidden rounded-md border
+            className="bg-2 border-color-sub min-h-full w-full transform overflow-hidden rounded-md border
                text-left align-middle transition-all laptop:w-[1077px] laptop:max-w-[1100px]"
          >
             <section className="bg-3 flex items-start">
                <Tab.Group>
                   <Tab.Panels className="bg-3 max-h-[90vh] w-[775px] overflow-auto px-4 pb-4 no-scrollbar">
                      <div
-                        className="bg-2 text-1 border-color fixed left-0 top-0 z-10 
+                        className="bg-2-sub text-1 border-color-sub fixed left-0 top-0 z-10 
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
-                        {dt.format(
-                           new Date(selectedVersion?.updatedAt as any),
-                           "MMMM D, hh:mm A",
-                        )}
+                        {selectedVersion?.updatedAt &&
+                           dt.format(
+                              new Date(selectedVersion?.updatedAt as any),
+                              "MMMM D, hh:mm A",
+                           )}
                      </div>
                      {versions?.map(
                         (version: any) =>
                            version.version?.content && (
-                              <Tab.Panel className="mt-16" key={version.id}>
+                              <Tab.Panel className="pt-16" key={version.id}>
                                  <h1 className="font-header text-3xl font-bold">
                                     {version.version.name}
                                  </h1>
@@ -72,12 +73,13 @@ export function EditorVersionModal({
                            ),
                      )}
                   </Tab.Panels>
-                  <div className="border-color flex h-full max-h-[90vh] min-h-[90vh] w-[300px] flex-col  border-l">
+                  <div className="border-color-sub flex h-full max-h-[90vh] min-h-[90vh] w-[300px] flex-col  border-l">
                      <Tab.List className="flex flex-grow flex-col justify-between overflow-auto">
                         <RadioGroup
                            className="bg-3 m-4 space-y-1 overflow-auto"
                            value={selectedVersion}
                            onChange={setSelectedVersion}
+                           by="id"
                         >
                            {versions?.map(
                               (row: any, index: any) =>
@@ -142,7 +144,10 @@ export function EditorVersionModal({
                               }}
                            >
                               {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin"
+                                 />
                               ) : (
                                  "Restore"
                               )}
