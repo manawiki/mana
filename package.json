@@ -83,6 +83,7 @@
       "react-timer-hook": "^3.0.7",
       "react-zorm": "^0.9.0",
       "remix-i18next": "^5.4.0",
+      "remix-utils": "^7.1.0",
       "slate": "^0.94.1",
       "slate-history": "^0.93.0",
       "slate-react": "^0.99.0",

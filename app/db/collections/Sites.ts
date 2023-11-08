@@ -31,6 +31,12 @@ export const Sites: CollectionConfig = {
          defaultValue: false,
       },
       {
+         name: "enableAds",
+         type: "checkbox",
+         label: "Enable Ads",
+         defaultValue: false,
+      },
+      {
          name: "followers",
          type: "number",
       },
