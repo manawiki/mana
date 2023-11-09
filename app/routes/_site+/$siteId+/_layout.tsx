@@ -5,6 +5,7 @@ import type {
    ActionFunction,
    LoaderFunctionArgs,
    MetaFunction,
+   SerializeFrom,
 } from "@remix-run/node";
 import {
    useFetcher,
@@ -12,6 +13,7 @@ import {
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
+import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -22,7 +24,6 @@ import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/func
 import * as gtag from "~/routes/_site+/$siteId+/src/utils/gtags.client";
 import { assertIsPost } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-import { useIsBot } from "~/utils/isBotProvider";
 
 import {
    MobileTray,
@@ -33,8 +34,11 @@ import {
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
-   RampScripts,
+   GAScripts,
 } from "./src/components";
+import { RampScripts } from "./src/components/RampScripts";
+
+export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export async function loader({
    context: { user },
@@ -71,17 +75,42 @@ export async function loader({
    );
 }
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         //@ts-ignore
-         title: data.site.name,
+         title: data?.site.name,
       },
    ];
 };
 
-export const handle = {
-   i18n: "site",
+export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
+   scripts({ data }) {
+      const enableAds = data.site.enableAds;
+      const gaTag = data.site.gaTagId;
+
+      if ((enableAds || gaTag) && process.env.NODE_ENV === "production") {
+         const gAnalytics = {
+            src: `https://www.googletagmanager.com/gtag/js?id=${gaTag}`,
+            async: true,
+         };
+         //Load GTag with ads if enabled
+         if (enableAds) {
+            const rampConfig = {
+               src: "//cdn.intergient.com/1025133/74686/ramp_config.js",
+               async: true,
+            };
+            const rampCore = {
+               src: "//cdn.intergient.com/ramp_core.js",
+               async: true,
+            };
+            return [gAnalytics, rampConfig, rampCore];
+         }
+         //Otherwise just load analytics
+         return [gAnalytics];
+      }
+
+      return [];
+   },
 };
 
 export default function SiteIndex() {
@@ -92,16 +121,16 @@ export default function SiteIndex() {
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
    const [searchToggle, setSearchToggle] = useState(false);
-   const gaTrackingId = site?.gaTagId;
-   let isBot = useIsBot();
+   const gaTag = site?.gaTagId;
+   const enableAds = site?.enableAds;
 
    useEffect(() => {
-      if (process.env.NODE_ENV === "production" && gaTrackingId) {
-         gtag.pageview(location.pathname, gaTrackingId);
+      if (process.env.NODE_ENV === "production" && gaTag) {
+         gtag.pageview(location.pathname, gaTag);
       }
       //Hide the search on path change
       setSearchToggle(false);
-   }, [location, gaTrackingId]);
+   }, [location, gaTag]);
 
    return (
       <>
@@ -117,22 +146,14 @@ export default function SiteIndex() {
                className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
                      laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
             >
-               {/* ==== Desktop Following Menu ==== */}
                <ColumnOne site={site} user={user} />
-
-               {/* ==== Site Menu ==== */}
                <ColumnTwo site={site} user={user} />
-
-               {/* ==== Main Content ==== */}
                <ColumnThree
-                  location={location}
                   searchToggle={searchToggle}
                   setSearchToggle={setSearchToggle}
                   site={site}
                   fetcher={fetcher}
                />
-
-               {/* ==== Right Sidebar ==== */}
                <ColumnFour site={site} />
             </div>
 
@@ -152,45 +173,8 @@ export default function SiteIndex() {
                <UserTrayContent onOpenChange={setUserMenuOpen} />
             </MobileTray>
          </main>
-
-         {/* ==== Load GA Tag manager ==== */}
-         {(site.enableAds || gaTrackingId) &&
-         !isBot &&
-         process.env.NODE_ENV === "production" ? (
-            <>
-               <script
-                  async
-                  data-cfasync="false"
-                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
-               />
-            </>
-         ) : null}
-
-         {/* ==== Load Google Analytics ==== */}
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
-            <>
-               <script
-                  defer
-                  id="gtag-init"
-                  dangerouslySetInnerHTML={{
-                     __html: `
-                              window.dataLayer = window.dataLayer || [];
-                              function gtag(){dataLayer.push(arguments);}
-                              gtag('js', new Date());
-
-                              gtag('config', '${gaTrackingId}', {
-                                 page_path: window.location.pathname,
-                              });
-                           `,
-                  }}
-               />
-            </>
-         ) : null}
-
-         {/* ==== Load Ramp Ads ==== */}
-         {process.env.NODE_ENV === "production" && site.enableAds && !isBot ? (
-            <RampScripts />
-         ) : null}
+         <GAScripts gaTrackingId={gaTag} />
+         <RampScripts enableAds={enableAds} />
       </>
    );
 }
