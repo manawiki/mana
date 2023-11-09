@@ -51,7 +51,7 @@ async function fetchGQL(query: string, variables?: Record<string, any>) {
       console.error(JSON.stringify(errors)); // eslint-disable-line no-console
       // throw new Error();
    }
-   console.log(variables, data);
+   // console.log(variables, data);
 
    return data;
 }
