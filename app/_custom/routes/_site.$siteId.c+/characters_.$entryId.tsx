@@ -64,8 +64,14 @@ export async function loader({
       },
    });
 
-   const fetchSkillTreeData = fetchGQL(SkillTreeQuery, {
-      charId: params.entryId,
+   const fetchSkillTreeData = fetchEntry({
+      payload,
+      params,
+      request,
+      user,
+      gql: {
+         query: SkillTreeQuery,
+      },
    });
 
    const [{ entry }, data] = await Promise.all([
@@ -75,7 +81,7 @@ export async function loader({
 
    return json({
       entry,
-      skillTreeData: data.skillTree.docs as SkillTreeType[],
+      skillTreeData: data?.entry?.data?.skillTree?.docs as SkillTreeType[],
    });
 }
 
