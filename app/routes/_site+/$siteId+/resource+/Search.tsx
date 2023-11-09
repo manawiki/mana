@@ -52,8 +52,8 @@ export async function loader({
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([
-               await (await fetch(searchUrl)).json(),
-               await (await fetch(customSearchUrl)).json(),
+               (await fetch(searchUrl)).json(),
+               (await fetch(customSearchUrl)).json(),
             ]);
 
          const combineResults = [...coreSearchResults, ...customSearchResults];

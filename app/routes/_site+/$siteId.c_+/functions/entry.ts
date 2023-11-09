@@ -86,8 +86,8 @@ export async function fetchEntry({
       : undefined;
 
    const [data, embeddedContent] = await Promise.all([
-      await GQLorREST,
-      await getEmbeddedContent({
+      GQLorREST,
+      getEmbeddedContent({
          id: entry.id as string,
          payload,
          params,
