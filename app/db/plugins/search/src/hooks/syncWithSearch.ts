@@ -1,3 +1,4 @@
+//@ts-nocheck
 import type { SearchConfig, SyncWithSearch } from "../../types";
 
 const syncWithSearch: SyncWithSearch = async (args) => {
@@ -5,9 +6,9 @@ const syncWithSearch: SyncWithSearch = async (args) => {
       req: { payload },
       doc,
       operation,
-      // @ts-expect-error
+      //@ts-ignore
       collection,
-      // @ts-expect-error
+      //@ts-ignore
       searchConfig,
    } = args;
 
@@ -78,6 +79,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
                depth: 0,
             });
 
+            //@ts-ignore
             const docs: Array<{
                id: string | number;
                priority?: number;

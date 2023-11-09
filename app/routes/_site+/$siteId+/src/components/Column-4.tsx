@@ -131,14 +131,12 @@ export function ColumnFour({ site }: { site: Site }) {
                      </Tooltip>
                   </div>
                </section>
-               {site.enableAds && (
-                  <>
-                     <div className="flex-grow h-full" />
-                     <div className="border-t border-color p-4">
-                        <AdUnit adId="pwDeskMedRectAtf" />
-                     </div>
-                  </>
-               )}
+               <div className="flex-grow h-full" />
+               <AdUnit
+                  adId="pwDeskMedRectAtf"
+                  site={site}
+                  className="flex min-h-[284px] items-center justify-center"
+               />
             </div>
          </div>
       </section>

@@ -17,19 +17,17 @@ import { isAdding } from "~/utils";
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../../resource+/Search";
 
-export const ColumnThree = ({
-   location,
+export function ColumnThree({
    searchToggle,
    setSearchToggle,
    fetcher,
    site,
 }: {
-   location: any;
    searchToggle: any;
    setSearchToggle: any;
    fetcher: any;
    site: Site;
-}) => {
+}) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
@@ -231,4 +229,4 @@ export const ColumnThree = ({
          </section>
       </>
    );
-};
+}
