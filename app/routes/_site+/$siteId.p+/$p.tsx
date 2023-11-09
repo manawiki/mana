@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
@@ -8,7 +8,7 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { Await, useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
@@ -46,6 +46,7 @@ import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { mainContainerStyle } from "../$siteId+/_index";
+import { AdUnit } from "../$siteId+/src/components";
 
 export async function loader({
    context: { payload, user },
@@ -133,6 +134,7 @@ export default function Post() {
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const [isDeleteOpen, setDeleteOpen] = useState(false);
+   const enableAds = post.site.enableAds;
 
    return (
       <>
@@ -155,20 +157,29 @@ export default function Post() {
                show
             >
                <main className={mainContainerStyle}>
-                  <Suspense fallback="Loading...">
-                     <Await resolve={post}>
-                        <PostHeaderEdit
-                           post={post}
-                           isShowBanner={isShowBanner}
-                        />
-                        <ManaEditor
-                           collectionSlug="posts"
-                           fetcher={fetcher}
-                           pageId={post.id}
-                           defaultValue={post.content as Descendant[]}
-                        />
-                     </Await>
-                  </Suspense>
+                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                  {enableAds && (
+                     <div
+                        className="bg-zinc-100  dark:bg-dark350 rounded-md my-5 w-[300px] mx-auto h-[250px] 
+                           tablet:w-[728px] flex items-center justify-center tablet:h-[90px] text-zinc-400 dark:text-zinc-500"
+                     >
+                        <div className="space-y-1">
+                           <div className="text-center text-xs text-1 font-semibold">
+                              Top - Ad Banner
+                           </div>
+                           <div className="text-center text-[10px] justify-center flex items-center gap-0.5">
+                              <span className="">728x90</span>
+                              <Icon name="chevron-down" size={14} />
+                           </div>
+                        </div>
+                     </div>
+                  )}
+                  <ManaEditor
+                     collectionSlug="posts"
+                     fetcher={fetcher}
+                     pageId={post.id}
+                     defaultValue={post.content as Descendant[]}
+                  />
                </main>
                <div>
                   <EditorCommandBar
@@ -237,12 +248,20 @@ export default function Post() {
             </Float>
          ) : (
             <main className={mainContainerStyle}>
-               <Suspense fallback="Loading...">
-                  <Await resolve={post}>
-                     <PostHeaderView post={post} />
-                     <EditorView data={post.content} />
-                  </Await>
-               </Suspense>
+               <PostHeaderView post={post} />
+               <AdUnit
+                  enableAds={enableAds}
+                  adType="desktopLeaderATF"
+                  selectorId="postDesktopLeaderATF"
+                  className="flex items-center justify-center [&>div]:py-5"
+               />
+               {/* <AdUnit
+                  enableAds
+                  adType="mobileSquareATF"
+                  selectorId="postMobileSquareATF"
+                  className="flex items-center justify-center"
+               /> */}
+               <EditorView data={post.content} />
             </main>
          )}
       </>
