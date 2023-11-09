@@ -88,7 +88,7 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
       const enableAds = data.site.enableAds;
       const gaTag = data.site.gaTagId;
 
-      if ((enableAds || gaTag) && process.env.NODE_ENV === "production") {
+      if (enableAds || gaTag) {
          const gAnalytics = {
             src: `https://www.googletagmanager.com/gtag/js?id=${gaTag}`,
             async: true,

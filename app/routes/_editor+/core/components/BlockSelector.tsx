@@ -256,6 +256,25 @@ export function BlockSelector({
                   });
                },
             },
+            {
+               label: "Ad Unit",
+               icon: (
+                  <Icon
+                     name="lock"
+                     title="Ad Unit"
+                     className="text-red-400"
+                     size={12}
+                  />
+               ),
+               description: "Generate revenue with ads",
+               onSelect: () => {
+                  onInsertBelow({
+                     id: nanoid(),
+                     type: BlockType.InlineAd,
+                     children: [{ text: "" }],
+                  });
+               },
+            },
          ],
       },
    ];

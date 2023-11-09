@@ -32,6 +32,7 @@ export enum BlockType {
    EventItem = "event-item",
    TwoColumn = "two-column",
    CodeBlock = "code-block",
+   InlineAd = "inline-ad",
 }
 
 export type TextBlock =
@@ -54,6 +55,10 @@ export type ParagraphElement = BlockElement & {
 export type CodeBlockElement = BlockElement & {
    type: BlockType.CodeBlock;
    value: string;
+};
+
+export type InlineAdElement = BlockElement & {
+   type: BlockType.InlineAd;
 };
 
 export type HeadingElement = BlockElement & {
@@ -190,7 +195,8 @@ export type CustomElement =
    | EventsElement
    | EventItemElement
    | TwoColumnElement
-   | CodeBlockElement;
+   | CodeBlockElement
+   | InlineAdElement;
 
 export type CustomText = {
    text: string;
