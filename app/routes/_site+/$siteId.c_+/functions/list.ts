@@ -1,10 +1,10 @@
 import type { MetaFunction, Params } from "@remix-run/react";
-import { gql, request as gqlRequest } from "graphql-request";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 
 import type { Site, User, Collection } from "~/db/payload-types";
 import { gqlFormat, gqlEndpoint } from "~/utils";
+import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 
 import type { CollectionsAllSchema } from "../$collectionId";
 
@@ -22,7 +22,7 @@ export async function fetchList({ params, gql }: ListFetchType) {
    });
 
    const data = gql?.query
-      ? await gqlRequest(gqlPath, gql?.query, {
+      ? await gqlRequestWithCache(gqlPath, gql?.query, {
            ...gql?.variables,
         })
       : undefined;
@@ -106,7 +106,9 @@ export async function fetchListCore({
 
       const endpoint = gqlEndpoint({ siteSlug: collectionEntry?.site.slug });
 
-      const { entries }: any = await gqlRequest(endpoint, document, { page });
+      const { entries }: any = await gqlRequestWithCache(endpoint, document, {
+         page,
+      });
       return { entries };
    }
 
