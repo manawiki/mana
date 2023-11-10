@@ -10,7 +10,7 @@ export {
    PrimaryMenuLinks,
 } from "./Menu";
 export { MobileHeader } from "./MobileHeader";
-export { AdUnit } from "./Ramp";
+export { AdUnit, AdPlaceholder } from "./Ramp";
 export { GAScripts } from "./GAScripts";
 export { ColumnOne } from "./Column-1";
 export { ColumnTwo } from "./Column-2";

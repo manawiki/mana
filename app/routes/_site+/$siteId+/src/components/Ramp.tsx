@@ -1,7 +1,11 @@
+import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
 
 import { useLocation } from "@remix-run/react";
 import { ClientOnly } from "remix-utils/client-only";
+
+import { Icon } from "~/components/Icon";
+import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
 
 type AdUnitType =
    | "desktopLeaderATF"
@@ -145,4 +149,32 @@ export function AdUnit({
          </ClientOnly>
       );
    }
+}
+
+export function AdPlaceholder({ children }: { children?: ReactNode }) {
+   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
+
+   if (hasAccess || !children)
+      return (
+         <div
+            className="bg-zinc-50 dark:bg-dark350 rounded-md my-5 w-[300px] mx-auto h-[250px] shadow-sm shadow-1
+          tablet:w-[728px] flex items-center justify-center tablet:h-[90px] text-zinc-400 dark:text-zinc-500
+          border border-color-sub relative overflow-hidden"
+         >
+            <div
+               className="pattern-diagonal-lines pattern-zinc-100 pattern-bg-zinc-50 dark:pattern-dark400 dark:pattern-bg-dark350
+               pattern-size-4 pattern-opacity-20 w-full h-full absolute top-0 -z-0 left-0"
+            ></div>
+            <div className="space-y-1">
+               <div className="text-center text-xs text-1 font-semibold">
+                  Ad Banner
+               </div>
+               <div className="text-center text-[10px] justify-center flex items-center gap-0.5">
+                  <span className="">728x90</span>
+                  <Icon name="chevron-down" size={14} />
+               </div>
+            </div>
+         </div>
+      );
+   return children;
 }
