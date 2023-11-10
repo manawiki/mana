@@ -46,7 +46,7 @@ import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { mainContainerStyle } from "../$siteId+/_index";
-import { AdUnit } from "../$siteId+/src/components";
+import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
 
 export async function loader({
    context: { payload, user },
@@ -158,22 +158,7 @@ export default function Post() {
             >
                <main className={mainContainerStyle}>
                   <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                  {enableAds && (
-                     <div
-                        className="bg-zinc-100  dark:bg-dark350 rounded-md my-5 w-[300px] mx-auto h-[250px] 
-                           tablet:w-[728px] flex items-center justify-center tablet:h-[90px] text-zinc-400 dark:text-zinc-500"
-                     >
-                        <div className="space-y-1">
-                           <div className="text-center text-xs text-1 font-semibold">
-                              Top - Ad Banner
-                           </div>
-                           <div className="text-center text-[10px] justify-center flex items-center gap-0.5">
-                              <span className="">728x90</span>
-                              <Icon name="chevron-down" size={14} />
-                           </div>
-                        </div>
-                     </div>
-                  )}
+                  {enableAds && <AdPlaceholder />}
                   <ManaEditor
                      collectionSlug="posts"
                      fetcher={fetcher}
@@ -249,18 +234,20 @@ export default function Post() {
          ) : (
             <main className={mainContainerStyle}>
                <PostHeaderView post={post} />
-               <AdUnit
-                  enableAds={enableAds}
-                  adType="desktopLeaderATF"
-                  selectorId="postDesktopLeaderATF"
-                  className="flex items-center justify-center [&>div]:py-5"
-               />
-               {/* <AdUnit
+               <AdPlaceholder>
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                     className="flex items-center justify-center [&>div]:py-5"
+                  />
+                  {/* <AdUnit
                   enableAds
                   adType="mobileSquareATF"
                   selectorId="postMobileSquareATF"
                   className="flex items-center justify-center"
                /> */}
+               </AdPlaceholder>
                <EditorView data={post.content} />
             </main>
          )}

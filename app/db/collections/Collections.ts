@@ -156,6 +156,12 @@ export const Collections: CollectionConfig = {
                defaultValue: false,
             },
             {
+               name: "showAd",
+               type: "checkbox",
+               label: "Show Ad",
+               defaultValue: false,
+            },
+            {
                name: "subSections",
                type: "array",
                label: "Sub-Sections",
