@@ -3,7 +3,13 @@ import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { offset } from "@floating-ui/react";
 import { Popover, Tab, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { Link, useFetcher, useLocation, useMatches } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useLocation,
+   useMatches,
+   useSearchParams,
+} from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 import { lazily } from "react-lazily";
@@ -19,6 +25,7 @@ import type { loader as entryLoaderType } from "~/routes/_site+/$siteId.c_+/$col
 
 import type { Section } from "./Sections";
 import { TableOfContents } from "./TableOfContents";
+import { AdPlaceholder, AdUnit } from "../../$siteId+/src/components";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
 //@ts-ignore
@@ -42,8 +49,11 @@ export function Section({
    const { entry } = useMatches()?.[2]?.data as SerializeFrom<
       typeof entryLoaderType
    >;
+
    const [activeSection, setActiveSection] = useState(null);
    const sections = useRef([]);
+
+   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
    const handleScroll = () => {
       const pageYOffset = window.scrollY;
@@ -76,17 +86,30 @@ export function Section({
 
    return (
       <>
-         <TableOfContents sections={entry.sections} />
+         <TableOfContents entry={entry} sections={entry.sections} />
          {entry.sections?.map((section) => (
-            <SectionParent
-               activeSection={activeSection}
-               key={section.id}
-               entry={entry}
-               section={section}
-               sections={entry.sections}
-               customData={customData}
-               customComponents={customComponents}
-            />
+            <>
+               {section.showAd && (
+                  <AdPlaceholder>
+                     <AdUnit
+                        enableAds={section.showAd}
+                        adType="desktopLeaderBTF"
+                        selectorId={`sectionDesktopLeaderBTF-${section.id}`}
+                        className="flex items-center justify-center mx-auto [&>div]:my-5"
+                     />
+                  </AdPlaceholder>
+               )}
+               <SectionParent
+                  activeSection={activeSection}
+                  key={section.id}
+                  entry={entry}
+                  section={section}
+                  sections={entry.sections}
+                  customData={customData}
+                  customComponents={customComponents}
+                  hasAccess={hasAccess}
+               />
+            </>
          ))}
          <ScrollToHashElement />
       </>
@@ -100,6 +123,7 @@ function SectionParent({
    customComponents,
    entry,
    activeSection,
+   hasAccess,
 }: {
    section: Flatten<Collection["sections"]>;
    sections: Collection["sections"];
@@ -107,9 +131,8 @@ function SectionParent({
    customComponents: unknown;
    entry: SerializeFrom<typeof entryLoaderType>["entry"];
    activeSection: string | null;
+   hasAccess: Boolean;
 }) {
-   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-
    if (sections && section?.subSections) {
       const isSingle =
          section?.subSections && section?.subSections?.length == 1;
@@ -172,7 +195,10 @@ function SectionParent({
                                     leaveTo="opacity-0 translate-y-1"
                                  >
                                     <Popover.Panel className="max-laptop:px-3 absolute w-full mt-4 drop-shadow-xl left-0 transform">
-                                       <TableOfContents sections={sections} />
+                                       <TableOfContents
+                                          entry={entry}
+                                          sections={sections}
+                                       />
                                     </Popover.Panel>
                                  </Transition>
                               </>
@@ -270,9 +296,7 @@ function SubSectionTabs({
    entry: SerializeFrom<typeof entryLoaderType>["entry"];
 }) {
    // Hide null tabs
-
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
-
    const tabs = section?.subSections
       ?.filter((subSection) => {
          if (subSection.type == "editor") {
@@ -290,8 +314,25 @@ function SubSectionTabs({
          return subSection;
       });
 
+   //On initial load, this will set the section active tab if url param exists
+   const [searchParams] = useSearchParams();
+   const subSectionId = searchParams.get("section");
+   const activeTabIndex = tabs?.findIndex(({ id }) => id == subSectionId);
+   const [selectedIndex, setSelectedIndex] = useState(activeTabIndex);
+
+   useEffect(() => {
+      //Update active tab if ToC is clicked after initial load
+      if (subSectionId) {
+         setSelectedIndex(activeTabIndex);
+      }
+      //If section param is empty, set first tab to default
+      if (!searchParams.has("section")) {
+         setSelectedIndex(0);
+      }
+   }, [searchParams]);
+
    return (
-      <Tab.Group>
+      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
          <Tab.List>
             <div className="border py-2 px-1.5 border-color-sub overflow-hidden rounded-t-lg text-[13px] bg-zinc-50 shadow-1 shadow-sm dark:bg-dark350 r z-20 relative flex items-center gap-1">
                {tabs?.map((subSection) => {

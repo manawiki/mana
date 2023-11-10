@@ -212,11 +212,7 @@ export function EditorBlocks({
       case BlockType.InlineAd: {
          return (
             <div contentEditable={false}>
-               <BlockInlineAd
-                  readOnly={readOnly}
-                  element={element}
-                  {...attributes}
-               />
+               <BlockInlineAd element={element} {...attributes} />
                <div className="hidden">{children}</div>
             </div>
          );
