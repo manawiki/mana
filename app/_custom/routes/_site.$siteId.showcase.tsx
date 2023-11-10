@@ -20,7 +20,6 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { settings } from "mana-config";
-import { fetchShowcase } from "~/_custom/showcase-cache.server";
 import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -45,6 +44,7 @@ async function fetchGQL(query: string, variables?: Record<string, any>) {
             variables,
          }),
       },
+      60000,
    );
 
    if (errors) {
@@ -64,7 +64,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
    if (!uid) return null;
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
-   const showcaseData = await fetchShowcase(showcaseDataUrl);
+   const showcaseData = await fetchWithCache(showcaseDataUrl);
 
    if (showcaseData.detail)
       return json({
@@ -1607,7 +1607,7 @@ export async function action({ request }: ActionFunctionArgs) {
    if (!uid) return null;
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
-   const showcaseData = await fetchShowcase(showcaseDataUrl);
+   const showcaseData = await fetchWithCache(showcaseDataUrl);
 
    return showcaseData;
 }
