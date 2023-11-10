@@ -10,12 +10,7 @@ import { settings } from "mana-config";
 import type { Entry, User } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { gqlFormat, gqlEndpoint } from "~/utils";
-import {
-   fetchWithCache,
-   gqlRequestWithCache,
-   gql,
-   cacheThis,
-} from "~/utils/cache.server";
+import { fetchWithCache, gqlRequestWithCache, gql } from "~/utils/cache.server";
 
 export type EntryType = {
    siteId: string;
@@ -252,22 +247,20 @@ export async function getEntryFields({
 
    const collectionId = url.split("/")[3];
 
-   const collectionData = await cacheThis(() =>
-      payload.find({
-         collection: "collections",
-         where: {
-            "site.slug": {
-               equals: siteId,
-            },
-            slug: {
-               equals: collectionId,
-            },
+   const collectionData = await payload.find({
+      collection: "collections",
+      where: {
+         "site.slug": {
+            equals: siteId,
          },
-         draft: true,
-         user,
-         overrideAccess: false,
-      }),
-   );
+         slug: {
+            equals: collectionId,
+         },
+      },
+      draft: true,
+      user,
+      overrideAccess: false,
+   });
 
    const collection = collectionData.docs[0];
 
