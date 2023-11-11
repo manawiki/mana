@@ -28,7 +28,8 @@ export const FollowingListMobile = ({
                         reloadDocument={true}
                         key={item.id}
                         onClick={() => setMenuOpen(false)}
-                        className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
+                        className="shadow-1 bg-2-sub border-color relative flex w-full items-center 
+                        justify-between gap-3 rounded-xl border pr-4 shadow-sm"
                         to={`/${item.slug}`}
                      >
                         {({ isActive }) => (
