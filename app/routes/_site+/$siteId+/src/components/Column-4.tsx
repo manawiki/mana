@@ -10,8 +10,8 @@ export function ColumnFour({ site }: { site: Site }) {
    return (
       <section className="relative z-40 laptop:block max-laptop:bg-2-sub">
          <div
-            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub max-laptop:max-w-[728px]
-            laptop:w-[334px] laptop:dark:bg-dark350/50 laptop:dark:border-zinc-700 laptop:border-zinc-200/60 laptop:overflow-y-auto max-laptop:mx-auto"
+            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub laptop:bg-2 max-laptop:max-w-[728px]
+            laptop:w-[334px] border-color laptop:overflow-y-auto max-laptop:mx-auto"
          >
             <div className="laptop:h-full flex flex-col">
                <section className="border-color py-4 max-tablet:border-b max-tablet:px-3 laptop:hidden">
@@ -34,7 +34,7 @@ export function ColumnFour({ site }: { site: Site }) {
                      </div>
                   </div>
                )}
-               <section className="border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
+               <section className="dark:border-zinc-700/40 border-color border-b p-4 px-4 tablet:px-0 laptop:p-4">
                   <div className="flex items-center gap-2 pl-0.5">
                      <Icon
                         className="text-1"
@@ -50,7 +50,7 @@ export function ColumnFour({ site }: { site: Site }) {
                      <div className="text-1 text-xs pt-3">{site.about}</div>
                   )}
                </section>
-               <section className="p-4 px-4 tablet:px-0 laptop:p-4 border-b border-color">
+               <section className="dark:border-zinc-700/40 p-4 px-4 tablet:px-0 laptop:p-4 border-b border-color">
                   <div className="flex items-center pb-3">
                      <span className="text-1 text-sm font-bold">
                         Contributors
