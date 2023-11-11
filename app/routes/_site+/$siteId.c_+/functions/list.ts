@@ -4,7 +4,7 @@ import { select } from "payload-query";
 
 import type { Site, User, Collection } from "~/db/payload-types";
 import { gqlFormat, gqlEndpoint } from "~/utils";
-import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 
 import type { CollectionsAllSchema } from "../$collectionId";
 
@@ -62,21 +62,19 @@ export async function fetchListCore({
    siteId: Site["slug"];
    user?: User;
 }) {
-   const collectionData = await cacheThis(() =>
-      payload.find({
-         collection: "collections",
-         where: {
-            "site.slug": {
-               equals: siteId,
-            },
-            slug: {
-               equals: collectionId,
-            },
+   const collectionData = await payload.find({
+      collection: "collections",
+      where: {
+         "site.slug": {
+            equals: siteId,
          },
-         overrideAccess: false,
-         user,
-      }),
-   );
+         slug: {
+            equals: collectionId,
+         },
+      },
+      overrideAccess: false,
+      user,
+   });
 
    const collectionEntry = collectionData?.docs[0];
 
@@ -115,22 +113,20 @@ export async function fetchListCore({
    }
 
    //Otherwise pull data from core
-   const data = await cacheThis(() =>
-      payload.find({
-         collection: "entries",
-         where: {
-            site: {
-               equals: collectionEntry?.site?.id,
-            },
-            "collectionEntity.slug": {
-               equals: collectionId,
-            },
+   const data = await payload.find({
+      collection: "entries",
+      where: {
+         site: {
+            equals: collectionEntry?.site?.id,
          },
-         depth: 1,
-         overrideAccess: false,
-         user,
-      }),
-   );
+         "collectionEntity.slug": {
+            equals: collectionId,
+         },
+      },
+      depth: 1,
+      overrideAccess: false,
+      user,
+   });
 
    const filtered = data.docs.map((doc) => {
       return {

@@ -91,7 +91,7 @@ export async function cacheThis<T>(func: () => Promise<T>, ttl?: number) {
    // if the function is payload api, we'll use the body instead
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
-   return await cachified<T>({
+   return await cachified({
       cache,
       key,
       async getFreshValue() {
