@@ -13,7 +13,7 @@ export const lruCache = remember(
    new LRUCache<string, CacheEntry>({
       // max: 250, // maximum number of items to store in the cache
       sizeCalculation: (value) => JSON.stringify(value).length,
-      maxSize: 100 * 1024 * 1024, // 100MB
+      maxSize: 200 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
