@@ -13,7 +13,7 @@ export const lruCache = remember(
    new LRUCache<string, CacheEntry>({
       // max: 250, // maximum number of items to store in the cache
       sizeCalculation: (value) => JSON.stringify(value).length,
-      maxSize: 100 * 1024 * 1024, // 100MB
+      maxSize: 200 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
@@ -91,7 +91,7 @@ export async function cacheThis<T>(func: () => Promise<T>, ttl?: number) {
    // if the function is payload api, we'll use the body instead
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
-   return await cachified({
+   return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
