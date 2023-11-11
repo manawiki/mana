@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 
-import { Menu, Transition } from "@headlessui/react";
+import { Menu } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
 import {
    useLocation,
    useMatches,
@@ -55,13 +56,13 @@ export function CollectionHeader() {
       ? `/${site?.name}/c/${collection?.slug}/${entry?.id}`
       : `/${site?.name}/c/${collection?.slug}`;
    return (
-      <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark">
-         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 z-10 relative">
+      <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">
+         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 z-20 relative">
             <div className="flex items-center justify-between gap-2">
                <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                   {entryName ?? collection?.name}
                </h1>
-               <div className="flex-none group relative -mr-2 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
+               <div className="flex-none group relative tablet:-mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
                   <CircleImageUploader
                      image={icon}
                      actionPath={path}
@@ -71,7 +72,10 @@ export function CollectionHeader() {
                </div>
             </div>
          </div>
-         <section className="border-b border-color max-tablet:px-3 clip-path [clip-path:inset(0px_-10px_-10px_-10px)] dark:shadow-zinc-800/80 shadow-sm">
+         <section
+            className="border-b border-zinc-200/50 border-color max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
+            shadow-zinc-200/40 dark:shadow-zinc-800/80 shadow-sm relative z-10"
+         >
             <div className="mx-auto max-w-[728px] flex items-center border-t py-1.5 border-zinc-100 dark:border-zinc-700/40">
                <Link
                   to={`/${site?.slug}/collections`}
@@ -90,7 +94,17 @@ export function CollectionHeader() {
                />
                <Menu as="div" className="relative">
                   {({ open }) => (
-                     <>
+                     <Float
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="opacity-0 translate-y-1"
+                        enterTo="opacity-100 translate-y-0"
+                        leave="transition ease-in duration-150"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-1"
+                        placement="bottom-start"
+                        portal
+                     >
                         <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-1 pl-2 pr-1.5 py-2 rounded-lg">
                            <span className="font-bold text-1 text-xs">
                               {collection?.name}
@@ -107,56 +121,47 @@ export function CollectionHeader() {
                               </svg>
                            </span>
                         </Menu.Button>
-                        <Transition
-                           as={Fragment}
-                           enter="transition ease-out duration-200"
-                           enterFrom="opacity-0 translate-y-1"
-                           enterTo="opacity-100 translate-y-0"
-                           leave="transition ease-in duration-150"
-                           leaveFrom="opacity-100 translate-y-0"
-                           leaveTo="opacity-0 translate-y-1"
-                        >
-                           <Menu.Items className="absolute left-0 mt-0.5 min-w-[160px] max-w-[240px] z-20 w-full">
-                              <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
-                                 {site?.collections?.map((row) => (
-                                    <Menu.Item key={row.slug}>
-                                       <NavLink
-                                          end
-                                          className={({ isActive }) =>
-                                             clsx(
-                                                isActive
-                                                   ? "bg-zinc-100 dark:bg-dark450"
-                                                   : "hover:bg-zinc-50 dark:hover:bg-dark400",
-                                                "flex items-center p-1 rounded-md gap-1.5",
-                                             )
-                                          }
-                                          to={`/${site.slug}/c/${row.slug}`}
-                                       >
-                                          <span className="flex-none flex h-5 w-5 items-center">
-                                             {row.icon?.url ? (
-                                                <Image
-                                                   url={row.icon?.url}
-                                                   options="aspect_ratio=1:1&height=80&width=80"
-                                                   alt="Collection Icon"
-                                                />
-                                             ) : (
-                                                <Icon
-                                                   name="component"
-                                                   className="text-1 mx-auto"
-                                                   size={18}
-                                                />
-                                             )}
-                                          </span>
-                                          <span className="text-xs font-semibold text-1 flex-none">
-                                             {row.name}
-                                          </span>
-                                       </NavLink>
-                                    </Menu.Item>
-                                 ))}
-                              </div>
-                           </Menu.Items>
-                        </Transition>
-                     </>
+
+                        <Menu.Items className="absolute left-0 mt-0.5 min-w-[160px] max-w-[240px] z-20 w-full">
+                           <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
+                              {site?.collections?.map((row) => (
+                                 <Menu.Item key={row.slug}>
+                                    <NavLink
+                                       end
+                                       className={({ isActive }) =>
+                                          clsx(
+                                             isActive
+                                                ? "bg-zinc-100 dark:bg-dark450"
+                                                : "hover:bg-zinc-50 dark:hover:bg-dark400",
+                                             "flex items-center p-1 rounded-md gap-1.5",
+                                          )
+                                       }
+                                       to={`/${site.slug}/c/${row.slug}`}
+                                    >
+                                       <span className="flex-none flex h-5 w-5 items-center">
+                                          {row.icon?.url ? (
+                                             <Image
+                                                url={row.icon?.url}
+                                                options="aspect_ratio=1:1&height=80&width=80"
+                                                alt="Collection Icon"
+                                             />
+                                          ) : (
+                                             <Icon
+                                                name="component"
+                                                className="text-1 mx-auto"
+                                                size={18}
+                                             />
+                                          )}
+                                       </span>
+                                       <span className="text-xs font-semibold text-1 flex-none">
+                                          {row.name}
+                                       </span>
+                                    </NavLink>
+                                 </Menu.Item>
+                              ))}
+                           </div>
+                        </Menu.Items>
+                     </Float>
                   )}
                </Menu>
                <Icon
@@ -190,6 +195,16 @@ export function CollectionHeader() {
                )}
             </div>
          </section>
+         <span
+            className="pattern-dots absolute left-0 top-0 -z-0 h-full
+                  w-full pattern-bg-white pattern-zinc-700 pattern-opacity-10 
+                  pattern-size-1 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
+         />
+         <span
+            className="bg-gradient-to-b dark:from-bg3Dark/90 dark:to-bg3Dark/60 
+            from-white/90 to-white/60
+             w-full h-full absolute top-0 left-0 z-0"
+         />
       </div>
    );
 }

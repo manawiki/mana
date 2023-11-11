@@ -119,12 +119,10 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                <div className="space-y-3">
                   <Drawer.NestedRoot>
                      <Drawer.Trigger
-                        className="shadow-1 bg-3 border-color relative flex w-full items-center
+                        className="shadow-1 bg-2-sub border-color relative flex w-full items-center
                   justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
                      >
                         <div className="font-bold">Settings</div>
-
-                        {/* <Settings size={18} className="text-zinc-400" /> */}
                      </Drawer.Trigger>
                      <Drawer.Portal>
                         <Drawer.Overlay className="fixed inset-0 z-40 min-h-[100vh] bg-black/40" />
@@ -208,7 +206,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                      </Drawer.Portal>
                   </Drawer.NestedRoot>
                   <div
-                     className="shadow-1 bg-3 border-color relative flex w-full items-center
+                     className="shadow-1 bg-2-sub border-color relative flex w-full items-center
                   justify-between gap-3 rounded-xl border py-3 pl-4 pr-3 shadow-sm"
                   >
                      <ThemeToggleMobile />
@@ -220,7 +218,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                      handleLogout();
                   }}
                   type="submit"
-                  className="shadow-1 bg-3 border-color relative flex w-full items-center
+                  className="shadow-1 bg-2-sub border-color relative flex w-full items-center
                   justify-between gap-3 rounded-xl border px-4 py-3 shadow-sm"
                >
                   <div className="font-bold">Logout</div>

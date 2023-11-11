@@ -451,6 +451,7 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
                crossAxis: 0,
             }),
          ]}
+         autoUpdate
          zIndex={20}
          placement="right-start"
          show
