@@ -1,21 +1,26 @@
 import type { Character } from "payload/generated-custom-types";
 
-import { H2 } from "~/components/Headers";
+export const Profile = ({
+   data,
+}: {
+   data: {
+      character: Character;
+   };
+}) => {
+   const { character } = data;
 
-export const Profile = ({ pageData }: { pageData: Character }) => {
    const adata = [
-      { name: "CN CV", value: pageData.cv_cn },
-      { name: "JP CV", value: pageData.cv_jp },
-      { name: "KR CV", value: pageData.cv_kr },
-      { name: "EN CV", value: pageData.cv_en },
-      { name: "Affiliation", value: pageData.camp },
+      { name: "CN CV", value: character.cv_cn },
+      { name: "JP CV", value: character.cv_jp },
+      { name: "KR CV", value: character.cv_kr },
+      { name: "EN CV", value: character.cv_en },
+      { name: "Affiliation", value: character.camp },
    ];
 
    return (
       <>
-         {pageData.cv_cn ? (
+         {character.cv_cn ? (
             <>
-               <H2 text="Profile" />
                <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
                   {adata.map((stat, index) => {
                      return (

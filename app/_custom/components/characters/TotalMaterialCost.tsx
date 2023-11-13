@@ -5,12 +5,15 @@ import type {
 } from "payload/generated-custom-types";
 
 export const TotalMaterialCost = ({
-   pageData,
-   skillTreeData,
+   data,
 }: {
-   pageData: Character;
-   skillTreeData: SkillTree[];
+   data: {
+      character: Character;
+      skillTree: SkillTree[];
+   };
 }) => {
+   const { character, skillTree } = data;
+
    // Three totals:
    // 1) Promotion total
    // 2) Skill tree total
@@ -19,7 +22,8 @@ export const TotalMaterialCost = ({
    // 1) Calculate Promotion total
    // ======================
    let promotionTotal = [] as ItemQtyFrameProps[];
-   const promData = pageData?.promotion_cost;
+
+   const promData = character?.promotion_cost;
    if (promData && promData?.length > 0) {
       for (let i = 0; i < promData?.length; i++) {
          const material_qty = promData?.[i]?.material_qty;
@@ -41,8 +45,8 @@ export const TotalMaterialCost = ({
    // 2) Calculate Skill Tree total
    // ======================
    let skillTreeTotal = [] as ItemQtyFrameProps[];
-   for (let s = 0; s < skillTreeData?.length; s++) {
-      const treeData = skillTreeData?.[s]?.level_up_cost;
+   for (let s = 0; s < skillTree?.length; s++) {
+      const treeData = skillTree?.[s]?.level_up_cost;
       if (!treeData) break;
 
       for (let i = 0; i < treeData?.length; i++) {

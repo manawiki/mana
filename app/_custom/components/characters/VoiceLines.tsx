@@ -1,17 +1,22 @@
 import { Tab } from "@headlessui/react";
 
 import type { Character, Image } from "payload/generated-custom-types";
-import { H2 } from "~/components/Headers";
 
-export const VoiceLines = ({ pageData }: { pageData: Character }) => {
-   const lines = pageData.voice_lines;
+export const VoiceLines = ({
+   data,
+}: {
+   data: {
+      character: Character;
+   };
+}) => {
+   const { character } = data;
+
+   const lines = character.voice_lines;
    return (
       <>
          {lines && lines?.length > 0 ? (
             <>
-               <H2 text="Voice Lines" />
                <table className="mb-3 w-full">
-                  <thead></thead>
                   <tbody>
                      {/* One row per voice line */}
                      {lines.map((voice, index) => (

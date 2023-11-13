@@ -1,8 +1,16 @@
 import type { Character } from "payload/generated-custom-types";
 import { Image } from "~/components";
 
-export const ImageGallery = ({ pageData }: { pageData: Character }) => {
-   var galleryname = [
+export const ImageGallery = ({
+   data,
+}: {
+   data: {
+      character: Character;
+   };
+}) => {
+   const { character } = data;
+
+   let galleryname = [
       "Icon",
       "Full",
       "Figure",
@@ -17,15 +25,15 @@ export const ImageGallery = ({ pageData }: { pageData: Character }) => {
       "Eidolon 5",
       "Eidolon 6",
    ];
-   var gallerylist = [
-      pageData?.icon?.url,
-      pageData?.image_draw?.url,
-      pageData.image_full?.url,
-      pageData?.image_full_bg?.url,
-      pageData?.image_full_front?.url,
-      pageData?.image_action?.url,
-      pageData?.image_round_icon?.url,
-      ...(pageData?.eidolons?.map((e) => e.image?.url) ?? []),
+   let gallerylist = [
+      character?.icon?.url,
+      character?.image_draw?.url,
+      character.image_full?.url,
+      character?.image_full_bg?.url,
+      character?.image_full_front?.url,
+      character?.image_action?.url,
+      character?.image_round_icon?.url,
+      ...(character?.eidolons?.map((e) => e.image?.url) ?? []),
    ];
 
    return (

@@ -8,19 +8,22 @@ import type {
 import { Image } from "~/components";
 
 export const SkillTree = ({
-   pageData,
-   skillTreeData,
+   data,
 }: {
-   pageData: Character;
-   skillTreeData: SkillTreeType[];
+   data: {
+      character: Character;
+      skillTree: SkillTreeType[];
+   };
 }) => {
+   const { character, skillTree } = data;
+
    // UseState variable settings
    const [treeNode, setTreeNode] = useState(0);
    const [skillLevel, setSkillLevel] = useState(1);
 
-   let pathkey = pageData?.path?.data_key;
-   let treelist = skillTreeData; // pageData?.attributes?.tree; //skillTreeData;
-   let traces = pageData?.traces;
+   let pathkey = character?.path?.data_key;
+   let treelist = skillTree; // pageData?.attributes?.tree; //skillTreeData;
+   let traces = character?.traces;
 
    // Need to sort skill nodes in order from Point01 - 18
    treelist.sort((a, b) =>

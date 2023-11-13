@@ -1,8 +1,16 @@
 import type { Character } from "payload/generated-custom-types";
 import { Image } from "~/components";
 
-export const Eidolons = ({ pageData }: { pageData: Character }) => {
-   const eidolons = pageData.eidolons;
+export const Eidolons = ({
+   data,
+}: {
+   data: {
+      character: Character;
+   };
+}) => {
+   const { character } = data;
+
+   const eidolons = character.eidolons;
 
    return (
       <div

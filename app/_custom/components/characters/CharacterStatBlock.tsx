@@ -6,20 +6,26 @@ import { Image } from "~/components";
 import { CSVStats } from "../CSVStats.tsx";
 import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph.tsx";
 
-export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
+export const CharacterStatBlock = ({
+   data,
+}: {
+   data: { character: Character };
+}) => {
    // Cast stats to the correct type
-   const stats = pageData.stats as StatsType;
+   const { character } = data;
+
+   const stats = character.stats as StatsType;
 
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
 
-   const mainurl = pageData.image_draw?.url;
-   const elemurl = pageData.element?.icon?.url;
-   const pathurl = pageData.path?.icon?.url;
-   const pathsmall = pageData.path?.icon_small?.url;
-   const rarityurl = pageData.rarity?.icon?.url;
-   const pathname = pageData.path?.name;
+   const mainurl = character.image_draw?.url;
+   const elemurl = character.element?.icon?.url;
+   const pathurl = character.path?.icon?.url;
+   const pathsmall = character.path?.icon_small?.url;
+   const rarityurl = character.rarity?.icon?.url;
+   const pathname = character.path?.name;
 
    const statsList = [
       "HP",
@@ -276,7 +282,7 @@ export const CharacterStatBlock = ({ pageData }: { pageData: Character }) => {
         UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
          {/* <Stats charData={charData} /> */}
 
-         {pageData?.stats && <CSVStats statsCSV={pageData?.stats_csv} />}
+         {character?.stats && <CSVStats statsCSV={character?.stats_csv} />}
 
          {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
          {/* <BinOutputLink charData={charData} /> */}

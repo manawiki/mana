@@ -9,18 +9,20 @@ import type {
 import { Image } from "~/components";
 
 export const Traces = ({
-   pageData,
-   skillTreeData,
+   data,
 }: {
-   pageData: Character;
-   skillTreeData: SkillTree[];
+   data: {
+      character: Character;
+      skillTree: SkillTree[];
+   };
 }) => {
-   const traces = pageData.traces;
+   const { character, skillTree } = data;
+   const traces = character.traces;
 
    return (
       <div className="grid gap-3 laptop:grid-cols-2">
          {traces?.map((trace, index) => (
-            <Trace trace={trace} skillTreeData={skillTreeData} key={index} />
+            <Trace trace={trace} skillTreeData={skillTree} key={index} />
          ))}
       </div>
    );
