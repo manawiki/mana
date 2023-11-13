@@ -80,24 +80,31 @@ export async function gqlRequestWithCache(
 
 /**
  * Use this to cache a function return. Use this only for public api calls, not for private api calls.
- * @param func  await cacheThis(func () => payload.find({...}));
- * @param ttl - time to live in ms
+ * @param func  await cacheThis(func (params) => payload.find(params));
+ * @param params - optional params to pass to the function, also used as a key
  * @returns  the result of the function or its cached value
  */
-export async function cacheThis<T>(func: () => Promise<T>, ttl?: number) {
-   //the key is the function stringified
-   let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
-
-   // if the function is payload api, we'll use the body instead
-   key = key.split("(")?.slice(2)?.join("(") ?? key;
+export async function cacheThis<T>(
+   func: (params?: any) => Promise<T>,
+   params?: any,
+) {
+   //the key is the function name and params stringified
+   let key = params
+      ? func.name
+         ? `${func.name}(${JSON.stringify(params)})`
+         : typeof params === "string"
+         ? params
+         : params.toString()
+      : func.toString();
 
    return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
-         return await func();
+         console.log("cached: ", key);
+         return await func(params);
       },
-      ttl: ttl ?? 300_000, // how long to live in ms
+      ttl: 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
@@ -118,7 +125,6 @@ export async function cacheWithSelect<T>(
    func: () => Promise<T>,
    selectFunction: Function,
    selectOptions: Partial<Record<keyof any, boolean>>,
-   ttl?: number,
 ) {
    //the key is the function stringified
    let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
@@ -138,7 +144,7 @@ export async function cacheWithSelect<T>(
          const result = await func();
          return selectFunction(result, selectOptions);
       },
-      ttl: ttl ?? 300_000, // how long to live in ms
+      ttl: 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
