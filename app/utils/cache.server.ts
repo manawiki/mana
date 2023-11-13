@@ -13,7 +13,7 @@ export const lruCache = remember(
    new LRUCache<string, CacheEntry>({
       // max: 250, // maximum number of items to store in the cache
       sizeCalculation: (value) => JSON.stringify(value).length,
-      maxSize: 200 * 1024 * 1024, // 200MB
+      maxSize: 90 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
@@ -91,7 +91,7 @@ export async function cacheThis<T>(func: () => Promise<T>, ttl?: number) {
    // if the function is payload api, we'll use the body instead
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
-   return await cachified({
+   return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -131,7 +131,7 @@ export async function cacheWithSelect<T>(
       key += JSON.stringify(selectOptions);
    }
 
-   return await cachified({
+   return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -147,6 +147,7 @@ export async function cacheWithSelect<T>(
    });
 }
 
+//This reports the cache status, simplified from https://github.com/Xiphe/cachified/blob/main/src/reporter.ts
 export function verboseReporter<T>(): CreateReporter<T> {
    return ({ key, fallbackToCache, forceFresh }) => {
       let cached: unknown;
