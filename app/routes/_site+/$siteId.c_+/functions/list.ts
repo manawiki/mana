@@ -4,7 +4,7 @@ import { select } from "payload-query";
 
 import type { Site, User, Collection } from "~/db/payload-types";
 import { gqlFormat, gqlEndpoint } from "~/utils";
-import { gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
 
 import type { CollectionsAllSchema } from "../$collectionId";
 
@@ -62,19 +62,23 @@ export async function fetchListCore({
    siteId: Site["slug"];
    user?: User;
 }) {
-   const collectionData = await payload.find({
-      collection: "collections",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         slug: {
-            equals: collectionId,
-         },
-      },
-      overrideAccess: false,
-      user,
-   });
+   const collectionData = await cacheThis(
+      () =>
+         payload.find({
+            collection: "collections",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: collectionId,
+               },
+            },
+            overrideAccess: false,
+            user,
+         }),
+      `list-collection-${siteId}-${collectionId}`,
+   );
 
    const collectionEntry = collectionData?.docs[0];
 
@@ -113,20 +117,24 @@ export async function fetchListCore({
    }
 
    //Otherwise pull data from core
-   const data = await payload.find({
-      collection: "entries",
-      where: {
-         site: {
-            equals: collectionEntry?.site?.id,
-         },
-         "collectionEntity.slug": {
-            equals: collectionId,
-         },
-      },
-      depth: 1,
-      overrideAccess: false,
-      user,
-   });
+   const data = await cacheThis(
+      () =>
+         payload.find({
+            collection: "entries",
+            where: {
+               site: {
+                  equals: collectionEntry?.site?.id,
+               },
+               "collectionEntity.slug": {
+                  equals: collectionId,
+               },
+            },
+            depth: 1,
+            overrideAccess: false,
+            user,
+         }),
+      `list-entries-${siteId}-${collectionId}`,
+   );
 
    const filtered = data.docs.map((doc) => {
       return {
