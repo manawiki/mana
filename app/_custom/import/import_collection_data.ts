@@ -13,6 +13,9 @@
 // overwrite:false // TRUE = Force overwrite, even with matching checksum. FALSE = ignores matching checksum imports.
 // -------------- PNPM Sample ----------------
 // pnpm import_collection_data collection:materials,filename:Material.json,idname:data_key,sync:false,overwrite:false
+// -------------- Notes ---------------
+// - sync option needs to be used if field hooks used in a collection require the hooks to be executed in serial, since otherwise they are by default executed simultaneously (example: Hook that updates another collection for a list of entries in another collection that have a relation with a given entry)
+// - Generally overwrite does not need to be defined, but can be set to true for testing purposes.
 
 // ==================
 // Notes about the format of FILE.json
