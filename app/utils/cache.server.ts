@@ -13,7 +13,7 @@ export const lruCache = remember(
    new LRUCache<string, CacheEntry>({
       // max: 250, // maximum number of items to store in the cache
       sizeCalculation: (value) => JSON.stringify(value).length,
-      maxSize: 100 * 1024 * 1024, // 100MB
+      maxSize: 90 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
@@ -80,24 +80,31 @@ export async function gqlRequestWithCache(
 
 /**
  * Use this to cache a function return. Use this only for public api calls, not for private api calls.
- * @param func  await cacheThis(func () => payload.find({...}));
- * @param ttl - time to live in ms
+ * @param func  await cacheThis(func (params) => payload.find(params));
+ * @param params - optional params to pass to the function, also used as a key
  * @returns  the result of the function or its cached value
  */
-export async function cacheThis<T>(func: () => Promise<T>, ttl?: number) {
-   //the key is the function stringified
-   let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
+export async function cacheThis<T>(
+   func: (params?: any) => Promise<T>,
+   params?: any,
+) {
+   //the key is the function name and params stringified
+   let key = params
+      ? func.name
+         ? `${func.name}(${JSON.stringify(params)})`
+         : typeof params === "string"
+         ? params
+         : params.toString()
+      : func.toString();
 
-   // if the function is payload api, we'll use the body instead
-   key = key.split("(")?.slice(2)?.join("(") ?? key;
-
-   return await cachified({
+   return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
-         return await func();
+         console.log("cached: ", key);
+         return await func(params);
       },
-      ttl: ttl ?? 300_000, // how long to live in ms
+      ttl: 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
@@ -118,7 +125,6 @@ export async function cacheWithSelect<T>(
    func: () => Promise<T>,
    selectFunction: Function,
    selectOptions: Partial<Record<keyof any, boolean>>,
-   ttl?: number,
 ) {
    //the key is the function stringified
    let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
@@ -131,14 +137,14 @@ export async function cacheWithSelect<T>(
       key += JSON.stringify(selectOptions);
    }
 
-   return await cachified({
+   return await cachified<T>({
       cache,
       key,
       async getFreshValue() {
          const result = await func();
          return selectFunction(result, selectOptions);
       },
-      ttl: ttl ?? 300_000, // how long to live in ms
+      ttl: 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
@@ -147,6 +153,7 @@ export async function cacheWithSelect<T>(
    });
 }
 
+//This reports the cache status, simplified from https://github.com/Xiphe/cachified/blob/main/src/reporter.ts
 export function verboseReporter<T>(): CreateReporter<T> {
    return ({ key, fallbackToCache, forceFresh }) => {
       let cached: unknown;
