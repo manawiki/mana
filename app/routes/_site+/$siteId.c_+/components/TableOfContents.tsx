@@ -113,7 +113,7 @@ export function TableOfContents({
                </div>
                {showAll && (
                   <div
-                     className="bg-gradient-to-b absolute bottom-0 w-full group p-3
+                     className="bg-gradient-to-b absolute bottom-0 border border-color-sub border-t-0 w-full group p-3
                   from-transparent to-zinc-50 dark:to-dark400 dark:from-transparent rounded-b-lg"
                   >
                      <button
