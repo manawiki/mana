@@ -19,6 +19,9 @@ export function TableOfContents({
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
    //hide nested ToC rows if empty
+
+   let totalTOCItem = 0;
+
    const sectionsWithContent = sections?.map((section) => {
       const subSection = section?.subSections
          ?.filter((subSection) => {
@@ -34,6 +37,7 @@ export function TableOfContents({
             return true;
          })
          .map((subSection) => {
+            totalTOCItem++;
             return subSection;
          });
       return { ...section, subSections: subSection };
@@ -43,9 +47,11 @@ export function TableOfContents({
 
    const [seeAllOpen, setSeeAllOpen] = useState<boolean>(false);
 
-   const showAll = !seeAllOpen && sectionsList && sectionsList?.length > 5;
+   const showAll =
+      !seeAllOpen && sectionsList && totalTOCItem && totalTOCItem > 5;
 
-   const showText = showAll && sectionsList?.length - 5;
+   const showText =
+      showAll && sectionsList?.length > 5 && sectionsList?.length - 5;
 
    return (
       <>
