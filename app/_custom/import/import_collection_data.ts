@@ -1,3 +1,56 @@
+// General Importer that accepts arguments!
+
+// usage: in package.json, add the following script:
+// "import_collection_data": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_collection_data.ts"
+
+// In the command line of the root directory, the following command can be run:
+// pnpm import_collection_data collection,filename,idname,sync,overwrite
+// ------------- Examples -------------
+// collection:COLLECTIONSLUG
+// filename:FILE.json
+// idname:IDFIELDNAME
+// sync:false // TRUE = Import synchronously, one at a time. FALSE = Async.
+// overwrite:false // TRUE = Force overwrite, even with matching checksum. FALSE = ignores matching checksum imports.
+// -------------- PNPM Sample ----------------
+// pnpm import_collection_data collection:materials,filename:Material.json,idname:data_key,sync:false,overwrite:false
+// -------------- Notes ---------------
+// - sync option needs to be used if field hooks used in a collection require the hooks to be executed in serial, since otherwise they are by default executed simultaneously (example: Hook that updates another collection for a list of entries in another collection that have a relation with a given entry)
+// - Generally overwrite does not need to be defined, but can be set to true for testing purposes.
+
+// ==================
+// Notes about the format of FILE.json
+// ==================
+// - Check the import_files/readme.md file for some formatting rules on relationship fields, etc.!
+// - FILE.json MUST contain the following fields:
+//   - ID (defined in idname argument)
+//   - name
+// - All other field names should match the collection definition field names.
+
+const args = process.argv.slice(2)?.[0]?.split(",");
+
+// Parse Arguments
+const collection = args
+   ?.find((a) => a.split(":")?.[0] == "collection")
+   ?.split(":")?.[1];
+const filename = args
+   ?.find((a) => a.split(":")?.[0] == "filename")
+   ?.split(":")?.[1];
+const idname = args
+   ?.find((a) => a.split(":")?.[0] == "idname")
+   ?.split(":")?.[1];
+const sync =
+   args?.find((a) => a.split(":")?.[0] == "sync")?.split(":")?.[1] === "true";
+const overwrite =
+   args?.find((a) => a.split(":")?.[0] == "overwrite")?.split(":")?.[1] ===
+   "true";
+
+if (!collection || !filename || !idname) {
+   console.log(
+      "Arguments for collection:COLLECTIONSLUG, filename:FILE.json, idname:IDFIELDNAME are required!\nPlease enter arguments after pnpm import_collection_data.\n\nUse format:\npnpm import_collection_data collection:materials,filename:Material.json,idname:data_key,sync:false,overwrite:false",
+   );
+   process.exit(-1);
+}
+
 import Payload from "payload";
 import { Materials } from "../collections/materials";
 require("dotenv").config();
@@ -5,14 +58,14 @@ require("dotenv").config();
 const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
 
 //Array of objects matching the payload shape, change to match your need
-const collectionName = "materials";
-const data = require("./import_files/" + "Material" + ".json");
-const idField = "data_key";
+const collectionName = collection;
+const data = require("./import_files/" + filename);
+const idField = idname;
 // const siteId = "lKJ16E5IhH";
 const userId = "644068fa51c100f909f89e1e"; // NorseFTX@gamepress.gg User ID for author field
-const importsync = false;
+const importsync = sync ?? false;
 
-const forceOverwrite = false; // Force overwrite even if checksum is matching.
+const forceOverwrite = overwrite ?? false; // Force overwrite even if checksum is matching.
 
 let payload = null as any;
 
