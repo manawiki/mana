@@ -7,7 +7,7 @@ export function RampScripts({
 }) {
    let isBot = useIsBot();
 
-   if (enableAds && !isBot)
+   if (process.env.NODE_ENV === "production" && enableAds && !isBot)
       return (
          <>
             <script
