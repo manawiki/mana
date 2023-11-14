@@ -366,4 +366,66 @@ function MoveEditForm() {
    );
 }
 
+// export function MoveEditForm() {
+//   return (
+//     <div className="w-full mb-0">
+//       <h4 className="bg-white p-8 mt-10 border border-gray-300 rounded-md">Edit Move</h4>
+//       <table className="w-full">
+//         <thead>
+//           <tr>
+//             <th className="text-center">Name</th>
+//             <th className="text-center">Type</th>
+//             <th className="text-center">Category</th>
+//             <th className="text-center">Power</th>
+//             <th className="text-center">Accuracy</th>
+//             <th className="text-center">PP</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           <tr>
+//             <td>
+//               <div className="relative">
+//                 <input
+//                   type="text"
+//                   className="w-full pl-40 bg-repeat text-left inline-block"
+//                   style={{ backgroundImage: "url('/icons/pokemon.png')" }}
+//                 />
+//               </div>
+//             </td>
+//             <td>
+//               <div className="relative">
+//                 <input
+//                   type="text"
+//                   className="w-full pl-40 bg-repeat text-left inline-block"
+//                   style={{ backgroundImage: "url('/icons/types.png')" }}
+//                 />
+//               </div>
+//             </td>
+//             <td>
+//               <select className="w-full">
+//                 <option value="physical">Physical</option>
+//                 <option value="special">Special</option>
+//                 <option value="status">Status</option>
+//               </select>
+//             </td>
+//             <td>
+//               <input type="number" className="w-full" />
+//             </td>
+//             <td>
+//               <input type="number" className="w-full" />
+//             </td>
+//             <td>
+//               <input type="number" className="w-full" />
+//             </td>
+//           </tr>
+//         </tbody>
+//       </table>
+//       <div className="mt-5">
+//         <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+//           Save
+//         </button>
+//       </div>
+//     </div>
+//   );
+//   }
 export default ComprehensiveDpsSpreadsheet;
