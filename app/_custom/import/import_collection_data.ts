@@ -6,15 +6,15 @@
 // In the command line of the root directory, the following command can be run:
 // pnpm import_collection_data collection,filename,idname,sync,overwrite
 // ------------- Examples -------------
-// collection:COLLECTIONSLUG
-// filename:FILE.json
-// idname:IDFIELDNAME
+// collection:COLLECTIONSLUG  [Required]
+// filename:FILE.json  [Required]
+// idname:IDFIELDNAME  [Required]
 // sync:false // TRUE = Import synchronously, one at a time. FALSE = Async.
 // overwrite:false // TRUE = Force overwrite, even with matching checksum. FALSE = ignores matching checksum imports.
 // -------------- PNPM Sample ----------------
 // pnpm import_collection_data collection:materials,filename:Material.json,idname:data_key,sync:false,overwrite:false
 // -------------- Notes ---------------
-// - sync option needs to be used if field hooks used in a collection require the hooks to be executed in serial, since otherwise they are by default executed simultaneously (example: Hook that updates another collection for a list of entries in another collection that have a relation with a given entry)
+// - sync option needs to be used if field hooks used in a collection require the hooks to be executed in series, since otherwise they are by default executed simultaneously (example: A collection has a hook that updates another collection such that it has a list of all entries related to that collection, such as a list of all characters that use an item)
 // - Generally overwrite does not need to be defined, but can be set to true for testing purposes.
 
 // ==================
@@ -70,6 +70,23 @@ const forceOverwrite = overwrite ?? false; // Force overwrite even if checksum i
 let payload = null as any;
 
 const fieldConfig = Materials.fields;
+
+// Flatten all collapsible data to root level! Uses a recursive function.
+function flattenCollapsibleFields(fconfig) {
+   var allconfig = fconfig;
+   fconfig
+      .filter((fc) => fc.type == "collapsible")
+      ?.map((collfield) => {
+         allconfig.push(...flattenCollapsibleFields(collfield.fields));
+      });
+   allconfig = allconfig.filter((obj) => obj.type != "collapsible");
+   return allconfig;
+}
+var flatFields = flattenCollapsibleFields(fieldConfig);
+// Filter out unique ones, the recursive makes duplicates currently, eyes emoji.
+flatFields = flatFields.filter(
+   (e, i) => flatFields.findIndex((a) => a["name"] === e["name"]) === i,
+);
 
 //Start payload instance
 const start = async () =>
@@ -132,8 +149,7 @@ const seedUploads = async (result: any) => {
       });
 
    // Array Fields with relations:
-   var arrayData: any = [];
-   var arraysWithRelation = fieldConfig
+   var arraysWithRelation = flatFields
       .filter((fc) => fc.type == "array")
       ?.map((f: any) => {
          return {
@@ -144,11 +160,13 @@ const seedUploads = async (result: any) => {
                   return {
                      name: fa.name,
                      collection: fa.relationTo,
-                     relationIdField: result[f.name]?.find((r) => r[fa.name])?.[
-                        fa.name
-                     ]
+                     relationIdField: result[f.name]?.find(
+                        (r: any) => r[fa.name],
+                     )?.[fa.name]
                         ? Object.keys(
-                             result[f.name]?.find((r) => r[fa.name])?.[fa.name],
+                             result[f.name]?.find((r: any) => r[fa.name])?.[
+                                fa.name
+                             ],
                           )?.[0]
                         : null, // Find Id field for if an entry has the relation
                      hasMany: fa.hasMany,
@@ -158,8 +176,8 @@ const seedUploads = async (result: any) => {
       });
 
    var arrayRelationImport = {};
-   var returnArrayElement;
-   arraysWithRelation?.map((awr: any) => {
+   var returnArrayElement = [];
+   arraysWithRelation?.map((awr) => {
       if (result[awr.name]?.length > 0) {
          returnArrayElement = result[awr.name].map((resulte: any) => {
             var tempobj = { ...resulte };
@@ -182,15 +200,37 @@ const seedUploads = async (result: any) => {
                      ].toString(); // Substitute Identifier out. At some point will need to write some code that will handle the case where the relationIdField's value is NOT the same as the id field, where a lookup of entry by relationIdField is done first.
                }
 
-               // For multi relationship fields in an array
+               // For multi relationship fields in an array, NON Polymorphic
                else if (
                   arrayRelField.hasMany &&
                   arrayRelField.relationIdField &&
-                  resulte?.[arrayRelField.name]?.[arrayRelField.relationIdField]
+                  resulte?.[arrayRelField.name]?.[
+                     arrayRelField.relationIdField
+                  ] &&
+                  !Array.isArray(arrayRelField.collection)
                ) {
                   tempobj[arrayRelField.name] = resulte?.[arrayRelField.name]?.[
                      arrayRelField.relationIdField
                   ]?.map((multirelation: any) => multirelation.toString()); // Substitute Identifier out. At some point will need to write some code that will handle the case where the relationIdField's value is NOT the same as the id field, where a lookup of entry by relationIdField is done first.
+               }
+
+               // For multi relationship fields in an array, POLYMORPHIC
+               else if (
+                  arrayRelField.hasMany &&
+                  arrayRelField.relationIdField &&
+                  resulte?.[arrayRelField.name]?.[
+                     arrayRelField.relationIdField
+                  ] &&
+                  Array.isArray(arrayRelField.collection)
+               ) {
+                  tempobj[arrayRelField.name] = resulte?.[arrayRelField.name]?.[
+                     arrayRelField.relationIdField
+                  ]?.map((polymorphic: any) => {
+                     return {
+                        relationTo: polymorphic.relationTo,
+                        value: polymorphic.value.toString(),
+                     };
+                  }); // Substitute Identifier out. At some point will need to write some code that will handle the case where the relationIdField's value is NOT the same as the id field, where a lookup of entry by relationIdField is done first.
                }
             }
             return {
@@ -201,26 +241,98 @@ const seedUploads = async (result: any) => {
       }
    });
 
-   // First Level Relation Fields (global)
-   const relationFields = fieldConfig
-      .filter((fc) => fc.type == "relationship" && !fc.hasMany)
-      .map((f: any) => {
-         return {
-            name: f.name,
-            collection: f.relationTo,
-            relationIdField: result[f.name]
-               ? Object.keys(result[f.name])?.[0]
-               : null,
-         };
-      });
+   // !! 2nd level nested array relationships
+
+   var relationNested2 = flatFields
+      .filter((a) => a.type == "array")
+      .map((lv1) => {
+         return lv1.fields
+            .filter((a) => a.type == "array")
+            .map((lv2) => {
+               return lv2.fields
+                  .filter((a) => a.type == "relationship")
+                  .map((lv3) => {
+                     // Get first instance of ID that exists for nested relationship
+                     var idtemp = result[lv1.name]
+                        ?.map(
+                           (a) =>
+                              a[lv2.name]?.map((b) =>
+                                 b[lv3.name]
+                                    ? Object.keys(b[lv3.name])[0]
+                                    : null,
+                              ),
+                        )
+                        .flat()
+                        .flat()
+                        .filter((a) => a); // Filter out undefined
+                     return {
+                        fieldlevel1: lv1.name,
+                        fieldlevel2: lv2.name,
+                        fieldlevel3: lv3.name,
+                        idkey: idtemp?.[0],
+                     };
+                  });
+            });
+      })
+      .flat()
+      .flat();
+
+   relationNested2.map((rn) => {
+      var fieldlevel1 = rn.fieldlevel1; // Array (1st)
+      var fieldlevel2 = rn.fieldlevel2; // Array (2nd)
+      var fieldlevel3 = rn.fieldlevel3; // Relation (3rd)
+      var idkey = rn.idkey; // Identifier key
+
+      var temparrayval = arrayRelationImport[fieldlevel1];
+      if (temparrayval) {
+         temparrayval = temparrayval.map((sk) => {
+            var temparray2val = sk[fieldlevel2];
+            var tempout = sk;
+            if (temparray2val) {
+               temparray2val = temparray2val.map((up) => {
+                  return {
+                     ...up,
+                     [fieldlevel3]: up[fieldlevel3]?.[idkey]?.toString(),
+                  };
+               });
+               tempout = {
+                  ...tempout,
+                  [fieldlevel2]: temparray2val,
+               };
+            }
+            return tempout;
+         });
+         arrayRelationImport[fieldlevel1] = temparrayval;
+      }
+   });
 
    // Check if Relation entry exists for each field and get ID
    // FIX: This always is the ID field for this entry - so we can just put the ID in without having to look up the prior entry. This way a relation can also be imported later and automatically link up.
+
+   var relationFieldList = flatFields.filter((fc) => fc.type == "relationship");
+
+   const relationFields = relationFieldList?.map((f: any) => {
+      return {
+         name: f.name,
+         collection: f.relationTo,
+         relationIdField: result[f.name]
+            ? Object.keys(result[f.name])?.[0]
+            : null,
+         hasMany: f.hasMany,
+      };
+   });
+
    const relationArray = relationFields.map((field: any) => {
-      if (result[field.name]) {
+      if (result[field.name] && !field.hasMany) {
          return {
             [field.name]:
                result[field.name]?.[field.relationIdField]?.toString(),
+         };
+      } else if (result[field.name] && field.hasMany) {
+         return {
+            [field.name]: result[field.name]?.[field.relationIdField]?.map(
+               (multirelation: any) => multirelation.toString(),
+            ),
          };
       } else {
          return null;
