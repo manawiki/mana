@@ -428,7 +428,11 @@ const CharacterList = ({ chars }: any) => {
 
 const CHARACTERS = gql`
    query Characters {
-      Characters(limit: 100, sort: "name") {
+      Characters(
+         limit: 100
+         sort: "name"
+         where: { name: { not_equals: null } }
+      ) {
          docs {
             id
             name

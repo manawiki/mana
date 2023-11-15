@@ -1,0 +1,45 @@
+pnpm import__itemtype
+pnpm import_item
+pnpm import_lightcone
+pnpm import_eidolon
+pnpm import_trace
+pnpm import_character
+pnpm import_skilltree
+pnpm import_charactervoice
+pnpm import_characterprofile
+pnpm import_playericon
+pnpm import_relicset
+pnpm import_relic
+pnpm import_recipe
+pnpm import__enemycamp
+pnpm import_enemyskill
+pnpm import_enemy
+pnpm import_enemyvariation
+pnpm import_achievementseries
+pnpm import_achievement
+pnpm import_aeon
+pnpm import_blessing
+pnpm import_banner
+
+"import__itemtype": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_100b__Itemtype.ts",
+"import_item": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_101_Materials.ts",
+"import_lightcone": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201_LightCone.ts",
+"import_eidolon": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_301_Eidolon.ts",
+"import_trace": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_302_Trace.ts",
+"import_character": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_303_Character.ts",
+"import_skilltree": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_304_SkillTree.ts",
+"import_charactervoice": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_305_CharacterVoice.ts",
+"import_characterprofile": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_306_CharacterProfile.ts",
+"import_playericon": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_320_PlayerIcon.ts",
+"import_relicset": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_401_RelicSet.ts",
+"import_relic": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_402_Relic.ts",
+"import_recipe": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_411_Recipe.ts",
+"import__enemycamp": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_500b__EnemyCamp.ts",
+"import_enemyskill": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_501_EnemySkill.ts",
+"import_enemy": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_502_Enemy.ts",
+"import_enemyvariation": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_503_EnemyVariation.ts",
+"import_achievementseries": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_601_AchievementSeries.ts",
+"import_achievement": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_602_Achievements.ts",
+"import_aeon": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_701_Aeon.ts",
+"import_blessing": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_702_Blessing.ts",
+"import_banner": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_901_Banner.ts"
