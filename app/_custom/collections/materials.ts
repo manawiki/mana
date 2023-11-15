@@ -99,6 +99,10 @@ export const Materials: CollectionConfig = {
          relationTo: "_item-valuable-tab-types",
       },
       {
+         name: "slug",
+         type: "text",
+      },
+      {
          name: "checksum",
          type: "text",
       },
