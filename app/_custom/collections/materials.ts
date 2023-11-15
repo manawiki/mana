@@ -45,6 +45,7 @@ export const Materials: CollectionConfig = {
          name: "obtain_way",
          type: "relationship",
          relationTo: "_item-obtain-ways",
+         hasMany: true,
       },
       {
          name: "no_obtain_way_hint",
