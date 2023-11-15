@@ -2,7 +2,8 @@ export function ComprehensiveDpsSpreadsheet() {
    return (
       <>
          <Introduction />
-         <MoveEditForm />
+         {/* <MoveEditForm /> */}
+         <ResultsTable />
       </>
    );
 }
@@ -366,66 +367,214 @@ function MoveEditForm() {
    );
 }
 
-// export function MoveEditForm() {
-//   return (
-//     <div className="w-full mb-0">
-//       <h4 className="bg-white p-8 mt-10 border border-gray-300 rounded-md">Edit Move</h4>
-//       <table className="w-full">
-//         <thead>
-//           <tr>
-//             <th className="text-center">Name</th>
-//             <th className="text-center">Type</th>
-//             <th className="text-center">Category</th>
-//             <th className="text-center">Power</th>
-//             <th className="text-center">Accuracy</th>
-//             <th className="text-center">PP</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           <tr>
-//             <td>
-//               <div className="relative">
-//                 <input
-//                   type="text"
-//                   className="w-full pl-40 bg-repeat text-left inline-block"
-//                   style={{ backgroundImage: "url('/icons/pokemon.png')" }}
-//                 />
-//               </div>
-//             </td>
-//             <td>
-//               <div className="relative">
-//                 <input
-//                   type="text"
-//                   className="w-full pl-40 bg-repeat text-left inline-block"
-//                   style={{ backgroundImage: "url('/icons/types.png')" }}
-//                 />
-//               </div>
-//             </td>
-//             <td>
-//               <select className="w-full">
-//                 <option value="physical">Physical</option>
-//                 <option value="special">Special</option>
-//                 <option value="status">Status</option>
-//               </select>
-//             </td>
-//             <td>
-//               <input type="number" className="w-full" />
-//             </td>
-//             <td>
-//               <input type="number" className="w-full" />
-//             </td>
-//             <td>
-//               <input type="number" className="w-full" />
-//             </td>
-//           </tr>
-//         </tbody>
-//       </table>
-//       <div className="mt-5">
-//         <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-//           Save
-//         </button>
-//       </div>
-//     </div>
-//   );
-//   }
+function ResultsTable() {
+   return (
+      <div className="flex pogo-dps-sheet-container">
+         <div className="container form-group">
+            <label className="row-form-label">Enemy Information</label>
+            <div className="row">
+               <div id="enemy-pokemon-name-container" className="col-sm-6">
+                  <label className="col-form-label">Species</label>
+               </div>
+               <div id="pokemon-pokeType1-container" className="col-sm-3">
+                  <label className="col-form-label">PokeType 1</label>
+                  <select
+                     name="pokemon-pokeType1"
+                     id="pokemon-pokeType1"
+                     className="form-control"
+                  ></select>
+               </div>
+               <div id="pokemon-pokeType2-container" className="col-sm-3">
+                  <label className="col-form-label">PokeType 2</label>
+                  <select
+                     name="pokemon-pokeType2"
+                     id="pokemon-pokeType2"
+                     className="form-control"
+                  ></select>
+               </div>
+            </div>
+            <div className="row">
+               <div id="enemy-pokemon-fmove-container" className="col-sm-6">
+                  <label className="col-form-label">Fast Move</label>
+               </div>
+               <div id="enemy-pokemon-cmove-container" className="col-sm-6">
+                  <label className="col-form-label">Charged Move</label>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col-sm-6">
+                  <label className="col-form-label">Weather</label>
+                  <select id="weather" className="form-control"></select>
+               </div>
+               <div className="col-sm-6">
+                  <label className="col-form-label">Controls</label>
+                  <div className="sub-menu-container">
+                     <button className="sub-menu-opener btn btn-primary">
+                        <i className="fa fa-cog" aria-hidden="true"></i>
+                        Customize
+                     </button>
+                     <div className="sub-menu">
+                        <button
+                           className="player_button"
+                           id="moveEditFormOpener"
+                        >
+                           Move
+                        </button>
+                        <button
+                           className="player_button"
+                           id="pokemonEditFormOpener"
+                        >
+                           Species
+                        </button>
+                        <button
+                           className="player_button"
+                           id="parameterEditFormOpener"
+                        >
+                           Battle Settings
+                        </button>
+                        <button
+                           className="player_button"
+                           id="modEditFormOpener"
+                        >
+                           Mods
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div className="container form-group">
+            <div className="row">
+               <div className="col-sm-6 col-lg-3">
+                  <div id="ui-swapDiscount" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        Swap Dscnt
+                        <input type="checkbox" id="ui-swapDiscount-checkbox" />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-lg-3">
+                  <div id="ui-use-box" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        My Pokemon
+                        <input
+                           type="checkbox"
+                           id="ui-use-box-checkbox"
+                           disabled
+                        />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-lg-3">
+                  <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        Best
+                        <input type="checkbox" id="ui-uniqueSpecies-checkbox" />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-lg-3">
+                  <select
+                     id="attacker-level"
+                     className="form-control"
+                     value="40"
+                  ></select>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col-sm-6 col-md-3">
+                  <div style={{ width: "100%" }}>
+                     <input
+                        id="ui-cpcap"
+                        type="number"
+                        placeholder="CP Cap"
+                        className="form-control"
+                     />
+                  </div>
+               </div>
+               <div className="col-sm-6 col-md-3">
+                  <div id="ui-pvpMode" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        PvP Mode
+                        <input type="checkbox" id="ui-pvpMode-checkbox" />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-md-3">
+                  <div id="ui-hideUnavail" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        Hide Unavail
+                        <input type="checkbox" id="ui-hideUnavail-checkbox" />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-md-3">
+                  <button className="btn btn-success" id="refresher">
+                     <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
+                     Refresh
+                  </button>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col-sm-6 col-md-3">
+                  <div id="ui-allyMega" style={{ width: "100%" }}>
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        Mega Boost?
+                        <input type="checkbox" id="ui-allyMega-checkbox" />
+                     </label>
+                  </div>
+               </div>
+               <div className="col-sm-6 col-md-3">
+                  <div
+                     id="ui-allyMegaStab"
+                     style={{ width: "100%", display: "none" }}
+                  >
+                     <label style={{ width: "100%", fontSize: "16px" }}>
+                        Mega Stab?
+                        <input type="checkbox" id="ui-allyMegaStab-checkbox" />
+                     </label>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div className="container">
+            <div className="row">
+               <div className="col">
+                  <label className="col-form-label">Search</label>
+               </div>
+            </div>
+            <div className="row">
+               <div className="col">
+                  <input
+                     id="searchInput"
+                     //  onKeyUp={search_trigger}
+                     className="form-control"
+                  />
+               </div>
+            </div>
+         </div>
+         <table id="ranking_table" style={{ width: "100%" }}>
+            <thead></thead>
+            <tfoot></tfoot>
+            <tbody></tbody>
+         </table>
+         <br />
+         <div className="container">
+            <div className="row">
+               <div className="col-sm-6">
+                  <button id="CopyClipboardButton" className="btn btn-info">
+                     Copy to Clipboard
+                  </button>
+               </div>
+               <div className="col-sm-6">
+                  <button id="CopyCSVButton" className="btn btn-info">
+                     Export To CSV
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+   );
+}
+
 export default ComprehensiveDpsSpreadsheet;
