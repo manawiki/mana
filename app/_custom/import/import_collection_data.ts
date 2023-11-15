@@ -52,7 +52,11 @@ if (!collection || !filename || !idname) {
 }
 
 import Payload from "payload";
-import { Materials } from "../collections/materials";
+// import { Materials } from "../collections/materials";
+
+const CollectionData = require("../collections/" + collection + ".ts");
+const Materials = CollectionData[Object.keys(CollectionData)[0]];
+
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
@@ -142,7 +146,7 @@ const seedUploads = async (result: any) => {
    const idValue = result[idField].toString();
 
    var iconImport: any = {};
-   fieldConfig
+   flatFields
       .filter((fc) => fc.type == "upload")
       .map((f: any) => {
          iconImport[f.name] = result[f.name]?.name.replace(".png", "");
