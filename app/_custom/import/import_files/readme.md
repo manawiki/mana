@@ -1,6 +1,6 @@
 n## Import File Formatting Cheat Sheet
 
-Last update: 10/30/2023
+Last update: 11/14/2023
 
 All files should be in .JSON format for importing.
 Generally, for number, text, textarea, checkbox, json fields that only have one value, these just need to have the field name as the object key, and the value as the value to be imported, such as:
@@ -14,21 +14,31 @@ Generally, for number, text, textarea, checkbox, json fields that only have one 
 Special cases are listed below for specific types of fields.
 
 ### File fields
+
 ```
 "FIELD_NAME": {
 	"name": "IMGNAME.png"
 }
 ```
 
+### Nested File Fields - in Arrays. For ease of handling, format these with just the name, without extension.
+
+```
+"FIELD_NAME": "IMGNAME"
+```
+
 ### Relationship Fields (Single)
 
 Use the below format for relationship fields that are one-one relations (hasMany = false).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": value
 }
 ```
+
 Example:
+
 ```
 "effect": {
 	"drupal_tid": 4701
@@ -38,6 +48,7 @@ Example:
 ### Relationship Fields (Multiple)
 
 Use the below format for relationship fields that are many-one relations (hasMany = true).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": [
@@ -48,7 +59,9 @@ Use the below format for relationship fields that are many-one relations (hasMan
 	]
 }
 ```
+
 Example:
+
 ```
 "bonus_item": {
 	"drupal_nid": [
@@ -61,7 +74,8 @@ Example:
 
 ### Relationship Fields (Multiple + Polymorphic)
 
-Use the below format for relationship fields that are many-one relations (hasMany = true) that are also *polymporphic* (relationTo: [ARRAY of collections]).
+Use the below format for relationship fields that are many-one relations (hasMany = true) that are also _polymporphic_ (relationTo: [ARRAY of collections]).
+
 ```
 "FIELD_NAME": {
 	"TARGET_COLLECTION_IDENTIFIER_FIELD_NAME": [
@@ -76,7 +90,9 @@ Use the below format for relationship fields that are many-one relations (hasMan
 	]
 }
 ```
+
 Example:
+
 ```
 "effect_condition": {
 	"drupal_tid": [
