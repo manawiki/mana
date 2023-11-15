@@ -126,33 +126,29 @@ export async function getEmbeddedContent({
       siteId: z.string(),
    });
 
+   //We can't use param since it won't exist on a custom site
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
-   const { docs } = await cacheThis(
-      () =>
-         payload.find({
-            collection: "contentEmbeds",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               "collectionEntity.slug": {
-                  equals: collectionId,
-               },
-               relationId: {
-                  equals: id,
-               },
-            },
-            depth: 1,
-            overrideAccess: false,
-            user,
-         }),
-      `contentEmbeds-${siteId}-${collectionId}-${id}`,
-   );
-   if (!docs) return;
-
    if (user) {
+      const { docs } = await payload.find({
+         collection: "contentEmbeds",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+            "collectionEntity.slug": {
+               equals: collectionId,
+            },
+            relationId: {
+               equals: id,
+            },
+         },
+         depth: 1,
+         overrideAccess: false,
+         user,
+      });
+
       const hasAccess = isSiteOwnerOrAdmin(user?.id, docs[0]?.site);
 
       if (hasAccess) {
@@ -229,12 +225,35 @@ export async function getEmbeddedContent({
       }));
    }
 
-   return docs.map((item) => ({
-      isChanged: false,
-      id: item.id,
-      content: item.content,
-      subSectionId: item.subSectionId,
-   }));
+   if (!user) {
+      const { docs } = await cacheThis(
+         () =>
+            payload.find({
+               collection: "contentEmbeds",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  "collectionEntity.slug": {
+                     equals: collectionId,
+                  },
+                  relationId: {
+                     equals: id,
+                  },
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            }),
+         `contentEmbeds-${siteId}-${collectionId}-${id}`,
+      );
+      return docs.map((item) => ({
+         isChanged: false,
+         id: item.id,
+         content: item.content,
+         subSectionId: item.subSectionId,
+      }));
+   }
 }
 
 export async function getEntryFields({
