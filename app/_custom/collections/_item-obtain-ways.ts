@@ -29,6 +29,22 @@ export const _ItemObtainWays: CollectionConfig = {
          type: "text",
       },
       {
+         name: "desc",
+         type: "textarea",
+      },
+      {
+         name: "map_id",
+         type: "text",
+      },
+      {
+         name: "bind_system",
+         type: "text",
+      },
+      {
+         name: "icon_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
