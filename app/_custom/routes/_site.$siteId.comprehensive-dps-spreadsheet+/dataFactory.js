@@ -1,8 +1,7 @@
-import { on } from "events";
 import moveData from "./move-data-full-PoGO.json";
+import PokemonForms from "./pogo_data_projection_10.json";
 import pokemonData from "./pokemon-data-full-en-PoGO.json";
 import raidBossList from "./raid-boss-list-PoGO.json";
-import PokemonForms from "./pogo_data_projection_10.json";
 
 /**
  * Data Factory. This module manages the game data such as Pokemon stats, Move stats, and type effectiveness matrix. It is basically an extended Game Master.
@@ -1429,7 +1428,7 @@ function fetchPokemon(oncomplete = function () {}) {
       }))
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
-      Data.Pokemon.sorted = true;
+   Data.Pokemon.sorted = true;
 
    return oncomplete();
 }
@@ -1505,20 +1504,20 @@ function fetchPokemon(oncomplete = function () {}) {
  * @param oncomplete The callback after the fetching is complete.
  */
 function fetchPokemonForms(oncomplete = function () {}) {
-     Data.PokemonForms = PokemonForms.map(pkm => ({
+   Data.PokemonForms = PokemonForms.map((pkm) => ({
       ...pkm,
-            fastMoves: pkm.fastMoves || [],
-            fastMoves_legacy: pkm.fastMoves_legacy || [],
-            fastMoves_exclusive: pkm.fastMoves_exclusive || [],
-            chargedMoves: pkm.chargedMoves || [],
-            chargedMoves_legacy: pkm.chargedMoves_legacy || [],
-            chargedMoves_exclusive: pkm.chargedMoves_exclusive || [],
-            raidMarker: "",
-         }.sort((a, b) => (a.name < b.name ? -1 : 1);
-         Data.PokemonForms.sorted = true;
+      fastMoves: pkm.fastMoves || [],
+      fastMoves_legacy: pkm.fastMoves_legacy || [],
+      fastMoves_exclusive: pkm.fastMoves_exclusive || [],
+      chargedMoves: pkm.chargedMoves || [],
+      chargedMoves_legacy: pkm.chargedMoves_legacy || [],
+      chargedMoves_exclusive: pkm.chargedMoves_exclusive || [],
+      raidMarker: "",
+   })).sort((a, b) => (a.name < b.name ? -1 : 1));
+   Data.PokemonForms.sorted = true;
 
-      return oncomplete();
-   }
+   return oncomplete();
+}
 // function fetchPokemonForms(oncomplete) {
 //    if (requiredJSONStatus.PokemonForms != 0) {
 //       return;
