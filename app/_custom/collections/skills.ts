@@ -29,9 +29,47 @@ export const Skills: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
+      },
+      {
+         name: "icon_bg_type",
+         type: "text",
+      },
+      {
+         name: "levels",
+         type: "array",
+         fields: [
+            {
+               name: "level",
+               type: "number",
+            },
+            {
+               name: "description",
+               type: "textarea",
+            },
+            {
+               name: "cost_val",
+               type: "number",
+            },
+            {
+               name: "cool_down",
+               type: "number",
+            },
+            {
+               name: "max_charge_time",
+               type: "number",
+            },
+            {
+               name: "blackboard",
+               type: "json",
+            },
+         ],
       },
       {
          name: "checksum",

@@ -17,6 +17,7 @@ import { Materials } from "../../../collections/materials";
 
 // Custom Component Imports
 import { Main } from "~/_custom/components/materials/Main";
+import { Obtain } from "~/_custom/components/materials/Obtain";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -40,6 +41,7 @@ export async function loader({
 
 const SECTIONS = {
    main: Main,
+   obtain: Obtain,
 };
 
 export default function EntryPage() {
