@@ -331,30 +331,52 @@ function SubSectionTabs({
       }
    }, [searchParams]);
 
+   const tabLength = tabs && tabs.length;
+
    return (
       <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
          <Tab.List>
-            <div className="border py-2 px-1.5 border-color-sub overflow-hidden rounded-t-lg text-[13px] bg-zinc-50 shadow-1 shadow-sm dark:bg-dark350 r z-20 relative flex items-center gap-1">
+            <div
+               className={clsx(
+                  tabLength == 2 ? "grid grid-cols-2" : "",
+                  tabLength == 3 ? "grid grid-cols-3" : "",
+                  `border border-color-sub overflow-hidden rounded-t-lg text-sm laptop:text-[15px] divide-x divide-color-sub 
+                  bg-zinc-50 shadow-1 shadow-sm dark:bg-dark350 r z-20 relative flex items-center`,
+               )}
+            >
                {tabs?.map((subSection) => {
                   return (
                      <Tab key={subSection.id} as={Fragment}>
                         {({ selected }) => (
-                           <button className="rounded-md px-1.5 flex items-center gap-2 relative focus-within:outline-none">
+                           <button
+                              className={clsx(
+                                 selected && tabLength && tabLength > 1
+                                    ? "bg-zinc-100/70 dark:bg-dark400"
+                                    : "",
+                                 "p-2 flex items-center justify-center gap-2 relative focus-within:outline-none",
+                              )}
+                           >
                               <div
                                  className={clsx(
                                     selected
-                                       ? "bg-zinc-300 dark:bg-dark500"
+                                       ? "bg-zinc-400 dark:bg-zinc-500"
                                        : "",
-                                    "h-[10px] w-7 absolute -bottom-[13px] transform -translate-x-1/2 left-1/2 rounded-lg",
+                                    "h-3 w-3 absolute -bottom-[7px] transform -translate-x-1/2 left-1/2 rounded-lg",
                                  )}
                               />
                               <div
                                  className={clsx(
                                     selected ? "" : "text-1",
-                                    "dark:hover:bg-dark400 hover:bg-white py-1 px-2 rounded-md font-bold",
+                                    "py-1 px-2 rounded-md font-bold font-header relative",
                                  )}
                               >
                                  {subSection.name}
+                                 {!selected && (
+                                    <span className="absolute -right-2 top-1 flex h-2 w-2">
+                                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-300 dark:bg-zinc-400 opacity-75"></span>
+                                       <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-300 dark:bg-zinc-500"></span>
+                                    </span>
+                                 )}
                               </div>
                            </button>
                         )}

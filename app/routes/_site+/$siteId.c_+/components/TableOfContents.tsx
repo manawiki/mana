@@ -63,13 +63,30 @@ export function TableOfContents({
                      "text-sm border border-color-sub overflow-hidden shadow-sm shadow-1 rounded-lg mb-4 bg-zinc-50 dark:bg-dark350",
                   )}
                >
-                  <div className="py-3 px-2.5 font-bold text-xs flex items-center gap-2.5 border-b border-color shadow-zinc-100/70 dark:shadow-zinc-800/70 shadow-sm">
-                     <Icon
-                        name="list"
-                        size={18}
-                        className="dark:text-zinc-500 text-zinc-400"
-                     />
-                     <span>Table of Contents</span>
+                  <div className="py-3 px-2.5 font-bold text-xs flex items-center justify-between gap-2.5 border-b border-color shadow-zinc-100/70 dark:shadow-zinc-800/70 shadow-sm">
+                     <div className="flex items-center gap-2.5">
+                        <Icon
+                           name="list"
+                           size={18}
+                           className="dark:text-zinc-500 text-zinc-400"
+                        />
+                        <span>Table of Contents</span>
+                     </div>
+                     {!showAll && (
+                        <button
+                           onClick={() => setSeeAllOpen(!seeAllOpen)}
+                           className="w-6 h-6 bg-white dark:bg-dark450 z-10 shadow-sm shadow-1 hover:border-zinc-300
+                           rounded-full flex items-center justify-center border dark:hover:border-zinc-500
+                           dark:border-zinc-600"
+                        >
+                           <Icon
+                              name="chevron-up"
+                              title="Hide Table of Contents"
+                              size={14}
+                              className="dark:text-zinc-400 text-zinc-400"
+                           />
+                        </button>
+                     )}
                   </div>
                   <div className="py-1.5">
                      {sectionsList?.map((section) => (

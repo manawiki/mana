@@ -1,4 +1,5 @@
 export type IconName =
+  | "chevron-up"
   | "chevrons-up"
   | "chevrons-down"
   | "arrow-up"
