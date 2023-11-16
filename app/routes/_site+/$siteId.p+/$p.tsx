@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
@@ -8,7 +8,7 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { Await, useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
@@ -23,7 +23,10 @@ import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
-import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
+import {
+   EditorCommandBar,
+   command_button,
+} from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import {
@@ -43,6 +46,7 @@ import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { mainContainerStyle } from "../$siteId+/_index";
+import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
 
 export async function loader({
    context: { payload, user },
@@ -130,6 +134,7 @@ export default function Post() {
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const [isDeleteOpen, setDeleteOpen] = useState(false);
+   const enableAds = post.site.enableAds;
 
    return (
       <>
@@ -152,20 +157,14 @@ export default function Post() {
                show
             >
                <main className={mainContainerStyle}>
-                  <Suspense fallback="Loading...">
-                     <Await resolve={post}>
-                        <PostHeaderEdit
-                           post={post}
-                           isShowBanner={isShowBanner}
-                        />
-                        <ManaEditor
-                           collectionSlug="posts"
-                           fetcher={fetcher}
-                           pageId={post.id}
-                           defaultValue={post.content as Descendant[]}
-                        />
-                     </Await>
-                  </Suspense>
+                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                  {enableAds && <AdPlaceholder />}
+                  <ManaEditor
+                     collectionSlug="posts"
+                     fetcher={fetcher}
+                     pageId={post.id}
+                     defaultValue={post.content as Descendant[]}
+                  />
                </main>
                <div>
                   <EditorCommandBar
@@ -176,11 +175,10 @@ export default function Post() {
                   >
                      <EditorCommandBar.PrimaryOptions>
                         <>
-                           <Tooltip placement="left">
+                           <Tooltip placement="right">
                               <TooltipTrigger
                                  onClick={() => setIsBannerShowing((v) => !v)}
-                                 className="transition duration-100 border border-color shadow-sm shadow-1
-                  active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
+                                 className={command_button}
                               >
                                  {isShowBanner ? (
                                     <Icon name="image-minus" size={14} />
@@ -235,12 +233,22 @@ export default function Post() {
             </Float>
          ) : (
             <main className={mainContainerStyle}>
-               <Suspense fallback="Loading...">
-                  <Await resolve={post}>
-                     <PostHeaderView post={post} />
-                     <EditorView data={post.content} />
-                  </Await>
-               </Suspense>
+               <PostHeaderView post={post} />
+               <AdPlaceholder>
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                     className="flex items-center justify-center [&>div]:py-5"
+                  />
+                  {/* <AdUnit
+                  enableAds
+                  adType="mobileSquareATF"
+                  selectorId="postMobileSquareATF"
+                  className="flex items-center justify-center"
+               /> */}
+               </AdPlaceholder>
+               <EditorView data={post.content} />
             </main>
          )}
       </>

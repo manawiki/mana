@@ -17,19 +17,17 @@ import { isAdding } from "~/utils";
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../../resource+/Search";
 
-export const ColumnThree = ({
-   location,
+export function ColumnThree({
    searchToggle,
    setSearchToggle,
    fetcher,
    site,
 }: {
-   location: any;
    searchToggle: any;
    setSearchToggle: any;
    fetcher: any;
    site: Site;
-}) => {
+}) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
@@ -37,12 +35,12 @@ export const ColumnThree = ({
    return (
       <>
          <section className="max-laptop:border-color bg-3 max-laptop:border-b max-laptop:pt-14">
-            <section className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] laptop:sticky laptop:top-6">
+            <section className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] laptop:sticky laptop:top-0">
                <div
-                  className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-full laptop:border border-color bg-gradient-to-br dark:from-bg3Dark dark:to-bg2Dark 
-                  from-white to-gray-50 border-zinc-200 shadow-1 border-b shadow-sm"
+                  className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-b-2xl laptop:border border-color-sub
+                dark:bg-dark350 bg-zinc-50 border-zinc-200/70 dark:border-zinc-600/50 shadow-1 border-b shadow-sm laptop:border-t-0"
                >
-                  <div className="relative mx-auto flex h-[58px] items-center justify-between pl-3 pr-2.5">
+                  <div className="relative mx-auto flex h-[60px] items-center justify-between pl-3 pr-2.5">
                      {searchToggle ? (
                         <SearchComboBox
                            siteType={site.type}
@@ -50,7 +48,7 @@ export const ColumnThree = ({
                         />
                      ) : (
                         <>
-                           <div className="flex items-center">
+                           <div className="flex items-center truncate">
                               <Link
                                  prefetch="intent"
                                  to={`/${site.slug}`}
@@ -66,7 +64,7 @@ export const ColumnThree = ({
                                     />
                                  </div>
                                  <div className="truncate pl-3 text-sm">
-                                    <div className="font-bold group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
+                                    <div className="font-bold truncate group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
                                        {site.name}
                                     </div>
                                     <div className="text-[10px] flex items-center gap-1">
@@ -205,7 +203,7 @@ export const ColumnThree = ({
                                  <Icon name="search" className="w-5 h-5" />
                               </button>
                               <button
-                                 className="bg-3 border-color shadow-1 flex h-10 w-10 items-center justify-center rounded-full
+                                 className="bg-3-sub border-color-sub shadow-1 flex h-10 w-10 items-center justify-center rounded-full
                                              border shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
                                  aria-label="Menu"
                                  onClick={() => setPrimaryMenuOpen(true)}
@@ -231,4 +229,4 @@ export const ColumnThree = ({
          </section>
       </>
    );
-};
+}

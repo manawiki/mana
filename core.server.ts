@@ -25,7 +25,6 @@ async function start() {
 
    // Start Payload CMS
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
-   invariant(process.env.MONGO_URL, "MONGO_URL is required");
 
    //setup mail
    const transport = nodemailer.createTransport({
@@ -40,7 +39,6 @@ async function start() {
 
    await payload.init({
       secret: process.env.PAYLOADCMS_SECRET,
-      mongoURL: process.env.MONGO_URL,
       express: app,
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);

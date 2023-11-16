@@ -82,8 +82,8 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center">
             <button
-               className="bg-2 shadow-1 text-1 flex h-8 w-8 items-center justify-center
-               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 laptop:h-[52px] laptop:w-[52px]"
+               className="bg-2 shadow-1 text-1 flex h-12 w-12 items-center justify-center
+               rounded-full shadow-sm transition duration-300 active:translate-y-0.5"
                type="button"
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}

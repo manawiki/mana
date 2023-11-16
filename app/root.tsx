@@ -20,6 +20,8 @@ import {
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 // import rdtStylesheet from "remix-development-tools/index.css?url";
+import rdtStylesheet from "remix-development-tools/index.css";
+import { ExternalScripts } from "remix-utils/external-scripts";
 
 import { settings } from "mana-config";
 import type { Site } from "~/db/payload-types";
@@ -46,7 +48,6 @@ import "~/styles/fonts.css";
 export const loader = async ({
    context: { user },
    request,
-   params,
 }: LoaderFunctionArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
@@ -109,6 +110,7 @@ function App() {
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
@@ -139,7 +141,7 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body ${theme ?? ""}`}
+         className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
             <meta charSet="utf-8" />
@@ -185,6 +187,7 @@ function App() {
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
+            <ExternalScripts />
             <LiveReload />
             {isBot ? null : <Scripts />}
          </body>

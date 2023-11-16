@@ -1,18 +1,19 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { json } from "@remix-run/node";
 import type {
    ActionFunction,
    LoaderFunctionArgs,
    MetaFunction,
+   SerializeFrom,
 } from "@remix-run/node";
 import {
-   Await,
    useFetcher,
    useLoaderData,
    useLocation,
    useRouteLoaderData,
 } from "@remix-run/react";
+import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -23,23 +24,25 @@ import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/src/func
 import * as gtag from "~/routes/_site+/$siteId+/src/utils/gtags.client";
 import { assertIsPost } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
-import { useIsBot } from "~/utils/isBotProvider";
 
 import {
    MobileTray,
    UserTrayContent,
    ColumnOne,
-   Header,
+   MobileHeader,
    ColumnTwo,
    ColumnFour,
    ColumnThree,
    FollowingTrayContent,
+   GAScripts,
 } from "./src/components";
+import { RampScripts } from "./src/components/RampScripts";
+
+export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export async function loader({
    context: { user },
    params,
-   request,
 }: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
 
@@ -72,16 +75,42 @@ export async function loader({
    );
 }
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: data.site.name,
+         title: data?.site.name,
       },
    ];
 };
 
-export const handle = {
-   i18n: "site",
+export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
+   scripts({ data }) {
+      const enableAds = data.site.enableAds;
+      const gaTag = data.site.gaTagId;
+
+      if (enableAds || gaTag) {
+         const gAnalytics = {
+            src: `https://www.googletagmanager.com/gtag/js?id=${gaTag}`,
+            async: true,
+         };
+         //Load GTag with ads if enabled
+         if (enableAds) {
+            const rampConfig = {
+               src: "//cdn.intergient.com/1025133/74686/ramp_config.js",
+               async: true,
+            };
+            const rampCore = {
+               src: "//cdn.intergient.com/ramp_core.js",
+               async: true,
+            };
+            return [gAnalytics, rampConfig, rampCore];
+         }
+         //Otherwise just load analytics
+         return [gAnalytics];
+      }
+
+      return [];
+   },
 };
 
 export default function SiteIndex() {
@@ -92,98 +121,60 @@ export default function SiteIndex() {
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
    const [searchToggle, setSearchToggle] = useState(false);
-   const gaTrackingId = site?.gaTagId;
-   let isBot = useIsBot();
+   const gaTag = site?.gaTagId;
+   const enableAds = site?.enableAds;
 
    useEffect(() => {
-      if (process.env.NODE_ENV === "production" && gaTrackingId) {
-         gtag.pageview(location.pathname, gaTrackingId);
+      if (process.env.NODE_ENV === "production" && gaTag) {
+         gtag.pageview(location.pathname, gaTag);
       }
+      //Hide the search on path change
       setSearchToggle(false);
-   }, [location, gaTrackingId]);
+   }, [location, gaTag]);
 
    return (
       <>
-         <Header
+         <MobileHeader
             location={location}
             site={site}
             fetcher={fetcher}
             setFollowerMenuOpen={setFollowerMenuOpen}
             setUserMenuOpen={setUserMenuOpen}
          />
-         <Suspense fallback="Loading...">
-            <Await resolve={{ site }}>
-               {({ site }) => (
-                  <main>
-                     <div
-                        className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
-                     laptop:grid-flow-col desktop:auto-cols-[76px_220px_1fr_334px]"
-                     >
-                        {/* ==== Desktop Following Menu ==== */}
-                        <ColumnOne site={site} user={user} />
-
-                        {/* ==== Site Menu ==== */}
-                        <ColumnTwo site={site} user={user} />
-
-                        {/* ==== Main Content ==== */}
-                        <ColumnThree
-                           location={location}
-                           searchToggle={searchToggle}
-                           setSearchToggle={setSearchToggle}
-                           site={site}
-                           fetcher={fetcher}
-                        />
-
-                        {/* ==== Right Sidebar ==== */}
-                        <ColumnFour site={site} />
-                     </div>
-
-                     {/* ==== Follows: Mobile ==== */}
-                     <MobileTray
-                        onOpenChange={setFollowerMenuOpen}
-                        open={isFollowerMenuOpen}
-                     >
-                        <FollowingTrayContent
-                           site={site}
-                           setFollowerMenuOpen={setFollowerMenuOpen}
-                        />
-                     </MobileTray>
-
-                     {/* ==== User Menu: Mobile ==== */}
-                     <MobileTray
-                        onOpenChange={setUserMenuOpen}
-                        open={isUserMenuOpen}
-                     >
-                        <UserTrayContent onOpenChange={setUserMenuOpen} />
-                     </MobileTray>
-                  </main>
-               )}
-            </Await>
-         </Suspense>
-         {/* ==== Google Analytics ==== */}
-         {process.env.NODE_ENV === "production" && gaTrackingId && !isBot ? (
-            <>
-               <script
-                  defer
-                  src={`https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}`}
+         <main>
+            <div
+               className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
+                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
+            >
+               <ColumnOne site={site} user={user} />
+               <ColumnTwo site={site} user={user} />
+               <ColumnThree
+                  searchToggle={searchToggle}
+                  setSearchToggle={setSearchToggle}
+                  site={site}
+                  fetcher={fetcher}
                />
-               <script
-                  defer
-                  id="gtag-init"
-                  dangerouslySetInnerHTML={{
-                     __html: `
-                              window.dataLayer = window.dataLayer || [];
-                              function gtag(){dataLayer.push(arguments);}
-                              gtag('js', new Date());
+               <ColumnFour site={site} />
+            </div>
 
-                              gtag('config', '${gaTrackingId}', {
-                                 page_path: window.location.pathname,
-                              });
-                           `,
-                  }}
+            {/* ==== Follows: Mobile ==== */}
+            <MobileTray
+               onOpenChange={setFollowerMenuOpen}
+               open={isFollowerMenuOpen}
+            >
+               <FollowingTrayContent
+                  site={site}
+                  setFollowerMenuOpen={setFollowerMenuOpen}
                />
-            </>
-         ) : null}
+            </MobileTray>
+
+            {/* ==== User Menu: Mobile ==== */}
+            <MobileTray onOpenChange={setUserMenuOpen} open={isUserMenuOpen}>
+               <UserTrayContent onOpenChange={setUserMenuOpen} />
+            </MobileTray>
+         </main>
+         <GAScripts gaTrackingId={gaTag} />
+         <RampScripts enableAds={enableAds} />
       </>
    );
 }
@@ -239,7 +230,7 @@ export const action: ActionFunction = async ({
 
          return await payload.update({
             collection: "sites",
-            id: siteUID,
+            id: siteUID as string,
             data: { followers: totalDocs },
          });
       }
@@ -258,7 +249,7 @@ export const action: ActionFunction = async ({
          const siteUID = siteData?.docs[0]?.id;
          const site = await payload.findByID({
             collection: "sites",
-            id: siteUID,
+            id: siteUID as string,
             user,
          });
 
@@ -303,7 +294,7 @@ export const action: ActionFunction = async ({
 
          return await payload.update({
             collection: "sites",
-            id: siteUID,
+            id: siteUID as string,
             data: { followers: totalDocs },
          });
       }
@@ -343,6 +334,10 @@ const fetchSite = async ({
                   gaTagId
                   domain
                   followers
+                  enableAds
+                  banner {
+                     url
+                  }
                   icon {
                     url
                   }

@@ -18,6 +18,7 @@ import {
    BlockGroupView,
 } from "../../$siteId.blocks+/group/group-view";
 import { BlockImage } from "../../$siteId.blocks+/image";
+import { BlockInlineAd } from "../../$siteId.blocks+/inline-ad";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
 import { BlockTabs, BlockTabsItem } from "../../$siteId.blocks+/tabs/_tabs";
@@ -204,6 +205,14 @@ export function EditorBlocks({
          return (
             <div {...attributes} contentEditable={false}>
                <BlockImage element={element} />
+               <div className="hidden">{children}</div>
+            </div>
+         );
+      }
+      case BlockType.InlineAd: {
+         return (
+            <div contentEditable={false}>
+               <BlockInlineAd element={element} {...attributes} />
                <div className="hidden">{children}</div>
             </div>
          );

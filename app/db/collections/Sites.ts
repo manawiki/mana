@@ -31,6 +31,12 @@ export const Sites: CollectionConfig = {
          defaultValue: false,
       },
       {
+         name: "enableAds",
+         type: "checkbox",
+         label: "Enable Ads",
+         defaultValue: false,
+      },
+      {
          name: "followers",
          type: "number",
       },
@@ -151,6 +157,11 @@ export const Sites: CollectionConfig = {
          admin: {
             hidden: true,
          },
+      },
+      {
+         name: "banner",
+         type: "upload",
+         relationTo: "images",
       },
       {
          name: "favicon",

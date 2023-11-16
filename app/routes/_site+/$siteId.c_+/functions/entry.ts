@@ -1,6 +1,5 @@
 import { redirect } from "@remix-run/node";
 import type { Params, MetaFunction } from "@remix-run/react";
-import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import { select } from "payload-query";
@@ -11,7 +10,12 @@ import { settings } from "mana-config";
 import type { Entry, User } from "payload/generated-types";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { gqlFormat, gqlEndpoint } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
+import {
+   fetchWithCache,
+   gqlRequestWithCache,
+   gql,
+   cacheThis,
+} from "~/utils/cache.server";
 
 export type EntryType = {
    siteId: string;
@@ -77,7 +81,7 @@ export async function fetchEntry({
    }/${entry.id}?depth=${rest?.depth ?? 2}`;
 
    const GQLorREST = gql?.query
-      ? gqlRequest(gqlPath, gql?.query, {
+      ? gqlRequestWithCache(gqlPath, gql?.query, {
            entryId: entry.id,
            ...gql?.variables,
         })
@@ -86,8 +90,8 @@ export async function fetchEntry({
       : undefined;
 
    const [data, embeddedContent] = await Promise.all([
-      await GQLorREST,
-      await getEmbeddedContent({
+      GQLorREST,
+      getEmbeddedContent({
          id: entry.id as string,
          payload,
          params,
@@ -122,29 +126,29 @@ export async function getEmbeddedContent({
       siteId: z.string(),
    });
 
+   //We can't use param since it won't exist on a custom site
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[3];
 
-   const { docs } = await payload.find({
-      collection: "contentEmbeds",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         "collectionEntity.slug": {
-            equals: collectionId,
-         },
-         relationId: {
-            equals: id,
-         },
-      },
-      depth: 1,
-      overrideAccess: false,
-      user,
-   });
-   if (!docs) return;
-
    if (user) {
+      const { docs } = await payload.find({
+         collection: "contentEmbeds",
+         where: {
+            "site.slug": {
+               equals: siteId,
+            },
+            "collectionEntity.slug": {
+               equals: collectionId,
+            },
+            relationId: {
+               equals: id,
+            },
+         },
+         depth: 1,
+         overrideAccess: false,
+         user,
+      });
+
       const hasAccess = isSiteOwnerOrAdmin(user?.id, docs[0]?.site);
 
       if (hasAccess) {
@@ -198,7 +202,7 @@ export async function getEmbeddedContent({
 
                const isChanged =
                   JSON.stringify(draftEmbed.content) !=
-                  JSON.stringify(item.content);
+                     JSON.stringify(item.content) || versions.length == 0;
 
                return {
                   id: item.id,
@@ -221,12 +225,35 @@ export async function getEmbeddedContent({
       }));
    }
 
-   return docs.map((item) => ({
-      isChanged: false,
-      id: item.id,
-      content: item.content,
-      subSectionId: item.subSectionId,
-   }));
+   if (!user) {
+      const { docs } = await cacheThis(
+         () =>
+            payload.find({
+               collection: "contentEmbeds",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  "collectionEntity.slug": {
+                     equals: collectionId,
+                  },
+                  relationId: {
+                     equals: id,
+                  },
+               },
+               depth: 1,
+               overrideAccess: false,
+               user,
+            }),
+         `contentEmbeds-${siteId}-${collectionId}-${id}`,
+      );
+      return docs.map((item) => ({
+         isChanged: false,
+         id: item.id,
+         content: item.content,
+         subSectionId: item.subSectionId,
+      }));
+   }
 }
 
 export async function getEntryFields({
@@ -248,20 +275,24 @@ export async function getEntryFields({
 
    const collectionId = url.split("/")[3];
 
-   const collectionData = await payload.find({
-      collection: "collections",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         slug: {
-            equals: collectionId,
-         },
-      },
-      draft: true,
-      user,
-      overrideAccess: false,
-   });
+   const collectionData = await cacheThis(
+      () =>
+         payload.find({
+            collection: "collections",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: collectionId,
+               },
+            },
+            draft: true,
+            user,
+            overrideAccess: false,
+         }),
+      `collection-${siteId}-${collectionId}`,
+   );
 
    const collection = collectionData.docs[0];
 
@@ -292,7 +323,7 @@ export async function getEntryFields({
       });
 
       const { entryData }: { entryData: PaginatedDocs<Entry> } =
-         await gqlRequest(endpoint, entryQuery, {
+         await gqlRequestWithCache(endpoint, entryQuery, {
             entryId,
          });
 
@@ -318,31 +349,35 @@ export async function getEntryFields({
       };
    }
    //This is a core site, so we use the local api
-   const coreEntryData = await payload.find({
-      collection: "entries",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         "collectionEntity.slug": {
-            equals: collectionId,
-         },
-         or: [
-            {
-               slug: {
-                  equals: entryId,
+   const coreEntryData = await cacheThis(
+      () =>
+         payload.find({
+            collection: "entries",
+            where: {
+               "site.slug": {
+                  equals: siteId,
                },
-            },
-            {
-               id: {
-                  equals: entryId,
+               "collectionEntity.slug": {
+                  equals: collectionId,
                },
+               or: [
+                  {
+                     slug: {
+                        equals: entryId,
+                     },
+                  },
+                  {
+                     id: {
+                        equals: entryId,
+                     },
+                  },
+               ],
             },
-         ],
-      },
-      user,
-      overrideAccess: false,
-   });
+            user,
+            overrideAccess: false,
+         }),
+      `entries-${siteId}-${collectionId}-${entryId}`,
+   );
 
    const entryData = coreEntryData.docs[0];
 
