@@ -1,3 +1,9 @@
+import { on } from "events";
+import moveData from "./move-data-full-PoGO.json";
+import pokemonData from "./pokemon-data-full-en-PoGO.json";
+import raidBossList from "./raid-boss-list-PoGO.json";
+import PokemonForms from "./pogo_data_projection_10.json";
+
 /**
  * Data Factory. This module manages the game data such as Pokemon stats, Move stats, and type effectiveness matrix. It is basically an extended Game Master.
  * @exports GM
@@ -1282,32 +1288,32 @@ function parseUserPokebox(data) {
    return box;
 }
 
-/**
- * Fetch the URLs of the raid boss, Pokemon and move JSONs.
- *
- * @param oncomplete The callback after the fetching is complete.
- */
-function fetchURLs(oncomplete) {
-   $.ajax({
-      url: "/json-list?_format=json&game_tid=1&" + curTime,
-      dataType: "json",
-      success: function (data) {
-         for (var i = 0; i < data.length; i++) {
-            var curr = data[i];
-            if (curr.title == "raid-boss-list-PoGO") {
-               raidBossListURL = curr.url;
-            }
-            if (curr.title == "pokemon-data-full-en-PoGO") {
-               pokemonDataFullURL = curr.url;
-            }
-            if (curr.title == "move-data-full-PoGO") {
-               moveDataFullURL = curr.url;
-            }
-         }
-      },
-      complete: oncomplete || function () {},
-   });
-}
+// /**
+//  * Fetch the URLs of the raid boss, Pokemon and move JSONs.
+//  *
+//  * @param oncomplete The callback after the fetching is complete.
+//  */
+// function fetchURLs(oncomplete) {
+//    $.ajax({
+//       url: "/json-list?_format=json&game_tid=1&" + curTime,
+//       dataType: "json",
+//       success: function (data) {
+//          for (var i = 0; i < data.length; i++) {
+//             var curr = data[i];
+//             if (curr.title == "raid-boss-list-PoGO") {
+//                raidBossListURL = curr.url;
+//             }
+//             if (curr.title == "pokemon-data-full-en-PoGO") {
+//                pokemonDataFullURL = curr.url;
+//             }
+//             if (curr.title == "move-data-full-PoGO") {
+//                moveDataFullURL = curr.url;
+//             }
+//          }
+//       },
+//       complete: oncomplete || function () {},
+//    });
+// }
 
 /**
  * Fetch Level Settings from GP server.
@@ -1379,107 +1385,171 @@ function fetchRaidBosses(oncomplete) {
  *
  * @param oncomplete The callback after the fetching is complete.
  */
-function fetchPokemon(oncomplete) {
-   if (requiredJSONStatus.Pokemon != 0) {
-      return;
-   }
-   requiredJSONStatus.Pokemon = 1;
+function fetchPokemon(oncomplete = function () {}) {
+   Data.Pokemon = pokemonData
+      .map((pkm) => ({
+         dex: parseInt(pkm.number),
+         name: pkm.title_1.toLowerCase().replace("&#039;", "'"),
+         pokeType1: parsePokemonTypeFromString(pkm.field_pokemon_type)
+            .pokeType1,
+         pokeType2: parsePokemonTypeFromString(pkm.field_pokemon_type)
+            .pokeType2,
+         baseAtk: parseInt(pkm.atk),
+         baseDef: parseInt(pkm.def),
+         baseStm: parseInt(pkm.sta),
+         fastMoves: parseMovesFromString(pkm.field_primary_moves).concat(
+            parseMovesFromString(pkm.purified_fast_moves),
+         ), //for now, just stick the new fields in the base array
+         chargedMoves: parseMovesFromString(pkm.field_secondary_moves).concat(
+            parseMovesFromString(pkm.purified_charge_moves),
+         ), //for now, just stick the new fields in the base array
+         fastMoves_legacy: parseMovesFromString(
+            pkm.field_legacy_quick_moves,
+         ).concat(parseMovesFromString(pkm.elite_fast_moves)),
+         chargedMoves_legacy: parseMovesFromString(
+            pkm.field_legacy_charge_moves,
+         ).concat(parseMovesFromString(pkm.elite_charge_moves)),
+         fastMoves_exclusive: parseMovesFromString(pkm.quick_exclusive_moves),
+         chargedMoves_exclusive: parseMovesFromString(
+            pkm.charge_exclusive_moves,
+         ),
+         rating: parseFloat(pkm.rating) || 0,
+         raidMarker: "",
+         nid: pkm.nid,
+         icon: getPokemonIcon(pkm.number),
+         label: pkm.title_1.replace("&#039;", "'"),
+         labelLinked: pkm.title,
+         evolutions: parseMovesFromString(pkm.field_evolutions),
+         unavailable: pkm.unavailable,
+         rarity: LegendaryPokemon.includes(pkm.name)
+            ? "POKEMON_RARITY_LEGENDARY"
+            : MythicalPokemon.includes(pkm.name)
+            ? "POKEMON_RARITY_MYTHIC"
+            : "",
+      }))
+      .sort((a, b) => (a.name < b.name ? -1 : 1));
 
-   $.ajax({
-      url: pokemonDataFullURL + "?" + curTime,
-      dataType: "json",
-      success: function (data) {
-         Data.Pokemon = [];
-         for (var i = 0; i < data.length; i++) {
-            var pkm = {
-               dex: parseInt(data[i].number),
-               name: data[i].title_1.toLowerCase().replace("&#039;", "'"),
-               pokeType1: parsePokemonTypeFromString(data[i].field_pokemon_type)
-                  .pokeType1,
-               pokeType2: parsePokemonTypeFromString(data[i].field_pokemon_type)
-                  .pokeType2,
-               baseAtk: parseInt(data[i].atk),
-               baseDef: parseInt(data[i].def),
-               baseStm: parseInt(data[i].sta),
-               fastMoves: parseMovesFromString(
-                  data[i].field_primary_moves,
-               ).concat(parseMovesFromString(data[i].purified_fast_moves)), //for now, just stick the new fields in the base array
-               chargedMoves: parseMovesFromString(
-                  data[i].field_secondary_moves,
-               ).concat(parseMovesFromString(data[i].purified_charge_moves)), //for now, just stick the new fields in the base array
-               fastMoves_legacy: parseMovesFromString(
-                  data[i].field_legacy_quick_moves,
-               ).concat(parseMovesFromString(data[i].elite_fast_moves)),
-               chargedMoves_legacy: parseMovesFromString(
-                  data[i].field_legacy_charge_moves,
-               ).concat(parseMovesFromString(data[i].elite_charge_moves)),
-               fastMoves_exclusive: parseMovesFromString(
-                  data[i].quick_exclusive_moves,
-               ),
-               chargedMoves_exclusive: parseMovesFromString(
-                  data[i].charge_exclusive_moves,
-               ),
-               rating: parseFloat(data[i].rating) || 0,
-               raidMarker: "",
-               nid: data[i].nid,
-               icon: getPokemonIcon(data[i].number),
-               label: data[i].title_1.replace("&#039;", "'"),
-               labelLinked: data[i].title,
-               evolutions: parseMovesFromString(data[i].field_evolutions),
-               unavailable: data[i].unavailable,
-            };
-            if (LegendaryPokemon.includes(pkm.name)) {
-               pkm.rarity = "POKEMON_RARITY_LEGENDARY";
-            } else if (MythicalPokemon.includes(pkm.name)) {
-               pkm.rarity = "POKEMON_RARITY_MYTHIC";
-            }
+      Data.Pokemon.sorted = true;
 
-            Data.Pokemon.push(pkm);
-         }
-         Data.Pokemon.sort((a, b) => (a.name < b.name ? -1 : 1));
-         Data.Pokemon.sorted = true;
-         requiredJSONStatus.Pokemon = 2;
-      },
-      complete: oncomplete || function () {},
-   });
+   return oncomplete();
 }
+
+// function fetchPokemon(oncomplete) {
+//    if (requiredJSONStatus.Pokemon != 0) {
+//       return;
+//    }
+//    requiredJSONStatus.Pokemon = 1;
+
+//    $.ajax({
+//       url: pokemonDataFullURL + "?" + curTime,
+//       dataType: "json",
+//       success: function (data) {
+//          Data.Pokemon = [];
+//          for (var i = 0; i < data.length; i++) {
+//             var pkm = {
+//                dex: parseInt(data[i].number),
+//                name: data[i].title_1.toLowerCase().replace("&#039;", "'"),
+//                pokeType1: parsePokemonTypeFromString(data[i].field_pokemon_type)
+//                   .pokeType1,
+//                pokeType2: parsePokemonTypeFromString(data[i].field_pokemon_type)
+//                   .pokeType2,
+//                baseAtk: parseInt(data[i].atk),
+//                baseDef: parseInt(data[i].def),
+//                baseStm: parseInt(data[i].sta),
+//                fastMoves: parseMovesFromString(
+//                   data[i].field_primary_moves,
+//                ).concat(parseMovesFromString(data[i].purified_fast_moves)), //for now, just stick the new fields in the base array
+//                chargedMoves: parseMovesFromString(
+//                   data[i].field_secondary_moves,
+//                ).concat(parseMovesFromString(data[i].purified_charge_moves)), //for now, just stick the new fields in the base array
+//                fastMoves_legacy: parseMovesFromString(
+//                   data[i].field_legacy_quick_moves,
+//                ).concat(parseMovesFromString(data[i].elite_fast_moves)),
+//                chargedMoves_legacy: parseMovesFromString(
+//                   data[i].field_legacy_charge_moves,
+//                ).concat(parseMovesFromString(data[i].elite_charge_moves)),
+//                fastMoves_exclusive: parseMovesFromString(
+//                   data[i].quick_exclusive_moves,
+//                ),
+//                chargedMoves_exclusive: parseMovesFromString(
+//                   data[i].charge_exclusive_moves,
+//                ),
+//                rating: parseFloat(data[i].rating) || 0,
+//                raidMarker: "",
+//                nid: data[i].nid,
+//                icon: getPokemonIcon(data[i].number),
+//                label: data[i].title_1.replace("&#039;", "'"),
+//                labelLinked: data[i].title,
+//                evolutions: parseMovesFromString(data[i].field_evolutions),
+//                unavailable: data[i].unavailable,
+//             };
+//             if (LegendaryPokemon.includes(pkm.name)) {
+//                pkm.rarity = "POKEMON_RARITY_LEGENDARY";
+//             } else if (MythicalPokemon.includes(pkm.name)) {
+//                pkm.rarity = "POKEMON_RARITY_MYTHIC";
+//             }
+
+//             Data.Pokemon.push(pkm);
+//          }
+//          Data.Pokemon.sort((a, b) => (a.name < b.name ? -1 : 1));
+//          Data.Pokemon.sorted = true;
+//          requiredJSONStatus.Pokemon = 2;
+//       },
+//       complete: oncomplete || function () {},
+//    });
+// }
 
 /**
  * Fetch supplement Pokemon form data (such as icons) from GP server.
  *
  * @param oncomplete The callback after the fetching is complete.
  */
-function fetchPokemonForms(oncomplete) {
-   if (requiredJSONStatus.PokemonForms != 0) {
-      return;
-   }
-   requiredJSONStatus.PokemonForms = 1;
-
-   $.ajax({
-      url:
-         "/pokemongo/sites/pokemongo/files/pogo-jsons/pogo_data_projection_10.json" +
-         "?" +
-         curTime,
-      dataType: "json",
-      success: function (data) {
-         Data.PokemonForms = [];
-         for (let pkm of data) {
-            pkm.fastMoves = pkm.fastMoves || [];
-            pkm.fastMoves_legacy = pkm.fastMoves_legacy || [];
-            pkm.fastMoves_exclusive = pkm.fastMoves_exclusive || [];
-            pkm.chargedMoves = pkm.chargedMoves || [];
-            pkm.chargedMoves_legacy = pkm.chargedMoves_legacy || [];
-            pkm.chargedMoves_exclusive = pkm.chargedMoves_exclusive || [];
-            pkm.raidMarker = "";
-            Data.PokemonForms.push(pkm);
-         }
-         Data.PokemonForms.sort((a, b) => (a.name < b.name ? -1 : 1));
+function fetchPokemonForms(oncomplete = function () {}) {
+     Data.PokemonForms = PokemonForms.map(pkm => ({
+      ...pkm,
+            fastMoves: pkm.fastMoves || [],
+            fastMoves_legacy: pkm.fastMoves_legacy || [],
+            fastMoves_exclusive: pkm.fastMoves_exclusive || [],
+            chargedMoves: pkm.chargedMoves || [],
+            chargedMoves_legacy: pkm.chargedMoves_legacy || [],
+            chargedMoves_exclusive: pkm.chargedMoves_exclusive || [],
+            raidMarker: "",
+         }.sort((a, b) => (a.name < b.name ? -1 : 1);
          Data.PokemonForms.sorted = true;
-         requiredJSONStatus.PokemonForms = 2;
-      },
-      complete: oncomplete || function () {},
-   });
-}
+
+      return oncomplete();
+   }
+// function fetchPokemonForms(oncomplete) {
+//    if (requiredJSONStatus.PokemonForms != 0) {
+//       return;
+//    }
+//    requiredJSONStatus.PokemonForms = 1;
+
+//    $.ajax({
+//       url:
+//          "/pokemongo/sites/pokemongo/files/pogo-jsons/pogo_data_projection_10.json" +
+//          "?" +
+//          curTime,
+//       dataType: "json",
+//       success: function (data) {
+//          Data.PokemonForms = [];
+//          for (let pkm of data) {
+//             pkm.fastMoves = pkm.fastMoves || [];
+//             pkm.fastMoves_legacy = pkm.fastMoves_legacy || [];
+//             pkm.fastMoves_exclusive = pkm.fastMoves_exclusive || [];
+//             pkm.chargedMoves = pkm.chargedMoves || [];
+//             pkm.chargedMoves_legacy = pkm.chargedMoves_legacy || [];
+//             pkm.chargedMoves_exclusive = pkm.chargedMoves_exclusive || [];
+//             pkm.raidMarker = "";
+//             Data.PokemonForms.push(pkm);
+//          }
+//          Data.PokemonForms.sort((a, b) => (a.name < b.name ? -1 : 1));
+//          Data.PokemonForms.sorted = true;
+//          requiredJSONStatus.PokemonForms = 2;
+//       },
+//       complete: oncomplete || function () {},
+//    });
+// }
 
 /**
  * Fetch move data from GP server.
