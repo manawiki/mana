@@ -29,6 +29,10 @@ export const _WeaponTypes: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",

@@ -29,6 +29,14 @@ export const _Rarities: CollectionConfig = {
          type: "text",
       },
       {
+         name: "desc",
+         type: "text",
+      },
+      {
+         name: "hex",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",

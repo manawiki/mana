@@ -29,6 +29,14 @@ export const _Professions: CollectionConfig = {
          type: "text",
       },
       {
+         name: "desc",
+         type: "text",
+      },
+      {
+         name: "icon_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",

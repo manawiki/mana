@@ -29,6 +29,10 @@ export const _EnergyShardTypes: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon_id",
+         type: "text",
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
