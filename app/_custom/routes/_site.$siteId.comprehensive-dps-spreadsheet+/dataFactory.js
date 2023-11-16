@@ -3,7 +3,7 @@
  * @exports GM
  */
 
-var GM = {};
+export var GM = {};
 
 var pokemonDataFullURL =
    "/sites/default/files/aggregatedjson/pokemon-data-full-en-PoGO.json";
@@ -405,7 +405,7 @@ var requiredJSONStatus = {
    LevelSettings: 0,
 };
 
-var Data = {
+export var Data = {
    BattleSettings: {
       dodgeDurationMs: 500,
       dodgeWindowMs: 700,
@@ -2162,3 +2162,7 @@ function BasicPokeQuery(queryStr, pokemonInstance) {
       };
    }
 }
+
+export const Component = () => <div>Test</div>;
+
+export default Component;

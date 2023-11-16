@@ -1,3 +1,5 @@
+import { Data, GM } from "./dataFactory.js";
+
 /**
  * @file Comprehensive DPS Calculator
  */
@@ -15,6 +17,8 @@ var DEFAULT_ENEMY_POKETYPE2 = "none";
 var DEFAULT_WEATHER = "EXTREME";
 var DEFAULT_TOTAL_ENERGY_GAINED = 400;
 
+const LeagueCPCap = 0;
+
 var Context = {
    weather: DEFAULT_WEATHER,
    enemy: {},
@@ -26,6 +30,10 @@ var Context = {
    allyMega: false,
    allyMegaStab: false,
 };
+
+function generateSpreadsheet(pokemonCollection) {
+   return pokemonCollection.map((pkm) => calculateRow(pkm));
+}
 
 function damage(dmg_giver, dmg_taker, move, weather) {
    var multipliers = 1;
@@ -531,6 +539,119 @@ function calculateCP(pkm) {
 //    }
 // }
 
+function calculateRow(pkm) {
+   let pkmInstance = { ...pkm };
+
+   // user Pokemon
+   if (pkm.uid !== undefined) {
+      let species = GM.get("pokemon", pkm.name);
+      if (!species) {
+         //  pkm.level = pkm.level;
+         pkmInstance.cpm = GM.get("level", pkm.level).cpm;
+         pkmInstance.baseAtk = species.baseAtk;
+         pkmInstance.baseDef = species.baseDef;
+         pkmInstance.baseStm = species.baseStm;
+         pkmInstance.icon = species.icon;
+      }
+   }
+
+   let fastMoves_all = pkm.fmove
+      ? [pkm.fmove]
+      : pkm.fastMoves
+           .concat(pkm.fastMoves_legacy)
+           .concat(pkm.fastMoves_exclusive);
+
+   let chargedMoves_all = pkm.cmove
+      ? [pkm.cmove]
+      : pkm.chargedMoves
+           .concat(pkm.chargedMoves_legacy)
+           .concat(pkm.chargedMoves_exclusive);
+
+   for (let fmove of fastMoves_all) {
+      let fmoveInstance = GM.get("fast", fmove);
+      if (!fmoveInstance) {
+         continue;
+      }
+      for (let cmove of chargedMoves_all) {
+         var cmoveInstance = GM.get("charged", cmove);
+         if (!cmoveInstance) {
+            continue;
+         }
+
+         pkmInstance.fmove = fmoveInstance;
+         pkmInstance.cmove = cmoveInstance;
+         pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
+         pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
+         pkmInstance.atkiv =
+            pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
+         pkmInstance.defiv =
+            pkm.defiv >= 0 ? pkm.defiv : DEFAULT_ATTACKER_IVs[1];
+         pkmInstance.stmiv =
+            pkm.stmiv >= 0 ? pkm.stmiv : DEFAULT_ATTACKER_IVs[2];
+         pkmInstance.Atk =
+            (pkmInstance.baseAtk + pkmInstance.atkiv) * pkmInstance.cpm;
+         pkmInstance.Def =
+            (pkmInstance.baseDef + pkmInstance.defiv) * pkmInstance.cpm;
+         pkmInstance.Stm =
+            (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
+         pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
+
+         if (LeagueCPCap > 0) {
+            adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
+         }
+         pkmInstance.cp = calculateCP(pkmInstance);
+
+         if (pkmInstance.name.startsWith("shadow ")) {
+            pkmInstance.Def *=
+               Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
+         }
+
+         calculateDPS(pkmInstance, Context);
+
+         pkmInstance.ui_name = createIconLabelSpan(
+            pkm.icon,
+            pkm.labelLinked || pkm.label,
+            "species-input-with-icon",
+         );
+         pkmInstance.ui_fmove = createIconLabelSpan(
+            fmoveInstance.icon,
+            fmoveInstance.labelLinked || fmoveInstance.label,
+            "move-input-with-icon",
+         );
+         pkmInstance.ui_cmove = createIconLabelSpan(
+            cmoveInstance.icon,
+            cmoveInstance.labelLinked || cmoveInstance.label,
+            "move-input-with-icon",
+         );
+         pkmInstance.ui_dps = Math.round(pkmInstance.dps, 3);
+         pkmInstance.ui_tdo = Math.round(pkmInstance.tdo, 1);
+         if (Context.battleMode == "pvp") {
+            pkmInstance.ui_overall =
+               Math.ceil(
+                  -pkmInstance.cmove.energyDelta /
+                     (pkmInstance.fmove.energyDelta || 1),
+               ) * pkmInstance.fmove.duration;
+         } else {
+            pkmInstance.ui_overall = Math.round(
+               (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
+               2,
+            );
+         }
+         pkmInstance.ui_cp = pkmInstance.cp;
+      }
+   }
+
+   return pkmInstance;
+}
+
+function createIconLabelSpan(icon, label, className) {
+   return (
+      <span className={className}>
+         <img src={icon} alt={label} />
+         {label}
+      </span>
+   );
+}
 // function generateSpreadsheet(pokemonCollection) {
 //    var Table = $("#ranking_table").DataTable();
 //    Table.clear();
@@ -804,10 +925,10 @@ function adjustStatsUnderCPCap(pkm, cp) {
    }
 }
 
-function applyCPCap(cap) {
-   LeagueCPCap = cap;
-   requestSpreadsheet(false);
-}
+// function applyCPCap(cap) {
+//    LeagueCPCap = cap;
+//    requestSpreadsheet(false);
+// }
 
 /**
  * Features yet to be released
@@ -926,3 +1047,7 @@ function applyEasterEgg(dt) {
       ui_cp: 1600,
    });
 }
+
+export const Component = () => <div>Test</div>;
+
+export default Component;

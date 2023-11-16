@@ -1,3 +1,5 @@
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
 export function ComprehensiveDpsSpreadsheet() {
    return (
       <>
