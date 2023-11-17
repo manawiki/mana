@@ -1311,29 +1311,6 @@ function fetchLevelSettings(oncomplete = function () {}) {
    return oncomplete();
 }
 
-// function fetchLevelSettings(oncomplete) {
-//    if (requiredJSONStatus.LevelSettings != 0) return;
-//    requiredJSONStatus.LevelSettings = 1;
-//    $.ajax({
-//       url: "/pokemongo/assets/data/cpm.json",
-//       dataType: "json",
-//       success: function (data) {
-//          Data.LevelSettings = [];
-//          for (var i = 0; i < data.length; i++) {
-//             Data.LevelSettings.push({
-//                name: data[i].name,
-//                value: parseFloat(data[i].name),
-//                cpm: parseFloat(data[i].field_cp_multiplier),
-//                stardust: parseInt(data[i].field_stardust_cost),
-//                candy: parseInt(data[i].field_candy_cost),
-//             });
-//          }
-//          requiredJSONStatus.LevelSettings = 2;
-//       },
-//       complete: oncomplete || function () {},
-//    });
-// }
-
 /**
  * Fetch raid boss list from GP server.
  *
@@ -1353,38 +1330,6 @@ function fetchRaidBosses(oncomplete = function () {}) {
    }
    return oncomplete();
 }
-
-// function fetchRaidBosses(oncomplete) {
-//    if (requiredJSONStatus.RaidBosses != 0) {
-//       return;
-//    }
-//    requiredJSONStatus.RaidBosses = 1;
-
-//    $.ajax({
-//       url: raidBossListURL + "?" + curTime,
-//       dataType: "json",
-//       success: function (data) {
-//          Data.RaidBosses = [];
-//          data.forEach(function (bossInfo) {
-//             var parsedBossInfo = {
-//                name: bossInfo.title_plain.toLowerCase(),
-//                tier: parseInt(
-//                   (/>\s*(\d)\s*</.exec(bossInfo.tier) || [0, 0])[1],
-//                ),
-//                future: bossInfo.future.toLowerCase() == "on",
-//                legacy: bossInfo.legacy.toLowerCase() == "on",
-//                special: bossInfo.special.toLowerCase() == "on",
-//             };
-//             Data.RaidBosses.push(parsedBossInfo);
-//          });
-//          requiredJSONStatus.RaidBosses = 2;
-//          if (Data.Pokemon.length > 0) {
-//             attachRaidbossInfo();
-//          }
-//       },
-//       complete: oncomplete || function () {},
-//    });
-// }
 
 /**
  * Fetch Pokemon data from GP server.
@@ -1477,71 +1422,6 @@ function attachPokemonForm() {
    }
 }
 
-// function fetchPokemon(oncomplete) {
-//    if (requiredJSONStatus.Pokemon != 0) {
-//       return;
-//    }
-//    requiredJSONStatus.Pokemon = 1;
-
-//    $.ajax({
-//       url: pokemonDataFullURL + "?" + curTime,
-//       dataType: "json",
-//       success: function (data) {
-//          Data.Pokemon = [];
-//          for (var i = 0; i < data.length; i++) {
-//             var pkm = {
-//                dex: parseInt(data[i].number),
-//                name: data[i].title_1.toLowerCase().replace("&#039;", "'"),
-//                pokeType1: parsePokemonTypeFromString(data[i].field_pokemon_type)
-//                   .pokeType1,
-//                pokeType2: parsePokemonTypeFromString(data[i].field_pokemon_type)
-//                   .pokeType2,
-//                baseAtk: parseInt(data[i].atk),
-//                baseDef: parseInt(data[i].def),
-//                baseStm: parseInt(data[i].sta),
-//                fastMoves: parseMovesFromString(
-//                   data[i].field_primary_moves,
-//                ).concat(parseMovesFromString(data[i].purified_fast_moves)), //for now, just stick the new fields in the base array
-//                chargedMoves: parseMovesFromString(
-//                   data[i].field_secondary_moves,
-//                ).concat(parseMovesFromString(data[i].purified_charge_moves)), //for now, just stick the new fields in the base array
-//                fastMoves_legacy: parseMovesFromString(
-//                   data[i].field_legacy_quick_moves,
-//                ).concat(parseMovesFromString(data[i].elite_fast_moves)),
-//                chargedMoves_legacy: parseMovesFromString(
-//                   data[i].field_legacy_charge_moves,
-//                ).concat(parseMovesFromString(data[i].elite_charge_moves)),
-//                fastMoves_exclusive: parseMovesFromString(
-//                   data[i].quick_exclusive_moves,
-//                ),
-//                chargedMoves_exclusive: parseMovesFromString(
-//                   data[i].charge_exclusive_moves,
-//                ),
-//                rating: parseFloat(data[i].rating) || 0,
-//                raidMarker: "",
-//                nid: data[i].nid,
-//                icon: getPokemonIcon(data[i].number),
-//                label: data[i].title_1.replace("&#039;", "'"),
-//                labelLinked: data[i].title,
-//                evolutions: parseMovesFromString(data[i].field_evolutions),
-//                unavailable: data[i].unavailable,
-//             };
-//             if (LegendaryPokemon.includes(pkm.name)) {
-//                pkm.rarity = "POKEMON_RARITY_LEGENDARY";
-//             } else if (MythicalPokemon.includes(pkm.name)) {
-//                pkm.rarity = "POKEMON_RARITY_MYTHIC";
-//             }
-
-//             Data.Pokemon.push(pkm);
-//          }
-//          Data.Pokemon.sort((a, b) => (a.name < b.name ? -1 : 1));
-//          Data.Pokemon.sorted = true;
-//          requiredJSONStatus.Pokemon = 2;
-//       },
-//       complete: oncomplete || function () {},
-//    });
-// }
-
 /**
  * Fetch supplement Pokemon form data (such as icons) from GP server.
  *
@@ -1562,37 +1442,6 @@ function fetchPokemonForms(oncomplete = function () {}) {
 
    return oncomplete();
 }
-// function fetchPokemonForms(oncomplete) {
-//    if (requiredJSONStatus.PokemonForms != 0) {
-//       return;
-//    }
-//    requiredJSONStatus.PokemonForms = 1;
-
-//    $.ajax({
-//       url:
-//          "/pokemongo/sites/pokemongo/files/pogo-jsons/pogo_data_projection_10.json" +
-//          "?" +
-//          curTime,
-//       dataType: "json",
-//       success: function (data) {
-//          Data.PokemonForms = [];
-//          for (let pkm of data) {
-//             pkm.fastMoves = pkm.fastMoves || [];
-//             pkm.fastMoves_legacy = pkm.fastMoves_legacy || [];
-//             pkm.fastMoves_exclusive = pkm.fastMoves_exclusive || [];
-//             pkm.chargedMoves = pkm.chargedMoves || [];
-//             pkm.chargedMoves_legacy = pkm.chargedMoves_legacy || [];
-//             pkm.chargedMoves_exclusive = pkm.chargedMoves_exclusive || [];
-//             pkm.raidMarker = "";
-//             Data.PokemonForms.push(pkm);
-//          }
-//          Data.PokemonForms.sort((a, b) => (a.name < b.name ? -1 : 1));
-//          Data.PokemonForms.sorted = true;
-//          requiredJSONStatus.PokemonForms = 2;
-//       },
-//       complete: oncomplete || function () {},
-//    });
-// }
 
 /**
  * Fetch move data from GP server.
@@ -1677,99 +1526,6 @@ function fetchMoves(oncomplete = function () {}) {
    requiredJSONStatus.Moves = 2;
    return oncomplete();
 }
-
-// function fetchMoves(oncomplete) {
-//    if (requiredJSONStatus.Moves != 0) {
-//       return;
-//    }
-//    requiredJSONStatus.Moves = 1;
-
-//    $.ajax({
-//       url: moveDataFullURL + "?" + curTime,
-//       dataType: "json",
-//       success: function (data) {
-//          Data.FastMoves = [];
-//          Data.ChargedMoves = [];
-//          for (var i = 0; i < data.length; i++) {
-//             var move = {
-//                name: data[i].title.toLowerCase(),
-//                pokeType: data[i].move_type.toLowerCase(),
-//                label: toTitleCase(data[i].title),
-//                labelLinked: data[i].title_linked,
-//                icon: getTypeIcon(data[i].move_type),
-//                power: 0,
-//                dws: 0,
-//                duration: 0,
-//                energyDelta: 0,
-//                effect: "",
-//                regular: {
-//                   power: parseInt(data[i].power),
-//                   dws:
-//                      parseFloat(data[i].damage_window.split(" ")[0]) * 1000 ||
-//                      0,
-//                   duration: parseFloat(data[i].cooldown) * 1000,
-//                   energyDelta: 0,
-//                },
-//                combat: {
-//                   power: 0,
-//                   dws: 0,
-//                   duration: 0,
-//                   energyDelta: 0,
-//                },
-//             };
-//             if (data[i].move_category == "Fast Move") {
-//                move.moveType = "fast";
-//                move.regular.energyDelta = Math.abs(
-//                   parseInt(data[i].energy_gain),
-//                );
-//                move.combat.power = parseInt(data[i].pvp_fast_power);
-//                move.combat.energyDelta = parseInt(data[i].pvp_fast_energy);
-//                move.combat.duration = parseInt(data[i].pvp_fast_duration) + 1;
-//                move.combat.dws = 0;
-//                Data.FastMoves.push(move);
-//             } else {
-//                move.moveType = "charged";
-//                move.regular.energyDelta = -Math.abs(
-//                   parseInt(data[i].energy_cost),
-//                );
-//                move.combat.power = parseInt(data[i].pvp_charge_damage);
-//                move.combat.energyDelta = parseInt(data[i].pvp_charge_energy);
-//                move.combat.duration = 0;
-//                move.combat.dws = 0;
-//                Data.ChargedMoves.push(move);
-//             }
-//             for (var a in move.regular) {
-//                move[a] = move.regular[a];
-//             }
-//             // Parse move effect
-//             if (data[i].subject) {
-//                var stage_delta = parseInt(data[i].stage_delta);
-//                var subj_self = data[i].subject.includes("Self");
-//                var subj_targ = data[i].subject.includes("Opponent");
-//                var stat_atk = data[i].stat.includes("Atk");
-//                var stat_def = data[i].stat.includes("Def");
-//                move.effect = {
-//                   activation_chance: parseFloat(data[i].probability),
-//                   self_attack_stage_delta:
-//                      subj_self && stat_atk ? stage_delta : 0,
-//                   self_defense_stage_delta:
-//                      subj_self && stat_def ? stage_delta : 0,
-//                   target_attack_stage_delta:
-//                      subj_targ && stat_atk ? stage_delta : 0,
-//                   target_defense_stage_delta:
-//                      subj_targ && stat_def ? stage_delta : 0,
-//                };
-//             }
-//          }
-//          Data.FastMoves.sort((a, b) => (a.name < b.name ? -1 : 1));
-//          Data.FastMoves.sorted = true;
-//          Data.ChargedMoves.sort((a, b) => (a.name < b.name ? -1 : 1));
-//          Data.ChargedMoves.sorted = true;
-//          requiredJSONStatus.Moves = 2;
-//       },
-//       complete: oncomplete || function () {},
-//    });
-// }
 
 /**
  * Fetch GP user Pokemon box.
