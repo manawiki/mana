@@ -68,6 +68,12 @@ const QUERY = gql`
          image {
             url
          }
+         icon_round {
+            url
+         }
+         icon_bg_charinfo {
+            url
+         }
          energy_shard_type {
             id
             name
@@ -88,6 +94,16 @@ const QUERY = gql`
             icon {
                url
             }
+         }
+         attributes {
+            stat {
+               id
+               name
+               icon {
+                  url
+               }
+            }
+            values
          }
       }
    }
