@@ -1446,7 +1446,7 @@ function fetchPokemon(oncomplete = function () {}) {
 }
 
 /**
- * Attach raid boss info to each Pokemon.
+ * Attach raid boss info to each Pokemon. Requires Data.Pokemon and Data.RaidBosses to be loaded.
  */
 function attachRaidbossInfo() {
    for (let boss of Data.RaidBosses) {
@@ -1464,7 +1464,7 @@ function attachRaidbossInfo() {
 }
 
 /**
- * Attach alternative form info to each Pokemon.
+ * Attach alternative form info to each Pokemon. Requires Data.Pokemon and Data.PokemonForms to be loaded.
  */
 function attachPokemonForm() {
    for (let pkm of Data.PokemonForms) {
