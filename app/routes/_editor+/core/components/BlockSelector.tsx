@@ -164,9 +164,9 @@ export function BlockSelector({
                label: "Info Box",
                icon: (
                   <Icon
-                     name="columns"
+                     name="rows"
                      title="Info Box"
-                     className="text-blue-500"
+                     className="text-pink-400"
                      size={12}
                   />
                ),
