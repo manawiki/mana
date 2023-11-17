@@ -11,13 +11,6 @@ import raidBossList from "./raid-boss-list-PoGO.json";
 
 export var GM = {};
 
-var pokemonDataFullURL =
-   "/sites/default/files/aggregatedjson/pokemon-data-full-en-PoGO.json";
-var moveDataFullURL =
-   "/sites/default/files/aggregatedjson/move-data-full-PoGO.json";
-var raidBossListURL =
-   "/sites/default/files/aggregatedjson/raid-boss-list-PoGO.json";
-
 /**
  * Fetch all required JSONs for the application.
  * @param kwargs {Object} Keyword arguments. Can specify 'name', 'complete', 'userid'
@@ -82,6 +75,8 @@ GM.fetch = function (kwargs) {
    fetchMoves(oncompleteWrapper);
    fetchRaidBosses(oncompleteWrapper);
    fetchPokemon(oncompleteWrapper);
+   attachRaidbossInfo();
+   attachPokemonForm();
 
    if (window.userID2 && window.userID2 != "0") {
       fetchUser(null, window.userID2);
@@ -1218,24 +1213,6 @@ function getPokemonPool() {
 }
 
 /**
- * Attach raid boss info to each Pokemon.
- */
-function attachRaidbossInfo() {
-   for (let boss of Data.RaidBosses) {
-      var pkm = GM.get("pokemon", boss.name.toLowerCase().trim());
-      if (pkm) {
-         pkm.raidMarker = "";
-         pkm.raidMarker += boss.tier;
-         pkm.raidMarker +=
-            boss.future || boss.legacy || boss.special ? "" : " current";
-         pkm.raidMarker += boss.future ? " future" : "";
-         pkm.raidMarker += boss.legacy ? " legacy" : "";
-         pkm.raidMarker += boss.special ? " special" : "";
-      }
-   }
-}
-
-/**
  * Validate the user Pokemon data array for other modules to correctly use.
  *
  * @param {Object[]} pokemonDataBase An array of user Pokemon data.
@@ -1322,7 +1299,7 @@ function parseUserPokebox(data) {
  */
 function fetchLevelSettings(oncomplete = function () {}) {
    Data.LevelSettings = cpmData.map((cpm) => ({
-      name: data[i].name,
+      name: cpm.name,
       value: parseFloat(cpm.name),
       cpm: parseFloat(cpm.field_cp_multiplier),
       stardust: parseInt(cpm.field_stardust_cost),
@@ -1450,17 +1427,54 @@ function fetchPokemon(oncomplete = function () {}) {
          labelLinked: pkm.title,
          evolutions: parseMovesFromString(pkm.field_evolutions),
          unavailable: pkm.unavailable,
-         rarity: LegendaryPokemon.includes(pkm.name)
+         rarity: LegendaryPokemon.includes(
+            pkm.title_1.toLowerCase().replace("&#039;", "'"),
+         )
             ? "POKEMON_RARITY_LEGENDARY"
-            : MythicalPokemon.includes(pkm.name)
+            : MythicalPokemon.includes(
+                 pkm.title_1.toLowerCase().replace("&#039;", "'"),
+              )
             ? "POKEMON_RARITY_MYTHIC"
             : undefined,
       }))
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
    Data.Pokemon.sorted = true;
+   requiredJSONStatus.Pokemon = 2;
 
    return oncomplete();
+}
+
+/**
+ * Attach raid boss info to each Pokemon.
+ */
+function attachRaidbossInfo() {
+   for (let boss of Data.RaidBosses) {
+      let pkm = GM.get("pokemon", boss.name.toLowerCase().trim());
+      if (pkm) {
+         pkm.raidMarker = "";
+         pkm.raidMarker += boss.tier;
+         pkm.raidMarker +=
+            boss.future || boss.legacy || boss.special ? "" : " current";
+         pkm.raidMarker += boss.future ? " future" : "";
+         pkm.raidMarker += boss.legacy ? " legacy" : "";
+         pkm.raidMarker += boss.special ? " special" : "";
+      }
+   }
+}
+
+/**
+ * Attach alternative form info to each Pokemon.
+ */
+function attachPokemonForm() {
+   for (let pkm of Data.PokemonForms) {
+      let pkm2 = getEntry(pkm.name, Data.Pokemon);
+      if (pkm2) {
+         pkm2.icon = pkm.icon;
+      } else {
+         insertEntry({ ...pkm, fastMoves: [], chargedMoves: [] }, Data.Pokemon);
+      }
+   }
 }
 
 // function fetchPokemon(oncomplete) {
