@@ -33,6 +33,8 @@ export enum BlockType {
    TwoColumn = "two-column",
    CodeBlock = "code-block",
    InlineAd = "inline-ad",
+   InfoBox = "info-box",
+   InfoBoxItem = "info-box-item",
 }
 
 export type TextBlock =
@@ -54,7 +56,19 @@ export type ParagraphElement = BlockElement & {
 
 export type CodeBlockElement = BlockElement & {
    type: BlockType.CodeBlock;
-   value: string;
+   value?: string;
+};
+
+export type InfoBoxElement = {
+   id: string;
+   type: BlockType.InfoBox;
+   children: [InfoBoxItemElement];
+};
+
+export type InfoBoxItemElement = BlockElement & {
+   type: BlockType.InfoBoxItem;
+   infoBoxLeftContent?: [Descendant];
+   infoBoxRightContent?: [Descendant];
 };
 
 export type InlineAdElement = BlockElement & {
@@ -196,7 +210,9 @@ export type CustomElement =
    | EventItemElement
    | TwoColumnElement
    | CodeBlockElement
-   | InlineAdElement;
+   | InlineAdElement
+   | InfoBoxElement
+   | InfoBoxItemElement;
 
 export type CustomText = {
    text: string;
@@ -205,6 +221,13 @@ export type CustomText = {
    italic?: boolean;
    underline?: boolean;
    strikeThrough?: boolean;
+   small?: boolean;
+   color?: string;
 };
 
-export type Format = "bold" | "underline" | "strikeThrough" | "italic";
+export type Format =
+   | "bold"
+   | "underline"
+   | "strikeThrough"
+   | "italic"
+   | "small";
