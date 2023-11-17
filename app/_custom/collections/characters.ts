@@ -133,6 +133,29 @@ export const Characters: CollectionConfig = {
          ],
       },
       {
+         name: "skills",
+         type: "array",
+         fields: [
+            {
+               name: "skill",
+               type: "relationship",
+               relationTo: "skills",
+            },
+            {
+               name: "skill_type",
+               type: "text",
+            },
+            {
+               name: "unlock_condition",
+               type: "number",
+            },
+            {
+               name: "break_stage",
+               type: "number",
+            },
+         ],
+      },
+      {
          name: "factory_skills",
          type: "array",
          fields: [
