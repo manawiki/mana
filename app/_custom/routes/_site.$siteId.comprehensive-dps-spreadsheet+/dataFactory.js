@@ -23,64 +23,64 @@ GM.fetch = function (kwargs) {
          return fetchPokemon(kwargs.complete);
       } else if (dbname == "move" || dbname == "moves") {
          return fetchMoves(kwargs.complete);
-      } else if (dbname == "user") {
-         return fetchUser(kwargs.complete, kwargs.userid);
+         // } else if (dbname == "user") {
+         //    return fetchUser(kwargs.complete, kwargs.userid);
       }
    }
 
-   fetchLocalData();
+   // fetchLocalData();
 
-   function oncompleteWrapper() {
-      for (var json_name in requiredJSONStatus) {
-         if (requiredJSONStatus[json_name] != 2) return;
-      }
-      attachRaidbossInfo();
-      for (let pkm of Data.PokemonForms) {
-         var pkm2 = getEntry(pkm.name, Data.Pokemon);
-         if (pkm2) {
-            pkm2.icon = pkm.icon;
-         } else {
-            pkm = JSON.parse(JSON.stringify(pkm));
-            pkm.fastMoves = [];
-            pkm.chargedMoves = [];
-            insertEntry(pkm, Data.Pokemon);
-         }
-      }
-      for (let user of Data.Users) {
-         user.box = parseUserPokebox(user.box);
-      }
+   // function oncompleteWrapper() {
+   //    for (var json_name in requiredJSONStatus) {
+   //       if (requiredJSONStatus[json_name] != 2) return;
+   //    }
+   //    attachRaidbossInfo();
+   //    for (let pkm of Data.PokemonForms) {
+   //       var pkm2 = getEntry(pkm.name, Data.Pokemon);
+   //       if (pkm2) {
+   //          pkm2.icon = pkm.icon;
+   //       } else {
+   //          pkm = JSON.parse(JSON.stringify(pkm));
+   //          pkm.fastMoves = [];
+   //          pkm.chargedMoves = [];
+   //          insertEntry(pkm, Data.Pokemon);
+   //       }
+   //    }
+   //    for (let user of Data.Users) {
+   //       user.box = parseUserPokebox(user.box);
+   //    }
 
-      for (let pokemon of LocalData.Pokemon) {
-         insertEntry(pokemon, Data.Pokemon);
-      }
-      for (let move of LocalData.FastMoves) {
-         insertEntry(move, Data.FastMoves);
-      }
-      for (let move of LocalData.ChargedMoves) {
-         insertEntry(move, Data.ChargedMoves);
-      }
-      for (var param in LocalData.BattleSettings) {
-         Data.BattleSettings[param] = LocalData.BattleSettings[param];
-      }
+   //    for (let pokemon of LocalData.Pokemon) {
+   //       insertEntry(pokemon, Data.Pokemon);
+   //    }
+   //    for (let move of LocalData.FastMoves) {
+   //       insertEntry(move, Data.FastMoves);
+   //    }
+   //    for (let move of LocalData.ChargedMoves) {
+   //       insertEntry(move, Data.ChargedMoves);
+   //    }
+   //    for (var param in LocalData.BattleSettings) {
+   //       Data.BattleSettings[param] = LocalData.BattleSettings[param];
+   //    }
 
-      manuallyModifyData(Data);
+   //    manuallyModifyData(Data);
 
-      if (kwargs.complete) {
-         kwargs.complete();
-      }
-   }
+   //    if (kwargs.complete) {
+   //       kwargs.complete();
+   //    }
+   // }
 
-   fetchLevelSettings(oncompleteWrapper);
-   fetchPokemonForms(oncompleteWrapper);
-   fetchMoves(oncompleteWrapper);
-   fetchRaidBosses(oncompleteWrapper);
-   fetchPokemon(oncompleteWrapper);
+   fetchLevelSettings();
+   fetchPokemonForms();
+   fetchMoves();
+   fetchRaidBosses();
+   fetchPokemon();
    attachRaidbossInfo();
    attachPokemonForm();
 
-   if (window.userID2 && window.userID2 != "0") {
-      fetchUser(null, window.userID2);
-   }
+   // if (window.userID2 && window.userID2 != "0") {
+   //    fetchUser(null, window.userID2);
+   // }
 };
 
 /**
@@ -179,19 +179,19 @@ GM.select = function (nameDb, query, pokemonInstance) {
  * @param {GMeachCallback} cackbankfn The callback function that accepts one parameter.
  */
 GM.each = function (nameDb, cackbankfn) {
-   var db = getDatabaseByName(nameDb);
+   let db = getDatabaseByName(nameDb);
    if (Array.isArray(db)) {
-      for (var i = 0; i < db.length; i++) {
-         var ret = cackbankfn(db[i], i);
+      for (let i = 0; i < db.length; i++) {
+         let ret = cackbankfn(db[i], i);
          if (ret !== undefined) {
-            dt[i] = ret;
+            db[i] = ret;
          }
       }
    } else if (db) {
-      for (var k in db) {
-         var ret = cackbankfn(db[k], k);
+      for (let k in db) {
+         let ret = cackbankfn(db[k], k);
          if (ret !== undefined) {
-            dt[k] = ret;
+            db[k] = ret;
          }
       }
    }
@@ -220,7 +220,7 @@ GM.save = function () {
  */
 GM.convert = function (src) {
    src = src || Data;
-   var dst = {};
+   let dst = {};
 
    // CPMultipliers
    if (src.LevelSettings) {
@@ -236,9 +236,9 @@ GM.convert = function (src) {
    dst.PvEMoves = [];
    dst.PvPMoves = [];
    if (src.FastMoves) {
-      for (var i = 0; i < src.FastMoves.length; ++i) {
-         var move = src.FastMoves[i];
-         var pve_move = {
+      for (let i = 0; i < src.FastMoves.length; ++i) {
+         let move = src.FastMoves[i];
+         let pve_move = {
             movetype: "fast",
             name: move.name,
             pokeType: move.pokeType,
@@ -249,7 +249,7 @@ GM.convert = function (src) {
             icon: move.icon,
             label: move.label,
          };
-         var pvp_move = {
+         let pvp_move = {
             movetype: "fast",
             name: move.name,
             pokeType: move.pokeType,
@@ -264,9 +264,9 @@ GM.convert = function (src) {
       }
    }
    if (src.ChargedMoves) {
-      for (var i = 0; i < src.ChargedMoves.length; ++i) {
-         var move = src.ChargedMoves[i];
-         var pve_move = {
+      for (let i = 0; i < src.ChargedMoves.length; ++i) {
+         let move = src.ChargedMoves[i];
+         let pve_move = {
             movetype: "charged",
             name: move.name,
             pokeType: move.pokeType,
@@ -277,7 +277,7 @@ GM.convert = function (src) {
             icon: move.icon,
             label: move.label,
          };
-         var pvp_move = {
+         let pvp_move = {
             movetype: "charged",
             name: move.name,
             pokeType: move.pokeType,
@@ -298,7 +298,7 @@ GM.convert = function (src) {
 
       // WeatherSettings
       dst.WeatherSettings = {};
-      for (var t in src.BattleSettings.TypeBoostedWeather) {
+      for (let t in src.BattleSettings.TypeBoostedWeather) {
          let w = src.BattleSettings.TypeBoostedWeather[t];
          if (dst.WeatherSettings[w] == undefined) {
             dst.WeatherSettings[w] = [];
@@ -974,7 +974,8 @@ var Mods = [
                pokemon.chargedMoves.length == 0
             ) {
                let forme = getEntry(pokemon.name, Data.PokemonForms) || {};
-               $.extend(pokemon, forme);
+               // $.extend(pokemon, forme);
+               pokemon = { ...pokemon, ...forme };
             }
          }
       },
@@ -1169,7 +1170,7 @@ function getAllEvolutions(name) {
    var evolutions = [name],
       pkm = getEntry(name, Data.Pokemon);
    if (pkm) {
-      for (evo of pkm.evolutions) {
+      for (let evo of pkm.evolutions) {
          evolutions = evolutions.concat(getAllEvolutions(evo));
       }
    }
@@ -1248,7 +1249,8 @@ function parseUserPokebox(data) {
          uid: data[i].uid,
       };
       let species = getEntry(pkm.name, Data.Pokemon) || {};
-      $.extend(pkm, species);
+      // $.extend(pkm, species);
+      pkm = { ...pkm, ...species };
       pkm.nid = data[i].nid;
       pkm.label = pkm.nickname;
       pkm.labelLinked = data[i].labelLinked;
@@ -1257,10 +1259,10 @@ function parseUserPokebox(data) {
    if (missingRequiredFields.length > 0) {
       var missingMsg =
          "The following pokemon are missing a fast and/or charge move and will be excluded: ";
-      for (var i = 0; i < missingRequiredFields.length; i++) {
+      for (let i = 0; i < missingRequiredFields.length; i++) {
          missingMsg += "<br/>" + missingRequiredFields[i].labelLinked;
       }
-      UI.sendFeedbackDialog(missingMsg, "Missing Data", null, true);
+      // UI.sendFeedbackDialog(missingMsg, "Missing Data", null, true);
    }
    return box;
 }
@@ -1533,78 +1535,78 @@ function fetchMoves(oncomplete = function () {}) {
  * @param {function} oncomplete The callback after the fetching is complete.
  * @param {string} userid The user id of the user to fetch.
  */
-function fetchUser(oncomplete, userid) {
-   userid = userid || "";
-   var box_fetched = false,
-      parties_fetched = false;
-   var user = {
-      name: userid,
-      uid: userid,
-      box: [],
-      parties: [],
-   };
+// function fetchUser(oncomplete, userid) {
+//    userid = userid || "";
+//    var box_fetched = false,
+//       parties_fetched = false;
+//    var user = {
+//       name: userid,
+//       uid: userid,
+//       box: [],
+//       parties: [],
+//    };
 
-   function linkPokemon() {
-      for (let party of user.parties) {
-         party.pokemon = [];
-         for (let nid of party.pokemon_nids) {
-            for (let pkm of user.box) {
-               if ((pkm.nid = nid.trim())) {
-                  party.pokemon.push(pkm);
-                  break;
-               }
-            }
-         }
-      }
-   }
+//    function linkPokemon() {
+//       for (let party of user.parties) {
+//          party.pokemon = [];
+//          for (let nid of party.pokemon_nids) {
+//             for (let pkm of user.box) {
+//                if ((pkm.nid = nid.trim())) {
+//                   party.pokemon.push(pkm);
+//                   break;
+//                }
+//             }
+//          }
+//       }
+//    }
 
-   // Fetch box
-   $.ajax({
-      url:
-         "/pokemongo/user-pokemon-json-list?_format=json&new&uid_raw=" + userid,
-      dataType: "json",
-      success: function (data) {
-         for (let pokemon of data) {
-            pokemon.labelLinked = pokemon.title;
-            pokemon.uid = userid;
-         }
-         user.box = parseUserPokebox(data);
-         box_fetched = true;
-         if (parties_fetched) {
-            linkPokemon();
-            insertEntry(user, Data.Users);
-            if (oncomplete) oncomplete();
-         }
-         $("#ui-use-box-checkbox").checkboxradio({
-            disabled: false,
-         });
-      },
-   });
-   // Fetch parties
-   $.ajax({
-      url: "/pokemongo/user-pokemon-team?_format=json&uid=" + userid,
-      dataType: "json",
-      success: function (data) {
-         user.parties = [];
-         for (var i = 0; i < data.length; i++) {
-            var party = {
-               name: data[i].title,
-               label: data[i].title,
-               isLocal: false,
-               pokemon_nids: data[i].team_nids.split(","),
-            };
-            user.parties.push(party);
-         }
-         user.parties.sort((a, b) => (a.name < b.name ? -1 : 1));
-         parties_fetched = true;
-         if (box_fetched) {
-            linkPokemon();
-            insertEntry(user, Data.Users);
-            if (oncomplete) oncomplete();
-         }
-      },
-   });
-}
+//    // Fetch box
+//    $.ajax({
+//       url:
+//          "/pokemongo/user-pokemon-json-list?_format=json&new&uid_raw=" + userid,
+//       dataType: "json",
+//       success: function (data) {
+//          for (let pokemon of data) {
+//             pokemon.labelLinked = pokemon.title;
+//             pokemon.uid = userid;
+//          }
+//          user.box = parseUserPokebox(data);
+//          box_fetched = true;
+//          if (parties_fetched) {
+//             linkPokemon();
+//             insertEntry(user, Data.Users);
+//             if (oncomplete) oncomplete();
+//          }
+//          $("#ui-use-box-checkbox").checkboxradio({
+//             disabled: false,
+//          });
+//       },
+//    });
+//    // Fetch parties
+//    $.ajax({
+//       url: "/pokemongo/user-pokemon-team?_format=json&uid=" + userid,
+//       dataType: "json",
+//       success: function (data) {
+//          user.parties = [];
+//          for (var i = 0; i < data.length; i++) {
+//             var party = {
+//                name: data[i].title,
+//                label: data[i].title,
+//                isLocal: false,
+//                pokemon_nids: data[i].team_nids.split(","),
+//             };
+//             user.parties.push(party);
+//          }
+//          user.parties.sort((a, b) => (a.name < b.name ? -1 : 1));
+//          parties_fetched = true;
+//          if (box_fetched) {
+//             linkPokemon();
+//             insertEntry(user, Data.Users);
+//             if (oncomplete) oncomplete();
+//          }
+//       },
+//    });
+// }
 
 /**
  * Fetch user local data, including customed Pokemon/Moves
