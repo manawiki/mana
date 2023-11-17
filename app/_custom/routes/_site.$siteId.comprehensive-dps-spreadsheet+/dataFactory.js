@@ -1454,7 +1454,7 @@ function fetchPokemon(oncomplete = function () {}) {
             ? "POKEMON_RARITY_LEGENDARY"
             : MythicalPokemon.includes(pkm.name)
             ? "POKEMON_RARITY_MYTHIC"
-            : "",
+            : undefined,
       }))
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
