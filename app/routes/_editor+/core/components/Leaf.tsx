@@ -16,5 +16,13 @@ export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
       children = <del>{children}</del>;
    }
 
+   if (leaf.small) {
+      children = <small>{children}</small>;
+   }
+
+   if (leaf.color) {
+      children = <span className={leaf.color}>{children}</span>;
+   }
+
    return <span {...attributes}>{children}</span>;
 }

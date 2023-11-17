@@ -1,23 +1,29 @@
 import { useEffect, useRef } from "react";
 
 import { FloatingDelayGroup } from "@floating-ui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import { createPortal } from "react-dom";
-import {
-   Editor,
-   Path,
-   Range,
-   Transforms,
-   Element as SlateElement,
-} from "slate";
+import { Editor, Range, Transforms, Element as SlateElement } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
 import Button from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement, LinkElement, TextBlock } from "../types";
+import type { LinkElement } from "../types";
 import { BlockType } from "../types";
-import { toggleMark, topLevelPath } from "../utils";
+import { toggleMark } from "../utils";
+
+export const COLORS = [
+   "text-zinc-500",
+   "text-red-500",
+   "text-orange-500",
+   "text-yellow-500",
+   "text-green-500",
+   "text-blue-500",
+   "text-violet-500",
+   "text-pink-500",
+];
 
 export function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);
@@ -209,6 +215,64 @@ export function Toolbar() {
                         </TooltipTrigger>
                         <TooltipContent>Toggle Bold</TooltipContent>
                      </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger>
+                           <Button
+                              ariaLabel="Toggle Bold"
+                              onPointerDown={(e) => e.preventDefault()}
+                              onClick={() => toggleMark(editor, "small")}
+                              className={`${
+                                 marks && marks["small"] === true
+                                    ? "bg-zinc-200 dark:bg-dark500"
+                                    : ""
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                           >
+                              <Icon name="type" size={14} />
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Toggle Small</TooltipContent>
+                     </Tooltip>
+                     {/* <Listbox value={marks && marks["color"]}>
+                        <Listbox.Button className="hidden h-3 w-3 items-center justify-center rounded-full focus:outline-none group-hover:flex absolute right-1 top-1">
+                           <div
+                              style={{
+                                 backgroundColor: marks["color"] ?? "",
+                              }}
+                              className="h-3 w-3 rounded-full"
+                           />
+                        </Listbox.Button>
+                        <Transition
+                           enter="transition duration-100 ease-out"
+                           enterFrom="transform scale-95 opacity-0"
+                           enterTo="transform scale-100 opacity-100"
+                           leave="transition duration-75 ease-out"
+                           leaveFrom="transform scale-100 opacity-100"
+                           leaveTo="transform scale-95 opacity-0"
+                        >
+                           <Listbox.Options
+                              className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
+                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
+                           >
+                              {COLORS?.map((color: string, rowIdx: number) => (
+                                 <Listbox.Option
+                                    className="flex items-center justify-center"
+                                    key={rowIdx}
+                                    value={color}
+                                 >
+                                    <button
+                                       type="button"
+                                       onClick={() => toggleMark(editor, color)}
+                                       className="h-3.5 w-3.5 rounded-full"
+                                       key={color}
+                                       style={{
+                                          backgroundColor: color,
+                                       }}
+                                    ></button>
+                                 </Listbox.Option>
+                              ))}
+                           </Listbox.Options>
+                        </Transition>
+                     </Listbox> */}
                      <Tooltip>
                         <TooltipTrigger>
                            <Button

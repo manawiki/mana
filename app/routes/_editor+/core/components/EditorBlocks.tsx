@@ -18,6 +18,7 @@ import {
    BlockGroupView,
 } from "../../$siteId.blocks+/group/group-view";
 import { BlockImage } from "../../$siteId.blocks+/image";
+import { BlockInfoBox, BlockInfoBoxItem } from "../../$siteId.blocks+/infobox";
 import { BlockInlineAd } from "../../$siteId.blocks+/inline-ad";
 import { BlockLink } from "../../$siteId.blocks+/link/_link";
 import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
@@ -72,6 +73,7 @@ export function EditorBlocks({
          );
       }
       case BlockType.TabsItem: {
+         //@ts-ignore
          return <BlockTabsItem element={element} children={children} />;
       }
       case BlockType.TwoColumn: {
@@ -96,6 +98,25 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.InfoBox: {
+         return (
+            <BlockInfoBox
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.InfoBoxItem: {
+         return (
+            <BlockInfoBoxItem
+               readOnly={readOnly}
+               element={element}
                {...attributes}
             />
          );
