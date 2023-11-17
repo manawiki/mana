@@ -1602,7 +1602,7 @@ function fetchMoves(oncomplete = function () {}) {
             target_defense_stage_delta: subj_targ && stat_def ? stage_delta : 0,
          };
       }
-      return {};
+      return "";
    }
 
    let moves = moveData.map((move) => ({
@@ -1611,59 +1611,47 @@ function fetchMoves(oncomplete = function () {}) {
       label: toTitleCase(move.title),
       labelLinked: move.title_linked,
       icon: getTypeIcon(move.move_type),
-      move_category: move.move_category,
-      power: 0,
-      dws: 0,
-      duration: 0,
-      energyDelta: 0,
-      effect: "",
+      power: parseInt(move.power),
+      dws: parseFloat(move.damage_window.split(" ")[0]) * 1000 || 0,
+      duration: parseFloat(move.cooldown) * 1000,
+      energyDelta:
+         move.move_category == "Fast Move"
+            ? Math.abs(parseInt(move.energy_gain))
+            : -Math.abs(parseInt(move.energy_cost)),
+      effect: parseMoveEffect(move),
       regular: {
          power: parseInt(move.power),
          dws: parseFloat(move.damage_window.split(" ")[0]) * 1000 || 0,
          duration: parseFloat(move.cooldown) * 1000,
-         energyDelta: 0,
+         energyDelta:
+            move.move_category == "Fast Move"
+               ? Math.abs(parseInt(move.energy_gain))
+               : -Math.abs(parseInt(move.energy_cost)),
       },
-      combat: {
-         power: 0,
-
-         dws: 0,
-         duration: 0,
-         energyDelta: 0,
-      },
-      ...parseMoveEffect(move),
+      combat:
+         move.move_category === "Fast Move"
+            ? {
+                 power: parseInt(move.pvp_fast_power),
+                 dws: 0,
+                 duration: parseInt(move.pvp_fast_duration) + 1,
+                 energyDelta: parseInt(move.pvp_fast_energy),
+              }
+            : {
+                 power: parseInt(move.pvp_charge_damage),
+                 dws: 0,
+                 duration: 0,
+                 energyDelta: parseInt(move.pvp_charge_energy),
+              },
+      moveType: move.move_category === "Fast Move" ? "fast" : "charged",
    }));
 
    // moves could be fast or charged
    Data.FastMoves = moves
-      .filter((move) => move.move_category == "Fast Move")
-      .map((move) => ({
-         ...move,
-         moveType: "fast",
-         ...move.regular,
-         energyDelta: Math.abs(parseInt(move.energy_gain)),
-         combat: {
-            ...move.combat,
-            power: parseInt(move.pvp_fast_power),
-            energyDelta: parseInt(move.pvp_fast_energy),
-
-            duration: parseInt(move.pvp_fast_duration) + 1,
-         },
-      }))
+      .filter((move) => move.moveType == "fast")
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
    Data.ChargedMoves = moves
-      .filter((move) => move.move_category == "Charged Move")
-      .map((move) => ({
-         ...move,
-         moveType: "charged",
-         ...move.regular,
-         energyDelta: -Math.abs(parseInt(move.energy_cost)),
-         combat: {
-            ...move.combat,
-            power: parseInt(move.pvp_charge_damage),
-            energyDelta: parseInt(move.pvp_charge_energy),
-         },
-      }))
+      .filter((move) => move.moveType == "charged")
       .sort((a, b) => (a.name < b.name ? -1 : 1));
 
    //   for (var a in move.regular) {
