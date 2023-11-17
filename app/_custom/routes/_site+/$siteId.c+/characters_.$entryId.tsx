@@ -17,6 +17,8 @@ import { Characters } from "../../../collections/characters";
 
 // Custom Component Imports
 import { Main } from "~/_custom/components/characters/Main";
+import { Skills } from "~/_custom/components/characters/Skills";
+import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -40,12 +42,14 @@ export async function loader({
 
 const SECTIONS = {
    main: Main,
+   skills: Skills,
+   gallery: ImageGallery,
 };
 
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const char = entry?.data?.Character as CharacterType;
-   console.log(char);
+   // console.log(char);
 
    return <Entry customComponents={SECTIONS} customData={char} />;
 }
@@ -104,6 +108,24 @@ const QUERY = gql`
                }
             }
             values
+         }
+         skills {
+            skill {
+               id
+               name
+               icon {
+                  url
+               }
+               icon_bg_type
+               levels {
+                  level
+                  description
+                  cost_val
+                  cool_down
+                  max_charge_time
+                  blackboard
+               }
+            }
          }
       }
    }
