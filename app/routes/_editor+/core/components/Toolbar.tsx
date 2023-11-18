@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 
-import { FloatingDelayGroup } from "@floating-ui/react";
-import { Listbox, Transition } from "@headlessui/react";
-import { createPortal } from "react-dom";
+import { FloatingDelayGroup, FloatingPortal } from "@floating-ui/react";
+import { Listbox } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
+import clsx from "clsx";
 import { Editor, Range, Transforms, Element as SlateElement } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
@@ -15,14 +16,86 @@ import { BlockType } from "../types";
 import { toggleMark } from "../utils";
 
 export const COLORS = [
-   "text-zinc-500",
-   "text-red-500",
-   "text-orange-500",
-   "text-yellow-500",
-   "text-green-500",
-   "text-blue-500",
-   "text-violet-500",
-   "text-pink-500",
+   {
+      id: "grayBG",
+      type: "bg",
+      twClass: "bg-zinc-400 dark:bg-zinc-700 text-white",
+   },
+   {
+      id: "redBG",
+      type: "bg",
+      twClass: "bg-red-400 dark:bg-red-700/50 text-white",
+   },
+   {
+      id: "orangeBG",
+      type: "bg",
+      twClass: "bg-orange-400 dark:bg-orange-700/50 text-white",
+   },
+   {
+      id: "yellowBG",
+      type: "bg",
+      twClass: "bg-yellow-400 dark:bg-yellow-700/50 text-white",
+   },
+   {
+      id: "greenBG",
+      type: "bg",
+      twClass: "bg-green-400 dark:bg-green-700/50 text-white",
+   },
+   {
+      id: "blueBG",
+      type: "bg",
+      twClass: "bg-blue-400 dark:bg-blue-700/50 text-white",
+   },
+   {
+      id: "violetBG",
+      type: "bg",
+      twClass: "bg-violet-400 dark:bg-violet-700/50 text-white",
+   },
+   {
+      id: "pinkBG",
+      type: "bg",
+      twClass: "bg-pink-400 dark:bg-pink-700/50 text-white",
+   },
+   {
+      id: "grayText",
+      type: "text",
+      twClass: "text-zinc-500",
+   },
+   {
+      id: "redText",
+      type: "text",
+      twClass: "text-red-500",
+   },
+   {
+      id: "orangeText",
+      type: "text",
+      twClass: "text-orange-500",
+   },
+   {
+      id: "yellowText",
+      type: "text",
+      twClass: "text-yellow-500",
+   },
+   {
+      id: "greenText",
+      type: "text",
+      twClass: "text-green-500",
+   },
+   {
+      id: "blueText",
+      type: "text",
+      twClass: "text-blue-500",
+   },
+   {
+      id: "violetText",
+      type: "text",
+      twClass: "text-violet-500",
+   },
+   {
+      id: "pinkText",
+      type: "text",
+      twClass: "text-pink-500",
+   },
 ];
 
 export function Toolbar() {
@@ -121,18 +194,19 @@ export function Toolbar() {
    const marks = Editor.marks(editor);
 
    if (typeof document !== "undefined") {
-      return createPortal(
-         <div
-            ref={ref}
-            className="border-color-sub shadow-1 bg-2-sub -mt-12 z-50
+      return (
+         <FloatingPortal>
+            <div
+               ref={ref}
+               className="border-color-sub shadow-1 bg-2-sub -mt-12 z-50
             rounded-xl border px-2 py-1.5 hidden shadow-lg"
-            onMouseDown={(e) => {
-               // prevent toolbar from taking focus away from editor
-               e.preventDefault();
-            }}
-         >
-            <section className="flex items-center gap-2">
-               {/* {type && (
+               onMouseDown={(e) => {
+                  // prevent toolbar from taking focus away from editor
+                  e.preventDefault();
+               }}
+            >
+               <section className="flex items-center gap-2">
+                  {/* {type && (
                   <>
                      <div>
                         <Select
@@ -170,13 +244,11 @@ export function Toolbar() {
                   </>
                )} */}
 
-               <div className="flex items-center gap-1">
-                  <FloatingDelayGroup delay={{ open: 1000 }}>
-                     {!isLinkActive(editor) && (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <Button
-                                 ariaLabel="Add Link"
+                  <div className="flex items-center gap-1">
+                     <FloatingDelayGroup delay={{ open: 1000 }}>
+                        {!isLinkActive(editor) && (
+                           <Tooltip>
+                              <TooltipTrigger
                                  onPointerDown={(e) => e.preventDefault()}
                                  onClick={(e) => {
                                     e.preventDefault();
@@ -193,15 +265,12 @@ export function Toolbar() {
                                  } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                               >
                                  <Icon name="link-2" size={14} />
-                              </Button>
-                           </TooltipTrigger>
-                           <TooltipContent>Add Link</TooltipContent>
-                        </Tooltip>
-                     )}
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Bold"
+                              </TooltipTrigger>
+                              <TooltipContent>Add Link</TooltipContent>
+                           </Tooltip>
+                        )}
+                        <Tooltip>
+                           <TooltipTrigger
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() => toggleMark(editor, "bold")}
                               className={`${
@@ -211,14 +280,11 @@ export function Toolbar() {
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
                               <Icon name="bold" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Bold</TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Bold"
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Bold</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() => toggleMark(editor, "small")}
                               className={`${
@@ -228,55 +294,11 @@ export function Toolbar() {
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
                               <Icon name="type" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Small</TooltipContent>
-                     </Tooltip>
-                     {/* <Listbox value={marks && marks["color"]}>
-                        <Listbox.Button className="hidden h-3 w-3 items-center justify-center rounded-full focus:outline-none group-hover:flex absolute right-1 top-1">
-                           <div
-                              style={{
-                                 backgroundColor: marks["color"] ?? "",
-                              }}
-                              className="h-3 w-3 rounded-full"
-                           />
-                        </Listbox.Button>
-                        <Transition
-                           enter="transition duration-100 ease-out"
-                           enterFrom="transform scale-95 opacity-0"
-                           enterTo="transform scale-100 opacity-100"
-                           leave="transition duration-75 ease-out"
-                           leaveFrom="transform scale-100 opacity-100"
-                           leaveTo="transform scale-95 opacity-0"
-                        >
-                           <Listbox.Options
-                              className="border-color-sub text-1 bg-3-sub shadow-1 absolute -top-4 right-7 z-30 flex min-w-[100px]
-                           items-center justify-center gap-2 rounded-full border p-2 shadow-sm"
-                           >
-                              {COLORS?.map((color: string, rowIdx: number) => (
-                                 <Listbox.Option
-                                    className="flex items-center justify-center"
-                                    key={rowIdx}
-                                    value={color}
-                                 >
-                                    <button
-                                       type="button"
-                                       onClick={() => toggleMark(editor, color)}
-                                       className="h-3.5 w-3.5 rounded-full"
-                                       key={color}
-                                       style={{
-                                          backgroundColor: color,
-                                       }}
-                                    ></button>
-                                 </Listbox.Option>
-                              ))}
-                           </Listbox.Options>
-                        </Transition>
-                     </Listbox> */}
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Italic"
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Small</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() => toggleMark(editor, "italic")}
                               className={`${
@@ -286,31 +308,28 @@ export function Toolbar() {
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
                               <Icon name="italic" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Italic</TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Underline"
-                              onPointerDown={(e) => e.preventDefault()}
-                              onClick={() => toggleMark(editor, "underline")}
-                              className={`${
-                                 marks && marks["underline"] === true
-                                    ? "bg-zinc-200 dark:bg-dark500"
-                                    : ""
-                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
-                           >
-                              <Icon name="underline" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Underline</TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Strikethrough"
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Italic</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger>
+                              <Button
+                                 ariaLabel="Toggle Underline"
+                                 onPointerDown={(e) => e.preventDefault()}
+                                 onClick={() => toggleMark(editor, "underline")}
+                                 className={`${
+                                    marks && marks["underline"] === true
+                                       ? "bg-zinc-200 dark:bg-dark500"
+                                       : ""
+                                 } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                              >
+                                 <Icon name="underline" size={14} />
+                              </Button>
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Underline</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                           <TooltipTrigger
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() =>
                                  toggleMark(editor, "strikeThrough")
@@ -322,23 +341,50 @@ export function Toolbar() {
                               } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
                            >
                               <Icon name="strikethrough" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Strikethrough</TooltipContent>
-                     </Tooltip>
-                  </FloatingDelayGroup>
-               </div>
-            </section>
-            {isLinkActive(editor) ? (
-               <section className="bg-3 mt-1.5 flex items-center gap-3 truncate rounded-md px-2">
-                  <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
-                     {activeLinkUrl(editor)}
-                  </span>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Strikethrough</TooltipContent>
+                        </Tooltip>
+                        <div
+                           className="border-color-sub text-1 bg-3-sub shadow-1 
+                                 absolute -top-12 right-7 z-30 min-w-[100px] grid grid-cols-8
+                                 items-center justify-center gap-2 rounded-lg border p-2 shadow-sm"
+                        >
+                           {COLORS?.map((color, rowIdx: number) => (
+                              <button
+                                 key={rowIdx}
+                                 type="button"
+                                 onPointerDown={(e) => e.preventDefault()}
+                                 onClick={() => toggleMark(editor, color.id)}
+                                 className={clsx(
+                                    color.twClass,
+                                    "h-3.5 w-3.5 rounded-full flex items-center justify-center",
+                                 )}
+                              >
+                                 {color.type == "text" && (
+                                    <Icon name="type" size={14} />
+                                 )}
+                              </button>
+                           ))}
+                        </div>
+                        <Tooltip placement="bottom">
+                           <TooltipTrigger
+                              onPointerDown={(e) => e.preventDefault()}
+                           >
+                              <div className="h-3.5 w-3.5 rounded-full bg-zinc-500" />
+                           </TooltipTrigger>
+                           <TooltipContent>Show Color Options</TooltipContent>
+                        </Tooltip>
+                     </FloatingDelayGroup>
+                  </div>
+               </section>
+               {isLinkActive(editor) ? (
+                  <section className="bg-3 mt-1.5 flex items-center gap-3 truncate rounded-md px-2">
+                     <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
+                        {activeLinkUrl(editor)}
+                     </span>
+                     <Tooltip>
+                        <TooltipTrigger
                            className="flex items-center p-1"
-                           ariaLabel="Remove Link"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
                               if (isLinkActive(editor)) {
@@ -351,15 +397,12 @@ export function Toolbar() {
                               className="text-red-400"
                               size={16}
                            />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Remove Link</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
+                        </TooltipTrigger>
+                        <TooltipContent>Remove Link</TooltipContent>
+                     </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger
                            className="flex items-center p-1"
-                           ariaLabel="Update Link"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
                               e.preventDefault();
@@ -375,14 +418,13 @@ export function Toolbar() {
                               className="text-blue-400"
                               size={14}
                            />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Update Link</TooltipContent>
-                  </Tooltip>
-               </section>
-            ) : null}
-         </div>,
-         document.body,
+                        </TooltipTrigger>
+                        <TooltipContent>Update Link</TooltipContent>
+                     </Tooltip>
+                  </section>
+               ) : null}
+            </div>
+         </FloatingPortal>
       );
    }
 }
