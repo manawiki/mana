@@ -21,3 +21,8 @@ pnpm import_collection_data collection:_stats,filename:_Stat.json,idname:data_ke
 
 # Skills
 pnpm import_collection_data collection:skills,filename:Skill.json,idname:data_key,sync:false,overwrite:false
+
+# Factory Skills
+pnpm import_collection_data collection:factory-skills,filename:FactorySkill.json,idname:data_key,sync:false,overwrite:false
+# _FactorySkillType
+pnpm import_collection_data collection:_factory-skill-types,filename:_FactorySkillType.json,idname:data_key,sync:false,overwrite:false
