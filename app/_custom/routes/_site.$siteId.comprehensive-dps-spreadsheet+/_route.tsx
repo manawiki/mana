@@ -1,20 +1,30 @@
+import { json } from "@remix-run/node";
+import { type LoaderFunctionArgs, useLoaderData } from "@remix-run/react";
+
+import { cacheThis } from "~/utils/cache.server";
+
 import { generateSpreadsheet } from "./calc.js";
-import { GM, Data } from "./dataFactory.js";
+import { GM } from "./dataFactory.js";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
-export function ComprehensiveDpsSpreadsheet() {
+export function loader({ params }: LoaderFunctionArgs) {
    const pokemon = [];
    GM.fetch();
    GM.each("pokemon", function (pkm) {
       pokemon.push(pkm);
    });
 
-   console.log("pokemon: ", pokemon);
+   // console.log("pokemon: ", pokemon);
 
-   const results = generateSpreadsheet(pokemon);
+   const results = cacheThis(() => generateSpreadsheet(pokemon), "pokemon");
 
-   console.log("results: ", results);
+   // console.log("results: ", results);
 
+   return json({ pokemon, results });
+}
+
+export function ComprehensiveDpsSpreadsheet() {
+   const { results } = useLoaderData<typeof loader>();
    return (
       <>
          <Introduction />
