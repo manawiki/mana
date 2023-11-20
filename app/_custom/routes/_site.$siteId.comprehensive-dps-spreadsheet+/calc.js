@@ -8,32 +8,52 @@ var DEFAULT_ATTACKER_LEVEL = 40;
 var DEFAULT_ATTACKER_CPM = 0.7903;
 var DEFAULT_ATTACKER_IVs = [15, 15, 15];
 var DEFAULT_ENEMY_DPS1 = 900;
-var DEFAULT_ENEMY_LEVEL = 40;
-var DEFAULT_ENEMY_CPM = 0.7903;
-var DEFAULT_ENEMY_IVs = [15, 15, 15];
-var DEFAULT_ENEMY_CURRENT_DEFENSE = 160;
-var DEFAULT_ENEMY_POKETYPE1 = "none";
-var DEFAULT_ENEMY_POKETYPE2 = "none";
-var DEFAULT_WEATHER = "EXTREME";
-var DEFAULT_TOTAL_ENERGY_GAINED = 400;
+// var DEFAULT_ENEMY_LEVEL = 40;
+// var DEFAULT_ENEMY_CPM = 0.7903;
+// var DEFAULT_ENEMY_IVs = [15, 15, 15];
+// var DEFAULT_ENEMY_CURRENT_DEFENSE = 160;
+// var DEFAULT_ENEMY_POKETYPE1 = "none";
+// var DEFAULT_ENEMY_POKETYPE2 = "none";
+// var DEFAULT_WEATHER = "EXTREME";
+// var DEFAULT_TOTAL_ENERGY_GAINED = 400;
 
 const LeagueCPCap = 0;
 
-var Context = {
-   weather: DEFAULT_WEATHER,
-   enemy: {},
-   genericEnemy: false,
-   genericEnemyFastMove: false,
-   genericEnemyChargedMove: false,
+// var Context = {
+//    weather: DEFAULT_WEATHER,
+//    enemy: {},
+//    genericEnemy: false,
+//    genericEnemyFastMove: false,
+//    genericEnemyChargedMove: false,
+//    swapDiscount: false,
+//    battleMode: "regular",
+//    allyMega: false,
+//    allyMegaStab: false,
+// };
+
+export const Context = {
+   weather: "EXTREME",
+   enemy: {
+      fastMoves: [],
+      chargedMoves: [],
+      fmove: {},
+      cmove: {},
+      Atk: null,
+      Def: 160,
+      Stm: null,
+      pokeType1: "none",
+      pokeType2: "none",
+      fmoves: [],
+      cmoves: [],
+   },
+   genericEnemy: true,
+   genericEnemyFastMove: true,
+   genericEnemyChargedMove: true,
    swapDiscount: false,
    battleMode: "regular",
    allyMega: false,
    allyMegaStab: false,
 };
-
-function generateSpreadsheet(pokemonCollection) {
-   return pokemonCollection.map((pkm) => calculateRow(pkm));
-}
 
 function damage(dmg_giver, dmg_taker, move, weather) {
    var multipliers = 1;
@@ -65,32 +85,32 @@ function damage(dmg_giver, dmg_taker, move, weather) {
 
 // https://gamepress.gg/pokemongo/how-calculate-comprehensive-dps
 function calculateDPS(pokemon, kwargs) {
-   var x = kwargs.x,
+   let x = kwargs.x,
       y = kwargs.y;
    if (x == undefined || y == undefined) {
-      var intakeProfile = calculateDPSIntake(pokemon, kwargs);
+      let intakeProfile = calculateDPSIntake(pokemon, kwargs);
       x = x == undefined ? intakeProfile.x : x;
       y = y == undefined ? intakeProfile.y : y;
    }
 
-   var FDmg = damage(pokemon, kwargs.enemy, pokemon.fmove, kwargs.weather);
-   var CDmg = damage(pokemon, kwargs.enemy, pokemon.cmove, kwargs.weather);
-   var FE = pokemon.fmove.energyDelta;
-   var CE = -pokemon.cmove.energyDelta;
+   let FDmg = damage(pokemon, kwargs.enemy, pokemon.fmove, kwargs.weather);
+   let CDmg = damage(pokemon, kwargs.enemy, pokemon.cmove, kwargs.weather);
+   let FE = pokemon.fmove.energyDelta;
+   let CE = -pokemon.cmove.energyDelta;
 
    if (kwargs.battleMode != "pvp") {
-      var FDur = pokemon.fmove.duration / 1000;
-      var CDur = pokemon.cmove.duration / 1000;
-      var CDWS = pokemon.cmove.dws / 1000;
+      let FDur = pokemon.fmove.duration / 1000;
+      let CDur = pokemon.cmove.duration / 1000;
+      let CDWS = pokemon.cmove.dws / 1000;
 
       if (CE >= 100) {
          CE = CE + 0.5 * FE + 0.5 * y * CDWS;
       }
 
-      var FDPS = FDmg / FDur;
-      var FEPS = FE / FDur;
-      var CDPS = CDmg / CDur;
-      var CEPS = CE / CDur;
+      let FDPS = FDmg / FDur;
+      let FEPS = FE / FDur;
+      let CDPS = CDmg / CDur;
+      let CEPS = CE / CDur;
 
       pokemon.st = pokemon.Stm / y;
       pokemon.dps =
@@ -114,10 +134,10 @@ function calculateDPS(pokemon, kwargs) {
       }
       return pokemon.dps;
    } else {
-      var FDur = pokemon.fmove.duration * 0.5;
+      let FDur = pokemon.fmove.duration * 0.5;
 
-      var FDPS = FDmg / FDur;
-      var FEPS = FE / FDur;
+      let FDPS = FDmg / FDur;
+      let FEPS = FE / FDur;
 
       pokemon.st = pokemon.Stm / y;
       let modFEPS = Math.max(0, FEPS - x / pokemon.st);
@@ -210,9 +230,9 @@ function calculateDPSIntake(pokemon, kwargs) {
             y: FDmg / (FDur - 2) + ((FE / (FDur - 2)) * CDmg) / CE,
          };
       } else {
-         var FDur = kwargs.enemy.fmove.duration / 1000 + 2;
-         var CDur = kwargs.enemy.cmove.duration / 1000 + 2;
-         var n = Math.max(1, (3 * CE) / 100);
+         let FDur = kwargs.enemy.fmove.duration / 1000 + 2;
+         let CDur = kwargs.enemy.cmove.duration / 1000 + 2;
+         let n = Math.max(1, (3 * CE) / 100);
          return {
             x:
                -pokemon.cmove.energyDelta * 0.5 +
@@ -225,10 +245,10 @@ function calculateDPSIntake(pokemon, kwargs) {
 }
 
 function calculateCP(pkm) {
-   var cpm = parseFloat(pkm.cpm);
-   var atk = pkm.Atk || (pkm.baseAtk + pkm.atkiv) * cpm;
-   var def = pkm.Def || (pkm.baseDef + pkm.defiv) * cpm;
-   var stm = pkm.Stm || (pkm.baseStm + pkm.stmiv) * cpm;
+   let cpm = parseFloat(pkm.cpm);
+   let atk = pkm.Atk || (pkm.baseAtk + pkm.atkiv) * cpm;
+   let def = pkm.Def || (pkm.baseDef + pkm.defiv) * cpm;
+   let stm = pkm.Stm || (pkm.baseStm + pkm.stmiv) * cpm;
    return Math.max(10, Math.floor((atk * Math.sqrt(def * stm)) / 10));
 }
 
@@ -539,7 +559,7 @@ function calculateCP(pkm) {
 //    }
 // }
 
-function calculateRow(pkm) {
+export function calculateRow(pkm) {
    let pkmInstance = { ...pkm };
 
    // user Pokemon
@@ -652,138 +672,133 @@ function createIconLabelSpan(icon, label, className) {
       </span>
    );
 }
-// function generateSpreadsheet(pokemonCollection) {
-//    var Table = $("#ranking_table").DataTable();
-//    Table.clear();
 
-//    let t1 = Date.now(),
-//       t2 = t1;
-//    console.log("Start");
-
-//    applyContext();
-
-//    for (let pkm of pokemonCollection) {
-//       // user Pokemon
-//       if (pkm.uid !== undefined) {
-//          let species = GM.get("pokemon", pkm.name);
-//          if (!species) {
-//             continue;
-//          }
-//          pkm.level = pkm.level;
-//          pkm.cpm = GM.get("level", pkm.level).cpm;
-//          pkm.baseAtk = species.baseAtk;
-//          pkm.baseDef = species.baseDef;
-//          pkm.baseStm = species.baseStm;
-//          pkm.icon = species.icon;
-//       }
-
-//       var fastMoves_all = pkm.fmove
-//          ? [pkm.fmove]
-//          : pkm.fastMoves
-//               .concat(pkm.fastMoves_legacy)
-//               .concat(pkm.fastMoves_exclusive);
-//       var chargedMoves_all = pkm.cmove
-//          ? [pkm.cmove]
-//          : pkm.chargedMoves
-//               .concat(pkm.chargedMoves_legacy)
-//               .concat(pkm.chargedMoves_exclusive);
-//       for (let fmove of fastMoves_all) {
-//          var fmoveInstance = GM.get("fast", fmove);
-//          if (!fmoveInstance) {
-//             continue;
-//          }
-//          for (let cmove of chargedMoves_all) {
-//             var cmoveInstance = GM.get("charged", cmove);
-//             if (!cmoveInstance) {
-//                continue;
-//             }
-
-//             var pkmInstance = {};
-//             $.extend(pkmInstance, pkm);
-
-//             pkmInstance.fmove = fmoveInstance;
-//             pkmInstance.cmove = cmoveInstance;
-//             pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
-//             pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
-//             pkmInstance.atkiv =
-//                pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
-//             pkmInstance.defiv =
-//                pkm.defiv >= 0 ? pkm.defiv : DEFAULT_ATTACKER_IVs[1];
-//             pkmInstance.stmiv =
-//                pkm.stmiv >= 0 ? pkm.stmiv : DEFAULT_ATTACKER_IVs[2];
-//             pkmInstance.Atk =
-//                (pkmInstance.baseAtk + pkmInstance.atkiv) * pkmInstance.cpm;
-//             pkmInstance.Def =
-//                (pkmInstance.baseDef + pkmInstance.defiv) * pkmInstance.cpm;
-//             pkmInstance.Stm =
-//                (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
-//             pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
-
-//             if (LeagueCPCap > 0) {
-//                adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
-//             }
-//             pkmInstance.cp = calculateCP(pkmInstance);
-
-//             if (pkmInstance.name.startsWith("shadow ")) {
-//                pkmInstance.Def *=
-//                   Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
-//             }
-
-//             calculateDPS(pkmInstance, Context);
-
-//             pkmInstance.ui_name = createIconLabelSpan(
-//                pkm.icon,
-//                pkm.labelLinked || pkm.label,
-//                "species-input-with-icon",
-//             );
-//             pkmInstance.ui_fmove = createIconLabelSpan(
-//                fmoveInstance.icon,
-//                fmoveInstance.labelLinked || fmoveInstance.label,
-//                "move-input-with-icon",
-//             );
-//             pkmInstance.ui_cmove = createIconLabelSpan(
-//                cmoveInstance.icon,
-//                cmoveInstance.labelLinked || cmoveInstance.label,
-//                "move-input-with-icon",
-//             );
-//             pkmInstance.ui_dps = round(pkmInstance.dps, 3);
-//             pkmInstance.ui_tdo = round(pkmInstance.tdo, 1);
-//             if (Context.battleMode == "pvp") {
-//                pkmInstance.ui_overall =
-//                   Math.ceil(
-//                      -pkmInstance.cmove.energyDelta /
-//                         (pkmInstance.fmove.energyDelta || 1),
-//                   ) * pkmInstance.fmove.duration;
-//             } else {
-//                pkmInstance.ui_overall = round(
-//                   (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
-//                   2,
-//                );
-//             }
-//             pkmInstance.ui_cp = pkmInstance.cp;
-
-//             Table.row.add(pkmInstance);
-//          }
-//       }
-//    }
-
-//    if (EasterEggActiviated) {
-//       applyEasterEgg(Table);
-//    }
-
-//    t2 = Date.now();
-//    console.log("Primary Calculation took", t2 - t1, "ms");
-//    t1 = t2;
-
-//    Predicate = $("#searchInput").val()
-//       ? PokeQuery($("#searchInput").val())
-//       : (arg) => true;
-//    $("#ranking_table").DataTable().draw();
-
-//    t2 = Date.now();
-//    console.log("Drawing took", t2 - t1, "ms");
-//    t2 = t1;
+// export function generateSpreadsheet(pokemonCollection) {
+//    return pokemonCollection.map((pkm) => calculateRow(pkm));
 // }
+
+export function generateSpreadsheet(pokemonCollection) {
+   const Table = [];
+
+   let t1 = Date.now(),
+      t2 = t1;
+   console.log("Start");
+
+   // applyContext();
+
+   for (let pkm of pokemonCollection) {
+      // user Pokemon
+      if (pkm.uid !== undefined) {
+         let species = GM.get("pokemon", pkm.name);
+         if (!species) {
+            continue;
+         }
+         pkm.cpm = GM.get("level", pkm.level).cpm;
+         pkm.baseAtk = species.baseAtk;
+         pkm.baseDef = species.baseDef;
+         pkm.baseStm = species.baseStm;
+         pkm.icon = species.icon;
+      }
+
+      let fastMoves_all = pkm.fmove
+         ? [pkm.fmove]
+         : pkm.fastMoves
+              .concat(pkm.fastMoves_legacy)
+              .concat(pkm.fastMoves_exclusive);
+      let chargedMoves_all = pkm.cmove
+         ? [pkm.cmove]
+         : pkm.chargedMoves
+              .concat(pkm.chargedMoves_legacy)
+              .concat(pkm.chargedMoves_exclusive);
+      for (let fmove of fastMoves_all) {
+         var fmoveInstance = GM.get("fast", fmove);
+         if (!fmoveInstance) {
+            continue;
+         }
+         for (let cmove of chargedMoves_all) {
+            let cmoveInstance = GM.get("charged", cmove);
+            if (!cmoveInstance) {
+               continue;
+            }
+
+            let pkmInstance = { ...pkm };
+
+            pkmInstance.fmove = fmoveInstance;
+            pkmInstance.cmove = cmoveInstance;
+            pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
+            pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
+            pkmInstance.atkiv =
+               pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
+            pkmInstance.defiv =
+               pkm.defiv >= 0 ? pkm.defiv : DEFAULT_ATTACKER_IVs[1];
+            pkmInstance.stmiv =
+               pkm.stmiv >= 0 ? pkm.stmiv : DEFAULT_ATTACKER_IVs[2];
+            pkmInstance.Atk =
+               (pkmInstance.baseAtk + pkmInstance.atkiv) * pkmInstance.cpm;
+            pkmInstance.Def =
+               (pkmInstance.baseDef + pkmInstance.defiv) * pkmInstance.cpm;
+            pkmInstance.Stm =
+               (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
+            pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
+
+            if (LeagueCPCap > 0) {
+               adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
+            }
+            pkmInstance.cp = calculateCP(pkmInstance);
+
+            if (pkmInstance.name.startsWith("shadow ")) {
+               pkmInstance.Def *=
+                  Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
+            }
+
+            calculateDPS(pkmInstance, Context);
+
+            pkmInstance.ui_name = createIconLabelSpan(
+               pkm.icon,
+               pkm.labelLinked || pkm.label,
+               "species-input-with-icon",
+            );
+            pkmInstance.ui_fmove = createIconLabelSpan(
+               fmoveInstance.icon,
+               fmoveInstance.labelLinked || fmoveInstance.label,
+               "move-input-with-icon",
+            );
+            pkmInstance.ui_cmove = createIconLabelSpan(
+               cmoveInstance.icon,
+               cmoveInstance.labelLinked || cmoveInstance.label,
+               "move-input-with-icon",
+            );
+            pkmInstance.ui_dps = Math.round(pkmInstance.dps, 3);
+            pkmInstance.ui_tdo = Math.round(pkmInstance.tdo, 1);
+            if (Context.battleMode == "pvp") {
+               pkmInstance.ui_overall =
+                  Math.ceil(
+                     -pkmInstance.cmove.energyDelta /
+                        (pkmInstance.fmove.energyDelta || 1),
+                  ) * pkmInstance.fmove.duration;
+            } else {
+               pkmInstance.ui_overall = Math.round(
+                  (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
+                  2,
+               );
+            }
+            pkmInstance.ui_cp = pkmInstance.cp;
+
+            Table.push(pkmInstance);
+         }
+      }
+   }
+
+   if (EasterEggActiviated) {
+      applyEasterEgg(Table);
+   }
+
+   t2 = Date.now();
+   console.log("Primary Calculation took", t2 - t1, "ms");
+   t1 = t2;
+
+   return Table;
+}
 
 // function updateSpreadsheet() {
 //    var Table = $("#ranking_table").DataTable();
@@ -964,37 +979,37 @@ function generateSpectrum(pkm, settings) {
    return DPS_spectrum;
 }
 
-function calculateDPSGrades(maxDPS) {
-   var DT = $("#ranking_table").DataTable();
-   var data = DT.data();
-   for (var i = 0; i < data.length; i++) {
-      var score = data[i].ui_dps / maxDPS;
-      if (score >= 0.97619) {
-         grade = "A";
-      } else if (score >= 0.928571) {
-         grade = "A-";
-      } else if (score >= 0.880952) {
-         grade = "B+";
-      } else if (score >= 0.833333) {
-         grade = "B";
-      } else if (score >= 0.785714) {
-         grade = "B-";
-      } else if (score >= 0.738095) {
-         grade = "C+";
-      } else if (score >= 0.690476) {
-         grade = "C";
-      } else if (score >= 0.642857) {
-         grade = "C-";
-      } else {
-         grade = "X";
-      }
-      data[i].ui_cp = grade;
-   }
-   DT.rows().invalidate();
-}
+// function calculateDPSGrades(maxDPS) {
+//    var DT = $("#ranking_table").DataTable();
+//    var data = DT.data();
+//    for (var i = 0; i < data.length; i++) {
+//       var score = data[i].ui_dps / maxDPS;
+//       if (score >= 0.97619) {
+//          grade = "A";
+//       } else if (score >= 0.928571) {
+//          grade = "A-";
+//       } else if (score >= 0.880952) {
+//          grade = "B+";
+//       } else if (score >= 0.833333) {
+//          grade = "B";
+//       } else if (score >= 0.785714) {
+//          grade = "B-";
+//       } else if (score >= 0.738095) {
+//          grade = "C+";
+//       } else if (score >= 0.690476) {
+//          grade = "C";
+//       } else if (score >= 0.642857) {
+//          grade = "C-";
+//       } else {
+//          grade = "X";
+//       }
+//       data[i].ui_cp = grade;
+//    }
+//    DT.rows().invalidate();
+// }
 
-var d = new Date();
-var EasterEggActiviated = d.getMonth() == 3 && d.getDate() == 1;
+const d = new Date();
+const EasterEggActiviated = d.getMonth() == 3 && d.getDate() == 1;
 function applyEasterEgg(dt) {
    dt.row.add({
       ui_name: createIconLabelSpan(

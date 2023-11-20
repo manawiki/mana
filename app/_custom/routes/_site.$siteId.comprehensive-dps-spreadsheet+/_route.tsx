@@ -1,6 +1,20 @@
+import { generateSpreadsheet } from "./calc.js";
+import { GM, Data } from "./dataFactory.js";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export function ComprehensiveDpsSpreadsheet() {
+   const pokemon = [];
+   GM.fetch();
+   GM.each("pokemon", function (pkm) {
+      pokemon.push(pkm);
+   });
+
+   console.log(pokemon);
+
+   const results = generateSpreadsheet(pokemon);
+
+   console.log(results);
+
    return (
       <>
          <Introduction />
