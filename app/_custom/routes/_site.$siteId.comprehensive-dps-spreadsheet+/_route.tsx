@@ -9,17 +9,18 @@ export function ComprehensiveDpsSpreadsheet() {
       pokemon.push(pkm);
    });
 
-   console.log(pokemon);
+   console.log("pokemon: ", pokemon);
 
    const results = generateSpreadsheet(pokemon);
 
-   console.log(results);
+   console.log("results: ", results);
 
    return (
       <>
          <Introduction />
          {/* <MoveEditForm /> */}
-         <ResultsTable />
+         <Filters />
+         <ResultsTable results={results} />
       </>
    );
 }
@@ -383,7 +384,7 @@ function MoveEditForm() {
    );
 }
 
-function ResultsTable() {
+function Filters() {
    return (
       <div className="flex pogo-dps-sheet-container">
          <div className="container form-group">
@@ -590,6 +591,36 @@ function ResultsTable() {
             </div>
          </div>
       </div>
+   );
+}
+
+function ResultsTable({ results }) {
+   return (
+      <table>
+         <th>
+            <td>Pokemon</td>
+            <td>Fast Move</td>
+            <td>Charged Move</td>
+            <td>DPS</td>
+            <td>TDO</td>
+            <td>ER</td>
+            <td>CP</td>
+         </th>
+         {results
+            //limit results to the top 100
+            .slice(0, 100)
+            .map((pokemon, index) => (
+               <tr key={index}>
+                  <td>{pokemon?.label}</td>
+                  <td>{pokemon?.fmove?.label}</td>
+                  <td>{pokemon?.cmove?.label}</td>
+                  <td>{pokemon?.dps}</td>
+                  <td>{pokemon?.tdo}</td>
+                  <td>{pokemon?.er}</td>
+                  <td>{pokemon?.cp}</td>
+               </tr>
+            ))}
+      </table>
    );
 }
 
