@@ -395,9 +395,9 @@ GM.mode = function (mode) {
 /**
  * Non-interface members
  */
-var curTime = Date.now();
+export const curTime = Date.now();
 
-var requiredJSONStatus = {
+export const requiredJSONStatus = {
    // 0: Not loaded, 1: Started loading, 2: Successfully loaded
    Pokemon: 0,
    PokemonForms: 0,
@@ -406,7 +406,7 @@ var requiredJSONStatus = {
    LevelSettings: 0,
 };
 
-export var Data = {
+export const Data = {
    BattleSettings: {
       dodgeDurationMs: 500,
       dodgeWindowMs: 700,
@@ -937,7 +937,7 @@ export var Data = {
    Users: [],
 };
 
-var LocalData = {
+export const LocalData = {
    Pokemon: [],
    FastMoves: [],
    ChargedMoves: [],
@@ -945,7 +945,7 @@ var LocalData = {
    BattleSettings: {},
 };
 
-var Mods = [
+export const Mods = [
    {
       name: "Mega Evolutions Basic Movepool",
       effect: function () {
@@ -1257,12 +1257,12 @@ function parseUserPokebox(data) {
       box.push(pkm);
    }
    if (missingRequiredFields.length > 0) {
-      var missingMsg =
+      let missingMsg =
          "The following pokemon are missing a fast and/or charge move and will be excluded: ";
       for (let i = 0; i < missingRequiredFields.length; i++) {
          missingMsg += "<br/>" + missingRequiredFields[i].labelLinked;
       }
-      // UI.sendFeedbackDialog(missingMsg, "Missing Data", null, true);
+      console.log(missingMsg, "Missing Data", null, true);
    }
    return box;
 }
@@ -1615,7 +1615,11 @@ function fetchLocalData() {
    if (localStorage) {
       if (localStorage.LocalData) {
          // new
-         LocalData = JSON.parse(localStorage.LocalData);
+         const newData = JSON.parse(localStorage.LocalData);
+
+         for (let key in newData) {
+            LocalData[key] = newData[key];
+         }
       }
 
       // Removing the deprecated "index" attribute
@@ -1661,7 +1665,7 @@ function fetchLocalData() {
  * PokeQuery related
  */
 
-var LOGICAL_OPERATORS = {
+export const LOGICAL_OPERATORS = {
    ",": 0,
    ":": 0,
    ";": 0, // OR
@@ -1669,8 +1673,8 @@ var LOGICAL_OPERATORS = {
    "|": 1, // AND
    "!": 2, // NOT
 };
-var SELECTORS = ["*", "?"];
-var acceptedNumericalAttributes = [
+export const SELECTORS = ["*", "?"];
+export const acceptedNumericalAttributes = [
    "cp",
    "hp",
    "dex",
@@ -1691,7 +1695,7 @@ var acceptedNumericalAttributes = [
    "tdo",
 ];
 
-var LegendaryPokemon = [
+export const LegendaryPokemon = [
    "regice",
    "entei",
    "registeel",
@@ -1732,7 +1736,7 @@ var LegendaryPokemon = [
    "zekrom",
    "shadow raikou",
 ];
-var MythicalPokemon = [
+export const MythicalPokemon = [
    "arceus",
    "darkrai",
    "phione",
@@ -1748,7 +1752,7 @@ var MythicalPokemon = [
    "jirachi",
    "melmetal",
 ];
-var BabyPokemon = [
+export const BabyPokemon = [
    "pichu",
    "cleffa",
    "igglybuff",
@@ -1767,7 +1771,7 @@ var BabyPokemon = [
    "munchlax",
    "mantyke",
 ];
-var PokemonRegions = {
+export const PokemonRegions = {
    kanto: [1, 151],
    johto: [152, 251],
    hoenn: [252, 386],
@@ -1785,89 +1789,89 @@ var PokemonRegions = {
  * @param {Object|Pokemon} pokemonInstance An instance of the subject Pokemon. Used for querying Pokemon attributes.
  * @return {function} A function that accepts one parameter (the entity to evaluate) and returns true or false.
  */
-// function PokeQuery(queryStr, pokemonInstance) {
-//    var defaultPredicate = (arg) => false;
-//    var vstack = [],
-//       opstack = [];
+function PokeQuery(queryStr, pokemonInstance) {
+   let defaultPredicate = (arg) => false;
+   let vstack = [],
+      opstack = [];
 
-//    function evalSimple(op, stack) {
-//       if (op == "," || op == ":" || op == ";") {
-//          var rhs = stack.pop() || defaultPredicate,
-//             lhs = stack.pop() || defaultPredicate;
-//          stack.push((arg) => lhs(arg) || rhs(arg));
-//       } else if (op == "&" || op == "|") {
-//          var rhs = stack.pop() || defaultPredicate,
-//             lhs = stack.pop() || defaultPredicate;
-//          stack.push((arg) => lhs(arg) && rhs(arg));
-//       } else if (op == "!") {
-//          var rhs = stack.pop() || defaultPredicate;
-//          stack.push((arg) => !rhs(arg));
-//       } else {
-//          stack.push(defaultPredicate);
-//       }
-//    }
+   function evalSimple(op, stack) {
+      if (op == "," || op == ":" || op == ";") {
+         let rhs = stack.pop() || defaultPredicate,
+            lhs = stack.pop() || defaultPredicate;
+         stack.push((arg) => lhs(arg) || rhs(arg));
+      } else if (op == "&" || op == "|") {
+         let rhs = stack.pop() || defaultPredicate,
+            lhs = stack.pop() || defaultPredicate;
+         stack.push((arg) => lhs(arg) && rhs(arg));
+      } else if (op == "!") {
+         let rhs = stack.pop() || defaultPredicate;
+         stack.push((arg) => !rhs(arg));
+      } else {
+         stack.push(defaultPredicate);
+      }
+   }
 
-//    function tokenize(str, specialChars, escapeChar) {
-//       var tokens = [],
-//          cur = "",
-//          escaped = false;
-//       for (var i = 0; i < str.length; i++) {
-//          var c = str[i];
-//          if (escaped) {
-//             cur += c;
-//             escaped = false;
-//          } else if (c == escapeChar) {
-//             escaped = true;
-//          } else if (specialChars.includes(c)) {
-//             if (cur.trim()) {
-//                tokens.push(cur.trim());
-//                cur = "";
-//             }
-//             tokens.push(c);
-//          } else {
-//             cur += c;
-//          }
-//       }
-//       if (cur.trim()) {
-//          tokens.push(cur.trim());
-//       }
-//       return tokens;
-//    }
+   function tokenize(str, specialChars, escapeChar) {
+      let tokens = [],
+         cur = "",
+         escaped = false;
+      for (let i = 0; i < str.length; i++) {
+         let c = str[i];
+         if (escaped) {
+            cur += c;
+            escaped = false;
+         } else if (c == escapeChar) {
+            escaped = true;
+         } else if (specialChars.includes(c)) {
+            if (cur.trim()) {
+               tokens.push(cur.trim());
+               cur = "";
+            }
+            tokens.push(c);
+         } else {
+            cur += c;
+         }
+      }
+      if (cur.trim()) {
+         tokens.push(cur.trim());
+      }
+      return tokens;
+   }
 
-//    for (let tk of tokenize(
-//       queryStr,
-//       Object.keys(LOGICAL_OPERATORS).concat(["(", ")"]),
-//       "`",
-//    )) {
-//       if (LOGICAL_OPERATORS.hasOwnProperty(tk)) {
-//          var top_op = opstack[opstack.length - 1];
-//          while (
-//             top_op &&
-//             top_op != "(" &&
-//             LOGICAL_OPERATORS[top_op] > LOGICAL_OPERATORS[tk]
-//          ) {
-//             evalSimple(opstack.pop(), vstack);
-//             top_op = opstack[opstack.length - 1];
-//          }
-//          opstack.push(tk);
-//       } else if (tk == "(") {
-//          opstack.push("(");
-//       } else if (tk == ")") {
-//          while (opstack.length) {
-//             var op = opstack.pop();
-//             if (op == "(") break;
-//             evalSimple(op, vstack);
-//          }
-//       } else {
-//          vstack.push(BasicPokeQuery(tk, pokemonInstance));
-//       }
-//    }
-//    while (opstack.length) {
-//       evalSimple(opstack.pop(), vstack);
-//    }
+   for (let tk of tokenize(
+      queryStr,
+      Object.keys(LOGICAL_OPERATORS).concat(["(", ")"]),
+      "`",
+   )) {
+      if (LOGICAL_OPERATORS.hasOwnProperty(tk)) {
+         let top_op = opstack[opstack.length - 1];
+         while (
+            top_op &&
+            top_op != "(" &&
+            LOGICAL_OPERATORS[top_op] > LOGICAL_OPERATORS[tk]
+         ) {
+            evalSimple(opstack.pop(), vstack);
+            top_op = opstack[opstack.length - 1];
+         }
+         opstack.push(tk);
+      } else if (tk == "(") {
+         opstack.push("(");
+      } else if (tk == ")") {
+         while (opstack.length) {
+            let op = opstack.pop();
+            if (op == "(") break;
+            evalSimple(op, vstack);
+         }
+      } else {
+         vstack.push(BasicPokeQuery(tk, pokemonInstance));
+      }
+   }
+   while (opstack.length) {
+      evalSimple(opstack.pop(), vstack);
+   }
 
-//    return vstack.pop() || defaultPredicate;
-// }
+   return vstack.pop() || defaultPredicate;
+}
 
 function tryParseNumberOrRange(exp) {
    let bounds = Array(2);
