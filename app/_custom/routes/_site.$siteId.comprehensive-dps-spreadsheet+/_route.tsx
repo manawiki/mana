@@ -608,6 +608,7 @@ function ResultsTable({ results }) {
                <th>CP</th>
             </tr>
             {results
+               .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
                //limit results to the top 100
                .slice(0, 100)
                .map((pokemon, index) => (
@@ -615,10 +616,10 @@ function ResultsTable({ results }) {
                      <td>{pokemon?.label}</td>
                      <td>{pokemon?.fmove?.label}</td>
                      <td>{pokemon?.cmove?.label}</td>
-                     <td>{pokemon?.dps}</td>
-                     <td>{pokemon?.tdo}</td>
-                     <td>{pokemon?.er}</td>
-                     <td>{pokemon?.cp}</td>
+                     <td aria-label={pokemon?.dps}>{pokemon?.ui_dps}</td>
+                     <td aria-label={pokemon?.tdo}>{pokemon?.ui_tdo}</td>
+                     <td>{pokemon?.ui_overall}</td>
+                     <td>{pokemon?.ui_cp}</td>
                   </tr>
                ))}
          </table>
