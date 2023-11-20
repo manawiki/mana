@@ -1,28 +1,119 @@
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
-import { FloatingDelayGroup } from "@floating-ui/react";
-import { createPortal } from "react-dom";
-import {
-   Editor,
-   Path,
-   Range,
-   Transforms,
-   Element as SlateElement,
-} from "slate";
+import { FloatingDelayGroup, FloatingPortal } from "@floating-ui/react";
+import { Listbox, Popover } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
+import clsx from "clsx";
+import { Editor, Range, Transforms, Element as SlateElement } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
 import Button from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
-import type { CustomElement, LinkElement, TextBlock } from "../types";
+import type { LinkElement } from "../types";
 import { BlockType } from "../types";
-import { toggleMark, topLevelPath } from "../utils";
+import { toggleMark } from "../utils";
+
+export const COLORS = [
+   {
+      id: "grayBG",
+      type: "bg",
+      twClass: "bg-zinc-400 dark:bg-zinc-700 text-white",
+   },
+   {
+      id: "redBG",
+      type: "bg",
+      twClass: "bg-red-400 dark:bg-red-700/50 text-white",
+   },
+   {
+      id: "orangeBG",
+      type: "bg",
+      twClass: "bg-orange-400 dark:bg-orange-700/50 text-white",
+   },
+   {
+      id: "yellowBG",
+      type: "bg",
+      twClass: "bg-yellow-400 dark:bg-yellow-700/50 text-white",
+   },
+   {
+      id: "greenBG",
+      type: "bg",
+      twClass: "bg-green-400 dark:bg-green-700/50 text-white",
+   },
+   {
+      id: "limeBG",
+      type: "bg",
+      twClass: "bg-lime-400 dark:bg-lime-700/50 text-white",
+   },
+   {
+      id: "blueBG",
+      type: "bg",
+      twClass: "bg-blue-400 dark:bg-blue-700/50 text-white",
+   },
+   {
+      id: "violetBG",
+      type: "bg",
+      twClass: "bg-violet-400 dark:bg-violet-700/50 text-white",
+   },
+   {
+      id: "pinkBG",
+      type: "bg",
+      twClass: "bg-pink-400 dark:bg-pink-700/50 text-white",
+   },
+   {
+      id: "grayText",
+      type: "text",
+      twClass: "text-zinc-500",
+   },
+   {
+      id: "redText",
+      type: "text",
+      twClass: "text-red-500",
+   },
+   {
+      id: "orangeText",
+      type: "text",
+      twClass: "text-orange-500",
+   },
+   {
+      id: "yellowText",
+      type: "text",
+      twClass: "text-yellow-500",
+   },
+   {
+      id: "greenText",
+      type: "text",
+      twClass: "text-green-500",
+   },
+   {
+      id: "limeText",
+      type: "text",
+      twClass: "text-lime-500",
+   },
+   {
+      id: "blueText",
+      type: "text",
+      twClass: "text-blue-500",
+   },
+   {
+      id: "violetText",
+      type: "text",
+      twClass: "text-violet-500",
+   },
+   {
+      id: "pinkText",
+      type: "text",
+      twClass: "text-pink-500",
+   },
+];
 
 export function Toolbar() {
    const ref = useRef<HTMLDivElement | null>(null);
    const editor = useSlate();
    const inFocus = useFocused();
+
+   const [colorToggle, setColorToggle] = useState(false);
 
    const isLinkActive = (editor: Editor) => {
       const [link] = Editor.nodes(editor, {
@@ -115,18 +206,19 @@ export function Toolbar() {
    const marks = Editor.marks(editor);
 
    if (typeof document !== "undefined") {
-      return createPortal(
-         <div
-            ref={ref}
-            className="border-color-sub shadow-1 bg-2-sub -mt-12 z-50
-            rounded-xl border px-2 py-1.5 hidden shadow-lg"
-            onMouseDown={(e) => {
-               // prevent toolbar from taking focus away from editor
-               e.preventDefault();
-            }}
-         >
-            <section className="flex items-center gap-2">
-               {/* {type && (
+      return (
+         <FloatingPortal>
+            <div
+               ref={ref}
+               className="border-zinc-200 dark:border-zinc-600 shadow-1 bg-2-sub -mt-10 z-50
+            rounded-xl border p-1 hidden shadow-lg"
+               onMouseDown={(e) => {
+                  // prevent toolbar from taking focus away from editor
+                  e.preventDefault();
+               }}
+            >
+               <section className="flex items-center gap-2">
+                  {/* {type && (
                   <>
                      <div>
                         <Select
@@ -163,14 +255,11 @@ export function Toolbar() {
                      </div>
                   </>
                )} */}
-
-               <div className="flex items-center gap-1">
-                  <FloatingDelayGroup delay={{ open: 1000 }}>
-                     {!isLinkActive(editor) && (
-                        <Tooltip>
-                           <TooltipTrigger>
-                              <Button
-                                 ariaLabel="Add Link"
+                  <div className="flex items-center gap-1">
+                     <FloatingDelayGroup delay={{ open: 1000 }}>
+                        {!isLinkActive(editor) && (
+                           <Tooltip>
+                              <TooltipTrigger
                                  onPointerDown={(e) => e.preventDefault()}
                                  onClick={(e) => {
                                     e.preventDefault();
@@ -184,97 +273,250 @@ export function Toolbar() {
                                     isLinkActive(editor) === true
                                        ? "bg-zinc-200 dark:bg-dark500"
                                        : ""
-                                 } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                                 } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
                               >
                                  <Icon name="link-2" size={14} />
-                              </Button>
-                           </TooltipTrigger>
-                           <TooltipContent>Add Link</TooltipContent>
-                        </Tooltip>
-                     )}
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Bold"
+                              </TooltipTrigger>
+                              <TooltipContent>Add Link</TooltipContent>
+                           </Tooltip>
+                        )}
+                        <Tooltip>
+                           <TooltipTrigger
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() => toggleMark(editor, "bold")}
                               className={`${
                                  marks && marks["bold"] === true
                                     ? "bg-zinc-200 dark:bg-dark500"
                                     : ""
-                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
+                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
                            >
                               <Icon name="bold" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Bold</TooltipContent>
-                     </Tooltip>
+                           </TooltipTrigger>
+                           <TooltipContent>Toggle Bold</TooltipContent>
+                        </Tooltip>
+                        <Popover>
+                           {({ open }) => (
+                              <>
+                                 <Float
+                                    as={Fragment}
+                                    enter="transition ease-out duration-200"
+                                    enterFrom="opacity-0 translate-y-1"
+                                    enterTo="opacity-100 translate-y-0"
+                                    leave="transition ease-in duration-150"
+                                    leaveFrom="opacity-100 translate-y-0"
+                                    leaveTo="opacity-0 translate-y-1"
+                                    placement="top"
+                                    offset={4}
+                                 >
+                                    <Popover.Button as="div">
+                                       <Tooltip placement="top">
+                                          <TooltipTrigger
+                                             className="hover:bg-zinc-200 dark:hover:bg-dark500 flex 
+                                             h-6 w-6 items-center justify-center rounded-lg"
+                                          >
+                                             {open ? (
+                                                <Icon
+                                                   name="x"
+                                                   className="text-1"
+                                                   size={14}
+                                                />
+                                             ) : (
+                                                <Icon
+                                                   name="palette"
+                                                   size={14}
+                                                />
+                                             )}
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Settings
+                                          </TooltipContent>
+                                       </Tooltip>
+                                    </Popover.Button>
+                                    <Popover.Panel
+                                       className="border-color-sub justify-items-center min-w-[200px] text-1 bg-3-sub shadow-1 
+                                       gap-1 z-30 grid grid-cols-9 rounded-lg border p-2 shadow-sm"
+                                    >
+                                       {COLORS?.map((color, rowIdx: number) => (
+                                          <button
+                                             key={rowIdx}
+                                             type="button"
+                                             onPointerDown={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             onClick={() =>
+                                                toggleMark(editor, color.id)
+                                             }
+                                             className={clsx(
+                                                color.twClass,
+                                                "h-3.5 w-3.5 rounded-full flex items-center justify-center",
+                                             )}
+                                          >
+                                             {color.type == "text" && (
+                                                <Icon name="type" size={14} />
+                                             )}
+                                          </button>
+                                       ))}
+                                    </Popover.Panel>
+                                 </Float>
+                              </>
+                           )}
+                        </Popover>
+                        <Popover>
+                           {({ open }) => (
+                              <>
+                                 <Float
+                                    as={Fragment}
+                                    enter="transition ease-out duration-200"
+                                    enterFrom="opacity-0 translate-y-1"
+                                    enterTo="opacity-100 translate-y-0"
+                                    leave="transition ease-in duration-150"
+                                    leaveFrom="opacity-100 translate-y-0"
+                                    leaveTo="opacity-0 translate-y-1"
+                                    placement="top"
+                                    offset={4}
+                                 >
+                                    <Popover.Button as="div">
+                                       <Tooltip placement="right">
+                                          <TooltipTrigger
+                                             className="hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 
+                                             items-center justify-center rounded-lg"
+                                          >
+                                             {open ? (
+                                                <Icon
+                                                   name="x"
+                                                   className="text-1"
+                                                   size={14}
+                                                />
+                                             ) : (
+                                                <Icon
+                                                   name="more-vertical"
+                                                   size={16}
+                                                />
+                                             )}
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             More Options
+                                          </TooltipContent>
+                                       </Tooltip>
+                                    </Popover.Button>
+                                    <Popover.Panel
+                                       className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 gap-1 z-30 
+                                       flex rounded-lg border p-2 shadow-sm"
+                                    >
+                                       <Tooltip>
+                                          <TooltipTrigger
+                                             onPointerDown={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             onClick={() =>
+                                                toggleMark(editor, "small")
+                                             }
+                                             className={`${
+                                                marks && marks["small"] === true
+                                                   ? "bg-zinc-200 dark:bg-dark500"
+                                                   : ""
+                                             } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
+                                          >
+                                             <Icon name="type" size={14} />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Toggle Small
+                                          </TooltipContent>
+                                       </Tooltip>
+                                       <Tooltip>
+                                          <TooltipTrigger
+                                             onPointerDown={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             onClick={() =>
+                                                toggleMark(editor, "italic")
+                                             }
+                                             className={`${
+                                                marks &&
+                                                marks["italic"] === true
+                                                   ? "bg-zinc-200 dark:bg-dark500"
+                                                   : ""
+                                             } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
+                                          >
+                                             <Icon name="italic" size={14} />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Toggle Italic
+                                          </TooltipContent>
+                                       </Tooltip>
+                                       <Tooltip>
+                                          <TooltipTrigger>
+                                             <Button
+                                                ariaLabel="Toggle Underline"
+                                                onPointerDown={(e) =>
+                                                   e.preventDefault()
+                                                }
+                                                onClick={() =>
+                                                   toggleMark(
+                                                      editor,
+                                                      "underline",
+                                                   )
+                                                }
+                                                className={`${
+                                                   marks &&
+                                                   marks["underline"] === true
+                                                      ? "bg-zinc-200 dark:bg-dark500"
+                                                      : ""
+                                                } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
+                                             >
+                                                <Icon
+                                                   name="underline"
+                                                   size={14}
+                                                />
+                                             </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Toggle Underline
+                                          </TooltipContent>
+                                       </Tooltip>
+                                       <Tooltip>
+                                          <TooltipTrigger
+                                             onPointerDown={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             onClick={() =>
+                                                toggleMark(
+                                                   editor,
+                                                   "strikeThrough",
+                                                )
+                                             }
+                                             className={`${
+                                                marks &&
+                                                marks["strikeThrough"] === true
+                                                   ? "bg-zinc-200 dark:bg-dark500"
+                                                   : ""
+                                             } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
+                                          >
+                                             <Icon
+                                                name="strikethrough"
+                                                size={14}
+                                             />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                             Toggle Strikethrough
+                                          </TooltipContent>
+                                       </Tooltip>
+                                    </Popover.Panel>
+                                 </Float>
+                              </>
+                           )}
+                        </Popover>
+                     </FloatingDelayGroup>
+                  </div>
+               </section>
+               {isLinkActive(editor) ? (
+                  <section className="bg-3 mt-1.5 flex items-center gap-3 truncate rounded-md px-2">
+                     <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
+                        {activeLinkUrl(editor)}
+                     </span>
                      <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Italic"
-                              onPointerDown={(e) => e.preventDefault()}
-                              onClick={() => toggleMark(editor, "italic")}
-                              className={`${
-                                 marks && marks["italic"] === true
-                                    ? "bg-zinc-200 dark:bg-dark500"
-                                    : ""
-                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
-                           >
-                              <Icon name="italic" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Italic</TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Underline"
-                              onPointerDown={(e) => e.preventDefault()}
-                              onClick={() => toggleMark(editor, "underline")}
-                              className={`${
-                                 marks && marks["underline"] === true
-                                    ? "bg-zinc-200 dark:bg-dark500"
-                                    : ""
-                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
-                           >
-                              <Icon name="underline" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Underline</TooltipContent>
-                     </Tooltip>
-                     <Tooltip>
-                        <TooltipTrigger>
-                           <Button
-                              ariaLabel="Toggle Strikethrough"
-                              onPointerDown={(e) => e.preventDefault()}
-                              onClick={() =>
-                                 toggleMark(editor, "strikeThrough")
-                              }
-                              className={`${
-                                 marks && marks["strikeThrough"] === true
-                                    ? "bg-zinc-200 dark:bg-dark500"
-                                    : ""
-                              } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-7 w-7 items-center justify-center rounded-lg`}
-                           >
-                              <Icon name="strikethrough" size={14} />
-                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Toggle Strikethrough</TooltipContent>
-                     </Tooltip>
-                  </FloatingDelayGroup>
-               </div>
-            </section>
-            {isLinkActive(editor) ? (
-               <section className="bg-3 mt-1.5 flex items-center gap-3 truncate rounded-md px-2">
-                  <span className="text-1 w-32 flex-grow truncate py-2 text-xs">
-                     {activeLinkUrl(editor)}
-                  </span>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
+                        <TooltipTrigger
                            className="flex items-center p-1"
-                           ariaLabel="Remove Link"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
                               if (isLinkActive(editor)) {
@@ -287,15 +529,12 @@ export function Toolbar() {
                               className="text-red-400"
                               size={16}
                            />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Remove Link</TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Button
+                        </TooltipTrigger>
+                        <TooltipContent>Remove Link</TooltipContent>
+                     </Tooltip>
+                     <Tooltip>
+                        <TooltipTrigger
                            className="flex items-center p-1"
-                           ariaLabel="Update Link"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
                               e.preventDefault();
@@ -311,14 +550,13 @@ export function Toolbar() {
                               className="text-blue-400"
                               size={14}
                            />
-                        </Button>
-                     </TooltipTrigger>
-                     <TooltipContent>Update Link</TooltipContent>
-                  </Tooltip>
-               </section>
-            ) : null}
-         </div>,
-         document.body,
+                        </TooltipTrigger>
+                        <TooltipContent>Update Link</TooltipContent>
+                     </Tooltip>
+                  </section>
+               ) : null}
+            </div>
+         </FloatingPortal>
       );
    }
 }
