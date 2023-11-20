@@ -596,31 +596,34 @@ function Filters() {
 
 function ResultsTable({ results }) {
    return (
-      <table>
-         <th>
-            <td>Pokemon</td>
-            <td>Fast Move</td>
-            <td>Charged Move</td>
-            <td>DPS</td>
-            <td>TDO</td>
-            <td>ER</td>
-            <td>CP</td>
-         </th>
-         {results
-            //limit results to the top 100
-            .slice(0, 100)
-            .map((pokemon, index) => (
-               <tr key={index}>
-                  <td>{pokemon?.label}</td>
-                  <td>{pokemon?.fmove?.label}</td>
-                  <td>{pokemon?.cmove?.label}</td>
-                  <td>{pokemon?.dps}</td>
-                  <td>{pokemon?.tdo}</td>
-                  <td>{pokemon?.er}</td>
-                  <td>{pokemon?.cp}</td>
-               </tr>
-            ))}
-      </table>
+      <>
+         <table>
+            <tr>
+               <th>Pokemon</th>
+               <th>Fast Move</th>
+               <th>Charged Move</th>
+               <th>DPS</th>
+               <th>thO</th>
+               <th>ER</th>
+               <th>CP</th>
+            </tr>
+            {results
+               //limit results to the top 100
+               .slice(0, 100)
+               .map((pokemon, index) => (
+                  <tr key={index}>
+                     <td>{pokemon?.label}</td>
+                     <td>{pokemon?.fmove?.label}</td>
+                     <td>{pokemon?.cmove?.label}</td>
+                     <td>{pokemon?.dps}</td>
+                     <td>{pokemon?.tdo}</td>
+                     <td>{pokemon?.er}</td>
+                     <td>{pokemon?.cp}</td>
+                  </tr>
+               ))}
+         </table>
+         {results.length} results
+      </>
    );
 }
 
