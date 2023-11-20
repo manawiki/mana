@@ -1897,221 +1897,223 @@ function tryParseNumberOrRange(exp) {
  * @param {Object|Pokemon} pokemonInstance An instance of the subject Pokemon, used for querying Pokemon attributes.
  * @return {function} A function that accepts one parameter (the entity to evaluate) and returns true or false.
  */
-// function BasicPokeQuery(queryStr, pokemonInstance) {
-//    let str = queryStr.trim();
+function BasicPokeQuery(queryStr, pokemonInstance) {
+   let str = queryStr.trim();
+   let pred_move = false;
 
-//    let numericalAttr = "";
-//    let numericalBounds = tryParseNumberOrRange(str);
-//    if (numericalBounds) {
-//       numericalAttr = pokemonInstance ? "value" : "dex";
-//    } else {
-//       let non_alpha_idx = str.search(/[^A-Za-z]/);
-//       let name = str.substr(0, non_alpha_idx).toLowerCase();
-//       for (let attr of acceptedNumericalAttributes) {
-//          if (name && attr.toLowerCase().startsWith(name)) {
-//             numericalBounds = tryParseNumberOrRange(str.substr(non_alpha_idx));
-//             if (numericalBounds) {
-//                numericalAttr = attr;
-//                str = str.substr(non_alpha_idx);
-//                break;
-//             }
-//          }
-//       }
-//    }
+   let numericalAttr = "";
+   let numericalBounds = tryParseNumberOrRange(str);
+   if (numericalBounds) {
+      numericalAttr = pokemonInstance ? "value" : "dex";
+   } else {
+      let non_alpha_idx = str.search(/[^A-Za-z]/);
+      let name = str.substring(0, non_alpha_idx).toLowerCase();
+      for (let attr of acceptedNumericalAttributes) {
+         if (name && attr.toLowerCase().startsWith(name)) {
+            numericalBounds = tryParseNumberOrRange(str.substr(non_alpha_idx));
+            if (numericalBounds) {
+               numericalAttr = attr;
+               str = str.substr(non_alpha_idx);
+               break;
+            }
+         }
+      }
+   }
 
-//    if (numericalAttr && numericalBounds) {
-//       // Match numerical attributes
-//       const L = numericalBounds[0],
-//          U = numericalBounds[1];
-//       if (L === null) {
-//          return (x) => Math.abs(x[numericalAttr]) <= U;
-//       } else if (U === null) {
-//          return (x) => Math.abs(x[numericalAttr]) >= L;
-//       } else {
-//          return (x) =>
-//             L <= Math.abs(x[numericalAttr]) && Math.abs(x[numericalAttr]) <= U;
-//       }
-//    } else if (
-//       Data.BattleSettings.TypeEffectiveness.hasOwnProperty(str.toLowerCase()) ||
-//       str.toLowerCase() == "none"
-//    ) {
-//       // Match types
-//       str = str.toLowerCase();
-//       return function (obj) {
-//          return [obj.pokeType, obj.pokeType1, obj.pokeType2].includes(str);
-//       };
-//    } else if (str.toLowerCase() == "@same") {
-//       return function (obj) {
-//          return obj.cmove.pokeType == obj.fmove.pokeType;
-//       };
-//    } else if (str[0] == "@") {
-//       // Match Pokemon's moves
-//       str = str.slice(1).toLowerCase();
-//       if (str[0] == "1" || str.substring(0, 3) == "<f>") {
-//          str = str[0] == "1" ? str.slice(1) : str.slice(3);
-//          return function (obj) {
-//             var fmove =
-//                typeof obj.fmove == typeof ""
-//                   ? getEntry(obj.fmove, Data.FastMoves)
-//                   : obj.fmove;
-//             pred_move = BasicPokeQuery(str, obj);
-//             return fmove && pred_move(fmove);
-//          };
-//       } else if (str[0] == "2" || str.substring(0, 3) == "<c>") {
-//          str = str[0] == "2" ? str.slice(1) : str.slice(3);
-//          return function (obj) {
-//             var cmove =
-//                typeof obj.cmove == typeof ""
-//                   ? getEntry(obj.cmove, Data.ChargedMoves)
-//                   : obj.cmove;
-//             pred_move = BasicPokeQuery(str, obj);
-//             return cmove && pred_move(cmove);
-//          };
-//       } else if (str[0] == "3") {
-//          str = str.slice(1);
-//          return function (obj) {
-//             var cmove =
-//                typeof obj.cmove2 == typeof ""
-//                   ? getEntry(obj.cmove2, Data.ChargedMoves)
-//                   : obj.cmove2;
-//             pred_move = BasicPokeQuery(str, obj);
-//             return cmove && pred_move(cmove);
-//          };
-//       } else if (str[0] == "*" || str.substring(0, 3) == "<*>") {
-//          str = str[0] == "*" ? str.slice(1) : str.slice(3);
-//          return function (obj) {
-//             var fmove =
-//                typeof obj.fmove == typeof ""
-//                   ? getEntry(obj.fmove, Data.FastMoves)
-//                   : obj.fmove;
-//             var cmove =
-//                typeof obj.cmove == typeof ""
-//                   ? getEntry(obj.cmove, Data.ChargedMoves)
-//                   : obj.cmove;
-//             pred_move = BasicPokeQuery(str, obj);
-//             return fmove && pred_move(fmove) && cmove && pred_move(cmove);
-//          };
-//       } else {
-//          return function (obj) {
-//             var fmove =
-//                typeof obj.fmove == typeof ""
-//                   ? getEntry(obj.fmove, Data.FastMoves)
-//                   : obj.fmove;
-//             var cmove =
-//                typeof obj.cmove == typeof ""
-//                   ? getEntry(obj.cmove, Data.ChargedMoves)
-//                   : obj.cmove;
-//             pred_move = BasicPokeQuery(str, obj);
-//             return (fmove && pred_move(fmove)) || (cmove && pred_move(cmove));
-//          };
-//       }
-//    } else if (str[0] == "$") {
-//       // Box
-//       str = str.slice(1).trim();
-//       return function (obj) {
-//          return obj.uid && obj.nickname.includes(str);
-//       };
-//    } else if (str[0] == "%") {
-//       // Raid Boss
-//       str = str.slice(1);
-//       return function (obj) {
-//          return obj.raidMarker && obj.raidMarker.includes(str);
-//       };
-//    } else if (str[0] == "+") {
-//       // Evolutionary Family
-//       let ancestor = getPreEvolution(str.slice(1).trim().toLowerCase());
-//       const evolutions = getAllEvolutions(ancestor);
-//       return function (obj) {
-//          return evolutions.includes(obj.name);
-//       };
-//    } else if (str.toLowerCase() == "evolve") {
-//       // The Pokemon has evolution
-//       return function (obj) {
-//          return obj.evolutions && obj.evolutions.length > 0;
-//       };
-//    } else if (str.toLowerCase() == "legendary") {
-//       // Match legendary Pokemon
-//       return function (obj) {
-//          return obj.rarity == "POKEMON_RARITY_LEGENDARY";
-//       };
-//    } else if (str.toLowerCase() == "mythical") {
-//       // Match mythical Pokemon
-//       return function (obj) {
-//          return obj.rarity == "POKEMON_RARITY_MYTHIC";
-//       };
-//    } else if (str.toLowerCase() == "eggsonly") {
-//       // Match baby Pokemon
-//       return function (obj) {
-//          return BabyPokemon.includes(obj.name);
-//       };
-//    } else if (PokemonRegions.hasOwnProperty(str.toLowerCase())) {
-//       // Search By Region
-//       var dex_range = PokemonRegions[str.toLowerCase()];
-//       return function (obj) {
-//          return dex_range[0] <= obj.dex && obj.dex <= dex_range[1];
-//       };
-//    } else if (str.toLowerCase() == "current") {
-//       // Current Move
-//       return function (obj) {
-//          var movepool = (pokemonInstance || {})[obj.moveType + "Moves"];
-//          return movepool && movepool.includes(obj.name);
-//       };
-//    } else if (str.toLowerCase() == "legacy") {
-//       // Legacy Move
-//       return function (obj) {
-//          var movepool = (pokemonInstance || {})[obj.moveType + "Moves_legacy"];
-//          return movepool && movepool.includes(obj.name);
-//       };
-//    } else if (str.toLowerCase() == "exclusive") {
-//       // Exclusive Move
-//       return function (obj) {
-//          var movepool = (pokemonInstance || {})[
-//             obj.moveType + "Moves_exclusive"
-//          ];
-//          return movepool && movepool.includes(obj.name);
-//       };
-//    } else if (str.toLowerCase() == "special") {
-//       // Legacy or Exclusive Move
-//       return function (obj) {
-//          var movepool1 = (pokemonInstance || {})[obj.moveType + "Moves_legacy"];
-//          var movepool2 = (pokemonInstance || {})[
-//             obj.moveType + "Moves_exclusive"
-//          ];
-//          return (
-//             movepool1 &&
-//             movepool1.includes(obj.name) &&
-//             movepool2 &&
-//             movepool2.includes(obj.name)
-//          );
-//       };
-//    } else if (str.toLowerCase() == "stab") {
-//       // STAB Move
-//       return function (obj) {
-//          pokemonInstance = pokemonInstance || {};
-//          return (
-//             obj.pokeType == pokemonInstance.pokeType1 ||
-//             obj.pokeType == pokemonInstance.pokeType2
-//          );
-//       };
-//    } else if (str.toLowerCase() == "effect") {
-//       // Move with effect
-//       return function (obj) {
-//          return obj.effect;
-//       };
-//    } else if (str.toLowerCase() == "weather") {
-//       // Weather-boosted Move
-//       var Weather = $("#weather").val() || $("[name=input-weather]").val();
-//       return function (obj) {
-//          return Data.BattleSettings.TypeBoostedWeather[obj.pokeType] == Weather;
-//       };
-//    } else {
-//       // Match name/nickname/species
-//       return function (obj) {
-//          if (obj.name && obj.name.includes(str.toLowerCase())) return true;
-//          return obj.label && obj.label.includes(str);
-//       };
-//    }
-// }
+   if (numericalAttr && numericalBounds) {
+      // Match numerical attributes
+      const L = numericalBounds[0],
+         U = numericalBounds[1];
+      if (L === null) {
+         return (x) => Math.abs(x[numericalAttr]) <= U;
+      } else if (U === null) {
+         return (x) => Math.abs(x[numericalAttr]) >= L;
+      } else {
+         return (x) =>
+            L <= Math.abs(x[numericalAttr]) && Math.abs(x[numericalAttr]) <= U;
+      }
+   } else if (
+      Data.BattleSettings.TypeEffectiveness.hasOwnProperty(str.toLowerCase()) ||
+      str.toLowerCase() == "none"
+   ) {
+      // Match types
+      str = str.toLowerCase();
+      return function (obj) {
+         return [obj.pokeType, obj.pokeType1, obj.pokeType2].includes(str);
+      };
+   } else if (str.toLowerCase() == "@same") {
+      return function (obj) {
+         return obj.cmove.pokeType == obj.fmove.pokeType;
+      };
+   } else if (str[0] == "@") {
+      // Match Pokemon's moves
+      str = str.slice(1).toLowerCase();
+      if (str[0] == "1" || str.substring(0, 3) == "<f>") {
+         str = str[0] == "1" ? str.slice(1) : str.slice(3);
+         return function (obj) {
+            var fmove =
+               typeof obj.fmove == typeof ""
+                  ? getEntry(obj.fmove, Data.FastMoves)
+                  : obj.fmove;
+            pred_move = BasicPokeQuery(str, obj);
+            return fmove && pred_move(fmove);
+         };
+      } else if (str[0] == "2" || str.substring(0, 3) == "<c>") {
+         str = str[0] == "2" ? str.slice(1) : str.slice(3);
+         return function (obj) {
+            var cmove =
+               typeof obj.cmove == typeof ""
+                  ? getEntry(obj.cmove, Data.ChargedMoves)
+                  : obj.cmove;
+            pred_move = BasicPokeQuery(str, obj);
+            return cmove && pred_move(cmove);
+         };
+      } else if (str[0] == "3") {
+         str = str.slice(1);
+         return function (obj) {
+            var cmove =
+               typeof obj.cmove2 == typeof ""
+                  ? getEntry(obj.cmove2, Data.ChargedMoves)
+                  : obj.cmove2;
+            pred_move = BasicPokeQuery(str, obj);
+            return cmove && pred_move(cmove);
+         };
+      } else if (str[0] == "*" || str.substring(0, 3) == "<*>") {
+         str = str[0] == "*" ? str.slice(1) : str.slice(3);
+         return function (obj) {
+            var fmove =
+               typeof obj.fmove == typeof ""
+                  ? getEntry(obj.fmove, Data.FastMoves)
+                  : obj.fmove;
+            var cmove =
+               typeof obj.cmove == typeof ""
+                  ? getEntry(obj.cmove, Data.ChargedMoves)
+                  : obj.cmove;
+            pred_move = BasicPokeQuery(str, obj);
+            return fmove && pred_move(fmove) && cmove && pred_move(cmove);
+         };
+      } else {
+         return function (obj) {
+            var fmove =
+               typeof obj.fmove == typeof ""
+                  ? getEntry(obj.fmove, Data.FastMoves)
+                  : obj.fmove;
+            var cmove =
+               typeof obj.cmove == typeof ""
+                  ? getEntry(obj.cmove, Data.ChargedMoves)
+                  : obj.cmove;
+            pred_move = BasicPokeQuery(str, obj);
+            return (fmove && pred_move(fmove)) || (cmove && pred_move(cmove));
+         };
+      }
+   } else if (str[0] == "$") {
+      // Box
+      str = str.slice(1).trim();
+      return function (obj) {
+         return obj.uid && obj.nickname.includes(str);
+      };
+   } else if (str[0] == "%") {
+      // Raid Boss
+      str = str.slice(1);
+      return function (obj) {
+         return obj.raidMarker && obj.raidMarker.includes(str);
+      };
+   } else if (str[0] == "+") {
+      // Evolutionary Family
+      let ancestor = getPreEvolution(str.slice(1).trim().toLowerCase());
+      const evolutions = getAllEvolutions(ancestor);
+      return function (obj) {
+         return evolutions.includes(obj.name);
+      };
+   } else if (str.toLowerCase() == "evolve") {
+      // The Pokemon has evolution
+      return function (obj) {
+         return obj.evolutions && obj.evolutions.length > 0;
+      };
+   } else if (str.toLowerCase() == "legendary") {
+      // Match legendary Pokemon
+      return function (obj) {
+         return obj.rarity == "POKEMON_RARITY_LEGENDARY";
+      };
+   } else if (str.toLowerCase() == "mythical") {
+      // Match mythical Pokemon
+      return function (obj) {
+         return obj.rarity == "POKEMON_RARITY_MYTHIC";
+      };
+   } else if (str.toLowerCase() == "eggsonly") {
+      // Match baby Pokemon
+      return function (obj) {
+         return BabyPokemon.includes(obj.name);
+      };
+   } else if (PokemonRegions.hasOwnProperty(str.toLowerCase())) {
+      // Search By Region
+      var dex_range = PokemonRegions[str.toLowerCase()];
+      return function (obj) {
+         return dex_range[0] <= obj.dex && obj.dex <= dex_range[1];
+      };
+   } else if (str.toLowerCase() == "current") {
+      // Current Move
+      return function (obj) {
+         var movepool = (pokemonInstance || {})[obj.moveType + "Moves"];
+         return movepool && movepool.includes(obj.name);
+      };
+   } else if (str.toLowerCase() == "legacy") {
+      // Legacy Move
+      return function (obj) {
+         var movepool = (pokemonInstance || {})[obj.moveType + "Moves_legacy"];
+         return movepool && movepool.includes(obj.name);
+      };
+   } else if (str.toLowerCase() == "exclusive") {
+      // Exclusive Move
+      return function (obj) {
+         var movepool = (pokemonInstance || {})[
+            obj.moveType + "Moves_exclusive"
+         ];
+         return movepool && movepool.includes(obj.name);
+      };
+   } else if (str.toLowerCase() == "special") {
+      // Legacy or Exclusive Move
+      return function (obj) {
+         var movepool1 = (pokemonInstance || {})[obj.moveType + "Moves_legacy"];
+         var movepool2 = (pokemonInstance || {})[
+            obj.moveType + "Moves_exclusive"
+         ];
+         return (
+            movepool1 &&
+            movepool1.includes(obj.name) &&
+            movepool2 &&
+            movepool2.includes(obj.name)
+         );
+      };
+   } else if (str.toLowerCase() == "stab") {
+      // STAB Move
+      return function (obj) {
+         pokemonInstance = pokemonInstance || {};
+         return (
+            obj.pokeType == pokemonInstance.pokeType1 ||
+            obj.pokeType == pokemonInstance.pokeType2
+         );
+      };
+   } else if (str.toLowerCase() == "effect") {
+      // Move with effect
+      return function (obj) {
+         return obj.effect;
+      };
+      // todo reimplement weather
+      // } else if (str.toLowerCase() == "weather") {
+      //    // Weather-boosted Move
+      //    var Weather = $("#weather").val() || $("[name=input-weather]").val();
+      //    return function (obj) {
+      //       return Data.BattleSettings.TypeBoostedWeather[obj.pokeType] == Weather;
+      //    };
+   } else {
+      // Match name/nickname/species
+      return function (obj) {
+         if (obj.name && obj.name.includes(str.toLowerCase())) return true;
+         return obj.label && obj.label.includes(str);
+      };
+   }
+}
 
 export const Component = () => <div>Test</div>;
 
