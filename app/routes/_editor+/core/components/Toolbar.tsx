@@ -42,6 +42,11 @@ export const COLORS = [
       twClass: "bg-green-400 dark:bg-green-700/50 text-white",
    },
    {
+      id: "limeBG",
+      type: "bg",
+      twClass: "bg-lime-400 dark:bg-lime-700/50 text-white",
+   },
+   {
       id: "blueBG",
       type: "bg",
       twClass: "bg-blue-400 dark:bg-blue-700/50 text-white",
@@ -80,6 +85,11 @@ export const COLORS = [
       id: "greenText",
       type: "text",
       twClass: "text-green-500",
+   },
+   {
+      id: "limeText",
+      type: "text",
+      twClass: "text-lime-500",
    },
    {
       id: "blueText",
@@ -200,7 +210,7 @@ export function Toolbar() {
          <FloatingPortal>
             <div
                ref={ref}
-               className="border-zinc-200 shadow-1 bg-2-sub -mt-10 z-50
+               className="border-zinc-200 dark:border-zinc-600 shadow-1 bg-2-sub -mt-10 z-50
             rounded-xl border p-1 hidden shadow-lg"
                onMouseDown={(e) => {
                   // prevent toolbar from taking focus away from editor
@@ -324,7 +334,7 @@ export function Toolbar() {
                                     </Popover.Button>
                                     <Popover.Panel
                                        className="border-color-sub justify-items-center min-w-[200px] text-1 bg-3-sub shadow-1 
-                                       gap-1 z-30 grid grid-cols-8 rounded-lg border p-2 shadow-sm"
+                                       gap-1 z-30 grid grid-cols-9 rounded-lg border p-2 shadow-sm"
                                     >
                                        {COLORS?.map((color, rowIdx: number) => (
                                           <button

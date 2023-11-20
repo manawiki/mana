@@ -53,6 +53,12 @@ export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
          <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
       );
    }
+   if (leaf.limeBG) {
+      const { twClass } = COLORS.find((element) => element.id == "limeBG");
+      children = (
+         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
+      );
+   }
    if (leaf.blueBG) {
       const { twClass } = COLORS.find((element) => element.id == "blueBG");
       children = (
@@ -97,6 +103,12 @@ export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
    }
    if (leaf.greenText) {
       const { twClass } = COLORS.find((element) => element.id == "greenText");
+      children = (
+         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
+      );
+   }
+   if (leaf.limeText) {
+      const { twClass } = COLORS.find((element) => element.id == "limeText");
       children = (
          <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
       );
