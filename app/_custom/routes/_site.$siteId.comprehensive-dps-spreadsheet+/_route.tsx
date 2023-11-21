@@ -11,7 +11,7 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 // We can move calculation to the server to cache the results
 export async function loader({ request }: LoaderFunctionArgs) {
    //get formData from req
-   // const formData = await request?.formData();
+   // const formData = await request.formData();
    // const toggles = Object.fromEntries(formData);
 
    // console.log(formData);
@@ -446,7 +446,7 @@ const capitalize = (string) => {
 };
 function Toggles() {
    return (
-      <Form method="get" replace={true} className="w-full">
+      <Form method="GET" replace={true} className="w-full">
          <label className="row-form-label">Enemy Information</label>
          <div className="w-full grid grid-cols-4">
             <div className="row">
