@@ -1,40 +1,32 @@
-// import { json } from "@remix-run/node";
-// import type { LoaderFunctionArgs } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
-// import { cacheThis } from "~/utils/cache.server";
+import { cacheThis } from "~/utils/cache.server";
 
 import { generateSpreadsheet } from "./calc.js";
 import { GM, Data } from "./dataFactory.js";
+
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
-// // We can move calculation to the server to cache the results
-// export async function loader({ req }: LoaderFunctionArgs) {
-//    const pokemon = [];
-//    GM.fetch();
-//    GM.each("pokemon", function (pkm) {
-//       pokemon.push(pkm);
-//    });
-
-//    const results = await cacheThis(
-//       async () => generateSpreadsheet(Data.Pokemon),
-//       "pokemon",
-//    );
-
-//    return json({ pokemon, results });
-// }
-
-export function ComprehensiveDpsSpreadsheet() {
+// We can move calculation to the server to cache the results
+export async function loader({ req }: LoaderFunctionArgs) {
    const pokemon = [];
    GM.fetch();
    GM.each("pokemon", function (pkm) {
       pokemon.push(pkm);
    });
 
-   console.log("pokemon: ", pokemon);
+   const results = await cacheThis(
+      async () => generateSpreadsheet(Data.Pokemon),
+      "pokemon",
+   );
 
-   const results = generateSpreadsheet(pokemon);
+   return json({ pokemon, results });
+}
 
-   console.log("results: ", results);
+export function ComprehensiveDpsSpreadsheet() {
+   const { results } = useLoaderData<typeof loader>();
 
    return (
       <>
