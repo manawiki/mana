@@ -11,10 +11,6 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 // We can move calculation to the server to cache the results
 export async function loader({ request }: LoaderFunctionArgs) {
    //get formData from req
-   // const formData = await request.formData();
-   // const toggles = Object.fromEntries(formData);
-
-   // console.log(formData);
 
    const pokemon = [];
    GM.fetch();
@@ -33,6 +29,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
    );
 
    return json({ pokemon, results });
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+   const formData = await request.formData();
+   const toggles = Object.fromEntries(formData);
+
+   console.log(toggles);
+   return null;
 }
 
 export function ComprehensiveDpsSpreadsheet() {
@@ -439,14 +443,16 @@ const pokeTypes = [
    "steel",
    "water",
 ];
+
 const capitalize = (string) => {
    return string
       ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
       : "";
 };
+
 function Toggles() {
    return (
-      <Form method="GET" replace={true} className="w-full">
+      <Form method="POST" replace={true} className="w-full">
          <label className="row-form-label">Enemy Information</label>
          <div className="w-full grid grid-cols-4">
             <div className="row">
