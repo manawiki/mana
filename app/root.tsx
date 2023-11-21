@@ -45,6 +45,8 @@ import "./styles/global.css";
 import "~/_custom/styles.css";
 import "~/styles/fonts.css";
 
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
 export const loader = async ({
    context: { user },
    request,
