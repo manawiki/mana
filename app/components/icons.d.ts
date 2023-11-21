@@ -1,4 +1,6 @@
 export type IconName =
+  | "palette"
+  | "rows"
   | "chevron-up"
   | "chevrons-up"
   | "chevrons-down"
