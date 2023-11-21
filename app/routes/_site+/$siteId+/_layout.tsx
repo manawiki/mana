@@ -307,7 +307,7 @@ const fetchSite = async ({
    siteId,
    user,
 }: {
-   siteId: Site["slug"];
+   siteId: string;
    user?: User;
 }): Promise<Site> => {
    const QUERY = {
