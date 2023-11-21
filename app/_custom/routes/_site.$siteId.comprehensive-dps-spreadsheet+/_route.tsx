@@ -1,6 +1,6 @@
 import { json } from "@remix-run/node";
 import type { LoaderFunctionArgs } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 
 import { cacheThis } from "~/utils/cache.server";
 
@@ -20,6 +20,7 @@ export async function loader({ req }: LoaderFunctionArgs) {
    const results = await cacheThis(
       async () => generateSpreadsheet(Data.Pokemon),
       "pokemon",
+      60 * 60 * 24 * 1000, //cache for 24 hours
    );
 
    return json({ pokemon, results });
@@ -123,7 +124,7 @@ export function Introduction() {
 
 function MoveEditForm() {
    return (
-      <div className="flex">
+      <Form className="flex w-full">
          <div id="moveEditForm" title="Add/Edit Move">
             <table id="moveEditForm-table">
                <tr>
@@ -393,48 +394,111 @@ function MoveEditForm() {
 
             <div id="modEditForm-feedback"></div>
          </div>
-      </div>
+      </Form>
    );
 }
 
+const weathers = [
+   { name: "EXTREME", label: "Extreme" },
+   { name: "CLEAR", label: "Clear" },
+   { name: "FOG", label: "Fog" },
+   { name: "CLOUDY", label: "Cloudy" },
+   { name: "PARTLY_CLOUDY", label: "Partly Cloudy" },
+   { name: "RAINY", label: "Rainy" },
+   { name: "SNOW", label: "Snow" },
+   { name: "WINDY", label: "Windy" },
+];
+
+const pokeTypes = [
+   "bug",
+   "dark",
+   "dragon",
+   "electric",
+   "fairy",
+   "fighting",
+   "fire",
+   "flying",
+   "ghost",
+   "grass",
+   "ground",
+   "ice",
+   "normal",
+   "poison",
+   "psychic",
+   "rock",
+   "steel",
+   "water",
+];
+const capitalize = (string) => {
+   return string
+      ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+      : "";
+};
 function Filters() {
    return (
-      <div className="flex pogo-dps-sheet-container">
-         <div className="container form-group">
-            <label className="row-form-label">Enemy Information</label>
+      <Form method="get" replace={true} className="w-full">
+         <label className="row-form-label">Enemy Information</label>
+         <div className="w-full grid grid-cols-4">
             <div className="row">
                <div id="enemy-pokemon-name-container" className="col-sm-6">
                   <label className="col-form-label">Species</label>
+                  <input
+                     id="enemy-pokemon-name"
+                     type="text"
+                     placeholder="Species"
+                  />
                </div>
                <div id="pokemon-pokeType1-container" className="col-sm-3">
                   <label className="col-form-label">PokeType 1</label>
-                  <select
-                     name="pokemon-pokeType1"
-                     id="pokemon-pokeType1"
-                     className="form-control"
-                  ></select>
+                  <select id="pokemon-pokeType1" className="form-control">
+                     <option value="none">None</option>
+                     {pokeTypes.map((type) => (
+                        <option key={type} value={type} className="capitalize">
+                           {capitalize(type)}
+                        </option>
+                     ))}
+                  </select>
                </div>
                <div id="pokemon-pokeType2-container" className="col-sm-3">
                   <label className="col-form-label">PokeType 2</label>
-                  <select
-                     name="pokemon-pokeType2"
-                     id="pokemon-pokeType2"
-                     className="form-control"
-                  ></select>
+                  <select id="pokemon-pokeType2" className="form-control">
+                     <option value="none">None</option>
+                     {pokeTypes.map((type) => (
+                        <option key={type} value={type} className="capitalize">
+                           {capitalize(type)}
+                        </option>
+                     ))}
+                  </select>
                </div>
             </div>
             <div className="row">
                <div id="enemy-pokemon-fmove-container" className="col-sm-6">
                   <label className="col-form-label">Fast Move</label>
+                  <input
+                     id="enemy-pokemon-fmove"
+                     type="text"
+                     placeholder="Fast Move"
+                  />
                </div>
                <div id="enemy-pokemon-cmove-container" className="col-sm-6">
                   <label className="col-form-label">Charged Move</label>
+                  <input
+                     id="enemy-pokemon-cmove"
+                     type="text"
+                     placeholder="Charged Move"
+                  />
                </div>
             </div>
             <div className="row">
                <div className="col-sm-6">
                   <label className="col-form-label">Weather</label>
-                  <select id="weather" className="form-control"></select>
+                  <select id="weather" className="form-control">
+                     {weathers.map(({ name, label }) => (
+                        <option key={name} value={name}>
+                           {label}
+                        </option>
+                     ))}
+                  </select>
                </div>
                <div className="col-sm-6">
                   <label className="col-form-label">Controls</label>
@@ -473,7 +537,7 @@ function Filters() {
                </div>
             </div>
          </div>
-         <div className="container form-group">
+         <div className="w-full grid grid-cols-4">
             <div className="row">
                <div className="col-sm-6 col-lg-3">
                   <div id="ui-swapDiscount" style={{ width: "100%" }}>
@@ -539,7 +603,11 @@ function Filters() {
                   </div>
                </div>
                <div className="col-sm-6 col-md-3">
-                  <button className="btn btn-success" id="refresher">
+                  <button
+                     className="btn btn-success"
+                     id="refresher"
+                     type="submit"
+                  >
                      <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
                      Refresh
                   </button>
@@ -567,7 +635,7 @@ function Filters() {
                </div>
             </div>
          </div>
-         <div className="container">
+         <div className="w-full">
             <div className="row">
                <div className="col">
                   <label className="col-form-label">Search</label>
@@ -578,32 +646,12 @@ function Filters() {
                   <input
                      id="searchInput"
                      //  onKeyUp={search_trigger}
-                     className="form-control"
+                     className="w-full"
                   />
                </div>
             </div>
          </div>
-         <table id="ranking_table" style={{ width: "100%" }}>
-            <thead></thead>
-            <tfoot></tfoot>
-            <tbody></tbody>
-         </table>
-         <br />
-         <div className="container">
-            <div className="row">
-               <div className="col-sm-6">
-                  <button id="CopyClipboardButton" className="btn btn-info">
-                     Copy to Clipboard
-                  </button>
-               </div>
-               <div className="col-sm-6">
-                  <button id="CopyCSVButton" className="btn btn-info">
-                     Export To CSV
-                  </button>
-               </div>
-            </div>
-         </div>
-      </div>
+      </Form>
    );
 }
 
@@ -637,6 +685,20 @@ function ResultsTable({ results }) {
                ))}
          </table>
          {results.length} results
+         <div className="container">
+            <div className="row">
+               <div className="col-sm-6">
+                  <button id="CopyClipboardButton" className="btn btn-info">
+                     Copy to Clipboard
+                  </button>
+               </div>
+               <div className="col-sm-6">
+                  <button id="CopyCSVButton" className="btn btn-info">
+                     Export To CSV
+                  </button>
+               </div>
+            </div>
+         </div>
       </>
    );
 }
