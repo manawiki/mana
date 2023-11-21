@@ -675,7 +675,7 @@ function ResultsTable({ results }) {
                   <th>Fast Move</th>
                   <th>Charged Move</th>
                   <th>DPS</th>
-                  <th>thO</th>
+                  <th>TDO</th>
                   <th>ER</th>
                   <th>CP</th>
                </tr>
