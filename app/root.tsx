@@ -42,6 +42,8 @@ import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 import { rdtClientConfig } from "../rdt.config";
 
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
 export const loader = async ({
    context: { user },
    request,
