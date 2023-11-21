@@ -19,8 +19,6 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-// import rdtStylesheet from "remix-development-tools/index.css?url";
-import rdtStylesheet from "remix-development-tools/index.css";
 import { ExternalScripts } from "remix-utils/external-scripts";
 
 import { settings } from "mana-config";
@@ -38,7 +36,6 @@ import { toast } from "./components/Toaster";
 import { i18nextServer } from "./utils/i18n";
 import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
-// import { rdtClientConfig } from "../rdt.config";
 
 //css should be imported as side effect for vite
 import "./styles/global.css";
@@ -207,16 +204,7 @@ export function AppWithProviders() {
    );
 }
 
-let AppExport = withMetronome(AppWithProviders);
-
-// Toggle Remix Dev Tools
-// if (process.env.NODE_ENV === "development") {
-//    const { withDevTools } = require("remix-development-tools");
-
-//    AppExport = withDevTools(AppExport, rdtClientConfig);
-// }
-
-export default AppExport;
+export default withMetronome(AppWithProviders);
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();
