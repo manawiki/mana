@@ -1,5 +1,4 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs } from "@remix-run/react";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 
 import { cacheThis } from "~/utils/cache.server";
@@ -10,7 +9,13 @@ import { GM, Data } from "./dataFactory.js";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 // We can move calculation to the server to cache the results
-export async function loader({ req }: LoaderFunctionArgs) {
+export async function loader({ request }: LoaderFunctionArgs) {
+   //get formData from req
+   // const formData = await request?.formData();
+   // const toggles = Object.fromEntries(formData);
+
+   // console.log(formData);
+
    const pokemon = [];
    GM.fetch();
    GM.each("pokemon", function (pkm) {
@@ -18,7 +23,11 @@ export async function loader({ req }: LoaderFunctionArgs) {
    });
 
    const results = await cacheThis(
-      async () => generateSpreadsheet(Data.Pokemon),
+      async () =>
+         generateSpreadsheet(Data.Pokemon)
+            .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
+            //limit results to the top 100
+            .slice(0, 100),
       "pokemon",
       60 * 60 * 24 * 1000, //cache for 24 hours
    );
@@ -33,7 +42,7 @@ export function ComprehensiveDpsSpreadsheet() {
       <>
          <Introduction />
          {/* <MoveEditForm /> */}
-         <Filters />
+         <Toggles />
          <ResultsTable results={results} />
       </>
    );
@@ -228,61 +237,62 @@ function MoveEditForm() {
 
          <div id="pokemonEditForm" title="Add/Edit Pokemon">
             <table id="pokemonEditForm-table">
-               <tr>
-                  <th>Pokemon Name</th>
-                  <td>
-                     <input
-                        type="text"
-                        name="pokemon-name"
-                        className="input-with-icon species-input-with-icon"
-                     />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Pokemon Typing 1</th>
-                  <td>
-                     <select name="pokemon-pokeType1"></select>
-                  </td>
-               </tr>
-               <tr>
-                  <th>Pokemon Typing 2</th>
-                  <td>
-                     <select name="pokemon-pokeType2"></select>
-                  </td>
-               </tr>
-               <tr>
-                  <th>Base Attack</th>
-                  <td>
-                     <input type="number" name="pokemon-baseAtk" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Base Defense</th>
-                  <td>
-                     <input type="number" name="pokemon-baseDef" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Base Stamina</th>
-                  <td>
-                     <input type="number" name="pokemon-baseStm" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Fast Move Pool</th>
-                  <td>
-                     <input type="text" name="pokemon-fmoves" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Charged Move Pool</th>
-                  <td>
-                     <input type="text" name="pokemon-cmoves" />
-                  </td>
-               </tr>
+               <tbody>
+                  <tr>
+                     <th>Pokemon Name</th>
+                     <td>
+                        <input
+                           type="text"
+                           name="pokemon-name"
+                           className="input-with-icon species-input-with-icon"
+                        />
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Pokemon Typing 1</th>
+                     <td>
+                        <select name="pokemon-pokeType1"></select>
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Pokemon Typing 2</th>
+                     <td>
+                        <select name="pokemon-pokeType2"></select>
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Base Attack</th>
+                     <td>
+                        <input type="number" name="pokemon-baseAtk" />
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Base Defense</th>
+                     <td>
+                        <input type="number" name="pokemon-baseDef" />
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Base Stamina</th>
+                     <td>
+                        <input type="number" name="pokemon-baseStm" />
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Fast Move Pool</th>
+                     <td>
+                        <input type="text" name="pokemon-fmoves" />
+                     </td>
+                  </tr>
+                  <tr>
+                     <th>Charged Move Pool</th>
+                     <td>
+                        <input type="text" name="pokemon-cmoves" />
+                     </td>
+                  </tr>
+               </tbody>
             </table>
             <br />
-
             <div className="container">
                <div className="row">
                   <div className="col-sm-6">
@@ -434,7 +444,7 @@ const capitalize = (string) => {
       ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
       : "";
 };
-function Filters() {
+function Toggles() {
    return (
       <Form method="get" replace={true} className="w-full">
          <label className="row-form-label">Enemy Information</label>
@@ -453,7 +463,7 @@ function Filters() {
                   <select id="pokemon-pokeType1" className="form-control">
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
-                        <option key={type} value={type} className="capitalize">
+                        <option key={type} value={type}>
                            {capitalize(type)}
                         </option>
                      ))}
@@ -464,7 +474,7 @@ function Filters() {
                   <select id="pokemon-pokeType2" className="form-control">
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
-                        <option key={type} value={type} className="capitalize">
+                        <option key={type} value={type}>
                            {capitalize(type)}
                         </option>
                      ))}
@@ -571,7 +581,7 @@ function Filters() {
                   <select
                      id="attacker-level"
                      className="form-control"
-                     value="40"
+                     defaultValue="40"
                   ></select>
                </div>
             </div>
@@ -659,20 +669,19 @@ function ResultsTable({ results }) {
    return (
       <>
          <table>
-            <tr>
-               <th>Pokemon</th>
-               <th>Fast Move</th>
-               <th>Charged Move</th>
-               <th>DPS</th>
-               <th>thO</th>
-               <th>ER</th>
-               <th>CP</th>
-            </tr>
-            {results
-               .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
-               //limit results to the top 100
-               .slice(0, 100)
-               .map((pokemon, index) => (
+            <thead>
+               <tr>
+                  <th>Pokemon</th>
+                  <th>Fast Move</th>
+                  <th>Charged Move</th>
+                  <th>DPS</th>
+                  <th>thO</th>
+                  <th>ER</th>
+                  <th>CP</th>
+               </tr>
+            </thead>
+            <tbody>
+               {results.map((pokemon, index) => (
                   <tr key={index}>
                      <td>{pokemon?.label}</td>
                      <td>{pokemon?.fmove?.label}</td>
@@ -683,6 +692,7 @@ function ResultsTable({ results }) {
                      <td>{pokemon?.ui_cp}</td>
                   </tr>
                ))}
+            </tbody>
          </table>
          {results.length} results
          <div className="container">
