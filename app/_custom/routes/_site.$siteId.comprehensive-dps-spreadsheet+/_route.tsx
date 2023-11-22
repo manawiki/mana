@@ -12,6 +12,14 @@ export { ErrorBoundary } from "~/components/ErrorBoundary";
 export async function loader({ request }: LoaderFunctionArgs) {
    //get formData from req
 
+   // get url to parse query params
+   const url = new URL(request.url);
+
+   // get query params from url
+   const params = Object.fromEntries(url.searchParams);
+
+   console.log(params);
+
    const pokemon = [];
    GM.fetch();
    GM.each("pokemon", function (pkm) {
@@ -31,14 +39,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
    return json({ pokemon, results });
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-   const formData = await request.formData();
-   const toggles = Object.fromEntries(formData);
-
-   console.log(toggles);
-   return null;
-}
-
 export function ComprehensiveDpsSpreadsheet() {
    const { results } = useLoaderData<typeof loader>();
 
@@ -46,6 +46,7 @@ export function ComprehensiveDpsSpreadsheet() {
       <>
          <Introduction />
          {/* <MoveEditForm /> */}
+         <NewToggle />
          <Toggles />
          <ResultsTable results={results} />
       </>
@@ -444,15 +445,29 @@ const pokeTypes = [
    "water",
 ];
 
-const capitalize = (string) => {
-   return string
-      ? string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
+const capitalize = (word: string) => {
+   return word
+      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
       : "";
 };
 
+function NewToggle() {
+   return (
+      <Form method="GET" replace={true} className="w-full">
+         <input
+            type="checkbox"
+            id="ui-swapDiscount-checkbox"
+            name="ui-swapDiscount-checkbox"
+         />{" "}
+         Swap Dscnt
+         <input type="submit" value="Submit" />
+      </Form>
+   );
+}
+
 function Toggles() {
    return (
-      <Form method="POST" replace={true} className="w-full">
+      <Form method="GET" replace={true} className="w-full">
          <label className="row-form-label">Enemy Information</label>
          <div className="w-full grid grid-cols-4">
             <div className="row">
@@ -460,13 +475,18 @@ function Toggles() {
                   <label className="col-form-label">Species</label>
                   <input
                      id="enemy-pokemon-name"
+                     name="enemy-pokemon-name"
                      type="text"
                      placeholder="Species"
                   />
                </div>
                <div id="pokemon-pokeType1-container" className="col-sm-3">
                   <label className="col-form-label">PokeType 1</label>
-                  <select id="pokemon-pokeType1" className="form-control">
+                  <select
+                     id="pokemon-pokeType1"
+                     name="pokemon-pokeType1"
+                     className="form-control"
+                  >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
                         <option key={type} value={type}>
@@ -477,7 +497,11 @@ function Toggles() {
                </div>
                <div id="pokemon-pokeType2-container" className="col-sm-3">
                   <label className="col-form-label">PokeType 2</label>
-                  <select id="pokemon-pokeType2" className="form-control">
+                  <select
+                     id="pokemon-pokeType2"
+                     name="pokemon-pokeType2"
+                     className="form-control"
+                  >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
                         <option key={type} value={type}>
@@ -492,6 +516,7 @@ function Toggles() {
                   <label className="col-form-label">Fast Move</label>
                   <input
                      id="enemy-pokemon-fmove"
+                     name="enemy-pokemon-fmove"
                      type="text"
                      placeholder="Fast Move"
                   />
@@ -500,6 +525,7 @@ function Toggles() {
                   <label className="col-form-label">Charged Move</label>
                   <input
                      id="enemy-pokemon-cmove"
+                     name="enemy-pokemon-cmove"
                      type="text"
                      placeholder="Charged Move"
                   />
@@ -508,7 +534,7 @@ function Toggles() {
             <div className="row">
                <div className="col-sm-6">
                   <label className="col-form-label">Weather</label>
-                  <select id="weather" className="form-control">
+                  <select id="weather" name="weather" className="form-control">
                      {weathers.map(({ name, label }) => (
                         <option key={name} value={name}>
                            {label}
@@ -519,7 +545,10 @@ function Toggles() {
                <div className="col-sm-6">
                   <label className="col-form-label">Controls</label>
                   <div className="sub-menu-container">
-                     <button className="sub-menu-opener btn btn-primary">
+                     <button
+                        name="customize"
+                        className="sub-menu-opener btn btn-primary"
+                     >
                         <i className="fa fa-cog" aria-hidden="true"></i>
                         Customize
                      </button>
@@ -527,24 +556,28 @@ function Toggles() {
                         <button
                            className="player_button"
                            id="moveEditFormOpener"
+                           name="moveEditFormOpener"
                         >
                            Move
                         </button>
                         <button
                            className="player_button"
                            id="pokemonEditFormOpener"
+                           name="pokemonEditFormOpener"
                         >
                            Species
                         </button>
                         <button
                            className="player_button"
                            id="parameterEditFormOpener"
+                           name="parameterEditFormOpener"
                         >
                            Battle Settings
                         </button>
                         <button
                            className="player_button"
                            id="modEditFormOpener"
+                           name="modEditFormOpener"
                         >
                            Mods
                         </button>
@@ -559,7 +592,11 @@ function Toggles() {
                   <div id="ui-swapDiscount" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Swap Dscnt
-                        <input type="checkbox" id="ui-swapDiscount-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-swapDiscount-checkbox"
+                           name="ui-swapDiscount-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -570,6 +607,7 @@ function Toggles() {
                         <input
                            type="checkbox"
                            id="ui-use-box-checkbox"
+                           name="ui-use-box-checkbox"
                            disabled
                         />
                      </label>
@@ -579,7 +617,11 @@ function Toggles() {
                   <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Best
-                        <input type="checkbox" id="ui-uniqueSpecies-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-uniqueSpecies-checkbox"
+                           name="ui-uniqueSpecies-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -588,6 +630,7 @@ function Toggles() {
                      id="attacker-level"
                      className="form-control"
                      defaultValue="40"
+                     name="attacker-level"
                   ></select>
                </div>
             </div>
@@ -599,6 +642,7 @@ function Toggles() {
                         type="number"
                         placeholder="CP Cap"
                         className="form-control"
+                        name="ui-cpcap"
                      />
                   </div>
                </div>
@@ -606,7 +650,11 @@ function Toggles() {
                   <div id="ui-pvpMode" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         PvP Mode
-                        <input type="checkbox" id="ui-pvpMode-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-pvpMode-checkbox"
+                           name="ui-pvpMode-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -614,7 +662,11 @@ function Toggles() {
                   <div id="ui-hideUnavail" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Hide Unavail
-                        <input type="checkbox" id="ui-hideUnavail-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-hideUnavail-checkbox"
+                           name="ui-hideUnavail-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -623,6 +675,7 @@ function Toggles() {
                      className="btn btn-success"
                      id="refresher"
                      type="submit"
+                     name="refresher"
                   >
                      <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
                      Refresh
@@ -634,7 +687,11 @@ function Toggles() {
                   <div id="ui-allyMega" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Mega Boost?
-                        <input type="checkbox" id="ui-allyMega-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-allyMega-checkbox"
+                           name="ui-allyMega-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -645,7 +702,11 @@ function Toggles() {
                   >
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Mega Stab?
-                        <input type="checkbox" id="ui-allyMegaStab-checkbox" />
+                        <input
+                           type="checkbox"
+                           id="ui-allyMegaStab-checkbox"
+                           name="ui-allyMegaStab-checkbox"
+                        />
                      </label>
                   </div>
                </div>
@@ -663,6 +724,7 @@ function Toggles() {
                      id="searchInput"
                      //  onKeyUp={search_trigger}
                      className="w-full"
+                     name="searchInput"
                   />
                </div>
             </div>
