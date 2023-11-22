@@ -19,7 +19,7 @@ import {
 } from "@remix-run/react";
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { ExternalScripts } from "remix-utils/external-scripts";
+// import { ExternalScripts } from "remix-utils/external-scripts";
 
 import { settings } from "mana-config";
 import type { Site } from "~/db/payload-types";
@@ -186,7 +186,7 @@ function App() {
             <Toaster />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
-            <ExternalScripts />
+            {/* <ExternalScripts /> */}
             <LiveReload />
             {isBot ? null : <Scripts />}
          </body>
