@@ -102,7 +102,7 @@ export async function loader({
    const sites = data.sites;
 
    return json(
-      { q, sites, dev: process.env.NODE_ENV === "development" ?? undefined },
+      { q, sites, dev: process.env.NODE_ENV === "development" },
       { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
