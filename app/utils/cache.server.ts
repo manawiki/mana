@@ -11,9 +11,9 @@ export { gql } from "graphql-request";
 export const lruCache = remember(
    "lruCache",
    new LRUCache<string, CacheEntry>({
-      // max: 250, // maximum number of items to store in the cache
-      sizeCalculation: (value) => JSON.stringify(value).length,
-      maxSize: 80 * 1024 * 1024, // 200MB
+      max: 1000, // maximum number of items to store in the cache
+      // sizeCalculation: (value) => JSON.stringify(value).length,
+      // maxSize: 80 * 1024 * 1024, // 200MB
       // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
@@ -87,6 +87,7 @@ export async function gqlRequestWithCache(
 export async function cacheThis<T>(
    func: (params?: any) => Promise<T>,
    params?: any,
+   ttl?: number,
 ) {
    //the key is the function name and params stringified
    let key = params
@@ -104,7 +105,7 @@ export async function cacheThis<T>(
          console.log("cached: ", key);
          return await func(params);
       },
-      ttl: 300_000, // how long to live in ms
+      ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
@@ -125,6 +126,7 @@ export async function cacheWithSelect<T>(
    func: () => Promise<T>,
    selectFunction: Function,
    selectOptions: Partial<Record<keyof any, boolean>>,
+   ttl?: number,
 ) {
    //the key is the function stringified
    let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
@@ -144,7 +146,7 @@ export async function cacheWithSelect<T>(
          const result = await func();
          return selectFunction(result, selectOptions);
       },
-      ttl: 300_000, // how long to live in ms
+      ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
       // fallbackToCache: true,
@@ -193,9 +195,7 @@ export function verboseReporter<T>(): CreateReporter<T> {
                if (event.written) {
                   console.log(
                      `Fresh cache took ${formatDuration(totalTime)}, `,
-                     `${lruCache.size} cached total ${Math.ceil(
-                        lruCache.calculatedSize / 1024 / 1024,
-                     )}MB.`,
+                     `${lruCache.size} cached total.`,
                   );
                } else {
                   console.log(
@@ -227,9 +227,7 @@ export function verboseReporter<T>(): CreateReporter<T> {
                   `Stale cache took ${formatDuration(
                      performance.now() - refreshValueStartTS,
                   )}, `,
-                  `${lruCache.size} cached total ${Math.ceil(
-                     lruCache.calculatedSize / 1024 / 1024,
-                  )}MB.`,
+                  `${lruCache.size} cached total.`,
                );
                break;
             case "refreshValueError":

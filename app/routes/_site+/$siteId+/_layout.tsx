@@ -7,13 +7,9 @@ import type {
    MetaFunction,
    SerializeFrom,
 } from "@remix-run/node";
-import {
-   useFetcher,
-   useLoaderData,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -117,7 +113,6 @@ export default function SiteIndex() {
    const { site } = useLoaderData<typeof loader>() || {};
    const fetcher = useFetcher();
    const location = useLocation();
-   const { user } = useRouteLoaderData("root") as { user: User };
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
    const [searchToggle, setSearchToggle] = useState(false);
@@ -146,8 +141,8 @@ export default function SiteIndex() {
                className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
                      laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
             >
-               <ColumnOne site={site} user={user} />
-               <ColumnTwo site={site} user={user} />
+               <ColumnOne site={site} />
+               <ColumnTwo site={site} />
                <ColumnThree
                   searchToggle={searchToggle}
                   setSearchToggle={setSearchToggle}
@@ -195,7 +190,15 @@ export const action: ActionFunction = async ({
       case "followSite": {
          //We need to get the current sites of the user, then prepare the new sites array
          const userId = user?.id;
-         const userCurrentSites = user?.sites || [];
+         invariant(userId);
+         const userData = user
+            ? await payload.findByID({
+                 collection: "users",
+                 id: userId,
+                 user,
+              })
+            : undefined;
+         const userCurrentSites = userData?.sites || [];
          //@ts-ignore
          const sites = userCurrentSites.map(({ id }: { id }) => id);
          //Finally we update the user with the new site id
@@ -263,7 +266,18 @@ export const action: ActionFunction = async ({
                { status: 400 },
             );
          }
-         const userCurrentSites = user?.sites || [];
+
+         invariant(userId);
+
+         const userData = user
+            ? await payload.findByID({
+                 collection: "users",
+                 id: userId,
+                 user,
+              })
+            : undefined;
+
+         const userCurrentSites = userData?.sites || [];
          //@ts-ignore
          const sites = userCurrentSites.map(({ id }: { id }) => id);
 
@@ -307,7 +321,7 @@ const fetchSite = async ({
    siteId,
    user,
 }: {
-   siteId: Site["slug"];
+   siteId: string;
    user?: User;
 }): Promise<Site> => {
    const QUERY = {
