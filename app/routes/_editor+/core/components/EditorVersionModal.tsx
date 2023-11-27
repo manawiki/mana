@@ -52,7 +52,7 @@ export function EditorVersionModal({
                <Tab.Group>
                   <Tab.Panels className="bg-3 max-h-[90vh] w-[775px] overflow-auto px-4 pb-4 no-scrollbar">
                      <div
-                        className="bg-2-sub text-1 border-color-sub fixed left-0 top-0 z-10 
+                        className="bg-2-sub text-1 border-color-sub fixed left-0 top-0 z-20 
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
                         {selectedVersion?.updatedAt &&
