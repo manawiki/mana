@@ -1,3 +1,6 @@
+import { useState } from "react";
+
+import { Combobox } from "@headlessui/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 
@@ -5,8 +8,6 @@ import { cacheThis } from "~/utils/cache.server";
 
 import { generateSpreadsheet } from "./calc.js";
 import { GM, Data } from "./dataFactory.js";
-import { Combobox } from "@headlessui/react";
-import { useState } from "react";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
