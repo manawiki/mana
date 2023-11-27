@@ -1,19 +1,18 @@
-import { NavLink, useNavigation } from "@remix-run/react";
+import { NavLink } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
-import type { Site, User } from "~/db/payload-types";
+import type { Site } from "~/db/payload-types";
 
 import { PinnedSideMenu } from "./Menu";
 
-export function ColumnTwo({ site, user }: { site: Site; user: User }) {
-   const navigation = useNavigation();
-
+export function ColumnTwo({ site }: { site: Site }) {
+   // const navigation = useNavigation();
    //opportunistically update the active state of the link
-   const opportunistic = (isActive: boolean, to: string) =>
-      navigation?.state === "loading"
-         ? navigation?.location?.pathname === to
-         : isActive;
+   // const opportunistic = (isActive: boolean, to: string) =>
+   //    navigation?.state === "loading"
+   //       ? navigation?.location?.pathname === to
+   //       : isActive;
 
    return (
       <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
