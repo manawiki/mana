@@ -466,6 +466,37 @@ function NewToggle() {
 }
 
 function Toggles() {
+   const { pokemon } = useLoaderData<typeof loader>();
+
+   console.log(pokemon);
+
+   // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
+   // a pokemon in our list
+   // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
+   const enemyPokemonName = "pikachu";
+
+   const enemyPokemon = pokemon.find(
+      (pokemon) => pokemon.name === enemyPokemonName,
+   );
+
+   const fastMoves =
+      [
+         enemyPokemon?.fastMoves,
+         enemyPokemon?.fastMove_exclusive,
+         enemyPokemon?.fastMoves_legacy,
+      ]
+         .flat(1)
+         .filter((move) => move) ?? [];
+
+   const chargedMoves =
+      [
+         enemyPokemon?.chargedMoves,
+         enemyPokemon?.chargedMove_exclusive,
+         enemyPokemon?.chargedMoves_legacy,
+      ]
+         .flat(1)
+         .filter((move) => move) ?? [];
+
    return (
       <Form method="GET" replace={true} className="w-full">
          <label className="row-form-label">Enemy Information</label>
@@ -478,6 +509,7 @@ function Toggles() {
                      name="enemy-pokemon-name"
                      type="text"
                      placeholder="Species"
+                     defaultValue={capitalize(enemyPokemonName)}
                   />
                </div>
                <div id="pokemon-pokeType1-container" className="col-sm-3">
@@ -514,21 +546,35 @@ function Toggles() {
             <div className="row">
                <div id="enemy-pokemon-fmove-container" className="col-sm-6">
                   <label className="col-form-label">Fast Move</label>
-                  <input
+                  <select
                      id="enemy-pokemon-fmove"
                      name="enemy-pokemon-fmove"
-                     type="text"
+                     className="form-control"
                      placeholder="Fast Move"
-                  />
+                  >
+                     <option value="">Select Fast Move</option>
+                     {fastMoves.map((move) => (
+                        <option key={move} value={move}>
+                           {capitalize(move)}
+                        </option>
+                     ))}
+                  </select>
                </div>
                <div id="enemy-pokemon-cmove-container" className="col-sm-6">
                   <label className="col-form-label">Charged Move</label>
-                  <input
+                  <select
                      id="enemy-pokemon-cmove"
                      name="enemy-pokemon-cmove"
-                     type="text"
-                     placeholder="Charged Move"
-                  />
+                     className="form-control"
+                     placeholder="Charge Move"
+                  >
+                     <option value="">Select Charged Move</option>
+                     {chargedMoves.map((move) => (
+                        <option key={move} value={move}>
+                           {capitalize(move)}
+                        </option>
+                     ))}
+                  </select>
                </div>
             </div>
             <div className="row">
