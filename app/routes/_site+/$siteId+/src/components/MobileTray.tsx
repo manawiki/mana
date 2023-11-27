@@ -66,10 +66,7 @@ export const FollowingTrayContent = ({
    return (
       <>
          <menu className="flex h-full flex-col">
-            <FollowingListMobile
-               site={site}
-               setMenuOpen={setFollowerMenuOpen}
-            />
+            <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
             <LoggedIn>
                <Link
                   reloadDocument={true}

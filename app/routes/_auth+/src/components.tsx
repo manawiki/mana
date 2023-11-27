@@ -38,13 +38,15 @@ export const NotAdminOrStaffOrOwner = ({
 
 //Render child components if the user is following the site
 export const FollowingSite = ({ children }: { children: React.ReactNode }) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
-
+   const { following } = useRouteLoaderData("root") as {
+      user: User;
+      following: User["sites"];
+   };
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
       site: null,
    };
-   if (site && user?.sites?.some((e: any) => e.id === site?.id))
+   if (site && following?.some((e: any) => e.id === site?.id))
       return <>{children}</>;
    return null;
 };
@@ -64,14 +66,17 @@ export const NotFollowingSite = ({
 }: {
    children: React.ReactNode;
 }) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
+   const { user, following } = useRouteLoaderData("root") as {
+      user: User;
+      following: User["sites"];
+   };
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
       site: null,
    };
    if (!user) return null;
-   if (user?.sites?.some((e: any) => e.id === site?.id)) return null;
+   if (following?.some((e: any) => e.id === site?.id)) return null;
    return <>{children}</>;
 };
 
