@@ -66,6 +66,7 @@ export const loader = async ({
       icon: {
          url: site?.icon?.url,
       },
+      name: site.name,
       slug: site?.slug,
       type: site?.type,
    }));
