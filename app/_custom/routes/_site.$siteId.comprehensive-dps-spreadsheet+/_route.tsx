@@ -29,8 +29,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
       pokemon.push(pkm);
    });
 
+   //to-do seperate out the toggle filters as seperate cache step
    const results = await cacheThis(
       async () =>
+         //todo apply context from query params
          generateSpreadsheet(Data.Pokemon)
             .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
             //limit results to the top 100
@@ -788,6 +790,7 @@ function Toggles() {
    );
 }
 
+//todo figure out what we want to use for table
 function ResultsTable({ results }) {
    return (
       <>
