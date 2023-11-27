@@ -5,6 +5,8 @@ import { cacheThis } from "~/utils/cache.server";
 
 import { generateSpreadsheet } from "./calc.js";
 import { GM, Data } from "./dataFactory.js";
+import { Combobox } from "@headlessui/react";
+import { useState } from "react";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -466,18 +468,14 @@ function NewToggle() {
 }
 
 function Toggles() {
-   const { pokemon } = useLoaderData<typeof loader>();
+   // const { pokemon } = useLoaderData<typeof loader>();
 
-   console.log(pokemon);
+   // console.log(pokemon);
 
    // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
    // a pokemon in our list
    // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
-   const enemyPokemonName = "pikachu";
-
-   const enemyPokemon = pokemon.find(
-      (pokemon) => pokemon.name === enemyPokemonName,
-   );
+   const [enemyPokemon, setEnemyPokemon] = useState({});
 
    const fastMoves =
       [
@@ -504,12 +502,14 @@ function Toggles() {
             <div className="row">
                <div id="enemy-pokemon-name-container" className="col-sm-6">
                   <label className="col-form-label">Species</label>
+                  <PokemonComboBox
+                     enemyPokemon={enemyPokemon}
+                     setEnemyPokemon={setEnemyPokemon}
+                  />
                   <input
-                     id="enemy-pokemon-name"
+                     hidden
                      name="enemy-pokemon-name"
-                     type="text"
-                     placeholder="Species"
-                     defaultValue={capitalize(enemyPokemonName)}
+                     value={enemyPokemon.name}
                   />
                </div>
                <div id="pokemon-pokeType1-container" className="col-sm-3">
@@ -521,7 +521,11 @@ function Toggles() {
                   >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
-                        <option key={type} value={type}>
+                        <option
+                           key={type}
+                           value={type}
+                           selected={enemyPokemon?.pokeType1 === type}
+                        >
                            {capitalize(type)}
                         </option>
                      ))}
@@ -536,7 +540,11 @@ function Toggles() {
                   >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
-                        <option key={type} value={type}>
+                        <option
+                           key={type}
+                           value={type}
+                           selected={enemyPokemon?.pokeType2 === type}
+                        >
                            {capitalize(type)}
                         </option>
                      ))}
@@ -824,6 +832,61 @@ function ResultsTable({ results }) {
             </div>
          </div>
       </>
+   );
+}
+
+export function PokemonComboBox({ enemyPokemon, setEnemyPokemon }) {
+   const { pokemon } = useLoaderData<typeof loader>();
+
+   const [query, setQuery] = useState("");
+
+   // console.log(enemyPokemon);
+
+   const filteredPokemon =
+      query === ""
+         ? pokemon
+         : pokemon.filter((current) => {
+              return current.name.includes(query.toLowerCase());
+           });
+
+   return (
+      <Combobox
+         // name="enemy-pokemon-name"
+         value={enemyPokemon}
+         onChange={setEnemyPokemon}
+      >
+         <div className="relative h-full w-full focus:outline-none">
+            <Combobox.Input
+               // className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
+               displayValue={(item) => capitalize(item?.name) ?? ""}
+               placeholder="Species"
+               onChange={(e) => setQuery(e.target.value)}
+            />
+         </div>
+
+         <Combobox.Options
+         // className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
+         //    overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
+         >
+            {filteredPokemon.length === 0
+               ? query && (
+                    <div className="text-1 p-3 text-sm">No results...</div>
+                 )
+               : filteredPokemon?.map((item) => (
+                    <Combobox.Option
+                       className={({ active }) =>
+                          `relative cursor-default select-none ${
+                             active ? "bg-zinc-100 dark:bg-dark400" : "text-1"
+                          }`
+                       }
+                       key={item?.name}
+                       value={item}
+                    >
+                       {capitalize(item?.name) ?? ""}
+                    </Combobox.Option>
+                 ))}
+         </Combobox.Options>
+      </Combobox>
    );
 }
 
