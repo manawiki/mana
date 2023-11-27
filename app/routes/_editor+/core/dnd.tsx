@@ -17,13 +17,7 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-   FloatingDelayGroup,
-   safePolygon,
-   useFloating,
-   useHover,
-   useInteractions,
-} from "@floating-ui/react";
+import { FloatingDelayGroup } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
@@ -316,24 +310,11 @@ function HoverElement({
    activeId: string | null;
    isTwoColumn?: boolean;
 }) {
-   const [isHoverActive, setHoverState] = useState(false);
-
    const [isEditorTrayOpen, setEditorTray] = useState(false);
    const animateLayoutChanges: AnimateLayoutChanges = (args) =>
       defaultAnimateLayoutChanges({ ...args, wasDragging: true });
 
    const sortable = useSortable({ animateLayoutChanges, id: element.id });
-
-   const { refs, context } = useFloating({
-      open: isHoverActive,
-      onOpenChange: setHoverState,
-   });
-
-   const hover = useHover(context, {
-      handleClose: safePolygon(),
-   });
-
-   const { getReferenceProps } = useInteractions([hover]);
 
    const activeIndex = editor.children.findIndex(
       (result: any) => result.id === activeId,
@@ -351,11 +332,7 @@ function HoverElement({
 
    return (
       <section className="relative">
-         <div
-            className="w-full"
-            ref={refs.setReference}
-            {...getReferenceProps()}
-         >
+         <div className="w-full group/editor">
             <div
                className={clsx(
                   insertPosition === Position.Before
@@ -387,12 +364,10 @@ function HoverElement({
                contentEditable={false}
                //If editor tray is also open, we keep the menu open
                className={clsx(
-                  isHoverActive || isEditorTrayOpen
-                     ? "opacity-100"
-                     : "opacity-0",
+                  isEditorTrayOpen ? "opacity-100" : "opacity-0",
                   isParentTwoColumn ? "pr-16" : "pr-2",
                   isTwoColumn ? "z-20" : "z-10",
-                  "absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
+                  "group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
                )}
             >
                <BlockInlineActions

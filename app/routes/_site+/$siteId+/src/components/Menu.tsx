@@ -8,15 +8,10 @@ import { LoggedIn } from "~/routes/_auth+/src/components";
 
 import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
 
-export const FollowingListMobile = ({
-   setMenuOpen,
-   site,
-}: {
-   setMenuOpen?: any;
-   site?: Site;
-}) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
-   const following = user?.sites as Site[];
+export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
+   const { following } = useRouteLoaderData("root") as {
+      following: User["sites"];
+   };
 
    return (
       <>
@@ -42,7 +37,7 @@ export const FollowingListMobile = ({
                                        height={32}
                                        alt="Site Logo"
                                        options="aspect_ratio=1:1&height=120&width=120"
-                                       url={item.icon?.url}
+                                       url={item.icon?.url ?? ""}
                                     />
                                  </div>
                                  <div className="truncate text-sm font-bold">

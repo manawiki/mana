@@ -133,9 +133,27 @@ export function Main({ data: char }: { data: CharacterType }) {
          <div className="my-2 flex items-center gap-2 px-3 bg-zinc-50 dark:bg-dark350 rounded-lg shadow-sm shadow-1 border border-color-sub py-1">
             <div className="mr-2 inline-flex align-middle text-zinc-200">
                <div className="text-xs mr-1 text-gray-500 self-center">Lv</div>
-               <div className="text-lg font-bold mr-2 w-6 text-gray-600 dark:text-gray-400 self-center">
-                  {levelAttribute.values[level]}
-               </div>
+               <input
+                  className="text-lg font-bold mr-2 w-6 text-gray-600 dark:text-gray-400 self-center bg-transparent border-0 p-0"
+                  value={levelAttribute.values[level]}
+                  onChange={(event) => {
+                     const numonly = /^[0-9\b]+$/;
+                     const maxval = char.attributes?.[0]?.values?.length - 1;
+
+                     // Only set the level slider value if the entered value is not blank or a Number. Parseint as well so leading 0s are removed.
+                     if (numonly.test(event.target.value)) {
+                        let input = parseInt(event.target.value);
+                        if (input > maxval) {
+                           input = maxval;
+                        } else if (input < 1) {
+                           input = 1;
+                        }
+                        let input_entry =
+                           char.attributes?.[0]?.values?.indexOf(input);
+                        setLevel(input_entry);
+                     }
+                  }}
+               ></input>
 
                <div className="flex text-md font-bold mr-2 items-center self-center rounded-full bg-zinc-500 h-3">
                   {[1, 2, 3, 4, 5].map((stg: any) => (
@@ -150,7 +168,7 @@ export function Main({ data: char }: { data: CharacterType }) {
                            "https://static.mana.wiki/endfield/icon_breakmark_01.png"
                         }
                         options="height=15"
-                        alt={"BreakStage"}
+                        alt={">"}
                      />
                   ))}
                </div>
