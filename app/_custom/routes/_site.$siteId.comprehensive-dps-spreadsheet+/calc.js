@@ -4,20 +4,20 @@ import { Data, GM } from "./dataFactory.js";
  * @file Comprehensive DPS Calculator
  */
 
-var DEFAULT_ATTACKER_LEVEL = 40;
-var DEFAULT_ATTACKER_CPM = 0.7903;
-var DEFAULT_ATTACKER_IVs = [15, 15, 15];
-var DEFAULT_ENEMY_DPS1 = 900;
-// var DEFAULT_ENEMY_LEVEL = 40;
-// var DEFAULT_ENEMY_CPM = 0.7903;
-// var DEFAULT_ENEMY_IVs = [15, 15, 15];
-// var DEFAULT_ENEMY_CURRENT_DEFENSE = 160;
-// var DEFAULT_ENEMY_POKETYPE1 = "none";
-// var DEFAULT_ENEMY_POKETYPE2 = "none";
-// var DEFAULT_WEATHER = "EXTREME";
-// var DEFAULT_TOTAL_ENERGY_GAINED = 400;
+const DEFAULT_ATTACKER_LEVEL = 40;
+const DEFAULT_ATTACKER_CPM = 0.7903;
+const DEFAULT_ATTACKER_IVs = [15, 15, 15];
+const DEFAULT_ENEMY_DPS1 = 900;
+const DEFAULT_ENEMY_LEVEL = 40;
+const DEFAULT_ENEMY_CPM = 0.7903;
+const DEFAULT_ENEMY_IVs = [15, 15, 15];
+const DEFAULT_ENEMY_CURRENT_DEFENSE = 160;
+const DEFAULT_ENEMY_POKETYPE1 = "none";
+const DEFAULT_ENEMY_POKETYPE2 = "none";
+const DEFAULT_WEATHER = "EXTREME";
+const DEFAULT_TOTAL_ENERGY_GAINED = 400;
 
-const LeagueCPCap = 0;
+// const LeagueCPCap = 0;
 
 // var Context = {
 //    weather: DEFAULT_WEATHER,
@@ -53,6 +53,7 @@ export const Context = {
    battleMode: "regular",
    allyMega: false,
    allyMegaStab: false,
+   LeagueCPCap: 0,
 };
 
 function damage(dmg_giver, dmg_taker, move, Context) {
@@ -480,76 +481,73 @@ function calculateCP(pkm) {
 //    $("#ranking_table_filter").hide();
 // }
 
-// function applyContext() {
-//    Context.weather = $("#weather").val();
+export function applyContext(custom) {
+   let Context = {};
 
-//    Context.genericEnemy = false;
-//    var enemyPokemon = GM.get(
-//       "pokemon",
-//       $("#pokemon-name").val().trim().toLowerCase(),
-//    );
-//    if (!enemyPokemon) {
-//       Context.genericEnemy = true;
-//       enemyPokemon = {};
-//    }
+   Context.weather = custom.weather;
 
-//    Context.genericEnemyFastMove = false;
-//    var enemyFast = GM.get(
-//       "fast",
-//       $("#pokemon-fmove").val().trim().toLowerCase(),
-//    );
-//    if (!enemyFast) {
-//       Context.genericEnemyFastMove = true;
-//       enemyFast = {};
-//    }
+   Context.genericEnemy = false;
+   let enemyPokemon = GM.get("pokemon", custom?.enemyPokemon);
+   if (!enemyPokemon) {
+      Context.genericEnemy = true;
+      enemyPokemon = {};
+   }
 
-//    Context.genericEnemyChargedMove = false;
-//    var enemyCharged = GM.get(
-//       "charged",
-//       $("#pokemon-cmove").val().trim().toLowerCase(),
-//    );
-//    if (!enemyCharged) {
-//       Context.genericEnemyChargedMove = true;
-//       enemyCharged = {};
-//    }
+   // Context.genericEnemyFastMove = false;
+   let enemyFast = GM.get(
+      "fast",
+      custom?.enemyPokemonFmove?.trim().toLowerCase(),
+   );
+   if (!enemyFast) {
+      Context.genericEnemyFastMove = true;
+      enemyFast = {};
+   }
 
-//    Context.enemy = {
-//       fastMoves: [],
-//       chargedMoves: [],
-//    };
-//    $.extend(Context.enemy, enemyPokemon);
+   // Context.genericEnemyChargedMove = false;
+   let enemyCharged = GM.get(
+      "charged",
+      custom.enemyPokemonCmove?.trim().toLowerCase(),
+   );
+   if (!enemyCharged) {
+      Context.genericEnemyChargedMove = true;
+      enemyCharged = {};
+   }
 
-//    Context.enemy.fmove = enemyFast;
-//    Context.enemy.cmove = enemyCharged;
-//    var enemy_cpm = DEFAULT_ENEMY_CPM;
-//    Context.enemy.Atk =
-//       (Context.enemy.baseAtk + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
-//    Context.enemy.Def =
-//       (Context.enemy.baseDef + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
-//    Context.enemy.Stm =
-//       (Context.enemy.baseStm + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
-//    Context.enemy.pokeType1 = $("#pokemon-pokeType1").val();
-//    Context.enemy.pokeType2 = $("#pokemon-pokeType2").val();
+   Context.enemy = {
+      fastMoves: [],
+      chargedMoves: [],
+   };
+   Context.enemy = { ...enemyPokemon };
 
-//    Context.enemy.fmoves = [];
-//    for (let move of Context.enemy.fastMoves) {
-//       Context.enemy.fmoves.push(GM.get("fast", move));
-//    }
-//    Context.enemy.cmoves = [];
-//    for (let move of Context.enemy.chargedMoves) {
-//       Context.enemy.cmoves.push(GM.get("charged", move));
-//    }
+   Context.enemy.fmove = enemyFast;
+   Context.enemy.cmove = enemyCharged;
+   let enemy_cpm = DEFAULT_ENEMY_CPM;
+   Context.enemy.Atk =
+      (Context.enemy.baseAtk + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
+   Context.enemy.Def =
+      (Context.enemy.baseDef + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
+   Context.enemy.Stm =
+      (Context.enemy.baseStm + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
+   if (custom.enemyPokeType1) Context.enemy.pokeType1 = custom.enemyPokeType1;
+   if (custom.enemyPokeType2) Context.enemy.pokeType2 = custom.enemyPokeType2;
 
-//    if (Context.genericEnemy) {
-//       Context.enemy.Def = DEFAULT_ENEMY_CURRENT_DEFENSE;
-//    }
-//    var cpcap = parseInt($("#ui-cpcap").val());
-//    if (cpcap > 0) {
-//       LeagueCPCap = cpcap;
-//    } else {
-//       LeagueCPCap = 0;
-//    }
-// }
+   Context.enemy.fmoves = [];
+   for (let move of Context.enemy.fastMoves) {
+      Context.enemy.fmoves.push(GM.get("fast", move));
+   }
+   Context.enemy.cmoves = [];
+   for (let move of Context.enemy.chargedMoves) {
+      Context.enemy.cmoves.push(GM.get("charged", move));
+   }
+
+   if (Context.genericEnemy) {
+      Context.enemy.Def = DEFAULT_ENEMY_CURRENT_DEFENSE;
+   }
+
+   if (custom.cpcap) Context.LeagueCPCap = custom.cpcap;
+
+   return Context;
+}
 
 // export function calculateRow(pkm) {
 //    let pkmInstance = { ...pkm };
@@ -733,8 +731,8 @@ export function generateSpreadsheet(pokemonCollection, Context) {
                (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
             pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
 
-            if (LeagueCPCap > 0) {
-               adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
+            if (Context.LeagueCPCap > 0) {
+               adjustStatsUnderCPCap(pkmInstance, Context.LeagueCPCap);
             }
             pkmInstance.cp = calculateCP(pkmInstance);
 
@@ -922,7 +920,7 @@ export function generateSpreadsheet(pokemonCollection, Context) {
 // var LeagueCPCap = 0;
 
 function adjustStatsUnderCPCap(pkm, cp) {
-   var old_cp = calculateCP(pkm);
+   let old_cp = calculateCP(pkm);
    if (old_cp > cp) {
       let adjust_ratio = Math.sqrt(cp / old_cp);
       pkm.cpm *= adjust_ratio;

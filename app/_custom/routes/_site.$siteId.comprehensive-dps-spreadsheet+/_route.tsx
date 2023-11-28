@@ -6,13 +6,13 @@ import { Form, useLoaderData } from "@remix-run/react";
 
 import { cacheThis } from "~/utils/cache.server";
 
-import { generateSpreadsheet, Context } from "./calc.js";
+import { generateSpreadsheet, Context, applyContext } from "./calc.js";
 import { GM, Data } from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 //apply param toggles to update context
-function getContext(params) {
+function getCustom(params) {
    const context = {};
 
    if (params["ui-swapDiscount-checkbox"]) {
@@ -23,14 +23,16 @@ function getContext(params) {
       context.useBox = true;
    }
 
+   //todo what is this?
    if (params["ui-uniqueSpecies-checkbox"]) {
       context.uniqueSpecies = true;
    }
 
    if (params["ui-pvpMode-checkbox"]) {
-      context.pvpMode = true;
+      context.battleMode = "pvp";
    }
 
+   //todo what is this?
    if (params["ui-hideUnavail-checkbox"]) {
       context.hideUnavail = true;
    }
@@ -68,11 +70,11 @@ function getContext(params) {
    }
 
    if (params["pokemon-pokeType1"]) {
-      context.pokemonPokeType1 = params["pokemon-pokeType1"];
+      context.enemyPokeType1 = params["pokemon-pokeType1"];
    }
 
    if (params["pokemon-pokeType2"]) {
-      context.pokemonPokeType2 = params["pokemon-pokeType2"];
+      context.enemyPokeType2 = params["pokemon-pokeType2"];
    }
 
    // if (params["searchInput"]) {
@@ -89,16 +91,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
    // get url to parse query params
    const url = new URL(request.url);
 
-   console.log(url.search);
+   // console.log(url.search);
 
    // get query params from url
    const params = Object.fromEntries(url.searchParams);
 
-   const custom = getContext(params);
-
-   const customContext = { ...Context, ...custom };
-
-   console.log(customContext);
+   const custom = getCustom(params);
 
    //to-do add user pokemon
    GM.fetch();
@@ -106,13 +104,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    //todo apply context from query params
    const results = await cacheThis(
-      async () => generateSpreadsheet(Data.Pokemon, customContext),
+      async () =>
+         generateSpreadsheet(Data.Pokemon, {
+            ...Context,
+            ...applyContext(custom),
+         }),
 
-      "pokemon-dps" + JSON.stringify(customContext),
+      "pokemon-dps" + JSON.stringify(custom),
       60 * 60 * 24 * 1000, //cache for 24 hours
    );
 
-   //to-do seperate out the toggle filters as seperate cache step
+   //to-do read params to toggle sorting
+   const sort = params["sort"] ?? "dps";
+   const page = params["page"] ?? 1;
+
    const filtered = await cacheThis(
       async () =>
          results
