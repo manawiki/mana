@@ -1,17 +1,17 @@
 import { _CharacterCamps } from "./_character-camps";
 import { _DamageElements } from "./_damage-elements";
 import { _DamageTypes } from "./_damage-types";
-import { Characters } from "./characters";
+import { Agents } from "./agents";
 
 export const CustomCollections = [
-  Characters,
+  Agents,
   _CharacterCamps,
   _DamageElements,
   _DamageTypes,
 ];
 
-export const CustomSearchCollections = ["characters"];
+export const CustomSearchCollections = ["agents"];
 
 export const CustomDefaultPriorities = {
-  characters: 90,
+  agents: 90,
 };
