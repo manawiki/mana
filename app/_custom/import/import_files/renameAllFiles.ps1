@@ -1,0 +1,1 @@
+Get-ChildItem *.json | rename-item -newname { $_.name -replace '\d\d\d\d\d\d\d\d ','' -replace ' \w\w\w\w?\w?\w?\w?','' }
