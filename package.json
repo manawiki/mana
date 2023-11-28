@@ -69,7 +69,7 @@
       "lru-cache": "^10.0.0",
       "morgan": "^1.10.0",
       "nanoid": "^4.0.0",
-      "payload": "2.2.1",
+      "payload": "2.2.2",
       "payload-query": "^1.0.2",
       "pluralize": "^8.0.0",
       "prism-react-renderer": "^2.1.0",
