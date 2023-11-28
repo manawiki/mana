@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 
 import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
-import { Loader2, Upload } from "lucide-react";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import {
    isAdding,
    assertIsPost,
@@ -111,12 +111,17 @@ export function BlockImage({ element }: Props) {
                      >
                         <div className="text-1 space-y-2">
                            {isImageAdding ? (
-                              <Loader2
+                              <Icon
+                                 name="loader-2"
                                  size={24}
                                  className="mx-auto animate-spin"
                               />
                            ) : (
-                              <Upload className="mx-auto" size={24} />
+                              <Icon
+                                 name="upload"
+                                 className="mx-auto"
+                                 size={24}
+                              />
                            )}
 
                            <div className="text-center text-sm font-bold group-hover:underline">

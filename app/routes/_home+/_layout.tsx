@@ -9,7 +9,6 @@ import { LogoFull } from "~/components";
 import type { User } from "~/db/payload-types";
 
 import { LoggedIn, LoggedOut } from "../_auth+/src/components";
-import { UserMenu } from "../_site+/$siteId+/src/components";
 
 export default function IndexLayout() {
    return (
@@ -52,7 +51,7 @@ const Header = () => {
                   </Link>
                </LoggedOut>
                <nav className="flex items-center gap-4">
-                  <UserMenu />
+                  {/* <UserMenu /> */}
                   <LoggedOut>
                      <ul className="flex items-center justify-end gap-3">
                         <li>

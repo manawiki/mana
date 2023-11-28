@@ -1,7 +1,7 @@
 import { useFetcher } from "@remix-run/react";
-import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
 import { isAdding } from "~/utils";
 
@@ -54,7 +54,10 @@ export const PostDeleteModal = ({
                                               focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
                >
                   {deleting ? (
-                     <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
+                     <Icon
+                        name="loader-2"
+                        className="mx-auto h-5 w-5 animate-spin text-red-200"
+                     />
                   ) : (
                      t("actions.delete")
                   )}

@@ -4,20 +4,14 @@ import { Popover, Switch } from "@headlessui/react";
 import { type ActionFunction, type MetaFunction, json } from "@remix-run/node";
 import { Link, Outlet, useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import {
-   ChevronDown,
-   ChevronRight,
-   Database,
-   Link as LinkIcon,
-   Loader2,
-   X,
-} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
+import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
@@ -25,7 +19,6 @@ import {
    assertIsPost,
    isProcessing,
    isAdding,
-   slugify,
    getSession,
    setErrorMessage,
 } from "~/utils";
@@ -69,7 +62,7 @@ function SlugField({ zo }: { zo: Zorm<typeof CollectionSchema> }) {
          name={zo.fields.slug()}
          type="text"
          className="input-text h-6 focus:bg-3 pb-0.5 text-xs border-0 p-0 mt-0"
-         value={slugify(value)}
+         value={urlSlug(value)}
       />
    );
 }
@@ -116,7 +109,11 @@ export default function CollectionIndex() {
                         type="submit"
                         onClick={() => setCollectionToggle(!collectionToggle)}
                      >
-                        <Database className="text-zinc-400" size={13} />
+                        <Icon
+                           name="database"
+                           className="text-zinc-400"
+                           size={13}
+                        />
                         New Collection
                      </button>
                   )}
@@ -128,7 +125,7 @@ export default function CollectionIndex() {
                         value="createPost"
                         onClick={() => setCollectionToggle(!collectionToggle)}
                      >
-                        <X className="text-zinc-400" size={16} />
+                        <Icon name="x" className="text-zinc-400" size={16} />
                      </button>
                   )}
                </AdminOrStaffOrOwner>
@@ -165,7 +162,8 @@ export default function CollectionIndex() {
                                           <div className="text-xs group-hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 font-semibold">
                                              Advanced
                                           </div>
-                                          <ChevronDown
+                                          <Icon
+                                             name="chevron-down"
                                              className={clsx(
                                                 open ? "rotate-180" : "",
                                                 "transform transition duration-300 ease-in-out w-3.5 h-3.5",
@@ -215,7 +213,11 @@ export default function CollectionIndex() {
                            </section>
                            <section className="flex items-start justify-between relative">
                               <div className="flex items-center gap-2 space-y-1">
-                                 <LinkIcon className="text-1" size={11} />
+                                 <Icon
+                                    name="link"
+                                    className="text-1"
+                                    size={11}
+                                 />
                                  <SlugField zo={zoCollection} />
                               </div>
                            </section>
@@ -228,7 +230,10 @@ export default function CollectionIndex() {
                               disabled={disabled}
                            >
                               {adding ? (
-                                 <Loader2 className="mx-auto h-5 w-5 animate-spin text-zinc-300" />
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin text-zinc-300"
+                                 />
                               ) : (
                                  t("new.action")
                               )}
@@ -240,15 +245,17 @@ export default function CollectionIndex() {
             )}
             {site?.collections?.length === 0 ? null : (
                <>
-                  <div className="border-color-sub divide-y shadow-sm shadow-1 overflow-hidden divide-color-sub rounded-lg border">
+                  <div className="space-y-2.5 pb-5">
                      {site?.collections?.map((row, int) => (
                         <Link
                            key={row.slug}
+                           prefetch="intent"
                            to={`/${site.slug}/c/${row.slug}`}
-                           className="group relative flex items-center odd:bg-2-sub justify-between gap-2 p-2"
+                           className="relative flex items-center justify-between shadow-zinc-100 gap-2 dark:bg-dark350 dark:hover:border-zinc-600/70
+                           p-2 border-color-sub shadow-sm shadow-1 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
                         >
                            <div className="flex items-center gap-3">
-                              <div className="border-color-sub border shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">
+                              <div className="border-color-sub border bg-3-sub justify-center shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">
                                  {row.icon?.url ? (
                                     <Image
                                        width={50}
@@ -256,16 +263,16 @@ export default function CollectionIndex() {
                                        alt={row.name ?? "List Icon"}
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        url={row?.icon?.url}
-                                       loading={int > 10 ? "lazy" : undefined}
                                     />
                                  ) : (
-                                    <Database
+                                    <Icon
+                                       name="database"
                                        className="text-1 mx-auto"
-                                       size={18}
+                                       size={14}
                                     />
                                  )}
                               </div>
-                              <span className="group-hover:underline truncate text-sm font-bold">
+                              <span className="truncate text-sm font-bold">
                                  {row.name}
                               </span>
                               {/* <AdminOrStaffOrOwner>
@@ -277,7 +284,8 @@ export default function CollectionIndex() {
                                  </button>
                               </AdminOrStaffOrOwner> */}
                            </div>
-                           <ChevronRight
+                           <Icon
+                              name="chevron-right"
                               size={20}
                               className="flex-none text-1"
                            />
@@ -337,6 +345,7 @@ export const action: ActionFunction = async ({
                user,
             });
             if (existingSlug.totalDocs > 0) {
+               //TODO when toast behavior is improved, work on this
                return;
             }
             return await payload.create({
@@ -350,6 +359,7 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
+                  sections: [{ id: "main", name: "Main", showTitle: false }],
                },
                user,
                overrideAccess: false,

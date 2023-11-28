@@ -1,70 +1,132 @@
+import { cachified, lruCacheAdapter } from "cachified";
+import type { CreateReporter, CacheEntry } from "cachified";
+import { request as gqlRequest } from "graphql-request";
 import { LRUCache } from "lru-cache";
 
 import { remember } from "./remember.server";
 
+export { gql } from "graphql-request";
+
 // Setup an in memory lru-cache for api calls, this will be cleared on server restart.
 export const lruCache = remember(
    "lruCache",
-   new LRUCache({
-      max: 250, // maximum number of items to store in the cache
-      ttl: 5 * 60 * 1000, // how long to live in ms
+   new LRUCache<string, CacheEntry>({
+      max: 1000, // maximum number of items to store in the cache
+      // sizeCalculation: (value) => JSON.stringify(value).length,
+      // maxSize: 80 * 1024 * 1024, // 200MB
+      // ttl: 5 * 60 * 1000, // how long to live in ms
    }),
 );
+
+export const cache = lruCacheAdapter(lruCache);
 
 /**
  * Setup a lru-cache for layout data, so we don't have to fetch it every time. Params are based on browser fetch api.
  * @param url - rest api endpoint `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
  * @param init - browser fetch api init object for headers, body, etc
+ * @param ttl - time to live in ms
  * @returns  the result of the fetch or its cached value
  */
-export async function fetchWithCache(url: string, init?: RequestInit) {
+export async function fetchWithCache(
+   url: string,
+   init?: RequestInit,
+   ttl?: number,
+) {
    //The key could be graphql, in that case we'll use init.body instead. We should also delete any spacing characters
    const key = init?.body
       ? (init.body as string).replace(/\s/g, "").replace(/\n/g, " ")
       : url;
 
-   const cached = lruCache.get(key);
-   if (cached && process.env.NODE_ENV === "production") {
-      return cached;
-   }
-   return fetch(url, init).then((res) => {
-      const response = res.json();
-      lruCache.set(key, response);
+   return cachified<any>({
+      cache,
+      key,
+      async getFreshValue() {
+         const response = await fetch(url, init);
+         return response.json();
+      },
+      ttl: ttl ?? 300_000, // how long to live in ms
+      swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
+      //checkValue  // implement a type check
+      // fallbackToCache: true,
+      // staleRefreshTimeout
+      reporter: verboseReporter(),
+   });
+}
 
-      //log cache size, trim length to terminal width
-      console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
-      return response;
+//Instead of native fetch, we'll use gqlRequest from "graphql-request" to make the request.
+export async function gqlRequestWithCache(
+   url: string,
+   query: string,
+   variables: any,
+   ttl?: number,
+) {
+   const key = `${url}${query}${JSON.stringify(variables)}`;
+
+   return cachified<any>({
+      cache,
+      key,
+      async getFreshValue() {
+         const response = await gqlRequest(url, query, variables);
+         return response;
+      },
+      ttl: ttl ?? 300_000, // how long to live in ms
+      swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
+      //checkValue  // implement a type check
+      // fallbackToCache: true,
+      // staleRefreshTimeout
+      reporter: verboseReporter(),
+   });
+}
+
+/**
+ * Use this to cache a function return. Use this only for public api calls, not for private api calls.
+ * @param func  await cacheThis(func (params) => payload.find(params));
+ * @param params - optional params to pass to the function, also used as a key
+ * @returns  the result of the function or its cached value
+ */
+export async function cacheThis<T>(
+   func: (params?: any) => Promise<T>,
+   params?: any,
+   ttl?: number,
+) {
+   //the key is the function name and params stringified
+   let key = params
+      ? func.name
+         ? `${func.name}(${JSON.stringify(params)})`
+         : typeof params === "string"
+         ? params
+         : params.toString()
+      : func.toString();
+
+   return await cachified<T>({
+      cache,
+      key,
+      async getFreshValue() {
+         console.log("cached: ", key);
+         return await func(params);
+      },
+      ttl: ttl ?? 300_000, // how long to live in ms
+      swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
+      //checkValue  // implement a type check
+      // fallbackToCache: true,
+      // staleRefreshTimeout
+      reporter: verboseReporter(),
    });
 }
 
 /**
  * Use this to cache a function return. Use this only for public api calls, not for private api calls.
  * @param func  await cacheThis(func () => payload.find({...}));
+ * @param selectFunction - a function that selects the data you want to cache
+ * @param selectOptions - options for the select function
+ * @param ttl - time to live in ms
  * @returns  the result of the function or its cached value
  */
-export async function cacheThis<T>(func: () => Promise<T>) {
-   //the key is the function stringified
-   let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
-
-   // if the function is payload api, we'll use the body instead
-   key = key.split("(")?.slice(2)?.join("(") ?? key;
-
-   const cached = lruCache.get(key);
-   if (cached && process.env.NODE_ENV === "production") {
-      return cached as T;
-   }
-   const result = await func();
-   lruCache.set(key, result);
-
-   //log cache size, trim length to terminal width
-   console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
-   return result;
-}
-
 export async function cacheWithSelect<T>(
    func: () => Promise<T>,
    selectFunction: Function,
    selectOptions: Partial<Record<keyof any, boolean>>,
+   ttl?: number,
 ) {
    //the key is the function stringified
    let key = func.toString().replace(/\s/g, "").replace(/\n/g, " ");
@@ -72,15 +134,110 @@ export async function cacheWithSelect<T>(
    // if the function is payload api, we'll use the body instead
    key = key.split("(")?.slice(2)?.join("(") ?? key;
 
-   const cached = lruCache.get(key);
-   if (cached && process.env.NODE_ENV === "production") {
-      return cached as T;
+   // if selectOptions is passed, we'll add it to the key
+   if (selectOptions) {
+      key += JSON.stringify(selectOptions);
    }
-   const result = await func();
-   const selectFields = selectFunction(result, selectOptions);
-   lruCache.set(key, selectFields);
 
-   //log cache size, trim length to terminal width
-   console.log(`API Cached ${lruCache.size}: ${key}`.substring(0, 80));
-   return result;
+   return await cachified<T>({
+      cache,
+      key,
+      async getFreshValue() {
+         const result = await func();
+         return selectFunction(result, selectOptions);
+      },
+      ttl: ttl ?? 300_000, // how long to live in ms
+      swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
+      //checkValue  // implement a type check
+      // fallbackToCache: true,
+      // staleRefreshTimeout
+      reporter: verboseReporter(),
+   });
 }
+
+//This reports the cache status, simplified from https://github.com/Xiphe/cachified/blob/main/src/reporter.ts
+export function verboseReporter<T>(): CreateReporter<T> {
+   return ({ key, fallbackToCache, forceFresh }) => {
+      let cached: unknown;
+      let freshValue: unknown;
+      let getFreshValueStartTs: number;
+      let refreshValueStartTS: number;
+
+      return (event) => {
+         switch (event.name) {
+            case "getCachedValueRead":
+               cached = event.entry;
+               break;
+            case "checkCachedValueError":
+               console.warn(
+                  `check failed for cached value of ${key}\nReason: ${event.reason}.\nDeleting the cache key and trying to get a fresh value.`,
+                  cached,
+               );
+               break;
+            case "getCachedValueError":
+               console.error(
+                  `error with cache at ${key}. Deleting the cache key and trying to get a fresh value.`,
+                  event.error,
+               );
+               break;
+            case "getFreshValueError":
+               console.error(
+                  `getting a fresh value for ${key} failed`,
+                  { fallbackToCache, forceFresh },
+                  event.error,
+               );
+               break;
+            case "getFreshValueStart":
+               getFreshValueStartTs = performance.now();
+               break;
+            case "writeFreshValueSuccess": {
+               const totalTime = performance.now() - getFreshValueStartTs;
+               if (event.written) {
+                  console.log(
+                     `Fresh cache took ${formatDuration(totalTime)}, `,
+                     `${lruCache.size} cached total.`,
+                  );
+               } else {
+                  console.log(
+                     `Not updating the cache value for ${key}.`,
+                     `Getting a fresh value for this took ${formatDuration(
+                        totalTime,
+                     )}.`,
+                  );
+               }
+               break;
+            }
+            case "writeFreshValueError":
+               console.error(`error setting cache: ${key}`, event.error);
+               break;
+            case "getFreshValueSuccess":
+               freshValue = event.value;
+               break;
+            case "checkFreshValueError":
+               console.error(
+                  `check failed for fresh value of ${key}\nReason: ${event.reason}.`,
+                  freshValue,
+               );
+               break;
+            case "refreshValueStart":
+               refreshValueStartTS = performance.now();
+               break;
+            case "refreshValueSuccess":
+               console.log(
+                  `Stale cache took ${formatDuration(
+                     performance.now() - refreshValueStartTS,
+                  )}, `,
+                  `${lruCache.size} cached total.`,
+               );
+               break;
+            case "refreshValueError":
+               console.log(
+                  `Background refresh for ${key} failed.`,
+                  event.error,
+               );
+               break;
+         }
+      };
+   };
+}
+const formatDuration = (ms: number) => `${Math.round(ms)}ms`;

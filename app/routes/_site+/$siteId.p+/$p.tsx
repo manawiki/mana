@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
@@ -8,12 +8,12 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { EyeOff, Image, ImageMinus, Trash2 } from "lucide-react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
+import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -21,8 +21,12 @@ import type { Post, Site, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
+import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
-import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
+import {
+   EditorCommandBar,
+   command_button,
+} from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import {
@@ -34,15 +38,16 @@ import {
    getSession,
    setErrorMessage,
    setSuccessMessage,
-   slugify,
    uploadImage,
 } from "~/utils";
 
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
+import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { mainContainerStyle } from "../$siteId+/_index";
+import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
 
 export async function loader({
    context: { payload, user },
@@ -92,13 +97,21 @@ export const meta: MetaFunction<typeof loader> = ({
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site;
 
-   const postUrl = site.domain
-      ? `https://${site.domain}/p/${site.slug}`
-      : `https://mana.wiki/p/${postSlug}`;
+   //todo this is producing bad canonical urls
+   // const postUrl = site.domain
+   //    ? `https://${site.domain}/p/${site.slug}`
+   //    : `https://mana.wiki/p/${postSlug}`;
 
    return [
       {
          title:
+            postStatus == "published"
+               ? `${postTitle} - ${siteName}`
+               : `Edit | ${postTitle} - ${siteName}`,
+      },
+      {
+         property: "og:title",
+         content:
             postStatus == "published"
                ? `${postTitle} - ${siteName}`
                : `Edit | ${postTitle} - ${siteName}`,
@@ -111,7 +124,7 @@ export const meta: MetaFunction<typeof loader> = ({
            ]
          : []),
       ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+      // ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
    ];
 };
 
@@ -122,6 +135,7 @@ export default function Post() {
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const [isDeleteOpen, setDeleteOpen] = useState(false);
+   const enableAds = post.site.enableAds;
 
    return (
       <>
@@ -144,20 +158,15 @@ export default function Post() {
                show
             >
                <main className={mainContainerStyle}>
-                  <Suspense fallback="Loading...">
-                     <Await resolve={post}>
-                        <PostHeaderEdit
-                           post={post}
-                           isShowBanner={isShowBanner}
-                        />
-                        <ManaEditor
-                           collectionSlug="posts"
-                           fetcher={fetcher}
-                           pageId={post.id}
-                           defaultValue={post.content as Descendant[]}
-                        />
-                     </Await>
-                  </Suspense>
+                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                  <PostTableOfContents data={post.content} />
+                  {enableAds && <AdPlaceholder />}
+                  <ManaEditor
+                     collectionSlug="posts"
+                     fetcher={fetcher}
+                     pageId={post.id}
+                     defaultValue={post.content as Descendant[]}
+                  />
                </main>
                <div>
                   <EditorCommandBar
@@ -168,16 +177,15 @@ export default function Post() {
                   >
                      <EditorCommandBar.PrimaryOptions>
                         <>
-                           <Tooltip placement="left">
+                           <Tooltip placement="right">
                               <TooltipTrigger
                                  onClick={() => setIsBannerShowing((v) => !v)}
-                                 className="transition duration-100 border border-color shadow-sm shadow-1
-                  active:translate-y-0.5 hover:bg-3-sub flex h-8 w-8 items-center justify-center rounded-full"
+                                 className={command_button}
                               >
                                  {isShowBanner ? (
-                                    <ImageMinus size={14} />
+                                    <Icon name="image-minus" size={14} />
                                  ) : (
-                                    <Image size={14} />
+                                    <Icon name="image" size={14} />
                                  )}
                               </TooltipTrigger>
                               <TooltipContent>Banner</TooltipContent>
@@ -192,7 +200,11 @@ export default function Post() {
                                     py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                  onClick={() => setUnpublishOpen(true)}
                               >
-                                 <EyeOff className="text-zinc-400" size={12} />
+                                 <Icon
+                                    name="eye-off"
+                                    className="text-zinc-400"
+                                    size={12}
+                                 />
                                  <span className="text-xs">Unpublish</span>
                               </button>
                            )}
@@ -201,7 +213,11 @@ export default function Post() {
                                               px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                               onClick={() => setDeleteOpen(true)}
                            >
-                              <Trash2 className="text-red-400" size={12} />
+                              <Icon
+                                 name="trash-2"
+                                 className="text-red-400"
+                                 size={12}
+                              />
                               <span className="text-xs">Delete</span>
                            </button>
                         </>
@@ -219,12 +235,17 @@ export default function Post() {
             </Float>
          ) : (
             <main className={mainContainerStyle}>
-               <Suspense fallback="Loading...">
-                  <Await resolve={post}>
-                     <PostHeaderView post={post} />
-                     <EditorView data={post.content} />
-                  </Await>
-               </Suspense>
+               <PostHeaderView post={post} />
+               <PostTableOfContents data={post.content} />
+               <AdPlaceholder>
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                     className="flex items-center justify-center [&>div]:py-5"
+                  />
+               </AdPlaceholder>
+               <EditorView data={post.content} />
             </main>
          )}
       </>
@@ -430,7 +451,7 @@ export async function action({
             draft: true,
          });
 
-         const newSlug = slugify(currentPost.name);
+         const newSlug = urlSlug(currentPost.name);
 
          //See if duplicate exists on the same site
          const allPosts = await payload.find({

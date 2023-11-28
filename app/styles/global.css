@@ -46,11 +46,11 @@
 /* Since dark/light class is set at html level, we can't declare styles inline  */
 
 html.light {
-   @apply bg-zinc-50;
+   @apply bg-white;
 }
 
 html.dark {
-   @apply bg-bg2Dark;
+   @apply bg-dark350 laptop:bg-bg3Dark;
 }
 
 @layer components {
