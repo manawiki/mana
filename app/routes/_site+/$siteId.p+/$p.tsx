@@ -44,6 +44,7 @@ import {
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
+import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
 import { mainContainerStyle } from "../$siteId+/_index";
 import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
@@ -158,6 +159,7 @@ export default function Post() {
             >
                <main className={mainContainerStyle}>
                   <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                  <PostTableOfContents data={post.content} />
                   {enableAds && <AdPlaceholder />}
                   <ManaEditor
                      collectionSlug="posts"
@@ -234,6 +236,7 @@ export default function Post() {
          ) : (
             <main className={mainContainerStyle}>
                <PostHeaderView post={post} />
+               <PostTableOfContents data={post.content} />
                <AdPlaceholder>
                   <AdUnit
                      enableAds={enableAds}
@@ -241,12 +244,6 @@ export default function Post() {
                      selectorId="postDesktopLeaderATF"
                      className="flex items-center justify-center [&>div]:py-5"
                   />
-                  {/* <AdUnit
-                  enableAds
-                  adType="mobileSquareATF"
-                  selectorId="postMobileSquareATF"
-                  className="flex items-center justify-center"
-               /> */}
                </AdPlaceholder>
                <EditorView data={post.content} />
             </main>
