@@ -24,6 +24,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
    console.log(params);
 
    //to-do add user pokemon
+   GM.fetch();
    const pokemon = Data.Pokemon;
 
    //to-do seperate out the toggle filters as seperate cache step
