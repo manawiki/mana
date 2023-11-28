@@ -482,10 +482,11 @@ function calculateCP(pkm) {
 // }
 
 export function applyContext(custom) {
-   let Context = {};
+   let Context = {
+      ...custom,
+   };
 
-   Context.weather = custom.weather;
-
+   // apply enemy context
    Context.genericEnemy = false;
    let enemyPokemon = GM.get("pokemon", custom?.enemyPokemon);
    if (!enemyPokemon) {
