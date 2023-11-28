@@ -55,7 +55,7 @@ export const Context = {
    allyMegaStab: false,
 };
 
-function damage(dmg_giver, dmg_taker, move, weather) {
+function damage(dmg_giver, dmg_taker, move, Context) {
    var multipliers = 1;
    if (
       move.pokeType == dmg_giver.pokeType1 ||
@@ -67,7 +67,9 @@ function damage(dmg_giver, dmg_taker, move, weather) {
          multipliers *= GM.get("battle", "sameTypeAttackBonusMultiplier");
       }
    }
-   if (GM.get("battle", "TypeBoostedWeather")[move.pokeType] == weather) {
+   if (
+      GM.get("battle", "TypeBoostedWeather")[move.pokeType] == Context.weather
+   ) {
       multipliers *= GM.get("battle", "weatherAttackBonusMultiplier");
    }
    var Effectiveness = GM.get("battle", "TypeEffectiveness");
@@ -93,8 +95,8 @@ function calculateDPS(pokemon, kwargs) {
       y = y == undefined ? intakeProfile.y : y;
    }
 
-   let FDmg = damage(pokemon, kwargs.enemy, pokemon.fmove, kwargs.weather);
-   let CDmg = damage(pokemon, kwargs.enemy, pokemon.cmove, kwargs.weather);
+   let FDmg = damage(pokemon, kwargs.enemy, pokemon.fmove, kwargs);
+   let CDmg = damage(pokemon, kwargs.enemy, pokemon.cmove, kwargs);
    let FE = pokemon.fmove.energyDelta;
    let CE = -pokemon.cmove.energyDelta;
 
@@ -209,18 +211,8 @@ function calculateDPSIntake(pokemon, kwargs) {
          y: sum_y / num,
       };
    } else {
-      var FDmg = damage(
-         kwargs.enemy,
-         pokemon,
-         kwargs.enemy.fmove,
-         kwargs.weather,
-      );
-      var CDmg = damage(
-         kwargs.enemy,
-         pokemon,
-         kwargs.enemy.cmove,
-         kwargs.weather,
-      );
+      var FDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.fmove, kwargs);
+      var CDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.cmove, kwargs);
       var FE = kwargs.enemy.fmove.energyDelta;
       var CE = -kwargs.enemy.cmove.energyDelta;
       if (kwargs.battleMode == "pvp") {
@@ -559,110 +551,110 @@ function calculateCP(pkm) {
 //    }
 // }
 
-export function calculateRow(pkm) {
-   let pkmInstance = { ...pkm };
+// export function calculateRow(pkm) {
+//    let pkmInstance = { ...pkm };
 
-   // user Pokemon
-   if (pkm.uid !== undefined) {
-      let species = GM.get("pokemon", pkm.name);
-      if (!species) {
-         //  pkm.level = pkm.level;
-         pkmInstance.cpm = GM.get("level", pkm.level).cpm;
-         pkmInstance.baseAtk = species.baseAtk;
-         pkmInstance.baseDef = species.baseDef;
-         pkmInstance.baseStm = species.baseStm;
-         pkmInstance.icon = species.icon;
-      }
-   }
+//    // user Pokemon
+//    if (pkm.uid !== undefined) {
+//       let species = GM.get("pokemon", pkm.name);
+//       if (!species) {
+//          //  pkm.level = pkm.level;
+//          pkmInstance.cpm = GM.get("level", pkm.level).cpm;
+//          pkmInstance.baseAtk = species.baseAtk;
+//          pkmInstance.baseDef = species.baseDef;
+//          pkmInstance.baseStm = species.baseStm;
+//          pkmInstance.icon = species.icon;
+//       }
+//    }
 
-   let fastMoves_all = pkm.fmove
-      ? [pkm.fmove]
-      : pkm.fastMoves
-           .concat(pkm.fastMoves_legacy)
-           .concat(pkm.fastMoves_exclusive);
+//    let fastMoves_all = pkm.fmove
+//       ? [pkm.fmove]
+//       : pkm.fastMoves
+//            .concat(pkm.fastMoves_legacy)
+//            .concat(pkm.fastMoves_exclusive);
 
-   let chargedMoves_all = pkm.cmove
-      ? [pkm.cmove]
-      : pkm.chargedMoves
-           .concat(pkm.chargedMoves_legacy)
-           .concat(pkm.chargedMoves_exclusive);
+//    let chargedMoves_all = pkm.cmove
+//       ? [pkm.cmove]
+//       : pkm.chargedMoves
+//            .concat(pkm.chargedMoves_legacy)
+//            .concat(pkm.chargedMoves_exclusive);
 
-   for (let fmove of fastMoves_all) {
-      let fmoveInstance = GM.get("fast", fmove);
-      if (!fmoveInstance) {
-         continue;
-      }
-      for (let cmove of chargedMoves_all) {
-         var cmoveInstance = GM.get("charged", cmove);
-         if (!cmoveInstance) {
-            continue;
-         }
+//    for (let fmove of fastMoves_all) {
+//       let fmoveInstance = GM.get("fast", fmove);
+//       if (!fmoveInstance) {
+//          continue;
+//       }
+//       for (let cmove of chargedMoves_all) {
+//          var cmoveInstance = GM.get("charged", cmove);
+//          if (!cmoveInstance) {
+//             continue;
+//          }
 
-         pkmInstance.fmove = fmoveInstance;
-         pkmInstance.cmove = cmoveInstance;
-         pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
-         pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
-         pkmInstance.atkiv =
-            pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
-         pkmInstance.defiv =
-            pkm.defiv >= 0 ? pkm.defiv : DEFAULT_ATTACKER_IVs[1];
-         pkmInstance.stmiv =
-            pkm.stmiv >= 0 ? pkm.stmiv : DEFAULT_ATTACKER_IVs[2];
-         pkmInstance.Atk =
-            (pkmInstance.baseAtk + pkmInstance.atkiv) * pkmInstance.cpm;
-         pkmInstance.Def =
-            (pkmInstance.baseDef + pkmInstance.defiv) * pkmInstance.cpm;
-         pkmInstance.Stm =
-            (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
-         pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
+//          pkmInstance.fmove = fmoveInstance;
+//          pkmInstance.cmove = cmoveInstance;
+//          pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
+//          pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
+//          pkmInstance.atkiv =
+//             pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
+//          pkmInstance.defiv =
+//             pkm.defiv >= 0 ? pkm.defiv : DEFAULT_ATTACKER_IVs[1];
+//          pkmInstance.stmiv =
+//             pkm.stmiv >= 0 ? pkm.stmiv : DEFAULT_ATTACKER_IVs[2];
+//          pkmInstance.Atk =
+//             (pkmInstance.baseAtk + pkmInstance.atkiv) * pkmInstance.cpm;
+//          pkmInstance.Def =
+//             (pkmInstance.baseDef + pkmInstance.defiv) * pkmInstance.cpm;
+//          pkmInstance.Stm =
+//             (pkmInstance.baseStm + pkmInstance.stmiv) * pkmInstance.cpm;
+//          pkmInstance.hp = Math.max(10, Math.floor(pkmInstance.Stm));
 
-         if (LeagueCPCap > 0) {
-            adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
-         }
-         pkmInstance.cp = calculateCP(pkmInstance);
+//          if (LeagueCPCap > 0) {
+//             adjustStatsUnderCPCap(pkmInstance, LeagueCPCap);
+//          }
+//          pkmInstance.cp = calculateCP(pkmInstance);
 
-         if (pkmInstance.name.startsWith("shadow ")) {
-            pkmInstance.Def *=
-               Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
-         }
+//          if (pkmInstance.name.startsWith("shadow ")) {
+//             pkmInstance.Def *=
+//                Data.BattleSettings.shadowPokemonDefenseBonusMultiplier;
+//          }
 
-         calculateDPS(pkmInstance, Context);
+//          calculateDPS(pkmInstance, Context);
 
-         pkmInstance.ui_name = createIconLabelSpan(
-            pkm.icon,
-            pkm.labelLinked || pkm.label,
-            "species-input-with-icon",
-         );
-         pkmInstance.ui_fmove = createIconLabelSpan(
-            fmoveInstance.icon,
-            fmoveInstance.labelLinked || fmoveInstance.label,
-            "move-input-with-icon",
-         );
-         pkmInstance.ui_cmove = createIconLabelSpan(
-            cmoveInstance.icon,
-            cmoveInstance.labelLinked || cmoveInstance.label,
-            "move-input-with-icon",
-         );
-         pkmInstance.ui_dps = Math.round(pkmInstance.dps, 3);
-         pkmInstance.ui_tdo = Math.round(pkmInstance.tdo, 1);
-         if (Context.battleMode == "pvp") {
-            pkmInstance.ui_overall =
-               Math.ceil(
-                  -pkmInstance.cmove.energyDelta /
-                     (pkmInstance.fmove.energyDelta || 1),
-               ) * pkmInstance.fmove.duration;
-         } else {
-            pkmInstance.ui_overall = Math.round(
-               (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
-               2,
-            );
-         }
-         pkmInstance.ui_cp = pkmInstance.cp;
-      }
-   }
+//          pkmInstance.ui_name = createIconLabelSpan(
+//             pkm.icon,
+//             pkm.labelLinked || pkm.label,
+//             "species-input-with-icon",
+//          );
+//          pkmInstance.ui_fmove = createIconLabelSpan(
+//             fmoveInstance.icon,
+//             fmoveInstance.labelLinked || fmoveInstance.label,
+//             "move-input-with-icon",
+//          );
+//          pkmInstance.ui_cmove = createIconLabelSpan(
+//             cmoveInstance.icon,
+//             cmoveInstance.labelLinked || cmoveInstance.label,
+//             "move-input-with-icon",
+//          );
+//          pkmInstance.ui_dps = Math.round(pkmInstance.dps, 3);
+//          pkmInstance.ui_tdo = Math.round(pkmInstance.tdo, 1);
+//          if (Context.battleMode == "pvp") {
+//             pkmInstance.ui_overall =
+//                Math.ceil(
+//                   -pkmInstance.cmove.energyDelta /
+//                      (pkmInstance.fmove.energyDelta || 1),
+//                ) * pkmInstance.fmove.duration;
+//          } else {
+//             pkmInstance.ui_overall = Math.round(
+//                (pkmInstance.dps ** 3 * pkmInstance.tdo) ** 0.25,
+//                2,
+//             );
+//          }
+//          pkmInstance.ui_cp = pkmInstance.cp;
+//       }
+//    }
 
-   return pkmInstance;
-}
+//    return pkmInstance;
+// }
 
 function createIconLabelSpan(icon, label, className) {
    return (
@@ -677,7 +669,7 @@ function createIconLabelSpan(icon, label, className) {
 //    return pokemonCollection.map((pkm) => calculateRow(pkm));
 // }
 
-export function generateSpreadsheet(pokemonCollection) {
+export function generateSpreadsheet(pokemonCollection, Context) {
    const Table = [];
 
    let t1 = Date.now(),

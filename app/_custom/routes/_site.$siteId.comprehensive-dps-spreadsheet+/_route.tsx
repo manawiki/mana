@@ -6,10 +6,81 @@ import { Form, useLoaderData } from "@remix-run/react";
 
 import { cacheThis } from "~/utils/cache.server";
 
-import { generateSpreadsheet } from "./calc.js";
+import { generateSpreadsheet, Context } from "./calc.js";
 import { GM, Data } from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+//apply param toggles to update context
+function getContext(params) {
+   const context = {};
+
+   if (params["ui-swapDiscount-checkbox"]) {
+      context.swapDiscount = true;
+   }
+
+   if (params["ui-use-box-checkbox"]) {
+      context.useBox = true;
+   }
+
+   if (params["ui-uniqueSpecies-checkbox"]) {
+      context.uniqueSpecies = true;
+   }
+
+   if (params["ui-pvpMode-checkbox"]) {
+      context.pvpMode = true;
+   }
+
+   if (params["ui-hideUnavail-checkbox"]) {
+      context.hideUnavail = true;
+   }
+
+   if (params["ui-allyMega-checkbox"]) {
+      context.allyMega = true;
+   }
+
+   if (params["ui-allyMegaStab-checkbox"]) {
+      context.allyMegaStab = true;
+   }
+
+   if (params["ui-cpcap"]) {
+      context.cpCap = params["ui-cpcap"];
+   }
+
+   if (params["attacker-level"]) {
+      context.attackerLevel = params["attacker-level"];
+   }
+
+   if (params["weather"]) {
+      context.weather = params["weather"];
+   }
+
+   if (params["enemy-pokemon-name"]) {
+      context.enemyPokemon = params["enemy-pokemon-name"];
+   }
+
+   if (params["enemy-pokemon-fmove"]) {
+      context.enemyPokemonFmove = params["enemy-pokemon-fmove"];
+   }
+
+   if (params["enemy-pokemon-cmove"]) {
+      context.enemyPokemonCmove = params["enemy-pokemon-cmove"];
+   }
+
+   if (params["pokemon-pokeType1"]) {
+      context.pokemonPokeType1 = params["pokemon-pokeType1"];
+   }
+
+   if (params["pokemon-pokeType2"]) {
+      context.pokemonPokeType2 = params["pokemon-pokeType2"];
+   }
+
+   // if (params["searchInput"]) {
+   //    context.searchInput = params["searchInput"];
+   // }
+
+   return context;
+}
 
 // We can move calculation to the server to cache the results
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -18,10 +89,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
    // get url to parse query params
    const url = new URL(request.url);
 
+   console.log(url.search);
+
    // get query params from url
    const params = Object.fromEntries(url.searchParams);
 
-   console.log(params);
+   const custom = getContext(params);
+
+   const customContext = { ...Context, ...custom };
+
+   console.log(customContext);
 
    //to-do add user pokemon
    GM.fetch();
@@ -29,21 +106,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    //todo apply context from query params
    const results = await cacheThis(
-      async () => generateSpreadsheet(Data.Pokemon),
+      async () => generateSpreadsheet(Data.Pokemon, customContext),
 
-      "pokemon-dps",
+      "pokemon-dps" + JSON.stringify(customContext),
       60 * 60 * 24 * 1000, //cache for 24 hours
    );
 
    //to-do seperate out the toggle filters as seperate cache step
-
    const filtered = await cacheThis(
       async () =>
          results
             .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
             //limit results to the top 100
             .slice(0, 100),
-      "pokemon-dps-filtered",
+      "pokemon-dps-filtered" + url.search,
       60 * 60 * 24 * 1000,
    );
 
