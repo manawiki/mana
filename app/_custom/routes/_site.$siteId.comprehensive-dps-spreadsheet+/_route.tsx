@@ -27,19 +27,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
    GM.fetch();
    const pokemon = Data.Pokemon;
 
-   //to-do seperate out the toggle filters as seperate cache step
+   //todo apply context from query params
    const results = await cacheThis(
-      async () =>
-         //todo apply context from query params
-         generateSpreadsheet(Data.Pokemon)
-            .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
-            //limit results to the top 100
-            .slice(0, 100),
-      "pokemon",
+      async () => generateSpreadsheet(Data.Pokemon),
+
+      "pokemon-dps",
       60 * 60 * 24 * 1000, //cache for 24 hours
    );
 
-   return json({ pokemon, results });
+   //to-do seperate out the toggle filters as seperate cache step
+
+   const filtered = await cacheThis(
+      async () =>
+         results
+            .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
+            //limit results to the top 100
+            .slice(0, 100),
+      "pokemon-dps-filtered",
+      60 * 60 * 24 * 1000,
+   );
+
+   return json({ pokemon, results: filtered });
 }
 
 export function ComprehensiveDpsSpreadsheet() {
