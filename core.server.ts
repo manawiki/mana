@@ -58,12 +58,10 @@ async function startCore() {
    app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
-   invariant(process.env.MONGO_URL, "MONGO_URL is required");
 
    // Initialize Payload
    await payload.init({
       secret: process.env.PAYLOADCMS_SECRET,
-      mongoURL: process.env.MONGO_URL,
       express: app,
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
@@ -132,6 +130,10 @@ async function startCore() {
       "/fonts",
       express.static("public/fonts", { immutable: true, maxAge: "1y" }),
    );
+   app.use(
+      "/icons",
+      express.static("public/icons", { immutable: true, maxAge: "1y" }),
+   );
 
    // Everything else (like favicon.ico) is cached for an hour. You may want to be
    // more aggressive with this caching.
@@ -154,7 +156,7 @@ async function startCore() {
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {
-      console.log(`Express server listening on port ${port}`);
+      console.log(`Express server listening on port http://localhost:${port}`);
 
       if (process.env.NODE_ENV === "development") {
          broadcastDevReady(build);
@@ -167,9 +169,12 @@ startCore();
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
    function getLoadContext(req: any, res: any) {
+      const userData = req.user
+         ? { id: req?.user?.id, roles: req?.user?.roles }
+         : undefined;
       return {
          payload: req.payload,
-         user: req?.user,
+         user: req?.user && userData,
          res,
       };
    }
@@ -211,9 +216,12 @@ function createDevRequestHandler(): RequestHandler {
             build,
             mode: "development",
             getLoadContext(req, res) {
+               const userData = req.user
+                  ? { id: req?.user?.id, roles: req?.user?.roles }
+                  : undefined;
                return {
                   payload: req.payload,
-                  user: req?.user,
+                  user: userData,
                   res,
                };
             },

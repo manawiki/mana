@@ -20,7 +20,7 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
             collection: "sites",
             id: siteId,
          });
-         if (!currentCollections.collections) {
+         if (!currentCollections?.collections) {
             payload.update({
                collection: "sites",
                id: siteId,
@@ -29,7 +29,7 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
                },
             });
          }
-         if (currentCollections.collections) {
+         if (currentCollections?.collections) {
             const prevCollections = currentCollections.collections.map(
                ({ id }: { id: string }) => id,
             );
@@ -142,19 +142,70 @@ export const Collections: CollectionConfig = {
             {
                name: "id",
                type: "text",
+               required: true,
+               unique: true,
             },
             {
                name: "name",
                type: "text",
             },
             {
-               name: "hideTitle",
+               name: "showTitle",
                type: "checkbox",
-               label: "Hide Title",
+               label: "Display Title",
                defaultValue: false,
-               access: {
-                  update: isStaffFieldLevel,
-               },
+            },
+            {
+               name: "showAd",
+               type: "checkbox",
+               label: "Show Ad",
+               defaultValue: false,
+            },
+            {
+               name: "subSections",
+               type: "array",
+               label: "Sub-Sections",
+               defaultValue: [
+                  {
+                     name: "Main",
+                     type: "editor",
+                  },
+               ],
+               fields: [
+                  {
+                     name: "id",
+                     type: "text",
+                     required: true,
+                     unique: true,
+                  },
+                  {
+                     name: "name",
+                     type: "text",
+                  },
+                  {
+                     name: "type",
+                     type: "select",
+                     required: true,
+                     options: [
+                        {
+                           label: "Editor",
+                           value: "editor",
+                        },
+                        {
+                           label: "Custom Template",
+                           value: "customTemplate",
+                        },
+                        {
+                           label: "Q & A",
+                           value: "qna",
+                        },
+                        {
+                           label: "Comments",
+                           value: "comments",
+                        },
+                     ],
+                  },
+               ],
             },
          ],
       },

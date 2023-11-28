@@ -1,8 +1,8 @@
 import dt from "date-and-time";
-import { PenLine } from "lucide-react";
 
 import type { Post } from "payload/generated-types";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components";
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 
 export function PostAuthorHeader({ post }: { post: Post }) {
@@ -26,7 +26,8 @@ export function PostAuthorHeader({ post }: { post: Post }) {
                         contentEditable={false}
                         className="flex items-center gap-1"
                      >
-                        <PenLine
+                        <Icon
+                           name="pen-line"
                            size={12}
                            className="dark:text-zinc-500 text-zinc-300"
                         />

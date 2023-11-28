@@ -1,6 +1,6 @@
-import { Moon, Sun } from "lucide-react";
-
 import { Theme, Themed, useTheme } from "~/utils/theme-provider";
+
+import { Icon } from "./Icon";
 
 export const DarkModeToggle = () => {
    const [, setTheme] = useTheme();
@@ -20,7 +20,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle dark mode"
                >
-                  <Moon size={18} className="text-1" />
+                  <Icon name="moon" size={18} className="text-1" />
                </button>
             }
             light={
@@ -29,7 +29,7 @@ export const DarkModeToggle = () => {
                   onClick={toggleTheme}
                   aria-label="Toggle light mode"
                >
-                  <Sun size={18} className="text-1" />
+                  <Icon name="sun" size={18} className="text-1" />
                </button>
             }
          />

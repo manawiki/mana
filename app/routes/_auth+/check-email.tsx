@@ -1,9 +1,13 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+import { Icon } from "~/components/Icon";
+
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -35,7 +39,7 @@ export default function CheckEmail() {
             className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
                      w-14 items-center justify-center rounded-full border shadow-sm"
          >
-            <Mail className="mx-auto" size={24} />
+            <Icon name="mail" className="mx-auto" size={24} />
          </div>
          {t("register.checkEmail")}
       </div>

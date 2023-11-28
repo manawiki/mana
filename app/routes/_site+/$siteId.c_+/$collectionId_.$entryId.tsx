@@ -4,7 +4,6 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -15,15 +14,15 @@ import {
    uploadImage,
 } from "~/utils";
 
-import { CollectionHeader, EntryContentEmbed } from "./src/components";
-import { getAllEntryData } from "./src/functions";
+import { Entry } from "./components/Entry";
+import { fetchEntry } from "./functions/entry";
 
 export async function loader({
    context: { payload, user },
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { entry } = await getAllEntryData({
+   const { entry } = await fetchEntry({
       payload,
       params,
       request,
@@ -50,19 +49,8 @@ export const meta: MetaFunction = ({
    ];
 };
 
-export default function CollectionEntryWiki() {
-   const { entry } = useLoaderData<typeof loader>();
-
-   return (
-      <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 max-desktop:pt-14">
-         <CollectionHeader />
-         {entry.sections?.map((row) => (
-            <div key={row?.id}>
-               <EntryContentEmbed sectionId={row.id} title={row?.name} />
-            </div>
-         ))}
-      </div>
-   );
+export default function CollectionEntry() {
+   return <Entry />;
 }
 
 export const action: ActionFunction = async ({

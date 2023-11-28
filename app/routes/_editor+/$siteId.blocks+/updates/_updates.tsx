@@ -4,7 +4,6 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useMatches } from "@remix-run/react";
 import dt from "date-and-time";
-import { Loader2, Send, Trash } from "lucide-react";
 import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
 import { Editor, createEditor, Transforms } from "slate";
@@ -15,7 +14,8 @@ import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { H2Default } from "~/components/H2";
+import { H2 } from "~/components/Headers";
+import { Icon } from "~/components/Icon";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
@@ -76,7 +76,7 @@ export function BlockUpdates({ element }: Props) {
    return (
       <section>
          <>
-            <H2Default text="Updates" />
+            <H2 text="Updates" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
                <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
@@ -124,10 +124,15 @@ export function BlockUpdates({ element }: Props) {
                            dark:to-bg2Dark dark:text-zinc-200 dark:hover:border-zinc-700"
                      >
                         {addingUpdate ? (
-                           <Loader2 size={16} className="animate-spin" />
+                           <Icon
+                              name="loader-2"
+                              size={16}
+                              className="animate-spin"
+                           />
                         ) : (
                            <>
-                              <Send
+                              <Icon
+                                 name="send"
                                  className="text-zinc-400 dark:text-zinc-300"
                                  size={12}
                               />
@@ -184,12 +189,14 @@ export function BlockUpdates({ element }: Props) {
                                        type="submit"
                                     >
                                        {deletingUpdate ? (
-                                          <Loader2
+                                          <Icon
+                                             name="loader-2"
                                              size={15}
                                              className="animate-spin"
                                           />
                                        ) : (
-                                          <Trash
+                                          <Icon
+                                             name="trash"
                                              className="text-zinc-400 hover:text-red-400"
                                              size={15}
                                           />

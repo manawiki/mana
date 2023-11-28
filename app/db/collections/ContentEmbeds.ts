@@ -35,7 +35,7 @@ export const ContentEmbeds: CollectionConfig = {
          type: "text",
       },
       {
-         name: "sectionId",
+         name: "subSectionId",
          type: "text",
       },
       {

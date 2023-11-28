@@ -10,7 +10,7 @@ module.exports = {
    publicPath: process.env.STATIC_URL
       ? `${process.env.STATIC_URL}/build/`
       : "/build/",
-   serverDependenciesToBundle: ["nanoid"],
+   serverDependenciesToBundle: ["nanoid", "react-code-block", /^remix-utils.*/],
    // ignore all files in routes folder to prevent
    // default remix convention from picking up routes
    ignoredRouteFiles: ["**/.*"],

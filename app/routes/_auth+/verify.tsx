@@ -1,10 +1,10 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Icon } from "~/components/Icon";
 import { commitSession, getSession, setSuccessMessage } from "~/utils";
 
 export async function loader({
@@ -27,7 +27,7 @@ export async function loader({
    if (result) {
       setSuccessMessage(
          session,
-         "Your email has been verified. You can now login."
+         "Your email has been verified. You can now login.",
       );
       return redirect(`/login?email=${email}`, {
          headers: { "Set-Cookie": await commitSession(session) },
@@ -62,7 +62,7 @@ export default function CheckEmail() {
                className="bg-3 border-color shadow-1 mx-auto mb-3 flex h-14
                      w-14 items-center justify-center rounded-full border shadow-sm"
             >
-               <Check className="mx-auto" size={24} />
+               <Icon name="check" className="mx-auto" size={24} />
             </div>
             {t("register.verified")}
          </div>

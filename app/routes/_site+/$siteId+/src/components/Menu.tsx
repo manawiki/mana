@@ -1,25 +1,17 @@
 import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { Component, Database, PenSquare, Pin } from "lucide-react";
 
 import { Image } from "~/components";
+import { Icon } from "~/components/Icon";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/src/components";
 
 import { pinnedLinkUrlGenerator } from "../utils/pinnedLinkUrlGenerator";
 
-export const activeStyle = `bg-zinc-200/40 dark:bg-bg3Dark`;
-export const defaultStyle = `bg-2 hover:bg-zinc-100 flex items-center gap-3 rounded-full font-bold dark:hover:bg-bg3Dark/70 bg-2 text-1 rounded-lg text-sm px-2.5 py-2`;
-
-export const FollowingListMobile = ({
-   setMenuOpen,
-   site,
-}: {
-   setMenuOpen?: any;
-   site?: Site;
-}) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
-   const following = user?.sites as Site[];
+export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
+   const { following } = useRouteLoaderData("root") as {
+      following: User["sites"];
+   };
 
    return (
       <>
@@ -31,7 +23,8 @@ export const FollowingListMobile = ({
                         reloadDocument={true}
                         key={item.id}
                         onClick={() => setMenuOpen(false)}
-                        className="shadow-1 bg-3 border-color relative flex w-full items-center justify-between gap-3 rounded-xl border pr-4 shadow-sm"
+                        className="shadow-1 bg-2-sub border-color relative flex w-full items-center 
+                        justify-between gap-3 rounded-xl border pr-4 shadow-sm"
                         to={`/${item.slug}`}
                      >
                         {({ isActive }) => (
@@ -44,7 +37,7 @@ export const FollowingListMobile = ({
                                        height={32}
                                        alt="Site Logo"
                                        options="aspect_ratio=1:1&height=120&width=120"
-                                       url={item.icon?.url}
+                                       url={item.icon?.url ?? ""}
                                     />
                                  </div>
                                  <div className="truncate text-sm font-bold">
@@ -70,61 +63,74 @@ export const PinnedSideMenu = ({ site }: { site: Site }) => {
       <>
          {site?.pinned && site?.pinned?.length > 1 && (
             <>
-               <div className="space-y-0.5 pt-6 desktop:pl-3">
-                  <div className="flex items-center gap-1.5 pb-2 desktop:gap-3.5 desktop:pl-2.5">
-                     <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:hidden" />
-                     <div className="text-1 flex items-center gap-3.5 text-sm font-bold">
-                        <Pin className="text-zinc-500" size={16} />
-                        {/* <span className="max-desktop:hidden">Pinned</span> */}
+               <div className="flex items-center text-xs text-1 pb-3 desktop:pb-2 pt-4 font-semibold px-4">
+                  <div className="flex items-center w-full gap-1 max-desktop:justify-center">
+                     <div className="flex-grow text-zinc-500 max-desktop:hidden">
+                        Pinned
                      </div>
-                     <div className="block h-0.5 flex-grow rounded-l-full bg-zinc-100 dark:bg-bg3Dark" />
+                     <Icon
+                        name="pin"
+                        className="desktop:hidden text-zinc-400 dark:text-zinc-500"
+                        size={14}
+                     />
                   </div>
-                  <ul className="space-y-0.5 max-desktop:mx-3 desktop:pr-3">
-                     {site.pinned?.map((item: any) => (
-                        <li key={item.id}>
-                           <NavLink
-                              prefetch="intent"
-                              className={({ isActive }) =>
-                                 clsx(
-                                    isActive ? activeStyle : "",
-                                    `${defaultStyle} !p-2 text-sm font-semibold`,
-                                 )
-                              }
-                              to={pinnedLinkUrlGenerator(
-                                 item,
-                                 site?.slug ?? "",
-                              )}
-                           >
-                              <div className="h-6 w-6 laptop:w-5 laptop:h-5 flex items-center justify-center">
-                                 {item.relation?.value?.icon?.url ? (
-                                    <Image
-                                       width={80}
-                                       height={80}
-                                       url={item.relation?.value?.icon?.url}
-                                       options="aspect_ratio=1:1&height=80&width=80"
-                                       alt="Pinned Icon"
-                                    />
-                                 ) : (
-                                    <Component
-                                       className="text-1 mx-auto"
-                                       size={24}
-                                    />
-                                 )}
-                              </div>
-                              <div className="truncate max-desktop:hidden">
-                                 {item.relation.value.name}
-                              </div>
-                           </NavLink>
-                        </li>
-                     ))}
-                  </ul>
                </div>
-               <div className="mt-3 block h-0.5 rounded-l-full bg-zinc-100 dark:bg-bg3Dark desktop:ml-6" />
+               <ul
+                  className="desktop:pl-4 dark:divide-zinc-700/40 border-y border-zinc-200/40 
+                  divide-zinc-200/40 dark:border-zinc-700/40 divide-y divide-color"
+               >
+                  {site.pinned?.map((item: any) => (
+                     <li key={item.id}>
+                        <PinnedMenuLink
+                           item={item}
+                           to={pinnedLinkUrlGenerator(item, site?.slug ?? "")}
+                        />
+                     </li>
+                  ))}
+               </ul>
             </>
          )}
       </>
    );
 };
+
+function PinnedMenuLink({ item, to }: { item: any; to: string }) {
+   return (
+      <NavLink
+         prefetch="intent"
+         className="flex items-center relative gap-3 py-3 text-1 desktop:pr-3.5 text-[13px] font-semibold max-desktop:justify-center"
+         to={to}
+      >
+         {({ isActive, isPending }) => (
+            <>
+               {(isActive || isPending) && (
+                  <div className="w-3 h-3 absolute -left-[22px] rounded-full dark:bg-zinc-600 bg-zinc-300" />
+               )}
+               <div className="truncate max-desktop:hidden flex-grow">
+                  {item?.relation?.value?.name}
+               </div>
+               <div className="h-6 w-6 laptop:w-5 laptop:h-5 flex items-center justify-center">
+                  {item.relation?.value?.icon?.url ? (
+                     <Image
+                        width={80}
+                        height={80}
+                        url={item.relation?.value?.icon?.url}
+                        options="aspect_ratio=1:1&height=80&width=80"
+                        alt="Pinned Icon"
+                     />
+                  ) : (
+                     <Icon
+                        name="component"
+                        className="text-1 mx-auto"
+                        size={24}
+                     />
+                  )}
+               </div>
+            </>
+         )}
+      </NavLink>
+   );
+}
 
 export const PinnedList = ({
    site,
@@ -138,7 +144,12 @@ export const PinnedList = ({
       site?.pinned?.length > 1 && (
          <>
             <div className="flex items-center gap-2 pb-2.5 pl-2 pt-5">
-               <Pin className="text-zinc-500" size={14} />
+               <Icon
+                  name="pin"
+                  title="Pinned"
+                  className="text-zinc-500"
+                  size={14}
+               />
                <span className="text-1 text-sm font-bold">Pinned</span>
             </div>
             <ul className="space-y-2">
@@ -150,8 +161,8 @@ export const PinnedList = ({
                      >
                         <div
                            onClick={() => onOpenChange(false)}
-                           className="shadow-1 bg-3 border-color relative flex items-center gap-3
-                          rounded-xl border p-3 pr-4 text-sm font-bold shadow-sm"
+                           className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3
+                          rounded-xl border p-3 text-sm font-bold shadow-sm"
                         >
                            <div className="h-5 w-5">
                               {item.relation?.value?.icon?.url ? (
@@ -163,7 +174,8 @@ export const PinnedList = ({
                                     alt="Pinned Icon"
                                  />
                               ) : (
-                                 <Component
+                                 <Icon
+                                    name="component"
                                     className="text-1 mx-auto"
                                     size={24}
                                  />
@@ -198,10 +210,11 @@ export const PrimaryMenuLinks = ({
          >
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
-                  <PenSquare
+                  <Icon
+                     name="pen-square"
                      size={15}
                      className={clsx(
                         isActive
@@ -221,10 +234,12 @@ export const PrimaryMenuLinks = ({
          >
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3 border-color relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
-                  <Database
+                  <Icon
+                     name="database"
+                     title="collections"
                      size={15}
                      className={clsx(
                         isActive

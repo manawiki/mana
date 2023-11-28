@@ -21,7 +21,6 @@ export const Images: CollectionConfig = {
       {
          name: "checksum",
          type: "text",
-         unique: true,
       },
       {
          name: "createdBy",

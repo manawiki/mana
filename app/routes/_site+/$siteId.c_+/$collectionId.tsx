@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 
+import { arrayMove } from "@dnd-kit/sortable";
 import {
    type ActionFunction,
    type LoaderFunctionArgs,
@@ -14,37 +15,27 @@ import {
    useMatches,
    useParams,
 } from "@remix-run/react";
-import { request as gqlRequest, gql } from "graphql-request";
-import {
-   Component,
-   Loader2,
-   ChevronLeft,
-   ChevronRight,
-   Plus,
-} from "lucide-react";
 import { nanoid } from "nanoid";
-import type { Payload } from "payload";
-import { select } from "payload-query";
-import { plural } from "pluralize";
-import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Entry, Collection, User, Site } from "payload/generated-types";
+import type { Entry, Site } from "payload/generated-types";
+import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import {
    assertIsDelete,
+   assertIsPatch,
    assertIsPost,
    getMultipleFormData,
    isAdding,
-   toWords,
    uploadImage,
 } from "~/utils";
 
-import { List } from "./src/components";
-import { customListMeta } from "./src/functions";
+import { List } from "./components/List";
+import { SectionSchema } from "./components/Sections";
+import { customListMeta, fetchListCore } from "./functions/list";
 
 const EntrySchema = z.object({
    name: z.string(),
@@ -52,7 +43,7 @@ const EntrySchema = z.object({
    siteId: z.string(),
 });
 
-const CollectionsAllSchema = z.object({
+export const CollectionsAllSchema = z.object({
    q: z.string().optional(),
    page: z.coerce.number().optional(),
 });
@@ -71,7 +62,7 @@ export async function loader({
 
    const { page } = zx.parseQuery(request, CollectionsAllSchema);
 
-   const { entries } = await fetchEntries({
+   const { entries } = await fetchListCore({
       collectionId,
       page,
       payload,
@@ -82,14 +73,10 @@ export async function loader({
    return json({ entries });
 }
 
-export const handle = {
-   i18n: "entry",
-};
-
 export default function CollectionList() {
    const { entries } = useLoaderData<typeof loader>();
 
-   // Paging Variables
+   //Paging Variables
    const [, setSearchParams] = useSearchParams({});
 
    const currentEntry = entries?.pagingCounter;
@@ -99,9 +86,7 @@ export default function CollectionList() {
    const hasNextPage = entries?.hasNextPage;
    const hasPrevPage = entries?.hasPrevPage;
 
-   const { t } = useTranslation(handle?.i18n);
-
-   // Form/fetcher
+   //Form/fetcher
    const fetcher = useFetcher();
    const addingUpdate = isAdding(fetcher, "addEntry");
    const zoEntry = useZorm("newEntry", EntrySchema);
@@ -116,8 +101,8 @@ export default function CollectionList() {
       (collection) => collection.slug === collectionId,
    );
 
+   //Reset form after submission
    useEffect(() => {
-      //Reset form after submission
       if (!addingUpdate) {
          zoEntry.refObject.current && zoEntry.refObject.current.reset();
       }
@@ -125,83 +110,100 @@ export default function CollectionList() {
 
    return (
       <List>
-         <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+         <section className="relative">
             <AdminOrStaffOrOwner>
+               {/* Add new entry */}
                {!collection?.customDatabase && (
-                  <fetcher.Form
-                     ref={zoEntry.ref}
-                     className="dark:bg-dark350 bg-zinc-50 flex items-center justify-between pr-2.5"
-                     method="post"
-                  >
-                     <input
-                        required
-                        placeholder={t("new.namePlaceholder") ?? undefined}
-                        name={zoEntry.fields.name()}
-                        type="text"
-                        className="w-full bg-transparent text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                     />
-                     <input
-                        value={site?.id}
-                        name={zoEntry.fields.siteId()}
-                        type="hidden"
-                     />
-                     <input
-                        value={collection?.id}
-                        name={zoEntry.fields.collectionId()}
-                        type="hidden"
-                     />
-                     <button
-                        className="shadow-1 inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:border-zinc-600 text-xs font-bold shadow-sm"
-                        name="intent"
-                        value="addEntry"
-                        type="submit"
+                  <div className="pt-1">
+                     <fetcher.Form
+                        ref={zoEntry.ref}
+                        className="dark:bg-dark350 border focus-within:border-zinc-200 dark:focus-within:border-zinc-600 border-color-sub rounded-lg 
+                     shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
+                        method="post"
                      >
-                        {addingUpdate ? (
-                           <Loader2 size={16} className="animate-spin" />
-                        ) : (
-                           <>
-                              <Plus
+                        <input
+                           required
+                           placeholder="Type an entry name..."
+                           name={zoEntry.fields.name()}
+                           type="text"
+                           className="w-full bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                        />
+                        <input
+                           value={site?.id}
+                           name={zoEntry.fields.siteId()}
+                           type="hidden"
+                        />
+                        <input
+                           value={collection?.id}
+                           name={zoEntry.fields.collectionId()}
+                           type="hidden"
+                        />
+                        <button
+                           className="shadow-1 inline-flex h-[30px] items-center justify-center gap-1.5 w-[78px] bg-white dark:bg-dark450
+                     rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                           name="intent"
+                           value="addEntry"
+                           type="submit"
+                        >
+                           {addingUpdate ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-zinc-400 dark:text-zinc-300"
+                              />
+                           ) : (
+                              <Icon
+                                 name="plus"
                                  className="text-zinc-400 dark:text-zinc-300"
                                  size={14}
                               />
-                              <span className="text-1 pr-0.5">Add</span>
-                           </>
-                        )}
-                     </button>
-                  </fetcher.Form>
+                           )}
+                           <span className="text-1 pr-0.5">Add</span>
+                        </button>
+                     </fetcher.Form>
+                  </div>
                )}
             </AdminOrStaffOrOwner>
-            {entries.docs?.length > 0
-               ? entries.docs?.map((entry: Entry, int: number) => (
-                    <Link
-                       key={entry.id}
-                       to={entry.slug ?? entry.id}
-                       // prefetch="intent" Enabling this makes hover perform weird
-                       className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
-                    >
-                       <div
-                          className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
+            {/* <section className="flex items-center justify-between text-sm pb-1.5 pt-2 px-0.5">
+               <div>Filter</div>
+               <div>Sort</div>
+            </section> */}
+            {entries.docs?.length > 0 ? (
+               <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+                  {entries.docs?.map((entry: Entry, int: number) => (
+                     <Link
+                        key={entry.id}
+                        to={entry.slug ?? entry.id}
+                        // prefetch="intent" Enabling this makes hover perform weird
+                        className="flex items-center gap-3 p-2 dark:odd:bg-dark350 odd:bg-zinc-50 group"
+                     >
+                        <div
+                           className="border-color-sub shadow-1 flex h-8 w-8 items-center justify-between
                                     overflow-hidden rounded-full border bg-3-sub shadow-sm"
-                       >
-                          {entry.icon?.url ? (
-                             <Image /* @ts-ignore */
-                                url={entry.icon?.url}
-                                options="aspect_ratio=1:1&height=80&width=80"
-                                alt={entry.name ?? "Entry Icon"}
-                                loading={int > 10 ? "lazy" : undefined}
-                             />
-                          ) : (
-                             <Component className="text-1 mx-auto" size={18} />
-                          )}
-                       </div>
-                       <span className="text-sm font-bold group-hover:underline">
-                          {entry.name}
-                       </span>
-                    </Link>
-                 ))
-               : null}
-         </div>
+                        >
+                           {entry.icon?.url ? (
+                              <Image /* @ts-ignore */
+                                 url={entry.icon?.url}
+                                 options="aspect_ratio=1:1&height=80&width=80"
+                                 alt={entry.name ?? "Entry Icon"}
+                                 loading={int > 10 ? "lazy" : undefined}
+                              />
+                           ) : (
+                              <Icon
+                                 name="component"
+                                 className="text-1 mx-auto"
+                                 size={18}
+                              />
+                           )}
+                        </div>
+                        <span className="text-sm font-bold group-hover:underline">
+                           {entry.name}
+                        </span>
+                     </Link>
+                  ))}
+               </div>
+            ) : null}
+         </section>
          {/* Pagination Section */}
          {totalPages > 1 && (
             <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
@@ -225,8 +227,13 @@ export default function CollectionList() {
                            })
                         }
                      >
-                        <ChevronLeft size={18} className="text-zinc-500" />
-                        Prev
+                        <Icon
+                           name="chevron-left"
+                           size={18}
+                           className="text-zinc-500"
+                        >
+                           Prev
+                        </Icon>
                      </button>
                   ) : null}
                   {hasNextPage && hasPrevPage && (
@@ -243,7 +250,12 @@ export default function CollectionList() {
                         }
                      >
                         Next
-                        <ChevronRight size={18} className="text-zinc-500" />
+                        <Icon
+                           name="chevron-right"
+                           title="Next"
+                           size={18}
+                           className="text-zinc-500"
+                        />
                      </button>
                   ) : null}
                </div>
@@ -262,8 +274,11 @@ export const action: ActionFunction = async ({
    const { intent } = await zx.parseForm(request, {
       intent: z.enum([
          "addEntry",
+         "addSection",
          "collectionUpdateIcon",
          "collectionDeleteIcon",
+         "updateSection",
+         "updateSectionOrder",
       ]),
    });
 
@@ -291,6 +306,132 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return json({
                error: "Something went wrong...unable to add entry.",
+            });
+         }
+      }
+      case "addSection": {
+         assertIsPost(request);
+         const { collectionId, sectionId, name, showTitle } =
+            await zx.parseForm(request, SectionSchema);
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  sections: [
+                     { id: sectionId, name, showTitle },
+                     //@ts-ignore
+                     ...collectionData?.sections,
+                  ],
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
+            });
+         }
+      }
+      case "updateSection": {
+         assertIsPatch(request);
+         const { collectionId, sectionId, showTitle, name } =
+            await zx.parseForm(request, {
+               collectionId: z.string(),
+               sectionId: z.string(),
+               name: z.string().optional(),
+               showTitle: z.string().optional(),
+            });
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            const section = collectionData?.sections?.find(
+               (section) => section.id === sectionId,
+            );
+
+            const updatedSection = {
+               ...section,
+               ...(name && { name }),
+               ...(showTitle && { showTitle }),
+            };
+
+            const updatedSections =
+               collectionData.sections?.map((item) =>
+                  item.id === sectionId ? updatedSection : item,
+               ) ?? [];
+
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  //@ts-ignore
+                  sections: updatedSections,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
+            });
+         }
+      }
+      case "updateSectionOrder": {
+         assertIsPatch(request);
+         const { overId, activeId, collectionId } = await zx.parseForm(
+            request,
+            {
+               collectionId: z.string(),
+               activeId: z.string(),
+               overId: z.string(),
+            },
+         );
+         try {
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            const oldIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == activeId,
+            );
+
+            const newIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == overId,
+            );
+
+            const sortedArray = arrayMove(
+               //@ts-ignore
+               collectionData?.sections,
+               oldIndex,
+               newIndex,
+            );
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  sections: sortedArray,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
             });
          }
       }
@@ -354,104 +495,3 @@ export const action: ActionFunction = async ({
       }
    }
 };
-
-async function fetchEntries({
-   page = 1,
-   payload,
-   siteId,
-   user,
-   collectionId,
-}: typeof CollectionsAllSchema._type & {
-   payload: Payload;
-   collectionId: Collection["slug"];
-   siteId: Site["slug"];
-   user?: User;
-}) {
-   const collectionData = await payload.find({
-      collection: "collections",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         slug: {
-            equals: collectionId,
-         },
-      },
-      overrideAccess: false,
-      user,
-   });
-
-   const collectionEntry = collectionData?.docs[0];
-
-   // Get custom collection list data
-   if (collectionEntry?.customDatabase) {
-      const formattedName = plural(toWords(collectionId, true));
-
-      const document = gql`
-         query($page: Int!) {
-            entries: ${formattedName}(page: $page, limit: 20) {
-            totalDocs
-            totalPages
-            limit
-            pagingCounter
-            hasPrevPage
-            prevPage
-            nextPage
-            hasNextPage
-            docs {
-               id
-               name
-               icon {
-                  url
-               }
-            }
-            }
-         }
-      `;
-
-      const endpoint = `https://${collectionEntry?.site.slug}-db.${
-         collectionEntry?.site?.domain ?? "mana.wiki"
-      }/api/graphql`;
-
-      const { entries }: any = await gqlRequest(endpoint, document, { page });
-      return { entries };
-   }
-
-   //Otherwise pull data from core
-   const data = await payload.find({
-      collection: "entries",
-      where: {
-         site: {
-            equals: collectionEntry?.site?.id,
-         },
-         "collectionEntity.slug": {
-            equals: collectionId,
-         },
-      },
-      depth: 1,
-      overrideAccess: false,
-      user,
-   });
-
-   const filtered = data.docs.map((doc) => {
-      return {
-         ...select(
-            {
-               id: true,
-               name: true,
-               slug: true,
-            },
-            doc,
-         ),
-         icon: doc.icon && select({ id: false, url: true }, doc.icon),
-      };
-   });
-
-   //Extract pagination fields
-   const { docs, ...pagination } = data;
-
-   //Combine filtered docs with pagination info
-   const result = { docs: filtered, ...pagination };
-
-   return { entries: result };
-}

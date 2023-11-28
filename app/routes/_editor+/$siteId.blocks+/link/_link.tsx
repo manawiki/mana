@@ -3,9 +3,7 @@ import type { ReactNode } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
-import { Trash } from "lucide-react";
-import { select, type Select } from "payload-query";
-import { singular } from "pluralize";
+import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -13,13 +11,11 @@ import useSWR from "swr";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type {
-   Image as PayloadImage,
-   Collection,
-} from "payload/generated-types";
+import type { Entry } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { Image } from "~/components";
-import { swrRestFetcher, toWords } from "~/utils";
+import { Icon } from "~/components/Icon";
+import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -35,7 +31,7 @@ export async function loader({
    const pathSection = url.split("/");
 
    switch (pathSection[2]) {
-      case "collections": {
+      case "c": {
          const slug = await payload.find({
             collection: "sites",
             where: {
@@ -47,51 +43,9 @@ export async function loader({
          });
          const site = slug?.docs[0];
 
-         //Singleton
-         if (pathSection[4]) {
-            const entryId = pathSection[4];
-            const collectionId = pathSection[3];
-            if (site?.type == "custom") {
-               const formattedName = singular(toWords(collectionId, true));
-               const document = gql`
-                  query ($entryId: String!) {
-                     entryIcon: ${formattedName}(id: $entryId) {
-                        name
-                        icon {
-                           url
-                        }
-                     }
-                  }
-               `;
-               const endpoint = `https://${site.slug}-db.${
-                  site.domain ?? "mana.wiki"
-               }/api/graphql`;
-               const result: any = await gqlRequest(endpoint, document, {
-                  entryId,
-               });
-               return result.entryIcon;
-            }
-            //If not custom site, fetch local api entries collection
-            const doc = await payload.findByID({
-               collection: "entries",
-               id: entryId,
-               depth: 1,
-               overrideAccess: false,
-               user,
-            });
-            const entry = select({ id: false, name: true, icon: true }, doc);
-
-            const iconSelect: Select<PayloadImage> = {
-               id: false,
-               url: true,
-            };
-            const entryIcon = entry.icon && select(iconSelect, entry.icon);
-
-            return { ...entry, icon: entryIcon };
-         }
-         //If collection path 4 is null, search the collection list page instead
-         else if (pathSection[3]) {
-            const { docs } = await payload.find({
+         //List
+         if (pathSection[3] && pathSection[4] == null) {
+            const collectionData = await payload.find({
                collection: "collections",
                where: {
                   site: {
@@ -106,21 +60,88 @@ export async function loader({
                user,
             });
 
-            const collectionSelect: Select<Collection> = {
-               id: false,
-               name: true,
-               icon: true,
+            const collection = collectionData?.docs[0];
+
+            return {
+               name: collection?.name,
+               icon: {
+                  url: collection?.icon?.url,
+               },
+            };
+         }
+
+         //Entry
+         if (pathSection[4]) {
+            const entryId = pathSection[4];
+            const collectionId = pathSection[3];
+            if (site?.type == "custom") {
+               const label = gqlFormat(collectionId ?? "", "list");
+               const endpoint = gqlEndpoint({
+                  siteSlug: site.slug,
+               });
+
+               //Document request if slug does exist
+               const entryQuery = gql`
+                        query ($entryId: String!) {
+                           entryData: ${label}(
+                                 where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
+                              ) {
+                              docs {
+                                 name
+                                 icon {
+                                    url
+                                 }
+                              }
+                           }
+                        }
+                  `;
+
+               //Fetch to see if slug exists
+               const { entryData }: { entryData: PaginatedDocs<Entry> } =
+                  await gqlRequest(endpoint, entryQuery, {
+                     entryId,
+                  });
+
+               return entryData?.docs[0];
+            }
+            //If not custom site, fetch local api entries collection
+            const coreEntryData = await payload.find({
+               collection: "entries",
+               where: {
+                  "site.slug": {
+                     equals: site?.slug,
+                  },
+                  "collectionEntity.slug": {
+                     equals: collectionId,
+                  },
+                  or: [
+                     {
+                        slug: {
+                           equals: entryId,
+                        },
+                     },
+                     {
+                        id: {
+                           equals: entryId,
+                        },
+                     },
+                  ],
+               },
+               depth: 1,
+               user,
+               overrideAccess: false,
+            });
+
+            const entryData = coreEntryData?.docs[0];
+
+            const entry = {
+               name: entryData?.name,
+               icon: {
+                  url: entryData?.icon?.url,
+               },
             };
 
-            const iconSelect: Select<PayloadImage> = {
-               id: false,
-               url: true,
-            };
-
-            const collection = select(collectionSelect, docs[0]);
-            const collectionIcon =
-               collection.icon && select(iconSelect, collection.icon);
-            return { ...collection, icon: collectionIcon };
+            return entry;
          }
       }
       // Posts version (future)
@@ -177,7 +198,7 @@ export function BlockLink({ element, children }: Props) {
       isSafeLink &&
       element.icon == undefined &&
       pathSection &&
-      pathSection[2] == "collections" &&
+      pathSection[2] == "c" &&
       pathSection[3];
 
    const { data }: { data: Fields } = useSWR(
@@ -218,18 +239,22 @@ export function BlockLink({ element, children }: Props) {
                   return Transforms.removeNodes(editor, { at: path });
                }}
             >
-               <Trash className="h-3 w-3 text-white" />
+               <Icon name="trash" className="h-3 w-3 text-white" />
             </button>
             <span
-               className="border-color shadow-1 flex h-6 w-6 items-center justify-center
-               self-center overflow-hidden rounded-full border shadow-sm"
+               className="border-color-sub shadow-1 flex h-6 w-6 items-center justify-center
+               self-center overflow-hidden bg-2-sub rounded-full border shadow-sm"
             >
-               <Image
-                  width={30}
-                  height={30}
-                  url={element.icon.url}
-                  options="aspect_ratio=1:1&height=40&width=40"
-               />
+               {element?.icon?.url ? (
+                  <Image
+                     width={30}
+                     height={30}
+                     url={element.icon.url}
+                     options="aspect_ratio=1:1&height=40&width=40"
+                  />
+               ) : (
+                  <Icon name="component" className="text-1 mx-auto" size={12} />
+               )}
             </span>
             {children}
          </span>

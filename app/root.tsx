@@ -20,6 +20,7 @@ import {
 import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/index.css";
+import { ExternalScripts } from "remix-utils/external-scripts";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -41,25 +42,45 @@ import { commitSession, getSession } from "./utils/message.server";
 import type { ToastMessage } from "./utils/message.server";
 import { rdtClientConfig } from "../rdt.config";
 
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
 export const loader = async ({
-   context: { user },
+   context: { user, payload },
    request,
-   params,
 }: LoaderFunctionArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
 
-   const sharedData = {
+   const userData = user
+      ? await payload.findByID({
+           collection: "users",
+           id: user.id,
+           user,
+        })
+      : undefined;
+
+   const following = userData?.sites?.map((site) => ({
+      id: site?.id,
+      icon: {
+         url: site?.icon?.url,
+      },
+      name: site.name,
+      slug: site?.slug,
+      type: site?.type,
+   }));
+
+   const data = {
       toastMessage,
       locale,
       user,
       siteTheme: themeSession.getTheme(),
+      following,
    };
 
    return json(
-      { ...sharedData },
+      { ...data },
       { headers: { "Set-Cookie": await commitSession(session) } },
    );
 };
@@ -116,6 +137,7 @@ function App() {
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
@@ -146,7 +168,7 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body ${theme ?? ""}`}
+         className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
             <meta charSet="utf-8" />
@@ -193,6 +215,7 @@ function App() {
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
+            <ExternalScripts />
             <LiveReload />
          </body>
       </html>
