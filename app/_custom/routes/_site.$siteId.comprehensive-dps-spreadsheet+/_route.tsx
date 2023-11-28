@@ -23,11 +23,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    console.log(params);
 
-   const pokemon = [];
-   GM.fetch();
-   GM.each("pokemon", function (pkm) {
-      pokemon.push(pkm);
-   });
+   //to-do add user pokemon
+   const pokemon = Data.Pokemon;
 
    //to-do seperate out the toggle filters as seperate cache step
    const results = await cacheThis(
