@@ -169,9 +169,12 @@ startCore();
 // Create a request handler for production
 function createProductionRequestHandler(): RequestHandler {
    function getLoadContext(req: any, res: any) {
+      const userData = req.user
+         ? { id: req?.user?.id, roles: req?.user?.roles }
+         : undefined;
       return {
          payload: req.payload,
-         user: req?.user,
+         user: req?.user && userData,
          res,
       };
    }
@@ -213,9 +216,12 @@ function createDevRequestHandler(): RequestHandler {
             build,
             mode: "development",
             getLoadContext(req, res) {
+               const userData = req.user
+                  ? { id: req?.user?.id, roles: req?.user?.roles }
+                  : undefined;
                return {
                   payload: req.payload,
-                  user: req?.user,
+                  user: userData,
                   res,
                };
             },

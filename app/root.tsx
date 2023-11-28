@@ -45,7 +45,7 @@ import { rdtClientConfig } from "../rdt.config";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export const loader = async ({
-   context: { user },
+   context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
    const themeSession = await getThemeSession(request);
@@ -53,15 +53,34 @@ export const loader = async ({
    const session = await getSession(request.headers.get("cookie"));
    const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
 
-   const sharedData = {
+   const userData = user
+      ? await payload.findByID({
+           collection: "users",
+           id: user.id,
+           user,
+        })
+      : undefined;
+
+   const following = userData?.sites?.map((site) => ({
+      id: site?.id,
+      icon: {
+         url: site?.icon?.url,
+      },
+      name: site.name,
+      slug: site?.slug,
+      type: site?.type,
+   }));
+
+   const data = {
       toastMessage,
       locale,
       user,
       siteTheme: themeSession.getTheme(),
+      following,
    };
 
    return json(
-      { ...sharedData },
+      { ...data },
       { headers: { "Set-Cookie": await commitSession(session) } },
    );
 };

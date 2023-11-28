@@ -277,7 +277,7 @@ export default function PostsAll() {
                               {post.updatedAt && (
                                  <div className="flex flex-none items-center gap-4">
                                     <time
-                                       className="text-1 flex items-center gap-1.5 text-sm"
+                                       className="text-1 flex items-center gap-1.5 text-xs"
                                        dateTime={post?.updatedAt}
                                     >
                                        {dt.format(
@@ -285,7 +285,22 @@ export default function PostsAll() {
                                           "MMM D",
                                        )}
                                     </time>
-                                    {post._status == "published" ? (
+                                    {post.publishedAt &&
+                                       post._status == "draft" && (
+                                          <Tooltip>
+                                             <TooltipTrigger>
+                                                <Icon
+                                                   name="pencil"
+                                                   size={12}
+                                                   className="text-zinc-400"
+                                                />
+                                             </TooltipTrigger>
+                                             <TooltipContent>
+                                                Unpublished changes...
+                                             </TooltipContent>
+                                          </Tooltip>
+                                       )}
+                                    {post.publishedAt ? (
                                        <Tooltip>
                                           <TooltipTrigger>
                                              <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
@@ -678,6 +693,8 @@ const fetchMyPosts = async ({
          name: true,
          _status: true,
          updatedAt: true,
+         publishedAt: true,
+         slug: true,
       };
 
       const result = filterAuthorFields(data, postSelect);
