@@ -604,10 +604,10 @@ function Toggles() {
             <div className="row">
                <div className="col">
                   <input
-                     id="searchInput"
+                     id="search"
                      //  onKeyUp={search_trigger}
                      className="w-full"
-                     name="searchInput"
+                     name="search"
                   />
                </div>
             </div>
@@ -629,10 +629,10 @@ function ResultsTable() {
                   <th>Pokemon</th>
                   <th>Fast Move</th>
                   <th>Charged Move</th>
-                  <th>DPS</th>
-                  <th>TDO</th>
-                  <th>ER</th>
-                  <th>CP</th>
+                  <TH>DPS</TH>
+                  <TH>TDO</TH>
+                  <TH>ER</TH>
+                  <TH>CP</TH>
                </tr>
             </thead>
             <tbody>
@@ -668,6 +668,52 @@ function ResultsTable() {
    );
 }
 
+//Make the th clickable to sort
+function TH({ children }: { children: string }) {
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   const sort = searchParams.get("sort") ?? "dps";
+   const asc = searchParams.get("asc");
+
+   const onClick = () => {
+      setSearchParams((searchParams) => {
+         searchParams.set("sort", children.toString().toLowerCase());
+
+         //reset asc if we're sorting by a different column
+         sort !== children.toString().toLowerCase()
+            ? searchParams.delete("asc")
+            : asc
+            ? searchParams.delete("asc")
+            : searchParams.set("asc", "true");
+
+         return searchParams;
+      });
+   };
+
+   return (
+      <th className="px-4 py-2">
+         <button
+            className="flex items-center gap-1 capitalize"
+            type="button"
+            onClick={onClick}
+         >
+            {children}
+            <Icon
+               name={
+                  sort !== children.toString().toLowerCase()
+                     ? "chevrons-up-down"
+                     : asc
+                     ? "chevron-up"
+                     : "chevron-down"
+               }
+               size={18}
+               className="text-zinc-500"
+            />
+         </button>
+      </th>
+   );
+}
+
 // Insert a simple pagination component here
 function Pagination() {
    const { count } = useLoaderData<typeof loader>();
@@ -682,41 +728,50 @@ function Pagination() {
    return (
       <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
          <div className="flex items-center gap-3 text-xs">
-            {page > 1 ? (
-               <button
-                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                  onClick={() =>
-                     setSearchParams((searchParams) => {
-                        searchParams.set("page", (page - 1).toString());
-                        return searchParams;
-                     })
-                  }
-               >
-                  <Icon name="chevron-left" size={18} className="text-zinc-500">
-                     Prev
-                  </Icon>
-               </button>
-            ) : null}
-            <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-            {numPages > page ? (
-               <button
-                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
-                  onClick={() =>
-                     setSearchParams((searchParams) => {
-                        searchParams.set("page", (page + 1).toString());
-                        return searchParams;
-                     })
-                  }
-               >
-                  Next
-                  <Icon
-                     name="chevron-right"
-                     title="Next"
-                     size={18}
-                     className="text-zinc-500"
-                  />
-               </button>
-            ) : null}
+            <button
+               className="flex items-center gap-1 font-semibold uppercase hover:underline"
+               onClick={() =>
+                  setSearchParams((searchParams) => {
+                     searchParams.set("page", (page - 1).toString());
+                     return searchParams;
+                  })
+               }
+               disabled={page === 1}
+            >
+               <Icon name="chevron-left" size={18} className="text-zinc-500">
+                  Prev
+               </Icon>
+            </button>
+
+            <input
+               form="dps-form"
+               type="number"
+               value={page}
+               className="w-16"
+               name="page"
+               min={1}
+               max={numPages}
+            />
+            {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
+
+            <button
+               className="flex items-center gap-1 font-semibold uppercase hover:underline"
+               onClick={() =>
+                  setSearchParams((searchParams) => {
+                     searchParams.set("page", (page + 1).toString());
+                     return searchParams;
+                  })
+               }
+               disabled={page >= numPages}
+            >
+               Next
+               <Icon
+                  name="chevron-right"
+                  title="Next"
+                  size={18}
+                  className="text-zinc-500"
+               />
+            </button>
          </div>
       </div>
    );
