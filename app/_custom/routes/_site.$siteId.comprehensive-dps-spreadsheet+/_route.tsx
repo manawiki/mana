@@ -133,6 +133,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
    const filtered = await cacheThis(
       async () =>
          results
+            .filter((pokemon) =>
+               search === ""
+                  ? true
+                  : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+            )
             .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
             //limit results to the top 100
             .slice(100 * page - 100, 100 * page),
@@ -147,8 +152,6 @@ export function ComprehensiveDpsSpreadsheet() {
    return (
       <>
          <Introduction />
-         {/* <MoveEditForm /> */}
-         <NewToggle />
          <Toggles />
          <ResultsTable />
       </>
@@ -275,20 +278,6 @@ const capitalize = (word: string) => {
       ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
       : "";
 };
-
-function NewToggle() {
-   return (
-      <Form method="GET" replace={true} className="w-full">
-         <input
-            type="checkbox"
-            id="ui-swapDiscount-checkbox"
-            name="ui-swapDiscount-checkbox"
-         />{" "}
-         Swap Dscnt
-         <input type="submit" value="Submit" />
-      </Form>
-   );
-}
 
 function Toggles() {
    // const { pokemon } = useLoaderData<typeof loader>();
@@ -425,7 +414,7 @@ function Toggles() {
                      ))}
                   </select>
                </div>
-               <div className="col-sm-6">
+               {/* <div className="col-sm-6">
                   <label className="col-form-label">Controls</label>
                   <div className="sub-menu-container">
                      <button
@@ -466,7 +455,7 @@ function Toggles() {
                         </button>
                      </div>
                   </div>
-               </div>
+               </div> */}
             </div>
          </div>
          <div className="w-full grid grid-cols-4">
@@ -483,7 +472,7 @@ function Toggles() {
                      </label>
                   </div>
                </div>
-               <div className="col-sm-6 col-lg-3">
+               {/* <div className="col-sm-6 col-lg-3">
                   <div id="ui-use-box" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         My Pokemon
@@ -495,8 +484,8 @@ function Toggles() {
                         />
                      </label>
                   </div>
-               </div>
-               <div className="col-sm-6 col-lg-3">
+               </div> */}
+               {/* <div className="col-sm-6 col-lg-3">
                   <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Best
@@ -507,14 +496,18 @@ function Toggles() {
                         />
                      </label>
                   </div>
-               </div>
+               </div> */}
                <div className="col-sm-6 col-lg-3">
-                  <select
+                  Attacker Level
+                  <input
                      id="attacker-level"
                      className="form-control"
                      defaultValue="40"
                      name="attacker-level"
-                  ></select>
+                     type="number"
+                     min={1}
+                     max={40}
+                  />
                </div>
             </div>
             <div className="row">
@@ -529,7 +522,7 @@ function Toggles() {
                      />
                   </div>
                </div>
-               <div className="col-sm-6 col-md-3">
+               {/* <div className="col-sm-6 col-md-3">
                   <div id="ui-pvpMode" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         PvP Mode
@@ -540,8 +533,8 @@ function Toggles() {
                         />
                      </label>
                   </div>
-               </div>
-               <div className="col-sm-6 col-md-3">
+               </div> */}
+               {/* <div className="col-sm-6 col-md-3">
                   <div id="ui-hideUnavail" style={{ width: "100%" }}>
                      <label style={{ width: "100%", fontSize: "16px" }}>
                         Hide Unavail
@@ -552,7 +545,7 @@ function Toggles() {
                         />
                      </label>
                   </div>
-               </div>
+               </div> */}
                <div className="col-sm-6 col-md-3">
                   <button
                      className="btn btn-success"
@@ -592,23 +585,6 @@ function Toggles() {
                         />
                      </label>
                   </div>
-               </div>
-            </div>
-         </div>
-         <div className="w-full">
-            <div className="row">
-               <div className="col">
-                  <label className="col-form-label">Search</label>
-               </div>
-            </div>
-            <div className="row">
-               <div className="col">
-                  <input
-                     id="search"
-                     //  onKeyUp={search_trigger}
-                     className="w-full"
-                     name="search"
-                  />
                </div>
             </div>
          </div>
@@ -744,13 +720,19 @@ function Pagination() {
             </button>
 
             <input
-               form="dps-form"
+               // form="dps-form"
                type="number"
-               value={page}
+               defaultValue={page}
                className="w-16"
                name="page"
                min={1}
                max={numPages}
+               onChange={(e) => {
+                  setSearchParams((searchParams) => {
+                     searchParams.set("page", e.target.value);
+                     return searchParams;
+                  });
+               }}
             />
             {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
 
@@ -772,6 +754,31 @@ function Pagination() {
                   className="text-zinc-500"
                />
             </button>
+
+            <div className="w-full">
+               <div className="row">
+                  <div className="col">
+                     <label className="col-form-label">Search</label>
+                  </div>
+               </div>
+               <div className="row">
+                  <div className="col">
+                     <input
+                        id="search"
+                        //  onKeyUp={search_trigger}
+                        className="w-full"
+                        name="search"
+                        onChange={(e) => {
+                           setSearchParams((searchParams) => {
+                              searchParams.set("search", e.target.value);
+                              searchParams.delete("page");
+                              return searchParams;
+                           });
+                        }}
+                     />
+                  </div>
+               </div>
+            </div>
          </div>
       </div>
    );
