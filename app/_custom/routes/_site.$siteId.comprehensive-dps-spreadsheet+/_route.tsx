@@ -2,7 +2,12 @@ import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+   Form,
+   useLoaderData,
+   useSearchParams,
+   useSubmit,
+} from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { cacheThis } from "~/utils/cache.server";
@@ -294,6 +299,7 @@ function Toggles() {
    // a pokemon in our list
    // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
    const [enemyPokemon, setEnemyPokemon] = useState({});
+   const submit = useSubmit();
 
    const fastMoves =
       [
@@ -320,6 +326,9 @@ function Toggles() {
          className="w-full"
          id="dps-form"
          name="dps-form"
+         onChange={(e) => {
+            submit(e.currentTarget, { method: "GET" });
+         }}
       >
          <label className="row-form-label">Enemy Information</label>
          <div className="w-full grid grid-cols-4">
