@@ -112,6 +112,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
       "pokemon-dps" + JSON.stringify(custom),
       60 * 60 * 24 * 1000, //cache for 24 hours
+      1,
    );
 
    //to-do read params to toggle sorting

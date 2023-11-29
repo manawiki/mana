@@ -487,11 +487,12 @@ export function applyContext(custom) {
    };
 
    // apply enemy context
-   Context.genericEnemy = false;
    let enemyPokemon = GM.get("pokemon", custom?.enemyPokemon);
-   if (!enemyPokemon) {
-      Context.genericEnemy = true;
-      enemyPokemon = {};
+   if (enemyPokemon) {
+      Context.genericEnemy = false;
+      Context.enemy = { ...enemyPokemon };
+   } else {
+      Context.enemy = {};
    }
 
    // Context.genericEnemyFastMove = false;
@@ -499,9 +500,9 @@ export function applyContext(custom) {
       "fast",
       custom?.enemyPokemonFmove?.trim().toLowerCase(),
    );
-   if (!enemyFast) {
-      Context.genericEnemyFastMove = true;
-      enemyFast = {};
+   if (enemyFast) {
+      Context.fmove = enemyFast;
+      Context.genericEnemyFastMove = false;
    }
 
    // Context.genericEnemyChargedMove = false;
@@ -509,43 +510,33 @@ export function applyContext(custom) {
       "charged",
       custom.enemyPokemonCmove?.trim().toLowerCase(),
    );
-   if (!enemyCharged) {
-      Context.genericEnemyChargedMove = true;
-      enemyCharged = {};
+   if (enemyCharged) {
+      Context.genericEnemyChargedMove = false;
+      Context.cmove = enemyCharged;
    }
 
-   Context.enemy = {
-      fastMoves: [],
-      chargedMoves: [],
-   };
-   Context.enemy = { ...enemyPokemon };
-
-   Context.enemy.fmove = enemyFast;
-   Context.enemy.cmove = enemyCharged;
    let enemy_cpm = DEFAULT_ENEMY_CPM;
    Context.enemy.Atk =
-      (Context.enemy.baseAtk + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
+      (enemyPokemon?.baseAtk ?? 0 + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
    Context.enemy.Def =
-      (Context.enemy.baseDef + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
+      (enemyPokemon?.baseDef ?? 0 + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
    Context.enemy.Stm =
-      (Context.enemy.baseStm + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
+      (enemyPokemon?.baseStm ?? 0 + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
    if (custom.enemyPokeType1) Context.enemy.pokeType1 = custom.enemyPokeType1;
    if (custom.enemyPokeType2) Context.enemy.pokeType2 = custom.enemyPokeType2;
 
-   Context.enemy.fmoves = [];
-   for (let move of Context.enemy.fastMoves) {
-      Context.enemy.fmoves.push(GM.get("fast", move));
-   }
-   Context.enemy.cmoves = [];
-   for (let move of Context.enemy.chargedMoves) {
-      Context.enemy.cmoves.push(GM.get("charged", move));
-   }
+   Context.enemy.fmoves =
+      enemyPokemon?.fastMoves.map((move) => GM.get("fast", move)) ?? [];
+   Context.enemy.cmoves =
+      enemyPokemon?.chargedMoves.map((move) => GM.get("charged", move)) ?? [];
 
-   if (Context.genericEnemy) {
+   if (Context.genericEnemy === undefined) {
       Context.enemy.Def = DEFAULT_ENEMY_CURRENT_DEFENSE;
    }
 
    if (custom.cpcap) Context.LeagueCPCap = custom.cpcap;
+
+   console.log("Context", Context);
 
    return Context;
 }
