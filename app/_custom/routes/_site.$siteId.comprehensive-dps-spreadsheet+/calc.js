@@ -505,7 +505,6 @@ export function applyContext(custom) {
       Context.genericEnemyFastMove = false;
    }
 
-   // Context.genericEnemyChargedMove = false;
    let enemyCharged = GM.get(
       "charged",
       custom.enemyPokemonCmove?.trim().toLowerCase(),

@@ -1442,6 +1442,8 @@ function fetchPokemonForms(oncomplete = function () {}) {
    })).sort((a, b) => (a.name < b.name ? -1 : 1));
    Data.PokemonForms.sorted = true;
 
+   requiredJSONStatus.PokemonForms = 2;
+
    return oncomplete();
 }
 

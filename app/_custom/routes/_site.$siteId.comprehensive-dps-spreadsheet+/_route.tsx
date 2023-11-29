@@ -2,12 +2,13 @@ import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 
+import { Icon } from "~/components/Icon";
 import { cacheThis } from "~/utils/cache.server";
 
 import { generateSpreadsheet, Context, applyContext } from "./calc.js";
-import { GM, Data } from "./dataFactory.js";
+import { GM, Data, requiredJSONStatus } from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -19,20 +20,22 @@ function getCustom(params) {
       context.swapDiscount = true;
    }
 
+   // todo figure out user box
    if (params["ui-use-box-checkbox"]) {
       context.useBox = true;
    }
 
-   //todo what is this?
+   // todo add this to filters
    if (params["ui-uniqueSpecies-checkbox"]) {
       context.uniqueSpecies = true;
    }
 
+   // todo rework pvp GM.mode()
    if (params["ui-pvpMode-checkbox"]) {
       context.battleMode = "pvp";
    }
 
-   //todo what is this?
+   // todo reimplement this
    if (params["ui-hideUnavail-checkbox"]) {
       context.hideUnavail = true;
    }
@@ -98,11 +101,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    const custom = getCustom(params);
 
+   console.log(requiredJSONStatus);
+
+   // todo redo how Data.Pokemon is generated
+   if (!requiredJSONStatus.Pokemon) GM.fetch();
+
    //to-do add user pokemon
-   GM.fetch();
    const pokemon = Data.Pokemon;
 
-   //todo apply context from query params
+   // todo apply context from query params
    const results = await cacheThis(
       async () =>
          generateSpreadsheet(Data.Pokemon, {
@@ -117,31 +124,33 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    //to-do read params to toggle sorting
    const sort = params["sort"] ?? "dps";
-   const page = params["page"] ?? 1;
+   const asc = params["asc"] ? 1 : -1;
+   const page = params["page"] ? parseInt(params["page"]) : 1;
+   const search = params["search"] ?? "";
+
+   console.log(sort, asc, page, search);
 
    const filtered = await cacheThis(
       async () =>
          results
-            .sort((a, b) => (a?.dps > b?.dps ? -1 : 1))
+            .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
             //limit results to the top 100
-            .slice(0, 100),
-      "pokemon-dps-filtered" + url.search,
+            .slice(100 * page - 100, 100 * page),
+      "pokemon-dps-filtered-" + sort + asc + page + search,
       60 * 60 * 24 * 1000,
    );
 
-   return json({ pokemon, results: filtered });
+   return json({ pokemon, results: filtered, count: results.length });
 }
 
 export function ComprehensiveDpsSpreadsheet() {
-   const { results } = useLoaderData<typeof loader>();
-
    return (
       <>
          <Introduction />
          {/* <MoveEditForm /> */}
          <NewToggle />
          <Toggles />
-         <ResultsTable results={results} />
+         <ResultsTable />
       </>
    );
 }
@@ -229,283 +238,6 @@ export function Introduction() {
    );
 }
 
-function MoveEditForm() {
-   return (
-      <Form className="flex w-full">
-         <div id="moveEditForm" title="Add/Edit Move">
-            <table id="moveEditForm-table">
-               <tr>
-                  <th>Scope</th>
-                  <td>
-                     <select name="move-scope">
-                        <option value="regular">Regular (PvE)</option>
-                        <option value="combat">Combat (PvP)</option>
-                     </select>
-                  </td>
-               </tr>
-               <tr>
-                  <th>Category</th>
-                  <td>
-                     <select name="move-moveType">
-                        <option value="fast">Fast</option>
-                        <option value="charged">Charged</option>
-                     </select>
-                  </td>
-               </tr>
-               <tr>
-                  <th>Name</th>
-                  <td>
-                     <input
-                        type="text"
-                        name="move-name"
-                        className="input-with-icon move-input-with-icon"
-                     />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Typing</th>
-                  <td>
-                     <select name="move-pokeType"></select>
-                  </td>
-               </tr>
-               <tr>
-                  <th>Power</th>
-                  <td>
-                     <input type="number" name="move-power" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>EnergyDelta</th>
-                  <td>
-                     <input type="number" name="move-energyDelta" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Duration (in miliseconds)</th>
-                  <td>
-                     <input type="number" name="move-duration" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Damage Window (in miliseconds)</th>
-                  <td>
-                     <input type="number" name="move-dws" />
-                  </td>
-               </tr>
-               <tr>
-                  <th>Effect</th>
-                  <td>
-                     <input name="move-effect" />
-                  </td>
-               </tr>
-            </table>
-            <br />
-
-            <div className="container">
-               <div className="row">
-                  <div className="col-sm-6">
-                     <button
-                        id="moveEditForm-submit"
-                        className="center_stuff btn btn-primary"
-                     >
-                        <i className="fa fa-check" aria-hidden="true"></i> Save
-                     </button>
-                  </div>
-                  <div className="col-sm-3">
-                     <button
-                        id="moveEditForm-delete"
-                        className="center_stuff btn btn-warning"
-                     >
-                        <i className="fa fa-trash" aria-hidden="true"></i>{" "}
-                        Delete
-                     </button>
-                  </div>
-                  <div className="col-sm-3">
-                     <button
-                        id="moveEditForm-reset"
-                        className="center_stuff btn btn-danger"
-                     >
-                        <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
-                        Reset
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         <div id="pokemonEditForm" title="Add/Edit Pokemon">
-            <table id="pokemonEditForm-table">
-               <tbody>
-                  <tr>
-                     <th>Pokemon Name</th>
-                     <td>
-                        <input
-                           type="text"
-                           name="pokemon-name"
-                           className="input-with-icon species-input-with-icon"
-                        />
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Pokemon Typing 1</th>
-                     <td>
-                        <select name="pokemon-pokeType1"></select>
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Pokemon Typing 2</th>
-                     <td>
-                        <select name="pokemon-pokeType2"></select>
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Base Attack</th>
-                     <td>
-                        <input type="number" name="pokemon-baseAtk" />
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Base Defense</th>
-                     <td>
-                        <input type="number" name="pokemon-baseDef" />
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Base Stamina</th>
-                     <td>
-                        <input type="number" name="pokemon-baseStm" />
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Fast Move Pool</th>
-                     <td>
-                        <input type="text" name="pokemon-fmoves" />
-                     </td>
-                  </tr>
-                  <tr>
-                     <th>Charged Move Pool</th>
-                     <td>
-                        <input type="text" name="pokemon-cmoves" />
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-            <br />
-            <div className="container">
-               <div className="row">
-                  <div className="col-sm-6">
-                     <button
-                        id="pokemonEditForm-submit"
-                        className="center_stuff btn btn-primary"
-                     >
-                        <i className="fa fa-check" aria-hidden="true"></i> Save
-                     </button>
-                  </div>
-                  <div className="col-sm-3">
-                     <button
-                        id="pokemonEditForm-delete"
-                        className="center_stuff btn btn-warning"
-                     >
-                        <i className="fa fa-trash" aria-hidden="true"></i>{" "}
-                        Delete
-                     </button>
-                  </div>
-                  <div className="col-sm-3">
-                     <button
-                        id="pokemonEditForm-reset"
-                        className="center_stuff btn btn-danger"
-                     >
-                        <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
-                        Reset
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
-
-         <div id="parameterEditForm" title="Edit Battle Settings">
-            <div
-               style={{
-                  display: "inline-block",
-                  overflowY: "scroll",
-                  maxHeight: "40vh",
-                  width: "100%",
-               }}
-            >
-               <table id="parameterEditForm-Table">
-                  <thead>
-                     <tr>
-                        <th>Paramater</th>
-                        <th>Value</th>
-                     </tr>
-                  </thead>
-                  <tbody></tbody>
-               </table>
-            </div>
-
-            <br />
-
-            <div className="container">
-               <div className="row">
-                  <div className="col-sm-6">
-                     <button
-                        id="parameterEditForm-submit"
-                        className="center_stuff btn btn-primary"
-                     >
-                        <i className="fa fa-check" aria-hidden="true"></i> Save
-                     </button>
-                  </div>
-                  <div className="col-sm-6">
-                     <button
-                        id="parameterEditForm-reset"
-                        className="center_stuff btn btn-danger"
-                     >
-                        <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
-                        Reset
-                     </button>
-                  </div>
-               </div>
-            </div>
-
-            <div id="parameterEditForm-feedback"></div>
-         </div>
-
-         <div id="modEditForm" title="Edit Mods">
-            <table id="modEditForm-Table">
-               <thead>
-                  <colgroup>
-                     <col width="50%" />
-                     <col width="50%" />
-                  </colgroup>
-                  <tr>
-                     <th>Mod Name</th>
-                     <th>Applied</th>
-                  </tr>
-               </thead>
-               <tbody id="modEditForm-table-body"></tbody>
-            </table>
-
-            <br />
-
-            <div className="container">
-               <div className="row">
-                  <div className="col">
-                     <button
-                        id="modForm-submit"
-                        className="center_stuff btn btn-primary"
-                     >
-                        <i className="fa fa-check" aria-hidden="true"></i> Save
-                     </button>
-                  </div>
-               </div>
-            </div>
-
-            <div id="modEditForm-feedback"></div>
-         </div>
-      </Form>
-   );
-}
-
 const weathers = [
    { name: "EXTREME", label: "Extreme" },
    { name: "CLEAR", label: "Clear" },
@@ -587,7 +319,13 @@ function Toggles() {
          .filter((move) => move) ?? [];
 
    return (
-      <Form method="GET" replace={true} className="w-full">
+      <Form
+         method="GET"
+         replace={true}
+         className="w-full"
+         id="dps-form"
+         name="dps-form"
+      >
          <label className="row-form-label">Enemy Information</label>
          <div className="w-full grid grid-cols-4">
             <div className="row">
@@ -879,9 +617,12 @@ function Toggles() {
 }
 
 //todo figure out what we want to use for table
-function ResultsTable({ results }) {
+function ResultsTable() {
+   const { count, results } = useLoaderData<typeof loader>();
+
    return (
       <>
+         <Pagination />
          <table>
             <thead>
                <tr>
@@ -908,7 +649,7 @@ function ResultsTable({ results }) {
                ))}
             </tbody>
          </table>
-         {results.length} results
+         {count} results
          <div className="container">
             <div className="row">
                <div className="col-sm-6">
@@ -924,6 +665,60 @@ function ResultsTable({ results }) {
             </div>
          </div>
       </>
+   );
+}
+
+// Insert a simple pagination component here
+function Pagination() {
+   const { count } = useLoaderData<typeof loader>();
+   const [searchParams, setSearchParams] = useSearchParams();
+
+   const page = parseInt(searchParams.get("page") ?? "1");
+
+   const numPages = Math.ceil(count / 100);
+
+   if (numPages <= 1) return null;
+
+   return (
+      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+         <div className="flex items-center gap-3 text-xs">
+            {page > 1 ? (
+               <button
+                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                  onClick={() =>
+                     setSearchParams((searchParams) => {
+                        searchParams.set("page", (page - 1).toString());
+                        return searchParams;
+                     })
+                  }
+               >
+                  <Icon name="chevron-left" size={18} className="text-zinc-500">
+                     Prev
+                  </Icon>
+               </button>
+            ) : null}
+            <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            {numPages > page ? (
+               <button
+                  className="flex items-center gap-1 font-semibold uppercase hover:underline"
+                  onClick={() =>
+                     setSearchParams((searchParams) => {
+                        searchParams.set("page", (page + 1).toString());
+                        return searchParams;
+                     })
+                  }
+               >
+                  Next
+                  <Icon
+                     name="chevron-right"
+                     title="Next"
+                     size={18}
+                     className="text-zinc-500"
+                  />
+               </button>
+            ) : null}
+         </div>
+      </div>
    );
 }
 
@@ -981,5 +776,283 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon }) {
       </Combobox>
    );
 }
+
+//reimplement this and add to context
+// function MoveEditForm() {
+//    return (
+//       <Form className="flex w-full">
+//          <div id="moveEditForm" title="Add/Edit Move">
+//             <table id="moveEditForm-table">
+//                <tr>
+//                   <th>Scope</th>
+//                   <td>
+//                      <select name="move-scope">
+//                         <option value="regular">Regular (PvE)</option>
+//                         <option value="combat">Combat (PvP)</option>
+//                      </select>
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Category</th>
+//                   <td>
+//                      <select name="move-moveType">
+//                         <option value="fast">Fast</option>
+//                         <option value="charged">Charged</option>
+//                      </select>
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Name</th>
+//                   <td>
+//                      <input
+//                         type="text"
+//                         name="move-name"
+//                         className="input-with-icon move-input-with-icon"
+//                      />
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Typing</th>
+//                   <td>
+//                      <select name="move-pokeType"></select>
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Power</th>
+//                   <td>
+//                      <input type="number" name="move-power" />
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>EnergyDelta</th>
+//                   <td>
+//                      <input type="number" name="move-energyDelta" />
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Duration (in miliseconds)</th>
+//                   <td>
+//                      <input type="number" name="move-duration" />
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Damage Window (in miliseconds)</th>
+//                   <td>
+//                      <input type="number" name="move-dws" />
+//                   </td>
+//                </tr>
+//                <tr>
+//                   <th>Effect</th>
+//                   <td>
+//                      <input name="move-effect" />
+//                   </td>
+//                </tr>
+//             </table>
+//             <br />
+
+//             <div className="container">
+//                <div className="row">
+//                   <div className="col-sm-6">
+//                      <button
+//                         id="moveEditForm-submit"
+//                         className="center_stuff btn btn-primary"
+//                      >
+//                         <i className="fa fa-check" aria-hidden="true"></i> Save
+//                      </button>
+//                   </div>
+//                   <div className="col-sm-3">
+//                      <button
+//                         id="moveEditForm-delete"
+//                         className="center_stuff btn btn-warning"
+//                      >
+//                         <i className="fa fa-trash" aria-hidden="true"></i>{" "}
+//                         Delete
+//                      </button>
+//                   </div>
+//                   <div className="col-sm-3">
+//                      <button
+//                         id="moveEditForm-reset"
+//                         className="center_stuff btn btn-danger"
+//                      >
+//                         <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
+//                         Reset
+//                      </button>
+//                   </div>
+//                </div>
+//             </div>
+//          </div>
+
+//          <div id="pokemonEditForm" title="Add/Edit Pokemon">
+//             <table id="pokemonEditForm-table">
+//                <tbody>
+//                   <tr>
+//                      <th>Pokemon Name</th>
+//                      <td>
+//                         <input
+//                            type="text"
+//                            name="pokemon-name"
+//                            className="input-with-icon species-input-with-icon"
+//                         />
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Pokemon Typing 1</th>
+//                      <td>
+//                         <select name="pokemon-pokeType1"></select>
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Pokemon Typing 2</th>
+//                      <td>
+//                         <select name="pokemon-pokeType2"></select>
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Base Attack</th>
+//                      <td>
+//                         <input type="number" name="pokemon-baseAtk" />
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Base Defense</th>
+//                      <td>
+//                         <input type="number" name="pokemon-baseDef" />
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Base Stamina</th>
+//                      <td>
+//                         <input type="number" name="pokemon-baseStm" />
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Fast Move Pool</th>
+//                      <td>
+//                         <input type="text" name="pokemon-fmoves" />
+//                      </td>
+//                   </tr>
+//                   <tr>
+//                      <th>Charged Move Pool</th>
+//                      <td>
+//                         <input type="text" name="pokemon-cmoves" />
+//                      </td>
+//                   </tr>
+//                </tbody>
+//             </table>
+//             <br />
+//             <div className="container">
+//                <div className="row">
+//                   <div className="col-sm-6">
+//                      <button
+//                         id="pokemonEditForm-submit"
+//                         className="center_stuff btn btn-primary"
+//                      >
+//                         <i className="fa fa-check" aria-hidden="true"></i> Save
+//                      </button>
+//                   </div>
+//                   <div className="col-sm-3">
+//                      <button
+//                         id="pokemonEditForm-delete"
+//                         className="center_stuff btn btn-warning"
+//                      >
+//                         <i className="fa fa-trash" aria-hidden="true"></i>{" "}
+//                         Delete
+//                      </button>
+//                   </div>
+//                   <div className="col-sm-3">
+//                      <button
+//                         id="pokemonEditForm-reset"
+//                         className="center_stuff btn btn-danger"
+//                      >
+//                         <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
+//                         Reset
+//                      </button>
+//                   </div>
+//                </div>
+//             </div>
+//          </div>
+
+//          <div id="parameterEditForm" title="Edit Battle Settings">
+//             <div
+//                style={{
+//                   display: "inline-block",
+//                   overflowY: "scroll",
+//                   maxHeight: "40vh",
+//                   width: "100%",
+//                }}
+//             >
+//                <table id="parameterEditForm-Table">
+//                   <thead>
+//                      <tr>
+//                         <th>Paramater</th>
+//                         <th>Value</th>
+//                      </tr>
+//                   </thead>
+//                   <tbody></tbody>
+//                </table>
+//             </div>
+
+//             <br />
+
+//             <div className="container">
+//                <div className="row">
+//                   <div className="col-sm-6">
+//                      <button
+//                         id="parameterEditForm-submit"
+//                         className="center_stuff btn btn-primary"
+//                      >
+//                         <i className="fa fa-check" aria-hidden="true"></i> Save
+//                      </button>
+//                   </div>
+//                   <div className="col-sm-6">
+//                      <button
+//                         id="parameterEditForm-reset"
+//                         className="center_stuff btn btn-danger"
+//                      >
+//                         <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
+//                         Reset
+//                      </button>
+//                   </div>
+//                </div>
+//             </div>
+
+//             <div id="parameterEditForm-feedback"></div>
+//          </div>
+
+//          <div id="modEditForm" title="Edit Mods">
+//             <table id="modEditForm-Table">
+//                <thead>
+//                   <colgroup>
+//                      <col width="50%" />
+//                      <col width="50%" />
+//                   </colgroup>
+//                   <tr>
+//                      <th>Mod Name</th>
+//                      <th>Applied</th>
+//                   </tr>
+//                </thead>
+//                <tbody id="modEditForm-table-body"></tbody>
+//             </table>
+
+//             <br />
+
+//             <div className="container">
+//                <div className="row">
+//                   <div className="col">
+//                      <button
+//                         id="modForm-submit"
+//                         className="center_stuff btn btn-primary"
+//                      >
+//                         <i className="fa fa-check" aria-hidden="true"></i> Save
+//                      </button>
+//                   </div>
+//                </div>
+//             </div>
+
+//             <div id="modEditForm-feedback"></div>
+//          </div>
+//       </Form>
+//    );
+// }
 
 export default ComprehensiveDpsSpreadsheet;
