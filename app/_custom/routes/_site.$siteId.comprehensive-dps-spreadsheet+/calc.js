@@ -53,6 +53,7 @@ export const Context = {
    battleMode: "regular",
    allyMega: false,
    allyMegaStab: false,
+   attackerLevel: 40,
    LeagueCPCap: 0,
 };
 
@@ -706,7 +707,7 @@ export function generateSpreadsheet(pokemonCollection, Context) {
 
             pkmInstance.fmove = fmoveInstance;
             pkmInstance.cmove = cmoveInstance;
-            pkmInstance.level = pkm.level || DEFAULT_ATTACKER_LEVEL;
+            pkmInstance.level = pkm.level || Context.attackerLevel;
             pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
             pkmInstance.atkiv =
                pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];

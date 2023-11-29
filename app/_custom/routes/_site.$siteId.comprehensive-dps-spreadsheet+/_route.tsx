@@ -49,11 +49,12 @@ function getCustom(params) {
    }
 
    if (params["ui-cpcap"]) {
-      context.cpCap = params["ui-cpcap"];
+      context.cpCap = parseInt(params["ui-cpcap"]);
    }
 
+   // todo currently broken
    if (params["attacker-level"]) {
-      context.attackerLevel = params["attacker-level"];
+      context.attackerLevel = parseInt(params["attacker-level"]);
    }
 
    if (params["weather"]) {
@@ -101,7 +102,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    const custom = getCustom(params);
 
-   console.log(requiredJSONStatus);
+   // console.log(requiredJSONStatus);
 
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch();
@@ -119,7 +120,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
       "pokemon-dps" + JSON.stringify(custom),
       60 * 60 * 24 * 1000, //cache for 24 hours
-      1,
    );
 
    //to-do read params to toggle sorting
@@ -141,7 +141,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
             .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
             //limit results to the top 100
             .slice(100 * page - 100, 100 * page),
-      "pokemon-dps-filtered-" + sort + asc + page + search,
+      "pokemon-dps" +
+         JSON.stringify(custom) +
+         "-filters-" +
+         sort +
+         asc +
+         page +
+         search,
       60 * 60 * 24 * 1000,
    );
 
