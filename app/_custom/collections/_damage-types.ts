@@ -29,7 +29,11 @@ export const _DamageTypes: CollectionConfig = {
       type: "text",
     },
     {
-      name: "icon_id",
+      name: "desc",
+      type: "textarea",
+    },
+    {
+      name: "icon_name",
       type: "text",
     },
     {

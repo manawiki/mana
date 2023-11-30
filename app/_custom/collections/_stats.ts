@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const _DamageElements: CollectionConfig = {
-  slug: "_damage-elements",
-  labels: { singular: "_damage-element", plural: "_damage-elements" },
+export const _Stats: CollectionConfig = {
+  slug: "_stats",
+  labels: { singular: "_stat", plural: "_stats" },
   admin: {
     group: "Custom",
     useAsTitle: "name",
@@ -27,22 +27,6 @@ export const _DamageElements: CollectionConfig = {
     {
       name: "name",
       type: "text",
-    },
-    {
-      name: "desc",
-      type: "textarea",
-    },
-    {
-      name: "hp_revise",
-      type: "number",
-    },
-    {
-      name: "armor_revise",
-      type: "number",
-    },
-    {
-      name: "shield_revise",
-      type: "number",
     },
     {
       name: "icon_name",

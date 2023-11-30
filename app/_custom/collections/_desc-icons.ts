@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const _DamageElements: CollectionConfig = {
-  slug: "_damage-elements",
-  labels: { singular: "_damage-element", plural: "_damage-elements" },
+export const _DescIcons: CollectionConfig = {
+  slug: "_desc-icons",
+  labels: { singular: "_desc-icon", plural: "_desc-icons" },
   admin: {
     group: "Custom",
     useAsTitle: "name",
@@ -29,20 +29,12 @@ export const _DamageElements: CollectionConfig = {
       type: "text",
     },
     {
-      name: "desc",
-      type: "textarea",
-    },
-    {
-      name: "hp_revise",
+      name: "size",
       type: "number",
     },
     {
-      name: "armor_revise",
-      type: "number",
-    },
-    {
-      name: "shield_revise",
-      type: "number",
+      name: "icon_path",
+      type: "text",
     },
     {
       name: "icon_name",
