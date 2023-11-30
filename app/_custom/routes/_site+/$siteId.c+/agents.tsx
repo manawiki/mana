@@ -144,6 +144,12 @@ const CharacterList = ({ chars }: any) => {
       icon: chars.find((c: any) => c.character_camp?.id == "5")?.character_camp
         .icon?.url,
     },
+    {
+      id: "6",
+      name: "Hollow Special Operations Section 6",
+      icon: chars.find((c: any) => c.character_camp?.id == "6")?.character_camp
+        .icon?.url,
+    },
   ] as FilterOptionType[];
 
   // const camps = chars.map((c) => {
