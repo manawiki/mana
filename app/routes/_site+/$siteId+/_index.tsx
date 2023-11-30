@@ -30,10 +30,10 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
-   context: { payload, user },
-   params,
-   request,
-}: LoaderFunctionArgs) {
+                                context: { payload, user },
+                                params,
+                                request,
+                             }: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -115,11 +115,11 @@ export default function SiteIndexMain() {
 }
 
 async function fetchHomeUpdates({
-   payload,
-   siteId,
-   user,
-   request,
-}: {
+                                   payload,
+                                   siteId,
+                                   user,
+                                   request,
+                                }: {
    payload: Payload;
    siteId: Site["slug"];
    user?: User;
@@ -172,12 +172,12 @@ async function fetchHomeUpdates({
 }
 
 async function fetchHomeContent({
-   payload,
-   siteId,
-   user,
-   request,
-   page = 1,
-}: {
+                                   payload,
+                                   siteId,
+                                   user,
+                                   request,
+                                   page = 1,
+                                }: {
    payload: Payload;
    siteId: Site["slug"];
    user?: User;
@@ -233,10 +233,13 @@ async function fetchHomeContent({
                   {
                      id: false,
                      content: true,
+                     user: true,
                      _status: true,
                   },
                   doc.version,
                );
+
+               console.log(JSON.stringify(version, null, 2));
 
                //Combine final result
                const result = {
@@ -291,9 +294,9 @@ async function fetchHomeContent({
 }
 
 export async function action({
-   context: { payload, user },
-   request,
-}: ActionFunctionArgs) {
+                                context: { payload, user },
+                                request,
+                             }: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["publish"]),
    });
