@@ -10,7 +10,7 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 export function Comments({ value }: { value: any }) {
    return (
       <div className="py-6">
-         <div className="border-t border-color bg-dark350/70">
+         <div className="border-t border-color bg-zinc-50 dark:bg-dark350/70">
             <div
                className="flex items-center justify-between gap-1.5 font-bold py-3
             mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
@@ -23,14 +23,14 @@ export function Comments({ value }: { value: any }) {
                   />
                   <div className="font-header text-lg">Comments</div>
                </div>
-               <div className="flex items-center gap-3">
+               {/* <div className="flex items-center gap-3">
                   <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
                      Latest
                   </div>
                   <div className="rounded-full text-[11px] flex items-center justify-center dark:bg-dark450 bg-zinc-100 h-7 px-4">
                      Top
                   </div>
-               </div>
+               </div> */}
             </div>
          </div>
          <div className="pt-5 pb-40 border-t border-color">
@@ -58,7 +58,10 @@ export function CommentsEditor({ value }: { value: any }) {
             />
          </Slate>
          <div className="absolute right-3.5 bottom-3.5 flex items-center justify-end">
-            <button className="rounded-full dark:bg-zinc-300 dark:text-zinc-700 px-3.5 py-1.5 text-xs font-bold">
+            <button
+               className="rounded-full text-white bg-zinc-600 dark:bg-zinc-300 
+             dark:text-zinc-700 px-3.5 py-1.5 text-xs font-bold"
+            >
                Comment
             </button>
          </div>
@@ -71,7 +74,7 @@ export function CommentsList() {
       <>
          <div className="border-t border-color py-6">
             <div className="flex items-center gap-2">
-               <div className="w-5 h-5 rounded-full dark:bg-zinc-500"></div>
+               <div className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-500"></div>
                <div className="text-xs font-bold">Pogseal</div>
                <span className="w-1 h-1 bg-zinc-500 rounded-full" />
                <div className="text-xs">3h ago</div>
@@ -100,7 +103,7 @@ export function CommentsList() {
          </div>
          <div className="border-t border-color py-6">
             <div className="flex items-center gap-2">
-               <div className="w-5 h-5 rounded-full dark:bg-zinc-500"></div>
+               <div className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-500"></div>
                <div className="text-xs font-bold">Pogseal</div>
                <span className="w-1 h-1 bg-zinc-500 rounded-full" />
                <div className="text-xs">3h ago</div>
@@ -129,7 +132,7 @@ export function CommentsList() {
          </div>
          <div className="border-t border-color py-6">
             <div className="flex items-center gap-2">
-               <div className="w-5 h-5 rounded-full dark:bg-zinc-500"></div>
+               <div className="w-5 h-5 rounded-full bg-zinc-200 dark:bg-zinc-500"></div>
                <div className="text-xs font-bold">Pogseal</div>
                <span className="w-1 h-1 bg-zinc-500 rounded-full" />
                <div className="text-xs">3h ago</div>
