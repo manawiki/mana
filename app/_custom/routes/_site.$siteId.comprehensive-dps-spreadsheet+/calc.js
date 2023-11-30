@@ -213,7 +213,6 @@ function calculateDPSIntake(pokemon, kwargs) {
          y: sum_y / num,
       };
    } else {
-      var FDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.fmove, kwargs);
       let FDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.fmove, kwargs);
       let CDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.cmove, kwargs);
       let FE = kwargs.enemy.fmove.energyDelta;
