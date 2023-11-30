@@ -193,7 +193,7 @@ function calculateDPSIntake(pokemon, kwargs) {
          y: sum_y / num,
       };
    } else if (kwargs.genericEnemyChargedMove) {
-      var sum_x = 0,
+      let sum_x = 0,
          sum_y = 0,
          num = kwargs.enemy.cmoves.length;
       if (num == 0) {
@@ -214,11 +214,12 @@ function calculateDPSIntake(pokemon, kwargs) {
       };
    } else {
       var FDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.fmove, kwargs);
-      var CDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.cmove, kwargs);
-      var FE = kwargs.enemy.fmove.energyDelta;
-      var CE = -kwargs.enemy.cmove.energyDelta;
+      let FDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.fmove, kwargs);
+      let CDmg = damage(kwargs.enemy, pokemon, kwargs.enemy.cmove, kwargs);
+      let FE = kwargs.enemy.fmove.energyDelta;
+      let CE = -kwargs.enemy.cmove.energyDelta;
       if (kwargs.battleMode == "pvp") {
-         var FDur = kwargs.enemy.fmove.duration * 0.5;
+         let FDur = kwargs.enemy.fmove.duration * 0.5;
          return {
             x: 0,
             y: FDmg / (FDur - 2) + ((FE / (FDur - 2)) * CDmg) / CE,
@@ -502,7 +503,7 @@ export function applyContext(custom) {
       custom?.enemyPokemonFmove?.trim().toLowerCase(),
    );
    if (enemyFast) {
-      Context.fmove = enemyFast;
+      Context.enemy.fmove = enemyFast;
       Context.genericEnemyFastMove = false;
    }
 
@@ -511,8 +512,8 @@ export function applyContext(custom) {
       custom.enemyPokemonCmove?.trim().toLowerCase(),
    );
    if (enemyCharged) {
+      Context.enemy.cmove = enemyCharged;
       Context.genericEnemyChargedMove = false;
-      Context.cmove = enemyCharged;
    }
 
    let enemy_cpm = DEFAULT_ENEMY_CPM;
@@ -536,7 +537,7 @@ export function applyContext(custom) {
 
    if (custom.cpcap) Context.LeagueCPCap = custom.cpcap;
 
-   console.log("Context", Context);
+   // console.log("Context", Context);
 
    return Context;
 }

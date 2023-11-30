@@ -133,7 +133,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
    const page = params["page"] ? parseInt(params["page"]) : 1;
    const search = params["search"] ?? "";
 
-   console.log(sort, asc, page, search);
+   // console.log(sort, asc, page, search);
 
    const filtered = await cacheThis(
       async () =>
