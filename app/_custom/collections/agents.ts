@@ -170,6 +170,10 @@ export const Agents: CollectionConfig = {
       relationTo: "images",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "checksum",
       type: "text",
     },
