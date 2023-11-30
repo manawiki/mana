@@ -760,14 +760,14 @@ function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
    return (
       <>
          <Link
-            className="relative block py-4"
+            className="relative block py-4 group"
             prefetch="intent"
             to={`/${siteId}/p/${post.slug}`}
             key={post.id}
          >
-            <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
-               <div className="flex items-center gap-3">
-                  <div className="h-6 w-6 overflow-hidden rounded-full">
+            <div className="flex w-full items-center justify-between gap-3 pb-3 text-sm text-gray-500 dark:text-gray-400">
+               <div className="flex items-center gap-2.5">
+                  <div className="h-5 w-5 overflow-hidden rounded-full">
                      {post?.author.avatar?.url ? (
                         <Image
                            width={20}
@@ -796,7 +796,7 @@ function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
             </div>
             <div className="flex items-start gap-5">
                <div className="relative flex-grow">
-                  <div className="pb-2 font-header text-xl font-bold">
+                  <div className="pb-2 font-header text-xl font-bold group-hover:underline">
                      {post.name}
                   </div>
                   <div className="text-1 text-sm max-laptop:line-clamp-2">

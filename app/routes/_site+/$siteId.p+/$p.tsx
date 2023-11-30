@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
+import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { json, redirect } from "@remix-run/node";
 import type {
@@ -8,10 +9,11 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import type { Descendant } from "slate";
+import { useSlate } from "slate-react";
 import invariant from "tiny-invariant";
 import urlSlug from "url-slug";
 import { z } from "zod";
@@ -41,6 +43,7 @@ import {
    uploadImage,
 } from "~/utils";
 
+import { Comments } from "./components/Comments";
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
@@ -140,99 +143,196 @@ export default function Post() {
    return (
       <>
          {hasAccess ? (
-            <Float
-               middleware={[
-                  shift({
-                     padding: {
-                        top: 80,
-                     },
-                  }),
-                  offset({
-                     mainAxis: 50,
-                     crossAxis: 0,
-                  }),
-               ]}
-               zIndex={20}
-               autoUpdate
-               placement="right-start"
-               show
-            >
-               <main className={mainContainerStyle}>
-                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                  <PostTableOfContents data={post.content} />
-                  {enableAds && <AdPlaceholder />}
-                  <ManaEditor
-                     collectionSlug="posts"
-                     fetcher={fetcher}
-                     pageId={post.id}
-                     defaultValue={post.content as Descendant[]}
-                  />
-               </main>
-               <div>
-                  <EditorCommandBar
-                     collectionSlug="posts"
-                     pageId={post.id}
-                     fetcher={fetcher}
-                     isChanged={isChanged}
-                  >
-                     <EditorCommandBar.PrimaryOptions>
-                        <>
-                           <Tooltip placement="right">
-                              <TooltipTrigger
-                                 onClick={() => setIsBannerShowing((v) => !v)}
-                                 className={command_button}
+            <>
+               <Float
+                  middleware={[
+                     shift({
+                        padding: {
+                           top: 80,
+                        },
+                     }),
+                     offset({
+                        mainAxis: 50,
+                        crossAxis: 0,
+                     }),
+                  ]}
+                  zIndex={20}
+                  autoUpdate
+                  placement="right-start"
+                  show
+               >
+                  <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+                     <div className="pb-3 mb-4 border-b border-color flex items-center justify-between">
+                        <Link
+                           to={`/${post.site.slug}/posts`}
+                           className="flex items-center hover:underline group gap-2"
+                        >
+                           <Icon name="arrow-left" size={16} />
+                           <div className="font-bold text-sm text-1">Posts</div>
+                        </Link>
+                        <div className="flex items-center gap-2">
+                           <div className="flex items-center gap-1.5 font-bold text-xs">
+                              <Icon
+                                 name="message-circle"
+                                 className="text-zinc-400 dark:text-zinc-500"
+                                 size={15}
+                              />
+                              <div className="text-1">Comments</div>
+                              <div
+                                 className="rounded-full text-[10px] flex items-center 
+                              justify-center dark:bg-dark450 bg-zinc-100 w-5 h-5 ml-0.5"
                               >
-                                 {isShowBanner ? (
-                                    <Icon name="image-minus" size={14} />
-                                 ) : (
-                                    <Icon name="image" size={14} />
+                                 4
+                              </div>
+                           </div>
+                           <Icon
+                              name="slash"
+                              size={16}
+                              className="text-zinc-200 text-lg -rotate-[30deg] dark:text-zinc-700"
+                           />
+                           <div className="flex items-center gap-1.5 font-bold text-xs">
+                              <Icon
+                                 name="folder"
+                                 className="text-zinc-400 dark:text-zinc-500"
+                                 size={15}
+                              />
+                              <div className="text-1">General</div>
+                              <Popover>
+                                 {({ open }) => (
+                                    <>
+                                       <Float
+                                          as={Fragment}
+                                          enter="transition ease-out duration-200"
+                                          enterFrom="opacity-0 translate-y-1"
+                                          enterTo="opacity-100 translate-y-0"
+                                          leave="transition ease-in duration-150"
+                                          leaveFrom="opacity-100 translate-y-0"
+                                          leaveTo="opacity-0 translate-y-1"
+                                          placement="bottom-end"
+                                          offset={4}
+                                       >
+                                          <Popover.Button className="dark:bg-dark450 bg-zinc-100 ml-0.5 flex items-center justify-center rounded-full w-5 h-5">
+                                             {open ? (
+                                                <Icon
+                                                   name="x"
+                                                   className="text-1"
+                                                   size={14}
+                                                />
+                                             ) : (
+                                                <Icon
+                                                   className="pt-[1px]"
+                                                   name="chevron-down"
+                                                   size={14}
+                                                />
+                                             )}
+                                          </Popover.Button>
+                                          <Popover.Panel
+                                             className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
+                                       gap-1 z-30 grid grid-cols-9 w-40 rounded-lg border p-2 shadow-sm"
+                                          >
+                                             Hello
+                                          </Popover.Panel>
+                                       </Float>
+                                    </>
                                  )}
-                              </TooltipTrigger>
-                              <TooltipContent>Banner</TooltipContent>
-                           </Tooltip>
-                        </>
-                     </EditorCommandBar.PrimaryOptions>
-                     <EditorCommandBar.SecondaryOptions>
-                        <>
-                           {post._status == "published" && (
-                              <button
-                                 className="text-1 flex w-full items-center gap-2 rounded-lg px-2
-                                    py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                 onClick={() => setUnpublishOpen(true)}
-                              >
-                                 <Icon
-                                    name="eye-off"
-                                    className="text-zinc-400"
-                                    size={12}
-                                 />
-                                 <span className="text-xs">Unpublish</span>
-                              </button>
-                           )}
+                              </Popover>
+                           </div>
+                           <Icon
+                              name="slash"
+                              size={16}
+                              className="text-zinc-200 text-lg -rotate-[30deg] dark:text-zinc-700"
+                           />
                            <button
-                              className="text-1 flex w-full items-center gap-2 rounded-lg
-                                              px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                              onClick={() => setDeleteOpen(true)}
+                              className="rounded-md text-[10px] flex items-center shadow-sm shadow-1
+                              justify-center dark:bg-dark450 bg-zinc-100 w-6 h-6"
                            >
                               <Icon
-                                 name="trash-2"
-                                 className="text-red-400"
-                                 size={12}
+                                 className="text-zinc-400"
+                                 name="bookmark"
+                                 size={14}
                               />
-                              <span className="text-xs">Delete</span>
                            </button>
-                        </>
-                     </EditorCommandBar.SecondaryOptions>
-                  </EditorCommandBar>
-                  <PostDeleteModal
-                     isDeleteOpen={isDeleteOpen}
-                     setDeleteOpen={setDeleteOpen}
-                  />
-                  <PostUnpublishModal
-                     isUnpublishOpen={isUnpublishOpen}
-                     setUnpublishOpen={setUnpublishOpen}
-                  />
-               </div>
-            </Float>
+                        </div>
+                     </div>
+                     <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                     <PostTableOfContents data={post.content} />
+                     {enableAds && <AdPlaceholder />}
+                     <ManaEditor
+                        collectionSlug="posts"
+                        fetcher={fetcher}
+                        pageId={post.id}
+                        defaultValue={post.content as Descendant[]}
+                     />
+                  </div>
+                  <div>
+                     <EditorCommandBar
+                        collectionSlug="posts"
+                        pageId={post.id}
+                        fetcher={fetcher}
+                        isChanged={isChanged}
+                     >
+                        <EditorCommandBar.PrimaryOptions>
+                           <>
+                              <Tooltip placement="right">
+                                 <TooltipTrigger
+                                    onClick={() =>
+                                       setIsBannerShowing((v) => !v)
+                                    }
+                                    className={command_button}
+                                 >
+                                    {isShowBanner ? (
+                                       <Icon name="image-minus" size={14} />
+                                    ) : (
+                                       <Icon name="image" size={14} />
+                                    )}
+                                 </TooltipTrigger>
+                                 <TooltipContent>Banner</TooltipContent>
+                              </Tooltip>
+                           </>
+                        </EditorCommandBar.PrimaryOptions>
+                        <EditorCommandBar.SecondaryOptions>
+                           <>
+                              {post._status == "published" && (
+                                 <button
+                                    className="text-1 flex w-full items-center gap-2 rounded-lg px-2
+                                    py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                    onClick={() => setUnpublishOpen(true)}
+                                 >
+                                    <Icon
+                                       name="eye-off"
+                                       className="text-zinc-400"
+                                       size={12}
+                                    />
+                                    <span className="text-xs">Unpublish</span>
+                                 </button>
+                              )}
+                              <button
+                                 className="text-1 flex w-full items-center gap-2 rounded-lg
+                                              px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                 onClick={() => setDeleteOpen(true)}
+                              >
+                                 <Icon
+                                    name="trash-2"
+                                    className="text-red-400"
+                                    size={12}
+                                 />
+                                 <span className="text-xs">Delete</span>
+                              </button>
+                           </>
+                        </EditorCommandBar.SecondaryOptions>
+                     </EditorCommandBar>
+                     <PostDeleteModal
+                        isDeleteOpen={isDeleteOpen}
+                        setDeleteOpen={setDeleteOpen}
+                     />
+                     <PostUnpublishModal
+                        isUnpublishOpen={isUnpublishOpen}
+                        setUnpublishOpen={setUnpublishOpen}
+                     />
+                  </div>
+               </Float>
+               <Comments />
+            </>
          ) : (
             <main className={mainContainerStyle}>
                <PostHeaderView post={post} />
