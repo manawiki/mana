@@ -115,11 +115,11 @@ export default function SiteIndexMain() {
 }
 
 async function fetchHomeUpdates({
-                                   payload,
-                                   siteId,
-                                   user,
-                                   request,
-                                }: {
+   payload,
+   siteId,
+   user,
+   request,
+}: {
    payload: Payload;
    siteId: Site["slug"];
    user?: User;
@@ -172,12 +172,12 @@ async function fetchHomeUpdates({
 }
 
 async function fetchHomeContent({
-                                   payload,
-                                   siteId,
-                                   user,
-                                   request,
-                                   page = 1,
-                                }: {
+   payload,
+   siteId,
+   user,
+   request,
+   page = 1,
+}: {
    payload: Payload;
    siteId: Site["slug"];
    user?: User;
@@ -238,8 +238,6 @@ async function fetchHomeContent({
                   },
                   doc.version,
                );
-
-               console.log(JSON.stringify(version, null, 2));
 
                //Combine final result
                const result = {
