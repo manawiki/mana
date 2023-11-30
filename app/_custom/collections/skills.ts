@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const _DamageElements: CollectionConfig = {
-  slug: "_damage-elements",
-  labels: { singular: "_damage-element", plural: "_damage-elements" },
+export const Skills: CollectionConfig = {
+  slug: "skills",
+  labels: { singular: "skill", plural: "skills" },
   admin: {
     group: "Custom",
     useAsTitle: "name",
@@ -29,29 +29,45 @@ export const _DamageElements: CollectionConfig = {
       type: "text",
     },
     {
-      name: "desc",
-      type: "textarea",
+      name: "character",
+      type: "relationship",
+      relationTo: "agents",
     },
     {
-      name: "hp_revise",
-      type: "number",
-    },
-    {
-      name: "armor_revise",
-      type: "number",
-    },
-    {
-      name: "shield_revise",
-      type: "number",
-    },
-    {
-      name: "icon_name",
+      name: "text_type",
       type: "text",
     },
     {
-      name: "icon",
-      type: "upload",
-      relationTo: "images",
+      name: "skill_type",
+      type: "text",
+    },
+    {
+      name: "description",
+      type: "array",
+      fields: [
+        {
+          name: "name",
+          type: "text",
+        },
+        {
+          name: "desc",
+          type: "textarea",
+        },
+      ],
+    },
+    {
+      name: "stats",
+      type: "array",
+      fields: [
+        {
+          name: "title",
+          type: "text",
+        },
+        {
+          name: "params",
+          type: "json",
+        },
+      ],
     },
     {
       name: "checksum",

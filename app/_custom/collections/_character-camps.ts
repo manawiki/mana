@@ -29,7 +29,7 @@ export const _CharacterCamps: CollectionConfig = {
       type: "text",
     },
     {
-      name: "icon_id",
+      name: "icon_name",
       type: "text",
     },
     {
