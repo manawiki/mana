@@ -16,7 +16,9 @@ import type { Agent as AgentType } from "~/db/payload-custom-types";
 import { Agents } from "../../../collections/agents";
 
 // Custom Component Imports
-// import { Main } from "~/_custom/components/agents/Main";
+import { Main } from "~/_custom/components/agents/Main";
+import { Skills } from "~/_custom/components/agents/Skills";
+import { ImageGallery } from "~/_custom/components/agents/ImageGallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -39,7 +41,9 @@ export async function loader({
 }
 
 const SECTIONS = {
-  //main: Main,
+  main: Main,
+  skills: Skills,
+  gallery: ImageGallery,
 };
 
 import { ZZZLoadingImage } from "~/_custom/components/ZZZLoadingImage";
@@ -53,6 +57,9 @@ export default function EntryPage() {
     <>
       {/* <Entry customComponents={SECTIONS} customData={char} /> */}
       <Entry>
+        <Main data={char} />
+        <Skills data={char} />
+        <ImageGallery data={char} />
         <div className="my-4 dark:invert-0 invert h-28 w-full flex items-center justify-center">
           <ZZZLoadingImage />
         </div>
@@ -69,7 +76,22 @@ const QUERY = gql`
       name
       name_code
       slug
+      hp
+      atk
+      def
+      impact
+      crit
+      crit_damage
+      icon_full {
+        url
+      }
       icon {
+        url
+      }
+      icon_round {
+        url
+      }
+      icon_general {
         url
       }
       damage_type {
@@ -91,6 +113,56 @@ const QUERY = gql`
         name
         icon {
           url
+        }
+      }
+      skill_basic {
+        description {
+          name
+          desc
+        }
+        stats {
+          title
+          params
+        }
+      }
+      skill_dodge {
+        description {
+          name
+          desc
+        }
+        stats {
+          title
+          params
+        }
+      }
+      skill_special {
+        description {
+          name
+          desc
+        }
+        stats {
+          title
+          params
+        }
+      }
+      skill_chain {
+        description {
+          name
+          desc
+        }
+        stats {
+          title
+          params
+        }
+      }
+      skill_core {
+        description {
+          name
+          desc
+        }
+        stats {
+          title
+          params
         }
       }
     }
