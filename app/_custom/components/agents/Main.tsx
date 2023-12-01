@@ -45,11 +45,13 @@ export function Main({ data: char }: { data: AgentType }) {
       label: "CRIT Rate",
       value: char?.crit,
       icon: "https://static.mana.wiki/zzz/IconCrit.png",
+      percent: true,
     },
     {
       label: "PEN Ratio",
       value: 0,
       icon: "https://static.mana.wiki/zzz/IconPenRatio.png",
+      percent: true,
     },
 
     {
@@ -71,6 +73,7 @@ export function Main({ data: char }: { data: AgentType }) {
       label: "Crit DMG",
       value: char?.crit_damage,
       icon: "https://static.mana.wiki/zzz/IconCritDam.png",
+      percent: true,
     },
     {
       label: "PEN",
@@ -79,7 +82,7 @@ export function Main({ data: char }: { data: AgentType }) {
     },
     {
       label: "Attribute Mastery",
-      value: char?.hp,
+      value: char?.attribute_mastery,
       icon: "https://static.mana.wiki/zzz/IconAddedElementAccumulationRatio.png",
     },
   ];
@@ -141,39 +144,7 @@ export function Main({ data: char }: { data: AgentType }) {
             {statDisplay
               ?.filter((v: any, i: any) => i < 5)
               .map((attr: any) => {
-                const attr_icon = attr?.icon;
-                const attr_name = attr?.label;
-                const attr_val = attr?.value;
-
-                return (
-                  <>
-                    <div className="py-1 px-3 justify-between flex items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        {attr_icon ? (
-                          <>
-                            <div className="items-center inline-block align-middle justify-center h-full mr-1 invert-[0.3]">
-                              <Image
-                                height={30}
-                                className="object-contain"
-                                url={attr_icon}
-                                options="height=30"
-                                alt={attr_name ?? "Icon"}
-                              />
-                            </div>
-                          </>
-                        ) : null}
-                        <span className="font-semibold text-sm inline-block align-middle">
-                          {attr_name}
-                        </span>
-                      </div>
-                      <div className="text-sm font-semibold">
-                        <span className="inline-block align-middle">
-                          {attr_val}
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                );
+                return <StatBlock attr={attr} />;
               })}
           </div>
         </section>
@@ -187,39 +158,7 @@ export function Main({ data: char }: { data: AgentType }) {
             {statDisplay
               ?.filter((v: any, i: any) => i >= 5)
               .map((attr: any) => {
-                const attr_icon = attr?.icon;
-                const attr_name = attr?.label;
-                const attr_val = attr?.value;
-
-                return (
-                  <>
-                    <div className="py-1 px-3 justify-between flex items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        {attr_icon ? (
-                          <>
-                            <div className="items-center inline-block align-middle justify-center h-full mr-1 invert-[0.3]">
-                              <Image
-                                height={30}
-                                className="object-contain"
-                                url={attr_icon}
-                                options="height=30"
-                                alt={attr_name ?? "Icon"}
-                              />
-                            </div>
-                          </>
-                        ) : null}
-                        <span className="font-semibold text-sm inline-block align-middle">
-                          {attr_name}
-                        </span>
-                      </div>
-                      <div className="text-sm font-semibold">
-                        <span className="inline-block align-middle">
-                          {attr_val}
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                );
+                return <StatBlock attr={attr} />;
               })}
           </div>
         </section>
@@ -227,3 +166,40 @@ export function Main({ data: char }: { data: AgentType }) {
     </>
   );
 }
+
+const StatBlock = ({ attr }: any) => {
+  const attr_icon = attr?.icon;
+  const attr_name = attr?.label;
+  const attr_val = attr?.value;
+  const attr_perc = attr?.percent;
+
+  return (
+    <>
+      <div className="py-1 px-3 justify-between flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          {attr_icon ? (
+            <>
+              <div className="items-center inline-block align-middle justify-center h-full mr-1 invert-[0.3]">
+                <Image
+                  height={30}
+                  className="object-contain"
+                  url={attr_icon}
+                  options="height=30"
+                  alt={attr_name ?? "Icon"}
+                />
+              </div>
+            </>
+          ) : null}
+          <span className="font-semibold text-sm inline-block align-middle">
+            {attr_name}
+          </span>
+        </div>
+        <div className="text-sm font-semibold">
+          <span className="inline-block align-middle">
+            {attr_perc ? attr_val / 100 + "%" : attr_val}
+          </span>
+        </div>
+      </div>
+    </>
+  );
+};
