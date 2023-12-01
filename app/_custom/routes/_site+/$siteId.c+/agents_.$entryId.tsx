@@ -82,6 +82,7 @@ const QUERY = gql`
       impact
       crit
       crit_damage
+      attribute_mastery
       icon_full {
         url
       }
