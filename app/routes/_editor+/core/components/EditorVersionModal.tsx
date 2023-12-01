@@ -68,9 +68,9 @@ export function EditorVersionModal({
                                  className="bg-3 shadow-1 flex h-5 w-5 items-center justify-center
                                           overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
                               >
-                                 {selectedVersion?.version?.user?.avatar?.url ? (
+                                 {selectedVersion?.version?.versionAuthor?.avatar?.url ? (
                                     <Image
-                                       url={selectedVersion?.version?.user?.avatar?.url}
+                                       url={selectedVersion?.version?.versionAuthor?.avatar?.url}
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        alt="User Avatar"
                                     />
@@ -82,7 +82,7 @@ export function EditorVersionModal({
                                     />
                                  )}
                               </div>
-                              <div className="pl-2">{selectedVersion?.version?.user?.username ?? ("Unknown contributor")}</div>
+                              <div className="pl-2">{selectedVersion?.version?.versionAuthor?.username ?? ("Unknown contributor")}</div>
                            </div>
                         </div>
                      </div>

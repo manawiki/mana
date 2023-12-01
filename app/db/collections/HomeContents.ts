@@ -1,21 +1,8 @@
 import payload from "payload";
-import type {CollectionBeforeChangeHook , CollectionConfig} from "payload/types";
-
-import type { User } from "payload/generated-types";
+import type {CollectionConfig} from "payload/types";
 
 import { canMutateAsSiteAdmin, canRead } from "../../access/site";
-
-// Automatically replaces the lastEditedBy field before a change is submitted in order to allow us to determine which user made a specific document version
-const replaceLastEditedBy: CollectionBeforeChangeHook = async ({ data, req, operation, originalDoc }) => {
-   try {
-      if(operation == "update") {
-          data.user = req.user.id;
-      }
-      return data;
-   } catch (err: unknown) {
-      payload.logger.error(`${err}`);
-   }
-};
+import {replaceVersionAuthor} from "../hooks/replaceVersionAuthor";
 
 export const HomeContents: CollectionConfig = {
    slug: "homeContents",
@@ -32,11 +19,14 @@ export const HomeContents: CollectionConfig = {
          type: "json",
       },
       {
-         name: "user",
+         name: "versionAuthor",
          type: "relationship",
          relationTo: "users",
          maxDepth: 3,
          required: false,
+         admin: {
+            hidden: true,
+         }
       },
       {
          name: "site",
@@ -48,7 +38,7 @@ export const HomeContents: CollectionConfig = {
       },
    ],
    hooks: {
-      beforeChange: [replaceLastEditedBy],
+      beforeChange: [replaceVersionAuthor],
    },
    versions: {
       drafts: {

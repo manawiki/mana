@@ -4,6 +4,7 @@ import type { User } from "payload/generated-types";
 
 import { canMutateAsSiteAdmin, canRead } from "../../access/site";
 import { isStaffFieldLevel } from "../../access/user";
+import {replaceVersionAuthor} from "../hooks/replaceVersionAuthor";
 
 export const Posts: CollectionConfig = {
    slug: "posts",
@@ -71,7 +72,20 @@ export const Posts: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
+      {
+         name: "versionAuthor",
+         type: "relationship",
+         relationTo: "users",
+         maxDepth: 3,
+         required: false,
+         admin: {
+            hidden: true,
+         }
+      },
    ],
+   hooks: {
+      beforeChange: [replaceVersionAuthor]
+   },
    versions: {
       drafts: {
          autosave: true,

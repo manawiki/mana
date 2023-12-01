@@ -233,7 +233,7 @@ async function fetchHomeContent({
                   {
                      id: false,
                      content: true,
-                     user: true,
+                     versionAuthor: true,
                      _status: true,
                   },
                   doc.version,
