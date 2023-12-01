@@ -10,9 +10,11 @@ pnpm import_collection_data collection:_stats,filename:_Stat.json,idname:data_ke
 
 # Agents
 pnpm import_collection_data collection:agents,filename:Agent.json,idname:data_key,sync:false,overwrite:false
-
 # Skills
 pnpm import_collection_data collection:skills,filename:Skill.json,idname:data_key,sync:false,overwrite:false
-
 # Talents
 pnpm import_collection_data collection:talents,filename:Talent.json,idname:data_key,sync:false,overwrite:false
+
+# Bangboos
+pnpm import_collection_data collection:bangboos,filename:Bangboo.json,idname:data_key,sync:false,overwrite:false
+# Bangboo-Skills

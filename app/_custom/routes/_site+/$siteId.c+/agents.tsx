@@ -134,7 +134,7 @@ const CharacterList = ({ chars }: any) => {
     },
     {
       id: "3",
-      name: "Belobog Heavy Industries",
+      name: "Belobog Heavy Ind.",
       icon: chars.find((c: any) => c.character_camp?.id == "3")?.character_camp
         .icon?.url,
     },
@@ -146,7 +146,7 @@ const CharacterList = ({ chars }: any) => {
     },
     {
       id: "6",
-      name: "Hollow Special Operations Section 6",
+      name: "Hollow Spec. Ops. S6",
       icon: chars.find((c: any) => c.character_camp?.id == "6")?.character_camp
         .icon?.url,
     },
