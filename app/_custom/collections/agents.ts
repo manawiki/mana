@@ -33,6 +33,11 @@ export const Agents: CollectionConfig = {
       type: "text",
     },
     {
+      name: "rarity",
+      type: "relationship",
+      relationTo: "_rarities",
+    },
+    {
       name: "damage_type",
       type: "relationship",
       relationTo: "_damage-types",
@@ -116,7 +121,12 @@ export const Agents: CollectionConfig = {
         },
       ],
     },
-
+    {
+      name: "talents",
+      type: "relationship",
+      relationTo: "talents",
+      hasMany: true,
+    },
     {
       name: "icon_path",
       type: "text",
