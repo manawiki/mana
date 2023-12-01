@@ -18,6 +18,7 @@ import { Agents } from "../../../collections/agents";
 // Custom Component Imports
 import { Main } from "~/_custom/components/agents/Main";
 import { Skills } from "~/_custom/components/agents/Skills";
+import { Talents } from "~/_custom/components/agents/Talents";
 import { ImageGallery } from "~/_custom/components/agents/ImageGallery";
 
 // Loader definition - loads Entry data!
@@ -43,6 +44,7 @@ export async function loader({
 const SECTIONS = {
   main: Main,
   skills: Skills,
+  talents: Talents,
   gallery: ImageGallery,
 };
 
@@ -59,6 +61,7 @@ export default function EntryPage() {
       <Entry>
         <Main data={char} />
         <Skills data={char} />
+        <Talents data={char} />
         <ImageGallery data={char} />
         <div className="my-4 dark:invert-0 invert h-28 w-full flex items-center justify-center">
           <ZZZLoadingImage />
@@ -165,6 +168,11 @@ const QUERY = gql`
           title
           params
         }
+      }
+      talents {
+        name
+        desc
+        desc_flavor
       }
     }
   }
