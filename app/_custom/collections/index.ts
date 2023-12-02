@@ -6,6 +6,8 @@ import { _Rarities } from "./_rarities";
 import { _Stats } from "./_stats";
 import { Agents } from "./agents";
 import { Bangboos } from "./bangboos";
+import { BangbooSkills } from "./bangboo-skills";
+import { BangbooTalents } from "./bangboo-talents";
 import { Materials } from "./materials";
 import { Skills } from "./skills";
 import { Talents } from "./talents";
@@ -13,6 +15,8 @@ import { Talents } from "./talents";
 export const CustomCollections = [
   Agents,
   Bangboos,
+  BangbooSkills,
+  BangbooTalents,
   Materials,
   Skills,
   Talents,
