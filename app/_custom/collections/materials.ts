@@ -33,6 +33,10 @@ export const Materials: CollectionConfig = {
       type: "textarea",
     },
     {
+      name: "desc_flavor",
+      type: "textarea",
+    },
+    {
       name: "rarity",
       type: "relationship",
       relationTo: "_rarities",

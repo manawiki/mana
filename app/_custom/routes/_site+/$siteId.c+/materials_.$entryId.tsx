@@ -12,14 +12,12 @@ import {
 export { customEntryMeta as meta };
 
 // Custom Site / Collection Config Imports
-import type { Bangboo as BangbooType } from "~/db/payload-custom-types";
-import { Bangboos } from "../../../collections/bangboos";
+import type { Material as MaterialType } from "~/db/payload-custom-types";
+import { Materials } from "../../../collections/materials";
 
 // Custom Component Imports
-import { Main } from "~/_custom/components/bangboos/Main";
-import { Skills } from "~/_custom/components/bangboos/Skills";
-import { Talents } from "~/_custom/components/bangboos/Talents";
-import { ImageGallery } from "~/_custom/components/bangboos/ImageGallery";
+import { Main } from "~/_custom/components/materials/Main";
+//import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -43,16 +41,12 @@ export async function loader({
 
 const SECTIONS = {
   main: Main,
-  skills: Skills,
-  talents: Talents,
-  gallery: ImageGallery,
+  // gallery: ImageGallery,
 };
-
-import { ZZZUnderConstruction } from "~/_custom/components/ZZZUnderConstruction";
 
 export default function EntryPage() {
   const { entry } = useLoaderData<typeof loader>();
-  const char = entry?.data?.Bangboo as BangbooType;
+  const char = entry?.data?.Material as MaterialType;
   // console.log(char);
 
   return (
@@ -60,55 +54,33 @@ export default function EntryPage() {
       {/* <Entry customComponents={SECTIONS} customData={char} /> */}
       <Entry>
         <Main data={char} />
-        <Skills data={char} />
-        <Talents data={char} />
-        <ImageGallery data={char} />
+        {/* <ImageGallery data={char} /> */}
 
-        <ZZZUnderConstruction />
+        {/* <ZZZUnderConstruction /> */}
       </Entry>
     </>
   );
 }
 
 const QUERY = gql`
-  query Bangboo($entryId: String!) {
-    Bangboo(id: $entryId) {
+  query Material($entryId: String!) {
+    Material(id: $entryId) {
       id
       name
       desc
+      desc_flavor
       slug
-      hp
-      atk
-      def
-      impact
-      icon_full {
-        url
+      rarity {
+        name
+        icon {
+          url
+        }
+      }
+      class {
+        name
       }
       icon {
         url
-      }
-      rarity {
-        id
-        name
-        icon {
-          url
-        }
-      }
-      skills {
-        name
-        desc
-        icon {
-          url
-        }
-      }
-      talents {
-        name
-        levels {
-          desc
-        }
-        icon {
-          url
-        }
       }
     }
   }
