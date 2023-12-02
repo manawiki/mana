@@ -8,7 +8,10 @@ pnpm import_collection_data collection:_damage-types,filename:_DamageType.json,i
 pnpm import_collection_data collection:_desc-icons,filename:_DescIcon.json,idname:data_key,sync:false,overwrite:false
 pnpm import_collection_data collection:_stats,filename:_Stat.json,idname:data_key,sync:false,overwrite:false
 
+# MaterialClasses
+pnpm import_collection_data collection:_material-classes,filename:_MaterialClass.json,idname:data_key,sync:false,overwrite:false
 # Materials
+pnpm import_collection_data collection:materials,filename:Material.json,idname:data_key,sync:false,overwrite:false
 
 # Agents
 pnpm import_collection_data collection:agents,filename:Agent.json,idname:data_key,sync:false,overwrite:false

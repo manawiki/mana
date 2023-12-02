@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../access/user";
 
-export const Materials: CollectionConfig = {
-  slug: "materials",
-  labels: { singular: "material", plural: "materials" },
+export const _MaterialClasses: CollectionConfig = {
+  slug: "_material-classes",
+  labels: { singular: "_material-class", plural: "_material-classes" },
   admin: {
     group: "Custom",
     useAsTitle: "name",
@@ -26,37 +26,6 @@ export const Materials: CollectionConfig = {
     },
     {
       name: "name",
-      type: "text",
-    },
-    {
-      name: "desc",
-      type: "textarea",
-    },
-    {
-      name: "rarity",
-      type: "relationship",
-      relationTo: "_rarities",
-    },
-    {
-      name: "class",
-      type: "relationship",
-      relationTo: "_material-classes",
-    },
-    {
-      name: "icon_path",
-      type: "text",
-    },
-    {
-      name: "icon_name",
-      type: "text",
-    },
-    {
-      name: "icon",
-      type: "upload",
-      relationTo: "images",
-    },
-    {
-      name: "slug",
       type: "text",
     },
     {

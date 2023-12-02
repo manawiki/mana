@@ -58,6 +58,18 @@ export const Bangboos: CollectionConfig = {
       type: "number",
     },
     {
+      name: "skills",
+      type: "relationship",
+      relationTo: "bangboo-skills",
+      hasMany: true,
+    },
+    {
+      name: "talents",
+      type: "relationship",
+      relationTo: "bangboo-talents",
+      hasMany: true,
+    },
+    {
       name: "icon_path",
       type: "text",
     },
