@@ -106,7 +106,7 @@ export const meta: MetaFunction<typeof loader> = ({
    const postBannerUrl = data?.post?.banner?.url;
    const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
    const postDescription = data?.post?.subtitle;
-   const postSlug = data?.post?.slug;
+   // const postSlug = data?.post?.slug;
 
    const site = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
@@ -267,6 +267,7 @@ export default function Post() {
                         </div>
                      </div>
                      <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                     {/* @ts-ignore */}
                      <PostTableOfContents data={post.content} />
                      {enableAds && <AdPlaceholder />}
                      <ManaEditor
@@ -348,6 +349,7 @@ export default function Post() {
          ) : (
             <main className={mainContainerStyle}>
                <PostHeaderView post={post} />
+               {/* @ts-ignore */}
                <PostTableOfContents data={post.content} />
                <AdPlaceholder>
                   <AdUnit
@@ -664,35 +666,28 @@ export async function action({
             overrideAccess: false,
             user,
          });
+
          //If no collision and it's the first time we are generating the slug, publish with alias.
          //Alias is not updated on subsequent title updates.
          //Otherwise the slug already exists so we just update publishedAt.
          //TODO Feature: Allow user to manually set a url alias at publish
-         if (allPosts.totalDocs == 0) {
-            console.log("got here");
-
-            //If slug is same as post id, it's the first time a slug is being set
+         //If slug is same as post id, it's the first time a slug is being set
+         const firstSlug =
             //@ts-ignore
-            const firstSlug = currentPost?.slug == currentPost.id;
+            currentPost?.slug == currentPost.id && allPosts.totalDocs == 0;
 
-            return await payload.update({
-               collection: "posts",
-               id: currentPost.id,
-               //@ts-ignore
-               data: {
-                  ...(firstSlug && { slug: newSlug }),
-                  ...(firstSlug && { publishedAt: new Date().toISOString() }),
-                  _status: "published",
-               },
-               overrideAccess: false,
-               user,
-            });
-         }
-
-         return jsonWithError(
-            null,
-            "Collision detected, existing alias exists",
-         );
+         return await payload.update({
+            collection: "posts",
+            id: currentPost.id,
+            //@ts-ignore
+            data: {
+               ...(firstSlug && { slug: newSlug }),
+               ...(firstSlug && { publishedAt: new Date().toISOString() }),
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
       }
       case "deletePost": {
          assertIsDelete(request);

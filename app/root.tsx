@@ -200,7 +200,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster theme={Boolean(siteTheme)} />
+            <Toaster theme={siteTheme ?? "system"} />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}

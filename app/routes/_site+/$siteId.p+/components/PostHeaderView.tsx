@@ -6,7 +6,7 @@ import { PostAuthorHeader } from "./PostAuthorHeader";
 export function PostHeaderView({ post }: { post: Post }) {
    return (
       <section>
-         <h1 className="font-header text-3xl !leading-[3rem] laptop:text-4xl">
+         <h1 className="font-header text-3xl !leading-[3rem] laptop:text-4xl pb-2.5">
             {post.name}
          </h1>
          <PostAuthorHeader post={post} />
