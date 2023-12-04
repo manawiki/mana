@@ -63,12 +63,12 @@ export function EditorVersionModal({
                      </div>
                      {versions?.map(
                         (version: any) =>
-                           version.version?.content && (
-                              <Tab.Panel className="pt-16" key={version.id}>
+                           version?.version?.content && (
+                              <Tab.Panel className="pt-16" key={version?.id}>
                                  <h1 className="font-header text-3xl font-bold">
-                                    {version.version.name}
+                                    {version?.version?.name}
                                  </h1>
-                                 <EditorView data={version.version?.content} />
+                                 <EditorView data={version?.version?.content} />
                               </Tab.Panel>
                            ),
                      )}
