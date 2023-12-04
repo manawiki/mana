@@ -17,10 +17,11 @@ import {
    useLoaderData,
    useMatches,
 } from "@remix-run/react";
-import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/index.css";
+import { getToast } from "remix-toast";
 import { ExternalScripts } from "remix-utils/external-scripts";
+import { Toaster, toast as notify } from "sonner";
 
 import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -35,11 +36,8 @@ import {
 } from "~/utils/theme-provider";
 import { getThemeSession } from "~/utils/theme.server";
 
-import { toast } from "./components/Toaster";
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
-import { commitSession, getSession } from "./utils/message.server";
-import type { ToastMessage } from "./utils/message.server";
 import { rdtClientConfig } from "../rdt.config";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
@@ -50,8 +48,9 @@ export const loader = async ({
 }: LoaderFunctionArgs) => {
    const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
-   const session = await getSession(request.headers.get("cookie"));
-   const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
+
+   // Extracts the toast from the request
+   const { toast, headers } = await getToast(request);
 
    const userData = user
       ? await payload.findByID({
@@ -71,17 +70,15 @@ export const loader = async ({
       type: site?.type,
    }));
 
-   const data = {
-      toastMessage,
-      locale,
-      user,
-      siteTheme: themeSession.getTheme(),
-      following,
-   };
-
    return json(
-      { ...data },
-      { headers: { "Set-Cookie": await commitSession(session) } },
+      {
+         toast,
+         locale,
+         user,
+         siteTheme: themeSession.getTheme(),
+         following,
+      },
+      { headers },
    );
 };
 
@@ -133,7 +130,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
+   const { locale, siteTheme, toast } = useLoaderData<typeof loader>();
    const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
@@ -146,23 +143,15 @@ function App() {
    };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
+   // Hook to show the toasts
    useEffect(() => {
-      if (!toastMessage) {
-         return;
+      if (toast?.type === "error") {
+         notify.error(toast.message);
       }
-      const { message, type } = toastMessage;
-
-      switch (type) {
-         case "success":
-            toast.success(message);
-            break;
-         case "error":
-            toast.error(message);
-            break;
-         default:
-            throw new Error(`${type} is not handled`);
+      if (toast?.type === "success") {
+         notify.success(toast.message);
       }
-   }, [toastMessage]);
+   }, [toast]);
 
    return (
       <html
@@ -211,7 +200,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster />
+            <Toaster theme={Boolean(siteTheme)} />
             <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}

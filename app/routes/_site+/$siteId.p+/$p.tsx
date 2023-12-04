@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import { offset, shift } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { json, redirect } from "@remix-run/node";
+import { defer, redirect } from "@remix-run/node";
 import type {
    ActionFunctionArgs,
    LoaderFunctionArgs,
@@ -12,14 +12,18 @@ import type {
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
+import {
+   jsonWithError,
+   jsonWithSuccess,
+   redirectWithSuccess,
+} from "remix-toast";
 import type { Descendant } from "slate";
-import { useSlate } from "slate-react";
 import invariant from "tiny-invariant";
 import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Post, Site, User } from "payload/generated-types";
+import type { Post, User } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
 import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
@@ -35,11 +39,7 @@ import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
-   commitSession,
    getMultipleFormData,
-   getSession,
-   setErrorMessage,
-   setSuccessMessage,
    uploadImage,
 } from "~/utils";
 
@@ -67,6 +67,13 @@ export async function loader({
       p: z.string(),
    });
 
+   // const { comments } = fetchPostComments({
+   //    p,
+   //    payload,
+   //    siteId,
+   //    user,
+   // });
+
    const { post, isChanged, versions } = await fetchPost({
       p,
       page,
@@ -75,7 +82,12 @@ export async function loader({
       user,
    });
 
-   return await json({ post, isChanged, versions, siteId });
+   return defer({
+      post,
+      isChanged,
+      versions,
+      siteId,
+   });
 }
 
 export const meta: MetaFunction<typeof loader> = ({
@@ -372,13 +384,11 @@ export async function action({
    });
 
    const { p, siteId } = zx.parseParams(params, {
-      p: z.string().length(10),
+      p: z.string(),
       siteId: z.string(),
    });
 
    if (!user) throw redirect("/login", { status: 302 });
-
-   const session = await getSession(request.headers.get("cookie"));
 
    switch (intent) {
       case "updateTitle": {
@@ -391,9 +401,27 @@ export async function action({
          });
          if (result.success) {
             const { name } = result.data;
+
+            const { docs: postsAll } = await payload.find({
+               collection: "posts",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  slug: {
+                     equals: p,
+                  },
+               },
+               draft: true,
+            });
+
+            const currentPost = postsAll[0];
+
+            invariant(currentPost, "Post doesn't exist");
+
             return await payload.update({
                collection: "posts",
-               id: p,
+               id: currentPost.id,
                data: {
                   name,
                },
@@ -407,10 +435,7 @@ export async function action({
             .map((item: any) => item.message)
             .join("\n");
 
-         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
-         return redirect(`/${siteId}/p/${p}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithError(null, errorMessage);
       }
       case "updateSubtitle": {
          assertIsPatch(request);
@@ -419,9 +444,27 @@ export async function action({
          });
          if (result.success) {
             const { subtitle } = result.data;
+
+            const { docs: postsAll } = await payload.find({
+               collection: "posts",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  slug: {
+                     equals: p,
+                  },
+               },
+               draft: true,
+            });
+
+            const currentPost = postsAll[0];
+
+            invariant(currentPost, "Post doesn't exist");
+
             return await payload.update({
                collection: "posts",
-               id: p,
+               id: currentPost.id,
                data: {
                   subtitle,
                },
@@ -435,10 +478,7 @@ export async function action({
             .map((item: any) => item.message)
             .join("\n");
 
-         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
-         return redirect(`/${siteId}/p/${p}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithError(null, errorMessage);
       }
 
       case "updateBanner": {
@@ -472,9 +512,26 @@ export async function action({
                image: postBanner,
                user,
             });
+            const { docs: postsAll } = await payload.find({
+               collection: "posts",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  slug: {
+                     equals: p,
+                  },
+               },
+               draft: true,
+            });
+
+            const currentPost = postsAll[0];
+
+            invariant(currentPost, "Post doesn't exist");
+
             return await payload.update({
                collection: "posts",
-               id: p,
+               id: currentPost.id,
                draft: true,
                data: {
                   //@ts-expect-error
@@ -489,22 +546,29 @@ export async function action({
             .map((item: any) => item.message)
             .join("\n");
 
-         if (errorMessage) setErrorMessage(session, `${errorMessage}`);
-         return redirect(`/${siteId}/p/${p}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithError(null, errorMessage);
       }
       case "deleteBanner": {
          assertIsDelete(request);
-         const post = await payload.findByID({
+
+         const { docs: postsAll } = await payload.find({
             collection: "posts",
-            id: p,
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: p,
+               },
+            },
             draft: true,
-            overrideAccess: false,
-            user,
-            depth: 2,
          });
-         const bannerId = post?.banner?.id;
+
+         const currentPost = postsAll[0];
+
+         invariant(currentPost, "Post doesn't exist");
+
+         const bannerId = currentPost?.banner?.id;
          await payload.delete({
             collection: "images",
             //@ts-expect-error
@@ -514,7 +578,7 @@ export async function action({
          });
          return await payload.update({
             collection: "posts",
-            id: p,
+            id: currentPost.id,
             draft: true,
             data: {
                //@ts-expect-error
@@ -527,9 +591,27 @@ export async function action({
       }
       case "unpublish": {
          assertIsPost(request);
+
+         const { docs: postsAll } = await payload.find({
+            collection: "posts",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: p,
+               },
+            },
+            draft: true,
+         });
+
+         const currentPost = postsAll[0];
+
+         invariant(currentPost, "Post doesn't exist");
+
          await payload.update({
             collection: "posts",
-            id: p,
+            id: currentPost.id,
             data: {
                _status: "draft",
                publishedAt: "",
@@ -537,19 +619,30 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         setSuccessMessage(session, "Post successfully unpublished");
-         return redirect(`/${siteId}/p/${p}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithSuccess(
+            { result: "Data saved successfully" },
+            "Post successfully unpublished",
+         );
       }
       case "publish": {
          assertIsPost(request);
          //Pull post name again to generate a slug
-         const currentPost = await payload.findByID({
+         const { docs: postsAll } = await payload.find({
             collection: "posts",
-            id: p,
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: p,
+               },
+            },
             draft: true,
          });
+
+         const currentPost = postsAll[0];
+
+         invariant(currentPost, "Post doesn't exist");
 
          const newSlug = urlSlug(currentPost.name);
 
@@ -557,47 +650,35 @@ export async function action({
          const allPosts = await payload.find({
             collection: "posts",
             where: {
-               and: [
-                  {
-                     "site.slug": {
-                        equals: siteId,
-                     },
-                     //Check existing slug or id
-                     or: [
-                        {
-                           slug: {
-                              equals: newSlug,
-                           },
-                        },
-                        {
-                           id: {
-                              equals: newSlug,
-                           },
-                        },
-                     ],
-                  },
-                  {
-                     //We don't want to include the current post when checking
-                     id: {
-                        not_equals: currentPost.id,
-                     },
-                  },
-               ],
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: newSlug,
+               },
+               id: {
+                  not_equals: currentPost.id,
+               },
             },
             draft: true,
             overrideAccess: false,
             user,
          });
-
          //If no collision and it's the first time we are generating the slug, publish with alias.
          //Alias is not updated on subsequent title updates.
          //Otherwise the slug already exists so we just update publishedAt.
          //TODO Feature: Allow user to manually set a url alias at publish
          if (allPosts.totalDocs == 0) {
-            const firstSlug = !currentPost.slug && allPosts.totalDocs == 0;
+            console.log("got here");
+
+            //If slug is same as post id, it's the first time a slug is being set
+            //@ts-ignore
+            const firstSlug = currentPost?.slug == currentPost.id;
+
             return await payload.update({
                collection: "posts",
-               id: p,
+               id: currentPost.id,
+               //@ts-ignore
                data: {
                   ...(firstSlug && { slug: newSlug }),
                   ...(firstSlug && { publishedAt: new Date().toISOString() }),
@@ -607,16 +688,34 @@ export async function action({
                user,
             });
          }
-         setErrorMessage(session, "Collision detected, existing alias exists");
-         return redirect(`/${siteId}/p/${p}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+
+         return jsonWithError(
+            null,
+            "Collision detected, existing alias exists",
+         );
       }
       case "deletePost": {
          assertIsDelete(request);
+         const { docs: postsAll } = await payload.find({
+            collection: "posts",
+            where: {
+               "site.slug": {
+                  equals: siteId,
+               },
+               slug: {
+                  equals: p,
+               },
+            },
+            draft: true,
+         });
+
+         const currentPost = postsAll[0];
+
+         invariant(currentPost, "Post doesn't exist");
+
          const post = await payload.delete({
             collection: "posts",
-            id: p,
+            id: currentPost.id,
             overrideAccess: false,
             user,
          });
@@ -630,10 +729,11 @@ export async function action({
             });
          }
          const postTitle = post?.name;
-         setSuccessMessage(session, `"${postTitle}" successfully deleted`);
-         return redirect(`/${siteId}/posts`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+
+         return redirectWithSuccess(
+            `/${siteId}/posts`,
+            `"${postTitle}" successfully deleted`,
+         );
       }
    }
 }
@@ -647,7 +747,7 @@ async function fetchPost({
 }: {
    p: string;
    payload: Payload;
-   siteId: Site["slug"];
+   siteId: string;
    user?: User;
    page: number | undefined;
 }) {
@@ -673,28 +773,28 @@ async function fetchPost({
       }
       //Attempt to fetch with ID
       if (!post) {
-         const postById = await payload.findByID({
-            collection: "posts",
-            id: p,
-         });
-
-         if (!postById) throw redirect("/404", 404);
-
-         //Post exists, we received the ID as a URL param and want to redirect to the canonical path instead.
-         throw redirect(`/${postById.site.slug}/p/${postById.slug}`, 301);
+         throw redirect("/404", 404);
       }
    }
 
    invariant(user, "Not logged in");
 
-   //If post is not falsy, then we know the page was accessed with a canonical, as a site admin, we want to use the "/p/$p" path instead
-   if (post) {
-      throw redirect(`/${post.site.slug}/p/${post.id}`);
+   //If can't find post with slug, attempt to findById
+   if (!post) {
+      const postById = await payload.findByID({
+         collection: "posts",
+         id: p,
+      });
+
+      if (!postById) throw redirect("/404", 404);
+
+      //Post exists, we received the ID as a URL param and want to redirect to the canonical path instead.
+      throw redirect(`/${postById.site.slug}/p/${postById.slug}`, 301);
    }
 
    const authPost = await payload.findByID({
       collection: "posts",
-      id: p,
+      id: post.id,
       draft: true,
       user,
       overrideAccess: false,
@@ -703,9 +803,9 @@ async function fetchPost({
    const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
 
    if (hasAccess) {
-      const livePost = await payload.findByID({
+      const publishedPost = await payload.findByID({
          collection: "posts",
-         id: p,
+         id: post.id,
          user,
          overrideAccess: false,
       });
@@ -743,9 +843,68 @@ async function fetchPost({
             return result;
          });
 
-      const isChanged = JSON.stringify(authPost) != JSON.stringify(livePost);
+      const isChanged =
+         JSON.stringify(authPost) != JSON.stringify(publishedPost);
 
       return { post: authPost, isChanged, versions };
    }
    return { post: authPost, isChanged: false };
+}
+
+async function fetchPostComments({
+   p,
+   payload,
+   siteId,
+   user,
+}: {
+   p: string;
+   payload: Payload;
+   siteId: string;
+   user?: User;
+}) {
+   //Determine the real post Id from the post slug
+   const { docs: postsAll } = await payload.find({
+      collection: "posts",
+      where: {
+         "site.slug": {
+            equals: siteId,
+         },
+         slug: {
+            equals: p,
+         },
+      },
+   });
+
+   const post = postsAll[0];
+
+   if (!user) {
+   }
+
+   invariant(user, "Not logged in");
+
+   const { docs: commentsAll } = await payload.find({
+      collection: "comments",
+      where: {
+         "site.slug": {
+            equals: siteId,
+         },
+         postParent: {
+            equals: p,
+         },
+      },
+   });
+
+   const comments = await payload.findByID({
+      collection: "comments",
+      id: p,
+      user,
+      overrideAccess: false,
+   });
+
+   const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
+
+   if (hasAccess) {
+      return { comments };
+   }
+   return { comments };
 }
