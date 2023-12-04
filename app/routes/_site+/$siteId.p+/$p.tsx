@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, Suspense, useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
@@ -9,7 +9,7 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import {
@@ -42,6 +42,7 @@ import {
    getMultipleFormData,
    uploadImage,
 } from "~/utils";
+import { cacheThis } from "~/utils/cache.server";
 
 import { Comments } from "./components/Comments";
 import { PostDeleteModal } from "./components/PostDeleteModal";
@@ -67,23 +68,25 @@ export async function loader({
       p: z.string(),
    });
 
-   // const { comments } = fetchPostComments({
-   //    p,
-   //    payload,
-   //    siteId,
-   //    user,
-   // });
-
-   const { post, isChanged, versions } = await fetchPost({
+   const comments = fetchPostComments({
       p,
-      page,
       payload,
       siteId,
       user,
    });
 
+   const { post, isChanged, versions } = await fetchPost({
+      p,
+      page,
+      siteId,
+      payload,
+      user,
+   });
+   console.log(post);
+
    return defer({
       post,
+      comments,
       isChanged,
       versions,
       siteId,
@@ -106,16 +109,13 @@ export const meta: MetaFunction<typeof loader> = ({
    const postBannerUrl = data?.post?.banner?.url;
    const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
    const postDescription = data?.post?.subtitle;
-   // const postSlug = data?.post?.slug;
+   const postSlug = data?.post?.slug;
 
    const site = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site;
 
-   //todo this is producing bad canonical urls
-   // const postUrl = site.domain
-   //    ? `https://${site.domain}/p/${site.slug}`
-   //    : `https://mana.wiki/p/${postSlug}`;
+   const postUrl = `https://mana.wiki/${site.slug}p/${postSlug}`;
 
    return [
       {
@@ -139,12 +139,12 @@ export const meta: MetaFunction<typeof loader> = ({
            ]
          : []),
       ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      // ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
    ];
 };
 
 export default function Post() {
-   const { post, isChanged } = useLoaderData<typeof loader>();
+   const { post, isChanged, comments } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
@@ -344,7 +344,11 @@ export default function Post() {
                      />
                   </div>
                </Float>
-               <Comments />
+               <Suspense fallback={<></>}>
+                  <Await resolve={comments}>
+                     {(comments) => <Comments comments={comments} />}
+                  </Await>
+               </Suspense>
             </>
          ) : (
             <main className={mainContainerStyle}>
@@ -468,6 +472,7 @@ export async function action({
                collection: "posts",
                id: currentPost.id,
                data: {
+                  //@ts-ignore
                   subtitle,
                },
                autosave: true,
@@ -616,6 +621,7 @@ export async function action({
             id: currentPost.id,
             data: {
                _status: "draft",
+               //@ts-ignore
                publishedAt: "",
             },
             overrideAccess: false,
@@ -733,41 +739,82 @@ export async function action({
    }
 }
 
-async function fetchPost({
+async function fetchPostWithSlug({
    p,
    payload,
    siteId,
    user,
-   page = 1,
 }: {
    p: string;
    payload: Payload;
    siteId: string;
    user?: User;
-   page: number | undefined;
 }) {
    //Determine the real post Id from the post slug
-   const { docs: postsAll } = await payload.find({
-      collection: "posts",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         slug: {
-            equals: p,
-         },
-      },
-   });
+   const { docs: postsAll } = !user
+      ? await cacheThis(
+           () =>
+              payload.find({
+                 collection: "posts",
+                 where: {
+                    "site.slug": {
+                       equals: siteId,
+                    },
+                    slug: {
+                       equals: p,
+                    },
+                 },
+                 user,
+                 overrideAccess: false,
+              }),
+           `post-${p}`,
+        )
+      : await payload.find({
+           collection: "posts",
+           where: {
+              "site.slug": {
+                 equals: siteId,
+              },
+              slug: {
+                 equals: p,
+              },
+           },
+           user,
+           overrideAccess: false,
+        });
 
    const post = postsAll[0];
 
+   return { postData: post };
+}
+
+async function fetchPost({
+   p,
+   payload,
+   user,
+   siteId,
+   page = 1,
+}: {
+   p: string;
+   payload: Payload;
+   user?: User;
+   siteId: string;
+   page: number | undefined;
+}) {
+   const { postData } = await fetchPostWithSlug({
+      p,
+      payload,
+      siteId,
+      user,
+   });
+
    if (!user) {
       //If anon and data exists, return post data now
-      if (post) {
-         return { post };
+      if (postData) {
+         return { post: postData };
       }
       //Attempt to fetch with ID
-      if (!post) {
+      if (!postData) {
          throw redirect("/404", 404);
       }
    }
@@ -775,7 +822,7 @@ async function fetchPost({
    invariant(user, "Not logged in");
 
    //If can't find post with slug, attempt to findById
-   if (!post) {
+   if (!postData) {
       const postById = await payload.findByID({
          collection: "posts",
          id: p,
@@ -789,7 +836,7 @@ async function fetchPost({
 
    const authPost = await payload.findByID({
       collection: "posts",
-      id: post.id,
+      id: postData.id,
       draft: true,
       user,
       overrideAccess: false,
@@ -800,7 +847,7 @@ async function fetchPost({
    if (hasAccess) {
       const publishedPost = await payload.findByID({
          collection: "posts",
-         id: post.id,
+         id: postData.id,
          user,
          overrideAccess: false,
       });
@@ -857,25 +904,12 @@ async function fetchPostComments({
    siteId: string;
    user?: User;
 }) {
-   //Determine the real post Id from the post slug
-   const { docs: postsAll } = await payload.find({
-      collection: "posts",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         slug: {
-            equals: p,
-         },
-      },
+   const { postData } = await fetchPostWithSlug({
+      p,
+      payload,
+      siteId,
+      user,
    });
-
-   const post = postsAll[0];
-
-   if (!user) {
-   }
-
-   invariant(user, "Not logged in");
 
    const { docs: commentsAll } = await payload.find({
       collection: "comments",
@@ -884,22 +918,16 @@ async function fetchPostComments({
             equals: siteId,
          },
          postParent: {
-            equals: p,
+            equals: postData?.id,
+         },
+         isTopLevel: {
+            equals: true,
          },
       },
-   });
-
-   const comments = await payload.findByID({
-      collection: "comments",
-      id: p,
       user,
       overrideAccess: false,
    });
 
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
-
-   if (hasAccess) {
-      return { comments };
-   }
-   return { comments };
+   const replies = commentsAll[0];
+   return replies ?? null;
 }
