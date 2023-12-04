@@ -1,11 +1,11 @@
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
+import { redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { Icon } from "~/components/Icon";
-import { commitSession, getSession, setSuccessMessage } from "~/utils";
 
 export async function loader({
    context: { payload, user },
@@ -22,16 +22,12 @@ export async function loader({
       collection: "users",
       token,
    });
-   const session = await getSession(request.headers.get("cookie"));
 
    if (result) {
-      setSuccessMessage(
-         session,
+      return redirectWithSuccess(
+         `/login?email=${email}`,
          "Your email has been verified. You can now login.",
       );
-      return redirect(`/login?email=${email}`, {
-         headers: { "Set-Cookie": await commitSession(session) },
-      });
    }
 }
 
