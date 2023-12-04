@@ -17,6 +17,7 @@ import {
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
+import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -32,12 +33,6 @@ import {
    safeRedirect,
 } from "~/utils";
 import { i18nextServer } from "~/utils/i18n";
-import {
-   commitSession,
-   getSession,
-   setErrorMessage,
-   setSuccessMessage,
-} from "~/utils/message.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -259,7 +254,6 @@ export const action: ActionFunction = async ({
    });
 
    if (intent === "reset-password") {
-      const session = await getSession(request.headers.get("cookie"));
       const result = await zx.parseFormSafe(request, PasswordResetSchema);
 
       if (result.success) {
@@ -273,34 +267,26 @@ export const action: ActionFunction = async ({
                disableEmail: false,
             });
             if (token) {
-               const session = await getSession(request.headers.get("cookie"));
-               setSuccessMessage(
-                  session,
+               return jsonWithSuccess(
+                  null,
                   "We sent you an email with a link to reset your password",
                );
-               return redirect("/login", {
-                  headers: { "Set-Cookie": await commitSession(session) },
-               });
             }
-            setErrorMessage(
-               session,
+            return jsonWithError(
+               null,
                "This email doesn't exist, do you want to create a new account?",
             );
-            return redirect("/login", {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
          } catch (error) {
-            setErrorMessage(session, "Something went wrong");
-            return redirect("/login", {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
+            return jsonWithError(
+               null,
+               "Oops! Something went wrong. Please try again later.",
+            );
          }
       }
       return;
    }
 
    if (intent === "login") {
-      const session = await getSession(request.headers.get("cookie"));
       const result = await zx.parseFormSafe(request, LoginFormSchema);
       if (result.success) {
          const { email, password, redirectTo } = result.data;
@@ -314,13 +300,10 @@ export const action: ActionFunction = async ({
                res,
             });
          } catch (error) {
-            setErrorMessage(
-               session,
+            return redirectWithError(
+               `/login${signUpEmail ? `?email=${email}` : ""}`,
                "The email or password provided is incorrect",
             );
-            return redirect(`/login${signUpEmail ? `?email=${email}` : ""}`, {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
          }
          return redirect(safeRedirect(redirectTo));
       }

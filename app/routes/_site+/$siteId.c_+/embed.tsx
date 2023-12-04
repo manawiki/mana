@@ -1,34 +1,27 @@
 import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
+import { jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import {
-   assertIsPost,
-   commitSession,
-   getSession,
-   setSuccessMessage,
-} from "~/utils";
+import { assertIsPost } from "~/utils";
 
 export async function action({
    context: { payload, user },
    request,
    params,
 }: ActionFunctionArgs) {
-   const { intent, pageId, collectionSlug, siteId, collectionId, entryId } =
-      await zx.parseForm(request, {
-         intent: z.enum(["unpublish", "publish"]),
-         pageId: z.string(),
-         collectionSlug: z.custom<keyof Config["collections"]>(),
-         siteId: z.string(),
-         collectionId: z.string(),
-         entryId: z.string(),
-      });
+   const { intent, pageId, collectionSlug } = await zx.parseForm(request, {
+      intent: z.enum(["unpublish", "publish"]),
+      pageId: z.string(),
+      collectionSlug: z.custom<keyof Config["collections"]>(),
+      siteId: z.string(),
+      collectionId: z.string(),
+      entryId: z.string(),
+   });
 
    if (!user) throw redirect("/login", { status: 302 });
-
-   const session = await getSession(request.headers.get("cookie"));
 
    switch (intent) {
       case "unpublish": {
@@ -42,10 +35,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         setSuccessMessage(session, "Successfully unpublished");
-         return redirect(`/${siteId}/c/${collectionId}/${entryId}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithSuccess(null, "Successfully unpublished");
       }
       case "publish": {
          assertIsPost(request);
@@ -58,10 +48,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         setSuccessMessage(session, "Successfully published");
-         return redirect(`/${siteId}/c/${collectionId}/${entryId}`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return jsonWithSuccess(null, "Successfully published");
       }
    }
 }
