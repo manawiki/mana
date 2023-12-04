@@ -82,7 +82,6 @@ export async function loader({
       payload,
       user,
    });
-   console.log(post);
 
    return defer({
       post,
