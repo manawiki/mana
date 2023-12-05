@@ -10,7 +10,11 @@ import {
    subscribeToSchemeChange,
 } from "@epic-web/client-hints/color-scheme";
 import { clientHint as timeZoneHint } from "@epic-web/client-hints/time-zone";
-import { useRevalidator, useRouteLoaderData } from "@remix-run/react";
+import {
+   useFetchers,
+   useRevalidator,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { type loader as rootLoader } from "~/root";
@@ -31,6 +35,22 @@ export function useHints() {
    invariant(data?.requestInfo, "No requestInfo found in root loader");
 
    return data.requestInfo;
+}
+
+/**
+ * @returns theme from client hints optimistically
+ */
+export function useTheme() {
+   const hints = useHints();
+
+   const fetchers = useFetchers();
+   const themeFetcher = fetchers.find(
+      (f) => f.formAction === "/action/theme-toggle",
+   );
+
+   return (themeFetcher?.formData?.get("theme") ?? hints.theme) as
+      | "light"
+      | "dark";
 }
 
 /**

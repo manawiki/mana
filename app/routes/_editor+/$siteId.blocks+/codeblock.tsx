@@ -10,7 +10,7 @@ import { ReactEditor, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { delay } from "~/utils";
-import { useHints } from "~/utils/client-hints";
+import { useTheme } from "~/utils/client-hints";
 
 import type { CodeBlockElement, CustomElement } from "../core/types";
 
@@ -24,7 +24,7 @@ export function BlockCodeBlock({
    readOnly: boolean;
 }) {
    const editor = useSlate();
-   const { theme } = useHints();
+   const theme = useTheme();
 
    const path = ReactEditor.findPath(editor, element);
 

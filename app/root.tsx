@@ -27,9 +27,9 @@ import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
-import { ClientHintCheck, getHints } from "~/utils/client-hints";
+import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
-import { getTheme } from "~/utils/theme";
+import { getTheme } from "~/utils/theme.server";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
@@ -129,9 +129,10 @@ export const handle = {
 };
 
 function App() {
-   const { locale, requestInfo, toast } = useLoaderData<typeof loader>();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+   const theme = useTheme();
 
    useChangeLanguage(locale);
 
@@ -155,7 +156,7 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body scroll-smooth ${requestInfo?.theme ?? ""}`}
+         className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
             <ClientHintCheck />
@@ -198,7 +199,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster theme={requestInfo?.theme ?? "system"} />
+            <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <ExternalScripts />
