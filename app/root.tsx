@@ -29,6 +29,7 @@ import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useHints } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
+import { type Theme, setTheme, getTheme } from "~/utils/theme";
 import {
    ThemeBody,
    ThemeHead,
@@ -36,7 +37,6 @@ import {
    useTheme,
 } from "~/utils/theme-provider";
 import { getThemeSession } from "~/utils/theme.server";
-import { type Theme, setTheme, getTheme } from "~/utils/theme.server";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
@@ -72,10 +72,13 @@ export const loader = async ({
       type: site?.type,
    }));
 
+   const hints = getHints(request);
+
    return json(
       {
          requestInfo: {
-            ...getHints(request),
+            ...hints,
+            theme: getTheme(request) ?? hints.theme,
          },
          toast,
          locale,

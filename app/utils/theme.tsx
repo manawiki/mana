@@ -1,6 +1,6 @@
 import * as cookie from "cookie";
 
-const cookieName = "en_theme";
+const cookieName = "theme";
 export type Theme = "light" | "dark";
 
 export function getTheme(request: Request): Theme | null {
