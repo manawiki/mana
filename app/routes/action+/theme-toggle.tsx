@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
+import { useHints } from "~/utils/client-hints";
 import { setTheme } from "~/utils/theme";
 
 enum Theme {
@@ -39,7 +40,8 @@ export const action: ActionFunction = async ({ request }) => {
    );
 };
 
-export const DarkModeToggle = ({ theme }: { theme: Theme }) => {
+export const DarkModeToggle = () => {
+   const { theme } = useHints();
    const fetcher = useFetcher<typeof action>();
 
    return (

@@ -13,8 +13,8 @@ import {
    LoggedOutMobile,
 } from "~/routes/_auth+/src/components";
 import { handleLogout } from "~/routes/_auth+/src/functions";
+import { DarkModeToggle } from "~/routes/action+/theme-toggle";
 import { isAdding } from "~/utils";
-import { Theme, useTheme } from "~/utils/theme-provider";
 
 export function UserDesktopMenu() {
    const [isMenuOpen, setMenuOpen] = useState(false);
@@ -94,7 +94,7 @@ export function UserDesktopMenu() {
                      </div>
                      <Tab.Panels className="w-full py-7 px-6">
                         <Tab.Panel>
-                           <ThemeToggleDesktop />
+                           <DarkModeToggle />
                         </Tab.Panel>
                         <Tab.Panel>
                            <UserDeleteSection />
@@ -209,7 +209,7 @@ export const UserTrayContent = ({ onOpenChange }: { onOpenChange: any }) => {
                      className="shadow-1 bg-2-sub border-color relative flex w-full items-center
                   justify-between gap-3 rounded-xl border py-3 pl-4 pr-3 shadow-sm"
                   >
-                     <ThemeToggleMobile />
+                     <DarkModeToggle />
                   </div>
                </div>
                <button
@@ -312,119 +312,120 @@ const UserDeleteSection = () => {
    );
 };
 
-export const ThemeToggleMobile = () => {
-   const [theme, setTheme] = useTheme();
+//temp disable these
+// export const ThemeToggleMobile = () => {
+//    const [theme, setTheme] = useTheme();
 
-   const toggleTheme = () => {
-      setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
-      );
-      setEnabled(!enabled);
-   };
-   const [enabled, setEnabled] = useState(false);
+//    const toggleTheme = () => {
+//       setTheme((prevTheme) =>
+//          prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
+//       );
+//       setEnabled(!enabled);
+//    };
+//    const [enabled, setEnabled] = useState(false);
 
-   return (
-      <Switch.Group>
-         <div className="flex w-full items-center gap-3">
-            <Switch.Label className="flex-grow font-bold">Theme</Switch.Label>
-            <Switch
-               checked={enabled}
-               onChange={toggleTheme}
-               className="relative inline-flex h-7 w-14 items-center rounded-full border 
-               bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700"
-            >
-               <span className="sr-only">Theme</span>
-               <div
-                  className={clsx(
-                     theme == Theme.DARK
-                        ? "translate-x-8 bg-white"
-                        : "translate-x-1.5 bg-zinc-400",
-                     "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
-                  )}
-               />
-               <div
-                  className={clsx(
-                     theme == Theme.DARK ? "left-2" : "right-1.5",
-                     "absolute flex  items-center justify-center",
-                  )}
-               >
-                  {theme == Theme.DARK ? (
-                     <Icon
-                        name="moon"
-                        title="Dark Mode"
-                        className="h-3 w-3 text-zinc-400"
-                     />
-                  ) : (
-                     <Icon
-                        name="sun"
-                        title="Light Mode"
-                        className="h-4 w-4 text-zinc-500"
-                     />
-                  )}
-               </div>
-            </Switch>
-         </div>
-      </Switch.Group>
-   );
-};
+//    return (
+//       <Switch.Group>
+//          <div className="flex w-full items-center gap-3">
+//             <Switch.Label className="flex-grow font-bold">Theme</Switch.Label>
+//             <Switch
+//                checked={enabled}
+//                onChange={toggleTheme}
+//                className="relative inline-flex h-7 w-14 items-center rounded-full border
+//                bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700"
+//             >
+//                <span className="sr-only">Theme</span>
+//                <div
+//                   className={clsx(
+//                      theme == Theme.DARK
+//                         ? "translate-x-8 bg-white"
+//                         : "translate-x-1.5 bg-zinc-400",
+//                      "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
+//                   )}
+//                />
+//                <div
+//                   className={clsx(
+//                      theme == Theme.DARK ? "left-2" : "right-1.5",
+//                      "absolute flex  items-center justify-center",
+//                   )}
+//                >
+//                   {theme == Theme.DARK ? (
+//                      <Icon
+//                         name="moon"
+//                         title="Dark Mode"
+//                         className="h-3 w-3 text-zinc-400"
+//                      />
+//                   ) : (
+//                      <Icon
+//                         name="sun"
+//                         title="Light Mode"
+//                         className="h-4 w-4 text-zinc-500"
+//                      />
+//                   )}
+//                </div>
+//             </Switch>
+//          </div>
+//       </Switch.Group>
+//    );
+// };
 
-const ThemeToggleDesktop = () => {
-   const [theme, setTheme] = useTheme();
+// const ThemeToggleDesktop = () => {
+//    const [theme, setTheme] = useTheme();
 
-   const toggleTheme = () => {
-      setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
-      );
-      setEnabled(!enabled);
-   };
-   const [enabled, setEnabled] = useState(false);
+//    const toggleTheme = () => {
+//       setTheme((prevTheme) =>
+//          prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
+//       );
+//       setEnabled(!enabled);
+//    };
+//    const [enabled, setEnabled] = useState(false);
 
-   return (
-      <Switch.Group>
-         <div className="border-b pb-4 border-color flex items-center">
-            <div className="flex-grow">
-               <Switch.Label className="font-bold pb-0.5 block">
-                  Theme
-               </Switch.Label>
-               <div className="text-1 text-xs">Change the site theme</div>
-            </div>
-            <Switch
-               checked={enabled}
-               onChange={toggleTheme}
-               className="border-zinc-200 bg-white dark:border-zinc-500/60 dark:bg-dark500 relative 
-               shadow-sm shadow-1 inline-flex h-7 w-[51px] items-center rounded-full border"
-            >
-               <span className="sr-only">Theme</span>
-               <div
-                  className={clsx(
-                     theme == Theme.DARK
-                        ? "translate-x-7 bg-white"
-                        : "translate-x-1.5 bg-zinc-500",
-                     "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
-                  )}
-               />
-               <div
-                  className={clsx(
-                     theme == Theme.DARK ? "left-1.5" : "right-1.5",
-                     "absolute flex  items-center justify-center",
-                  )}
-               >
-                  {theme == Theme.DARK ? (
-                     <Icon
-                        name="moon"
-                        title="Dark Mode"
-                        className="h-3.5 w-3.5 text-zinc-400"
-                     />
-                  ) : (
-                     <Icon
-                        name="sun"
-                        title="Light Mode"
-                        className="h-3.5 w-3.5 text-zinc-500"
-                     />
-                  )}
-               </div>
-            </Switch>
-         </div>
-      </Switch.Group>
-   );
-};
+//    return (
+//       <Switch.Group>
+//          <div className="border-b pb-4 border-color flex items-center">
+//             <div className="flex-grow">
+//                <Switch.Label className="font-bold pb-0.5 block">
+//                   Theme
+//                </Switch.Label>
+//                <div className="text-1 text-xs">Change the site theme</div>
+//             </div>
+//             <Switch
+//                checked={enabled}
+//                onChange={toggleTheme}
+//                className="border-zinc-200 bg-white dark:border-zinc-500/60 dark:bg-dark500 relative
+//                shadow-sm shadow-1 inline-flex h-7 w-[51px] items-center rounded-full border"
+//             >
+//                <span className="sr-only">Theme</span>
+//                <div
+//                   className={clsx(
+//                      theme == Theme.DARK
+//                         ? "translate-x-7 bg-white"
+//                         : "translate-x-1.5 bg-zinc-500",
+//                      "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
+//                   )}
+//                />
+//                <div
+//                   className={clsx(
+//                      theme == Theme.DARK ? "left-1.5" : "right-1.5",
+//                      "absolute flex  items-center justify-center",
+//                   )}
+//                >
+//                   {theme == Theme.DARK ? (
+//                      <Icon
+//                         name="moon"
+//                         title="Dark Mode"
+//                         className="h-3.5 w-3.5 text-zinc-400"
+//                      />
+//                   ) : (
+//                      <Icon
+//                         name="sun"
+//                         title="Light Mode"
+//                         className="h-3.5 w-3.5 text-zinc-500"
+//                      />
+//                   )}
+//                </div>
+//             </Switch>
+//          </div>
+//       </Switch.Group>
+//    );
+// };

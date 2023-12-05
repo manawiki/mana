@@ -30,12 +30,7 @@ import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useHints } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
 import { type Theme, setTheme, getTheme } from "~/utils/theme";
-import {
-   ThemeBody,
-   ThemeHead,
-   ThemeProvider,
-   useTheme,
-} from "~/utils/theme-provider";
+import { ThemeProvider } from "~/utils/theme-provider";
 import { getThemeSession } from "~/utils/theme.server";
 
 import tailwindStylesheetUrl from "./styles/global.css";
@@ -217,17 +212,17 @@ function App() {
    );
 }
 
-export function AppWithProviders() {
-   const { siteTheme } = useLoaderData<typeof loader>();
+// export function AppWithProviders() {
+//    const { siteTheme } = useLoaderData<typeof loader>();
 
-   return (
-      <ThemeProvider specifiedTheme={siteTheme}>
-         <App />
-      </ThemeProvider>
-   );
-}
+//    return (
+//       <ThemeProvider specifiedTheme={siteTheme}>
+//          <App />
+//       </ThemeProvider>
+//    );
+// }
 
-let AppExport = withMetronome(AppWithProviders);
+let AppExport = withMetronome(App);
 
 // Toggle Remix Dev Tools
 if (process.env.NODE_ENV === "development") {
