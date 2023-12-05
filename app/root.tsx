@@ -27,6 +27,7 @@ import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
+import { ClientHintCheck, getHints, useHints } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
 import {
    ThemeBody,
@@ -35,6 +36,7 @@ import {
    useTheme,
 } from "~/utils/theme-provider";
 import { getThemeSession } from "~/utils/theme.server";
+import { type Theme, setTheme, getTheme } from "~/utils/theme.server";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
@@ -72,6 +74,9 @@ export const loader = async ({
 
    return json(
       {
+         requestInfo: {
+            ...getHints(request),
+         },
          toast,
          locale,
          user,
@@ -131,7 +136,6 @@ export const handle = {
 
 function App() {
    const { locale, siteTheme, toast } = useLoaderData<typeof loader>();
-   const [theme] = useTheme();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
 
@@ -157,9 +161,10 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body scroll-smooth ${theme ?? ""}`}
+         className={`font-body scroll-smooth ${siteTheme ?? ""}`}
       >
          <head>
+            <ClientHintCheck nonce={""} />
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -196,12 +201,10 @@ function App() {
             />
             <Meta />
             <Links />
-            <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
             <Toaster theme={siteTheme ?? "system"} />
-            <ThemeBody ssrTheme={Boolean(siteTheme)} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <ExternalScripts />
