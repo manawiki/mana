@@ -27,11 +27,9 @@ import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
-import { ClientHintCheck, getHints, useHints } from "~/utils/client-hints";
+import { ClientHintCheck, getHints } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
-import { type Theme, setTheme, getTheme } from "~/utils/theme";
-import { ThemeProvider } from "~/utils/theme-provider";
-import { getThemeSession } from "~/utils/theme.server";
+import { getTheme } from "~/utils/theme";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
@@ -43,7 +41,6 @@ export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
 
    // Extracts the toast from the request
@@ -78,7 +75,6 @@ export const loader = async ({
          toast,
          locale,
          user,
-         siteTheme: themeSession.getTheme(),
          following,
       },
       { headers },
@@ -133,9 +129,11 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toast } = useLoaderData<typeof loader>();
+   const { locale, requestInfo, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+
+   const siteTheme = requestInfo?.theme ?? "system";
 
    useChangeLanguage(locale);
 

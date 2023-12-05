@@ -31,7 +31,7 @@ export const action: ActionFunction = async ({ request }) => {
    }
 
    return json(
-      { success: true },
+      { success: true, theme: theme },
       {
          headers: {
             "Set-Cookie": setTheme(theme),
