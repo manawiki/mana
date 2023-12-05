@@ -133,8 +133,6 @@ function App() {
    const { i18n } = useTranslation();
    const isBot = useIsBot();
 
-   const siteTheme = requestInfo?.theme ?? "system";
-
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
@@ -157,7 +155,7 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body scroll-smooth ${siteTheme ?? ""}`}
+         className={`font-body scroll-smooth ${requestInfo?.theme ?? ""}`}
       >
          <head>
             <ClientHintCheck />
@@ -200,7 +198,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster theme={siteTheme ?? "system"} />
+            <Toaster theme={requestInfo?.theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <ExternalScripts />
@@ -209,16 +207,6 @@ function App() {
       </html>
    );
 }
-
-// export function AppWithProviders() {
-//    const { siteTheme } = useLoaderData<typeof loader>();
-
-//    return (
-//       <ThemeProvider specifiedTheme={siteTheme}>
-//          <App />
-//       </ThemeProvider>
-//    );
-// }
 
 let AppExport = withMetronome(App);
 
