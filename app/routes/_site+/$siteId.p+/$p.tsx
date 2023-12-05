@@ -103,18 +103,17 @@ export const meta: MetaFunction<typeof loader> = ({
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
 
+   const siteSlug = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.slug;
+
    const postTitle = data?.post?.name;
    const postStatus = data?.post?._status;
    const postBannerUrl = data?.post?.banner?.url;
    const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
    const postDescription = data?.post?.subtitle;
    const postSlug = data?.post?.slug;
-
-   const site = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site;
-
-   const postUrl = `https://mana.wiki/${site.slug}p/${postSlug}`;
+   const postUrl = `https://mana.wiki/${siteSlug}/p/${postSlug}`;
 
    return [
       {
@@ -130,7 +129,7 @@ export const meta: MetaFunction<typeof loader> = ({
                ? `${postTitle} - ${siteName}`
                : `Edit | ${postTitle} - ${siteName}`,
       },
-      { property: "og:site_name", content: site.name },
+      { property: "og:site_name", content: siteName },
       ...(postDescription
          ? [
               { property: "description", content: postDescription },
@@ -384,6 +383,10 @@ export async function action({
          "updateSubtitle",
          "updateBanner",
          "deleteBanner",
+         "createComment",
+         "createCommentReply",
+         "deleteComment",
+         "updateComment",
       ]),
       field: z.enum(["title"]).optional(),
    });
@@ -407,26 +410,18 @@ export async function action({
          if (result.success) {
             const { name } = result.data;
 
-            const { docs: postsAll } = await payload.find({
-               collection: "posts",
-               where: {
-                  "site.slug": {
-                     equals: siteId,
-                  },
-                  slug: {
-                     equals: p,
-                  },
-               },
-               draft: true,
+            const { postData } = await fetchPostWithSlug({
+               p,
+               payload,
+               siteId,
+               user,
             });
 
-            const currentPost = postsAll[0];
-
-            invariant(currentPost, "Post doesn't exist");
+            invariant(postData, "Post doesn't exist");
 
             return await payload.update({
                collection: "posts",
-               id: currentPost.id,
+               id: postData.id,
                data: {
                   name,
                },
@@ -450,26 +445,18 @@ export async function action({
          if (result.success) {
             const { subtitle } = result.data;
 
-            const { docs: postsAll } = await payload.find({
-               collection: "posts",
-               where: {
-                  "site.slug": {
-                     equals: siteId,
-                  },
-                  slug: {
-                     equals: p,
-                  },
-               },
-               draft: true,
+            const { postData } = await fetchPostWithSlug({
+               p,
+               payload,
+               siteId,
+               user,
             });
 
-            const currentPost = postsAll[0];
-
-            invariant(currentPost, "Post doesn't exist");
+            invariant(postData, "Post doesn't exist");
 
             return await payload.update({
                collection: "posts",
-               id: currentPost.id,
+               id: postData.id,
                data: {
                   //@ts-ignore
                   subtitle,
@@ -518,26 +505,18 @@ export async function action({
                image: postBanner,
                user,
             });
-            const { docs: postsAll } = await payload.find({
-               collection: "posts",
-               where: {
-                  "site.slug": {
-                     equals: siteId,
-                  },
-                  slug: {
-                     equals: p,
-                  },
-               },
-               draft: true,
+            const { postData } = await fetchPostWithSlug({
+               p,
+               payload,
+               siteId,
+               user,
             });
 
-            const currentPost = postsAll[0];
-
-            invariant(currentPost, "Post doesn't exist");
+            invariant(postData, "Post doesn't exist");
 
             return await payload.update({
                collection: "posts",
-               id: currentPost.id,
+               id: postData.id,
                draft: true,
                data: {
                   //@ts-expect-error
@@ -557,24 +536,16 @@ export async function action({
       case "deleteBanner": {
          assertIsDelete(request);
 
-         const { docs: postsAll } = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: p,
-               },
-            },
-            draft: true,
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
          });
 
-         const currentPost = postsAll[0];
+         invariant(postData, "Post doesn't exist");
 
-         invariant(currentPost, "Post doesn't exist");
-
-         const bannerId = currentPost?.banner?.id;
+         const bannerId = postData?.banner?.id;
          await payload.delete({
             collection: "images",
             //@ts-expect-error
@@ -584,7 +555,7 @@ export async function action({
          });
          return await payload.update({
             collection: "posts",
-            id: currentPost.id,
+            id: postData.id,
             draft: true,
             data: {
                //@ts-expect-error
@@ -597,27 +568,17 @@ export async function action({
       }
       case "unpublish": {
          assertIsPost(request);
-
-         const { docs: postsAll } = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: p,
-               },
-            },
-            draft: true,
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
          });
-
-         const currentPost = postsAll[0];
-
-         invariant(currentPost, "Post doesn't exist");
+         invariant(postData, "Post doesn't exist");
 
          await payload.update({
             collection: "posts",
-            id: currentPost.id,
+            id: postData.id,
             data: {
                _status: "draft",
                //@ts-ignore
@@ -634,24 +595,15 @@ export async function action({
       case "publish": {
          assertIsPost(request);
          //Pull post name again to generate a slug
-         const { docs: postsAll } = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: p,
-               },
-            },
-            draft: true,
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
          });
+         invariant(postData, "Post doesn't exist");
 
-         const currentPost = postsAll[0];
-
-         invariant(currentPost, "Post doesn't exist");
-
-         const newSlug = urlSlug(currentPost.name);
+         const newSlug = urlSlug(postData.name);
 
          //See if duplicate exists on the same site
          const allPosts = await payload.find({
@@ -664,7 +616,7 @@ export async function action({
                   equals: newSlug,
                },
                id: {
-                  not_equals: currentPost.id,
+                  not_equals: postData?.id,
                },
             },
             draft: true,
@@ -679,11 +631,11 @@ export async function action({
          //If slug is same as post id, it's the first time a slug is being set
          const firstSlug =
             //@ts-ignore
-            currentPost?.slug == currentPost.id && allPosts.totalDocs == 0;
+            postData?.slug == postData.id && allPosts.totalDocs == 0;
 
          return await payload.update({
             collection: "posts",
-            id: currentPost.id,
+            id: postData.id,
             //@ts-ignore
             data: {
                ...(firstSlug && { slug: newSlug }),
@@ -696,26 +648,18 @@ export async function action({
       }
       case "deletePost": {
          assertIsDelete(request);
-         const { docs: postsAll } = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: p,
-               },
-            },
-            draft: true,
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
          });
 
-         const currentPost = postsAll[0];
-
-         invariant(currentPost, "Post doesn't exist");
+         invariant(postData, "Post doesn't exist");
 
          const post = await payload.delete({
             collection: "posts",
-            id: currentPost.id,
+            id: postData?.id,
             overrideAccess: false,
             user,
          });
@@ -734,6 +678,80 @@ export async function action({
             `/${siteId}/posts`,
             `"${postTitle}" successfully deleted`,
          );
+      }
+      case "createComment": {
+         const result = await zx.parseFormSafe(request, {
+            comment: z.string(),
+         });
+         if (result.success) {
+            const { comment } = result.data;
+            const { postData } = await fetchPostWithSlug({
+               p,
+               payload,
+               siteId,
+               user,
+            });
+            invariant(postData, "Post doesn't exist");
+            return await payload.create({
+               collection: "comments",
+               data: {
+                  site: postData?.site.id as any,
+                  comment: JSON.parse(comment),
+                  postParent: postData.id as any,
+                  author: user.id as any,
+                  isTopLevel: true,
+               },
+               overrideAccess: false,
+               user,
+            });
+         }
+      }
+      case "createCommentReply": {
+         const result = await zx.parseFormSafe(request, {
+            comment: z.string(),
+            commentParentId: z.string(),
+         });
+         if (result.success) {
+            const { comment, commentParentId } = result.data;
+            const { postData } = await fetchPostWithSlug({
+               p,
+               payload,
+               siteId,
+               user,
+            });
+            invariant(postData, "Post doesn't exist");
+
+            const commentReply = await payload.create({
+               collection: "comments",
+               data: {
+                  site: postData?.site.id as any,
+                  comment: JSON.parse(comment),
+                  author: user.id as any,
+               },
+               overrideAccess: false,
+               user,
+            });
+
+            const reply = await payload.findByID({
+               collection: "comments",
+               id: commentParentId,
+               overrideAccess: false,
+               user,
+            });
+
+            const existingReplies = reply?.replies || [];
+            const replies = existingReplies.map(({ id }: { id: any }) => id);
+
+            return await payload.update({
+               collection: "comments",
+               id: commentParentId,
+               data: {
+                  replies: [...replies, commentReply.id],
+               },
+               overrideAccess: false,
+               user,
+            });
+         }
       }
    }
 }
@@ -910,7 +928,7 @@ async function fetchPostComments({
       user,
    });
 
-   const { docs: commentsAll } = await payload.find({
+   const { docs: comments } = await payload.find({
       collection: "comments",
       where: {
          "site.slug": {
@@ -925,8 +943,8 @@ async function fetchPostComments({
       },
       user,
       overrideAccess: false,
+      depth: 8,
    });
 
-   const replies = commentsAll[0];
-   return replies ?? null;
+   return comments ?? null;
 }
