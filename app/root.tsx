@@ -164,7 +164,7 @@ function App() {
          className={`font-body scroll-smooth ${siteTheme ?? ""}`}
       >
          <head>
-            <ClientHintCheck nonce={""} />
+            <ClientHintCheck />
             <meta charSet="utf-8" />
             <meta
                name="viewport"

@@ -24,11 +24,13 @@ const hintsUtils = getHintUtils({
 export const { getHints } = hintsUtils;
 
 /**
- * @returns an object with the client hints and their values
+ * @returns an object with the client hints and their values from the root loader
  */
 export function useHints() {
-   const requestInfo = useRequestInfo();
-   return requestInfo.hints;
+   const data = useRouteLoaderData<typeof rootLoader>("root");
+   invariant(data?.requestInfo, "No requestInfo found in root loader");
+
+   return data.requestInfo;
 }
 
 /**
@@ -36,7 +38,7 @@ export function useHints() {
  * if they are not set then reloads the page if any cookie was set to an
  * inaccurate value.
  */
-export function ClientHintCheck({ nonce }: { nonce: string }) {
+export function ClientHintCheck({ nonce }: { nonce?: string }) {
    const { revalidate } = useRevalidator();
    React.useEffect(
       () => subscribeToSchemeChange(() => revalidate()),
@@ -51,14 +53,4 @@ export function ClientHintCheck({ nonce }: { nonce: string }) {
          }}
       />
    );
-}
-
-/**
- * @returns the request info from the root loader
- */
-export function useRequestInfo() {
-   const data = useRouteLoaderData<typeof rootLoader>("root");
-   invariant(data?.requestInfo, "No requestInfo found in root loader");
-
-   return data.requestInfo;
 }
