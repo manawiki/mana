@@ -5,8 +5,7 @@ import type { Site } from "~/db/payload-types";
 import { LoggedIn, LoggedOut } from "~/routes/_auth+/src/components";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
-import { DarkModeToggle } from "~/routes/action+/theme-toggle";
-// import { ThemeToggleMobile } from "./UserMenu";
+import { ThemeToggleMobile } from "./UserMenu";
 
 export const MobileTray = ({
    children,
@@ -50,7 +49,7 @@ export const MenuTrayContent = ({
                className="shadow-1 bg-3-sub border-color-sub relative flex w-full items-center
                   justify-between gap-3 rounded-xl border py-2.5 pl-4 pr-3 shadow-sm"
             >
-               <DarkModeToggle />
+               <ThemeToggleMobile />
             </div>
          </LoggedOut>
       </menu>
