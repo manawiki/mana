@@ -27,14 +27,9 @@ import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
+import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
-import {
-   ThemeBody,
-   ThemeHead,
-   ThemeProvider,
-   useTheme,
-} from "~/utils/theme-provider";
-import { getThemeSession } from "~/utils/theme.server";
+import { getTheme } from "~/utils/theme.server";
 
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
@@ -46,7 +41,6 @@ export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
 
    // Extracts the toast from the request
@@ -70,12 +64,17 @@ export const loader = async ({
       type: site?.type,
    }));
 
+   const hints = getHints(request);
+
    return json(
       {
+         requestInfo: {
+            ...hints,
+            theme: getTheme(request) ?? hints.theme,
+         },
          toast,
          locale,
          user,
-         siteTheme: themeSession.getTheme(),
          following,
       },
       { headers },
@@ -130,10 +129,10 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toast } = useLoaderData<typeof loader>();
-   const [theme] = useTheme();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+   const theme = useTheme();
 
    useChangeLanguage(locale);
 
@@ -160,6 +159,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
+            {isBot ? null : <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -196,12 +196,10 @@ function App() {
             />
             <Meta />
             <Links />
-            <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster theme={siteTheme ?? "system"} />
-            <ThemeBody ssrTheme={Boolean(siteTheme)} />
+            <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <ExternalScripts />
@@ -211,17 +209,7 @@ function App() {
    );
 }
 
-export function AppWithProviders() {
-   const { siteTheme } = useLoaderData<typeof loader>();
-
-   return (
-      <ThemeProvider specifiedTheme={siteTheme}>
-         <App />
-      </ThemeProvider>
-   );
-}
-
-let AppExport = withMetronome(AppWithProviders);
+let AppExport = withMetronome(App);
 
 // Toggle Remix Dev Tools
 if (process.env.NODE_ENV === "development") {

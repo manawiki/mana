@@ -1,4 +1,3 @@
-export * from "./DarkModeToggle";
 export * from "./DotLoader";
 export * from "./Forms";
 export * from "./Image";
