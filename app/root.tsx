@@ -159,7 +159,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
-            <ClientHintCheck />
+            {isBot ? null : <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"

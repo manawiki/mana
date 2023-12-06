@@ -48,7 +48,7 @@ export function useTheme() {
       (f) => f.formAction === "/action/theme-toggle",
    );
 
-   return (themeFetcher?.formData?.get("theme") ?? hints.theme) as
+   return (themeFetcher?.formData?.get("theme") ?? hints.theme ?? "light") as
       | "light"
       | "dark";
 }
