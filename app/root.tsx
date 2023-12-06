@@ -18,7 +18,9 @@ import {
    useMatches,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { getToast } from "remix-toast";
 // import { ExternalScripts } from "remix-utils/external-scripts";
+import { Toaster, toast as notify } from "sonner";
 
 import { settings } from "mana-config";
 import type { Site } from "~/db/payload-types";
@@ -26,10 +28,7 @@ import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
 import { getTheme } from "~/utils/theme.server";
 
-import { toast } from "./components/Toaster";
 import { i18nextServer } from "./utils/i18n";
-import { commitSession, getSession } from "./utils/message.server";
-import type { ToastMessage } from "./utils/message.server";
 
 //css should be imported as side effect for vite
 import "./styles/global.css";
