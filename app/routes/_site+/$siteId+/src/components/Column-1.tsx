@@ -5,8 +5,8 @@ import {
    useRouteLoaderData,
 } from "@remix-run/react";
 
-import { DarkModeToggle, Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site, User } from "~/db/payload-types";
 import {
    LoggedOut,
@@ -14,6 +14,7 @@ import {
    AdminOrStaffOrOwner,
 } from "~/routes/_auth+/src/components";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
+import { DarkModeToggle } from "~/routes/action+/theme-toggle";
 
 import { UserDesktopMenu } from "./UserMenu";
 
