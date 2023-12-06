@@ -74,7 +74,7 @@ export const Comments: CollectionConfig = {
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 2,
+         maxDepth: 3,
       },
    ],
 };

@@ -756,6 +756,10 @@ export async function action({
    }
 }
 
+/**
+ * Get the immutable post Id from post slug.
+ * Cache if anon.
+ */
 async function fetchPostWithSlug({
    p,
    payload,
@@ -767,7 +771,6 @@ async function fetchPostWithSlug({
    siteId: string;
    user?: User;
 }) {
-   //Determine the real post Id from the post slug
    const { docs: postsAll } = !user
       ? await cacheThis(
            () =>
@@ -825,19 +828,6 @@ async function fetchPost({
       user,
    });
 
-   if (!user) {
-      //If anon and data exists, return post data now
-      if (postData) {
-         return { post: postData };
-      }
-      //Attempt to fetch with ID
-      if (!postData) {
-         throw redirect("/404", 404);
-      }
-   }
-
-   invariant(user, "Not logged in");
-
    //If can't find post with slug, attempt to findById
    if (!postData) {
       const postById = await payload.findByID({
@@ -851,6 +841,20 @@ async function fetchPost({
       throw redirect(`/${postById.site.slug}/p/${postById.slug}`, 301);
    }
 
+   if (!user) {
+      //If anon and data exists, return post data now
+      if (postData) {
+         return { post: postData };
+      }
+      //Otherwise post doesn't exist
+      if (!postData) {
+         throw redirect("/404", 404);
+      }
+   }
+
+   //Now we handle authenticated querying
+   invariant(user, "Not logged in");
+
    const authPost = await payload.findByID({
       collection: "posts",
       id: postData.id,
@@ -861,6 +865,7 @@ async function fetchPost({
 
    const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
 
+   //If user has access, pull versions
    if (hasAccess) {
       const publishedPost = await payload.findByID({
          collection: "posts",
