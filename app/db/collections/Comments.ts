@@ -42,6 +42,7 @@ export const Comments: CollectionConfig = {
       {
          name: "isTopLevel",
          type: "checkbox",
+         defaultValue: false,
       },
       {
          name: "isPinned",
@@ -73,7 +74,7 @@ export const Comments: CollectionConfig = {
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 0,
+         maxDepth: 3,
       },
    ],
 };
