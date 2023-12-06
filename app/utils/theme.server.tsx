@@ -16,6 +16,9 @@ export function setTheme(theme: Theme | "system") {
    if (theme === "system") {
       return cookie.serialize(cookieName, "", { path: "/", maxAge: -1 });
    } else {
-      return cookie.serialize(cookieName, theme, { path: "/" });
+      return cookie.serialize(cookieName, theme, {
+         path: "/",
+         maxAge: 31536000,
+      });
    }
 }
