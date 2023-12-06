@@ -1,4 +1,9 @@
 export type IconName =
+  | "bookmark"
+  | "reply"
+  | "triangle"
+  | "message-circle"
+  | "folder"
   | "palette"
   | "rows"
   | "chevron-up"
