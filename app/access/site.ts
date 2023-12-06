@@ -21,7 +21,8 @@ export const canRead =
          | "posts"
          | "updates"
          | "homeContents"
-         | "contentEmbeds",
+         | "contentEmbeds"
+         | "comments",
    ): Access =>
    async ({ req: { user, payload }, id }) => {
       if (user && user.roles.includes("staff")) return true;
@@ -63,7 +64,8 @@ export const canMutateAsSiteAdmin =
          | "posts"
          | "updates"
          | "homeContents"
-         | "contentEmbeds",
+         | "contentEmbeds"
+         | "comments",
    ): Access =>
    async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {

@@ -32,11 +32,11 @@ export function PostTableOfContents({
 
    return (
       <>
-         {rows && rows.length > 0 && (
+         {rows && rows.length > 1 && (
             <section className="relative">
                <div
                   className={clsx(
-                     seeAllOpen ? "" : "max-h-[230px]",
+                     seeAllOpen ? "" : "max-h-[244px]",
                      "text-sm border border-color-sub overflow-hidden shadow-sm shadow-1 rounded-lg mt-5 mb-4 bg-zinc-50 dark:bg-dark350",
                   )}
                >
@@ -49,7 +49,7 @@ export function PostTableOfContents({
                         />
                         <span>Table of Contents</span>
                      </div>
-                     {!showAll && (
+                     {!showAll && rows.length > 5 && (
                         <button
                            onClick={() => setSeeAllOpen(!seeAllOpen)}
                            className="w-6 h-6 bg-white dark:bg-dark450 z-10 shadow-sm shadow-1 hover:border-zinc-300
