@@ -17,20 +17,14 @@ import {
    useLoaderData,
    useMatches,
 } from "@remix-run/react";
-import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 // import { ExternalScripts } from "remix-utils/external-scripts";
 
 import { settings } from "mana-config";
 import type { Site } from "~/db/payload-types";
+import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
-import {
-   ThemeBody,
-   ThemeHead,
-   ThemeProvider,
-   useTheme,
-} from "~/utils/theme-provider";
-import { getThemeSession } from "~/utils/theme.server";
+import { getTheme } from "~/utils/theme.server";
 
 import { toast } from "./components/Toaster";
 import { i18nextServer } from "./utils/i18n";
@@ -45,24 +39,46 @@ import "~/styles/fonts.css";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export const loader = async ({
-   context: { user },
+   context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const themeSession = await getThemeSession(request);
    const locale = await i18nextServer.getLocale(request);
-   const session = await getSession(request.headers.get("cookie"));
-   const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
 
-   const sharedData = {
-      toastMessage,
-      locale,
-      user,
-      siteTheme: themeSession.getTheme(),
-   };
+   // Extracts the toast from the request
+   const { toast, headers } = await getToast(request);
+
+   const userData = user
+      ? await payload.findByID({
+           collection: "users",
+           id: user.id,
+           user,
+        })
+      : undefined;
+
+   const following = userData?.sites?.map((site) => ({
+      id: site?.id,
+      icon: {
+         url: site?.icon?.url,
+      },
+      name: site.name,
+      slug: site?.slug,
+      type: site?.type,
+   }));
+
+   const hints = getHints(request);
 
    return json(
-      { ...sharedData },
-      { headers: { "Set-Cookie": await commitSession(session) } },
+      {
+         requestInfo: {
+            ...hints,
+            theme: getTheme(request) ?? hints.theme,
+         },
+         toast,
+         locale,
+         user,
+         following,
+      },
+      { headers },
    );
 };
 
@@ -105,10 +121,10 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
-   const [theme] = useTheme();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+   const theme = useTheme();
 
    useChangeLanguage(locale);
 
@@ -118,23 +134,15 @@ function App() {
    };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
+   // Hook to show the toasts
    useEffect(() => {
-      if (!toastMessage) {
-         return;
+      if (toast?.type === "error") {
+         notify.error(toast.message);
       }
-      const { message, type } = toastMessage;
-
-      switch (type) {
-         case "success":
-            toast.success(message);
-            break;
-         case "error":
-            toast.error(message);
-            break;
-         default:
-            throw new Error(`${type} is not handled`);
+      if (toast?.type === "success") {
+         notify.success(toast.message);
       }
-   }, [toastMessage]);
+   }, [toast]);
 
    return (
       <html
@@ -143,6 +151,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
+            {isBot ? null : <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -179,12 +188,10 @@ function App() {
             />
             <Meta />
             <Links />
-            <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
             <Outlet />
-            <Toaster />
-            <ThemeBody ssrTheme={Boolean(siteTheme)} />
+            <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {/* <ExternalScripts /> */}
             <LiveReload />
@@ -194,17 +201,7 @@ function App() {
    );
 }
 
-export function AppWithProviders() {
-   const { siteTheme } = useLoaderData<typeof loader>();
-
-   return (
-      <ThemeProvider specifiedTheme={siteTheme}>
-         <App />
-      </ThemeProvider>
-   );
-}
-
-export default withMetronome(AppWithProviders);
+export default withMetronome(App);
 
 export function useChangeLanguage(locale: string) {
    let { i18n } = useTranslation();

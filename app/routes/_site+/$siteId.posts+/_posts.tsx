@@ -267,7 +267,7 @@ export default function PostsAll() {
                         myPosts?.docs?.map((post) => (
                            <Link
                               prefetch="intent"
-                              to={`/${siteId}/p/${post.id}`}
+                              to={`/${siteId}/p/${post.slug}`}
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3"
                            >
@@ -277,7 +277,7 @@ export default function PostsAll() {
                               {post.updatedAt && (
                                  <div className="flex flex-none items-center gap-4">
                                     <time
-                                       className="text-1 flex items-center gap-1.5 text-sm"
+                                       className="text-1 flex items-center gap-1.5 text-xs"
                                        dateTime={post?.updatedAt}
                                     >
                                        {dt.format(
@@ -285,7 +285,22 @@ export default function PostsAll() {
                                           "MMM D",
                                        )}
                                     </time>
-                                    {post._status == "published" ? (
+                                    {post.publishedAt &&
+                                       post._status == "draft" && (
+                                          <Tooltip>
+                                             <TooltipTrigger>
+                                                <Icon
+                                                   name="pencil"
+                                                   size={12}
+                                                   className="text-zinc-400"
+                                                />
+                                             </TooltipTrigger>
+                                             <TooltipContent>
+                                                Unpublished changes...
+                                             </TooltipContent>
+                                          </Tooltip>
+                                       )}
+                                    {post.publishedAt ? (
                                        <Tooltip>
                                           <TooltipTrigger>
                                              <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
@@ -450,16 +465,18 @@ export const action = async ({
          const { name } = await zx.parseForm(request, {
             name: z.string(),
          });
+         const postId = safeNanoID();
 
          const post = await payload.create({
             collection: "posts",
             data: {
-               id: safeNanoID(),
+               id: postId,
                name,
                //@ts-ignore
                author: user?.id,
                //@ts-ignore
                site: site.id,
+               slug: postId,
             },
             user,
             draft: true,
@@ -468,15 +485,17 @@ export const action = async ({
          return redirect(`/${siteId}/p/${post.id}`);
       }
       case "createPost": {
+         const postId = safeNanoID();
          const post = await payload.create({
             collection: "posts",
             data: {
-               id: safeNanoID(),
+               id: postId,
                name: "Untitled",
                //@ts-ignore
                author: user?.id,
                //@ts-ignore
                site: site.id,
+               slug: postId,
                content: initialValue(),
             },
             user,
@@ -678,6 +697,8 @@ const fetchMyPosts = async ({
          name: true,
          _status: true,
          updatedAt: true,
+         publishedAt: true,
+         slug: true,
       };
 
       const result = filterAuthorFields(data, postSelect);
@@ -743,14 +764,14 @@ function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
    return (
       <>
          <Link
-            className="relative block py-4"
+            className="relative block py-4 group"
             prefetch="intent"
             to={`/${siteId}/p/${post.slug}`}
             key={post.id}
          >
-            <div className="flex w-full items-center justify-between gap-3 pb-4 text-sm text-gray-500 dark:text-gray-400">
-               <div className="flex items-center gap-3">
-                  <div className="h-6 w-6 overflow-hidden rounded-full">
+            <div className="flex w-full items-center justify-between gap-3 pb-3 text-sm text-gray-500 dark:text-gray-400">
+               <div className="flex items-center gap-2.5">
+                  <div className="h-5 w-5 overflow-hidden rounded-full">
                      {post?.author.avatar?.url ? (
                         <Image
                            width={20}
@@ -779,7 +800,7 @@ function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
             </div>
             <div className="flex items-start gap-5">
                <div className="relative flex-grow">
-                  <div className="pb-2 font-header text-xl font-bold">
+                  <div className="pb-2 font-header text-xl font-bold group-hover:underline">
                      {post.name}
                   </div>
                   <div className="text-1 text-sm max-laptop:line-clamp-2">

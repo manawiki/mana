@@ -81,7 +81,7 @@ export function PostHeaderEdit({
 
    return (
       <>
-         <div className="relative mb-3 flex items-center gap-3">
+         <div className="relative mb-2 flex items-center gap-3">
             <TextareaAutosize
                className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
                    font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"

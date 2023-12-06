@@ -1,7 +1,12 @@
-import { Link, NavLink } from "@remix-run/react";
+import {
+   Link,
+   NavLink,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 
-import { DarkModeToggle, Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site, User } from "~/db/payload-types";
 import {
    LoggedOut,
@@ -9,6 +14,7 @@ import {
    AdminOrStaffOrOwner,
 } from "~/routes/_auth+/src/components";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
+import { DarkModeToggle } from "~/routes/action+/theme-toggle";
 
 import { UserDesktopMenu } from "./UserMenu";
 
@@ -26,7 +32,7 @@ function SideBarItem({ site }: { site: Site }) {
                   <Image
                      alt="Site Logo"
                      options="aspect_ratio=1:1&height=120&width=120"
-                     url={site.icon?.url}
+                     url={site?.icon?.url ?? ""}
                   />
                </div>
                {isActive && (
@@ -38,8 +44,12 @@ function SideBarItem({ site }: { site: Site }) {
    );
 }
 
-export function ColumnOne({ site, user }: { site: Site; user: User }) {
-   const following = user?.sites as Site[];
+export function ColumnOne({ site }: { site: Site }) {
+   const { following } = useRouteLoaderData("root") as {
+      following: User["sites"];
+   };
+
+   const location = useLocation();
 
    return (
       <section
@@ -91,7 +101,7 @@ export function ColumnOne({ site, user }: { site: Site; user: User }) {
                      <div className="flex items-center justify-center flex-col gap-3">
                         <DarkModeToggle />
                         <Link
-                           to="/login"
+                           to={`/login?redirectTo=${location.pathname}`}
                            className="border border-color transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
                            rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow-sm shadow-1 hover:border-zinc-200"
                         >

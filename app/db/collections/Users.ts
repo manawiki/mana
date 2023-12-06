@@ -39,7 +39,7 @@ export const Users: CollectionConfig = {
       },
       forgotPassword: {
          generateEmailHTML: (prop) => {
-            const  token  = prop?.token;
+            const token = prop?.token;
             // Use the token provided to allow your user to verify their account
             const url =
                serverEnv == "development"
@@ -102,7 +102,6 @@ export const Users: CollectionConfig = {
       },
       {
          name: "roles",
-         saveToJWT: true,
          type: "select",
          hasMany: true,
          defaultValue: ["user"],
@@ -123,7 +122,6 @@ export const Users: CollectionConfig = {
       },
       {
          name: "sites",
-         saveToJWT: true,
          type: "relationship",
          relationTo: "sites",
          hasMany: true,

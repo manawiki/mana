@@ -305,8 +305,16 @@ export const action: ActionFunction = async ({
             user,
          });
 
+         const userData = user
+            ? await payload.findByID({
+                 collection: "users",
+                 id: userId,
+                 user,
+              })
+            : undefined;
+
          //We need to get the current sites of the user, then prepare the new sites array
-         const userCurrentSites = user?.sites || [];
+         const userCurrentSites = userData?.sites || [];
          const sites = userCurrentSites.map((site) =>
             typeof site === "string" ? site : site?.id,
          );

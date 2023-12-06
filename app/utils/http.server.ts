@@ -1,5 +1,3 @@
-import { json } from "@remix-run/node";
-
 export function getCurrentPath(request: Request) {
    return new URL(request.url).pathname;
 }
@@ -45,7 +43,7 @@ export function assertIsPost(request: Request, message = "Method not allowed") {
 
 export function assertIsDelete(
    request: Request,
-   message = "Method not allowed"
+   message = "Method not allowed",
 ) {
    if (!isDelete(request)) {
       throw notAllowedMethod(message);
@@ -54,31 +52,11 @@ export function assertIsDelete(
 
 export function assertIsPatch(
    request: Request,
-   message = "Method not allowed"
+   message = "Method not allowed",
 ) {
    if (!isPatch(request)) {
       throw notAllowedMethod(message);
    }
-}
-
-export function toastResponse({
-   result,
-   error,
-   success,
-}: {
-   result: any;
-   error: string;
-   success?: string;
-}) {
-   if (!result || !result.success) {
-      return json(
-         {
-            error,
-         },
-         { status: 400 }
-      );
-   }
-   return json({ success });
 }
 
 /**
@@ -90,7 +68,7 @@ export function toastResponse({
  */
 export function safeRedirect(
    to: FormDataEntryValue | string | null | undefined,
-   defaultRedirect = "/"
+   defaultRedirect = "/",
 ) {
    if (
       !to ||
