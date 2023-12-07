@@ -10,6 +10,7 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { request as gqlRequest, gql } from "graphql-request";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import {
@@ -40,6 +41,7 @@ import {
    assertIsPatch,
    assertIsPost,
    getMultipleFormData,
+   gqlEndpoint,
    uploadImage,
 } from "~/utils";
 import { cacheThis } from "~/utils/cache.server";
@@ -149,7 +151,6 @@ export default function Post() {
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const enableAds = post.site.enableAds;
-
    return (
       <>
          {hasAccess ? (
@@ -387,6 +388,7 @@ export async function action({
          "createCommentReply",
          "deleteComment",
          "updateComment",
+         "upVoteComment",
       ]),
       field: z.enum(["title"]).optional(),
    });
@@ -753,6 +755,53 @@ export async function action({
             });
          }
       }
+      case "upVoteComment": {
+         const result = await zx.parseFormSafe(request, {
+            commentId: z.string(),
+            userId: z.string(),
+         });
+         if (result.success) {
+            const { commentId, userId } = result.data;
+            const comment = await payload.findByID({
+               collection: "comments",
+               id: commentId,
+               overrideAccess: false,
+               user,
+            });
+
+            const existingVoteStatic = comment?.upVotesStatic ?? 0;
+
+            //@ts-ignore
+            let existingVotes = (comment?.upVotes as string[]) ?? [];
+
+            //If vote exists, remove instead
+            if (existingVotes.includes(userId)) {
+               existingVotes.splice(existingVotes.indexOf(userId), 1);
+               return await payload.update({
+                  collection: "comments",
+                  id: commentId,
+                  data: {
+                     //@ts-ignore
+                     upVotes: existingVotes,
+                     upVotesStatic: existingVoteStatic - 1,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            //@ts-ignore
+            return await payload.update({
+               collection: "comments",
+               id: commentId,
+               data: {
+                  upVotes: [...existingVotes, userId],
+                  upVotesStatic: existingVoteStatic + 1,
+               },
+               overrideAccess: false,
+               user,
+            });
+         }
+      }
    }
 }
 
@@ -933,23 +982,86 @@ async function fetchPostComments({
       user,
    });
 
-   const { docs: comments } = await payload.find({
-      collection: "comments",
-      where: {
-         "site.slug": {
-            equals: siteId,
-         },
-         postParent: {
-            equals: postData?.id,
-         },
-         isTopLevel: {
-            equals: true,
-         },
-      },
-      user,
-      overrideAccess: false,
-      depth: 8,
+   const document = gql`
+      query GetComments($siteId: JSON!, $postParentId: JSON!) {
+         comments: Comments(
+            where: {
+               site: { equals: $siteId }
+               isTopLevel: { equals: true }
+               postParent: { equals: $postParentId }
+            }
+            sort: "-upVotesStatic"
+         ) {
+            docs {
+               id
+               createdAt
+               upVotesStatic
+               isTopLevel
+               isPinned
+               comment
+               author {
+                  username
+                  avatar {
+                     url
+                  }
+               }
+               replies {
+                  id
+                  createdAt
+                  comment
+                  upVotesStatic
+                  author {
+                     username
+                     avatar {
+                        url
+                     }
+                  }
+                  replies {
+                     id
+                     createdAt
+                     comment
+                     upVotesStatic
+                     author {
+                        username
+                        avatar {
+                           url
+                        }
+                     }
+                     replies {
+                        id
+                        createdAt
+                        comment
+                        upVotesStatic
+                        author {
+                           username
+                           avatar {
+                              url
+                           }
+                        }
+                        replies {
+                           id
+                           createdAt
+                           comment
+                           upVotesStatic
+                           author {
+                              username
+                              avatar {
+                                 url
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   `;
+   const fetchComments = await gqlRequest(gqlEndpoint({}), document, {
+      siteId: postData?.site.id,
+      postParentId: postData?.id,
    });
-
+   //@ts-ignore
+   const comments = fetchComments?.comments?.docs;
    return comments ?? null;
 }

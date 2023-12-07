@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 import { Transition } from "@headlessui/react";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Comment } from "~/db/payload-types";
+import type { Comment, User } from "~/db/payload-types";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
@@ -18,7 +18,8 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding } from "~/utils";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   console.log(comments);
+   const { user } = useRouteLoaderData("root") as { user: User };
+
    return (
       <div className="py-6">
          <div className="border-y overflow-hidden border-color bg-zinc-50 shadow dark:bg-dark350/70 relative">
@@ -34,14 +35,14 @@ export function Comments({ comments }: { comments: Comment[] }) {
                   />
                   <div className="font-header text-lg">Comments</div>
                </div>
-               {/* <div className="flex items-center gap-3">
+               <div className="flex items-center gap-3 z-10">
                   <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
                      Latest
                   </div>
                   <div className="rounded-full text-[11px] flex items-center justify-center dark:bg-dark450 bg-zinc-100 h-7 px-4">
                      Top
                   </div>
-               </div> */}
+               </div>
             </div>
             <div
                className="pattern-dots absolute left-0
@@ -59,6 +60,7 @@ export function Comments({ comments }: { comments: Comment[] }) {
                   comments.map((comment, index) => (
                      <CommentRow
                         key={comment.id}
+                        userId={user.id}
                         comment={comment}
                         index={index}
                      />
@@ -71,15 +73,30 @@ export function Comments({ comments }: { comments: Comment[] }) {
 
 function CommentRow({
    comment,
+   userId,
    isNested,
    index,
 }: {
    comment: Comment;
+   userId: string;
    isNested?: Boolean;
    index?: number;
 }) {
    const [isReplyOpen, setReplyOpen] = useState(false);
    const [isCommentExpanded, setCommentExpanded] = useState(true);
+
+   const fetcher = useFetcher();
+
+   function upVoteComment() {
+      return fetcher.submit(
+         {
+            commentId: comment.id,
+            userId,
+            intent: "upVoteComment",
+         },
+         { method: "post" },
+      );
+   }
 
    return (
       <>
@@ -147,6 +164,7 @@ function CommentRow({
                <div className="pt-3 flex items-center gap-4">
                   <div className="flex items-center gap-2">
                      <button
+                        onClick={() => upVoteComment()}
                         className="dark:bg-dark450 border shadow-sm dark:shadow-emerald-950/50
                         hover:dark:border-emerald-600/70
                       dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center"
@@ -205,6 +223,7 @@ function CommentRow({
                      {comment?.replies.map((comment, index) => (
                         <CommentRow
                            key={comment.id}
+                           userId={userId}
                            comment={comment}
                            index={index}
                            isNested
