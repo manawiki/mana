@@ -94,20 +94,78 @@ function getCustom(params) {
 }
 
 // We can move calculation to the server to cache the results
-export async function loader({ request }: LoaderFunctionArgs) {
-   //get formData from req
+// export async function loader({ request }: LoaderFunctionArgs) {
+//    //get formData from req
 
-   // get url to parse query params
-   const url = new URL(request.url);
+//    // get url to parse query params
+//    const url = new URL(request.url);
 
-   // console.log(url.search);
+//    // console.log(url.search);
 
+//    // get query params from url
+//    const params = Object.fromEntries(url.searchParams);
+
+//    const custom = getCustom(params);
+
+//    // console.log(requiredJSONStatus);
+
+//    // todo redo how Data.Pokemon is generated
+//    if (!requiredJSONStatus.Pokemon) GM.fetch();
+
+//    //to-do add user pokemon
+//    const pokemon = Data.Pokemon;
+
+//    // todo apply context from query params
+//    const results = await cacheThis(
+//       async () =>
+//          generateSpreadsheet(Data.Pokemon, {
+//             ...Context,
+//             ...applyContext(custom),
+//          }),
+
+//       "pokemon-dps" + JSON.stringify(custom),
+//       60 * 60 * 24 * 1000, //cache for 24 hours
+//    );
+
+//    //to-do read params to toggle sorting
+//    const sort = params["sort"] ?? "dps";
+//    const asc = params["asc"] ? 1 : -1;
+//    const page = params["page"] ? parseInt(params["page"]) : 1;
+//    const search = params["search"] ?? "";
+
+//    // console.log(sort, asc, page, search);
+
+//    const filtered = await cacheThis(
+//       async () =>
+//          results
+//             .filter((pokemon) =>
+//                search === ""
+//                   ? true
+//                   : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+//             )
+//             .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
+//             //limit results to the top 100
+//             .slice(100 * page - 100, 100 * page),
+//       "pokemon-dps" +
+//          JSON.stringify(custom) +
+//          "-filters-" +
+//          sort +
+//          asc +
+//          page +
+//          search,
+//       60 * 60 * 24 * 1000,
+//    );
+
+//    return json({ pokemon, results: filtered, count: results.length });
+// }
+
+export function useClientData() {
    // get query params from url
-   const params = Object.fromEntries(url.searchParams);
+   const [searchParams] = useSearchParams();
+
+   const params = Object.fromEntries(searchParams);
 
    const custom = getCustom(params);
-
-   // console.log(requiredJSONStatus);
 
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch();
@@ -116,16 +174,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
    const pokemon = Data.Pokemon;
 
    // todo apply context from query params
-   const results = await cacheThis(
-      async () =>
-         generateSpreadsheet(Data.Pokemon, {
-            ...Context,
-            ...applyContext(custom),
-         }),
-
-      "pokemon-dps" + JSON.stringify(custom),
-      60 * 60 * 24 * 1000, //cache for 24 hours
-   );
+   const results = generateSpreadsheet(Data.Pokemon, {
+      ...Context,
+      ...applyContext(custom),
+   });
 
    //to-do read params to toggle sorting
    const sort = params["sort"] ?? "dps";
@@ -135,36 +187,25 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
    // console.log(sort, asc, page, search);
 
-   const filtered = await cacheThis(
-      async () =>
-         results
-            .filter((pokemon) =>
-               search === ""
-                  ? true
-                  : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-            )
-            .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
-            //limit results to the top 100
-            .slice(100 * page - 100, 100 * page),
-      "pokemon-dps" +
-         JSON.stringify(custom) +
-         "-filters-" +
-         sort +
-         asc +
-         page +
-         search,
-      60 * 60 * 24 * 1000,
-   );
-
-   return json({ pokemon, results: filtered, count: results.length });
+   const filtered = results
+      .filter((pokemon) =>
+         search === ""
+            ? true
+            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+      )
+      .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
+      //limit results to the top 100
+      .slice(100 * page - 100, 100 * page);
+   return { pokemon, results: filtered, count: results.length };
 }
 
 export function ComprehensiveDpsSpreadsheet() {
+   const { pokemon, results, count } = useClientData();
    return (
       <>
          <Introduction />
-         <Toggles />
-         <ResultsTable />
+         <Toggles pokemon={pokemon} />
+         <ResultsTable results={results} count={count} />
       </>
    );
 }
@@ -290,8 +331,8 @@ const capitalize = (word: string) => {
       : "";
 };
 
-function Toggles() {
-   // const { pokemon } = useLoaderData<typeof loader>();
+function Toggles({ pokemon }) {
+   // const { pokemon } = useLoaderData();
 
    // console.log(pokemon);
 
@@ -338,6 +379,7 @@ function Toggles() {
                   <PokemonComboBox
                      enemyPokemon={enemyPokemon}
                      setEnemyPokemon={setEnemyPokemon}
+                     pokemon={pokemon}
                   />
                   <input
                      hidden
@@ -608,12 +650,12 @@ function Toggles() {
 }
 
 //todo figure out what we want to use for table
-function ResultsTable() {
-   const { count, results } = useLoaderData<typeof loader>();
+function ResultsTable({ count, results }) {
+   // const { count, results } = useClientData();
 
    return (
       <>
-         <Pagination />
+         <Pagination count={count} />
          <table>
             <thead>
                <tr>
@@ -706,8 +748,8 @@ function TH({ children }: { children: string }) {
 }
 
 // Insert a simple pagination component here
-function Pagination() {
-   const { count } = useLoaderData<typeof loader>();
+function Pagination({ count }) {
+   // const { count } = useClientData();
    const [searchParams, setSearchParams] = useSearchParams();
 
    const page = parseInt(searchParams.get("page") ?? "1");
@@ -799,8 +841,8 @@ function Pagination() {
    );
 }
 
-export function PokemonComboBox({ enemyPokemon, setEnemyPokemon }) {
-   const { pokemon } = useLoaderData<typeof loader>();
+export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
+   // const { pokemon } = useClientData();
 
    const [query, setQuery] = useState("");
 
