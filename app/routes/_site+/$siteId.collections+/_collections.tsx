@@ -351,6 +351,7 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
+                  //@ts-ignore
                   sections: [{ id: "main", name: "Main", showTitle: false }],
                },
                user,

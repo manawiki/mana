@@ -75,7 +75,7 @@ export const Comments: CollectionConfig = {
          },
       },
       {
-         name: "nestedLevels",
+         name: "maxCommentDepth",
          type: "number",
       },
    ],
