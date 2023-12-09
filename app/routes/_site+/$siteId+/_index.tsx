@@ -30,10 +30,10 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
-   context: { payload, user },
-   params,
-   request,
-}: LoaderFunctionArgs) {
+                                context: { payload, user },
+                                params,
+                                request,
+                             }: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -233,6 +233,7 @@ async function fetchHomeContent({
                   {
                      id: false,
                      content: true,
+                     versionAuthor: true,
                      _status: true,
                   },
                   doc.version,
@@ -291,9 +292,9 @@ async function fetchHomeContent({
 }
 
 export async function action({
-   context: { payload, user },
-   request,
-}: ActionFunctionArgs) {
+                                context: { payload, user },
+                                request,
+                             }: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["publish"]),
    });

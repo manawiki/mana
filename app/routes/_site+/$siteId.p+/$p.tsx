@@ -966,6 +966,7 @@ async function fetchPost({
             const version = select(
                {
                   id: false,
+                  versionAuthor: true,
                   content: true,
                   _status: true,
                },
