@@ -170,7 +170,11 @@ startCore();
 function createProductionRequestHandler(): RequestHandler {
    function getLoadContext(req: any, res: any) {
       const userData = req.user
-         ? { id: req?.user?.id, roles: req?.user?.roles }
+         ? {
+              id: req?.user?.id,
+              roles: req?.user?.roles,
+              avatar: { url: req?.user?.avatar?.url },
+           }
          : undefined;
       return {
          payload: req.payload,
@@ -217,7 +221,11 @@ function createDevRequestHandler(): RequestHandler {
             mode: "development",
             getLoadContext(req, res) {
                const userData = req.user
-                  ? { id: req?.user?.id, roles: req?.user?.roles }
+                  ? {
+                       id: req?.user?.id,
+                       roles: req?.user?.roles,
+                       avatar: { url: req?.user?.avatar?.url },
+                    }
                   : undefined;
                return {
                   payload: req.payload,

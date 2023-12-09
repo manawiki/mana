@@ -30,10 +30,10 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function loader({
-                                context: { payload, user },
-                                params,
-                                request,
-                             }: LoaderFunctionArgs) {
+   context: { payload, user },
+   params,
+   request,
+}: LoaderFunctionArgs) {
    const siteId = params?.siteId ?? customConfig?.siteId;
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -58,7 +58,7 @@ export async function loader({
 }
 
 export const mainContainerStyle =
-   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6";
+   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 laptop:pb-20";
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
@@ -292,9 +292,9 @@ async function fetchHomeContent({
 }
 
 export async function action({
-                                context: { payload, user },
-                                request,
-                             }: ActionFunctionArgs) {
+   context: { payload, user },
+   request,
+}: ActionFunctionArgs) {
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["publish"]),
    });
