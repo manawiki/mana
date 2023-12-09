@@ -1,24 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Comment } from "~/db/payload-types";
+import type { Comment, User } from "~/db/payload-types";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { Toolbar } from "~/routes/_editor+/core/components/Toolbar";
 import { useEditor } from "~/routes/_editor+/core/plugins";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { isAdding } from "~/utils";
+import { isAdding, isProcessing } from "~/utils";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   console.log(comments);
+   const { user } = useRouteLoaderData("root") as { user: User };
+
    return (
       <div className="py-6">
          <div className="border-y overflow-hidden border-color bg-zinc-50 shadow dark:bg-dark350/70 relative">
@@ -34,14 +35,14 @@ export function Comments({ comments }: { comments: Comment[] }) {
                   />
                   <div className="font-header text-lg">Comments</div>
                </div>
-               {/* <div className="flex items-center gap-3">
+               <div className="flex items-center gap-3 z-10">
                   <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
                      Latest
                   </div>
                   <div className="rounded-full text-[11px] flex items-center justify-center dark:bg-dark450 bg-zinc-100 h-7 px-4">
                      Top
                   </div>
-               </div> */}
+               </div>
             </div>
             <div
                className="pattern-dots absolute left-0
@@ -59,8 +60,10 @@ export function Comments({ comments }: { comments: Comment[] }) {
                   comments.map((comment, index) => (
                      <CommentRow
                         key={comment.id}
+                        userId={user.id}
                         comment={comment}
-                        index={index}
+                        comments={comments}
+                        topLevelIndex={index}
                      />
                   ))}
             </div>
@@ -71,15 +74,49 @@ export function Comments({ comments }: { comments: Comment[] }) {
 
 function CommentRow({
    comment,
+   comments,
+   userId,
    isNested,
-   index,
+   topLevelIndex,
 }: {
    comment: Comment;
+   comments: Comment[];
+   userId: string;
    isNested?: Boolean;
-   index?: number;
+   topLevelIndex?: number;
 }) {
    const [isReplyOpen, setReplyOpen] = useState(false);
    const [isCommentExpanded, setCommentExpanded] = useState(true);
+
+   const fetcher = useFetcher({ key: "comments" });
+
+   function upVoteComment() {
+      return fetcher.submit(
+         {
+            commentId: comment.id,
+            userId,
+            intent: "upVoteComment",
+         },
+         { method: "post" },
+      );
+   }
+
+   const commentTopLevelParentId =
+      //@ts-ignore
+      comments[topLevelIndex]?.isTopLevel == true &&
+      //@ts-ignore
+      comments[topLevelIndex]?.id;
+
+   //Hide the comment field after submission
+   useEffect(
+      function resetFormOnSuccess() {
+         //@ts-ignore
+         if (fetcher.state === "idle" && fetcher.data?.message == "ok") {
+            return setReplyOpen(false);
+         }
+      },
+      [fetcher.state, fetcher.data],
+   );
 
    return (
       <>
@@ -147,6 +184,7 @@ function CommentRow({
                <div className="pt-3 flex items-center gap-4">
                   <div className="flex items-center gap-2">
                      <button
+                        onClick={() => upVoteComment()}
                         className="dark:bg-dark450 border shadow-sm dark:shadow-emerald-950/50
                         hover:dark:border-emerald-600/70
                       dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center"
@@ -180,15 +218,21 @@ function CommentRow({
             </div>
             <Transition
                show={isReplyOpen}
-               enter="transition ease-out duration-200"
+               enter="transition ease-out duration-100"
                enterFrom="opacity-0 translate-y-1"
                enterTo="opacity-100 translate-y-0"
-               leave="transition ease-in duration-150"
+               leave="transition ease-in duration-50"
                leaveFrom="opacity-100 translate-y-0"
                leaveTo="opacity-0 translate-y-1"
             >
                <div className="pb-5 pl-8">
-                  <CommentsEditor isReply commentParentId={comment.id} />
+                  <CommentsEditor
+                     isReply
+                     commentParentId={comment.id}
+                     //@ts-ignore
+                     commentDepth={comment.depth}
+                     commentTopLevelParentId={commentTopLevelParentId}
+                  />
                </div>
             </Transition>
             {comment?.replies && comment?.replies?.length > 0 && (
@@ -205,8 +249,10 @@ function CommentRow({
                      {comment?.replies.map((comment, index) => (
                         <CommentRow
                            key={comment.id}
+                           userId={userId}
                            comment={comment}
-                           index={index}
+                           comments={comments}
+                           topLevelIndex={topLevelIndex}
                            isNested
                         />
                      ))}
@@ -223,20 +269,26 @@ function CommentRow({
 
 function CommentsEditor({
    commentParentId,
+   commentTopLevelParentId,
+   commentDepth,
    isReply,
 }: {
    commentParentId?: string;
+   commentTopLevelParentId?: string;
+   commentDepth?: number;
    isReply?: boolean;
 }) {
    const inlineEditor = useEditor();
-   const fetcher = useFetcher();
-   const creating = isAdding(fetcher, "createComment");
+   const fetcher = useFetcher({ key: "comments" });
+   const creatingTopLevelComment = isAdding(fetcher, "createTopLevelComment");
+   const creatingReply = isAdding(fetcher, "createCommentReply");
+   const disabled = isProcessing(fetcher.state);
 
    function createComment() {
       return fetcher.submit(
          {
             comment: JSON.stringify(inlineEditor.children),
-            intent: "createComment",
+            intent: "createTopLevelComment",
          },
          { method: "post" },
       );
@@ -247,6 +299,8 @@ function CommentsEditor({
          {
             comment: JSON.stringify(inlineEditor.children),
             commentParentId,
+            commentDepth,
+            commentTopLevelParentId,
             intent: "createCommentReply",
          },
          { method: "post" },
@@ -266,13 +320,17 @@ function CommentsEditor({
          </Slate>
          <div className="absolute right-3.5 bottom-3.5 flex items-center justify-end">
             <button
+               disabled={disabled}
                onClick={() =>
                   isReply ? createCommentReply() : createComment()
                }
-               className="rounded-full text-white bg-zinc-600 dark:bg-zinc-300 
-             dark:text-zinc-700 w-20 py-1.5 text-xs font-bold"
+               className={clsx(
+                  disabled ? "dark:bg-zinc-400 " : "",
+                  `rounded-full text-white bg-zinc-600 dark:bg-zinc-300 
+                  dark:text-zinc-700 w-20 py-1.5 text-xs font-bold`,
+               )}
             >
-               {creating ? (
+               {creatingTopLevelComment || creatingReply ? (
                   <Icon
                      name="loader-2"
                      className="mx-auto h-4 w-4 animate-spin"

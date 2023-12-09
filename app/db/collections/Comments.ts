@@ -19,7 +19,6 @@ export const Comments: CollectionConfig = {
          type: "relationship",
          relationTo: "sites",
          required: true,
-         maxDepth: 1,
       },
       {
          name: "postParent",
@@ -70,11 +69,14 @@ export const Comments: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
-         maxDepth: 3,
+      },
+      {
+         name: "maxCommentDepth",
+         type: "number",
       },
    ],
 };

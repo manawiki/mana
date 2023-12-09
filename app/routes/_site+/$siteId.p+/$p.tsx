@@ -3,13 +3,15 @@ import { Fragment, Suspense, useState } from "react";
 import { offset, shift } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { defer, redirect } from "@remix-run/node";
+import { defer, json, redirect } from "@remix-run/node";
 import type {
    ActionFunctionArgs,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
 import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { request as gqlRequest } from "graphql-request";
+import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 import {
@@ -40,6 +42,7 @@ import {
    assertIsPatch,
    assertIsPost,
    getMultipleFormData,
+   gqlEndpoint,
    uploadImage,
 } from "~/utils";
 import { cacheThis } from "~/utils/cache.server";
@@ -383,10 +386,11 @@ export async function action({
          "updateSubtitle",
          "updateBanner",
          "deleteBanner",
-         "createComment",
+         "createTopLevelComment",
          "createCommentReply",
          "deleteComment",
          "updateComment",
+         "upVoteComment",
       ]),
       field: z.enum(["title"]).optional(),
    });
@@ -679,7 +683,7 @@ export async function action({
             `"${postTitle}" successfully deleted`,
          );
       }
-      case "createComment": {
+      case "createTopLevelComment": {
          const result = await zx.parseFormSafe(request, {
             comment: z.string(),
          });
@@ -710,9 +714,16 @@ export async function action({
          const result = await zx.parseFormSafe(request, {
             comment: z.string(),
             commentParentId: z.string(),
+            commentTopLevelParentId: z.string(),
+            commentDepth: z.coerce.number(),
          });
          if (result.success) {
-            const { comment, commentParentId } = result.data;
+            const {
+               comment,
+               commentParentId,
+               commentDepth,
+               commentTopLevelParentId,
+            } = result.data;
             const { postData } = await fetchPostWithSlug({
                p,
                payload,
@@ -737,16 +748,79 @@ export async function action({
                id: commentParentId,
                overrideAccess: false,
                user,
+               depth: 0,
             });
 
             const existingReplies = reply?.replies || [];
-            const replies = existingReplies.map(({ id }: { id: any }) => id);
 
-            return await payload.update({
+            await payload.update({
+               collection: "comments",
+               id: commentTopLevelParentId,
+               data: {
+                  //If depth of reply is more than 2 levels deep, add a maxCommentDepth field
+                  ...(commentDepth > 2 && {
+                     maxCommentDepth: commentDepth + 2,
+                  }),
+               },
+               overrideAccess: false,
+               user,
+            });
+
+            //@ts-ignore
+            await payload.update({
                collection: "comments",
                id: commentParentId,
                data: {
-                  replies: [...replies, commentReply.id],
+                  replies: [commentReply.id, ...existingReplies],
+               },
+               overrideAccess: false,
+               user,
+            });
+
+            return json({ message: "ok" });
+         }
+      }
+      case "upVoteComment": {
+         const result = await zx.parseFormSafe(request, {
+            commentId: z.string(),
+            userId: z.string(),
+         });
+         if (result.success) {
+            const { commentId, userId } = result.data;
+            const comment = await payload.findByID({
+               collection: "comments",
+               id: commentId,
+               overrideAccess: false,
+               user,
+            });
+
+            const existingVoteStatic = comment?.upVotesStatic ?? 0;
+
+            //@ts-ignore
+            let existingVotes = (comment?.upVotes as string[]) ?? [];
+
+            //If vote exists, remove instead
+            if (existingVotes.includes(userId)) {
+               existingVotes.splice(existingVotes.indexOf(userId), 1);
+               return await payload.update({
+                  collection: "comments",
+                  id: commentId,
+                  data: {
+                     //@ts-ignore
+                     upVotes: existingVotes,
+                     upVotesStatic: existingVoteStatic - 1,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            //@ts-ignore
+            return await payload.update({
+               collection: "comments",
+               id: commentId,
+               data: {
+                  upVotes: [...existingVotes, userId],
+                  upVotesStatic: existingVoteStatic + 1,
                },
                overrideAccess: false,
                user,
@@ -933,23 +1007,105 @@ async function fetchPostComments({
       user,
    });
 
-   const { docs: comments } = await payload.find({
+   const { docs: topLevelComments } = await payload.find({
       collection: "comments",
       where: {
-         "site.slug": {
-            equals: siteId,
+         isTopLevel: {
+            equals: true,
          },
          postParent: {
             equals: postData?.id,
          },
-         isTopLevel: {
-            equals: true,
+         maxCommentDepth: {
+            greater_than_equal: 3,
          },
       },
-      user,
+      sort: "-maxCommentDepth",
       overrideAccess: false,
-      depth: 8,
+      user,
+      depth: 0,
    });
+
+   const commentDepth = topLevelComments[0]?.maxCommentDepth
+      ? topLevelComments[0]?.maxCommentDepth
+      : 4;
+
+   //Adds a depth key to each comment
+   function depthDecorator(array: any, depth = 0) {
+      return array.map((child: any) =>
+         Object.assign(child, {
+            depth,
+            replies: depthDecorator(child.replies || [], depth + 1),
+         }),
+      );
+   }
+
+   //Recursively generated nested query to get all replies
+   function generateNestedJsonObject(depth: number) {
+      if (depth === 0) {
+         return {};
+      } else {
+         let object = {
+            id: true,
+            createdAt: true,
+            comment: true,
+            upVotesStatic: true,
+            author: {
+               username: true,
+               avatar: {
+                  url: true,
+               },
+            },
+         };
+         for (let i = 0; i < depth; i++) {
+            //@ts-ignore
+            object["replies"] = generateNestedJsonObject(depth - 1);
+         }
+         return object;
+      }
+   }
+
+   const nestedJsonObject = generateNestedJsonObject(commentDepth);
+
+   //Construct the query in JSON to then parse to graphql format
+   const query = {
+      query: {
+         __variables: {
+            postParentId: "JSON!",
+         },
+         comments: {
+            __aliasFor: "Comments",
+            __args: {
+               where: {
+                  isTopLevel: { equals: true },
+                  postParent: { equals: new VariableType("postParentId") },
+               },
+               sort: "-upVotesStatic",
+            },
+            docs: {
+               id: true,
+               createdAt: true,
+               comment: true,
+               upVotesStatic: true,
+               isTopLevel: true,
+               isPinned: true,
+               author: {
+                  username: true,
+                  avatar: {
+                     url: true,
+                  },
+               },
+               ...nestedJsonObject,
+            },
+         },
+      },
+   };
+   const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+   const fetchComments = await gqlRequest(gqlEndpoint({}), graphql_query, {
+      postParentId: postData?.id,
+   });
+   //@ts-ignore
+   const comments = depthDecorator(fetchComments?.comments?.docs) as Comments[];
 
    return comments ?? null;
 }
