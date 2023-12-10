@@ -783,6 +783,7 @@ export async function action({
             const comment = await payload.findByID({
                collection: "comments",
                id: commentId,
+               depth: 0,
             });
 
             const existingVoteStatic = comment?.upVotesStatic ?? 0;
@@ -829,6 +830,22 @@ export async function action({
             commentId: z.string(),
          });
          try {
+            const comment = await payload.findByID({
+               collection: "comments",
+               id: commentId,
+               depth: 0,
+            });
+
+            //If comment has no replies, it can be deleted
+            if (!comment.replies || comment?.replies?.length == 0) {
+               return await payload.delete({
+                  collection: "comments",
+                  id: commentId,
+                  overrideAccess: true,
+                  user,
+               });
+            }
+            //Otherwise hide it to preserve the comment chain
             return await payload.update({
                collection: "comments",
                id: commentId,
