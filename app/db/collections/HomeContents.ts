@@ -1,8 +1,7 @@
-import payload from "payload";
-import type {CollectionConfig} from "payload/types";
+import type { CollectionConfig } from "payload/types";
 
 import { canMutateAsSiteAdmin, canRead } from "../../access/site";
-import {replaceVersionAuthor} from "../hooks/replaceVersionAuthor";
+import { replaceVersionAuthor } from "../hooks/replaceVersionAuthor";
 
 export const HomeContents: CollectionConfig = {
    slug: "homeContents",
@@ -26,7 +25,7 @@ export const HomeContents: CollectionConfig = {
          required: false,
          admin: {
             hidden: true,
-         }
+         },
       },
       {
          name: "site",

@@ -1,5 +1,6 @@
 // Comment permissions
 import type { Access, FieldAccess } from "payload/types";
+import invariant from "tiny-invariant";
 
 export const isOwnComment: Access = ({ req: { user } }) => {
    if (user) {
@@ -8,6 +9,66 @@ export const isOwnComment: Access = ({ req: { user } }) => {
             equals: user.id,
          },
       };
+   }
+   // Reject everyone else
+   return false;
+};
+
+export const deleteComment: Access = async ({
+   req: { user, payload },
+   id: commentId,
+}) => {
+   if (user && commentId) {
+      const comment = await payload.findByID({
+         collection: "comments",
+         id: commentId,
+         depth: 0,
+      });
+
+      //Can delete own comment
+      if (comment.author == user.id || user?.roles?.includes("staff")) {
+         //If comment has no replies, it can be deleted
+         if (!comment.replies || comment?.replies?.length == 0) {
+            const getParentRelationField = await payload.find({
+               collection: "comments",
+               where: {
+                  replies: {
+                     equals: commentId,
+                  },
+               },
+               depth: 0,
+            });
+
+            const parent = getParentRelationField?.docs[0];
+
+            //If top level and no replies, delete
+            if (!parent && comment.isTopLevel) {
+               return true;
+            }
+
+            //Otherwise it's a nested reply and we need to prune the parent comment
+            invariant(parent);
+
+            let existingReplies =
+               //@ts-ignore
+               (parent.replies as string[]) ?? [];
+
+            //Update parent to remove reply from relation field
+            //@ts-ignore
+            existingReplies.splice(existingReplies.indexOf(commentId), 1);
+
+            await payload.update({
+               collection: "comments",
+               id: parent?.id,
+               data: {
+                  //@ts-ignore
+                  replies: existingReplies,
+               },
+            });
+            return true;
+         }
+         return false;
+      }
    }
    // Reject everyone else
    return false;
