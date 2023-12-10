@@ -266,7 +266,6 @@ export default function PostsAll() {
                      ) : (
                         myPosts?.docs?.map((post) => (
                            <Link
-                              prefetch="intent"
                               to={`/${siteId}/p/${post.slug}`}
                               key={post.id}
                               className="group flex items-center justify-between gap-2 py-3"

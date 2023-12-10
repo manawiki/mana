@@ -1,4 +1,6 @@
 export type IconName =
+  | "archive"
+  | "archive-restore"
   | "bookmark"
   | "reply"
   | "triangle"
