@@ -1,6 +1,6 @@
-import type { Access } from "payload/types";
+import type { Access, FieldAccess } from "payload/types";
 
-import type { Site } from "payload/generated-types";
+import type { Site, User } from "payload/generated-types";
 
 //Check if user is a site owner or admin?
 export const isSiteOwnerOrAdmin = (userId: string, site: Site | undefined) => {
@@ -88,6 +88,26 @@ export const canMutateAsSiteAdmin =
                depth: 0,
             });
             return isSiteOwnerOrAdmin(userId, site);
+         }
+      }
+      // Reject everyone else
+      return false;
+   };
+
+export const canMutateFieldAsSiteAdmin =
+   (collectionSlug: "comments"): FieldAccess<{ id: string }, unknown, User> =>
+   async ({ req: { user, payload }, id: resultId, data }) => {
+      if (user) {
+         if (user?.roles?.includes("staff")) return true;
+         const userId = user.id;
+         // Update and Delete
+         if (resultId) {
+            const item = await payload.findByID({
+               collection: collectionSlug,
+               id: resultId,
+               depth: 1,
+            });
+            if (item.site) return isSiteOwnerOrAdmin(userId, item.site);
          }
       }
       // Reject everyone else
