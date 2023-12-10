@@ -748,7 +748,7 @@ export async function action({
                depth: 0,
             });
 
-            const existingReplies = reply?.replies || [];
+            let existingReplies = reply?.replies || [];
 
             await payload.update({
                collection: "comments",
