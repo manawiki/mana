@@ -960,21 +960,14 @@ async function fetchPost({
    //Now we handle authenticated querying
    invariant(user, "Not logged in");
 
-   const authPost = await payload.findByID({
-      collection: "posts",
-      id: postData.id,
-      draft: true,
-      user,
-      overrideAccess: false,
-   });
-
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
+   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
 
    //If user has access, pull versions
    if (hasAccess) {
-      const publishedPost = await payload.findByID({
+      const authPost = await payload.findByID({
          collection: "posts",
          id: postData.id,
+         draft: true,
          user,
          overrideAccess: false,
       });
@@ -1014,11 +1007,13 @@ async function fetchPost({
          });
 
       const isChanged =
-         JSON.stringify(authPost) != JSON.stringify(publishedPost);
+         JSON.stringify(authPost.content + authPost.name + authPost.subtitle) !=
+         JSON.stringify(postData.content + postData.name + postData.subtitle);
 
       return { post: authPost, isChanged, versions };
    }
-   return { post: authPost, isChanged: false };
+   //return for regular type of user
+   return { post: postData, isChanged: false };
 }
 
 async function fetchPostComments({
