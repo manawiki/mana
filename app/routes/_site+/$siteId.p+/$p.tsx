@@ -345,11 +345,6 @@ export default function Post() {
                      />
                   </div>
                </Float>
-               <Suspense fallback={<></>}>
-                  <Await resolve={comments}>
-                     {(comments) => <Comments comments={comments} />}
-                  </Await>
-               </Suspense>
             </>
          ) : (
             <main className={mainContainerStyle}>
@@ -367,6 +362,11 @@ export default function Post() {
                <EditorView data={post.content} />
             </main>
          )}
+         <Suspense fallback={<></>}>
+            <Await resolve={comments}>
+               {(comments) => <Comments comments={comments} />}
+            </Await>
+         </Suspense>
       </>
    );
 }
@@ -391,6 +391,7 @@ export async function action({
          "deleteComment",
          "updateComment",
          "upVoteComment",
+         "restoreComment",
       ]),
       field: z.enum(["title"]).optional(),
    });
@@ -400,7 +401,9 @@ export async function action({
       siteId: z.string(),
    });
 
-   if (!user) throw redirect("/login", { status: 302 });
+   const url = new URL(request.url).pathname;
+
+   if (!user) throw redirect(`/login?redirectTo=${url}`, { status: 302 });
 
    switch (intent) {
       case "updateTitle": {
@@ -705,8 +708,6 @@ export async function action({
                   author: user.id as any,
                   isTopLevel: true,
                },
-               overrideAccess: false,
-               user,
             });
          }
       }
@@ -739,15 +740,11 @@ export async function action({
                   comment: JSON.parse(comment),
                   author: user.id as any,
                },
-               overrideAccess: false,
-               user,
             });
 
             const reply = await payload.findByID({
                collection: "comments",
                id: commentParentId,
-               overrideAccess: false,
-               user,
                depth: 0,
             });
 
@@ -762,8 +759,6 @@ export async function action({
                      maxCommentDepth: commentDepth + 2,
                   }),
                },
-               overrideAccess: false,
-               user,
             });
 
             //@ts-ignore
@@ -773,8 +768,6 @@ export async function action({
                data: {
                   replies: [commentReply.id, ...existingReplies],
                },
-               overrideAccess: false,
-               user,
             });
 
             return json({ message: "ok" });
@@ -790,8 +783,6 @@ export async function action({
             const comment = await payload.findByID({
                collection: "comments",
                id: commentId,
-               overrideAccess: false,
-               user,
             });
 
             const existingVoteStatic = comment?.upVotesStatic ?? 0;
@@ -802,29 +793,73 @@ export async function action({
             //If vote exists, remove instead
             if (existingVotes.includes(userId)) {
                existingVotes.splice(existingVotes.indexOf(userId), 1);
+               try {
+                  return await payload.update({
+                     collection: "comments",
+                     id: commentId,
+                     data: {
+                        //@ts-ignore
+                        upVotes: existingVotes,
+                        upVotesStatic: existingVoteStatic - 1,
+                     },
+                  });
+               } catch (err: unknown) {
+                  console.log("ERROR");
+                  payload.logger.error(`${err}`);
+               }
+            }
+            try {
+               //@ts-ignore
                return await payload.update({
                   collection: "comments",
                   id: commentId,
                   data: {
-                     //@ts-ignore
-                     upVotes: existingVotes,
-                     upVotesStatic: existingVoteStatic - 1,
+                     upVotes: [...existingVotes, userId],
+                     upVotesStatic: existingVoteStatic + 1,
                   },
-                  overrideAccess: false,
-                  user,
                });
+            } catch (err: unknown) {
+               console.log("ERROR");
+               payload.logger.error(`${err}`);
             }
-            //@ts-ignore
+         }
+      }
+      case "deleteComment": {
+         const { commentId } = await zx.parseForm(request, {
+            commentId: z.string(),
+         });
+         try {
             return await payload.update({
                collection: "comments",
                id: commentId,
                data: {
-                  upVotes: [...existingVotes, userId],
-                  upVotesStatic: existingVoteStatic + 1,
+                  isDeleted: true,
                },
-               overrideAccess: false,
+               overrideAccess: true,
                user,
             });
+         } catch (err: unknown) {
+            console.log("ERROR, unable to delete comment");
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "restoreComment": {
+         try {
+            const { commentId } = await zx.parseForm(request, {
+               commentId: z.string(),
+            });
+            return await payload.update({
+               collection: "comments",
+               id: commentId,
+               data: {
+                  isDeleted: false,
+               },
+               overrideAccess: true,
+               user,
+            });
+         } catch (err: unknown) {
+            console.log("ERROR, unable to restore comment");
+            payload.logger.error(`${err}`);
          }
       }
    }
@@ -858,8 +893,6 @@ async function fetchPostWithSlug({
                        equals: p,
                     },
                  },
-                 user,
-                 overrideAccess: false,
               }),
            `post-${p}`,
         )
@@ -873,8 +906,6 @@ async function fetchPostWithSlug({
                  equals: p,
               },
            },
-           user,
-           overrideAccess: false,
         });
 
    const post = postsAll[0];
@@ -966,6 +997,7 @@ async function fetchPost({
             const version = select(
                {
                   id: false,
+                  versionAuthor: true,
                   content: true,
                   _status: true,
                },
@@ -1021,8 +1053,6 @@ async function fetchPostComments({
          },
       },
       sort: "-maxCommentDepth",
-      overrideAccess: false,
-      user,
       depth: 0,
    });
 
@@ -1030,12 +1060,13 @@ async function fetchPostComments({
       ? topLevelComments[0]?.maxCommentDepth
       : 4;
 
-   //Adds a depth key to each comment
-   function depthDecorator(array: any, depth = 0) {
+   function depthAndDeletionDecorator(array: any, depth = 0) {
       return array.map((child: any) =>
          Object.assign(child, {
             depth,
-            replies: depthDecorator(child.replies || [], depth + 1),
+            //Remove content if deleted
+            // ...(child.isDeleted == true && { comment: undefined }),
+            replies: depthAndDeletionDecorator(child.replies || [], depth + 1),
          }),
       );
    }
@@ -1048,6 +1079,7 @@ async function fetchPostComments({
          let object = {
             id: true,
             createdAt: true,
+            isDeleted: true,
             comment: true,
             upVotesStatic: true,
             author: {
@@ -1085,6 +1117,7 @@ async function fetchPostComments({
             docs: {
                id: true,
                createdAt: true,
+               isDeleted: true,
                comment: true,
                upVotesStatic: true,
                isTopLevel: true,
@@ -1104,8 +1137,10 @@ async function fetchPostComments({
    const fetchComments = await gqlRequest(gqlEndpoint({}), graphql_query, {
       postParentId: postData?.id,
    });
-   //@ts-ignore
-   const comments = depthDecorator(fetchComments?.comments?.docs) as Comments[];
-
+   const comments = depthAndDeletionDecorator(
+      //@ts-ignore
+      fetchComments?.comments?.docs,
+      //@ts-ignore
+   ) as Comments[];
    return comments ?? null;
 }

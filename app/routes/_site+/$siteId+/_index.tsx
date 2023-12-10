@@ -58,7 +58,7 @@ export async function loader({
 }
 
 export const mainContainerStyle =
-   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6";
+   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 laptop:pb-20";
 
 export default function SiteIndexMain() {
    const { home, siteId, isChanged } = useLoaderData<typeof loader>();
@@ -233,6 +233,7 @@ async function fetchHomeContent({
                   {
                      id: false,
                      content: true,
+                     versionAuthor: true,
                      _status: true,
                   },
                   doc.version,

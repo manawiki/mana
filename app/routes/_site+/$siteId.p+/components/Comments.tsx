@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-import { Transition } from "@headlessui/react";
+import { Popover, Transition } from "@headlessui/react";
+import { Float } from "@headlessui-float/react";
 import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
@@ -9,6 +10,7 @@ import { Editable, Slate } from "slate-react";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Comment, User } from "~/db/payload-types";
+import { LoggedIn } from "~/routes/_auth+/src/components";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
@@ -22,7 +24,7 @@ export function Comments({ comments }: { comments: Comment[] }) {
 
    return (
       <div className="py-6">
-         <div className="border-y overflow-hidden border-color bg-zinc-50 shadow dark:bg-dark350/70 relative">
+         <div className="border-y overflow-hidden border-color bg-zinc-50 shadow-sm dark:shadow dark:bg-dark350/70 relative">
             <div
                className="flex items-center justify-between gap-1.5 font-bold py-3
             mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
@@ -39,9 +41,12 @@ export function Comments({ comments }: { comments: Comment[] }) {
                   <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
                      Latest
                   </div>
-                  <div className="rounded-full text-[11px] flex items-center justify-center dark:bg-dark450 bg-zinc-100 h-7 px-4">
+                  <button
+                     className="rounded-full shadow-sm shadow-1 border border-color dark:border-zinc-600 text-[11px] 
+                     flex items-center justify-center dark:bg-dark450 bg-white h-7 px-4"
+                  >
                      Top
-                  </div>
+                  </button>
                </div>
             </div>
             <div
@@ -53,14 +58,16 @@ export function Comments({ comments }: { comments: Comment[] }) {
          </div>
          <div className="pt-5 pb-40 border-color">
             <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <div className="pb-5">
-                  <CommentsEditor />
-               </div>
+               <LoggedIn>
+                  <div className="pb-5">
+                     <CommentsEditor />
+                  </div>
+               </LoggedIn>
                {comments &&
                   comments.map((comment, index) => (
                      <CommentRow
-                        key={comment.id}
-                        userId={user.id}
+                        key={comment?.id}
+                        userId={user?.id}
                         comment={comment}
                         comments={comments}
                         topLevelIndex={index}
@@ -90,17 +97,6 @@ function CommentRow({
 
    const fetcher = useFetcher({ key: "comments" });
 
-   function upVoteComment() {
-      return fetcher.submit(
-         {
-            commentId: comment.id,
-            userId,
-            intent: "upVoteComment",
-         },
-         { method: "post" },
-      );
-   }
-
    const commentTopLevelParentId =
       //@ts-ignore
       comments[topLevelIndex]?.isTopLevel == true &&
@@ -118,22 +114,26 @@ function CommentRow({
       [fetcher.state, fetcher.data],
    );
 
+   const isDeleted = comment.isDeleted == true;
+
    return (
       <>
          <div
             className={clsx(
                isNested
                   ? `relative before:content-[''] before:absolute before:left-3 
-         before:dark:bg-zinc-700 before:-z-0 before:h-full before:w-[1px] rounded-full`
+         before:dark:bg-zinc-700 before:bg-[#ededed] before:-z-0 before:h-full before:w-[1px] rounded-full`
                   : "mb-3",
             )}
          >
             <div className="flex items-center gap-2 relative">
                <div
-                  className="dark:border-zinc-600 border dark:bg-zinc-700 justify-center shadow-sm shadow-1 
+                  className="dark:border-zinc-600 bg-zinc-50 border dark:bg-zinc-700 justify-center shadow-sm shadow-1 
                         flex h-6 w-6 flex-none items-center overflow-hidden rounded-full"
                >
-                  {comment.author?.avatar?.url ? (
+                  {isDeleted ? (
+                     <></>
+                  ) : comment.author?.avatar?.url ? (
                      <Image
                         width={50}
                         height={50}
@@ -146,10 +146,13 @@ function CommentRow({
                   )}
                </div>
                <div
-                  className="text-sm font-bold underline 
-               underline-offset-2 dark:decoration-zinc-600"
+                  className={clsx(
+                     isDeleted
+                        ? "text-sm italic text-1"
+                        : "text-sm font-bold underline underline-offset-2 dark:decoration-zinc-600",
+                  )}
                >
-                  {comment.author.username}
+                  {isDeleted ? "Deleted" : comment.author.username}
                </div>
                <span className="w-1 h-1 bg-zinc-500 rounded-full" />
                <div className="text-xs text-1">
@@ -160,7 +163,7 @@ function CommentRow({
                className={clsx(
                   !isNested
                      ? `relative before:content-[''] before:absolute before:left-0 rounded-full
-                     before:dark:bg-zinc-700 before:-z-0 before:h-full before:w-[1px]`
+                     before:dark:bg-zinc-700 before:bg-[#ededed] before:-z-0 before:h-full before:w-[1px]`
                      : "",
                   "mb-4 ml-3 pl-5 relative",
                )}
@@ -181,17 +184,27 @@ function CommentRow({
                <div className="pt-2.5">
                   {comment.comment && <EditorView data={comment.comment} />}
                </div>
-               <div className="pt-3 flex items-center gap-4">
+               <div className="pt-3 flex items-center">
                   <div className="flex items-center gap-2">
                      <button
-                        onClick={() => upVoteComment()}
-                        className="dark:bg-dark450 border shadow-sm dark:shadow-emerald-950/50
-                        hover:dark:border-emerald-600/70
-                      dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center"
+                        onClick={() =>
+                           fetcher.submit(
+                              {
+                                 commentId: comment?.id,
+                                 userId,
+                                 intent: "upVoteComment",
+                              },
+                              { method: "post" },
+                           )
+                        }
+                        className="border shadow-sm shadow-emerald-100 dark:shadow-emerald-950/50 active:border-emerald-300 group
+                        hover:dark:border-emerald-600/70 border-emerald-300/60 bg-emerald-50/50 hover:bg-emerald-50 dark:bg-emerald-950/10
+                      dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center dark:active:border-emerald-600"
                      >
                         <Icon
                            name="triangle"
-                           className="text-emerald-500"
+                           title="Up Vote"
+                           className="text-emerald-500 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
                            size={8}
                         />
                      </button>
@@ -199,21 +212,96 @@ function CommentRow({
                         {comment.upVotesStatic ?? 0}
                      </div>
                   </div>
-                  <span className="w-1 h-1 dark:bg-zinc-600 rounded-full" />
-                  <button
-                     onClick={() => setReplyOpen(!isReplyOpen)}
-                     className="shadow-sm dark:shadow-zinc-800 flex items-center gap-0.5 border dark:border-zinc-600/50 
-                     dark:hover:border-zinc-500/50 rounded-full bg-3-sub pl-1 pr-2.5"
-                  >
-                     <div className="w-5 h-5 rounded text-1 flex items-center justify-center">
-                        {isReplyOpen ? (
-                           <Icon name="chevron-up" size={14} />
-                        ) : (
-                           <Icon name="reply" size={14} />
+                  <LoggedIn>
+                     <span className="w-1 h-1 dark:bg-zinc-600 bg-zinc-300 rounded-full mx-3" />
+                     <button
+                        onClick={() => setReplyOpen(!isReplyOpen)}
+                        className="shadow-sm dark:shadow-zinc-800 flex items-center gap-0.5 border dark:border-zinc-600/50 mr-1
+                     dark:hover:border-zinc-500/50 rounded-full bg-3-sub pl-1 pr-2.5 bg-zinc-50 hover:border-zinc-300"
+                     >
+                        <div className="w-5 h-5 rounded text-1 flex items-center justify-center">
+                           {isReplyOpen ? (
+                              <Icon title="Close" name="chevron-up" size={14} />
+                           ) : (
+                              <Icon title="Reply" name="reply" size={14} />
+                           )}
+                        </div>
+                        <div className="text-[10px] font-bold">Reply</div>
+                     </button>
+                     <Popover>
+                        {({ open }) => (
+                           <>
+                              <Float
+                                 as={Fragment}
+                                 enter="transition ease-out duration-200"
+                                 enterFrom="opacity-0 translate-y-1"
+                                 enterTo="opacity-100 translate-y-0"
+                                 leave="transition ease-in duration-150"
+                                 leaveFrom="opacity-100 translate-y-0"
+                                 leaveTo="opacity-0 translate-y-1"
+                                 placement="bottom-end"
+                                 offset={7}
+                              >
+                                 <Popover.Button className="flex focus:outline-none items-center text-zinc-400 dark:text-zinc-500 justify-center rounded-full w-5 h-5">
+                                    {open ? (
+                                       <Icon
+                                          title="Close"
+                                          name="chevron-up"
+                                          size={14}
+                                       />
+                                    ) : (
+                                       <Icon name="more-vertical" size={14} />
+                                    )}
+                                 </Popover.Button>
+                                 <Popover.Panel
+                                    className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
+                                       gap-1 z-30 rounded-lg border p-1 shadow-sm"
+                                 >
+                                    {comment.isDeleted ? (
+                                       <button
+                                          className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
+                                          onClick={() =>
+                                             fetcher.submit(
+                                                {
+                                                   commentId: comment.id,
+                                                   intent: "restoreComment",
+                                                },
+                                                { method: "post" },
+                                             )
+                                          }
+                                       >
+                                          <Icon
+                                             title="Restore"
+                                             name="archive-restore"
+                                             size={12}
+                                          />
+                                       </button>
+                                    ) : (
+                                       <button
+                                          className="hover:dark:bg-zinc-700 hover:bg-zinc-100 rounded p-1.5"
+                                          onClick={() =>
+                                             fetcher.submit(
+                                                {
+                                                   commentId: comment.id,
+                                                   intent: "deleteComment",
+                                                },
+                                                { method: "post" },
+                                             )
+                                          }
+                                       >
+                                          <Icon
+                                             title="Delete"
+                                             name="archive"
+                                             size={12}
+                                          />
+                                       </button>
+                                    )}
+                                 </Popover.Panel>
+                              </Float>
+                           </>
                         )}
-                     </div>
-                     <div className="text-[10px] font-bold">Reply</div>
-                  </button>
+                     </Popover>
+                  </LoggedIn>
                </div>
             </div>
             <Transition
@@ -246,7 +334,7 @@ function CommentRow({
                   leaveTo="opacity-0 translate-y-1"
                >
                   <div className="pl-7">
-                     {comment?.replies.map((comment, index) => (
+                     {comment?.replies?.map((comment, index) => (
                         <CommentRow
                            key={comment.id}
                            userId={userId}
