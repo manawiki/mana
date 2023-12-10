@@ -835,24 +835,21 @@ export async function action({
                id: commentId,
                depth: 0,
             });
-
-            //If comment has no replies, it can be deleted
-            if (!comment.replies || comment?.replies?.length == 0) {
-               return await payload.delete({
+            if (comment.replies && comment?.replies?.length > 0) {
+               return await payload.update({
                   collection: "comments",
                   id: commentId,
-                  overrideAccess: true,
+                  data: {
+                     isDeleted: true,
+                  },
+                  overrideAccess: false,
                   user,
                });
             }
-            //Otherwise hide it to preserve the comment chain
-            return await payload.update({
+            return await payload.delete({
                collection: "comments",
                id: commentId,
-               data: {
-                  isDeleted: true,
-               },
-               overrideAccess: true,
+               overrideAccess: false,
                user,
             });
          } catch (err: unknown) {
@@ -871,7 +868,7 @@ export async function action({
                data: {
                   isDeleted: false,
                },
-               overrideAccess: true,
+               overrideAccess: false,
                user,
             });
          } catch (err: unknown) {

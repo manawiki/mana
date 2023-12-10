@@ -149,7 +149,7 @@ function CommentRow({
                   className={clsx(
                      isDeleted
                         ? "text-sm italic text-1"
-                        : "text-sm font-bold underline underline-offset-2 dark:decoration-zinc-600",
+                        : "text-sm font-bold underline underline-offset-2 dark:decoration-zinc-600 decoration-zinc-300",
                   )}
                >
                   {isDeleted ? "Deleted" : comment.author.username}
