@@ -748,7 +748,7 @@ export async function action({
                depth: 0,
             });
 
-            const existingReplies = reply?.replies || [];
+            let existingReplies = reply?.replies || [];
 
             await payload.update({
                collection: "comments",
@@ -783,6 +783,7 @@ export async function action({
             const comment = await payload.findByID({
                collection: "comments",
                id: commentId,
+               depth: 0,
             });
 
             const existingVoteStatic = comment?.upVotesStatic ?? 0;
@@ -829,13 +830,26 @@ export async function action({
             commentId: z.string(),
          });
          try {
-            return await payload.update({
+            const comment = await payload.findByID({
                collection: "comments",
                id: commentId,
-               data: {
-                  isDeleted: true,
-               },
-               overrideAccess: true,
+               depth: 0,
+            });
+            if (comment.replies && comment?.replies?.length > 0) {
+               return await payload.update({
+                  collection: "comments",
+                  id: commentId,
+                  data: {
+                     isDeleted: true,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            return await payload.delete({
+               collection: "comments",
+               id: commentId,
+               overrideAccess: false,
                user,
             });
          } catch (err: unknown) {
@@ -854,7 +868,7 @@ export async function action({
                data: {
                   isDeleted: false,
                },
-               overrideAccess: true,
+               overrideAccess: false,
                user,
             });
          } catch (err: unknown) {
@@ -960,21 +974,14 @@ async function fetchPost({
    //Now we handle authenticated querying
    invariant(user, "Not logged in");
 
-   const authPost = await payload.findByID({
-      collection: "posts",
-      id: postData.id,
-      draft: true,
-      user,
-      overrideAccess: false,
-   });
-
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, authPost.site);
+   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
 
    //If user has access, pull versions
    if (hasAccess) {
-      const publishedPost = await payload.findByID({
+      const authPost = await payload.findByID({
          collection: "posts",
          id: postData.id,
+         draft: true,
          user,
          overrideAccess: false,
       });
@@ -1014,11 +1021,13 @@ async function fetchPost({
          });
 
       const isChanged =
-         JSON.stringify(authPost) != JSON.stringify(publishedPost);
+         JSON.stringify(authPost.content + authPost.name + authPost.subtitle) !=
+         JSON.stringify(postData.content + postData.name + postData.subtitle);
 
       return { post: authPost, isChanged, versions };
    }
-   return { post: authPost, isChanged: false };
+   //return for regular type of user
+   return { post: postData, isChanged: false };
 }
 
 async function fetchPostComments({

@@ -2,9 +2,13 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isOwnComment, isCommentDeletedField } from "../../access/comments";
+import {
+   isOwnComment,
+   isCommentDeletedField,
+   deleteComment,
+} from "../../access/comments";
 import { canMutateFieldAsSiteAdmin } from "../../access/site";
-import { isLoggedIn } from "../../access/user";
+import { isLoggedIn, isStaff } from "../../access/user";
 
 export const Comments: CollectionConfig = {
    slug: "comments",
@@ -12,7 +16,7 @@ export const Comments: CollectionConfig = {
       create: isLoggedIn,
       read: () => true,
       update: isOwnComment,
-      delete: isOwnComment,
+      delete: deleteComment || isStaff,
    },
    fields: [
       {
