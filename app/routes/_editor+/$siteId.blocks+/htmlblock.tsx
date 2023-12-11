@@ -23,7 +23,7 @@ export function BlockHTMLBlock({
 
    const [HTMLBlockValue, setHTMLBlockValue] = useState(element?.value ?? "");
 
-   const [editMode, setEditMode] = useState(false);
+   const [editMode, setEditMode] = useState(readOnly ? false : true);
 
    function updateLabelValue(event: string) {
       Transforms.setNodes<CustomElement>(
@@ -36,7 +36,7 @@ export function BlockHTMLBlock({
       return setHTMLBlockValue(event);
    }
    return (
-      <div contentEditable={false} className="relative group mb-3">
+      <div contentEditable={false} className="relative group mb-3 min-h-[40px]">
          {readOnly || !editMode ? (
             <div dangerouslySetInnerHTML={{ __html: HTMLBlockValue }} />
          ) : (
