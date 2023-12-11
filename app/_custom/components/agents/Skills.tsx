@@ -59,7 +59,7 @@ export function Skills({ data: char }: { data: AgentType }) {
   const toggle_desc_button =
     "text-gray-900 hover:text-white border-2 border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-lg text-sm font-bold px-3 py-1 text-center dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800 cursor-pointer";
   const toggle_stats_button =
-    "text-blue-700 hover:text-white border-2 border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm font-bold px-3 py-1 text-center dark:border-blue-500 dark:text-gray-400 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800 cursor-pointer";
+    "text-blue-700 hover:text-white border-2 border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm font-bold px-3 py-1 text-center dark:border-blue-500 dark:text-blue-400 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800 cursor-pointer";
 
   return (
     <>
@@ -120,11 +120,11 @@ export function Skills({ data: char }: { data: AgentType }) {
               {/* Toggle for Desc/Stat! */}
               <div
                 className={`self-center ${
-                  tab ? toggle_stats_button : toggle_desc_button
+                  tab ? toggle_desc_button : toggle_stats_button
                 }`}
                 onClick={() => setTab(!tab)}
               >
-                {tab ? "Stats" : "Description"}
+                {tab ? "Description" : "Stats"}
               </div>
             </div>
 
