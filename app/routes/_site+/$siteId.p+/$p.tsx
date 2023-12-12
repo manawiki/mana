@@ -348,9 +348,6 @@ export async function action({
                siteId,
                user,
             });
-
-            invariant(postData, "Post doesn't exist");
-
             return await payload.update({
                collection: "posts",
                id: postData.id,
@@ -379,7 +376,6 @@ export async function action({
                siteId,
                user,
             });
-            invariant(postData, "Post doesn't exist");
             return await payload.update({
                collection: "posts",
                id: postData.id,
@@ -435,8 +431,6 @@ export async function action({
                user,
             });
 
-            invariant(postData, "Post doesn't exist");
-
             return await payload.update({
                collection: "posts",
                id: postData.id,
@@ -463,9 +457,6 @@ export async function action({
             siteId,
             user,
          });
-
-         invariant(postData, "Post doesn't exist");
-
          const bannerId = postData?.banner?.id;
          await payload.delete({
             collection: "images",
@@ -505,10 +496,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         return jsonWithSuccess(
-            { result: "Data saved successfully" },
-            "Post successfully unpublished",
-         );
+         return jsonWithSuccess(null, "Post unpublished");
       }
       case "publish": {
          assertIsPost(request);
@@ -519,78 +507,77 @@ export async function action({
             siteId,
             user,
          });
-         invariant(postData, "Post doesn't exist");
 
          const newSlug = urlSlug(postData.name);
 
          //See if duplicate exists on the same site
 
-         try {
-            const existingPostsWithSlug = await payload.find({
-               collection: "posts",
-               where: {
-                  "site.slug": {
-                     equals: siteId,
-                  },
-                  slug: {
-                     equals: newSlug,
-                  },
-                  id: {
-                     not_equals: postData?.id,
-                  },
+         const existingPostsWithSlug = await payload.find({
+            collection: "posts",
+            where: {
+               "site.slug": {
+                  equals: siteId,
                },
-               overrideAccess: false,
-               user,
-            });
-
-            //Update the postContents collection to published
-            await payload.update({
-               collection: "postContents",
-               id: postData.id,
-               data: {
-                  _status: "published",
+               slug: {
+                  equals: newSlug,
                },
-               overrideAccess: false,
-               user,
-            });
+               id: {
+                  not_equals: postData?.id,
+               },
+            },
+            overrideAccess: false,
+            user,
+         });
 
-            //If no collision and it's the first time we are generating the slug, publish with alias.
-            //Alias is not updated on subsequent title updates.
-            //Otherwise the slug already exists so we just update publishedAt.
-            //TODO Feature: Allow user to manually set a url alias at publish
-            //If slug is same as post id, it's the first time a slug is being set
-            const firstSlug =
-               //@ts-ignore
-               postData?.slug == postData.id &&
-               existingPostsWithSlug.totalDocs == 0;
-            if (firstSlug) {
-               //@ts-ignore
-               await payload.update({
-                  collection: "posts",
-                  id: postData.id,
-                  data: {
-                     slug: newSlug,
-                     publishedAt: new Date().toISOString(),
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            }
-            await payload.update({
+         //Update the postContents collection to published
+         await payload.update({
+            collection: "postContents",
+            id: postData.id,
+            data: {
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
+
+         //If no collision and it's the first time we are generating the slug, publish with alias.
+         //Alias is not updated on subsequent title updates.
+         //Otherwise the slug already exists so we just update publishedAt.
+         //TODO Feature: Allow user to manually set a url alias at publish
+         //If slug is same as post id, it's the first time a slug is being set
+         const firstSlug =
+            //@ts-ignore
+            postData?.slug == postData.id &&
+            existingPostsWithSlug.totalDocs == 0;
+         if (firstSlug) {
+            //@ts-ignore
+            const updatedPost = await payload.update({
                collection: "posts",
                id: postData.id,
                data: {
-                  //@ts-ignore
+                  slug: newSlug,
                   publishedAt: new Date().toISOString(),
                },
                overrideAccess: false,
                user,
             });
-            return jsonWithSuccess(null, "Post successfully published");
-         } catch (err: unknown) {
-            payload.logger.error(err);
-            payload.logger.error(`Error creating post`);
+            if (updatedPost)
+               return redirectWithSuccess(
+                  `/${siteId}/p/${updatedPost.slug}`,
+                  `"${postData.name}" successfully published`,
+               );
          }
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               //@ts-ignore
+               publishedAt: new Date().toISOString(),
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Latest update published");
       }
       case "deletePost": {
          assertIsDelete(request);
@@ -634,29 +621,26 @@ export async function action({
          );
       }
       case "createTopLevelComment": {
-         const result = await zx.parseFormSafe(request, {
+         const { comment } = await zx.parseForm(request, {
             comment: z.string(),
          });
-         if (result.success) {
-            const { comment } = result.data;
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            invariant(postData, "Post doesn't exist");
-            return await payload.create({
-               collection: "comments",
-               data: {
-                  site: postData?.site.id as any,
-                  comment: JSON.parse(comment),
-                  postParent: postData.id as any,
-                  author: user.id as any,
-                  isTopLevel: true,
-               },
-            });
-         }
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
+         invariant(postData, "Post doesn't exist");
+         return await payload.create({
+            collection: "comments",
+            data: {
+               site: postData?.site.id as any,
+               comment: JSON.parse(comment),
+               postParent: postData.id as any,
+               author: user.id as any,
+               isTopLevel: true,
+            },
+         });
       }
       case "createCommentReply": {
          const { comment, commentParentId, commentDepth } = await zx.parseForm(
@@ -849,6 +833,7 @@ async function fetchPostWithSlug({
         });
 
    const post = postsAll[0];
+   invariant(post, "Post doesn't exist");
 
    return { postData: post };
 }

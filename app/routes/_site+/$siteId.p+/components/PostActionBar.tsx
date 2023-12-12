@@ -18,7 +18,7 @@ export function PostActionBar({ post }: { post: Post }) {
             <div className="font-bold text-sm text-1">Posts</div>
          </Link>
          <div className="flex items-center">
-            {post.totalComments && (
+            {post.totalComments ? (
                <>
                   <Link
                      to="#comments"
@@ -43,7 +43,7 @@ export function PostActionBar({ post }: { post: Post }) {
                      className="text-zinc-200/70 text-lg -rotate-[30deg] dark:text-zinc-700"
                   />
                </>
-            )}
+            ) : null}
             <div className="flex items-center gap-1.5 font-bold text-xs px-3">
                <Icon
                   name="folder"
