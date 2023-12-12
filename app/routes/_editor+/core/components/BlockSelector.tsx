@@ -122,6 +122,18 @@ export function BlockSelector({
          },
       },
       {
+         label: "HTML Block",
+         icon: <Icon name="file-code-2" size={18} />,
+         description: "Embed a block of HTML code",
+         onSelect: () => {
+            onInsertBelow({
+               id: nanoid(),
+               type: BlockType.HTMLBlock,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
          label: "Image",
          icon: <Icon name="image-plus" size={18} />,
          description: "Embed an Image",

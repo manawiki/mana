@@ -13,16 +13,52 @@ export const isSiteOwnerOrAdmin = (userId: string, site: Site | undefined) => {
    return false;
 };
 
+export const canReadPost =
+   () =>
+   //@ts-ignore
+   async ({ req: { user, payload }, id }) => {
+      if (!user)
+         return {
+            publishedAt: {
+               exists: true,
+            },
+         };
+
+      if (user && user.roles.includes("staff")) return true;
+
+      //Singleton
+      if (user && id) {
+         const content = await payload.findByID({
+            collection: "posts",
+            id,
+         });
+         const hasAccess = isSiteOwnerOrAdmin(user.id, content?.site);
+         if (!hasAccess)
+            return {
+               publishedAt: {
+                  exists: true,
+               },
+            };
+         return hasAccess;
+      }
+      //List
+      return {
+         publishedAt: {
+            exists: true,
+         },
+      };
+   };
+
 export const canRead =
    (
       collectionSlug:
          | "collections"
          | "entries"
-         | "posts"
          | "updates"
          | "homeContents"
          | "contentEmbeds"
-         | "comments",
+         | "comments"
+         | "postContents",
    ): Access =>
    async ({ req: { user, payload }, id }) => {
       if (user && user.roles.includes("staff")) return true;
@@ -65,7 +101,8 @@ export const canMutateAsSiteAdmin =
          | "updates"
          | "homeContents"
          | "contentEmbeds"
-         | "comments",
+         | "comments"
+         | "postContents",
    ): Access =>
    async ({ req: { user, payload }, id: resultId, data }) => {
       if (user) {

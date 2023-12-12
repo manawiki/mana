@@ -1,4 +1,5 @@
 export type IconName =
+  | "file-code-2"
   | "archive"
   | "archive-restore"
   | "bookmark"
