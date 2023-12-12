@@ -204,7 +204,8 @@ export function HydrateFallback() {
    return (
       <>
          <Introduction />
-         <Toggles />
+         <NewToggles />
+         {/* <Toggles /> */}
          <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
       </>
    );
@@ -216,7 +217,8 @@ export function ComprehensiveDpsSpreadsheet() {
    return (
       <>
          <Introduction />
-         <Toggles pokemon={pokemon} />
+         <NewToggles pokemon={pokemon} />
+         {/* <Toggles pokemon={pokemon} /> */}
          <Pagination count={count} />
          <ResultsTable />
       </>
@@ -344,12 +346,7 @@ const capitalize = (word: string) => {
       : "";
 };
 
-function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
-   // console.log(pokemon);
-
-   // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
-   // a pokemon in our list
-   // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
+function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
    const [enemyPokemon, setEnemyPokemon] = useState({});
    const submit = useSubmit();
 
@@ -375,18 +372,25 @@ function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
       <Form
          method="GET"
          replace={true}
-         className="w-full"
          id="dps-form"
          name="dps-form"
          onChange={(e) => {
             submit(e.currentTarget, { method: "GET" });
          }}
+         className="bg-white p-6 rounded-lg shadow-lg"
       >
-         <label className="row-form-label">Enemy Information</label>
-         <div className="w-full grid grid-cols-4">
-            <div className="row">
-               <div id="enemy-pokemon-name-container" className="col-sm-6">
-                  <label className="col-form-label">Species</label>
+         <div className="grid grid-cols-3 gap-6">
+            <div>
+               <div className="text-lg font-semibold mb-4">
+                  Enemy Information
+               </div>
+               <div className="mb-4">
+                  <label
+                     className="block text-sm font-medium mb-1"
+                     htmlFor="enemy-pokemon-name"
+                  >
+                     Species
+                  </label>
                   <PokemonComboBox
                      enemyPokemon={enemyPokemon}
                      setEnemyPokemon={setEnemyPokemon}
@@ -395,15 +399,98 @@ function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   <input
                      hidden
                      name="enemy-pokemon-name"
+                     id="enemy-pokemon-name"
                      value={enemyPokemon.name}
                   />
                </div>
-               <div id="pokemon-pokeType1-container" className="col-sm-3">
-                  <label className="col-form-label">PokeType 1</label>
+               <div className="mb-4">
+                  <label
+                     className="block text-sm font-medium mb-1"
+                     htmlFor="enemy-pokemon-fmove"
+                  >
+                     Fast Move
+                  </label>
                   <select
+                     id="enemy-pokemon-fmove"
+                     name="enemy-pokemon-fmove"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                     placeholder="Fast Move"
+                  >
+                     {fastMoves.map((move) => (
+                        <option key={move} value={move}>
+                           {capitalize(move)}
+                        </option>
+                     ))}
+                  </select>
+               </div>
+               <div className="mb-4">
+                  <label
+                     className="block text-sm font-medium mb-1"
+                     htmlFor="weather"
+                  >
+                     Weather
+                  </label>
+                  <select
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+                     id="weather"
+                     name="weather"
+                  >
+                     {weathers.map(({ name, label }) => (
+                        <option key={name} value={name}>
+                           {label}
+                        </option>
+                     ))}
+                  </select>
+               </div>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-swapDiscount-checkbox"
+                     name="ui-swapDiscount-checkbox"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-swapDiscount-checkbox">Swap Dscnt</label>
+               </div>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     id="ui-cpcap"
+                     type="number"
+                     placeholder="CP Cap"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                     name="ui-cpcap"
+                  />
+               </div>
+               <div className="flex items-center gap-2">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-allyMega-checkbox"
+                     name="ui-allyMega-checkbox"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-allyMega-checkbox">Mega Boost?</label>
+               </div>
+               <div className="flex items-center gap-2">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-allyMegaStab-checkbox"
+                     name="ui-allyMegaStab-checkbox"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-allyMegaStab-checkbox">Mega Stab?</label>
+               </div>
+            </div>
+            <div>
+               <label
+                  htmlFor="pokemon-pokeType1"
+                  className="block text-sm font-medium mb-1"
+               >
+                  PokeType 1
+               </label>
+               <div className="mb-4">
+                  <select
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
                      id="pokemon-pokeType1"
                      name="pokemon-pokeType1"
-                     className="form-control"
                   >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
@@ -417,12 +504,45 @@ function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      ))}
                   </select>
                </div>
-               <div id="pokemon-pokeType2-container" className="col-sm-3">
-                  <label className="col-form-label">PokeType 2</label>
+               <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="enemy-pokemon-cmove"
+               >
+                  Charged Move
+               </label>
+               <div className="mb-4">
                   <select
+                     id="enemy-pokemon-cmove"
+                     name="enemy-pokemon-cmove"
+                     placeholder="Charge Move"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                     {chargedMoves.map((move) => (
+                        <option key={move} value={move}>
+                           {capitalize(move)}
+                        </option>
+                     ))}
+                  </select>
+               </div>
+               <button
+                  disabled
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-blue-500 text-white"
+               >
+                  Customize
+               </button>
+            </div>
+            <div>
+               <label
+                  htmlFor="pokemon-pokeType2"
+                  className="block text-sm font-medium mb-1"
+               >
+                  PokeType 2
+               </label>
+               <div className="mb-4">
+                  <select
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
                      id="pokemon-pokeType2"
                      name="pokemon-pokeType2"
-                     className="form-control"
                   >
                      <option value="none">None</option>
                      {pokeTypes.map((type) => (
@@ -436,229 +556,383 @@ function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      ))}
                   </select>
                </div>
-            </div>
-            <div className="row">
-               <div id="enemy-pokemon-fmove-container" className="col-sm-6">
-                  <label className="col-form-label">Fast Move</label>
-                  <select
-                     id="enemy-pokemon-fmove"
-                     name="enemy-pokemon-fmove"
-                     className="form-control"
-                     placeholder="Fast Move"
-                  >
-                     <option value="">Select Fast Move</option>
-                     {fastMoves.map((move) => (
-                        <option key={move} value={move}>
-                           {capitalize(move)}
-                        </option>
-                     ))}
-                  </select>
+               <div className="text-lg font-semibold mb-4">Controls</div>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-use-box-checkbox"
+                     name="ui-use-box-checkbox"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-use-box-checkbox">My Pokemon</label>
                </div>
-               <div id="enemy-pokemon-cmove-container" className="col-sm-6">
-                  <label className="col-form-label">Charged Move</label>
-                  <select
-                     id="enemy-pokemon-cmove"
-                     name="enemy-pokemon-cmove"
-                     className="form-control"
-                     placeholder="Charge Move"
-                  >
-                     <option value="">Select Charged Move</option>
-                     {chargedMoves.map((move) => (
-                        <option key={move} value={move}>
-                           {capitalize(move)}
-                        </option>
-                     ))}
-                  </select>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-pvpMode"
+                     name="ui-pvpMode"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-pvpMode">PvP Mode</label>
                </div>
-            </div>
-            <div className="row">
-               <div className="col-sm-6">
-                  <label className="col-form-label">Weather</label>
-                  <select id="weather" name="weather" className="form-control">
-                     {weathers.map(({ name, label }) => (
-                        <option key={name} value={name}>
-                           {label}
-                        </option>
-                     ))}
-                  </select>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-uniqueSpecies"
+                     name="ui-uniqueSpecies"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-uniqueSpecies">Best</label>
                </div>
-               {/* <div className="col-sm-6">
-                  <label className="col-form-label">Controls</label>
-                  <div className="sub-menu-container">
-                     <button
-                        name="customize"
-                        className="sub-menu-opener btn btn-primary"
-                     >
-                        <i className="fa fa-cog" aria-hidden="true"></i>
-                        Customize
-                     </button>
-                     <div className="sub-menu">
-                        <button
-                           className="player_button"
-                           id="moveEditFormOpener"
-                           name="moveEditFormOpener"
-                        >
-                           Move
-                        </button>
-                        <button
-                           className="player_button"
-                           id="pokemonEditFormOpener"
-                           name="pokemonEditFormOpener"
-                        >
-                           Species
-                        </button>
-                        <button
-                           className="player_button"
-                           id="parameterEditFormOpener"
-                           name="parameterEditFormOpener"
-                        >
-                           Battle Settings
-                        </button>
-                        <button
-                           className="player_button"
-                           id="modEditFormOpener"
-                           name="modEditFormOpener"
-                        >
-                           Mods
-                        </button>
-                     </div>
-                  </div>
-               </div> */}
-            </div>
-         </div>
-         <div className="w-full grid grid-cols-4">
-            <div className="row">
-               <div className="col-sm-6 col-lg-3">
-                  <div id="ui-swapDiscount" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        Swap Dscnt
-                        <input
-                           type="checkbox"
-                           id="ui-swapDiscount-checkbox"
-                           name="ui-swapDiscount-checkbox"
-                        />
-                     </label>
-                  </div>
+               <div className="flex items-center gap-2 mb-4">
+                  <input
+                     className="w-4 h-4"
+                     id="ui-hideUnavail"
+                     name="ui-hideUnavail"
+                     type="checkbox"
+                  />
+                  <label htmlFor="ui-hideUnavail">Hide Unavail</label>
                </div>
-               {/* <div className="col-sm-6 col-lg-3">
-                  <div id="ui-use-box" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        My Pokemon
-                        <input
-                           type="checkbox"
-                           id="ui-use-box-checkbox"
-                           name="ui-use-box-checkbox"
-                           disabled
-                        />
-                     </label>
-                  </div>
-               </div> */}
-               {/* <div className="col-sm-6 col-lg-3">
-                  <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        Best
-                        <input
-                           type="checkbox"
-                           id="ui-uniqueSpecies-checkbox"
-                           name="ui-uniqueSpecies-checkbox"
-                        />
-                     </label>
-                  </div>
-               </div> */}
-               <div className="col-sm-6 col-lg-3">
-                  Attacker Level
+               <div className="mb4">
                   <input
                      id="attacker-level"
-                     className="form-control"
-                     defaultValue="40"
+                     className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+                     placeholder="Attacker Level"
                      name="attacker-level"
                      type="number"
                      min={1}
                      max={40}
                   />
                </div>
-            </div>
-            <div className="row">
-               <div className="col-sm-6 col-md-3">
-                  <div style={{ width: "100%" }}>
-                     <input
-                        id="ui-cpcap"
-                        type="number"
-                        placeholder="CP Cap"
-                        className="form-control"
-                        name="ui-cpcap"
-                     />
-                  </div>
-               </div>
-               {/* <div className="col-sm-6 col-md-3">
-                  <div id="ui-pvpMode" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        PvP Mode
-                        <input
-                           type="checkbox"
-                           id="ui-pvpMode-checkbox"
-                           name="ui-pvpMode-checkbox"
-                        />
-                     </label>
-                  </div>
-               </div> */}
-               {/* <div className="col-sm-6 col-md-3">
-                  <div id="ui-hideUnavail" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        Hide Unavail
-                        <input
-                           type="checkbox"
-                           id="ui-hideUnavail-checkbox"
-                           name="ui-hideUnavail-checkbox"
-                        />
-                     </label>
-                  </div>
-               </div> */}
-               <div className="col-sm-6 col-md-3">
-                  <button
-                     className="btn btn-success"
-                     id="refresher"
-                     type="submit"
-                     name="refresher"
-                  >
-                     <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
-                     Refresh
-                  </button>
-               </div>
-            </div>
-            <div className="row">
-               <div className="col-sm-6 col-md-3">
-                  <div id="ui-allyMega" style={{ width: "100%" }}>
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        Mega Boost?
-                        <input
-                           type="checkbox"
-                           id="ui-allyMega-checkbox"
-                           name="ui-allyMega-checkbox"
-                        />
-                     </label>
-                  </div>
-               </div>
-               <div className="col-sm-6 col-md-3">
-                  <div
-                     id="ui-allyMegaStab"
-                     style={{ width: "100%", display: "none" }}
-                  >
-                     <label style={{ width: "100%", fontSize: "16px" }}>
-                        Mega Stab?
-                        <input
-                           type="checkbox"
-                           id="ui-allyMegaStab-checkbox"
-                           name="ui-allyMegaStab-checkbox"
-                        />
-                     </label>
-                  </div>
-               </div>
+               <button
+                  id="refresher"
+                  type="submit"
+                  name="refresher"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-green-500 text-white"
+               >
+                  Refresh
+               </button>
             </div>
          </div>
       </Form>
    );
 }
+
+// function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
+//    // console.log(pokemon);
+
+//    // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
+//    // a pokemon in our list
+//    // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
+//    const [enemyPokemon, setEnemyPokemon] = useState({});
+//    const submit = useSubmit();
+
+//    const fastMoves =
+//       [
+//          enemyPokemon?.fastMoves,
+//          enemyPokemon?.fastMove_exclusive,
+//          enemyPokemon?.fastMoves_legacy,
+//       ]
+//          .flat(1)
+//          .filter((move) => move) ?? [];
+
+//    const chargedMoves =
+//       [
+//          enemyPokemon?.chargedMoves,
+//          enemyPokemon?.chargedMove_exclusive,
+//          enemyPokemon?.chargedMoves_legacy,
+//       ]
+//          .flat(1)
+//          .filter((move) => move) ?? [];
+
+//    return (
+//       <Form
+//          method="GET"
+//          replace={true}
+//          className="w-full"
+//          id="dps-form"
+//          name="dps-form"
+//          onChange={(e) => {
+//             submit(e.currentTarget, { method: "GET" });
+//          }}
+//       >
+//          <label className="row-form-label">Enemy Information</label>
+//          <div className="w-full grid grid-cols-4">
+//             <div className="row">
+//                <div id="enemy-pokemon-name-container" className="col-sm-6">
+//                   <label className="col-form-label">Species</label>
+//                   <PokemonComboBox
+//                      enemyPokemon={enemyPokemon}
+//                      setEnemyPokemon={setEnemyPokemon}
+//                      pokemon={pokemon}
+//                   />
+//                   <input
+//                      hidden
+//                      name="enemy-pokemon-name"
+//                      value={enemyPokemon.name}
+//                   />
+//                </div>
+//                <div id="pokemon-pokeType1-container" className="col-sm-3">
+//                   <label className="col-form-label">PokeType 1</label>
+//                   <select
+//                      id="pokemon-pokeType1"
+//                      name="pokemon-pokeType1"
+//                      className="form-control"
+//                   >
+//                      <option value="none">None</option>
+//                      {pokeTypes.map((type) => (
+//                         <option
+//                            key={type}
+//                            value={type}
+//                            selected={enemyPokemon?.pokeType1 === type}
+//                         >
+//                            {capitalize(type)}
+//                         </option>
+//                      ))}
+//                   </select>
+//                </div>
+//                <div id="pokemon-pokeType2-container" className="col-sm-3">
+//                   <label className="col-form-label">PokeType 2</label>
+//                   <select
+//                      id="pokemon-pokeType2"
+//                      name="pokemon-pokeType2"
+//                      className="form-control"
+//                   >
+//                      <option value="none">None</option>
+//                      {pokeTypes.map((type) => (
+//                         <option
+//                            key={type}
+//                            value={type}
+//                            selected={enemyPokemon?.pokeType2 === type}
+//                         >
+//                            {capitalize(type)}
+//                         </option>
+//                      ))}
+//                   </select>
+//                </div>
+//             </div>
+//             <div className="row">
+//                <div id="enemy-pokemon-fmove-container" className="col-sm-6">
+//                   <label className="col-form-label">Fast Move</label>
+//                   <select
+//                      id="enemy-pokemon-fmove"
+//                      name="enemy-pokemon-fmove"
+//                      className="form-control"
+//                      placeholder="Fast Move"
+//                   >
+//                      <option value="">Select Fast Move</option>
+//                      {fastMoves.map((move) => (
+//                         <option key={move} value={move}>
+//                            {capitalize(move)}
+//                         </option>
+//                      ))}
+//                   </select>
+//                </div>
+//                <div id="enemy-pokemon-cmove-container" className="col-sm-6">
+//                   <label className="col-form-label">Charged Move</label>
+//                   <select
+//                      id="enemy-pokemon-cmove"
+//                      name="enemy-pokemon-cmove"
+//                      className="form-control"
+//                      placeholder="Charge Move"
+//                   >
+//                      <option value="">Select Charged Move</option>
+//                      {chargedMoves.map((move) => (
+//                         <option key={move} value={move}>
+//                            {capitalize(move)}
+//                         </option>
+//                      ))}
+//                   </select>
+//                </div>
+//             </div>
+//             <div className="row">
+//                <div className="col-sm-6">
+//                   <label className="col-form-label">Weather</label>
+//                   <select id="weather" name="weather" className="form-control">
+//                      {weathers.map(({ name, label }) => (
+//                         <option key={name} value={name}>
+//                            {label}
+//                         </option>
+//                      ))}
+//                   </select>
+//                </div>
+//                {/* <div className="col-sm-6">
+//                   <label className="col-form-label">Controls</label>
+//                   <div className="sub-menu-container">
+//                      <button
+//                         name="customize"
+//                         className="sub-menu-opener btn btn-primary"
+//                      >
+//                         <i className="fa fa-cog" aria-hidden="true"></i>
+//                         Customize
+//                      </button>
+//                      <div className="sub-menu">
+//                         <button
+//                            className="player_button"
+//                            id="moveEditFormOpener"
+//                            name="moveEditFormOpener"
+//                         >
+//                            Move
+//                         </button>
+//                         <button
+//                            className="player_button"
+//                            id="pokemonEditFormOpener"
+//                            name="pokemonEditFormOpener"
+//                         >
+//                            Species
+//                         </button>
+//                         <button
+//                            className="player_button"
+//                            id="parameterEditFormOpener"
+//                            name="parameterEditFormOpener"
+//                         >
+//                            Battle Settings
+//                         </button>
+//                         <button
+//                            className="player_button"
+//                            id="modEditFormOpener"
+//                            name="modEditFormOpener"
+//                         >
+//                            Mods
+//                         </button>
+//                      </div>
+//                   </div>
+//                </div> */}
+//             </div>
+//          </div>
+//          <div className="w-full grid grid-cols-4">
+//             <div className="row">
+//                <div className="col-sm-6 col-lg-3">
+//                   <div id="ui-swapDiscount" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         Swap Dscnt
+//                         <input
+//                            type="checkbox"
+//                            id="ui-swapDiscount-checkbox"
+//                            name="ui-swapDiscount-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div>
+//                {/* <div className="col-sm-6 col-lg-3">
+//                   <div id="ui-use-box" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         My Pokemon
+//                         <input
+//                            type="checkbox"
+//                            id="ui-use-box-checkbox"
+//                            name="ui-use-box-checkbox"
+//                            disabled
+//                         />
+//                      </label>
+//                   </div>
+//                </div> */}
+//                {/* <div className="col-sm-6 col-lg-3">
+//                   <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         Best
+//                         <input
+//                            type="checkbox"
+//                            id="ui-uniqueSpecies-checkbox"
+//                            name="ui-uniqueSpecies-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div> */}
+//                <div className="col-sm-6 col-lg-3">
+//                   Attacker Level
+//                   <input
+//                      id="attacker-level"
+//                      className="form-control"
+//                      defaultValue="40"
+//                      name="attacker-level"
+//                      type="number"
+//                      min={1}
+//                      max={40}
+//                   />
+//                </div>
+//             </div>
+//             <div className="row">
+//                <div className="col-sm-6 col-md-3">
+//                   <div style={{ width: "100%" }}>
+//                      <input
+//                         id="ui-cpcap"
+//                         type="number"
+//                         placeholder="CP Cap"
+//                         className="form-control"
+//                         name="ui-cpcap"
+//                      />
+//                   </div>
+//                </div>
+//                {/* <div className="col-sm-6 col-md-3">
+//                   <div id="ui-pvpMode" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         PvP Mode
+//                         <input
+//                            type="checkbox"
+//                            id="ui-pvpMode-checkbox"
+//                            name="ui-pvpMode-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div> */}
+//                {/* <div className="col-sm-6 col-md-3">
+//                   <div id="ui-hideUnavail" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         Hide Unavail
+//                         <input
+//                            type="checkbox"
+//                            id="ui-hideUnavail-checkbox"
+//                            name="ui-hideUnavail-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div> */}
+//                <div className="col-sm-6 col-md-3">
+//                   <button
+//                      className="btn btn-success"
+//                      id="refresher"
+//                      type="submit"
+//                      name="refresher"
+//                   >
+//                      <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
+//                      Refresh
+//                   </button>
+//                </div>
+//             </div>
+//             <div className="row">
+//                <div className="col-sm-6 col-md-3">
+//                   <div id="ui-allyMega" style={{ width: "100%" }}>
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         Mega Boost?
+//                         <input
+//                            type="checkbox"
+//                            id="ui-allyMega-checkbox"
+//                            name="ui-allyMega-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div>
+//                <div className="col-sm-6 col-md-3">
+//                   <div
+//                      id="ui-allyMegaStab"
+//                      style={{ width: "100%", display: "none" }}
+//                   >
+//                      <label style={{ width: "100%", fontSize: "16px" }}>
+//                         Mega Stab?
+//                         <input
+//                            type="checkbox"
+//                            id="ui-allyMegaStab-checkbox"
+//                            name="ui-allyMegaStab-checkbox"
+//                         />
+//                      </label>
+//                   </div>
+//                </div>
+//             </div>
+//          </div>
+//       </Form>
+//    );
+// }
 
 //todo figure out what we want to use for table
 function ResultsTable() {
@@ -823,28 +1097,21 @@ function Pagination({ count = 100 }) {
             </button>
 
             <div className="w-full">
-               <div className="row">
-                  <div className="col">
-                     <label className="col-form-label">Search</label>
-                  </div>
-               </div>
-               <div className="row">
-                  <div className="col">
-                     <input
-                        id="search"
-                        //  onKeyUp={search_trigger}
-                        className="w-full"
-                        name="search"
-                        onChange={(e) => {
-                           setSearchParams((searchParams) => {
-                              searchParams.set("search", e.target.value);
-                              searchParams.delete("page");
-                              return searchParams;
-                           });
-                        }}
-                     />
-                  </div>
-               </div>
+               <label htmlFor="search">Search</label>
+
+               <input
+                  id="search"
+                  //  onKeyUp={search_trigger}
+                  className="w-full"
+                  name="search"
+                  onChange={(e) => {
+                     setSearchParams((searchParams) => {
+                        searchParams.set("search", e.target.value);
+                        searchParams.delete("page");
+                        return searchParams;
+                     });
+                  }}
+               />
             </div>
          </div>
       </div>
@@ -871,14 +1138,13 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
          value={enemyPokemon}
          onChange={setEnemyPokemon}
       >
-         <div className="relative h-full w-full focus:outline-none">
-            <Combobox.Input
-               // className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
-               displayValue={(item) => capitalize(item?.name) ?? ""}
-               placeholder="Species"
-               onChange={(e) => setQuery(e.target.value)}
-            />
-         </div>
+         <Combobox.Input
+            // className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
+            displayValue={(item) => capitalize(item?.name) ?? ""}
+            placeholder="Species"
+            onChange={(e) => setQuery(e.target.value)}
+         />
 
          <Combobox.Options
          // className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
