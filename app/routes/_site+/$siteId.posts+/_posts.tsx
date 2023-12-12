@@ -1,16 +1,14 @@
 import { redirect, json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { useSearchParams } from "@remix-run/react";
-import { Form } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { Icon } from "~/components/Icon";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { safeNanoID } from "~/utils";
 
 import { MyPosts } from "./components/MyPosts";
+import { PostListHeader } from "./components/PostListHeader";
 import { PublishedPosts } from "./components/PublishedPosts";
 import { fetchMyPosts } from "./functions/fetchMyPosts";
 import { fetchPublishedPosts } from "./functions/fetchPublishedPosts";
@@ -67,31 +65,10 @@ export async function loader({
    return json({ q, myPosts, publishedPosts, siteId });
 }
 
-export default function PostsAll() {
+export default function PostList() {
    return (
       <main className={mainContainerStyle}>
-         <div className="relative flex items-center pb-5">
-            <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
-            <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
-            <AdminOrStaffOrOwner>
-               <Form method="post">
-                  <button
-                     className="flex py-2.5 items-center text-xs font-bold gap-2 dark:border-zinc-600 dark:hover:border-zinc-500
-                        border border-zinc-200 rounded-full hover:border-zinc-300 bg-zinc-50 dark:bg-dark450 px-4 shadow-sm shadow-1"
-                     name="intent"
-                     value="createPost"
-                     type="submit"
-                  >
-                     <Icon
-                        name="pen-square"
-                        className="text-zinc-400"
-                        size={13}
-                     />
-                     New Post
-                  </button>
-               </Form>
-            </AdminOrStaffOrOwner>
-         </div>
+         <PostListHeader />
          <MyPosts />
          <PublishedPosts />
       </main>

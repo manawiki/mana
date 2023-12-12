@@ -4,7 +4,13 @@ import dt from "date-and-time";
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components";
 
-export function PostFeedRow({ post, siteId }: { post: Post; siteId: string }) {
+export function PublishedPostRow({
+   post,
+   siteId,
+}: {
+   post: Post;
+   siteId: string;
+}) {
    return (
       <>
          <Link
