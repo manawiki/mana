@@ -9,6 +9,10 @@ import {
 } from "../../access/comments";
 import { canMutateFieldAsSiteAdmin } from "../../access/site";
 import { isLoggedIn, isStaff } from "../../access/user";
+import {
+   updateCommentCount,
+   updateCommentCountAfterDelete,
+} from "../hooks/updateCommentCount";
 
 export const Comments: CollectionConfig = {
    slug: "comments",
@@ -17,6 +21,10 @@ export const Comments: CollectionConfig = {
       read: () => true,
       update: isOwnComment,
       delete: deleteComment || isStaff,
+   },
+   hooks: {
+      afterChange: [updateCommentCount],
+      afterDelete: [updateCommentCountAfterDelete],
    },
    fields: [
       {
@@ -50,6 +58,7 @@ export const Comments: CollectionConfig = {
          name: "postParent",
          type: "relationship",
          relationTo: "posts",
+         hasMany: false,
          access: {
             update: () => false,
          },
@@ -111,13 +120,6 @@ export const Comments: CollectionConfig = {
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             read: isCommentDeletedField,
-            update: () => false,
-         },
-      },
-      {
-         name: "maxCommentDepth",
-         type: "number",
-         access: {
             update: () => false,
          },
       },
