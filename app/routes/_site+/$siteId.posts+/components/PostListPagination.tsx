@@ -1,8 +1,11 @@
 import type { SerializeFrom } from "@remix-run/node";
+import type { useSearchParams } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 
-import type { loader, setSearchParamsType } from "../_posts";
+import type { loader } from "../_posts";
+
+type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
 
 export function PostListPagination({
    myPosts,
