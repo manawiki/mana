@@ -17,7 +17,9 @@ import {
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { type loader as rootLoader } from "~/root";
+import type { loader as rootLoader } from "~/root";
+
+import type { Theme } from "./theme.server";
 
 const hintsUtils = getHintUtils({
    theme: colorSchemeHint,
@@ -48,9 +50,9 @@ export function useTheme() {
       (f) => f.formAction === "/action/theme-toggle",
    );
 
-   return (themeFetcher?.formData?.get("theme") ?? hints.theme ?? "light") as
-      | "light"
-      | "dark";
+   return (
+      (themeFetcher?.formData?.get("theme") as Theme) ?? hints.theme ?? "light"
+   );
 }
 
 /**

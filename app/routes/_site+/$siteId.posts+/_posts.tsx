@@ -33,7 +33,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { isLoading, safeNanoID, useDebouncedValue } from "~/utils";
-import { cacheWithSelect } from "~/utils/cache.server";
 
 import { mainContainerStyle } from "../$siteId+/_index";
 
@@ -74,6 +73,7 @@ export async function loader({
       status,
       page,
       payload,
+      //@ts-ignore
       siteId,
       user,
    });
@@ -81,6 +81,7 @@ export async function loader({
    const publishedPosts = await fetchPublishedPosts({
       q,
       payload,
+      //@ts-ignore
       siteId,
       user,
    });
@@ -285,7 +286,7 @@ export default function PostsAll() {
                                        )}
                                     </time>
                                     {post.publishedAt &&
-                                       post._status == "draft" && (
+                                       post.content?._status == "draft" && (
                                           <Tooltip>
                                              <TooltipTrigger>
                                                 <Icon
@@ -385,6 +386,7 @@ export default function PostsAll() {
             <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
                {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                   publishedPosts.docs.map((post: any) => (
+                     //@ts-ignore
                      <FeedItem key={post.id} siteId={siteId} post={post} />
                   ))
                ) : (
@@ -465,44 +467,79 @@ export const action = async ({
             name: z.string(),
          });
          const postId = safeNanoID();
-
-         const post = await payload.create({
-            collection: "posts",
-            data: {
-               id: postId,
-               name,
-               //@ts-ignore
-               author: user?.id,
-               //@ts-ignore
-               site: site.id,
-               slug: postId,
-            },
-            user,
-            draft: true,
-            overrideAccess: false,
-         });
-         return redirect(`/${siteId}/p/${post.id}`);
+         try {
+            const postContent = await payload.create({
+               collection: "postContents",
+               data: {
+                  id: postId,
+                  //@ts-ignore
+                  site: site?.id,
+                  content: initialValue(),
+               },
+               user,
+               draft: true,
+               overrideAccess: false,
+            });
+            const post = await payload.create({
+               collection: "posts",
+               data: {
+                  id: postId,
+                  name,
+                  //@ts-ignore
+                  author: user?.id,
+                  //@ts-ignore
+                  site: site.id,
+                  //@ts-ignore
+                  slug: postId,
+                  //@ts-ignore
+                  content: postContent.id,
+               },
+               user,
+               overrideAccess: false,
+            });
+            return redirect(`/${siteId}/p/${post.id}`);
+         } catch (err: unknown) {
+            payload.logger.error(err);
+            payload.logger.error(`Error creating post with title`);
+         }
       }
       case "createPost": {
          const postId = safeNanoID();
-         const post = await payload.create({
-            collection: "posts",
-            data: {
-               id: postId,
-               name: "Untitled",
-               //@ts-ignore
-               author: user?.id,
-               //@ts-ignore
-               site: site.id,
-               slug: postId,
-               content: initialValue(),
-            },
-            user,
-            draft: true,
-            overrideAccess: false,
-         });
-
-         return redirect(`/${siteId}/p/${post.id}`);
+         try {
+            await payload.create({
+               collection: "postContents",
+               data: {
+                  id: postId,
+                  //@ts-ignore
+                  site: site?.id,
+                  content: initialValue(),
+               },
+               user,
+               draft: true,
+               overrideAccess: false,
+            });
+            await payload.create({
+               collection: "posts",
+               data: {
+                  id: postId,
+                  name: "Untitled",
+                  //@ts-ignore
+                  author: user?.id,
+                  //@ts-ignore
+                  site: site.id,
+                  //@ts-ignore
+                  slug: postId,
+                  //@ts-ignore
+                  content: postId,
+               },
+               user,
+               overrideAccess: false,
+            });
+            return redirect(`/${siteId}/p/${postId}`);
+         } catch (err: unknown) {
+            payload.logger.error(err);
+            payload.logger.error(`Error creating post`);
+         }
       }
    }
 };
@@ -587,63 +624,32 @@ const fetchPublishedPosts = async ({
       banner: true,
    };
 
-   if (user) {
-      const data = await payload.find({
-         collection: "posts",
-         where: {
-            "site.slug": {
-               equals: siteId,
-            },
-            _status: {
-               equals: "published",
-            },
-            ...(q
-               ? {
-                    name: {
-                       contains: q,
-                    },
-                 }
-               : {}),
+   const data = await payload.find({
+      collection: "posts",
+      where: {
+         "site.slug": {
+            equals: siteId,
          },
-         depth: 2,
-         overrideAccess: false,
-         user,
-         sort: "-publishedAt",
-      });
+         publishedAt: {
+            exists: true,
+         },
+         ...(q
+            ? {
+                 name: {
+                    contains: q,
+                 },
+              }
+            : {}),
+      },
+      depth: 2,
+      overrideAccess: false,
+      user,
+      sort: "-publishedAt",
+   });
 
-      const { docs } = filterAuthorFields(data, postSelect);
+   const { docs } = filterAuthorFields(data, postSelect);
 
-      return { docs };
-   }
-
-   const result = await cacheWithSelect(
-      () =>
-         payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               _status: {
-                  equals: "published",
-               },
-               ...(q
-                  ? {
-                       name: {
-                          contains: q,
-                       },
-                    }
-                  : {}),
-            },
-            depth: 2,
-            overrideAccess: false,
-            user,
-            sort: "-publishedAt",
-         }),
-      filterAuthorFields,
-      postSelect,
-   );
-   return result;
+   return { docs };
 };
 
 const fetchMyPosts = async ({
@@ -676,15 +682,20 @@ const fetchMyPosts = async ({
             author: {
                equals: user.id,
             },
-            ...(status
+            ...(status == "published"
                ? {
-                    _status: {
-                       equals: status,
+                    publishedAt: {
+                       exists: true,
+                    },
+                 }
+               : status == "draft"
+               ? {
+                    publishedAt: {
+                       exists: false,
                     },
                  }
                : {}),
          },
-         draft: true,
          page: page ?? 1,
          sort: "-updatedAt",
          depth: 2,
@@ -694,7 +705,6 @@ const fetchMyPosts = async ({
 
       const postSelect: Select<Post> = {
          name: true,
-         _status: true,
          updatedAt: true,
          publishedAt: true,
          slug: true,
@@ -813,6 +823,7 @@ function FeedItem({ post, siteId }: { post: Post; siteId: Site["slug"] }) {
                         options="height=140"
                         height={200}
                         className="w-full rounded object-cover"
+                        //@ts-ignore
                         url={post?.banner?.url}
                      />
                   </div>

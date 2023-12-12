@@ -1,7 +1,6 @@
-import { Fragment, Suspense, useState } from "react";
+import { Suspense, useState } from "react";
 
 import { offset, shift } from "@floating-ui/react";
-import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { defer, json, redirect } from "@remix-run/node";
 import type {
@@ -9,7 +8,7 @@ import type {
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
-import { Await, Link, useFetcher, useLoaderData } from "@remix-run/react";
+import { Await, useFetcher, useLoaderData } from "@remix-run/react";
 import { request as gqlRequest } from "graphql-request";
 import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import type { Payload } from "payload";
@@ -45,9 +44,10 @@ import {
    gqlEndpoint,
    uploadImage,
 } from "~/utils";
-import { cacheThis } from "~/utils/cache.server";
+import { cacheThis, gqlRequestWithCache } from "~/utils/cache.server";
 
-import { Comments } from "./components/Comments";
+import { CommentHeader, Comments } from "./components/Comments";
+import { PostActionBar } from "./components/PostActionBar";
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
@@ -78,7 +78,7 @@ export async function loader({
       user,
    });
 
-   const { post, isChanged, versions } = await fetchPost({
+   const { post, postContent, isChanged, versions } = await fetchPost({
       p,
       page,
       siteId,
@@ -88,6 +88,7 @@ export async function loader({
 
    return defer({
       post,
+      postContent,
       comments,
       isChanged,
       versions,
@@ -145,7 +146,8 @@ export const meta: MetaFunction<typeof loader> = ({
 };
 
 export default function Post() {
-   const { post, isChanged, comments } = useLoaderData<typeof loader>();
+   const { post, postContent, isChanged, comments } =
+      useLoaderData<typeof loader>();
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
@@ -175,112 +177,21 @@ export default function Post() {
                   show
                >
                   <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
-                     <div className="pb-3 mb-4 border-b border-color flex items-center justify-between">
-                        <Link
-                           to={`/${post.site.slug}/posts`}
-                           className="flex items-center hover:underline group gap-2"
-                        >
-                           <Icon name="arrow-left" size={16} />
-                           <div className="font-bold text-sm text-1">Posts</div>
-                        </Link>
-                        <div className="flex items-center gap-2">
-                           <div className="flex items-center gap-1.5 font-bold text-xs">
-                              <Icon
-                                 name="message-circle"
-                                 className="text-zinc-400 dark:text-zinc-500"
-                                 size={15}
-                              />
-                              <div className="text-1">Comments</div>
-                              <div
-                                 className="rounded-full text-[10px] flex items-center 
-                              justify-center dark:bg-dark450 bg-zinc-100 w-5 h-5 ml-0.5"
-                              >
-                                 4
-                              </div>
-                           </div>
-                           <Icon
-                              name="slash"
-                              size={16}
-                              className="text-zinc-200 text-lg -rotate-[30deg] dark:text-zinc-700"
-                           />
-                           <div className="flex items-center gap-1.5 font-bold text-xs">
-                              <Icon
-                                 name="folder"
-                                 className="text-zinc-400 dark:text-zinc-500"
-                                 size={15}
-                              />
-                              <div className="text-1">General</div>
-                              <Popover>
-                                 {({ open }) => (
-                                    <>
-                                       <Float
-                                          as={Fragment}
-                                          enter="transition ease-out duration-200"
-                                          enterFrom="opacity-0 translate-y-1"
-                                          enterTo="opacity-100 translate-y-0"
-                                          leave="transition ease-in duration-150"
-                                          leaveFrom="opacity-100 translate-y-0"
-                                          leaveTo="opacity-0 translate-y-1"
-                                          placement="bottom-end"
-                                          offset={4}
-                                       >
-                                          <Popover.Button className="dark:bg-dark450 bg-zinc-100 ml-0.5 flex items-center justify-center rounded-full w-5 h-5">
-                                             {open ? (
-                                                <Icon
-                                                   name="x"
-                                                   className="text-1"
-                                                   size={14}
-                                                />
-                                             ) : (
-                                                <Icon
-                                                   className="pt-[1px]"
-                                                   name="chevron-down"
-                                                   size={14}
-                                                />
-                                             )}
-                                          </Popover.Button>
-                                          <Popover.Panel
-                                             className="border-color-sub justify-items-center text-1 bg-3-sub shadow-1 
-                                       gap-1 z-30 grid grid-cols-9 w-40 rounded-lg border p-2 shadow-sm"
-                                          >
-                                             Hello
-                                          </Popover.Panel>
-                                       </Float>
-                                    </>
-                                 )}
-                              </Popover>
-                           </div>
-                           <Icon
-                              name="slash"
-                              size={16}
-                              className="text-zinc-200 text-lg -rotate-[30deg] dark:text-zinc-700"
-                           />
-                           <button
-                              className="rounded-md text-[10px] flex items-center shadow-sm shadow-1
-                              justify-center dark:bg-dark450 bg-zinc-100 w-6 h-6"
-                           >
-                              <Icon
-                                 className="text-zinc-400"
-                                 name="bookmark"
-                                 size={14}
-                              />
-                           </button>
-                        </div>
-                     </div>
+                     <PostActionBar post={post} />
                      <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
                      {/* @ts-ignore */}
-                     <PostTableOfContents data={post.content} />
+                     <PostTableOfContents data={postContent} />
                      {enableAds && <AdPlaceholder />}
                      <ManaEditor
-                        collectionSlug="posts"
+                        collectionSlug="postContents"
                         fetcher={fetcher}
                         pageId={post.id}
-                        defaultValue={post.content as Descendant[]}
+                        defaultValue={postContent as Descendant[]}
                      />
                   </div>
                   <div>
                      <EditorCommandBar
-                        collectionSlug="posts"
+                        collectionSlug="postContents"
                         pageId={post.id}
                         fetcher={fetcher}
                         isChanged={isChanged}
@@ -306,7 +217,7 @@ export default function Post() {
                         </EditorCommandBar.PrimaryOptions>
                         <EditorCommandBar.SecondaryOptions>
                            <>
-                              {post._status == "published" && (
+                              {post.publishedAt && (
                                  <button
                                     className="text-1 flex w-full items-center gap-2 rounded-lg px-2
                                     py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
@@ -348,9 +259,10 @@ export default function Post() {
             </>
          ) : (
             <main className={mainContainerStyle}>
+               <PostActionBar post={post} />
                <PostHeaderView post={post} />
                {/* @ts-ignore */}
-               <PostTableOfContents data={post.content} />
+               <PostTableOfContents data={postContent} />
                <AdPlaceholder>
                   <AdUnit
                      enableAds={enableAds}
@@ -359,14 +271,27 @@ export default function Post() {
                      className="flex items-center justify-center [&>div]:py-5"
                   />
                </AdPlaceholder>
-               <EditorView data={post.content} />
+               <EditorView data={postContent} />
             </main>
          )}
-         <Suspense fallback={<></>}>
-            <Await resolve={comments}>
-               {(comments) => <Comments comments={comments} />}
-            </Await>
-         </Suspense>
+         <div className="pt-10">
+            <CommentHeader totalComments={post.totalComments ?? undefined} />
+            <Suspense
+               fallback={
+                  <div className="flex items-center justify-center py-10">
+                     <Icon
+                        name="loader-2"
+                        size={20}
+                        className="animate-spin dark:text-zinc-500 text-zinc-400"
+                     />
+                  </div>
+               }
+            >
+               <Await resolve={comments}>
+                  {(comments) => <Comments comments={comments} />}
+               </Await>
+            </Suspense>
+         </div>
       </>
    );
 }
@@ -432,8 +357,6 @@ export async function action({
                data: {
                   name,
                },
-               autosave: true,
-               draft: true,
                overrideAccess: false,
                user,
             });
@@ -446,21 +369,17 @@ export async function action({
       }
       case "updateSubtitle": {
          assertIsPatch(request);
-         const result = await zx.parseFormSafe(request, {
+         const { subtitle } = await zx.parseForm(request, {
             subtitle: z.string(),
          });
-         if (result.success) {
-            const { subtitle } = result.data;
-
+         try {
             const { postData } = await fetchPostWithSlug({
                p,
                payload,
                siteId,
                user,
             });
-
             invariant(postData, "Post doesn't exist");
-
             return await payload.update({
                collection: "posts",
                id: postData.id,
@@ -468,17 +387,14 @@ export async function action({
                   //@ts-ignore
                   subtitle,
                },
-               autosave: true,
-               draft: true,
                overrideAccess: false,
                user,
             });
+         } catch (err: unknown) {
+            payload.logger.error(err);
+            payload.logger.error("Error updating post sub title");
+            return jsonWithError(null, "Error updating post sub title");
          }
-         const errorMessage = JSON.parse(result.error.message)
-            .map((item: any) => item.message)
-            .join("\n");
-
-         return jsonWithError(null, errorMessage);
       }
 
       case "updateBanner": {
@@ -524,12 +440,10 @@ export async function action({
             return await payload.update({
                collection: "posts",
                id: postData.id,
-               draft: true,
                data: {
                   //@ts-expect-error
                   banner: upload.id,
                },
-               autosave: true,
                overrideAccess: false,
                user,
             });
@@ -563,12 +477,10 @@ export async function action({
          return await payload.update({
             collection: "posts",
             id: postData.id,
-            draft: true,
             data: {
                //@ts-expect-error
                banner: "",
             },
-            autosave: true,
             overrideAccess: false,
             user,
          });
@@ -587,7 +499,6 @@ export async function action({
             collection: "posts",
             id: postData.id,
             data: {
-               _status: "draft",
                //@ts-ignore
                publishedAt: "",
             },
@@ -613,45 +524,73 @@ export async function action({
          const newSlug = urlSlug(postData.name);
 
          //See if duplicate exists on the same site
-         const allPosts = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
-               },
-               slug: {
-                  equals: newSlug,
-               },
-               id: {
-                  not_equals: postData?.id,
-               },
-            },
-            draft: true,
-            overrideAccess: false,
-            user,
-         });
 
-         //If no collision and it's the first time we are generating the slug, publish with alias.
-         //Alias is not updated on subsequent title updates.
-         //Otherwise the slug already exists so we just update publishedAt.
-         //TODO Feature: Allow user to manually set a url alias at publish
-         //If slug is same as post id, it's the first time a slug is being set
-         const firstSlug =
-            //@ts-ignore
-            postData?.slug == postData.id && allPosts.totalDocs == 0;
+         try {
+            const existingPostsWithSlug = await payload.find({
+               collection: "posts",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  slug: {
+                     equals: newSlug,
+                  },
+                  id: {
+                     not_equals: postData?.id,
+                  },
+               },
+               overrideAccess: false,
+               user,
+            });
 
-         return await payload.update({
-            collection: "posts",
-            id: postData.id,
-            //@ts-ignore
-            data: {
-               ...(firstSlug && { slug: newSlug }),
-               ...(firstSlug && { publishedAt: new Date().toISOString() }),
-               _status: "published",
-            },
-            overrideAccess: false,
-            user,
-         });
+            //Update the postContents collection to published
+            await payload.update({
+               collection: "postContents",
+               id: postData.id,
+               data: {
+                  _status: "published",
+               },
+               overrideAccess: false,
+               user,
+            });
+
+            //If no collision and it's the first time we are generating the slug, publish with alias.
+            //Alias is not updated on subsequent title updates.
+            //Otherwise the slug already exists so we just update publishedAt.
+            //TODO Feature: Allow user to manually set a url alias at publish
+            //If slug is same as post id, it's the first time a slug is being set
+            const firstSlug =
+               //@ts-ignore
+               postData?.slug == postData.id &&
+               existingPostsWithSlug.totalDocs == 0;
+            if (firstSlug) {
+               //@ts-ignore
+               await payload.update({
+                  collection: "posts",
+                  id: postData.id,
+                  data: {
+                     slug: newSlug,
+                     publishedAt: new Date().toISOString(),
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            await payload.update({
+               collection: "posts",
+               id: postData.id,
+               data: {
+                  //@ts-ignore
+                  publishedAt: new Date().toISOString(),
+               },
+               overrideAccess: false,
+               user,
+            });
+            return jsonWithSuccess(null, "Post successfully published");
+         } catch (err: unknown) {
+            payload.logger.error(err);
+            payload.logger.error(`Error creating post`);
+         }
       }
       case "deletePost": {
          assertIsDelete(request);
@@ -670,6 +609,14 @@ export async function action({
             overrideAccess: false,
             user,
          });
+
+         await payload.delete({
+            collection: "postContents",
+            id: postData?.id,
+            overrideAccess: false,
+            user,
+         });
+
          const bannerId = post?.banner?.id;
          if (bannerId) {
             await payload.delete({
@@ -712,66 +659,60 @@ export async function action({
          }
       }
       case "createCommentReply": {
-         const result = await zx.parseFormSafe(request, {
-            comment: z.string(),
-            commentParentId: z.string(),
-            commentTopLevelParentId: z.string(),
-            commentDepth: z.coerce.number(),
+         const { comment, commentParentId, commentDepth } = await zx.parseForm(
+            request,
+            {
+               comment: z.string(),
+               commentParentId: z.string(),
+               commentDepth: z.coerce.number(),
+            },
+         );
+
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
          });
-         if (result.success) {
-            const {
-               comment,
-               commentParentId,
-               commentDepth,
-               commentTopLevelParentId,
-            } = result.data;
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            invariant(postData, "Post doesn't exist");
 
-            const commentReply = await payload.create({
-               collection: "comments",
-               data: {
-                  site: postData?.site.id as any,
-                  comment: JSON.parse(comment),
-                  author: user.id as any,
-               },
-            });
+         invariant(postData, "Post doesn't exist");
 
-            const reply = await payload.findByID({
-               collection: "comments",
-               id: commentParentId,
-               depth: 0,
-            });
+         const commentReply = await payload.create({
+            collection: "comments",
+            data: {
+               site: postData?.site.id as any,
+               comment: JSON.parse(comment),
+               postParent: postData.id as any,
+               author: user.id as any,
+            },
+         });
 
-            let existingReplies = reply?.replies || [];
+         const reply = await payload.findByID({
+            collection: "comments",
+            id: commentParentId,
+            depth: 0,
+         });
 
-            await payload.update({
-               collection: "comments",
-               id: commentTopLevelParentId,
-               data: {
-                  //If depth of reply is more than 2 levels deep, add a maxCommentDepth field
-                  ...(commentDepth > 2 && {
-                     maxCommentDepth: commentDepth + 2,
-                  }),
-               },
-            });
+         let existingReplies = reply?.replies || [];
 
-            //@ts-ignore
-            await payload.update({
-               collection: "comments",
-               id: commentParentId,
-               data: {
-                  replies: [commentReply.id, ...existingReplies],
-               },
-            });
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               maxCommentDepth: commentDepth,
+            },
+         });
 
-            return json({ message: "ok" });
-         }
+         //@ts-ignore
+         await payload.update({
+            collection: "comments",
+            id: commentParentId,
+            data: {
+               replies: [commentReply.id, ...existingReplies],
+            },
+         });
+
+         return json({ message: "ok" });
       }
       case "upVoteComment": {
          const result = await zx.parseFormSafe(request, {
@@ -809,72 +750,57 @@ export async function action({
                   payload.logger.error(`${err}`);
                }
             }
-            try {
-               //@ts-ignore
-               return await payload.update({
-                  collection: "comments",
-                  id: commentId,
-                  data: {
-                     upVotes: [...existingVotes, userId],
-                     upVotesStatic: existingVoteStatic + 1,
-                  },
-               });
-            } catch (err: unknown) {
-               console.log("ERROR");
-               payload.logger.error(`${err}`);
-            }
+            //@ts-ignore
+            return await payload.update({
+               collection: "comments",
+               id: commentId,
+               data: {
+                  upVotes: [...existingVotes, userId],
+                  upVotesStatic: existingVoteStatic + 1,
+               },
+            });
          }
       }
       case "deleteComment": {
          const { commentId } = await zx.parseForm(request, {
             commentId: z.string(),
          });
-         try {
-            const comment = await payload.findByID({
-               collection: "comments",
-               id: commentId,
-               depth: 0,
-            });
-            if (comment.replies && comment?.replies?.length > 0) {
-               return await payload.update({
-                  collection: "comments",
-                  id: commentId,
-                  data: {
-                     isDeleted: true,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            }
-            return await payload.delete({
-               collection: "comments",
-               id: commentId,
-               overrideAccess: false,
-               user,
-            });
-         } catch (err: unknown) {
-            console.log("ERROR, unable to delete comment");
-            payload.logger.error(`${err}`);
-         }
-      }
-      case "restoreComment": {
-         try {
-            const { commentId } = await zx.parseForm(request, {
-               commentId: z.string(),
-            });
+         const comment = await payload.findByID({
+            collection: "comments",
+            id: commentId,
+            depth: 0,
+         });
+         if (comment.replies && comment?.replies?.length > 0) {
             return await payload.update({
                collection: "comments",
                id: commentId,
                data: {
-                  isDeleted: false,
+                  isDeleted: true,
                },
                overrideAccess: false,
                user,
             });
-         } catch (err: unknown) {
-            console.log("ERROR, unable to restore comment");
-            payload.logger.error(`${err}`);
          }
+         return await payload.delete({
+            collection: "comments",
+            id: commentId,
+            overrideAccess: false,
+            user,
+         });
+      }
+      case "restoreComment": {
+         const { commentId } = await zx.parseForm(request, {
+            commentId: z.string(),
+         });
+         return await payload.update({
+            collection: "comments",
+            id: commentId,
+            data: {
+               isDeleted: false,
+            },
+            overrideAccess: false,
+            user,
+         });
       }
    }
 }
@@ -963,7 +889,7 @@ async function fetchPost({
    if (!user) {
       //If anon and data exists, return post data now
       if (postData) {
-         return { post: postData };
+         return { post: postData, postContent: postData.content.content };
       }
       //Otherwise post doesn't exist
       if (!postData) {
@@ -978,19 +904,19 @@ async function fetchPost({
 
    //If user has access, pull versions
    if (hasAccess) {
-      const authPost = await payload.findByID({
-         collection: "posts",
+      const postContent = await payload.findByID({
+         collection: "postContents",
          id: postData.id,
          draft: true,
          user,
          overrideAccess: false,
       });
       const versionData = await payload.findVersions({
-         collection: "posts",
+         collection: "postContents",
          depth: 2,
          where: {
             parent: {
-               equals: authPost.id,
+               equals: postContent.id,
             },
          },
          limit: 20,
@@ -1021,13 +947,23 @@ async function fetchPost({
          });
 
       const isChanged =
-         JSON.stringify(authPost.content + authPost.name + authPost.subtitle) !=
-         JSON.stringify(postData.content + postData.name + postData.subtitle);
+         JSON.stringify(postContent.content) !=
+            JSON.stringify(postData.content.content) ||
+         postData.publishedAt == null;
 
-      return { post: authPost, isChanged, versions };
+      return {
+         post: postData,
+         postContent: postContent.content,
+         isChanged,
+         versions,
+      };
    }
    //return for regular type of user
-   return { post: postData, isChanged: false };
+   return {
+      post: postData,
+      postContent: postData.content.content,
+      isChanged: false,
+   };
 }
 
 async function fetchPostComments({
@@ -1048,28 +984,11 @@ async function fetchPostComments({
       user,
    });
 
-   const { docs: topLevelComments } = await payload.find({
-      collection: "comments",
-      where: {
-         isTopLevel: {
-            equals: true,
-         },
-         postParent: {
-            equals: postData?.id,
-         },
-         maxCommentDepth: {
-            greater_than_equal: 3,
-         },
-      },
-      sort: "-maxCommentDepth",
-      depth: 0,
-   });
+   const postDataId = postData?.id;
 
-   const commentDepth = topLevelComments[0]?.maxCommentDepth
-      ? topLevelComments[0]?.maxCommentDepth
-      : 4;
+   const commentDepth = postData?.maxCommentDepth ?? 1;
 
-   function depthAndDeletionDecorator(array: any, depth = 0) {
+   function depthAndDeletionDecorator(array: any, depth = 1) {
       return array.map((child: any) =>
          Object.assign(child, {
             depth,
@@ -1143,13 +1062,21 @@ async function fetchPostComments({
       },
    };
    const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
-   const fetchComments = await gqlRequest(gqlEndpoint({}), graphql_query, {
-      postParentId: postData?.id,
-   });
+
+   //Cache comments if non
+   const fetchComments = !user
+      ? await gqlRequestWithCache(gqlEndpoint({}), graphql_query, {
+           postParentId: postDataId,
+        })
+      : await gqlRequest(gqlEndpoint({}), graphql_query, {
+           postParentId: postDataId,
+        });
+
    const comments = depthAndDeletionDecorator(
       //@ts-ignore
       fetchComments?.comments?.docs,
       //@ts-ignore
    ) as Comments[];
+
    return comments ?? null;
 }

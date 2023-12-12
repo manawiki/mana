@@ -99,7 +99,7 @@ export async function action({
       }
       case "update": {
          switch (collectionSlug) {
-            case "posts": {
+            case "postContents": {
                const { content, pageId } = await zx.parseForm(request, {
                   content: z.string(),
                   pageId: z.string(),
@@ -183,10 +183,11 @@ export async function action({
                } catch (error) {
                   return await payload.create({
                      collection: collectionSlug,
-                     //@ts-ignore
                      data: {
+                        //@ts-ignore
                         relationId: entryId,
                         site: siteId as any,
+                        //@ts-ignore
                         subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
                         content: JSON.parse(content),
