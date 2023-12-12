@@ -92,71 +92,7 @@ function getCustom(params) {
    return context;
 }
 
-// We can move calculation to the server to cache the results
-// export async function loader({ request }: LoaderFunctionArgs) {
-//    //get formData from req
-
-//    // get url to parse query params
-//    const url = new URL(request.url);
-
-//    // console.log(url.search);
-
-//    // get query params from url
-//    const params = Object.fromEntries(url.searchParams);
-
-//    const custom = getCustom(params);
-
-//    // console.log(requiredJSONStatus);
-
-//    // todo redo how Data.Pokemon is generated
-//    if (!requiredJSONStatus.Pokemon) GM.fetch();
-
-//    //to-do add user pokemon
-//    const pokemon = Data.Pokemon;
-
-//    // todo apply context from query params
-//    const results = await cacheThis(
-//       async () =>
-//          generateSpreadsheet(Data.Pokemon, {
-//             ...Context,
-//             ...applyContext(custom),
-//          }),
-
-//       "pokemon-dps" + JSON.stringify(custom),
-//       60 * 60 * 24 * 1000, //cache for 24 hours
-//    );
-
-//    //to-do read params to toggle sorting
-//    const sort = params["sort"] ?? "dps";
-//    const asc = params["asc"] ? 1 : -1;
-//    const page = params["page"] ? parseInt(params["page"]) : 1;
-//    const search = params["search"] ?? "";
-
-//    // console.log(sort, asc, page, search);
-
-//    const filtered = await cacheThis(
-//       async () =>
-//          results
-//             .filter((pokemon) =>
-//                search === ""
-//                   ? true
-//                   : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-//             )
-//             .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
-//             //limit results to the top 100
-//             .slice(100 * page - 100, 100 * page),
-//       "pokemon-dps" +
-//          JSON.stringify(custom) +
-//          "-filters-" +
-//          sort +
-//          asc +
-//          page +
-//          search,
-//       60 * 60 * 24 * 1000,
-//    );
-
-//    return json({ pokemon, results: filtered, count: results.length });
-// }
+const cache = { key: "", value: undefined };
 
 export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    // get query params from url
@@ -172,30 +108,23 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
 
+   function cacheResult() {
+      cache.value = generateSpreadsheet(Data.Pokemon, {
+         ...Context,
+         ...applyContext(custom),
+      });
+
+      cache.key = JSON.stringify(custom);
+      return cache.value;
+   }
+
    // todo apply context from query params
-   const results = generateSpreadsheet(Data.Pokemon, {
-      ...Context,
-      ...applyContext(custom),
-   });
+   const results =
+      cache.key === JSON.stringify(custom) && cache.value
+         ? cache.value
+         : cacheResult();
 
-   //to-do read params to toggle sorting
-   const sort = params["sort"] ?? "dps";
-   const asc = params["asc"] ? 1 : -1;
-   const page = params["page"] ? parseInt(params["page"]) : 1;
-   const search = params["search"] ?? "";
-
-   // console.log(sort, asc, page, search);
-
-   const filtered = results
-      .filter((pokemon) =>
-         search === ""
-            ? true
-            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-      )
-      .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
-      //limit results to the top 100
-      .slice(100 * page - 100, 100 * page);
-   return { pokemon, results: filtered, count: results?.length };
+   return { pokemon, results, count: results?.length };
 }
 
 clientLoader.hyrate = true;
@@ -938,9 +867,31 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
 function ResultsTable() {
    const { results, count } = useLoaderData<typeof clientLoader>();
 
+   const [searchParams] = useSearchParams();
+
+   const params = Object.fromEntries(searchParams);
+
+   //to-do read params to toggle sorting
+   const sort = params["sort"] ?? "dps";
+   const asc = params["asc"] ? 1 : -1;
+   const page = params["page"] ? parseInt(params["page"]) : 1;
+   const search = params["search"] ?? "";
+
+   // console.log(sort, asc, page, search);
+
+   const filtered = results
+      .filter((pokemon) =>
+         search === ""
+            ? true
+            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+      )
+      .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
+      //limit results to the top 100
+      .slice(100 * page - 100, 100 * page);
+
    return (
       <>
-         <table>
+         <table className="w-full">
             <thead>
                <tr>
                   <th>Pokemon</th>
@@ -953,15 +904,35 @@ function ResultsTable() {
                </tr>
             </thead>
             <tbody>
-               {results.map((pokemon, index) => (
-                  <tr key={index}>
-                     <td>{pokemon?.label}</td>
-                     <td>{pokemon?.fmove?.label}</td>
-                     <td>{pokemon?.cmove?.label}</td>
-                     <td aria-label={pokemon?.dps}>{pokemon?.ui_dps}</td>
-                     <td aria-label={pokemon?.tdo}>{pokemon?.ui_tdo}</td>
-                     <td>{pokemon?.ui_overall}</td>
-                     <td>{pokemon?.ui_cp}</td>
+               {filtered.map((pokemon, index) => (
+                  <tr key={index} className="group">
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                        {pokemon?.label}
+                     </td>
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                        {pokemon?.fmove?.label}
+                     </td>
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                        {pokemon?.cmove?.label}
+                     </td>
+                     <td
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        aria-label={pokemon?.dps}
+                     >
+                        {pokemon?.ui_dps}
+                     </td>
+                     <td
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        aria-label={pokemon?.tdo}
+                     >
+                        {pokemon?.ui_tdo}
+                     </td>
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                        {pokemon?.ui_overall}
+                     </td>
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                        {pokemon?.ui_cp}
+                     </td>
                   </tr>
                ))}
             </tbody>
@@ -1046,6 +1017,7 @@ function Pagination({ count = 100 }) {
       <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
          <div className="flex items-center gap-3 text-xs">
             <button
+               //todo convert this to links
                className="flex items-center gap-1 font-semibold uppercase hover:underline"
                onClick={() =>
                   setSearchParams((searchParams) => {
@@ -1063,6 +1035,7 @@ function Pagination({ count = 100 }) {
             <input
                // form="dps-form"
                type="number"
+               key={"page " + page}
                defaultValue={page}
                className="w-16"
                name="page"
