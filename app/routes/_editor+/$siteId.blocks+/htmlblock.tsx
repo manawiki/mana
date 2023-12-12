@@ -1,13 +1,32 @@
-import { useState } from "react";
+import { useState, createElement, useEffect, useRef } from "react";
 
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
-import InnerHTML from "dangerously-set-html-content";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import type { CustomElement, HTMLBlockElement } from "../core/types";
+
+function DangerouslySetHtmlContent({ html }: any, { allowRerender }: any) {
+   // We remove 'dangerouslySetInnerHTML' from props passed to the div
+   const divRef = useRef(null);
+   const isFirstRender = useRef(true);
+
+   useEffect(() => {
+      if (!html || !divRef.current) throw new Error("html prop can't be null");
+      if (!isFirstRender.current) return;
+      isFirstRender.current = Boolean(allowRerender);
+
+      const slotHtml = document.createRange().createContextualFragment(html); // Create a 'tiny' document and parse the html string
+      //@ts-ignore
+      divRef.current.innerHTML = ""; // Clear the container
+      //@ts-ignore
+      divRef.current.appendChild(slotHtml); // Append the new content
+   }, [html, divRef]);
+
+   return createElement("div", { ref: divRef });
+}
 
 export function BlockHTMLBlock({
    children,
@@ -39,7 +58,7 @@ export function BlockHTMLBlock({
    return (
       <div contentEditable={false} className="relative group mb-3 min-h-[40px]">
          {readOnly || !editMode ? (
-            <InnerHTML html={HTMLBlockValue} />
+            <DangerouslySetHtmlContent html={HTMLBlockValue} />
          ) : (
             <div className="bg-2 border border-color-sub p-3 rounded-lg shadow-sm shadow-1 text-sm relative">
                <TextareaAutosize
