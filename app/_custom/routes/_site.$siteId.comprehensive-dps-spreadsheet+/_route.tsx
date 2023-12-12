@@ -1,9 +1,8 @@
 import { useState } from "react";
 
 import { Combobox } from "@headlessui/react";
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
-   ClientLoaderFunctionArgs,
    Form,
    useLoaderData,
    useSearchParams,
@@ -11,7 +10,6 @@ import {
 } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
-import { cacheThis } from "~/utils/cache.server";
 
 import { generateSpreadsheet, Context, applyContext } from "./calc.js";
 import { GM, Data, requiredJSONStatus } from "./dataFactory.js";
