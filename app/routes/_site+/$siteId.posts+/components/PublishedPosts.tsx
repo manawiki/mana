@@ -10,7 +10,7 @@ import {
 import { Icon } from "~/components/Icon";
 import { isLoading, useDebouncedValue } from "~/utils";
 
-import { PostFeedRow } from "./PostFeedRow";
+import { PublishedPostRow } from "./PublishedPostRow";
 import type { loader } from "../_posts";
 
 export function PublishedPosts() {
@@ -93,7 +93,7 @@ export function PublishedPosts() {
          <section className="border-color divide-y overflow-hidden border-y dark:divide-zinc-700 mb-6">
             {publishedPosts && publishedPosts?.docs?.length > 0 ? (
                publishedPosts.docs.map((post: any) => (
-                  <PostFeedRow key={post.id} siteId={siteId} post={post} />
+                  <PublishedPostRow key={post.id} siteId={siteId} post={post} />
                ))
             ) : (
                <div className="flex items-center justify-between py-3 text-sm">
