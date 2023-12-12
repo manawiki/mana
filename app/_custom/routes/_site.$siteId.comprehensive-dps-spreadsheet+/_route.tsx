@@ -197,7 +197,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
       .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
       //limit results to the top 100
       .slice(100 * page - 100, 100 * page);
-   return { pokemon, results: filtered, count: results.length };
+   return { pokemon, results: filtered, count: results?.length };
 }
 
 clientLoader.hyrate = true;
@@ -213,12 +213,13 @@ export function HydrateFallback() {
 }
 
 export function ComprehensiveDpsSpreadsheet() {
-   const { pokemon } = useLoaderData<typeof clientLoader>();
+   const { pokemon, count } = useLoaderData<typeof clientLoader>();
 
    return (
       <>
          <Introduction />
          <Toggles pokemon={pokemon} />
+         <Pagination count={count} />
          <ResultsTable />
       </>
    );
@@ -663,11 +664,10 @@ function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
 
 //todo figure out what we want to use for table
 function ResultsTable() {
-   const { count, results } = useLoaderData<typeof clientLoader>();
+   const { results, count } = useLoaderData<typeof clientLoader>();
 
    return (
       <>
-         <Pagination count={count} />
          <table>
             <thead>
                <tr>
