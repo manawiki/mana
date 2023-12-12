@@ -98,6 +98,13 @@ const QUERY = gql`
       icon_general {
         url
       }
+      rarity {
+        id
+        name
+        icon {
+          url
+        }
+      }
       damage_type {
         id
         name
