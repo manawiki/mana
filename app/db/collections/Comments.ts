@@ -2,9 +2,17 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isOwnComment, isCommentDeletedField } from "../../access/comments";
+import {
+   isOwnComment,
+   isCommentDeletedField,
+   deleteComment,
+} from "../../access/comments";
 import { canMutateFieldAsSiteAdmin } from "../../access/site";
-import { isLoggedIn } from "../../access/user";
+import { isLoggedIn, isStaff } from "../../access/user";
+import {
+   updateCommentCount,
+   updateCommentCountAfterDelete,
+} from "../hooks/updateCommentCount";
 
 export const Comments: CollectionConfig = {
    slug: "comments",
@@ -12,7 +20,11 @@ export const Comments: CollectionConfig = {
       create: isLoggedIn,
       read: () => true,
       update: isOwnComment,
-      delete: isOwnComment,
+      delete: deleteComment || isStaff,
+   },
+   hooks: {
+      afterChange: [updateCommentCount],
+      afterDelete: [updateCommentCountAfterDelete],
    },
    fields: [
       {
@@ -46,6 +58,7 @@ export const Comments: CollectionConfig = {
          name: "postParent",
          type: "relationship",
          relationTo: "posts",
+         hasMany: false,
          access: {
             update: () => false,
          },
@@ -107,13 +120,6 @@ export const Comments: CollectionConfig = {
          defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             read: isCommentDeletedField,
-            update: () => false,
-         },
-      },
-      {
-         name: "maxCommentDepth",
-         type: "number",
-         access: {
             update: () => false,
          },
       },

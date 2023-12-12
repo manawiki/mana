@@ -57,9 +57,9 @@ export const DarkModeToggle = () => {
             aria-label="Toggle dark mode"
          >
             {theme === "light" ? (
-               <Icon name="sun" size={18} className="text-1" />
+               <Icon title="Dark" name="sun" size={18} className="text-1" />
             ) : (
-               <Icon name="moon" size={18} className="text-1" />
+               <Icon title="Light" name="moon" size={18} className="text-1" />
             )}
          </button>
       </fetcher.Form>
