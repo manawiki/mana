@@ -12,6 +12,7 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
+      //@ts-ignore
       read: canReadPost(),
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
