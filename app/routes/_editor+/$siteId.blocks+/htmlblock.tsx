@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Switch } from "@headlessui/react";
 import clsx from "clsx";
+import InnerHTML from "dangerously-set-html-content";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
@@ -38,7 +39,7 @@ export function BlockHTMLBlock({
    return (
       <div contentEditable={false} className="relative group mb-3 min-h-[40px]">
          {readOnly || !editMode ? (
-            <div dangerouslySetInnerHTML={{ __html: HTMLBlockValue }} />
+            <InnerHTML html={HTMLBlockValue} />
          ) : (
             <div className="bg-2 border border-color-sub p-3 rounded-lg shadow-sm shadow-1 text-sm relative">
                <TextareaAutosize

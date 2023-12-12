@@ -54,6 +54,7 @@
       "cors": "^2.8.5",
       "cross-env": "^7.0.3",
       "csstype": "^3.1.2",
+      "dangerously-set-html-content": "^1.1.0",
       "date-and-time": "^3.0.3",
       "dotenv": "^16.0.3",
       "express": "^4.18.2",
