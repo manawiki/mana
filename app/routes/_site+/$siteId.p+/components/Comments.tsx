@@ -80,7 +80,7 @@ export function CommentHeader({
       >
          <div
             className="flex items-center justify-between gap-1.5 font-bold py-3
-mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
+            mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
          >
             <div className="flex items-center gap-2">
                <Icon
@@ -88,7 +88,9 @@ mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
                   className="text-zinc-400 dark:text-zinc-500"
                   size={20}
                />
-               <div className="font-header">{totalComments ?? "Comments"}</div>
+               <div className="font-header">
+                  {totalComments ? totalComments : "Comments"}
+               </div>
             </div>
             <div className="flex items-center gap-3 z-10">
                <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
@@ -103,10 +105,8 @@ mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
             </div>
          </div>
          <div
-            className="pattern-dots absolute left-0
-    top-0.5 -z-0 h-full
-      w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-      pattern-size-2 dark:pattern-zinc-600 dark:pattern-bg-dark350"
+            className="pattern-dots absolute left-0 top-0.5 -z-0 h-full w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
+            pattern-size-2 dark:pattern-zinc-600 dark:pattern-bg-dark350"
          />
       </div>
    );

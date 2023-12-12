@@ -9,10 +9,6 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { request as gqlRequest } from "graphql-request";
-import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
-import type { Payload } from "payload";
-import { select } from "payload-query";
 import { jsonWithSuccess, redirectWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
@@ -20,9 +16,8 @@ import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Post, User } from "payload/generated-types";
+import type { Post } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
@@ -32,15 +27,14 @@ import {
 } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
+import type { loader as siteLayoutLoader } from "~/routes/_site+/$siteId+/_layout";
 import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
    getMultipleFormData,
-   gqlEndpoint,
    uploadImage,
 } from "~/utils";
-import { cacheThis, gqlRequestWithCache } from "~/utils/cache.server";
 
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
@@ -49,6 +43,9 @@ import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
+import { fetchPost } from "./functions/fetchPost";
+import { fetchPostComments } from "./functions/fetchPostComments";
+import { fetchPostWithSlug } from "./functions/fetchPostWithSlug";
 import { mainContainerStyle } from "../$siteId+/_index";
 import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
 
@@ -92,13 +89,10 @@ export async function loader({
    });
 }
 
-export const meta: MetaFunction<typeof loader> = ({
-   data,
-   matches,
-}: {
-   data: any;
-   matches: any;
-}) => {
+export const meta: MetaFunction<
+   typeof loader,
+   { "routes/_site+/$siteId+/_layout": typeof siteLayoutLoader }
+> = ({ data, matches }) => {
    const siteName = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.name;
@@ -107,33 +101,27 @@ export const meta: MetaFunction<typeof loader> = ({
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
    )?.data?.site.slug;
 
-   const postTitle = data?.post?.name;
-   const postStatus = data?.post?._status;
+   invariant(data?.post);
+
+   const { name, subtitle, slug } = data?.post;
+
    const postBannerUrl = data?.post?.banner?.url;
    const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
-   const postDescription = data?.post?.subtitle;
-   const postSlug = data?.post?.slug;
-   const postUrl = `https://mana.wiki/${siteSlug}/p/${postSlug}`;
+   const postUrl = `https://mana.wiki/${siteSlug}/p/${slug}`;
 
    return [
       {
-         title:
-            postStatus == "published"
-               ? `${postTitle} - ${siteName}`
-               : `Edit | ${postTitle} - ${siteName}`,
+         title: `${name} - ${siteName}`,
       },
       {
          property: "og:title",
-         content:
-            postStatus == "published"
-               ? `${postTitle} - ${siteName}`
-               : `Edit | ${postTitle} - ${siteName}`,
+         content: `${name} - ${siteName}`,
       },
       { property: "og:site_name", content: siteName },
-      ...(postDescription
+      ...(subtitle
          ? [
-              { property: "description", content: postDescription },
-              { property: "og:description", content: postDescription },
+              { property: "description", content: subtitle },
+              { property: "og:description", content: subtitle },
            ]
          : []),
       ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
@@ -751,281 +739,4 @@ export async function action({
          });
       }
    }
-}
-
-/**
- * Get the immutable post Id from post slug.
- * Cache if anon.
- */
-async function fetchPostWithSlug({
-   p,
-   payload,
-   siteId,
-   user,
-}: {
-   p: string;
-   payload: Payload;
-   siteId: string;
-   user?: User;
-}) {
-   const { docs: postsAll } = !user
-      ? await cacheThis(
-           () =>
-              payload.find({
-                 collection: "posts",
-                 where: {
-                    "site.slug": {
-                       equals: siteId,
-                    },
-                    slug: {
-                       equals: p,
-                    },
-                 },
-              }),
-           `post-${p}`,
-        )
-      : await payload.find({
-           collection: "posts",
-           where: {
-              "site.slug": {
-                 equals: siteId,
-              },
-              slug: {
-                 equals: p,
-              },
-           },
-        });
-
-   const post = postsAll[0];
-   invariant(post, "Post doesn't exist");
-
-   return { postData: post };
-}
-
-async function fetchPost({
-   p,
-   payload,
-   user,
-   siteId,
-   page = 1,
-}: {
-   p: string;
-   payload: Payload;
-   user?: User;
-   siteId: string;
-   page: number | undefined;
-}) {
-   const { postData } = await fetchPostWithSlug({
-      p,
-      payload,
-      siteId,
-      user,
-   });
-
-   //If can't find post with slug, attempt to findById
-   if (!postData) {
-      const postById = await payload.findByID({
-         collection: "posts",
-         id: p,
-      });
-
-      if (!postById) throw redirect("/404", 404);
-
-      //Post exists, we received the ID as a URL param and want to redirect to the canonical path instead.
-      throw redirect(`/${postById.site.slug}/p/${postById.slug}`, 301);
-   }
-
-   if (!user) {
-      //If anon and data exists, return post data now
-      if (postData) {
-         return { post: postData, postContent: postData.content.content };
-      }
-      //Otherwise post doesn't exist
-      if (!postData) {
-         throw redirect("/404", 404);
-      }
-   }
-
-   //Now we handle authenticated querying
-   invariant(user, "Not logged in");
-
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
-
-   //If user has access, pull versions
-   if (hasAccess) {
-      const postContent = await payload.findByID({
-         collection: "postContents",
-         id: postData.id,
-         draft: true,
-         user,
-         overrideAccess: false,
-      });
-      const versionData = await payload.findVersions({
-         collection: "postContents",
-         depth: 2,
-         where: {
-            parent: {
-               equals: postContent.id,
-            },
-         },
-         limit: 20,
-         user,
-         page,
-      });
-      const versions = versionData.docs
-         .filter((doc) => doc.version._status === "published")
-         .map((doc) => {
-            const versionRow = select({ id: true, updatedAt: true }, doc);
-            const version = select(
-               {
-                  id: false,
-                  versionAuthor: true,
-                  content: true,
-                  _status: true,
-               },
-               doc.version,
-            );
-
-            //Combine final result
-            const result = {
-               ...versionRow,
-               version,
-            };
-
-            return result;
-         });
-
-      const isChanged =
-         JSON.stringify(postContent.content) !=
-            JSON.stringify(postData.content.content) ||
-         postData.publishedAt == null;
-
-      return {
-         post: postData,
-         postContent: postContent.content,
-         isChanged,
-         versions,
-      };
-   }
-   //return for regular type of user
-   return {
-      post: postData,
-      postContent: postData.content.content,
-      isChanged: false,
-   };
-}
-
-async function fetchPostComments({
-   p,
-   payload,
-   siteId,
-   user,
-}: {
-   p: string;
-   payload: Payload;
-   siteId: string;
-   user?: User;
-}) {
-   const { postData } = await fetchPostWithSlug({
-      p,
-      payload,
-      siteId,
-      user,
-   });
-
-   const postDataId = postData?.id;
-
-   const commentDepth = postData?.maxCommentDepth ?? 1;
-
-   function depthAndDeletionDecorator(array: any, depth = 1) {
-      return array.map((child: any) =>
-         Object.assign(child, {
-            depth,
-            //Remove content if deleted
-            // ...(child.isDeleted == true && { comment: undefined }),
-            replies: depthAndDeletionDecorator(child.replies || [], depth + 1),
-         }),
-      );
-   }
-
-   //Recursively generated nested query to get all replies
-   function generateNestedJsonObject(depth: number) {
-      if (depth === 0) {
-         return {};
-      } else {
-         let object = {
-            id: true,
-            createdAt: true,
-            isDeleted: true,
-            comment: true,
-            upVotesStatic: true,
-            author: {
-               username: true,
-               avatar: {
-                  url: true,
-               },
-            },
-         };
-         for (let i = 0; i < depth; i++) {
-            //@ts-ignore
-            object["replies"] = generateNestedJsonObject(depth - 1);
-         }
-         return object;
-      }
-   }
-
-   const nestedJsonObject = generateNestedJsonObject(commentDepth);
-
-   //Construct the query in JSON to then parse to graphql format
-   const query = {
-      query: {
-         __variables: {
-            postParentId: "JSON!",
-         },
-         comments: {
-            __aliasFor: "Comments",
-            __args: {
-               where: {
-                  isTopLevel: { equals: true },
-                  postParent: { equals: new VariableType("postParentId") },
-               },
-               sort: "-upVotesStatic",
-            },
-            docs: {
-               id: true,
-               createdAt: true,
-               isDeleted: true,
-               comment: true,
-               upVotesStatic: true,
-               isTopLevel: true,
-               isPinned: true,
-               author: {
-                  username: true,
-                  avatar: {
-                     url: true,
-                  },
-               },
-               ...nestedJsonObject,
-            },
-         },
-      },
-   };
-   const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
-
-   //Cache comments if non
-   const fetchComments = !user
-      ? await gqlRequestWithCache(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
-        })
-      : await gqlRequest(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
-        });
-
-   const comments = depthAndDeletionDecorator(
-      //@ts-ignore
-      fetchComments?.comments?.docs,
-      //@ts-ignore
-   ) as Comments[];
-
-   return comments ?? null;
 }
