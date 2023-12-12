@@ -9,10 +9,11 @@ export function Main({ data: char }: { data: AgentType }) {
   const mainImage = char?.icon_full?.url;
   const mainName = char?.name;
   const mainStatDisplay = [
-    // {
-    //    label: "Rarity",
-    //    value: char.rarity?.name ? char.rarity?.name + "★" : "-",
-    // },
+    {
+      label: "Rarity",
+      value: char?.rarity?.name,
+      icon: char?.rarity?.icon?.url,
+    },
     {
       label: "Type",
       value: char?.damage_type?.[0]?.name,

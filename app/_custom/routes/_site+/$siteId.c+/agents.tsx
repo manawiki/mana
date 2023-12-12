@@ -58,13 +58,20 @@ const CharacterList = ({ chars }: any) => {
   // All Filter Options listed individually atm to control order filter options appear in
 
   const rarities = [
+    // {
+    //   id: "2",
+    //   //name: "B",
+    //   icon: "https://static.mana.wiki/zzz/IconRoleBBig.png",
+    // },
     {
-      id: "5",
-      name: "5",
+      id: "3",
+      //name: "A",
+      icon: "https://static.mana.wiki/zzz/IconRoleABig.png",
     },
     {
-      id: "6",
-      name: "6",
+      id: "4",
+      //name: "S",
+      icon: "https://static.mana.wiki/zzz/IconRoleSBig.png",
     },
   ] as FilterOptionType[];
   const elementries = chars.map((c: any) => c.damage_element).flat();
@@ -161,6 +168,11 @@ const CharacterList = ({ chars }: any) => {
 
   const filterOptions = [
     {
+      name: "Rarity",
+      field: "rarity",
+      options: rarities,
+    },
+    {
       name: "Element",
       field: "damage_element",
       options: elements,
@@ -253,9 +265,11 @@ const CharacterList = ({ chars }: any) => {
                           />
                         </div>
                       )}
-                      <div className="text-1 truncate pt-0.5 text-center text-[10px] font-semibold">
-                        {opt.name}
-                      </div>
+                      {opt?.name && (
+                        <div className="text-1 truncate pt-0.5 text-center text-[10px] font-semibold">
+                          {opt.name}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -320,6 +334,17 @@ const CharacterList = ({ chars }: any) => {
           const typesmall = char?.damage_type[0]?.icon?.url;
           const campurl = char?.character_camp?.icon?.url;
           const raritynum = char?.rarity?.name;
+          var rarityhex;
+          switch (raritynum) {
+            case "A":
+              rarityhex = "#d06bff";
+              break;
+            case "S":
+              rarityhex = "#ffa114";
+              break;
+            default:
+          }
+          const rarityurl = char?.rarity?.icon?.url;
           const cid = char.slug ?? char?.id;
           const iconurl =
             char.icon_round?.id == "IconRoleCircle01" && char?.id != "1011"
@@ -371,6 +396,17 @@ const CharacterList = ({ chars }: any) => {
                   />
                 </div>
 
+                {/* Rarity */}
+                <div className="border-color shadow-1 absolute right-1 bottom-5 z-20 h-7 w-7 rounded-full border bg-zinc-800 shadow">
+                  <Image
+                    options="aspect_ratio=1:1&height=42&width=42"
+                    alt="Path"
+                    className="object-contain"
+                    url={rarityurl}
+                    loading={int < 10 ? "lazy" : undefined}
+                  />
+                </div>
+
                 <div className="relative flex w-full items-center justify-center">
                   <div className="border-color shadow-1 overflow-hidden rounded-full border-2 shadow-sm">
                     <Image
@@ -384,7 +420,7 @@ const CharacterList = ({ chars }: any) => {
                 </div>
                 {/* Character Name, Color border by rarity */}
                 <div
-                  style={{ "border-color": `${char.rarity?.hex}` }}
+                  style={{ "border-color": `${rarityhex}` }}
                   className={`p-1 text-center text-xs font-bold border-b-4`}
                 >
                   {char.name}
@@ -424,6 +460,13 @@ const CHARACTERS = gql`
         icon_round {
           id
           url
+        }
+        rarity {
+          id
+          name
+          icon {
+            url
+          }
         }
         damage_type {
           id
