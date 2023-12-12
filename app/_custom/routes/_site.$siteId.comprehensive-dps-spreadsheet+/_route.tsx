@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import {
+   ClientLoaderFunctionArgs,
    Form,
    useLoaderData,
    useSearchParams,
@@ -159,16 +160,16 @@ function getCustom(params) {
 //    return json({ pokemon, results: filtered, count: results.length });
 // }
 
-export function useClientData() {
+export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    // get query params from url
-   const [searchParams] = useSearchParams();
+   const url = new URL(request.url);
 
-   const params = Object.fromEntries(searchParams);
+   const params = Object.fromEntries(url.searchParams);
 
    const custom = getCustom(params);
 
    // todo redo how Data.Pokemon is generated
-   if (!requiredJSONStatus.Pokemon) GM.fetch();
+   if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
@@ -199,13 +200,26 @@ export function useClientData() {
    return { pokemon, results: filtered, count: results.length };
 }
 
+clientLoader.hyrate = true;
+
+export function HydrateFallback() {
+   return (
+      <>
+         <Introduction />
+         <Toggles />
+         <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
+      </>
+   );
+}
+
 export function ComprehensiveDpsSpreadsheet() {
-   const { pokemon, results, count } = useClientData();
+   const { pokemon } = useLoaderData<typeof clientLoader>();
+
    return (
       <>
          <Introduction />
          <Toggles pokemon={pokemon} />
-         <ResultsTable results={results} count={count} />
+         <ResultsTable />
       </>
    );
 }
@@ -331,9 +345,7 @@ const capitalize = (word: string) => {
       : "";
 };
 
-function Toggles({ pokemon }) {
-   // const { pokemon } = useLoaderData();
-
+function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
    // console.log(pokemon);
 
    // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
@@ -650,8 +662,8 @@ function Toggles({ pokemon }) {
 }
 
 //todo figure out what we want to use for table
-function ResultsTable({ count, results }) {
-   // const { count, results } = useClientData();
+function ResultsTable() {
+   const { count, results } = useLoaderData<typeof clientLoader>();
 
    return (
       <>
@@ -748,7 +760,7 @@ function TH({ children }: { children: string }) {
 }
 
 // Insert a simple pagination component here
-function Pagination({ count }) {
+function Pagination({ count = 100 }) {
    // const { count } = useClientData();
    const [searchParams, setSearchParams] = useSearchParams();
 
