@@ -13,11 +13,7 @@ import { request as gqlRequest } from "graphql-request";
 import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import type { Payload } from "payload";
 import { select } from "payload-query";
-import {
-   jsonWithError,
-   jsonWithSuccess,
-   redirectWithSuccess,
-} from "remix-toast";
+import { jsonWithSuccess, redirectWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
 import urlSlug from "url-slug";
@@ -333,64 +329,53 @@ export async function action({
    switch (intent) {
       case "updateTitle": {
          assertIsPatch(request);
-         const result = await zx.parseFormSafe(request, {
+         const { name } = await zx.parseForm(request, {
             name: z
                .string()
                .min(3, "Title is too short.")
                .max(200, "Title is too long."),
          });
-         if (result.success) {
-            const { name } = result.data;
 
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            return await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  name,
-               },
-               overrideAccess: false,
-               user,
-            });
-         }
-         const errorMessage = JSON.parse(result.error.message)
-            .map((item: any) => item.message)
-            .join("\n");
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
 
-         return jsonWithError(null, errorMessage);
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               name,
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Title updated");
       }
       case "updateSubtitle": {
          assertIsPatch(request);
          const { subtitle } = await zx.parseForm(request, {
             subtitle: z.string(),
          });
-         try {
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            return await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  //@ts-ignore
-                  subtitle,
-               },
-               overrideAccess: false,
-               user,
-            });
-         } catch (err: unknown) {
-            payload.logger.error(err);
-            payload.logger.error("Error updating post sub title");
-            return jsonWithError(null, "Error updating post sub title");
-         }
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               //@ts-ignore
+               subtitle,
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Subtitle updated");
       }
 
       case "updateBanner": {
@@ -431,7 +416,7 @@ export async function action({
                user,
             });
 
-            return await payload.update({
+            await payload.update({
                collection: "posts",
                id: postData.id,
                data: {
@@ -441,12 +426,8 @@ export async function action({
                overrideAccess: false,
                user,
             });
+            return jsonWithSuccess(null, "Banner updated");
          }
-         const errorMessage = JSON.parse(result.error.message)
-            .map((item: any) => item.message)
-            .join("\n");
-
-         return jsonWithError(null, errorMessage);
       }
       case "deleteBanner": {
          assertIsDelete(request);
@@ -465,7 +446,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         return await payload.update({
+         await payload.update({
             collection: "posts",
             id: postData.id,
             data: {
@@ -475,6 +456,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
+         return jsonWithSuccess(null, "Banner deleted");
       }
       case "unpublish": {
          assertIsPost(request);
@@ -484,8 +466,6 @@ export async function action({
             siteId,
             user,
          });
-         invariant(postData, "Post doesn't exist");
-
          await payload.update({
             collection: "posts",
             id: postData.id,
@@ -508,71 +488,58 @@ export async function action({
             user,
          });
 
-         const newSlug = urlSlug(postData.name);
+         //TODO Feature: Allow user to manually set a url alias at publish
 
-         //See if duplicate exists on the same site
+         //Alias is not updated on subsequent title updates.
+         //If slug is same as post id, it's the first time a slug is being set
+         //@ts-ignore
+         if (postData?.slug == postData.id) {
+            const newSlug = urlSlug(postData.name);
 
-         const existingPostsWithSlug = await payload.find({
-            collection: "posts",
-            where: {
-               "site.slug": {
-                  equals: siteId,
+            const existingPostsWithSlug = await payload.find({
+               collection: "posts",
+               where: {
+                  "site.slug": {
+                     equals: siteId,
+                  },
+                  slug: {
+                     equals: newSlug,
+                  },
+                  id: {
+                     not_equals: postData?.id,
+                  },
                },
-               slug: {
-                  equals: newSlug,
-               },
-               id: {
-                  not_equals: postData?.id,
-               },
-            },
-            overrideAccess: false,
-            user,
-         });
+               overrideAccess: false,
+               user,
+            });
 
+            //If no collision and it's the first time we are generating the slug, publish with alias.
+            if (existingPostsWithSlug.totalDocs == 0) {
+               //@ts-ignore
+               const updatedPost = await payload.update({
+                  collection: "posts",
+                  id: postData.id,
+                  data: {
+                     slug: newSlug,
+                     publishedAt: new Date().toISOString(),
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+               if (updatedPost)
+                  return redirectWithSuccess(
+                     //@ts-ignore
+                     `/${siteId}/p/${updatedPost.slug}`,
+                     `"${postData.name}" successfully published`,
+                  );
+            }
+         }
          //Update the postContents collection to published
          await payload.update({
             collection: "postContents",
             id: postData.id,
             data: {
                _status: "published",
-            },
-            overrideAccess: false,
-            user,
-         });
-
-         //If no collision and it's the first time we are generating the slug, publish with alias.
-         //Alias is not updated on subsequent title updates.
-         //Otherwise the slug already exists so we just update publishedAt.
-         //TODO Feature: Allow user to manually set a url alias at publish
-         //If slug is same as post id, it's the first time a slug is being set
-         const firstSlug =
-            //@ts-ignore
-            postData?.slug == postData.id &&
-            existingPostsWithSlug.totalDocs == 0;
-         if (firstSlug) {
-            //@ts-ignore
-            const updatedPost = await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  slug: newSlug,
-                  publishedAt: new Date().toISOString(),
-               },
-               overrideAccess: false,
-               user,
-            });
-            if (updatedPost)
-               return redirectWithSuccess(
-                  `/${siteId}/p/${updatedPost.slug}`,
-                  `"${postData.name}" successfully published`,
-               );
-         }
-         await payload.update({
-            collection: "posts",
-            id: postData.id,
-            data: {
-               //@ts-ignore
-               publishedAt: new Date().toISOString(),
             },
             overrideAccess: false,
             user,
@@ -587,8 +554,6 @@ export async function action({
             siteId,
             user,
          });
-
-         invariant(postData, "Post doesn't exist");
 
          const post = await payload.delete({
             collection: "posts",
@@ -605,6 +570,7 @@ export async function action({
          });
 
          const bannerId = post?.banner?.id;
+
          if (bannerId) {
             await payload.delete({
                collection: "images",
@@ -630,7 +596,7 @@ export async function action({
             siteId,
             user,
          });
-         invariant(postData, "Post doesn't exist");
+
          return await payload.create({
             collection: "comments",
             data: {
@@ -699,51 +665,49 @@ export async function action({
          return json({ message: "ok" });
       }
       case "upVoteComment": {
-         const result = await zx.parseFormSafe(request, {
+         const { commentId, userId } = await zx.parseForm(request, {
             commentId: z.string(),
             userId: z.string(),
          });
-         if (result.success) {
-            const { commentId, userId } = result.data;
-            const comment = await payload.findByID({
-               collection: "comments",
-               id: commentId,
-               depth: 0,
-            });
 
-            const existingVoteStatic = comment?.upVotesStatic ?? 0;
+         const comment = await payload.findByID({
+            collection: "comments",
+            id: commentId,
+            depth: 0,
+         });
 
-            //@ts-ignore
-            let existingVotes = (comment?.upVotes as string[]) ?? [];
+         const existingVoteStatic = comment?.upVotesStatic ?? 0;
 
-            //If vote exists, remove instead
-            if (existingVotes.includes(userId)) {
-               existingVotes.splice(existingVotes.indexOf(userId), 1);
-               try {
-                  return await payload.update({
-                     collection: "comments",
-                     id: commentId,
-                     data: {
-                        //@ts-ignore
-                        upVotes: existingVotes,
-                        upVotesStatic: existingVoteStatic - 1,
-                     },
-                  });
-               } catch (err: unknown) {
-                  console.log("ERROR");
-                  payload.logger.error(`${err}`);
-               }
+         //@ts-ignore
+         let existingVotes = (comment?.upVotes as string[]) ?? [];
+
+         //If vote exists, remove instead
+         if (existingVotes.includes(userId)) {
+            existingVotes.splice(existingVotes.indexOf(userId), 1);
+            try {
+               return await payload.update({
+                  collection: "comments",
+                  id: commentId,
+                  data: {
+                     //@ts-ignore
+                     upVotes: existingVotes,
+                     upVotesStatic: existingVoteStatic - 1,
+                  },
+               });
+            } catch (err: unknown) {
+               console.log("ERROR");
+               payload.logger.error(`${err}`);
             }
-            //@ts-ignore
-            return await payload.update({
-               collection: "comments",
-               id: commentId,
-               data: {
-                  upVotes: [...existingVotes, userId],
-                  upVotesStatic: existingVoteStatic + 1,
-               },
-            });
          }
+         //@ts-ignore
+         return await payload.update({
+            collection: "comments",
+            id: commentId,
+            data: {
+               upVotes: [...existingVotes, userId],
+               upVotesStatic: existingVoteStatic + 1,
+            },
+         });
       }
       case "deleteComment": {
          const { commentId } = await zx.parseForm(request, {
