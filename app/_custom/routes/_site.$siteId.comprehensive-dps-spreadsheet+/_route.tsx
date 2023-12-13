@@ -4,6 +4,7 @@ import { Combobox } from "@headlessui/react";
 import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import {
    Form,
+   Link,
    useLoaderData,
    useSearchParams,
    useSubmit,
@@ -12,7 +13,13 @@ import {
 import { Icon } from "~/components/Icon";
 
 import { generateSpreadsheet, getCustom } from "./calc.js";
-import { GM, Data, requiredJSONStatus } from "./dataFactory.js";
+import {
+   GM,
+   Data,
+   requiredJSONStatus,
+   weathers,
+   pokeTypes,
+} from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -56,7 +63,6 @@ export function HydrateFallback() {
       <>
          <Introduction />
          <NewToggles />
-         {/* <Toggles /> */}
          <Icon name="loader-2" size={24} className="mx-auto animate-spin" />
       </>
    );
@@ -69,7 +75,6 @@ export function ComprehensiveDpsSpreadsheet() {
       <>
          <Introduction />
          <NewToggles pokemon={pokemon} />
-         {/* <Toggles pokemon={pokemon} /> */}
          <Pagination count={count} />
          <ResultsTable />
       </>
@@ -78,13 +83,18 @@ export function ComprehensiveDpsSpreadsheet() {
 
 export function Introduction() {
    return (
-      <div>
-         <p>
+      <div className="bg-white p-6 shadow rounded-lg">
+         <p className="text-gray-700">
             This is GamePress's complete list of all Pokemon and all movesets
-            and their associated DPS(Damage Per Second) and TDO(Total Damage
-            Output).
+            and their associated
+            <Link
+               to="/pokemongo/how-calculate-comprehensive-dps"
+               className="text-blue-600 underline"
+            >
+               DPS (Damage Per Second) and TDO (Total Damage Output)
+            </Link>
          </p>
-         <p>
+         <p className="text-gray-700 mt-4">
             The list is sortable by clicking on the double-ended arrows near the
             name of the categories. Selecting the "Swap Dscnt" checkbox will
             account for the time it takes to swap Pokemon during a raid battle.
@@ -92,110 +102,78 @@ export function Introduction() {
             uploaded to your GamePress account. Selecting "Best" will show only
             the best moveset for each Pokemon.
          </p>
-         <p>
+         <p className="text-gray-700 mt-4">
             To specify DPS and TDO for a specific matchup, select the enemy
             Pokemon and weather above the search bar. For a detailed sort, try
             using the search bar, which works much like the in-game search bar.
-            Here is the list of search features supported. Some examples:
+            <a
+               className="text-blue-600 underline"
+               href="https://github.com/biowpn/GoBattleSim/blob/master/doc/PokeQuery.md"
+            >
+               Here
+            </a>
+            is the list of search features supported. Some examples:
          </p>
-         <table className="table-auto border-collapse border border-gray-400">
-            <thead>
-               <tr>
-                  <th className="px-4 py-2">
-                     <center>Search</center>
-                  </th>
-                  <th className="px-4 py-2">
-                     <center>Example</center>
-                  </th>
-               </tr>
-            </thead>
-            <tbody>
-               <tr>
-                  <td className="border px-4 py-2">Dex Number</td>
-                  <td className="border px-4 py-2">1-151</td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">Pokemon Type</td>
-                  <td className="border px-4 py-2">
+         <div className="mt-6">
+            <div className="border-t border-b border-gray-200">
+               <div className="flex justify-between px-6 py-3 bg-gray-100">
+                  <span className="font-semibold text-gray-700">Search</span>
+                  <span className="font-semibold text-gray-700">Example</span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Dex Number</span>
+                  <span className="text-gray-700 float-right">1-151</span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Pokemon Type</span>
+                  <span className="text-gray-700 float-right">
                      normal, normal & flying, normal & none
-                  </td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">Move Type</td>
-                  <td className="border px-4 py-2">
-                     @ghost, @1ghost, @2ghost, @*ghost{" "}
-                  </td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">Base Stats</td>
-                  <td className="border px-4 py-2">baseatk180-200, cp3000-</td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">Filter by move</td>
-                  <td className="border px-4 py-2">
+                  </span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Move Type</span>
+                  <span className="text-gray-700 float-right">
+                     @ghost, @1ghost, @2ghost, *@ghost
+                  </span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Base Stats</span>
+                  <span className="text-gray-700 float-right">
+                     baseatk180-200, cp3000-
+                  </span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Filter by move</span>
+                  <span className="text-gray-700 float-right">
                      @legacy / @exclusive / @stab
-                  </td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">Filter out legacy moves</td>
-                  <td className="border px-4 py-2">@*current</td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">
+                  </span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">Filter out legacy moves</span>
+                  <span className="text-gray-700 float-right">@*current</span>
+               </div>
+               <div className="px-6 py-3 border-b border-gray-200">
+                  <span className="text-gray-700">
                      Filter out Shadow Pokemon
-                  </td>
-                  <td className="border px-4 py-2">!shadow</td>
-               </tr>
-               <tr>
-                  <td className="border px-4 py-2">
+                  </span>
+                  <span className="text-gray-700 float-right">!shadow</span>
+               </div>
+               <div className="px-6 py-3">
+                  <span className="text-gray-700">
                      View only Pokemon with fast and charged moves that are the
                      same type
-                  </td>
-                  <td className="border px-4 py-2">@same</td>
-               </tr>
-            </tbody>
-         </table>
+                  </span>
+                  <span className="text-gray-700 float-right">@same</span>
+               </div>
+            </div>
+            <p className="text-gray-700 mt-4">
+               These searches can be combined with the '&' symbol to create a
+               pinpointed reference for DPS and TDO.
+            </p>
+         </div>
       </div>
    );
 }
-
-const weathers = [
-   { name: "EXTREME", label: "Extreme" },
-   { name: "CLEAR", label: "Clear" },
-   { name: "FOG", label: "Fog" },
-   { name: "CLOUDY", label: "Cloudy" },
-   { name: "PARTLY_CLOUDY", label: "Partly Cloudy" },
-   { name: "RAINY", label: "Rainy" },
-   { name: "SNOW", label: "Snow" },
-   { name: "WINDY", label: "Windy" },
-];
-
-const pokeTypes = [
-   "bug",
-   "dark",
-   "dragon",
-   "electric",
-   "fairy",
-   "fighting",
-   "fire",
-   "flying",
-   "ghost",
-   "grass",
-   "ground",
-   "ice",
-   "normal",
-   "poison",
-   "psychic",
-   "rock",
-   "steel",
-   "water",
-];
-
-const capitalize = (word: string) => {
-   return word
-      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-      : "";
-};
 
 function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
    const [enemyPokemon, setEnemyPokemon] = useState({});
@@ -469,323 +447,6 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
    );
 }
 
-// function Toggles({ pokemon = [] }: { pokemon?: Array<any> }) {
-//    // console.log(pokemon);
-
-//    // We'll set Fast Move and Charged Move options if enemy-pokemon-name is set and matches
-//    // a pokemon in our list
-//    // todo probably use Combobox for this https://ui.shadcn.com/docs/components/combobox
-//    const [enemyPokemon, setEnemyPokemon] = useState({});
-//    const submit = useSubmit();
-
-//    const fastMoves =
-//       [
-//          enemyPokemon?.fastMoves,
-//          enemyPokemon?.fastMove_exclusive,
-//          enemyPokemon?.fastMoves_legacy,
-//       ]
-//          .flat(1)
-//          .filter((move) => move) ?? [];
-
-//    const chargedMoves =
-//       [
-//          enemyPokemon?.chargedMoves,
-//          enemyPokemon?.chargedMove_exclusive,
-//          enemyPokemon?.chargedMoves_legacy,
-//       ]
-//          .flat(1)
-//          .filter((move) => move) ?? [];
-
-//    return (
-//       <Form
-//          method="GET"
-//          replace={true}
-//          className="w-full"
-//          id="dps-form"
-//          name="dps-form"
-//          onChange={(e) => {
-//             submit(e.currentTarget, { method: "GET" });
-//          }}
-//       >
-//          <label className="row-form-label">Enemy Information</label>
-//          <div className="w-full grid grid-cols-4">
-//             <div className="row">
-//                <div id="enemy-pokemon-name-container" className="col-sm-6">
-//                   <label className="col-form-label">Species</label>
-//                   <PokemonComboBox
-//                      enemyPokemon={enemyPokemon}
-//                      setEnemyPokemon={setEnemyPokemon}
-//                      pokemon={pokemon}
-//                   />
-//                   <input
-//                      hidden
-//                      name="enemy-pokemon-name"
-//                      value={enemyPokemon.name}
-//                   />
-//                </div>
-//                <div id="pokemon-pokeType1-container" className="col-sm-3">
-//                   <label className="col-form-label">PokeType 1</label>
-//                   <select
-//                      id="pokemon-pokeType1"
-//                      name="pokemon-pokeType1"
-//                      className="form-control"
-//                   >
-//                      <option value="none">None</option>
-//                      {pokeTypes.map((type) => (
-//                         <option
-//                            key={type}
-//                            value={type}
-//                            selected={enemyPokemon?.pokeType1 === type}
-//                         >
-//                            {capitalize(type)}
-//                         </option>
-//                      ))}
-//                   </select>
-//                </div>
-//                <div id="pokemon-pokeType2-container" className="col-sm-3">
-//                   <label className="col-form-label">PokeType 2</label>
-//                   <select
-//                      id="pokemon-pokeType2"
-//                      name="pokemon-pokeType2"
-//                      className="form-control"
-//                   >
-//                      <option value="none">None</option>
-//                      {pokeTypes.map((type) => (
-//                         <option
-//                            key={type}
-//                            value={type}
-//                            selected={enemyPokemon?.pokeType2 === type}
-//                         >
-//                            {capitalize(type)}
-//                         </option>
-//                      ))}
-//                   </select>
-//                </div>
-//             </div>
-//             <div className="row">
-//                <div id="enemy-pokemon-fmove-container" className="col-sm-6">
-//                   <label className="col-form-label">Fast Move</label>
-//                   <select
-//                      id="enemy-pokemon-fmove"
-//                      name="enemy-pokemon-fmove"
-//                      className="form-control"
-//                      placeholder="Fast Move"
-//                   >
-//                      <option value="">Select Fast Move</option>
-//                      {fastMoves.map((move) => (
-//                         <option key={move} value={move}>
-//                            {capitalize(move)}
-//                         </option>
-//                      ))}
-//                   </select>
-//                </div>
-//                <div id="enemy-pokemon-cmove-container" className="col-sm-6">
-//                   <label className="col-form-label">Charged Move</label>
-//                   <select
-//                      id="enemy-pokemon-cmove"
-//                      name="enemy-pokemon-cmove"
-//                      className="form-control"
-//                      placeholder="Charge Move"
-//                   >
-//                      <option value="">Select Charged Move</option>
-//                      {chargedMoves.map((move) => (
-//                         <option key={move} value={move}>
-//                            {capitalize(move)}
-//                         </option>
-//                      ))}
-//                   </select>
-//                </div>
-//             </div>
-//             <div className="row">
-//                <div className="col-sm-6">
-//                   <label className="col-form-label">Weather</label>
-//                   <select id="weather" name="weather" className="form-control">
-//                      {weathers.map(({ name, label }) => (
-//                         <option key={name} value={name}>
-//                            {label}
-//                         </option>
-//                      ))}
-//                   </select>
-//                </div>
-//                {/* <div className="col-sm-6">
-//                   <label className="col-form-label">Controls</label>
-//                   <div className="sub-menu-container">
-//                      <button
-//                         name="customize"
-//                         className="sub-menu-opener btn btn-primary"
-//                      >
-//                         <i className="fa fa-cog" aria-hidden="true"></i>
-//                         Customize
-//                      </button>
-//                      <div className="sub-menu">
-//                         <button
-//                            className="player_button"
-//                            id="moveEditFormOpener"
-//                            name="moveEditFormOpener"
-//                         >
-//                            Move
-//                         </button>
-//                         <button
-//                            className="player_button"
-//                            id="pokemonEditFormOpener"
-//                            name="pokemonEditFormOpener"
-//                         >
-//                            Species
-//                         </button>
-//                         <button
-//                            className="player_button"
-//                            id="parameterEditFormOpener"
-//                            name="parameterEditFormOpener"
-//                         >
-//                            Battle Settings
-//                         </button>
-//                         <button
-//                            className="player_button"
-//                            id="modEditFormOpener"
-//                            name="modEditFormOpener"
-//                         >
-//                            Mods
-//                         </button>
-//                      </div>
-//                   </div>
-//                </div> */}
-//             </div>
-//          </div>
-//          <div className="w-full grid grid-cols-4">
-//             <div className="row">
-//                <div className="col-sm-6 col-lg-3">
-//                   <div id="ui-swapDiscount" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         Swap Dscnt
-//                         <input
-//                            type="checkbox"
-//                            id="ui-swapDiscount-checkbox"
-//                            name="ui-swapDiscount-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div>
-//                {/* <div className="col-sm-6 col-lg-3">
-//                   <div id="ui-use-box" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         My Pokemon
-//                         <input
-//                            type="checkbox"
-//                            id="ui-use-box-checkbox"
-//                            name="ui-use-box-checkbox"
-//                            disabled
-//                         />
-//                      </label>
-//                   </div>
-//                </div> */}
-//                {/* <div className="col-sm-6 col-lg-3">
-//                   <div id="ui-uniqueSpecies" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         Best
-//                         <input
-//                            type="checkbox"
-//                            id="ui-uniqueSpecies-checkbox"
-//                            name="ui-uniqueSpecies-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div> */}
-//                <div className="col-sm-6 col-lg-3">
-//                   Attacker Level
-//                   <input
-//                      id="attacker-level"
-//                      className="form-control"
-//                      defaultValue="40"
-//                      name="attacker-level"
-//                      type="number"
-//                      min={1}
-//                      max={40}
-//                   />
-//                </div>
-//             </div>
-//             <div className="row">
-//                <div className="col-sm-6 col-md-3">
-//                   <div style={{ width: "100%" }}>
-//                      <input
-//                         id="ui-cpcap"
-//                         type="number"
-//                         placeholder="CP Cap"
-//                         className="form-control"
-//                         name="ui-cpcap"
-//                      />
-//                   </div>
-//                </div>
-//                {/* <div className="col-sm-6 col-md-3">
-//                   <div id="ui-pvpMode" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         PvP Mode
-//                         <input
-//                            type="checkbox"
-//                            id="ui-pvpMode-checkbox"
-//                            name="ui-pvpMode-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div> */}
-//                {/* <div className="col-sm-6 col-md-3">
-//                   <div id="ui-hideUnavail" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         Hide Unavail
-//                         <input
-//                            type="checkbox"
-//                            id="ui-hideUnavail-checkbox"
-//                            name="ui-hideUnavail-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div> */}
-//                <div className="col-sm-6 col-md-3">
-//                   <button
-//                      className="btn btn-success"
-//                      id="refresher"
-//                      type="submit"
-//                      name="refresher"
-//                   >
-//                      <i className="fa fa-refresh" aria-hidden="true"></i>{" "}
-//                      Refresh
-//                   </button>
-//                </div>
-//             </div>
-//             <div className="row">
-//                <div className="col-sm-6 col-md-3">
-//                   <div id="ui-allyMega" style={{ width: "100%" }}>
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         Mega Boost?
-//                         <input
-//                            type="checkbox"
-//                            id="ui-allyMega-checkbox"
-//                            name="ui-allyMega-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div>
-//                <div className="col-sm-6 col-md-3">
-//                   <div
-//                      id="ui-allyMegaStab"
-//                      style={{ width: "100%", display: "none" }}
-//                   >
-//                      <label style={{ width: "100%", fontSize: "16px" }}>
-//                         Mega Stab?
-//                         <input
-//                            type="checkbox"
-//                            id="ui-allyMegaStab-checkbox"
-//                            name="ui-allyMegaStab-checkbox"
-//                         />
-//                      </label>
-//                   </div>
-//                </div>
-//             </div>
-//          </div>
-//       </Form>
-//    );
-// }
-
-//todo figure out what we want to use for table
 function ResultsTable() {
    const { results, count } = useLoaderData<typeof clientLoader>();
 
@@ -1029,11 +690,7 @@ function Pagination({ count = 100 }) {
 }
 
 export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
-   // const { pokemon } = useClientData();
-
    const [query, setQuery] = useState("");
-
-   // console.log(enemyPokemon);
 
    const filteredPokemon =
       query === ""
@@ -1359,5 +1016,11 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
 //       </Form>
 //    );
 // }
+
+const capitalize = (word: string) => {
+   return word
+      ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      : "";
+};
 
 export default ComprehensiveDpsSpreadsheet;

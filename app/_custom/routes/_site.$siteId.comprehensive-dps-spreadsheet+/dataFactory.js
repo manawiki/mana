@@ -11,6 +11,38 @@ import raidBossList from "./raid-boss-list-PoGO.json";
 
 export var GM = {};
 
+export const weathers = [
+   { name: "EXTREME", label: "Extreme" },
+   { name: "CLEAR", label: "Clear" },
+   { name: "FOG", label: "Fog" },
+   { name: "CLOUDY", label: "Cloudy" },
+   { name: "PARTLY_CLOUDY", label: "Partly Cloudy" },
+   { name: "RAINY", label: "Rainy" },
+   { name: "SNOW", label: "Snow" },
+   { name: "WINDY", label: "Windy" },
+];
+
+export const pokeTypes = [
+   "bug",
+   "dark",
+   "dragon",
+   "electric",
+   "fairy",
+   "fighting",
+   "fire",
+   "flying",
+   "ghost",
+   "grass",
+   "ground",
+   "ice",
+   "normal",
+   "poison",
+   "psychic",
+   "rock",
+   "steel",
+   "water",
+];
+
 /**
  * Fetch all required JSONs for the application.
  * @param kwargs {Object} Keyword arguments. Can specify 'name', 'complete', 'userid'
