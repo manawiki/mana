@@ -2,7 +2,12 @@ import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { useFetcher, useRouteLoaderData } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
@@ -10,7 +15,7 @@ import { Editable, Slate } from "slate-react";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Comment, User } from "~/db/payload-types";
-import { LoggedIn } from "~/routes/_auth+/src/components";
+import { LoggedIn, LoggedOut } from "~/routes/_auth+/src/components";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
@@ -22,59 +27,87 @@ import { isAdding, isProcessing } from "~/utils";
 export function Comments({ comments }: { comments: Comment[] }) {
    const { user } = useRouteLoaderData("root") as { user: User };
 
+   let location = useLocation();
+
    return (
-      <div className="py-6">
-         <div className="border-y overflow-hidden border-color bg-zinc-50 shadow-sm dark:shadow dark:bg-dark350/70 relative">
-            <div
-               className="flex items-center justify-between gap-1.5 font-bold py-3
-            mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
-            >
-               <div className="flex items-center gap-2">
-                  <Icon
-                     name="message-circle"
-                     className="text-zinc-400 dark:text-zinc-500"
-                     size={20}
+      <>
+         <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:w-[728px] py-6 laptop:pb-40">
+            <LoggedIn>
+               <div className="pb-5">
+                  <CommentsEditor />
+               </div>
+            </LoggedIn>
+            {comments && comments.length > 0 ? (
+               comments.map((comment, index) => (
+                  <CommentRow
+                     key={comment?.id}
+                     userId={user?.id}
+                     comment={comment}
+                     comments={comments}
+                     topLevelIndex={index}
                   />
-                  <div className="font-header text-lg">Comments</div>
-               </div>
-               <div className="flex items-center gap-3 z-10">
-                  <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
-                     Latest
-                  </div>
-                  <button
-                     className="rounded-full shadow-sm shadow-1 border border-color dark:border-zinc-600 text-[11px] 
-                     flex items-center justify-center dark:bg-dark450 bg-white h-7 px-4"
-                  >
-                     Top
-                  </button>
-               </div>
-            </div>
-            <div
-               className="pattern-dots absolute left-0
-                   top-0.5 -z-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-2 dark:pattern-zinc-600 dark:pattern-bg-dark350"
-            />
-         </div>
-         <div className="pt-5 pb-40 border-color">
-            <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]">
-               <LoggedIn>
-                  <div className="pb-5">
+               ))
+            ) : (
+               <LoggedOut>
+                  <div>
+                     <div className="mb-5 text-sm pl-4 border-l-2 border-color-sub">
+                        <Link
+                           className="underline font-bold pr-1 hover:text-blue-500"
+                           to={`/login?redirectTo=${location.pathname}`}
+                        >
+                           Login
+                        </Link>
+                        <span className="text-1">to leave a comment...</span>
+                     </div>
                      <CommentsEditor />
                   </div>
-               </LoggedIn>
-               {comments &&
-                  comments.map((comment, index) => (
-                     <CommentRow
-                        key={comment?.id}
-                        userId={user?.id}
-                        comment={comment}
-                        comments={comments}
-                        topLevelIndex={index}
-                     />
-                  ))}
+               </LoggedOut>
+            )}
+         </div>
+      </>
+   );
+}
+
+export function CommentHeader({
+   totalComments,
+}: {
+   totalComments: number | undefined;
+}) {
+   return (
+      <div
+         id="comments"
+         className="border-y overflow-hidden border-color bg-zinc-50 shadow-sm dark:shadow dark:bg-dark350/70 relative"
+      >
+         <div
+            className="flex items-center justify-between gap-1.5 font-bold py-3
+            mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px]"
+         >
+            <div className="flex items-center gap-2">
+               <Icon
+                  name="message-circle"
+                  className="text-zinc-400 dark:text-zinc-500"
+                  size={20}
+               />
+               <div className="font-header">
+                  {totalComments ? totalComments : "Comments"}
+               </div>
+            </div>
+            <div className="flex items-center gap-3 z-10">
+               <div className="rounded-full text-[11px] flex items-center justify-center h-7 px-4">
+                  Latest
+               </div>
+               <button
+                  className="rounded-full shadow-sm shadow-1 border border-color dark:border-zinc-600 text-[11px] 
+      flex items-center justify-center dark:bg-dark450 bg-white h-7 px-4"
+               >
+                  Top
+               </button>
             </div>
          </div>
+         <div
+            className="pattern-dots absolute left-0 top-0.5 -z-0 h-full w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
+            pattern-size-2 dark:pattern-zinc-600 dark:pattern-bg-dark350"
+         />
       </div>
    );
 }
@@ -96,12 +129,6 @@ function CommentRow({
    const [isCommentExpanded, setCommentExpanded] = useState(true);
 
    const fetcher = useFetcher({ key: "comments" });
-
-   const commentTopLevelParentId =
-      //@ts-ignore
-      comments[topLevelIndex]?.isTopLevel == true &&
-      //@ts-ignore
-      comments[topLevelIndex]?.id;
 
    //Hide the comment field after submission
    useEffect(
@@ -319,7 +346,6 @@ function CommentRow({
                      commentParentId={comment.id}
                      //@ts-ignore
                      commentDepth={comment.depth}
-                     commentTopLevelParentId={commentTopLevelParentId}
                   />
                </div>
             </Transition>
@@ -357,12 +383,10 @@ function CommentRow({
 
 function CommentsEditor({
    commentParentId,
-   commentTopLevelParentId,
    commentDepth,
    isReply,
 }: {
    commentParentId?: string;
-   commentTopLevelParentId?: string;
    commentDepth?: number;
    isReply?: boolean;
 }) {
@@ -387,8 +411,7 @@ function CommentsEditor({
          {
             comment: JSON.stringify(inlineEditor.children),
             commentParentId,
-            commentDepth,
-            commentTopLevelParentId,
+            commentDepth: commentDepth ? commentDepth + 1 : 1,
             intent: "createCommentReply",
          },
          { method: "post" },

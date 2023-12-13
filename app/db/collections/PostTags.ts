@@ -29,5 +29,9 @@ export const PostTags: CollectionConfig = {
          name: "slug",
          type: "text",
       },
+      {
+         name: "name",
+         type: "text",
+      },
    ],
 };

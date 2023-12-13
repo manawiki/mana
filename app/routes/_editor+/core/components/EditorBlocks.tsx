@@ -18,6 +18,7 @@ import {
    BlockGroupItemView,
    BlockGroupView,
 } from "../../$siteId.blocks+/group/group-view";
+import { BlockHTMLBlock } from "../../$siteId.blocks+/htmlblock";
 import { BlockImage } from "../../$siteId.blocks+/image";
 import { BlockInfoBox, BlockInfoBoxItem } from "../../$siteId.blocks+/infobox";
 import { BlockInlineAd } from "../../$siteId.blocks+/inline-ad";
@@ -96,6 +97,16 @@ export function EditorBlocks({
       case BlockType.CodeBlock: {
          return (
             <BlockCodeBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.HTMLBlock: {
+         return (
+            <BlockHTMLBlock
                readOnly={readOnly}
                element={element}
                children={children}
