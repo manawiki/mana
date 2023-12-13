@@ -11,86 +11,10 @@ import {
 
 import { Icon } from "~/components/Icon";
 
-import { generateSpreadsheet, Context, applyContext } from "./calc.js";
+import { generateSpreadsheet, getCustom } from "./calc.js";
 import { GM, Data, requiredJSONStatus } from "./dataFactory.js";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
-
-//apply param toggles to update context
-function getCustom(params) {
-   const context = {};
-
-   if (params["ui-swapDiscount-checkbox"]) {
-      context.swapDiscount = true;
-   }
-
-   // todo figure out user box
-   if (params["ui-use-box-checkbox"]) {
-      context.useBox = true;
-   }
-
-   // todo add this to filters
-   if (params["ui-uniqueSpecies-checkbox"]) {
-      context.uniqueSpecies = true;
-   }
-
-   // todo rework pvp GM.mode()
-   if (params["ui-pvpMode-checkbox"]) {
-      context.battleMode = "pvp";
-   }
-
-   // todo reimplement this
-   if (params["ui-hideUnavail-checkbox"]) {
-      context.hideUnavail = true;
-   }
-
-   if (params["ui-allyMega-checkbox"]) {
-      context.allyMega = true;
-   }
-
-   if (params["ui-allyMegaStab-checkbox"]) {
-      context.allyMegaStab = true;
-   }
-
-   if (params["ui-cpcap"]) {
-      context.cpCap = parseInt(params["ui-cpcap"]);
-   }
-
-   // todo currently broken
-   if (params["attacker-level"]) {
-      context.attackerLevel = parseInt(params["attacker-level"]);
-   }
-
-   if (params["weather"]) {
-      context.weather = params["weather"];
-   }
-
-   if (params["enemy-pokemon-name"]) {
-      context.enemyPokemon = params["enemy-pokemon-name"];
-   }
-
-   if (params["enemy-pokemon-fmove"]) {
-      context.enemyPokemonFmove = params["enemy-pokemon-fmove"];
-   }
-
-   if (params["enemy-pokemon-cmove"]) {
-      context.enemyPokemonCmove = params["enemy-pokemon-cmove"];
-   }
-
-   if (params["pokemon-pokeType1"]) {
-      context.enemyPokeType1 = params["pokemon-pokeType1"];
-   }
-
-   if (params["pokemon-pokeType2"]) {
-      context.enemyPokeType2 = params["pokemon-pokeType2"];
-   }
-
-   // if (params["searchInput"]) {
-   //    context.searchInput = params["searchInput"];
-   // }
-
-   return context;
-}
 
 const cache = { key: "", value: undefined };
 
@@ -100,7 +24,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const params = Object.fromEntries(url.searchParams);
 
-   const custom = getCustom(params);
+   const context = getCustom(params);
 
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
@@ -108,19 +32,17 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //to-do add user pokemon
    const pokemon = Data.Pokemon;
 
+   //create a simple in-memory cache
    function cacheResult() {
-      cache.value = generateSpreadsheet(Data.Pokemon, {
-         ...Context,
-         ...applyContext(custom),
-      });
+      cache.value = generateSpreadsheet(Data.Pokemon, context);
 
-      cache.key = JSON.stringify(custom);
+      cache.key = JSON.stringify(context);
       return cache.value;
    }
 
    // todo apply context from query params
    const results =
-      cache.key === JSON.stringify(custom) && cache.value
+      cache.key === JSON.stringify(context) && cache.value
          ? cache.value
          : cacheResult();
 
