@@ -12,10 +12,12 @@ import { BangbooTalents } from "./bangboo-talents";
 import { Materials } from "./materials";
 import { Skills } from "./skills";
 import { Talents } from "./talents";
+import { WEngines } from "./w-engines";
 
 export const CustomCollections = [
   Agents,
   Bangboos,
+  WEngines,
   BangbooSkills,
   BangbooTalents,
   Materials,
@@ -30,10 +32,16 @@ export const CustomCollections = [
   _Stats,
 ];
 
-export const CustomSearchCollections = ["agents", "bangboos", "materials"];
+export const CustomSearchCollections = [
+  "agents",
+  "bangboos",
+  "w-engines",
+  "materials",
+];
 
 export const CustomDefaultPriorities = {
   agents: 90,
   bangboos: 70,
+  "w-engines": 60,
   materials: 30,
 };
