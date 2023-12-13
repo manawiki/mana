@@ -9,24 +9,15 @@ import type {
    MetaFunction,
 } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
-import { request as gqlRequest } from "graphql-request";
-import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
-import type { Payload } from "payload";
-import { select } from "payload-query";
-import {
-   jsonWithError,
-   jsonWithSuccess,
-   redirectWithSuccess,
-} from "remix-toast";
+import { jsonWithSuccess, redirectWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
 import invariant from "tiny-invariant";
 import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Post, User } from "payload/generated-types";
+import type { Post } from "payload/generated-types";
 import customConfig from "~/_custom/config.json";
-import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
 import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/src/functions";
@@ -36,15 +27,14 @@ import {
 } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
+import type { loader as siteLayoutLoader } from "~/routes/_site+/$siteId+/_layout";
 import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
    getMultipleFormData,
-   gqlEndpoint,
    uploadImage,
 } from "~/utils";
-import { cacheThis, gqlRequestWithCache } from "~/utils/cache.server";
 
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
@@ -53,6 +43,9 @@ import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
 import { PostTableOfContents } from "./components/PostTableOfContents";
 import { PostUnpublishModal } from "./components/PostUnpublishModal";
+import { fetchPost } from "./functions/fetchPost";
+import { fetchPostComments } from "./functions/fetchPostComments";
+import { fetchPostWithSlug } from "./functions/fetchPostWithSlug";
 import { mainContainerStyle } from "../$siteId+/_index";
 import { AdPlaceholder, AdUnit } from "../$siteId+/src/components";
 
@@ -95,55 +88,6 @@ export async function loader({
       siteId,
    });
 }
-
-export const meta: MetaFunction<typeof loader> = ({
-   data,
-   matches,
-}: {
-   data: any;
-   matches: any;
-}) => {
-   const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site.name;
-
-   const siteSlug = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site.slug;
-
-   const postTitle = data?.post?.name;
-   const postStatus = data?.post?._status;
-   const postBannerUrl = data?.post?.banner?.url;
-   const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
-   const postDescription = data?.post?.subtitle;
-   const postSlug = data?.post?.slug;
-   const postUrl = `https://mana.wiki/${siteSlug}/p/${postSlug}`;
-
-   return [
-      {
-         title:
-            postStatus == "published"
-               ? `${postTitle} - ${siteName}`
-               : `Edit | ${postTitle} - ${siteName}`,
-      },
-      {
-         property: "og:title",
-         content:
-            postStatus == "published"
-               ? `${postTitle} - ${siteName}`
-               : `Edit | ${postTitle} - ${siteName}`,
-      },
-      { property: "og:site_name", content: siteName },
-      ...(postDescription
-         ? [
-              { property: "description", content: postDescription },
-              { property: "og:description", content: postDescription },
-           ]
-         : []),
-      ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
-   ];
-};
 
 export default function Post() {
    const { post, postContent, isChanged, comments } =
@@ -333,68 +277,53 @@ export async function action({
    switch (intent) {
       case "updateTitle": {
          assertIsPatch(request);
-         const result = await zx.parseFormSafe(request, {
+         const { name } = await zx.parseForm(request, {
             name: z
                .string()
                .min(3, "Title is too short.")
                .max(200, "Title is too long."),
          });
-         if (result.success) {
-            const { name } = result.data;
 
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
 
-            invariant(postData, "Post doesn't exist");
-
-            return await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  name,
-               },
-               overrideAccess: false,
-               user,
-            });
-         }
-         const errorMessage = JSON.parse(result.error.message)
-            .map((item: any) => item.message)
-            .join("\n");
-
-         return jsonWithError(null, errorMessage);
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               name,
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Title updated");
       }
       case "updateSubtitle": {
          assertIsPatch(request);
          const { subtitle } = await zx.parseForm(request, {
             subtitle: z.string(),
          });
-         try {
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            invariant(postData, "Post doesn't exist");
-            return await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  //@ts-ignore
-                  subtitle,
-               },
-               overrideAccess: false,
-               user,
-            });
-         } catch (err: unknown) {
-            payload.logger.error(err);
-            payload.logger.error("Error updating post sub title");
-            return jsonWithError(null, "Error updating post sub title");
-         }
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
+         await payload.update({
+            collection: "posts",
+            id: postData.id,
+            data: {
+               //@ts-ignore
+               subtitle,
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Subtitle updated");
       }
 
       case "updateBanner": {
@@ -435,9 +364,7 @@ export async function action({
                user,
             });
 
-            invariant(postData, "Post doesn't exist");
-
-            return await payload.update({
+            await payload.update({
                collection: "posts",
                id: postData.id,
                data: {
@@ -447,12 +374,8 @@ export async function action({
                overrideAccess: false,
                user,
             });
+            return jsonWithSuccess(null, "Banner updated");
          }
-         const errorMessage = JSON.parse(result.error.message)
-            .map((item: any) => item.message)
-            .join("\n");
-
-         return jsonWithError(null, errorMessage);
       }
       case "deleteBanner": {
          assertIsDelete(request);
@@ -463,9 +386,6 @@ export async function action({
             siteId,
             user,
          });
-
-         invariant(postData, "Post doesn't exist");
-
          const bannerId = postData?.banner?.id;
          await payload.delete({
             collection: "images",
@@ -474,7 +394,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         return await payload.update({
+         await payload.update({
             collection: "posts",
             id: postData.id,
             data: {
@@ -484,6 +404,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
+         return jsonWithSuccess(null, "Banner deleted");
       }
       case "unpublish": {
          assertIsPost(request);
@@ -493,8 +414,6 @@ export async function action({
             siteId,
             user,
          });
-         invariant(postData, "Post doesn't exist");
-
          await payload.update({
             collection: "posts",
             id: postData.id,
@@ -505,10 +424,7 @@ export async function action({
             overrideAccess: false,
             user,
          });
-         return jsonWithSuccess(
-            { result: "Data saved successfully" },
-            "Post successfully unpublished",
-         );
+         return jsonWithSuccess(null, "Post unpublished");
       }
       case "publish": {
          assertIsPost(request);
@@ -519,13 +435,15 @@ export async function action({
             siteId,
             user,
          });
-         invariant(postData, "Post doesn't exist");
 
-         const newSlug = urlSlug(postData.name);
+         //TODO Feature: Allow user to manually set a url alias at publish
 
-         //See if duplicate exists on the same site
+         //Alias is not updated on subsequent title updates.
+         //If slug is same as post id, it's the first time a slug is being set
+         //@ts-ignore
+         if (postData?.slug == postData.id) {
+            const newSlug = urlSlug(postData.name);
 
-         try {
             const existingPostsWithSlug = await payload.find({
                collection: "posts",
                where: {
@@ -543,29 +461,10 @@ export async function action({
                user,
             });
 
-            //Update the postContents collection to published
-            await payload.update({
-               collection: "postContents",
-               id: postData.id,
-               data: {
-                  _status: "published",
-               },
-               overrideAccess: false,
-               user,
-            });
-
             //If no collision and it's the first time we are generating the slug, publish with alias.
-            //Alias is not updated on subsequent title updates.
-            //Otherwise the slug already exists so we just update publishedAt.
-            //TODO Feature: Allow user to manually set a url alias at publish
-            //If slug is same as post id, it's the first time a slug is being set
-            const firstSlug =
+            if (existingPostsWithSlug.totalDocs == 0) {
                //@ts-ignore
-               postData?.slug == postData.id &&
-               existingPostsWithSlug.totalDocs == 0;
-            if (firstSlug) {
-               //@ts-ignore
-               await payload.update({
+               const updatedPost = await payload.update({
                   collection: "posts",
                   id: postData.id,
                   data: {
@@ -575,22 +474,25 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
+               if (updatedPost)
+                  return redirectWithSuccess(
+                     //@ts-ignore
+                     `/${siteId}/p/${updatedPost.slug}`,
+                     `"${postData.name}" successfully published`,
+                  );
             }
-            await payload.update({
-               collection: "posts",
-               id: postData.id,
-               data: {
-                  //@ts-ignore
-                  publishedAt: new Date().toISOString(),
-               },
-               overrideAccess: false,
-               user,
-            });
-            return jsonWithSuccess(null, "Post successfully published");
-         } catch (err: unknown) {
-            payload.logger.error(err);
-            payload.logger.error(`Error creating post`);
          }
+         //Update the postContents collection to published
+         await payload.update({
+            collection: "postContents",
+            id: postData.id,
+            data: {
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Latest update published");
       }
       case "deletePost": {
          assertIsDelete(request);
@@ -600,8 +502,6 @@ export async function action({
             siteId,
             user,
          });
-
-         invariant(postData, "Post doesn't exist");
 
          const post = await payload.delete({
             collection: "posts",
@@ -618,6 +518,7 @@ export async function action({
          });
 
          const bannerId = post?.banner?.id;
+
          if (bannerId) {
             await payload.delete({
                collection: "images",
@@ -634,29 +535,26 @@ export async function action({
          );
       }
       case "createTopLevelComment": {
-         const result = await zx.parseFormSafe(request, {
+         const { comment } = await zx.parseForm(request, {
             comment: z.string(),
          });
-         if (result.success) {
-            const { comment } = result.data;
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteId,
-               user,
-            });
-            invariant(postData, "Post doesn't exist");
-            return await payload.create({
-               collection: "comments",
-               data: {
-                  site: postData?.site.id as any,
-                  comment: JSON.parse(comment),
-                  postParent: postData.id as any,
-                  author: user.id as any,
-                  isTopLevel: true,
-               },
-            });
-         }
+         const { postData } = await fetchPostWithSlug({
+            p,
+            payload,
+            siteId,
+            user,
+         });
+
+         return await payload.create({
+            collection: "comments",
+            data: {
+               site: postData?.site.id as any,
+               comment: JSON.parse(comment),
+               postParent: postData.id as any,
+               author: user.id as any,
+               isTopLevel: true,
+            },
+         });
       }
       case "createCommentReply": {
          const { comment, commentParentId, commentDepth } = await zx.parseForm(
@@ -715,51 +613,49 @@ export async function action({
          return json({ message: "ok" });
       }
       case "upVoteComment": {
-         const result = await zx.parseFormSafe(request, {
+         const { commentId, userId } = await zx.parseForm(request, {
             commentId: z.string(),
             userId: z.string(),
          });
-         if (result.success) {
-            const { commentId, userId } = result.data;
-            const comment = await payload.findByID({
-               collection: "comments",
-               id: commentId,
-               depth: 0,
-            });
 
-            const existingVoteStatic = comment?.upVotesStatic ?? 0;
+         const comment = await payload.findByID({
+            collection: "comments",
+            id: commentId,
+            depth: 0,
+         });
 
-            //@ts-ignore
-            let existingVotes = (comment?.upVotes as string[]) ?? [];
+         const existingVoteStatic = comment?.upVotesStatic ?? 0;
 
-            //If vote exists, remove instead
-            if (existingVotes.includes(userId)) {
-               existingVotes.splice(existingVotes.indexOf(userId), 1);
-               try {
-                  return await payload.update({
-                     collection: "comments",
-                     id: commentId,
-                     data: {
-                        //@ts-ignore
-                        upVotes: existingVotes,
-                        upVotesStatic: existingVoteStatic - 1,
-                     },
-                  });
-               } catch (err: unknown) {
-                  console.log("ERROR");
-                  payload.logger.error(`${err}`);
-               }
+         //@ts-ignore
+         let existingVotes = (comment?.upVotes as string[]) ?? [];
+
+         //If vote exists, remove instead
+         if (existingVotes.includes(userId)) {
+            existingVotes.splice(existingVotes.indexOf(userId), 1);
+            try {
+               return await payload.update({
+                  collection: "comments",
+                  id: commentId,
+                  data: {
+                     //@ts-ignore
+                     upVotes: existingVotes,
+                     upVotesStatic: existingVoteStatic - 1,
+                  },
+               });
+            } catch (err: unknown) {
+               console.log("ERROR");
+               payload.logger.error(`${err}`);
             }
-            //@ts-ignore
-            return await payload.update({
-               collection: "comments",
-               id: commentId,
-               data: {
-                  upVotes: [...existingVotes, userId],
-                  upVotesStatic: existingVoteStatic + 1,
-               },
-            });
          }
+         //@ts-ignore
+         return await payload.update({
+            collection: "comments",
+            id: commentId,
+            data: {
+               upVotes: [...existingVotes, userId],
+               upVotesStatic: existingVoteStatic + 1,
+            },
+         });
       }
       case "deleteComment": {
          const { commentId } = await zx.parseForm(request, {
@@ -805,278 +701,42 @@ export async function action({
    }
 }
 
-/**
- * Get the immutable post Id from post slug.
- * Cache if anon.
- */
-async function fetchPostWithSlug({
-   p,
-   payload,
-   siteId,
-   user,
-}: {
-   p: string;
-   payload: Payload;
-   siteId: string;
-   user?: User;
-}) {
-   const { docs: postsAll } = !user
-      ? await cacheThis(
-           () =>
-              payload.find({
-                 collection: "posts",
-                 where: {
-                    "site.slug": {
-                       equals: siteId,
-                    },
-                    slug: {
-                       equals: p,
-                    },
-                 },
-              }),
-           `post-${p}`,
-        )
-      : await payload.find({
-           collection: "posts",
-           where: {
-              "site.slug": {
-                 equals: siteId,
-              },
-              slug: {
-                 equals: p,
-              },
-           },
-        });
+export const meta: MetaFunction<
+   typeof loader,
+   { "routes/_site+/$siteId+/_layout": typeof siteLayoutLoader }
+> = ({ data, matches }) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.name;
 
-   const post = postsAll[0];
+   const siteSlug = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.slug;
 
-   return { postData: post };
-}
+   invariant(data?.post);
 
-async function fetchPost({
-   p,
-   payload,
-   user,
-   siteId,
-   page = 1,
-}: {
-   p: string;
-   payload: Payload;
-   user?: User;
-   siteId: string;
-   page: number | undefined;
-}) {
-   const { postData } = await fetchPostWithSlug({
-      p,
-      payload,
-      siteId,
-      user,
-   });
+   const { name, subtitle, slug } = data?.post;
 
-   //If can't find post with slug, attempt to findById
-   if (!postData) {
-      const postById = await payload.findByID({
-         collection: "posts",
-         id: p,
-      });
+   const postBannerUrl = data?.post?.banner?.url;
+   const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
+   const postUrl = `https://mana.wiki/${siteSlug}/p/${slug}`;
 
-      if (!postById) throw redirect("/404", 404);
-
-      //Post exists, we received the ID as a URL param and want to redirect to the canonical path instead.
-      throw redirect(`/${postById.site.slug}/p/${postById.slug}`, 301);
-   }
-
-   if (!user) {
-      //If anon and data exists, return post data now
-      if (postData) {
-         return { post: postData, postContent: postData.content.content };
-      }
-      //Otherwise post doesn't exist
-      if (!postData) {
-         throw redirect("/404", 404);
-      }
-   }
-
-   //Now we handle authenticated querying
-   invariant(user, "Not logged in");
-
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
-
-   //If user has access, pull versions
-   if (hasAccess) {
-      const postContent = await payload.findByID({
-         collection: "postContents",
-         id: postData.id,
-         draft: true,
-         user,
-         overrideAccess: false,
-      });
-      const versionData = await payload.findVersions({
-         collection: "postContents",
-         depth: 2,
-         where: {
-            parent: {
-               equals: postContent.id,
-            },
-         },
-         limit: 20,
-         user,
-         page,
-      });
-      const versions = versionData.docs
-         .filter((doc) => doc.version._status === "published")
-         .map((doc) => {
-            const versionRow = select({ id: true, updatedAt: true }, doc);
-            const version = select(
-               {
-                  id: false,
-                  versionAuthor: true,
-                  content: true,
-                  _status: true,
-               },
-               doc.version,
-            );
-
-            //Combine final result
-            const result = {
-               ...versionRow,
-               version,
-            };
-
-            return result;
-         });
-
-      const isChanged =
-         JSON.stringify(postContent.content) !=
-            JSON.stringify(postData.content.content) ||
-         postData.publishedAt == null;
-
-      return {
-         post: postData,
-         postContent: postContent.content,
-         isChanged,
-         versions,
-      };
-   }
-   //return for regular type of user
-   return {
-      post: postData,
-      postContent: postData.content.content,
-      isChanged: false,
-   };
-}
-
-async function fetchPostComments({
-   p,
-   payload,
-   siteId,
-   user,
-}: {
-   p: string;
-   payload: Payload;
-   siteId: string;
-   user?: User;
-}) {
-   const { postData } = await fetchPostWithSlug({
-      p,
-      payload,
-      siteId,
-      user,
-   });
-
-   const postDataId = postData?.id;
-
-   const commentDepth = postData?.maxCommentDepth ?? 1;
-
-   function depthAndDeletionDecorator(array: any, depth = 1) {
-      return array.map((child: any) =>
-         Object.assign(child, {
-            depth,
-            //Remove content if deleted
-            // ...(child.isDeleted == true && { comment: undefined }),
-            replies: depthAndDeletionDecorator(child.replies || [], depth + 1),
-         }),
-      );
-   }
-
-   //Recursively generated nested query to get all replies
-   function generateNestedJsonObject(depth: number) {
-      if (depth === 0) {
-         return {};
-      } else {
-         let object = {
-            id: true,
-            createdAt: true,
-            isDeleted: true,
-            comment: true,
-            upVotesStatic: true,
-            author: {
-               username: true,
-               avatar: {
-                  url: true,
-               },
-            },
-         };
-         for (let i = 0; i < depth; i++) {
-            //@ts-ignore
-            object["replies"] = generateNestedJsonObject(depth - 1);
-         }
-         return object;
-      }
-   }
-
-   const nestedJsonObject = generateNestedJsonObject(commentDepth);
-
-   //Construct the query in JSON to then parse to graphql format
-   const query = {
-      query: {
-         __variables: {
-            postParentId: "JSON!",
-         },
-         comments: {
-            __aliasFor: "Comments",
-            __args: {
-               where: {
-                  isTopLevel: { equals: true },
-                  postParent: { equals: new VariableType("postParentId") },
-               },
-               sort: "-upVotesStatic",
-            },
-            docs: {
-               id: true,
-               createdAt: true,
-               isDeleted: true,
-               comment: true,
-               upVotesStatic: true,
-               isTopLevel: true,
-               isPinned: true,
-               author: {
-                  username: true,
-                  avatar: {
-                     url: true,
-                  },
-               },
-               ...nestedJsonObject,
-            },
-         },
+   return [
+      {
+         title: `${name} - ${siteName}`,
       },
-   };
-   const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
-
-   //Cache comments if non
-   const fetchComments = !user
-      ? await gqlRequestWithCache(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
-        })
-      : await gqlRequest(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
-        });
-
-   const comments = depthAndDeletionDecorator(
-      //@ts-ignore
-      fetchComments?.comments?.docs,
-      //@ts-ignore
-   ) as Comments[];
-
-   return comments ?? null;
-}
+      {
+         property: "og:title",
+         content: `${name} - ${siteName}`,
+      },
+      { property: "og:site_name", content: siteName },
+      ...(subtitle
+         ? [
+              { property: "description", content: subtitle },
+              { property: "og:description", content: subtitle },
+           ]
+         : []),
+      ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
+      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+   ];
+};
