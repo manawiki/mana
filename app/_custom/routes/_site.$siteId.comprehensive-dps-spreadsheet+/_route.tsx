@@ -964,18 +964,21 @@ function TH({ children }: { children: string }) {
    const asc = searchParams.get("asc");
 
    const onClick = () => {
-      setSearchParams((searchParams) => {
-         searchParams.set("sort", children.toString().toLowerCase());
+      setSearchParams(
+         (searchParams) => {
+            searchParams.set("sort", children.toString().toLowerCase());
 
-         //reset asc if we're sorting by a different column
-         sort !== children.toString().toLowerCase()
-            ? searchParams.delete("asc")
-            : asc
-            ? searchParams.delete("asc")
-            : searchParams.set("asc", "true");
+            //reset asc if we're sorting by a different column
+            sort !== children.toString().toLowerCase()
+               ? searchParams.delete("asc")
+               : asc
+               ? searchParams.delete("asc")
+               : searchParams.set("asc", "true");
 
-         return searchParams;
-      });
+            return searchParams;
+         },
+         { preventScrollReset: true },
+      );
    };
 
    return (
@@ -1020,10 +1023,13 @@ function Pagination({ count = 100 }) {
                //todo convert this to links
                className="flex items-center gap-1 font-semibold uppercase hover:underline"
                onClick={() =>
-                  setSearchParams((searchParams) => {
-                     searchParams.set("page", (page - 1).toString());
-                     return searchParams;
-                  })
+                  setSearchParams(
+                     (searchParams) => {
+                        searchParams.set("page", (page - 1).toString());
+                        return searchParams;
+                     },
+                     { preventScrollReset: true },
+                  )
                }
                disabled={page === 1}
             >
@@ -1042,10 +1048,13 @@ function Pagination({ count = 100 }) {
                min={1}
                max={numPages}
                onChange={(e) => {
-                  setSearchParams((searchParams) => {
-                     searchParams.set("page", e.target.value);
-                     return searchParams;
-                  });
+                  setSearchParams(
+                     (searchParams) => {
+                        searchParams.set("page", e.target.value);
+                        return searchParams;
+                     },
+                     { preventScrollReset: true },
+                  );
                }}
             />
             {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
@@ -1053,10 +1062,13 @@ function Pagination({ count = 100 }) {
             <button
                className="flex items-center gap-1 font-semibold uppercase hover:underline"
                onClick={() =>
-                  setSearchParams((searchParams) => {
-                     searchParams.set("page", (page + 1).toString());
-                     return searchParams;
-                  })
+                  setSearchParams(
+                     (searchParams) => {
+                        searchParams.set("page", (page + 1).toString());
+                        return searchParams;
+                     },
+                     { preventScrollReset: true },
+                  )
                }
                disabled={page >= numPages}
             >
@@ -1078,11 +1090,14 @@ function Pagination({ count = 100 }) {
                   className="w-full"
                   name="search"
                   onChange={(e) => {
-                     setSearchParams((searchParams) => {
-                        searchParams.set("search", e.target.value);
-                        searchParams.delete("page");
-                        return searchParams;
-                     });
+                     setSearchParams(
+                        (searchParams) => {
+                           searchParams.set("search", e.target.value);
+                           searchParams.delete("page");
+                           return searchParams;
+                        },
+                        { preventScrollReset: true },
+                     );
                   }}
                />
             </div>
