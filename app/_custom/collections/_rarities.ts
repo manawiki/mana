@@ -38,6 +38,11 @@ export const _Rarities: CollectionConfig = {
       relationTo: "images",
     },
     {
+      name: "icon_item",
+      type: "upload",
+      relationTo: "images",
+    },
+    {
       name: "checksum",
       type: "text",
     },

@@ -28,5 +28,6 @@ pnpm import_collection_data collection:bangboo-skills,filename:BangbooSkill.json
 pnpm import_collection_data collection:bangboo-talents,filename:BangbooTalent.json,idname:data_key,sync:false,overwrite:false
 
 # W-Engines
+pnpm import_collection_data collection:w-engines,filename:WEngine.json,idname:data_key,sync:false,overwrite:false
 
 # Disk Drives
