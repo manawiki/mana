@@ -83,8 +83,8 @@ export function ComprehensiveDpsSpreadsheet() {
 
 export function Introduction() {
    return (
-      <div className="bg-white p-6 shadow rounded-lg">
-         <p className="text-gray-700">
+      <div className=" p-6 shadow rounded-lg">
+         <p className="">
             This is GamePress's complete list of all Pokemon and all movesets
             and their associated
             <Link
@@ -94,7 +94,7 @@ export function Introduction() {
                DPS (Damage Per Second) and TDO (Total Damage Output)
             </Link>
          </p>
-         <p className="text-gray-700 mt-4">
+         <p className=" mt-4">
             The list is sortable by clicking on the double-ended arrows near the
             name of the categories. Selecting the "Swap Dscnt" checkbox will
             account for the time it takes to swap Pokemon during a raid battle.
@@ -102,7 +102,7 @@ export function Introduction() {
             uploaded to your GamePress account. Selecting "Best" will show only
             the best moveset for each Pokemon.
          </p>
-         <p className="text-gray-700 mt-4">
+         <p className=" mt-4">
             To specify DPS and TDO for a specific matchup, select the enemy
             Pokemon and weather above the search bar. For a detailed sort, try
             using the search bar, which works much like the in-game search bar.
@@ -117,56 +117,52 @@ export function Introduction() {
          <div className="mt-6">
             <div className="border-t border-b border-gray-200">
                <div className="flex justify-between px-6 py-3 bg-gray-100">
-                  <span className="font-semibold text-gray-700">Search</span>
-                  <span className="font-semibold text-gray-700">Example</span>
+                  <span className="font-semibold ">Search</span>
+                  <span className="font-semibold ">Example</span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Dex Number</span>
-                  <span className="text-gray-700 float-right">1-151</span>
+                  <span className="">Dex Number</span>
+                  <span className=" float-right">1-151</span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Pokemon Type</span>
-                  <span className="text-gray-700 float-right">
+                  <span className="">Pokemon Type</span>
+                  <span className=" float-right">
                      normal, normal & flying, normal & none
                   </span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Move Type</span>
-                  <span className="text-gray-700 float-right">
+                  <span className="">Move Type</span>
+                  <span className=" float-right">
                      @ghost, @1ghost, @2ghost, *@ghost
                   </span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Base Stats</span>
-                  <span className="text-gray-700 float-right">
-                     baseatk180-200, cp3000-
-                  </span>
+                  <span className="">Base Stats</span>
+                  <span className=" float-right">baseatk180-200, cp3000-</span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Filter by move</span>
-                  <span className="text-gray-700 float-right">
+                  <span className="">Filter by move</span>
+                  <span className=" float-right">
                      @legacy / @exclusive / @stab
                   </span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Filter out legacy moves</span>
-                  <span className="text-gray-700 float-right">@*current</span>
+                  <span className="">Filter out legacy moves</span>
+                  <span className=" float-right">@*current</span>
                </div>
                <div className="px-6 py-3 border-b border-gray-200">
-                  <span className="text-gray-700">
-                     Filter out Shadow Pokemon
-                  </span>
-                  <span className="text-gray-700 float-right">!shadow</span>
+                  <span className="">Filter out Shadow Pokemon</span>
+                  <span className=" float-right">!shadow</span>
                </div>
                <div className="px-6 py-3">
-                  <span className="text-gray-700">
+                  <span className="">
                      View only Pokemon with fast and charged moves that are the
                      same type
                   </span>
-                  <span className="text-gray-700 float-right">@same</span>
+                  <span className=" float-right">@same</span>
                </div>
             </div>
-            <p className="text-gray-700 mt-4">
+            <p className=" mt-4">
                These searches can be combined with the '&' symbol to create a
                pinpointed reference for DPS and TDO.
             </p>
@@ -206,7 +202,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
          onChange={(e) => {
             submit(e.currentTarget, { method: "GET" });
          }}
-         className="bg-white p-6 rounded-lg shadow-lg"
+         className=" p-6 rounded-lg shadow-lg"
       >
          <div className="grid grid-cols-3 gap-6">
             <div>
