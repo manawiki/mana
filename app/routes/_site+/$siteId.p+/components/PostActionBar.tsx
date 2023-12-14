@@ -12,13 +12,18 @@ export function PostActionBar({ post }: { post: Post }) {
       <div className="pb-3 mb-4 border-b border-color border-zinc-100 flex items-center justify-between">
          <Link
             to={`/${post.site.slug}/posts`}
-            className="flex items-center hover:underline group gap-2"
+            className="flex items-center hover:underline group gap-2.5 group"
          >
-            <Icon name="arrow-left" size={16} />
+            <div
+               className="bg-zinc-100 group-hover:bg-zinc-200 dark:bg-dark450 group-hover:dark:bg-dark500 
+               w-6 h-6 rounded-full flex items-center justify-center"
+            >
+               <Icon name="arrow-left" size={13} />
+            </div>
             <div className="font-bold text-sm text-1">Posts</div>
          </Link>
          <div className="flex items-center">
-            {post.totalComments && (
+            {post.totalComments ? (
                <>
                   <Link
                      to="#comments"
@@ -43,7 +48,7 @@ export function PostActionBar({ post }: { post: Post }) {
                      className="text-zinc-200/70 text-lg -rotate-[30deg] dark:text-zinc-700"
                   />
                </>
-            )}
+            ) : null}
             <div className="flex items-center gap-1.5 font-bold text-xs px-3">
                <Icon
                   name="folder"

@@ -24,8 +24,8 @@ export function PostHeaderEdit({
    isShowBanner: boolean;
 }) {
    const fetcher = useFetcher();
-   const [titleValue, setTitleValue] = useState("");
-   const [subtitleValue, setsubtitleValue] = useState("");
+   const [titleValue, setTitleValue] = useState(post.name);
+   const [subtitleValue, setSubtitleValue] = useState(post.subtitle ?? "");
 
    const debouncedTitle = useDebouncedValue(titleValue, 500);
    const debouncedSubtitle = useDebouncedValue(subtitleValue, 500);
@@ -85,7 +85,7 @@ export function PostHeaderEdit({
             <TextareaAutosize
                className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
                    font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
-               defaultValue={post.name}
+               defaultValue={titleValue}
                onChange={(event) => setTitleValue(event.target.value)}
                placeholder="Add a title..."
             />
@@ -95,8 +95,8 @@ export function PostHeaderEdit({
             <TextareaAutosize
                className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
                   p-0 text-sm font-semibold focus:ring-transparent"
-               defaultValue={post.subtitle}
-               onChange={(event) => setsubtitleValue(event.target.value)}
+               defaultValue={subtitleValue}
+               onChange={(event) => setSubtitleValue(event.target.value)}
                placeholder="Add a subtitle..."
             />
          </div>

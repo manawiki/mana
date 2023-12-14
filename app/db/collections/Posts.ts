@@ -31,6 +31,7 @@ export const Posts: CollectionConfig = {
       {
          name: "slug",
          type: "text",
+         index: true,
       },
       {
          name: "subtitle",
@@ -39,6 +40,7 @@ export const Posts: CollectionConfig = {
       {
          name: "publishedAt",
          type: "date",
+         index: true,
       },
       {
          name: "content",

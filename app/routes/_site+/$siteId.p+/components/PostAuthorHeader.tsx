@@ -4,6 +4,7 @@ import type { Post } from "payload/generated-types";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { timeAgo } from "~/utils/time-ago";
 
 export function PostAuthorHeader({ post }: { post: Post }) {
    return (
@@ -35,7 +36,7 @@ export function PostAuthorHeader({ post }: { post: Post }) {
                            className="text-1 flex items-center gap-1.5 text-xs"
                            dateTime={post?.updatedAt}
                         >
-                           {dt.format(new Date(post?.updatedAt), "MMM D, YYYY")}
+                           {timeAgo(new Date(post?.updatedAt))}
                         </time>
                      </TooltipTrigger>
                      <TooltipContent>Last Updated</TooltipContent>
