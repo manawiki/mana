@@ -116,7 +116,7 @@ export function Introduction() {
          </p>
          <div className="mt-6">
             <div className="border-t border-b border-gray-200">
-               <div className="flex justify-between px-6 py-3 bg-gray-100">
+               <div className="flex justify-between px-6 py-3 border-b-2">
                   <span className="font-semibold ">Search</span>
                   <span className="font-semibold ">Example</span>
                </div>
