@@ -42,40 +42,7 @@ export function withNodeId(editor: Editor) {
       return apply(operation);
    };
 
-   // TODO make this more like a plugin
-   // useEffect(() => {
-   //    const { insertBreak } = editor;
-   //    // Override editor to insert paragraph or element after inserting new line
-   //    editor.insertBreak = () => {
-   //       if (editor.selection) {
-   //          const previousBlock = editor.children[
-   //             editor.selection.anchor.path[0]
-   //          ] as CustomElement;
-
-   //          let newBlock;
-
-   //          // Create different current element on new line if set in Block.tsx
-   //          if (
-   //             !newBlock &&
-   //             previousBlock?.type &&
-   //             Object.keys(CreateNewBlockFromBlock).includes(
-   //                previousBlock?.type
-   //             )
-   //          ) {
-   //             newBlock = CreateNewBlockFromBlock[previousBlock.type]();
-   //          }
-
-   //          insertBreak();
-   //          Transforms.setNodes(editor, newBlock as any, {
-   //             at: editor.selection,
-   //          });
-   //       } else {
-   //          insertBreak();
-   //       }
-   //    };
-   // }, [editor]);
-
-   //Break to paragraph if element is any of the following
+   //Break to paragraph if element is H2 or H3
    editor.insertBreak = () => {
       const { selection } = editor;
 
@@ -84,20 +51,15 @@ export function withNodeId(editor: Editor) {
             match: (n: any) =>
                !Editor.isEditor(n) &&
                Element.isElement(n) &&
-               [BlockType.H2, BlockType.H3].includes(n.type),
+               (n.type === BlockType.H2 || n.type === BlockType.H3),
          });
 
          if (title) {
-            Transforms.insertNodes(
-               editor,
-               {
-                  id: nanoid(),
-                  children: [{ text: "" }],
-                  type: BlockType.Paragraph,
-               },
-               { at: [editor.children.length] }
-            );
-            Transforms.move(editor, { distance: 1, unit: "line" });
+            Transforms.insertNodes(editor, {
+               id: nanoid(),
+               children: [{ text: "" }],
+               type: BlockType.Paragraph,
+            });
             return;
          }
       }
@@ -229,10 +191,10 @@ export const useEditor = () =>
             withShortcuts(
                withNodeId(
                   withLayout(
-                     withLinkify(withReact(withHistory(createEditor())))
-                  )
-               )
-            )
+                     withLinkify(withReact(withHistory(createEditor()))),
+                  ),
+               ),
+            ),
          ),
-      []
+      [],
    );

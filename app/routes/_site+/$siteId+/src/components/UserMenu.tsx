@@ -5,8 +5,10 @@ import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Drawer } from "vaul";
 
+import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
+import type { User } from "~/db/payload-types";
 import {
    LoggedIn,
    LoggedOut,
@@ -14,9 +16,9 @@ import {
 } from "~/routes/_auth+/src/components";
 import { handleLogout } from "~/routes/_auth+/src/functions";
 import { isAdding } from "~/utils";
-import { Theme, useTheme } from "~/utils/theme-provider";
+import { useTheme } from "~/utils/client-hints";
 
-export function UserDesktopMenu() {
+export function UserDesktopMenu({ user }: { user: User }) {
    const [isMenuOpen, setMenuOpen] = useState(false);
 
    return (
@@ -25,10 +27,20 @@ export function UserDesktopMenu() {
             <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
                <button
                   onClick={() => setMenuOpen(true)}
-                  className="border border-color transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
-                  rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow-sm shadow-1 hover:border-zinc-200"
+                  className="border-4 border-zinc-300 dark:border-zinc-700 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-600  
+                  rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow shadow-1 hover:border-zinc-400"
                >
-                  <Icon name="user" size={20} />
+                  {user?.avatar?.url ? (
+                     <Image
+                        alt="User Pfp"
+                        className="rounded-full overflow-hidden"
+                        options="aspect_ratio=1:1&height=120&width=120"
+                        url={user?.avatar?.url ?? ""}
+                     />
+                  ) : (
+                     <Icon name="user" size={20} />
+                  )}
                </button>
             </section>
             <Modal
@@ -313,30 +325,28 @@ const UserDeleteSection = () => {
 };
 
 export const ThemeToggleMobile = () => {
-   const [theme, setTheme] = useTheme();
-
-   const toggleTheme = () => {
-      setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
-      );
-      setEnabled(!enabled);
-   };
-   const [enabled, setEnabled] = useState(false);
+   const theme = useTheme();
+   const fetcher = useFetcher();
 
    return (
       <Switch.Group>
          <div className="flex w-full items-center gap-3">
             <Switch.Label className="flex-grow font-bold">Theme</Switch.Label>
             <Switch
-               checked={enabled}
-               onChange={toggleTheme}
-               className="relative inline-flex h-7 w-14 items-center rounded-full border 
+               checked={Boolean(theme === "dark")}
+               onChange={() =>
+                  fetcher.submit(
+                     { theme: theme === "light" ? "dark" : "light" },
+                     { method: "POST", action: "/action/theme-toggle" },
+                  )
+               }
+               className="relative inline-flex h-7 w-14 items-center rounded-full border
                bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-700"
             >
                <span className="sr-only">Theme</span>
                <div
                   className={clsx(
-                     theme == Theme.DARK
+                     theme == "dark"
                         ? "translate-x-8 bg-white"
                         : "translate-x-1.5 bg-zinc-400",
                      "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
@@ -344,11 +354,11 @@ export const ThemeToggleMobile = () => {
                />
                <div
                   className={clsx(
-                     theme == Theme.DARK ? "left-2" : "right-1.5",
+                     theme == "dark" ? "left-2" : "right-1.5",
                      "absolute flex  items-center justify-center",
                   )}
                >
-                  {theme == Theme.DARK ? (
+                  {theme == "dark" ? (
                      <Icon
                         name="moon"
                         title="Dark Mode"
@@ -369,15 +379,8 @@ export const ThemeToggleMobile = () => {
 };
 
 const ThemeToggleDesktop = () => {
-   const [theme, setTheme] = useTheme();
-
-   const toggleTheme = () => {
-      setTheme((prevTheme) =>
-         prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT,
-      );
-      setEnabled(!enabled);
-   };
-   const [enabled, setEnabled] = useState(false);
+   const theme = useTheme();
+   const fetcher = useFetcher();
 
    return (
       <Switch.Group>
@@ -389,15 +392,20 @@ const ThemeToggleDesktop = () => {
                <div className="text-1 text-xs">Change the site theme</div>
             </div>
             <Switch
-               checked={enabled}
-               onChange={toggleTheme}
-               className="border-zinc-200 bg-white dark:border-zinc-500/60 dark:bg-dark500 relative 
+               className="border-zinc-200 bg-white dark:border-zinc-500/60 dark:bg-dark500 relative
                shadow-sm shadow-1 inline-flex h-7 w-[51px] items-center rounded-full border"
+               checked={Boolean(theme === "dark")}
+               onChange={() =>
+                  fetcher.submit(
+                     { theme: theme === "light" ? "dark" : "light" },
+                     { method: "POST", action: "/action/theme-toggle" },
+                  )
+               }
             >
                <span className="sr-only">Theme</span>
                <div
                   className={clsx(
-                     theme == Theme.DARK
+                     theme == "dark"
                         ? "translate-x-7 bg-white"
                         : "translate-x-1.5 bg-zinc-500",
                      "inline-flex h-4 w-4 transform items-center justify-center rounded-full transition",
@@ -405,11 +413,11 @@ const ThemeToggleDesktop = () => {
                />
                <div
                   className={clsx(
-                     theme == Theme.DARK ? "left-1.5" : "right-1.5",
+                     theme == "dark" ? "left-1.5" : "right-1.5",
                      "absolute flex  items-center justify-center",
                   )}
                >
-                  {theme == Theme.DARK ? (
+                  {theme == "dark" ? (
                      <Icon
                         name="moon"
                         title="Dark Mode"

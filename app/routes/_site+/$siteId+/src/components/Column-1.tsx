@@ -5,8 +5,8 @@ import {
    useRouteLoaderData,
 } from "@remix-run/react";
 
-import { DarkModeToggle, Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site, User } from "~/db/payload-types";
 import {
    LoggedOut,
@@ -14,6 +14,7 @@ import {
    AdminOrStaffOrOwner,
 } from "~/routes/_auth+/src/components";
 import { NewSiteModal } from "~/routes/action+/new-site-modal";
+import { DarkModeToggle } from "~/routes/action+/theme-toggle";
 
 import { UserDesktopMenu } from "./UserMenu";
 
@@ -44,12 +45,12 @@ function SideBarItem({ site }: { site: Site }) {
 }
 
 export function ColumnOne({ site }: { site: Site }) {
-   const { following } = useRouteLoaderData("root") as {
+   const { following, user } = useRouteLoaderData("root") as {
       following: User["sites"];
+      user: User;
    };
 
    const location = useLocation();
-
    return (
       <section
          className="bg-1 border-color relative top-0 z-50
@@ -86,7 +87,7 @@ export function ColumnOne({ site }: { site: Site }) {
                         </ul>
                         <div className="absolute bottom-3 left-0 w-full">
                            <div className="flex items-center justify-center flex-col gap-2">
-                              <UserDesktopMenu />
+                              <UserDesktopMenu user={user} />
                            </div>
                         </div>
                         <AdminOrStaffOrOwner>
@@ -101,8 +102,8 @@ export function ColumnOne({ site }: { site: Site }) {
                         <DarkModeToggle />
                         <Link
                            to={`/login?redirectTo=${location.pathname}`}
-                           className="border border-color transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
-                           rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow-sm shadow-1 hover:border-zinc-200"
+                           className="border-4 border-zinc-300 transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
+                           rounded-full flex items-center justify-center w-12 h-12 bg-3 dark:border-zinc-700 hover:border-zinc-200"
                         >
                            <Icon name="user" size={20} />
                         </Link>

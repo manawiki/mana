@@ -7,6 +7,7 @@ import { redirect, json } from "@remix-run/node";
 import { Form, useNavigation, useSearchParams } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
+import { redirectWithError, redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -14,21 +15,16 @@ import { DotLoader } from "~/components/DotLoader";
 import { FormLabel } from "~/components/Forms";
 import { assertIsPost, isAdding, isProcessing } from "~/utils";
 import { i18nextServer } from "~/utils/i18n";
-import {
-   commitSession,
-   getSession,
-   setErrorMessage,
-   setSuccessMessage,
-} from "~/utils/message.server";
-
-
 
 const PasswordResetSchema = z.object({
    password: z.string().min(8, "Password must be at least 8 characters long"),
    token: z.string(),
 });
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -111,7 +107,6 @@ export const action: ActionFunction = async ({
 
    if (result.success) {
       const { password, token } = result.data;
-      const session = await getSession(request.headers.get("cookie"));
       try {
          await payload.resetPassword({
             collection: "users",
@@ -121,18 +116,16 @@ export const action: ActionFunction = async ({
             },
             overrideAccess: true,
          });
-         setSuccessMessage(
-            session,
-            "Your password has been reset. You can now login."
+
+         return redirectWithSuccess(
+            "/login",
+            "Your password has been reset. You can now login.",
          );
-         return redirect(`/login`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
       } catch (error) {
-         setErrorMessage(session, "Something went wrong. Please try again.");
-         return redirect("/login", {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return redirectWithError(
+            "/login",
+            "Something went wrong. Please try again.",
+         );
       }
    }
 };

@@ -7,7 +7,7 @@ import clsx from "clsx";
 import dt from "date-and-time";
 
 import type { Config } from "payload/generated-types";
-import { Modal } from "~/components";
+import { Image, Modal } from "~/components";
 import { Icon } from "~/components/Icon";
 import { isAdding } from "~/utils";
 
@@ -29,7 +29,7 @@ export function EditorVersionModal({
    const versions =
       collectionSlug == "contentEmbeds"
          ? data.entry.embeddedContent.find((item: any) => item?.id === pageId)
-              ?.versions ?? []
+         ?.versions ?? []
          : data?.versions ?? [];
 
    const fetcher = useFetcher();
@@ -52,23 +52,48 @@ export function EditorVersionModal({
                <Tab.Group>
                   <Tab.Panels className="bg-3 max-h-[90vh] w-[775px] overflow-auto px-4 pb-4 no-scrollbar">
                      <div
-                        className="bg-2-sub text-1 border-color-sub fixed left-0 top-0 z-20 
+                        className="bg-2-sub text-1 border-color-sub fixed left-0 top-0 z-20
                         mb-3 flex h-12 w-[775px] items-center border-b px-4 text-sm font-bold"
                      >
-                        {selectedVersion?.updatedAt &&
-                           dt.format(
-                              new Date(selectedVersion?.updatedAt as any),
-                              "MMMM D, hh:mm A",
-                           )}
+                        <div className="flex gap-x-2">
+                           <div>
+                              {selectedVersion?.updatedAt &&
+                                 dt.format(
+                                    new Date(selectedVersion?.updatedAt as any),
+                                    "MMMM D, hh:mm A",
+                                 )}
+                           </div>
+                           <div className="border-l border-color-sub flex pl-2">
+                              <div
+                                 className="bg-3 shadow-1 flex h-5 w-5 items-center justify-center
+                                          overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
+                              >
+                                 {selectedVersion?.version?.versionAuthor?.avatar?.url ? (
+                                    <Image
+                                       url={selectedVersion?.version?.versionAuthor?.avatar?.url}
+                                       options="aspect_ratio=1:1&height=80&width=80"
+                                       alt="User Avatar"
+                                    />
+                                 ) : (
+                                    <Icon
+                                       name="dog"
+                                       className="text-1 m-0.5"
+                                       size={20}
+                                    />
+                                 )}
+                              </div>
+                              <div className="pl-2">{selectedVersion?.version?.versionAuthor?.username ?? ("Unknown contributor")}</div>
+                           </div>
+                        </div>
                      </div>
                      {versions?.map(
                         (version: any) =>
-                           version.version?.content && (
-                              <Tab.Panel className="pt-16" key={version.id}>
+                           version?.version?.content && (
+                              <Tab.Panel className="pt-16" key={version?.id}>
                                  <h1 className="font-header text-3xl font-bold">
-                                    {version.version.name}
+                                    {version?.version?.name}
                                  </h1>
-                                 <EditorView data={version.version?.content} />
+                                 <EditorView data={version?.version?.content} />
                               </Tab.Panel>
                            ),
                      )}
@@ -153,7 +178,7 @@ export function EditorVersionModal({
                               )}
                            </button>
                            <button
-                              className="h-9 rounded-md bg-zinc-200 text-sm 
+                              className="h-9 rounded-md bg-zinc-200 text-sm
                            font-bold focus:bg-zinc-100 dark:bg-zinc-700 dark:focus:bg-zinc-600"
                               onClick={() => {
                                  setVersionModal(false);

@@ -1,8 +1,9 @@
-import { Link } from "@remix-run/react";
+import { Link, useRouteLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
-import type { Site } from "~/db/payload-types";
+import type { Site, User } from "~/db/payload-types";
 import {
    LoggedIn,
    NotFollowingSite,
@@ -25,6 +26,9 @@ export function MobileHeader({
 }) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
+   const { user } = useRouteLoaderData("root") as {
+      user: User;
+   };
 
    return (
       <>
@@ -81,7 +85,16 @@ export function MobileHeader({
                      justify-center rounded-xl border shadow-sm"
                      onClick={() => setUserMenuOpen(true)}
                   >
-                     <Icon name="user" size={20} />
+                     {user?.avatar?.url ? (
+                        <Image
+                           alt="User Pfp"
+                           className="rounded-full overflow-hidden w-6 h-6"
+                           options="aspect_ratio=1:1&height=60&width=60"
+                           url={user?.avatar?.url ?? ""}
+                        />
+                     ) : (
+                        <Icon name="user" size={20} />
+                     )}
                   </button>
                </div>
             </LoggedIn>

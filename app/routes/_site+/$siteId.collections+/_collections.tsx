@@ -15,13 +15,7 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
-import {
-   assertIsPost,
-   isProcessing,
-   isAdding,
-   getSession,
-   setErrorMessage,
-} from "~/utils";
+import { assertIsPost, isProcessing, isAdding } from "~/utils";
 
 import { mainContainerStyle } from "../$siteId+/_index";
 
@@ -309,8 +303,6 @@ export const action: ActionFunction = async ({
       intent: z.enum(["deleteCollection", "updateCollection", "addCollection"]),
    });
 
-   const session = await getSession(request.headers.get("cookie"));
-
    // Add Collection
 
    switch (intent) {
@@ -359,6 +351,7 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
+                  //@ts-ignore
                   sections: [{ id: "main", name: "Main", showTitle: false }],
                },
                user,
@@ -366,10 +359,6 @@ export const action: ActionFunction = async ({
             });
          } catch (error) {
             payload.logger.error(`${error}`);
-            setErrorMessage(
-               session,
-               "Something went wrong...unable to add collection.",
-            );
          }
 
          // Last resort error message
