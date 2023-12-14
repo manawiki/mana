@@ -64,6 +64,7 @@
       "i18next-browser-languagedetector": "^7.0.1",
       "i18next-fs-backend": "^2.1.1",
       "i18next-http-backend": "^2.1.1",
+      "inngest": "^3.7.1",
       "is-hotkey": "^0.2.0",
       "is-url": "^1.2.4",
       "isbot": "^3.6.5",
