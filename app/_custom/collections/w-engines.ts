@@ -35,7 +35,7 @@ export const WEngines: CollectionConfig = {
     },
     {
       name: "stat_primary",
-      type: "array",
+      type: "group",
       fields: [
         {
           name: "name",
@@ -49,7 +49,7 @@ export const WEngines: CollectionConfig = {
     },
     {
       name: "stat_secondary",
-      type: "array",
+      type: "group",
       fields: [
         {
           name: "name",
