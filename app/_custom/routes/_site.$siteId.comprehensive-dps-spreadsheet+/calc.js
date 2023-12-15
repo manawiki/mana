@@ -59,7 +59,7 @@ export const Context = {
 
 //apply param toggles to update context
 export function getCustom(params) {
-   const context = {};
+   const context = { ...Context };
 
    if (params["ui-swapDiscount-checkbox"]) {
       context.swapDiscount = true;
@@ -70,19 +70,19 @@ export function getCustom(params) {
       context.useBox = true;
    }
 
-   // todo add this to filters
-   if (params["ui-uniqueSpecies-checkbox"]) {
-      context.uniqueSpecies = true;
-   }
+   // moved this as table concern
+   // if (params["ui-uniqueSpecies-checkbox"]) {
+   //    context.uniqueSpecies = true;
+   // }
 
    if (params["ui-pvpMode-checkbox"]) {
       context.battleMode = "pvp";
    }
 
-   // todo reimplement this
-   if (params["ui-hideUnavail-checkbox"]) {
-      context.hideUnavail = true;
-   }
+   // moved this as table concern
+   // if (params["ui-hideUnavail-checkbox"]) {
+   //    context.hideUnavail = true;
+   // }
 
    if (params["ui-allyMega-checkbox"]) {
       context.allyMega = true;
@@ -125,11 +125,12 @@ export function getCustom(params) {
       context.enemyPokeType2 = params["pokemon-pokeType2"];
    }
 
+   // moved this as a table concern
    // if (params["searchInput"]) {
    //    context.searchInput = params["searchInput"];
    // }
 
-   return { ...Context, ...context };
+   return context;
 }
 
 function damage(dmg_giver, dmg_taker, move, Context) {
