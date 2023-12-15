@@ -33,6 +33,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const context = getCustom(params);
 
+   console.log(context);
+
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
@@ -42,7 +44,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //create a simple in-memory cache
    function cacheResult() {
       //toggle move data for pvp mode
-      if (context.battleMode === "pvp") GM.mode("pvp");
+      context.battleMode === "pvp" ? GM.mode("pvp") : GM.mode("raid");
 
       cache.value = generateSpreadsheet(pokemon, context);
 
@@ -56,7 +58,10 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
          ? cache.value
          : cacheResult();
 
-   return { pokemon, results, count: results?.length };
+   //apply table filters
+   const filtered = filterResults(results, url.searchParams);
+
+   return { pokemon, results: filtered, count: results?.length };
 }
 
 clientLoader.hyrate = true;
@@ -202,8 +207,12 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
          replace={true}
          id="dps-form"
          name="dps-form"
+         preventScrollReset={true}
          onChange={(e) => {
-            submit(e.currentTarget, { method: "GET" });
+            submit(e.currentTarget, {
+               method: "GET",
+               preventScrollReset: true,
+            });
          }}
          className=" p-6 rounded-lg shadow-lg"
       >
@@ -449,31 +458,6 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
 function ResultsTable() {
    const { results, count } = useLoaderData<typeof clientLoader>();
 
-   const [searchParams] = useSearchParams();
-
-   //to-do read params to toggle sorting
-   const sort = searchParams.get("sort") ?? "dps";
-   const asc = searchParams.get("asc") ? 1 : -1;
-   const page = searchParams.get("page")
-      ? parseInt(searchParams.get("page") ?? "1")
-      : 1;
-   const search = searchParams.get("search") ?? "";
-   const hideUnavail = searchParams.get("ui-hideUnavail-checkbox");
-
-   console.log(hideUnavail);
-
-   // console.log(sort, asc, page, search);
-
-   const filtered = results
-      .filter((pokemon) =>
-         search === ""
-            ? true
-            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-      )
-      .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
-      //limit results to the top 100
-      .slice(100 * page - 100, 100 * page);
-
    return (
       <>
          <table className="w-full">
@@ -489,7 +473,7 @@ function ResultsTable() {
                </tr>
             </thead>
             <tbody>
-               {filtered.map((pokemon, index) => (
+               {results.map((pokemon, index) => (
                   <tr key={index} className="group">
                      <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
                         {pokemon?.label}
@@ -539,6 +523,58 @@ function ResultsTable() {
          </div>
       </>
    );
+}
+
+function filterResults(results, searchParams) {
+   let filtered = results;
+
+   // to-do read params to toggle sorting
+   const sort = searchParams.get("sort") ?? "dps";
+   const asc = searchParams.get("asc") ? 1 : -1;
+
+   filtered = filtered.sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc));
+
+   // filter out unavailable Pokemon if toggled
+   if (searchParams.get("ui-hideUnavail-checkbox")) {
+      filtered = filtered.filter((pokemon) => pokemon?.unavailable !== "on");
+   }
+
+   // filter for unique species if toggled
+   if (searchParams.get("ui-uniqueSpecies-checkbox")) {
+      //reduce the filtered array so only one of each pokemon.name remains
+
+      let unique = [];
+
+      for (let i = 0; i < filtered.length; i++) {
+         if (!unique.map((poke) => poke?.name).includes(filtered[i].name)) {
+            unique.push(filtered[i]);
+         }
+      }
+
+      filtered = unique;
+   }
+
+   // implement search
+   const search = searchParams.get("search");
+
+   if (search) {
+      filtered = filtered.filter((pokemon) =>
+         search === ""
+            ? true
+            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+      );
+   }
+
+   // pagination
+   const page = searchParams.get("page")
+      ? parseInt(searchParams.get("page") ?? "1")
+      : 1;
+
+   filtered = filtered
+      //limit results to the top 100
+      .slice(100 * page - 100, 100 * page);
+
+   return filtered;
 }
 
 //Make the th clickable to sort
