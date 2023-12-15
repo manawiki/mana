@@ -33,6 +33,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const context = getCustom(params);
 
+   console.log(params, context);
+
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
@@ -41,7 +43,9 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    //create a simple in-memory cache
    function cacheResult() {
-      cache.value = generateSpreadsheet(Data.Pokemon, context);
+      context.battleMode = "pvp" ? GM.mode("pvp") : GM.mode("raid");
+
+      cache.value = generateSpreadsheet(pokemon, context);
 
       cache.key = JSON.stringify(context);
       return cache.value;
@@ -394,29 +398,29 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-pvpMode"
-                     name="ui-pvpMode"
+                     id="ui-pvpMode-checkbox"
+                     name="ui-pvpMode-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-pvpMode">PvP Mode</label>
+                  <label htmlFor="ui-pvpMode-checkbox">PvP Mode</label>
                </div>
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-uniqueSpecies"
-                     name="ui-uniqueSpecies"
+                     id="ui-uniqueSpecies-checkbox"
+                     name="ui-uniqueSpecies-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-uniqueSpecies">Best</label>
+                  <label htmlFor="ui-uniqueSpecies-checkbox">Best</label>
                </div>
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-hideUnavail"
-                     name="ui-hideUnavail"
+                     id="ui-hideUnavail-checkbox"
+                     name="ui-hideUnavail-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-hideUnavail">Hide Unavail</label>
+                  <label htmlFor="ui-hideUnavail-checkbox">Hide Unavail</label>
                </div>
                <div className="mb4">
                   <input
