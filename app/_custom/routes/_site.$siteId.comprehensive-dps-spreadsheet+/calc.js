@@ -32,7 +32,7 @@ const DEFAULT_TOTAL_ENERGY_GAINED = 400;
 // };
 
 export const Context = {
-   weather: "EXTREME",
+   weather: DEFAULT_WEATHER,
    enemy: {
       fastMoves: [],
       chargedMoves: [],
@@ -41,8 +41,8 @@ export const Context = {
       Atk: null,
       Def: 160,
       Stm: null,
-      pokeType1: "none",
-      pokeType2: "none",
+      pokeType1: DEFAULT_ENEMY_POKETYPE1,
+      pokeType2: DEFAULT_ENEMY_POKETYPE2,
       fmoves: [],
       cmoves: [],
    },

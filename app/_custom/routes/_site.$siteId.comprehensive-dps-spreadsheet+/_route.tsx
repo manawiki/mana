@@ -451,13 +451,16 @@ function ResultsTable() {
 
    const [searchParams] = useSearchParams();
 
-   const params = Object.fromEntries(searchParams);
-
    //to-do read params to toggle sorting
-   const sort = params["sort"] ?? "dps";
-   const asc = params["asc"] ? 1 : -1;
-   const page = params["page"] ? parseInt(params["page"]) : 1;
-   const search = params["search"] ?? "";
+   const sort = searchParams.get("sort") ?? "dps";
+   const asc = searchParams.get("asc") ? 1 : -1;
+   const page = searchParams.get("page")
+      ? parseInt(searchParams.get("page") ?? "1")
+      : 1;
+   const search = searchParams.get("search") ?? "";
+   const hideUnavail = searchParams.get("ui-hideUnavail-checkbox");
+
+   console.log(hideUnavail);
 
    // console.log(sort, asc, page, search);
 
