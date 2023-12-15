@@ -61,7 +61,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
    //apply table filters
    const filtered = filterResults(results, url.searchParams);
 
-   return { pokemon, results: filtered, count: results?.length };
+   return { pokemon, results: filtered, count: filtered?.length };
 }
 
 clientLoader.hyrate = true;
@@ -83,7 +83,7 @@ export function ComprehensiveDpsSpreadsheet() {
       <>
          <Introduction />
          <NewToggles pokemon={pokemon} />
-         <Pagination count={count} />
+
          <ResultsTable />
       </>
    );
@@ -233,12 +233,14 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      setEnemyPokemon={setEnemyPokemon}
                      pokemon={pokemon}
                   />
-                  <input
-                     hidden
-                     name="enemy-pokemon-name"
-                     id="enemy-pokemon-name"
-                     value={enemyPokemon.name}
-                  />
+                  {enemyPokemon?.name && (
+                     <input
+                        hidden
+                        name="enemy-pokemon-name"
+                        id="enemy-pokemon-name"
+                        value={enemyPokemon?.name}
+                     />
+                  )}
                </div>
                <div className="mb-4">
                   <label
@@ -271,6 +273,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
                      id="weather"
                      name="weather"
+                     placeholder="choose weather"
                   >
                      {weathers.map(({ name, label }) => (
                         <option key={name} value={name}>
@@ -458,8 +461,26 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
 function ResultsTable() {
    const { results, count } = useLoaderData<typeof clientLoader>();
 
+   const [searchParams] = useSearchParams();
+
+   // pagination
+   const page = searchParams.get("page")
+      ? parseInt(searchParams.get("page") ?? "1")
+      : 1;
+
+   const start = 100 * page - 100;
+   const end = 100 * page;
+
+   const filtered = results
+      //limit results to the top 100
+      .slice(start, end);
+
    return (
       <>
+         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+            <Pagination count={count} />
+            Displaying {start + 1} to {end} of {count} results
+         </div>
          <table className="w-full">
             <thead>
                <tr>
@@ -473,7 +494,7 @@ function ResultsTable() {
                </tr>
             </thead>
             <tbody>
-               {results.map((pokemon, index) => (
+               {filtered.map((pokemon, index) => (
                   <tr key={index} className="group">
                      <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
                         {pokemon?.label}
@@ -536,7 +557,7 @@ function filterResults(results, searchParams) {
 
    // filter out unavailable Pokemon if toggled
    if (searchParams.get("ui-hideUnavail-checkbox")) {
-      filtered = filtered.filter((pokemon) => pokemon?.unavailable !== "on");
+      filtered = filtered.filter((pokemon) => pokemon?.unavailable !== "On");
    }
 
    // filter for unique species if toggled
@@ -564,15 +585,6 @@ function filterResults(results, searchParams) {
             : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
       );
    }
-
-   // pagination
-   const page = searchParams.get("page")
-      ? parseInt(searchParams.get("page") ?? "1")
-      : 1;
-
-   filtered = filtered
-      //limit results to the top 100
-      .slice(100 * page - 100, 100 * page);
 
    return filtered;
 }
@@ -638,90 +650,88 @@ function Pagination({ count = 100 }) {
    if (numPages <= 1) return null;
 
    return (
-      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-         <div className="flex items-center gap-3 text-xs">
-            <button
-               //todo convert this to links
-               className="flex items-center gap-1 font-semibold uppercase hover:underline"
-               onClick={() =>
-                  setSearchParams(
-                     (searchParams) => {
-                        searchParams.set("page", (page - 1).toString());
-                        return searchParams;
-                     },
-                     { preventScrollReset: true },
-                  )
-               }
-               disabled={page === 1}
-            >
-               <Icon name="chevron-left" size={18} className="text-zinc-500">
-                  Prev
-               </Icon>
-            </button>
+      <div className="flex items-center gap-3 text-xs">
+         <button
+            //todo convert this to links
+            className="flex items-center gap-1 font-semibold uppercase hover:underline"
+            onClick={() =>
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", (page - 1).toString());
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               )
+            }
+            disabled={page === 1}
+         >
+            <Icon name="chevron-left" size={18} className="text-zinc-500">
+               Prev
+            </Icon>
+         </button>
+
+         <input
+            // form="dps-form"
+            type="number"
+            key={"page " + page}
+            defaultValue={page}
+            className="w-16"
+            name="page"
+            min={1}
+            max={numPages}
+            onChange={(e) => {
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", e.target.value);
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               );
+            }}
+         />
+         {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
+
+         <button
+            className="flex items-center gap-1 font-semibold uppercase hover:underline"
+            onClick={() =>
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", (page + 1).toString());
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               )
+            }
+            disabled={page >= numPages}
+         >
+            Next
+            <Icon
+               name="chevron-right"
+               title="Next"
+               size={18}
+               className="text-zinc-500"
+            />
+         </button>
+
+         <div className="w-full">
+            <label htmlFor="search">Search</label>
 
             <input
-               // form="dps-form"
-               type="number"
-               key={"page " + page}
-               defaultValue={page}
-               className="w-16"
-               name="page"
-               min={1}
-               max={numPages}
+               id="search"
+               //  onKeyUp={search_trigger}
+               className="w-full"
+               name="search"
                onChange={(e) => {
                   setSearchParams(
                      (searchParams) => {
-                        searchParams.set("page", e.target.value);
+                        searchParams.set("search", e.target.value);
+                        searchParams.delete("page");
                         return searchParams;
                      },
                      { preventScrollReset: true },
                   );
                }}
             />
-            {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
-
-            <button
-               className="flex items-center gap-1 font-semibold uppercase hover:underline"
-               onClick={() =>
-                  setSearchParams(
-                     (searchParams) => {
-                        searchParams.set("page", (page + 1).toString());
-                        return searchParams;
-                     },
-                     { preventScrollReset: true },
-                  )
-               }
-               disabled={page >= numPages}
-            >
-               Next
-               <Icon
-                  name="chevron-right"
-                  title="Next"
-                  size={18}
-                  className="text-zinc-500"
-               />
-            </button>
-
-            <div className="w-full">
-               <label htmlFor="search">Search</label>
-
-               <input
-                  id="search"
-                  //  onKeyUp={search_trigger}
-                  className="w-full"
-                  name="search"
-                  onChange={(e) => {
-                     setSearchParams(
-                        (searchParams) => {
-                           searchParams.set("search", e.target.value);
-                           searchParams.delete("page");
-                           return searchParams;
-                        },
-                        { preventScrollReset: true },
-                     );
-                  }}
-               />
-            </div>
          </div>
       </div>
    );
