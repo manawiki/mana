@@ -75,7 +75,6 @@ export function getCustom(params) {
       context.uniqueSpecies = true;
    }
 
-   // todo rework pvp GM.mode()
    if (params["ui-pvpMode-checkbox"]) {
       context.battleMode = "pvp";
    }

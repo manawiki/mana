@@ -33,8 +33,6 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const context = getCustom(params);
 
-   console.log(params, context);
-
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
@@ -43,7 +41,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    //create a simple in-memory cache
    function cacheResult() {
-      context.battleMode = "pvp" ? GM.mode("pvp") : GM.mode("raid");
+      //toggle move data for pvp mode
+      if (context.battleMode === "pvp") GM.mode("pvp");
 
       cache.value = generateSpreadsheet(pokemon, context);
 
@@ -499,21 +498,21 @@ function ResultsTable() {
                         {pokemon?.cmove?.label}
                      </td>
                      <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
                         aria-label={pokemon?.dps}
                      >
                         {pokemon?.ui_dps}
                      </td>
                      <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
                         aria-label={pokemon?.tdo}
                      >
                         {pokemon?.ui_tdo}
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
                         {pokemon?.ui_overall}
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
                         {pokemon?.ui_cp}
                      </td>
                   </tr>
