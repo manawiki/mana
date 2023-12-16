@@ -210,6 +210,13 @@ export const Sites: CollectionConfig = {
          maxDepth: 2,
       },
       {
+         name: "contributors",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
@@ -230,6 +237,14 @@ export const Sites: CollectionConfig = {
       {
          name: "id",
          type: "text",
+      },
+      {
+         name: "totalPosts",
+         type: "number",
+      },
+      {
+         name: "totalEntries",
+         type: "number",
       },
    ],
    hooks: {
