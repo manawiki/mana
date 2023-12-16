@@ -5,7 +5,6 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { slateEditor } from "@payloadcms/richtext-slate";
-import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 
 import { Users } from "./collections/CustomUsers";
@@ -18,8 +17,6 @@ import {
    CustomSearchCollections,
    CustomDefaultPriorities,
 } from "../_custom/collections";
-
-dotenv.config();
 
 const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
 
@@ -38,9 +35,9 @@ const adapter = s3Adapter({
 
 export default buildConfig({
    serverURL:
-      process.env.NODE_ENV == "development"
-         ? "http://localhost:4000"
-         : `https://${settings.siteId}-db.${settings.domain}`,
+      process.env.NODE_ENV === "production"
+         ? `https://${settings.siteId}-db.${settings.domain}`
+         : "http://localhost:4000",
    editor: slateEditor({}),
    db: mongooseAdapter({
       url: process.env.CUSTOM_MONGO_URL ?? false,

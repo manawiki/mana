@@ -5,7 +5,6 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { slateEditor } from "@payloadcms/richtext-slate";
-import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
 
@@ -13,8 +12,6 @@ import { collections } from "./collections";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import { corsConfig, settings } from "../../mana.config";
-
-dotenv.config();
 
 const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
 
