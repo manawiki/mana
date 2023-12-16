@@ -93,6 +93,7 @@ export function getCustom(params) {
       context.allyMegaStab = true;
    }
 
+   //todo broke atm
    if (params["ui-cpcap"]) {
       context.cpCap = parseInt(params["ui-cpcap"]);
    }
@@ -615,7 +616,7 @@ export function getEnemy(custom) {
 
    if (custom.cpcap) Context.LeagueCPCap = custom.cpcap;
 
-   console.log("Enemy Context", Context);
+   // console.log("Enemy Context", Context);
 
    return Context;
 }
