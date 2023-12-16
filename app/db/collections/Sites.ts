@@ -72,6 +72,10 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
+         name: "trendingPages",
+         type: "json",
+      },
+      {
          name: "isPublic",
          type: "checkbox",
          label: "Public",
@@ -121,6 +125,14 @@ export const Sites: CollectionConfig = {
          name: "gaTagId",
          label: "Google Analytics tag id",
          type: "text",
+      },
+      {
+         name: "gaPropertyId",
+         label: "Google Analytics property id",
+         type: "text",
+         access: {
+            read: isStaffFieldLevel,
+         },
       },
       {
          name: "type",
