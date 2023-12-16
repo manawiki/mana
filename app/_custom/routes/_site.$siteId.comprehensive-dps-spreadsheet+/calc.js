@@ -99,11 +99,8 @@ export function getCustom(params) {
    }
 
    if (params["attacker-level"]) {
-      const attackerLevel = parseInt(params["attacker-level"]);
-      if (attackerLevel >= 1 && attackerLevel <= 40) {
-         context.attackerLevel = attackerLevel;
-         context.attackerCPM = GM.get("level", attackerLevel).cpm;
-      }
+      context.attackerLevel = params["attacker-level"];
+      context.attackerCPM = GM.get("level", params["attacker-level"]).cpm;
    }
 
    if (params["weather"]) {
