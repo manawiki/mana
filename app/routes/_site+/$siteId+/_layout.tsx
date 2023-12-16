@@ -352,6 +352,7 @@ const fetchSite = async ({
                   domain
                   followers
                   enableAds
+                  trendingPages
                   banner {
                      url
                   }

@@ -447,12 +447,14 @@ export const updateSiteAnalytics = inngest.createFunction(
             return true;
          });
 
-      const updatedSite = (await authRestFetcher({
+      (await authRestFetcher({
          method: "PATCH",
          path: `${settings.domainFull}/api/sites/${siteId}`,
          body: { trendingPages: result },
-      })) as PaginatedDocs<Site>;
+      })) as Site;
 
-      return { result, length: result?.length, updatedSite };
+      return {
+         result,
+      };
    },
 );
