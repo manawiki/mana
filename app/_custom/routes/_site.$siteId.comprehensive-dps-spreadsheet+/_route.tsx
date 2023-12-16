@@ -12,7 +12,7 @@ import {
 
 import { Icon } from "~/components/Icon";
 
-import { generateSpreadsheet, getCustom } from "./calc.js";
+import { generateSpreadsheet, getCustom, getEnemy } from "./calc.js";
 import {
    GM,
    Data,
@@ -33,7 +33,7 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const context = getCustom(params);
 
-   console.log(context);
+   const enemyContext = getEnemy(context);
 
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
@@ -46,7 +46,10 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
       //toggle move data for pvp mode
       context.battleMode === "pvp" ? GM.mode("pvp") : GM.mode("raid");
 
-      cache.value = generateSpreadsheet(pokemon, context);
+      cache.value = generateSpreadsheet(pokemon, {
+         ...context,
+         ...enemyContext,
+      });
 
       cache.key = JSON.stringify(context);
       return cache.value;
@@ -434,14 +437,21 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                   <label htmlFor="ui-hideUnavail-checkbox">Hide Unavail</label>
                </div>
                <div className="mb4">
+                  <label
+                     className="block text-sm font-medium mb-1"
+                     htmlFor="attacker-level"
+                  >
+                     Attacker Level
+                  </label>
                   <input
                      id="attacker-level"
                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     placeholder="Attacker Level"
                      name="attacker-level"
+                     placeholder="40"
                      type="number"
                      min={1}
-                     max={40}
+                     max={51}
+                     step={0.5}
                   />
                </div>
                <button
