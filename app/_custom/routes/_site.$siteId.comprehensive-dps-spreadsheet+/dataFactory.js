@@ -1510,13 +1510,10 @@ function fetchMoves(oncomplete = function () {}) {
       label: toTitleCase(move.title),
       labelLinked: move.title_linked,
       icon: getTypeIcon(move.move_type),
-      power: parseInt(move.power),
-      dws: parseFloat(move.damage_window.split(" ")[0]) * 1000 || 0,
-      duration: parseFloat(move.cooldown) * 1000,
-      energyDelta:
-         move.move_category == "Fast Move"
-            ? Math.abs(parseInt(move.energy_gain))
-            : -Math.abs(parseInt(move.energy_cost)),
+      power: 0,
+      dws: 0,
+      duration: 0,
+      energyDelta: 0,
       effect: parseMoveEffect(move),
       regular: {
          power: parseInt(move.power),

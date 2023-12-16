@@ -32,7 +32,7 @@ const DEFAULT_TOTAL_ENERGY_GAINED = 400;
 // };
 
 export const Context = {
-   weather: "EXTREME",
+   weather: DEFAULT_WEATHER,
    enemy: {
       fastMoves: [],
       chargedMoves: [],
@@ -41,8 +41,8 @@ export const Context = {
       Atk: null,
       Def: 160,
       Stm: null,
-      pokeType1: "none",
-      pokeType2: "none",
+      pokeType1: DEFAULT_ENEMY_POKETYPE1,
+      pokeType2: DEFAULT_ENEMY_POKETYPE2,
       fmoves: [],
       cmoves: [],
    },
@@ -53,13 +53,14 @@ export const Context = {
    battleMode: "regular",
    allyMega: false,
    allyMegaStab: false,
-   attackerLevel: 40,
+   attackerLevel: DEFAULT_ATTACKER_LEVEL,
+   attackerCPM: DEFAULT_ATTACKER_CPM,
    LeagueCPCap: 0,
 };
 
 //apply param toggles to update context
 export function getCustom(params) {
-   const context = {};
+   const context = { ...Context };
 
    if (params["ui-swapDiscount-checkbox"]) {
       context.swapDiscount = true;
@@ -70,20 +71,19 @@ export function getCustom(params) {
       context.useBox = true;
    }
 
-   // todo add this to filters
-   if (params["ui-uniqueSpecies-checkbox"]) {
-      context.uniqueSpecies = true;
-   }
+   // moved this as table concern
+   // if (params["ui-uniqueSpecies-checkbox"]) {
+   //    context.uniqueSpecies = true;
+   // }
 
-   // todo rework pvp GM.mode()
    if (params["ui-pvpMode-checkbox"]) {
       context.battleMode = "pvp";
    }
 
-   // todo reimplement this
-   if (params["ui-hideUnavail-checkbox"]) {
-      context.hideUnavail = true;
-   }
+   // moved this as table concern
+   // if (params["ui-hideUnavail-checkbox"]) {
+   //    context.hideUnavail = true;
+   // }
 
    if (params["ui-allyMega-checkbox"]) {
       context.allyMega = true;
@@ -93,13 +93,17 @@ export function getCustom(params) {
       context.allyMegaStab = true;
    }
 
+   //todo broke atm
    if (params["ui-cpcap"]) {
       context.cpCap = parseInt(params["ui-cpcap"]);
    }
 
-   // todo currently broken
    if (params["attacker-level"]) {
-      context.attackerLevel = parseInt(params["attacker-level"]);
+      const attackerLevel = parseInt(params["attacker-level"]);
+      if (attackerLevel >= 1 && attackerLevel <= 40) {
+         context.attackerLevel = attackerLevel;
+         context.attackerCPM = GM.get("level", attackerLevel).cpm;
+      }
    }
 
    if (params["weather"]) {
@@ -126,11 +130,12 @@ export function getCustom(params) {
       context.enemyPokeType2 = params["pokemon-pokeType2"];
    }
 
+   // moved this as a table concern
    // if (params["searchInput"]) {
    //    context.searchInput = params["searchInput"];
    // }
 
-   return { ...Context, ...context };
+   return context;
 }
 
 function damage(dmg_giver, dmg_taker, move, Context) {
@@ -558,10 +563,8 @@ function calculateCP(pkm) {
 //    $("#ranking_table_filter").hide();
 // }
 
-export function applyContext(custom) {
-   let Context = {
-      ...custom,
-   };
+export function getEnemy(custom) {
+   let Context = {};
 
    // apply enemy context
    let enemyPokemon = GM.get("pokemon", custom?.enemyPokemon);
@@ -593,11 +596,12 @@ export function applyContext(custom) {
 
    let enemy_cpm = DEFAULT_ENEMY_CPM;
    Context.enemy.Atk =
-      (enemyPokemon?.baseAtk ?? 0 + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
+      ((enemyPokemon?.baseAtk ?? 0) + DEFAULT_ENEMY_IVs[0]) * enemy_cpm;
    Context.enemy.Def =
-      (enemyPokemon?.baseDef ?? 0 + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
+      ((enemyPokemon?.baseDef ?? 0) + DEFAULT_ENEMY_IVs[1]) * enemy_cpm;
    Context.enemy.Stm =
-      (enemyPokemon?.baseStm ?? 0 + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
+      ((enemyPokemon?.baseStm ?? 0) + DEFAULT_ENEMY_IVs[2]) * enemy_cpm;
+
    if (custom.enemyPokeType1) Context.enemy.pokeType1 = custom.enemyPokeType1;
    if (custom.enemyPokeType2) Context.enemy.pokeType2 = custom.enemyPokeType2;
 
@@ -612,7 +616,7 @@ export function applyContext(custom) {
 
    if (custom.cpcap) Context.LeagueCPCap = custom.cpcap;
 
-   // console.log("Context", Context);
+   // console.log("Enemy Context", Context);
 
    return Context;
 }
@@ -784,7 +788,7 @@ export function generateSpreadsheet(pokemonCollection, Context) {
             pkmInstance.fmove = fmoveInstance;
             pkmInstance.cmove = cmoveInstance;
             pkmInstance.level = pkm.level || Context.attackerLevel;
-            pkmInstance.cpm = pkm.cpm || DEFAULT_ATTACKER_CPM;
+            pkmInstance.cpm = pkm.cpm || Context.attackerCPM;
             pkmInstance.atkiv =
                pkm.atkiv >= 0 ? pkm.atkiv : DEFAULT_ATTACKER_IVs[0];
             pkmInstance.defiv =

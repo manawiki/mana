@@ -12,7 +12,7 @@ import {
 
 import { Icon } from "~/components/Icon";
 
-import { generateSpreadsheet, getCustom } from "./calc.js";
+import { generateSpreadsheet, getCustom, getEnemy } from "./calc.js";
 import {
    GM,
    Data,
@@ -33,6 +33,8 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    const context = getCustom(params);
 
+   const enemyContext = getEnemy(context);
+
    // todo redo how Data.Pokemon is generated
    if (!requiredJSONStatus.Pokemon) GM.fetch({});
 
@@ -41,7 +43,13 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
 
    //create a simple in-memory cache
    function cacheResult() {
-      cache.value = generateSpreadsheet(Data.Pokemon, context);
+      //toggle move data for pvp mode
+      context.battleMode === "pvp" ? GM.mode("pvp") : GM.mode("raid");
+
+      cache.value = generateSpreadsheet(pokemon, {
+         ...context,
+         ...enemyContext,
+      });
 
       cache.key = JSON.stringify(context);
       return cache.value;
@@ -53,7 +61,10 @@ export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
          ? cache.value
          : cacheResult();
 
-   return { pokemon, results, count: results?.length };
+   //apply table filters
+   const filtered = filterResults(results, url.searchParams);
+
+   return { pokemon, results: filtered, count: filtered?.length };
 }
 
 clientLoader.hyrate = true;
@@ -75,7 +86,7 @@ export function ComprehensiveDpsSpreadsheet() {
       <>
          <Introduction />
          <NewToggles pokemon={pokemon} />
-         <Pagination count={count} />
+
          <ResultsTable />
       </>
    );
@@ -116,7 +127,7 @@ export function Introduction() {
          </p>
          <div className="mt-6">
             <div className="border-t border-b border-gray-200">
-               <div className="flex justify-between px-6 py-3 bg-gray-100">
+               <div className="flex justify-between px-6 py-3 border-b-2">
                   <span className="font-semibold ">Search</span>
                   <span className="font-semibold ">Example</span>
                </div>
@@ -199,8 +210,12 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
          replace={true}
          id="dps-form"
          name="dps-form"
+         preventScrollReset={true}
          onChange={(e) => {
-            submit(e.currentTarget, { method: "GET" });
+            submit(e.currentTarget, {
+               method: "GET",
+               preventScrollReset: true,
+            });
          }}
          className=" p-6 rounded-lg shadow-lg"
       >
@@ -221,12 +236,14 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      setEnemyPokemon={setEnemyPokemon}
                      pokemon={pokemon}
                   />
-                  <input
-                     hidden
-                     name="enemy-pokemon-name"
-                     id="enemy-pokemon-name"
-                     value={enemyPokemon.name}
-                  />
+                  {enemyPokemon?.name && (
+                     <input
+                        hidden
+                        name="enemy-pokemon-name"
+                        id="enemy-pokemon-name"
+                        value={enemyPokemon?.name}
+                     />
+                  )}
                </div>
                <div className="mb-4">
                   <label
@@ -259,6 +276,7 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
                      id="weather"
                      name="weather"
+                     placeholder="choose weather"
                   >
                      {weathers.map(({ name, label }) => (
                         <option key={name} value={name}>
@@ -394,39 +412,46 @@ function NewToggles({ pokemon = [] }: { pokemon?: Array<any> }) {
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-pvpMode"
-                     name="ui-pvpMode"
+                     id="ui-pvpMode-checkbox"
+                     name="ui-pvpMode-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-pvpMode">PvP Mode</label>
+                  <label htmlFor="ui-pvpMode-checkbox">PvP Mode</label>
                </div>
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-uniqueSpecies"
-                     name="ui-uniqueSpecies"
+                     id="ui-uniqueSpecies-checkbox"
+                     name="ui-uniqueSpecies-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-uniqueSpecies">Best</label>
+                  <label htmlFor="ui-uniqueSpecies-checkbox">Best</label>
                </div>
                <div className="flex items-center gap-2 mb-4">
                   <input
                      className="w-4 h-4"
-                     id="ui-hideUnavail"
-                     name="ui-hideUnavail"
+                     id="ui-hideUnavail-checkbox"
+                     name="ui-hideUnavail-checkbox"
                      type="checkbox"
                   />
-                  <label htmlFor="ui-hideUnavail">Hide Unavail</label>
+                  <label htmlFor="ui-hideUnavail-checkbox">Hide Unavail</label>
                </div>
                <div className="mb4">
+                  <label
+                     className="block text-sm font-medium mb-1"
+                     htmlFor="attacker-level"
+                  >
+                     Attacker Level
+                  </label>
                   <input
                      id="attacker-level"
                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                     placeholder="Attacker Level"
                      name="attacker-level"
+                     placeholder="40"
                      type="number"
                      min={1}
-                     max={40}
+                     max={51}
+                     step={0.5}
                   />
                </div>
                <button
@@ -448,28 +473,24 @@ function ResultsTable() {
 
    const [searchParams] = useSearchParams();
 
-   const params = Object.fromEntries(searchParams);
+   // pagination
+   const page = searchParams.get("page")
+      ? parseInt(searchParams.get("page") ?? "1")
+      : 1;
 
-   //to-do read params to toggle sorting
-   const sort = params["sort"] ?? "dps";
-   const asc = params["asc"] ? 1 : -1;
-   const page = params["page"] ? parseInt(params["page"]) : 1;
-   const search = params["search"] ?? "";
-
-   // console.log(sort, asc, page, search);
+   const start = 100 * page - 100;
+   const end = 100 * page;
 
    const filtered = results
-      .filter((pokemon) =>
-         search === ""
-            ? true
-            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
-      )
-      .sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc))
       //limit results to the top 100
-      .slice(100 * page - 100, 100 * page);
+      .slice(start, end);
 
    return (
       <>
+         <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
+            <Pagination count={count} />
+            Displaying {start + 1} to {end} of {count} results
+         </div>
          <table className="w-full">
             <thead>
                <tr>
@@ -495,21 +516,21 @@ function ResultsTable() {
                         {pokemon?.cmove?.label}
                      </td>
                      <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
                         aria-label={pokemon?.dps}
                      >
                         {pokemon?.ui_dps}
                      </td>
                      <td
-                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700"
+                        className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right"
                         aria-label={pokemon?.tdo}
                      >
                         {pokemon?.ui_tdo}
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
                         {pokemon?.ui_overall}
                      </td>
-                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700">
+                     <td className="group-odd:!bg-white group-odd:dark:!bg-gray-900 group-even:!bg-gray-50 group-even:dark:!bg-gray-800 group-border-b group-dark:!border-gray-700  text-right">
                         {pokemon?.ui_cp}
                      </td>
                   </tr>
@@ -533,6 +554,49 @@ function ResultsTable() {
          </div>
       </>
    );
+}
+
+function filterResults(results, searchParams) {
+   let filtered = results;
+
+   // to-do read params to toggle sorting
+   const sort = searchParams.get("sort") ?? "dps";
+   const asc = searchParams.get("asc") ? 1 : -1;
+
+   filtered = filtered.sort((a, b) => (a[sort] > b[sort] ? asc : -1 * asc));
+
+   // filter out unavailable Pokemon if toggled
+   if (searchParams.get("ui-hideUnavail-checkbox")) {
+      filtered = filtered.filter((pokemon) => pokemon?.unavailable !== "On");
+   }
+
+   // filter for unique species if toggled
+   if (searchParams.get("ui-uniqueSpecies-checkbox")) {
+      //reduce the filtered array so only one of each pokemon.name remains
+
+      let unique = [];
+
+      for (let i = 0; i < filtered.length; i++) {
+         if (!unique.map((poke) => poke?.name).includes(filtered[i].name)) {
+            unique.push(filtered[i]);
+         }
+      }
+
+      filtered = unique;
+   }
+
+   // implement search
+   const search = searchParams.get("search");
+
+   if (search) {
+      filtered = filtered.filter((pokemon) =>
+         search === ""
+            ? true
+            : pokemon?.name?.trim().includes(search.trim().toLowerCase()),
+      );
+   }
+
+   return filtered;
 }
 
 //Make the th clickable to sort
@@ -596,90 +660,88 @@ function Pagination({ count = 100 }) {
    if (numPages <= 1) return null;
 
    return (
-      <div className="text-1 flex items-center justify-between py-3 pl-1 text-sm">
-         <div className="flex items-center gap-3 text-xs">
-            <button
-               //todo convert this to links
-               className="flex items-center gap-1 font-semibold uppercase hover:underline"
-               onClick={() =>
-                  setSearchParams(
-                     (searchParams) => {
-                        searchParams.set("page", (page - 1).toString());
-                        return searchParams;
-                     },
-                     { preventScrollReset: true },
-                  )
-               }
-               disabled={page === 1}
-            >
-               <Icon name="chevron-left" size={18} className="text-zinc-500">
-                  Prev
-               </Icon>
-            </button>
+      <div className="flex items-center gap-3 text-xs">
+         <button
+            //todo convert this to links
+            className="flex items-center gap-1 font-semibold uppercase hover:underline"
+            onClick={() =>
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", (page - 1).toString());
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               )
+            }
+            disabled={page === 1}
+         >
+            <Icon name="chevron-left" size={18} className="text-zinc-500">
+               Prev
+            </Icon>
+         </button>
+
+         <input
+            // form="dps-form"
+            type="number"
+            key={"page " + page}
+            defaultValue={page}
+            className="w-16"
+            name="page"
+            min={1}
+            max={numPages}
+            onChange={(e) => {
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", e.target.value);
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               );
+            }}
+         />
+         {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
+
+         <button
+            className="flex items-center gap-1 font-semibold uppercase hover:underline"
+            onClick={() =>
+               setSearchParams(
+                  (searchParams) => {
+                     searchParams.set("page", (page + 1).toString());
+                     return searchParams;
+                  },
+                  { preventScrollReset: true },
+               )
+            }
+            disabled={page >= numPages}
+         >
+            Next
+            <Icon
+               name="chevron-right"
+               title="Next"
+               size={18}
+               className="text-zinc-500"
+            />
+         </button>
+
+         <div className="w-full">
+            <label htmlFor="search">Search</label>
 
             <input
-               // form="dps-form"
-               type="number"
-               key={"page " + page}
-               defaultValue={page}
-               className="w-16"
-               name="page"
-               min={1}
-               max={numPages}
+               id="search"
+               //  onKeyUp={search_trigger}
+               className="w-full"
+               name="search"
                onChange={(e) => {
                   setSearchParams(
                      (searchParams) => {
-                        searchParams.set("page", e.target.value);
+                        searchParams.set("search", e.target.value);
+                        searchParams.delete("page");
                         return searchParams;
                      },
                      { preventScrollReset: true },
                   );
                }}
             />
-            {/* <span className="h-1 w-1 rounded-full bg-zinc-300 dark:bg-zinc-600" /> */}
-
-            <button
-               className="flex items-center gap-1 font-semibold uppercase hover:underline"
-               onClick={() =>
-                  setSearchParams(
-                     (searchParams) => {
-                        searchParams.set("page", (page + 1).toString());
-                        return searchParams;
-                     },
-                     { preventScrollReset: true },
-                  )
-               }
-               disabled={page >= numPages}
-            >
-               Next
-               <Icon
-                  name="chevron-right"
-                  title="Next"
-                  size={18}
-                  className="text-zinc-500"
-               />
-            </button>
-
-            <div className="w-full">
-               <label htmlFor="search">Search</label>
-
-               <input
-                  id="search"
-                  //  onKeyUp={search_trigger}
-                  className="w-full"
-                  name="search"
-                  onChange={(e) => {
-                     setSearchParams(
-                        (searchParams) => {
-                           searchParams.set("search", e.target.value);
-                           searchParams.delete("page");
-                           return searchParams;
-                        },
-                        { preventScrollReset: true },
-                     );
-                  }}
-               />
-            </div>
          </div>
       </div>
    );
@@ -710,8 +772,8 @@ export function PokemonComboBox({ enemyPokemon, setEnemyPokemon, pokemon }) {
          />
 
          <Combobox.Options
-         // className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
-         //    overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
+            className="bg-white dark:bg-dark350 outline-color border shadow-1 border-zinc-100 dark:border-zinc-700 divide-color-sub absolute left-0 z-20 max-h-80 w-full divide-y
+            overflow-auto shadow-xl outline-1 max-laptop:border-y laptop:mt-2 no-scrollbar laptop:rounded-2xl laptop:outline"
          >
             {filteredPokemon.length === 0
                ? query && (
