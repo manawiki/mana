@@ -8,6 +8,7 @@ export const usersSlug = "users";
 export const Users: CollectionConfig = {
    slug: usersSlug,
    auth: {
+      useAPIKey: true,
       verify: {
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account

@@ -1,10 +1,10 @@
 import { redirect, json } from "@remix-run/node";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import type { useSearchParams } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { initialValue } from "~/routes/_editor+/core/utils";
+import type { loader as siteLayoutLoader } from "~/routes/_site+/$siteId+/_layout";
 import { safeNanoID } from "~/utils";
 
 import { MyPosts } from "./components/MyPosts";
@@ -14,21 +14,22 @@ import { fetchMyPosts } from "./functions/fetchMyPosts";
 import { fetchPublishedPosts } from "./functions/fetchPublishedPosts";
 import { mainContainerStyle } from "../$siteId+/_index";
 
-export const meta: MetaFunction = ({ matches }: { matches: any }) => {
-   const site = matches.find(
+export const meta: MetaFunction<
+   null,
+   {
+      "routes/_site+/$siteId+/_layout": typeof siteLayoutLoader;
+   }
+> = ({ matches }) => {
+   const siteName = matches.find(
       ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   );
-   const siteName = site?.data?.site.name;
+   )?.data?.site.name;
+
    return [
       {
          title: `Posts - ${siteName}`,
       },
    ];
 };
-
-export type setSearchParamsType = ReturnType<typeof useSearchParams>[1];
-
-export const handle = {};
 
 export const PostsAllSchema = z.object({
    q: z.string().optional(),
@@ -86,6 +87,10 @@ export const action = async ({
       siteId: z.string(),
    });
 
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
+
    const slug = await payload.find({
       collection: "sites",
       where: {
@@ -96,10 +101,6 @@ export const action = async ({
       user,
    });
    const site = slug?.docs[0];
-
-   const { intent } = await zx.parseForm(request, {
-      intent: z.string(),
-   });
 
    switch (intent) {
       case "createWithTitle": {

@@ -89,46 +89,6 @@ export async function loader({
    });
 }
 
-export const meta: MetaFunction<
-   typeof loader,
-   { "routes/_site+/$siteId+/_layout": typeof siteLayoutLoader }
-> = ({ data, matches }) => {
-   const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site.name;
-
-   const siteSlug = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
-   )?.data?.site.slug;
-
-   invariant(data?.post);
-
-   const { name, subtitle, slug } = data?.post;
-
-   const postBannerUrl = data?.post?.banner?.url;
-   const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
-   const postUrl = `https://mana.wiki/${siteSlug}/p/${slug}`;
-
-   return [
-      {
-         title: `${name} - ${siteName}`,
-      },
-      {
-         property: "og:title",
-         content: `${name} - ${siteName}`,
-      },
-      { property: "og:site_name", content: siteName },
-      ...(subtitle
-         ? [
-              { property: "description", content: subtitle },
-              { property: "og:description", content: subtitle },
-           ]
-         : []),
-      ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
-      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
-   ];
-};
-
 export default function Post() {
    const { post, postContent, isChanged, comments } =
       useLoaderData<typeof loader>();
@@ -740,3 +700,43 @@ export async function action({
       }
    }
 }
+
+export const meta: MetaFunction<
+   typeof loader,
+   { "routes/_site+/$siteId+/_layout": typeof siteLayoutLoader }
+> = ({ data, matches }) => {
+   const siteName = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.name;
+
+   const siteSlug = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/$siteId+/_layout",
+   )?.data?.site.slug;
+
+   invariant(data?.post);
+
+   const { name, subtitle, slug } = data?.post;
+
+   const postBannerUrl = data?.post?.banner?.url;
+   const postBanner = `${postBannerUrl}?crop=1200,630&aspect_ratio=1.9:1`;
+   const postUrl = `https://mana.wiki/${siteSlug}/p/${slug}`;
+
+   return [
+      {
+         title: `${name} - ${siteName}`,
+      },
+      {
+         property: "og:title",
+         content: `${name} - ${siteName}`,
+      },
+      { property: "og:site_name", content: siteName },
+      ...(subtitle
+         ? [
+              { property: "description", content: subtitle },
+              { property: "og:description", content: subtitle },
+           ]
+         : []),
+      ...(postBannerUrl ? [{ property: "og:image", content: postBanner }] : []),
+      ...(postUrl ? [{ property: "og:url", content: postUrl }] : []),
+   ];
+};
