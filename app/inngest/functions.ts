@@ -2,6 +2,7 @@ import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import type { GetEvents } from "inngest";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import type { PaginatedDocs } from "payload/database";
+import qs from "qs";
 
 import { settings } from "mana-config";
 import type {
@@ -428,7 +429,7 @@ export const updateSiteAnalytics = inngest.createFunction(
       }
 
       //Fetch icon and name, then clean
-      const result =
+      const trendingPages =
          filteredRows &&
          (
             await Promise.all(
@@ -447,14 +448,83 @@ export const updateSiteAnalytics = inngest.createFunction(
             return true;
          });
 
-      (await authRestFetcher({
+      //Get total site posts
+      const postTotalQuery = qs.stringify(
+         {
+            where: {
+               site: {
+                  equals: siteId,
+               },
+            },
+            depth: 0,
+         },
+         { addQueryPrefix: true },
+      );
+
+      const getPostsTotal = (await authRestFetcher({
+         method: "GET",
+         path: `${settings.domainFull}/api/posts${postTotalQuery}`,
+      })) as PaginatedDocs<Post>;
+
+      //Get total site entries
+      const entryTotalQuery = qs.stringify(
+         {
+            where: {
+               site: {
+                  equals: siteId,
+               },
+            },
+            depth: 0,
+         },
+         { addQueryPrefix: true },
+      );
+
+      const totalEntries = await (
+         await Promise.all(
+            collections.map(
+               async (collection: {
+                  id: string;
+                  slug: string;
+                  customDatabase: boolean;
+               }) => {
+                  if (collection.customDatabase == true) {
+                     const totalCustomEntries = await authRestFetcher({
+                        method: "GET",
+                        path: `https://${siteSlug}-db.${settings?.domain}/api/${collection.slug}`,
+                     });
+                     return totalCustomEntries.totalDocs;
+                  }
+                  const totalCoreEntries = await authRestFetcher({
+                     method: "GET",
+                     path: `${settings.domainFull}/api/entries${entryTotalQuery}`,
+                  });
+                  return totalCoreEntries.totalDocs;
+               },
+            ),
+         )
+      ).reduce((partialSum, a) => partialSum + a, 0);
+
+      //Update site with new data
+      await authRestFetcher({
          method: "PATCH",
          path: `${settings.domainFull}/api/sites/${siteId}`,
-         body: { trendingPages: result },
-      })) as Site;
+         body: {
+            ...(getPostsTotal.totalDocs && {
+               totalPosts: getPostsTotal.totalDocs,
+            }),
+            ...(totalEntries && {
+               totalEntries: totalEntries,
+            }),
+            ...(trendingPages && {
+               trendingPages: trendingPages,
+            }),
+         },
+      });
 
       return {
-         result,
+         trendingPages,
+         totalEntries,
+         totalPosts: getPostsTotal.totalDocs,
       };
    },
 );

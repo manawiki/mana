@@ -26,7 +26,7 @@ export function ColumnFour({ site }: { site: Site }) {
                      <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                         <div className="dark:bg-dark350/70 bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
                            <div className="text-xs font-bold text-center">
-                              {site.followers}
+                              {site.followers ? site.followers : "-"}
                            </div>
                            <div className="text-xs text-1 text-center">
                               Followers
@@ -34,7 +34,7 @@ export function ColumnFour({ site }: { site: Site }) {
                         </div>
                         <div className="dark:bg-dark350/70 bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
                            <div className="text-xs font-bold text-center">
-                              -
+                              {site.totalPosts ? site.totalPosts : "-"}
                            </div>
                            <div className="text-xs text-1 text-center">
                               Posts
@@ -42,7 +42,7 @@ export function ColumnFour({ site }: { site: Site }) {
                         </div>
                         <div className="dark:bg-dark350/70 bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
                            <div className="text-xs text-center font-bold">
-                              -
+                              {site.totalEntries ? site.totalEntries : "-"}
                            </div>
                            <div className="text-xs text-center text-1">
                               Entries
@@ -65,7 +65,7 @@ export function ColumnFour({ site }: { site: Site }) {
                               alt="Site Banner"
                               className=""
                            />
-                           <span className="bg-gradient-to-t dark:from-zinc-900 from-white to-transparent  w-full h-full absolute top-0 left-0 z-10" />
+                           <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/90 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
                            <div
                               className="absolute dark:[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] [text-shadow:_0_1px_0_rgb(255_255_255_/_40%)]
                            dark:text-white bottom-0 text-sm left-0 p-4 z-20 space-y-1"
