@@ -1,4 +1,7 @@
-import type { CollectionAfterChangeHook, CollectionConfig } from "payload/types";
+import type {
+   CollectionAfterChangeHook,
+   CollectionConfig,
+} from "payload/types";
 
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../access/user";
 const afterCreateSite: CollectionAfterChangeHook = async ({
@@ -22,19 +25,19 @@ const afterCreateSite: CollectionAfterChangeHook = async ({
                      children: [
                         {
                            text: "Welcome to Mana",
-                        }
-                     ]
+                        },
+                     ],
                   },
                   {
                      id: "jsowPnsUbN-UmsYfOpFtY",
                      type: "paragraph",
                      children: [
                         {
-                           text: "This page was automatically generated during site creation, and it looks like it hasn't been replaced yet."
-                        }
-                     ]
-                  }
-               ]
+                           text: "This page was automatically generated during site creation, and it looks like it hasn't been replaced yet.",
+                        },
+                     ],
+                  },
+               ],
             },
          });
       }
@@ -67,6 +70,10 @@ export const Sites: CollectionConfig = {
       {
          name: "about",
          type: "text",
+      },
+      {
+         name: "trendingPages",
+         type: "json",
       },
       {
          name: "isPublic",
@@ -118,6 +125,14 @@ export const Sites: CollectionConfig = {
          name: "gaTagId",
          label: "Google Analytics tag id",
          type: "text",
+      },
+      {
+         name: "gaPropertyId",
+         label: "Google Analytics property id",
+         type: "text",
+         access: {
+            read: isStaffFieldLevel,
+         },
       },
       {
          name: "type",
@@ -195,6 +210,13 @@ export const Sites: CollectionConfig = {
          maxDepth: 2,
       },
       {
+         name: "contributors",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
          name: "icon",
          type: "upload",
          relationTo: "images",
@@ -215,6 +237,14 @@ export const Sites: CollectionConfig = {
       {
          name: "id",
          type: "text",
+      },
+      {
+         name: "totalPosts",
+         type: "number",
+      },
+      {
+         name: "totalEntries",
+         type: "number",
       },
    ],
    hooks: {

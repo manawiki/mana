@@ -1,4 +1,5 @@
 export type IconName =
+  | "flame"
   | "file-code-2"
   | "archive"
   | "archive-restore"

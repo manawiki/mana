@@ -352,6 +352,9 @@ const fetchSite = async ({
                   domain
                   followers
                   enableAds
+                  totalEntries
+                  totalPosts
+                  trendingPages
                   banner {
                      url
                   }

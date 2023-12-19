@@ -1,11 +1,11 @@
 import { serve } from "inngest/remix";
 
 import { inngest } from "~/inngest/client";
-import { updateSiteAnalytics } from "~/inngest/functions";
+import { loadAnalyticsCron, updateSiteAnalytics } from "~/inngest/functions";
 
 const handler = serve({
    client: inngest,
-   functions: [updateSiteAnalytics],
+   functions: [loadAnalyticsCron, updateSiteAnalytics],
 });
 
 export { handler as action, handler as loader };

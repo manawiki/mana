@@ -74,6 +74,8 @@ export async function loader({
          if (pathSection[4]) {
             const entryId = pathSection[4];
             const collectionId = pathSection[3];
+
+            //TODO Check specifically if collection is custom
             if (site?.type == "custom") {
                const label = gqlFormat(collectionId ?? "", "list");
                const endpoint = gqlEndpoint({
