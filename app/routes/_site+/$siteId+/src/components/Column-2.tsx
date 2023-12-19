@@ -5,6 +5,7 @@ import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 
 import { PinnedSideMenu } from "./Menu";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/src/components";
 
 export function ColumnTwo({ site }: { site: Site }) {
    // const navigation = useNavigation();
@@ -108,6 +109,32 @@ export function ColumnTwo({ site }: { site: Site }) {
                </NavLink>
                <PinnedSideMenu site={site} />
             </div>
+            <AdminOrStaffOrOwner>
+               <div className="px-4 pb-5">
+                  <NavLink
+                     prefetch="intent"
+                     className="flex items-center border dark:border-zinc-700/40 shadow-sm shadow-1 bg-white
+                   gap-3 rounded-lg text-1 laptop:pl-3 laptop:pr-1 py-1 max-desktop:justify-center dark:hover:bg-dark350
+                  relative dark:bg-dark350/40"
+                     to={`/${site.slug}/settings`}
+                  >
+                     {({ isActive, isPending }) => (
+                        <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
+                           <div className="max-desktop:hidden flex-grow text-sm font-bold">
+                              Site Settings
+                           </div>
+                           <div className="p-[9px] flex items-center justify-center">
+                              <Icon
+                                 name="settings"
+                                 title="Settings"
+                                 size={16}
+                              />
+                           </div>
+                        </div>
+                     )}
+                  </NavLink>
+               </div>
+            </AdminOrStaffOrOwner>
          </div>
       </section>
    );
