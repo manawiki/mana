@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
@@ -12,8 +12,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry } from "payload/generated-types";
-import { Image } from "~/components/Image";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
@@ -26,8 +26,9 @@ export async function loader({
       linkUrl: z.string(),
    });
 
-   const url = new URL(linkUrl).pathname;
-   const pathSection = url.split("/");
+   let url = new URL(linkUrl);
+   const pathSection = url.pathname.split("/");
+   const subdomain = url.host.split(".")[0];
 
    switch (pathSection[1]) {
       case "c": {
@@ -35,7 +36,7 @@ export async function loader({
             collection: "sites",
             where: {
                slug: {
-                  equals: pathSection[1],
+                  equals: subdomain,
                },
             },
             user,
@@ -102,8 +103,7 @@ export async function loader({
                   await gqlRequest(endpoint, entryQuery, {
                      entryId,
                   });
-
-               return entryData?.docs[0];
+               return json(entryData?.docs[0]);
             }
             //If not custom site, fetch local api entries collection
             const coreEntryData = await payload.find({
@@ -179,9 +179,21 @@ type Fields = {
 };
 
 export function BlockLink({ element, children }: Props) {
-   const { hostname, pathname } = new URL(element.url as string);
-   const isSafeLink = ["mana.wiki"].includes(hostname);
-   const editor = useSlate();
+   let { hostname, pathname } = new URL(element.url as string);
+
+   let domain = hostname.split(".").slice(-2).join(".");
+   const isSafeLink = ["mana.wiki"].includes(domain);
+
+   let url = element.url && new URL(element.url).pathname;
+   let pathSection = url && url.split("/");
+
+   const canFetch =
+      isSafeLink &&
+      element.icon == undefined &&
+      pathSection &&
+      pathSection[1] == "c" &&
+      pathSection[2] &&
+      true;
 
    const linkDataQuery = qs.stringify(
       {
@@ -190,19 +202,10 @@ export function BlockLink({ element, children }: Props) {
       { addQueryPrefix: true },
    );
 
-   const url = element.url && new URL(element.url).pathname;
-
-   const pathSection = url && url.split("/");
-
-   const canFetch =
-      isSafeLink &&
-      element.icon == undefined &&
-      pathSection &&
-      pathSection[1] == "c" &&
-      pathSection[2];
+   const editor = useSlate();
 
    const { data }: { data: Fields } = useSWR(
-      canFetch && `/blocks/link${linkDataQuery}`,
+      canFetch && `blocks/link${linkDataQuery}`,
       swrRestFetcher,
    );
 
