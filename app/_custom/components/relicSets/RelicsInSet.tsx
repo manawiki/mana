@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { RelicSet, Relic } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 
@@ -59,10 +59,10 @@ export const RelicsInSet = ({
       a.stattype?.stat_id > b.stattype?.stat_id
          ? 1
          : a.stattype?.stat_id &&
-           b.stattype?.stat_id &&
-           b.stattype?.stat_id > a.stattype?.stat_id
-         ? -1
-         : 0,
+             b.stattype?.stat_id &&
+             b.stattype?.stat_id > a.stattype?.stat_id
+           ? -1
+           : 0,
    );
 
    // Sort substats
@@ -72,10 +72,10 @@ export const RelicsInSet = ({
       a.stattype?.stat_id > b.stattype?.stat_id
          ? 1
          : a.stattype?.stat_id &&
-           b.stattype?.stat_id &&
-           b.stattype?.stat_id > a.stattype?.stat_id
-         ? -1
-         : 0,
+             b.stattype?.stat_id &&
+             b.stattype?.stat_id > a.stattype?.stat_id
+           ? -1
+           : 0,
    );
 
    // Get currently selected rarity's maxlv

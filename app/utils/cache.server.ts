@@ -22,7 +22,7 @@ export const cache = lruCacheAdapter(lruCache);
 
 /**
  * Setup a lru-cache for layout data, so we don't have to fetch it every time. Params are based on browser fetch api.
- * @param url - rest api endpoint `https://${siteId}-db.${settings.domain}/api/${collectionId}/${entryId}?depth=1`
+ * @param url - rest api endpoint
  * @param init - browser fetch api init object for headers, body, etc
  * @param ttl - time to live in ms
  * @returns  the result of the fetch or its cached value
@@ -57,7 +57,7 @@ export async function fetchWithCache(
 export async function gqlRequestWithCache(
    url: string,
    query: string,
-   variables: any,
+   variables?: any,
    ttl?: number,
 ) {
    const key = `${url}${query}${JSON.stringify(variables)}`;
@@ -94,8 +94,8 @@ export async function cacheThis<T>(
       ? func.name
          ? `${func.name}(${JSON.stringify(params)})`
          : typeof params === "string"
-         ? params
-         : params.toString()
+           ? params
+           : params.toString()
       : func.toString();
 
    return await cachified<T>({

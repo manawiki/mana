@@ -1,5 +1,5 @@
 import type { LightCone } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
 
 export const ImageGallery = ({ pageData }: { pageData: LightCone }) => {

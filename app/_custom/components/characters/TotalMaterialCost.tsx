@@ -159,12 +159,12 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
       mat?.qty > 999999
          ? Math.round(mat?.qty / 1000) / 1000 + "M"
          : mat?.qty > 999
-         ? mat?.qty / 1000 + "k"
-         : mat?.qty;
+           ? mat?.qty / 1000 + "k"
+           : mat?.qty;
 
    return (
       <div className="relative inline-block text-center">
-         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
+         <a href={`/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}

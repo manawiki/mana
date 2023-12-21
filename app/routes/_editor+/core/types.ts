@@ -2,7 +2,7 @@ import type { BaseEditor, BaseOperation, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import type { Site, Collection } from "payload/generated-types";
-import type { Time } from "~/components/datepicker/time-picker/types";
+import type { Time } from "~/routes/_site+/_components/_datepicker/time-picker/types";
 
 declare module "slate" {
    interface CustomTypes {

@@ -11,7 +11,7 @@ import payload from "payload";
 import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
-import { settings, corsConfig } from "./mana.config";
+import { settings } from "./app/config";
 import { rdtServerConfig } from "./rdt.config";
 
 // patch in Remix runtime globals
@@ -39,8 +39,6 @@ const WATCH_PATH = path.resolve("./build/version.txt");
  */
 let build = require(BUILD_PATH);
 
-const cors = require("cors");
-
 const transport = nodemailer.createTransport({
    host: process.env.PAYLOAD_NODEMAILER_HOST,
    port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT ?? "587"),
@@ -54,8 +52,6 @@ const transport = nodemailer.createTransport({
 //Start core site (remix + payload instance)
 async function startCore() {
    const app = express();
-   const { corsOrigins } = await corsConfig();
-   app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
 
@@ -156,7 +152,7 @@ async function startCore() {
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {
-      console.log(`Express server listening on port http://localhost:${port}`);
+      console.log(`Express server listening on port http://localhost:3000`);
 
       if (process.env.NODE_ENV === "development") {
          broadcastDevReady(build);

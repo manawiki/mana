@@ -1,4 +1,4 @@
-export const Image = ({
+export function Image({
    url,
    options,
    alt,
@@ -9,7 +9,7 @@ export const Image = ({
 }: {
    url?: string;
    options?: string;
-} & React.ImgHTMLAttributes<HTMLImageElement>) => {
+} & React.ImgHTMLAttributes<HTMLImageElement>) {
    const searchParams = new URLSearchParams(options);
 
    return (
@@ -22,4 +22,4 @@ export const Image = ({
          src={`${url}?${options ?? ""}` ?? "/favicon.ico"}
       />
    );
-};
+}

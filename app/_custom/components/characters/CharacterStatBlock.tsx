@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { Character } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 import { CSVStats } from "../CSVStats.tsx";
 import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph.tsx";

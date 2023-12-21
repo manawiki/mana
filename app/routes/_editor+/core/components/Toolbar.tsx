@@ -7,7 +7,6 @@ import clsx from "clsx";
 import { Editor, Range, Transforms, Element as SlateElement } from "slate";
 import { useFocused, useSlate } from "slate-react";
 
-import Button from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 
@@ -445,30 +444,22 @@ export function Toolbar() {
                                           </TooltipContent>
                                        </Tooltip>
                                        <Tooltip>
-                                          <TooltipTrigger>
-                                             <Button
-                                                ariaLabel="Toggle Underline"
-                                                onPointerDown={(e) =>
-                                                   e.preventDefault()
-                                                }
-                                                onClick={() =>
-                                                   toggleMark(
-                                                      editor,
-                                                      "underline",
-                                                   )
-                                                }
-                                                className={`${
-                                                   marks &&
-                                                   marks["underline"] === true
-                                                      ? "bg-zinc-200 dark:bg-dark500"
-                                                      : ""
-                                                } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
-                                             >
-                                                <Icon
-                                                   name="underline"
-                                                   size={14}
-                                                />
-                                             </Button>
+                                          <TooltipTrigger
+                                             aria-label="Toggle Underline"
+                                             onPointerDown={(e) =>
+                                                e.preventDefault()
+                                             }
+                                             onClick={() =>
+                                                toggleMark(editor, "underline")
+                                             }
+                                             className={`${
+                                                marks &&
+                                                marks["underline"] === true
+                                                   ? "bg-zinc-200 dark:bg-dark500"
+                                                   : ""
+                                             } hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 items-center justify-center rounded-lg`}
+                                          >
+                                             <Icon name="underline" size={14} />
                                           </TooltipTrigger>
                                           <TooltipContent>
                                              Toggle Underline

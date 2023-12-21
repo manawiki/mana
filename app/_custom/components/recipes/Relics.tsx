@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 
 import type { Recipe } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
 
 export const Relics = ({ pageData }: { pageData: Recipe }) => {
@@ -24,7 +24,7 @@ export const Relics = ({ pageData }: { pageData: Recipe }) => {
                         key={rname}
                         prefetch="intent"
                         className="flex items-center gap-3 p-2"
-                        to={`/starrail/c/relicSets/${rsetid}`}
+                        to={`/c/relicSets/${rsetid}`}
                      >
                         <div className="h-12 w-12">
                            <Image

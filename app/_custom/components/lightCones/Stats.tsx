@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { LightCone } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 import { CSVStats } from "../CSVStats";
 import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph";

@@ -59,7 +59,7 @@ const ItemFrame = ({ mat }: { mat: Material }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/c/materials/${mat?.id}`}>
+         <a href={`/c/materials/${mat?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat?.icon?.url ?? "no_image_42df124128"}

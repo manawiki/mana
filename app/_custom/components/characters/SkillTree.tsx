@@ -5,7 +5,7 @@ import type {
    Character,
    SkillTree as SkillTreeType,
 } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 export const SkillTree = ({
    data,
@@ -30,8 +30,8 @@ export const SkillTree = ({
       a?.anchor && b?.anchor && a.anchor > b.anchor
          ? 1
          : a?.anchor && b?.anchor && b.anchor > a.anchor
-         ? -1
-         : 0,
+           ? -1
+           : 0,
    );
 
    const connectorcount = {
@@ -177,7 +177,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
+         <a href={`/c/materials/${mat.materials?.id}`}>
             <div
                className="relative mr-0.5 mt-0.5 inline-block h-11 w-11
             align-middle text-xs"

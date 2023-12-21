@@ -6,7 +6,7 @@ import type {
    SkillTree,
    Trace as TraceType,
 } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 export const Traces = ({
    data,
@@ -136,7 +136,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <a href={`/starrail/c/materials/${mat.materials?.id}`}>
+         <a href={`/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
                <img
                   src={mat.materials?.icon?.url ?? "no_image_42df124128"}

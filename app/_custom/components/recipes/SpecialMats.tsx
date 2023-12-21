@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 
 import type { Material, Recipe } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 import { H2 } from "~/components/Headers";
 
 export const SpecialMats = ({ pageData }: { pageData: Recipe }) => {
@@ -49,7 +49,7 @@ const ItemFrame = ({ mat }: { mat: Material }) => {
          className="relative inline-block text-center"
          key={mat?.id}
          prefetch="intent"
-         to={`/starrail/c/materials/${mat?.id}`}
+         to={`/c/materials/${mat?.id}`}
       >
          <div className="relative mr-2 mt-2 inline-block h-16 w-16 align-middle text-xs">
             <Image
@@ -81,7 +81,7 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
 
    return (
       <div className="relative inline-block text-center" key={mat?.id}>
-         <Link to={`/starrail/c/materials/${mat.materials?.id}`}>
+         <Link to={`/c/materials/${mat.materials?.id}`}>
             <div className="relative mr-1 mt-0.5 inline-block h-16 w-16 align-middle text-xs">
                <Image
                   options="aspect_ratio=1:1&height=80&width=80"
