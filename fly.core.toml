@@ -12,8 +12,6 @@ kill_timeout = "5s"
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_start_machines = true
-  min_machines_running = 0
   processes = ["app"]
 
 [[services]]
