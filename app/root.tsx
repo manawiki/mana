@@ -23,7 +23,6 @@ import { getToast } from "remix-toast";
 import { ExternalScripts } from "remix-utils/external-scripts";
 import { Toaster, toast as notify } from "sonner";
 
-import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
@@ -31,6 +30,8 @@ import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
 import { useIsBot } from "~/utils/isBotProvider";
 import { getTheme } from "~/utils/theme.server";
 
+import { settings } from "./config";
+import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
 import { rdtClientConfig } from "../rdt.config";
@@ -41,8 +42,12 @@ export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const locale = await i18nextServer.getLocale(request);
+   const { siteSlug } = getSiteSlug(request);
 
+   let { hostname } = new URL(request.url);
+   let [subDomain] = hostname.split(".");
+
+   const locale = await i18nextServer.getLocale(request);
    // Extracts the toast from the request
    const { toast, headers } = await getToast(request);
 
@@ -63,7 +68,6 @@ export const loader = async ({
       slug: site?.slug,
       type: site?.type,
    }));
-
    const hints = getHints(request);
 
    return json(
@@ -72,16 +76,19 @@ export const loader = async ({
             ...hints,
             theme: getTheme(request) ?? hints.theme,
          },
+         sitePath: request.url,
+         subDomain,
          toast,
          locale,
          user,
+         siteSlug,
          following,
       },
       { headers },
    );
 };
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
    { title: settings.title },
    { charSet: "utf-8" },
 ];
@@ -96,28 +103,8 @@ export const links: LinksFunction = () => [
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
-   //add preconnects to cdn to improve first bits
-   {
-      rel: "preconnect",
-      href: `https://${settings.domain}`,
-      crossOrigin: "anonymous",
-   },
-   {
-      rel: "preconnect",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-      crossOrigin: "anonymous",
-   },
-
    //add dns-prefetch as fallback support for older browsers
    { rel: "dns-prefetch", href: `https://static.mana.wiki` },
-   {
-      rel: "dns-prefetch",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-   },
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
       : []),
@@ -129,7 +116,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, toast } = useLoaderData<typeof loader>();
+   const { locale, toast, sitePath } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
@@ -170,6 +157,8 @@ function App() {
                name="format-detection"
                content="telephone=no, date=no, email=no, address=no"
             />
+            {/* add preconnect to cdn to improve first bits */}
+            <link rel="preconnect" href={sitePath} crossOrigin="anonymous" />
             <link
                sizes="32x32"
                rel="icon"

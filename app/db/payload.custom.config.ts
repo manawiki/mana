@@ -11,14 +11,15 @@ import { Users } from "./collections/CustomUsers";
 import { Images } from "./collections/Images";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
-import { settings } from "../../mana.config";
 import {
    CustomCollections,
    CustomSearchCollections,
    CustomDefaultPriorities,
 } from "../_custom/collections";
 
-const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
+const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET
+   ? process.env.PAYLOAD_PUBLIC_BUCKET
+   : "mana-prod";
 
 const adapter = s3Adapter({
    config: {
@@ -34,13 +35,9 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
-   serverURL:
-      process.env.NODE_ENV === "production"
-         ? `https://${settings.siteId}-db.${settings.domain}`
-         : "http://localhost:4000",
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: process.env.CUSTOM_MONGO_URL ?? false,
+      url: `${process.env.MONGODB_URI}/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}-prod-db`,
    }),
    admin: {
       bundler: viteBundler(),
@@ -72,9 +69,9 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/${settings.siteId}/${filename}`;
+                  return `https://static.mana.wiki/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}/${filename}`;
                },
-               prefix: settings.siteId,
+               prefix: process.env.PAYLOAD_PUBLIC_SITE_SLUG,
             },
          },
       }),

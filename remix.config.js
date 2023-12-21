@@ -1,15 +1,10 @@
 const { flatRoutes } = require("remix-flat-routes");
 
-const customConfig = require("./app/_custom/config.json");
-
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
    serverModuleFormat: "cjs",
    tailwind: true,
    postcss: true, // commented out to speed up hmr, uncomment if you need to use postcss.
-   publicPath: process.env.STATIC_URL
-      ? `${process.env.STATIC_URL}/build/`
-      : "/build/",
    serverDependenciesToBundle: [
       "nanoid",
       "react-code-block",
@@ -26,21 +21,36 @@ module.exports = {
 async function manaRoutes(defineRoutes) {
    let routes = flatRoutes(["routes", "_custom/routes"], defineRoutes);
 
-   if (customConfig?.domain) {
+   if (process.env.IS_HOME) {
       routes = {
          ...routes,
-         "routes/_home+/_layout": {
-            id: "routes/_home+/_layout",
+         "routes/_site+/_layout": {
+            id: "routes/_site+/_layout",
             parentId: "root",
-            file: "routes/_site+/$siteId+/_layout.tsx",
+            file: "routes/_home+/_layout.tsx",
          },
-         "routes/_home+/_index": {
+         "routes/_site+/_index/index": {
             index: true,
-            id: "routes/_home+/_index",
-            parentId: "routes/_home+/_layout",
-            file: "routes/_site+/$siteId+/_index.tsx",
+            id: "routes/_site+/_index",
+            parentId: "routes/_site+/_layout",
+            file: "routes/_home+/_index.tsx",
          },
       };
+      return routes;
    }
+   routes = {
+      ...routes,
+      "routes/_home+/_layout": {
+         id: "routes/_home+/_layout",
+         parentId: "root",
+         file: "routes/_site+/_layout.tsx",
+      },
+      "routes/_home+/_index": {
+         index: true,
+         id: "routes/_home+/_index",
+         parentId: "routes/_home+/_layout",
+         file: "routes/_site+/_index/index.tsx",
+      },
+   };
    return routes;
 }

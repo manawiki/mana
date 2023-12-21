@@ -5,10 +5,9 @@ import nodemailer from "nodemailer";
 import payload from "payload";
 import invariant from "tiny-invariant";
 
-import { settings, corsConfig } from "./mana.config";
+import { settings } from "./app/config";
 
 require("dotenv").config();
-const cors = require("cors");
 
 const transport = nodemailer.createTransport({
    host: process.env.PAYLOAD_NODEMAILER_HOST,
@@ -23,9 +22,6 @@ const transport = nodemailer.createTransport({
 //Start custom database (payload instance only)
 async function startCustom() {
    const app = express();
-
-   const { corsOrigins } = await corsConfig();
-   app.use(cors({ origin: corsOrigins }));
 
    // Redirect all traffic at root to admin UI
    app.get("/", function (_, res) {

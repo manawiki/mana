@@ -220,9 +220,6 @@ export const Sites: CollectionConfig = {
          name: "icon",
          type: "upload",
          relationTo: "images",
-         admin: {
-            hidden: true,
-         },
       },
       {
          name: "banner",

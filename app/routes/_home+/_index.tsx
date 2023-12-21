@@ -14,17 +14,17 @@ import clsx from "clsx";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
-import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
-import { useDebouncedValue } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
+import { gqlEndpoint, useDebouncedValue } from "~/utils";
+import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
-import { LoggedOut, LoggedIn } from "../_auth+/src/components";
-import { FollowingListMobile } from "../_site+/$siteId+/src/components";
+import { LoggedIn } from "../_auth+/components/LoggedIn";
+import { LoggedOut } from "../_auth+/components/LoggedOut";
+import { FollowingListMobile } from "../_site+/_components/Menu";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -43,61 +43,42 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const { data, errors } = await fetchWithCache(
-      `${settings.domainFull}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: `
-            query {
-               sites: Sites(
-                 ${page ? `page:${page}` : ""}
-                 where: {
-                   status: { equals: verified }
-                   ${c != null && "all" ? `category: { equals: ${c} }` : ""}
-                   ${
-                      q
-                         ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
-                         : ""
-                   }
-                 }
-               ) {
-                 totalDocs
-                 totalPages
-                 pagingCounter
-                 hasPrevPage
-                 prevPage
-                 hasNextPage
-                 docs {
-                   id
-                   name
-                   type
-                   slug
-                   status
-                   about
-                   icon {
-                     url
-                   }
-                 }
-               }
-             }
-            `,
-            variables: {
-               page,
-               q,
-               c,
-            },
-         }),
-      },
-   );
+   const QUERY = gql`query {
+      sites: Sites(
+        ${page ? `page:${page}` : ""}
+        where: {
+          status: { equals: verified }
+          ${c != null && "all" ? `category: { equals: ${c} }` : ""}
+          ${
+             q
+                ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
+                : ""
+          }
+        }
+      ) {
+        totalDocs
+        totalPages
+        pagingCounter
+        hasPrevPage
+        prevPage
+        hasNextPage
+        docs {
+          id
+          name
+          type
+          slug
+          status
+          about
+          icon {
+            url
+          }
+        }
+      }
+    }
+   `;
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
+   const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
+
    const sites = data.sites;
 
    return json(
@@ -301,7 +282,11 @@ const Discover = () => {
                            <Link
                               //don't reload document on dev
                               reloadDocument={!dev}
-                              to={`/${site.slug}`}
+                              to={
+                                 site.domain
+                                    ? site.domain
+                                    : `https://${site.slug}.mana.wiki`
+                              }
                               key={site.id}
                               className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
                            >

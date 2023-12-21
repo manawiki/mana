@@ -2,7 +2,7 @@ import Payload from "payload";
 
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET } = process.env;
 
 let payload = null as any;
 
@@ -10,7 +10,6 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -51,20 +50,20 @@ const resaveCollection = async () => {
                      },
                   });
                   console.log(
-                     `Document in '${collectionSlug}' with id '${id}' updated successfully`
+                     `Document in '${collectionSlug}' with id '${id}' updated successfully`,
                   );
                } catch (e) {
                   payload.logger.error(
-                     `Document in '${collectionSlug}' with id '${id}' failed to update`
+                     `Document in '${collectionSlug}' with id '${id}' failed to update`,
                   );
                   payload.logger.error(e);
                }
             } else {
                console.log(
-                  `No document found in '${collectionSlug}' with id '${id}'`
+                  `No document found in '${collectionSlug}' with id '${id}'`,
                );
             }
-         })
+         }),
       );
    } catch (e) {
       payload.logger.error("Something went wrong.");
