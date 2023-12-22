@@ -32,7 +32,7 @@ import {
    withReact,
 } from "slate-react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { Icon } from "~/components/Icon";
 
 import { BlockSelector } from "./components/BlockSelector";

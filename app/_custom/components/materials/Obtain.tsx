@@ -1,5 +1,6 @@
 import type { Material as MaterialType } from "payload/generated-custom-types";
-import { H3, Image } from "~/components";
+import { H3 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Obtain({ data: mat }: { data: MaterialType }) {
    const obtain_no_hint = mat?.no_obtain_way_hint;

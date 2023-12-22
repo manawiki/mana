@@ -2,61 +2,105 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "../../access/site";
-import { isStaffFieldLevel } from "../../access/user";
+import {
+   isOwnComment,
+   isCommentDeletedField,
+   deleteComment,
+} from "../../access/comments";
+import { canMutateFieldAsSiteAdmin } from "../../access/site";
+import { isLoggedIn, isStaff } from "../../access/user";
+import {
+   updateCommentCount,
+   updateCommentCountAfterDelete,
+} from "../hooks/updateCommentCount";
 
 export const Comments: CollectionConfig = {
    slug: "comments",
    access: {
-      create: canMutateAsSiteAdmin("comments"),
+      create: isLoggedIn,
       read: () => true,
-      update: canMutateAsSiteAdmin("comments"),
-      delete: canMutateAsSiteAdmin("comments"),
+      update: isOwnComment,
+      delete: deleteComment || isStaff,
+   },
+   hooks: {
+      afterChange: [updateCommentCount],
+      afterDelete: [updateCommentCountAfterDelete],
    },
    fields: [
+      {
+         name: "comment",
+         type: "json",
+         access: {
+            read: isCommentDeletedField,
+         },
+      },
+      {
+         name: "isDeleted",
+         type: "checkbox",
+      },
+      {
+         name: "isPinned",
+         type: "checkbox",
+         access: {
+            update: canMutateFieldAsSiteAdmin("comments"),
+         },
+      },
       {
          name: "site",
          type: "relationship",
          relationTo: "sites",
          required: true,
-         maxDepth: 1,
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "postParent",
          type: "relationship",
          relationTo: "posts",
+         hasMany: false,
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "sectionParentCollection",
          type: "relationship",
          relationTo: "collections",
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "sectionParentId",
          type: "text",
-      },
-      {
-         name: "comment",
-         type: "json",
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "isTopLevel",
          type: "checkbox",
          defaultValue: false,
-      },
-      {
-         name: "isPinned",
-         type: "checkbox",
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "upVotesStatic",
          type: "number",
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "replies",
          type: "relationship",
          relationTo: "comments",
          hasMany: true,
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "upVotes",
@@ -64,17 +108,20 @@ export const Comments: CollectionConfig = {
          relationTo: "users",
          hasMany: true,
          maxDepth: 0,
+         access: {
+            update: () => false,
+         },
       },
       {
          name: "author",
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
-            update: isStaffFieldLevel,
+            read: isCommentDeletedField,
+            update: () => false,
          },
-         maxDepth: 3,
       },
    ],
 };

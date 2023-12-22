@@ -25,16 +25,7 @@ export function Icon({
    if (children) {
       return (
          <span className="inline-flex items-center gap-1.5">
-            <Icon
-               name={name}
-               size={size}
-               title={
-                  typeof children === "string"
-                     ? children.toString().trim()
-                     : title
-               }
-               {...props}
-            />
+            <Icon name={name} size={size} title={title} {...props} />
             {children}
          </span>
       );

@@ -1,20 +1,21 @@
 import type { CollectionConfig } from "payload/types";
 
-import { settings } from "../../../mana.config";
 import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
+
 export const Users: CollectionConfig = {
    slug: usersSlug,
    auth: {
+      useAPIKey: true,
       verify: {
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
-                  : `${settings.domainFull}/verify?token=${token}`;
+                  : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/verify?token=${token}`;
 
             return `
             <span>Hey ${user.email}, thanks for registering at Mana.</span>
@@ -44,7 +45,7 @@ export const Users: CollectionConfig = {
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
-                  : `${settings.domainFull}/reset-password?token=${token}`;
+                  : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/reset-password?token=${token}`;
 
             return `
             <br><br>
@@ -68,7 +69,9 @@ export const Users: CollectionConfig = {
       },
       cookies: {
          domain:
-            serverEnv == "development" ? "localhost" : `.${settings.domain}`,
+            serverEnv == "development"
+               ? "localhost"
+               : `.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}`,
          secure: serverEnv == "development" ? false : true,
          sameSite: serverEnv == "development" ? "lax" : "none",
       },

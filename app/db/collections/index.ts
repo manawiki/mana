@@ -5,6 +5,7 @@ import { CustomPages } from "./CustomPages";
 import { Entries } from "./Entries";
 import { HomeContents } from "./HomeContents";
 import { Images } from "./Images";
+import { PostContents } from "./PostContents";
 import { Posts } from "./Posts";
 import { PostTags } from "./PostTags";
 import { Sites } from "./Sites";
@@ -24,4 +25,5 @@ export const collections = [
    HomeContents,
    PostTags,
    Comments,
+   PostContents,
 ];

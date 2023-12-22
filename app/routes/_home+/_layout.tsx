@@ -1,14 +1,9 @@
-import {
-   Link,
-   Outlet,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, Outlet, useLocation } from "@remix-run/react";
 
-import { LogoFull } from "~/components";
-import type { User } from "~/db/payload-types";
+import { LogoFull } from "~/components/Logo";
 
-import { LoggedIn, LoggedOut } from "../_auth+/src/components";
+import { LoggedIn } from "../_auth+/components/LoggedIn";
+import { LoggedOut } from "../_auth+/components/LoggedOut";
 
 export default function IndexLayout() {
    return (
@@ -31,9 +26,6 @@ export default function IndexLayout() {
 }
 
 const Header = () => {
-   const { user } = useRouteLoaderData("root") as {
-      user: User;
-   };
    const location = useLocation();
 
    return (
@@ -51,7 +43,6 @@ const Header = () => {
                   </Link>
                </LoggedOut>
                <nav className="flex items-center gap-4">
-                  {/* <UserMenu /> */}
                   <LoggedOut>
                      <ul className="flex items-center justify-end gap-3">
                         <li>

@@ -4,30 +4,28 @@ import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import { BlockCodeBlock } from "../../$siteId.blocks+/codeblock";
-import {
-   BlockEventItem,
-   BlockEvents,
-} from "../../$siteId.blocks+/events/_events";
+import { BlockCodeBlock } from "../../blocks+/codeblock";
+import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import {
    BlockEventItemView,
    BlockEventsView,
-} from "../../$siteId.blocks+/events/events-view";
-import { BlockGroup, BlockGroupItem } from "../../$siteId.blocks+/group/_group";
+} from "../../blocks+/events/events-view";
+import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
 import {
    BlockGroupItemView,
    BlockGroupView,
-} from "../../$siteId.blocks+/group/group-view";
-import { BlockImage } from "../../$siteId.blocks+/image";
-import { BlockInfoBox, BlockInfoBoxItem } from "../../$siteId.blocks+/infobox";
-import { BlockInlineAd } from "../../$siteId.blocks+/inline-ad";
-import { BlockLink } from "../../$siteId.blocks+/link/_link";
-import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
-import { BlockTabs, BlockTabsItem } from "../../$siteId.blocks+/tabs/_tabs";
-import { BlockToggleBlock } from "../../$siteId.blocks+/toggleblock";
-import { BlockTwoColumn } from "../../$siteId.blocks+/two-column";
-import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
-import { BlockUpdatesView } from "../../$siteId.blocks+/updates/updates-view";
+} from "../../blocks+/group/group-view";
+import { BlockHTMLBlock } from "../../blocks+/htmlblock";
+import { BlockImage } from "../../blocks+/image";
+import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
+import { BlockInlineAd } from "../../blocks+/inline-ad";
+import { BlockLink } from "../../blocks+/link/_link";
+import { BlockLinkView } from "../../blocks+/link/link-view";
+import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
+import { BlockToggleBlock } from "../../blocks+/toggleblock";
+import { BlockTwoColumn } from "../../blocks+/two-column";
+import { BlockUpdates } from "../../blocks+/updates/_updates";
+import { BlockUpdatesView } from "../../blocks+/updates/updates-view";
 import { BlockType } from "../types";
 
 // Note: {children} must be rendered in every element otherwise bugs occur
@@ -96,6 +94,16 @@ export function EditorBlocks({
       case BlockType.CodeBlock: {
          return (
             <BlockCodeBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.HTMLBlock: {
+         return (
+            <BlockHTMLBlock
                readOnly={readOnly}
                element={element}
                children={children}

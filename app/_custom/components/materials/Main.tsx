@@ -1,5 +1,5 @@
 import type { Material as MaterialType } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 export function Main({ data: mat }: { data: MaterialType }) {
    const mainImage = mat?.icon?.url;

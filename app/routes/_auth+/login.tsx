@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import type {
    ActionFunction,
-   LinksFunction,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
@@ -21,7 +20,6 @@ import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
 import { DotLoader } from "~/components/DotLoader";
 import { FormLabel } from "~/components/Forms";
 import { Icon } from "~/components/Icon";
@@ -66,15 +64,10 @@ export async function loader({
 
    return json({ title, email });
 }
-
-export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: `${settings.domainFull}/login` }];
-};
-
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
    ];
 };
@@ -297,6 +290,7 @@ export const action: ActionFunction = async ({
             await payload.login({
                collection: "users",
                data: { email, password },
+               //@ts-ignore
                res,
             });
          } catch (error) {

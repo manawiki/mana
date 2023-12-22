@@ -1,7 +1,9 @@
-import type { Character as CharacterType } from "payload/generated-custom-types";
-import { Disclosure } from "@headlessui/react";
-import { Image } from "~/components";
 import { useState } from "react";
+
+import { Disclosure } from "@headlessui/react";
+
+import type { Character as CharacterType } from "payload/generated-custom-types";
+import { Image } from "~/components/Image";
 
 export function Main({ data: char }: { data: CharacterType }) {
    const [level, setLevel] = useState(0);

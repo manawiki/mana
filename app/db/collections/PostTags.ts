@@ -19,7 +19,7 @@ export const PostTags: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
@@ -27,6 +27,10 @@ export const PostTags: CollectionConfig = {
       },
       {
          name: "slug",
+         type: "text",
+      },
+      {
+         name: "name",
          type: "text",
       },
    ],

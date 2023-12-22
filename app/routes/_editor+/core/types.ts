@@ -2,7 +2,7 @@ import type { BaseEditor, BaseOperation, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import type { Site, Collection } from "payload/generated-types";
-import type { Time } from "~/components/datepicker/time-picker/types";
+import type { Time } from "~/routes/_site+/_components/_datepicker/time-picker/types";
 
 declare module "slate" {
    interface CustomTypes {
@@ -32,6 +32,7 @@ export enum BlockType {
    EventItem = "event-item",
    TwoColumn = "two-column",
    CodeBlock = "code-block",
+   HTMLBlock = "html-block",
    InlineAd = "inline-ad",
    InfoBox = "info-box",
    InfoBoxItem = "info-box-item",
@@ -56,6 +57,11 @@ export type ParagraphElement = BlockElement & {
 
 export type CodeBlockElement = BlockElement & {
    type: BlockType.CodeBlock;
+   value?: string;
+};
+
+export type HTMLBlockElement = BlockElement & {
+   type: BlockType.HTMLBlock;
    value?: string;
 };
 
@@ -210,6 +216,7 @@ export type CustomElement =
    | EventItemElement
    | TwoColumnElement
    | CodeBlockElement
+   | HTMLBlockElement
    | InlineAdElement
    | InfoBoxElement
    | InfoBoxItemElement;

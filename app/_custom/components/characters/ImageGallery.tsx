@@ -1,5 +1,6 @@
 import type { Character as CharacterType } from "payload/generated-custom-types";
-import { H2, Image } from "~/components";
+import { H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function ImageGallery({ data: char }: { data: CharacterType }) {
    const gallery_items = [

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
 
-import { Logo } from "~/components";
+import { Logo } from "~/components/Logo";
 
 import { Particles } from "./particles";
 
