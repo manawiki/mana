@@ -71,7 +71,7 @@ export const Users: CollectionConfig = {
          domain:
             serverEnv == "development"
                ? "localhost"
-               : `.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}`,
+               : ${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN},
          secure: serverEnv == "development" ? false : true,
          sameSite: serverEnv == "development" ? "lax" : "none",
       },
