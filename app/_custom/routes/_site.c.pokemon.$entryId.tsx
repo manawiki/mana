@@ -7,20 +7,14 @@ import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { gql } from "graphql-request";
 
-import {
-   H3,
-   Image,
-   Tooltip,
-   TooltipContent,
-   TooltipTrigger,
-} from "~/components";
+import { H3 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
+import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
 import type { Pokemon as PokemonType } from "~/db/payload-custom-types";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import {
-   customEntryMeta,
-   fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/functions/entry";
+import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
+import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
+import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
 import {
    InfoBlock_Container,
@@ -30,7 +24,7 @@ import {
 } from "../classes";
 import { Pokemon } from "../collections/pokemon";
 
-export { customEntryMeta as meta };
+export { entryMeta as meta };
 
 export async function loader({
    context: { payload, user },

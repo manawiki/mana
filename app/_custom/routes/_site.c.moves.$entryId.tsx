@@ -2,13 +2,11 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { H2 } from "~/components";
+import { H2 } from "~/components/Headers";
 import type { Move } from "~/db/payload-custom-types";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import {
-   customEntryMeta,
-   fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/functions/entry";
+import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
+import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
+import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
 import {
    InfoBlock_Container,
@@ -17,7 +15,7 @@ import {
    InfoBlock_Row,
 } from "../classes";
 
-export { customEntryMeta as meta };
+export { entryMeta as meta };
 
 export async function loader({
    context: { payload, user },
