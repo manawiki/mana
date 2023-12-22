@@ -1,7 +1,7 @@
 FROM node:18-bookworm-slim as base
 
-ARG STATIC_URL
-ENV STATIC_URL $STATIC_URL
+ARG IS_HOME
+ENV IS_HOME $IS_HOME
 
 FROM base as builder
 
@@ -24,6 +24,6 @@ COPY --from=builder /home/node/public ./public
 COPY --from=builder /home/node/dist ./dist
 COPY --from=builder /home/node/build ./build
 
-EXPOSE 4040
+EXPOSE 8080
 
 CMD ["yarn", "run", "start:core"]
