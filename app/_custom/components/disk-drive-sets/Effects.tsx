@@ -1,48 +1,48 @@
 import type { DiskDriveSet as DiskDriveSetType } from "payload/generated-custom-types";
-import { H2, Image } from "~/components";
+import { Image } from "~/components/Image";
 import { useState } from "react";
 
 export function Effects({ data: char }: { data: DiskDriveSetType }) {
-  const desc_icons = [
-    {
-      id: "Icon_Normal",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyNormal.png",
-    },
-    {
-      id: "Icon_Special",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeySpecial.png",
-    },
-    {
-      id: "Icon_Evade",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyEvade.png",
-    },
-    {
-      id: "Icon_Ultimate",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyUltimate.png",
-    },
-    {
-      id: "Icon_Switch",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeySwitch.png",
-    },
-    {
-      id: "Icon_JoyStick",
-      icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyJoyStick.png",
-    },
-  ];
+   const desc_icons = [
+      {
+         id: "Icon_Normal",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyNormal.png",
+      },
+      {
+         id: "Icon_Special",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeySpecial.png",
+      },
+      {
+         id: "Icon_Evade",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyEvade.png",
+      },
+      {
+         id: "Icon_Ultimate",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyUltimate.png",
+      },
+      {
+         id: "Icon_Switch",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeySwitch.png",
+      },
+      {
+         id: "Icon_JoyStick",
+         icon: "https://static.mana.wiki/zzz/IconRoleSkillKeyJoyStick.png",
+      },
+   ];
 
-  const talents = char.talent;
+   const talents = char.talent;
 
-  const [talentLevel, setTalentLevel] = useState(0);
+   const [talentLevel, setTalentLevel] = useState(0);
 
-  // Some general CSS stuff
-  const set_effects = char.set_effect;
+   // Some general CSS stuff
+   const set_effects = char.set_effect;
 
-  return (
-    <>
-      <H2 text="Set Effects" />
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<style>
+   return (
+      <>
+         <H2 text="Set Effects" />
+         <div
+            dangerouslySetInnerHTML={{
+               __html: `<style>
                                   div.zzz-skill-description > span {
                                      background-color: rgb(50,50,50);
                                      padding-top: 2px;
@@ -54,20 +54,20 @@ export function Effects({ data: char }: { data: DiskDriveSetType }) {
                                      border-radius: 2px;
                                   }
                                </style>`,
-        }}
-      ></div>
+            }}
+         ></div>
 
-      {/* Description */}
-      {set_effects?.map((effect: any) => {
-        return (
-          <>
-            <div className="grid grid-cols-8 bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-2 my-2">
-              <div className="col-span-1">{effect.num}-Pc:</div>
-              <div className="col-span-7">{effect.desc}</div>
-            </div>
-          </>
-        );
-      })}
-    </>
-  );
+         {/* Description */}
+         {set_effects?.map((effect: any) => {
+            return (
+               <>
+                  <div className="grid grid-cols-8 bg-zinc-50 dark:bg-dark350 shadow-sm shadow-1 border border-color-sub rounded-lg px-3 py-2 my-2">
+                     <div className="col-span-1">{effect.num}-Pc:</div>
+                     <div className="col-span-7">{effect.desc}</div>
+                  </div>
+               </>
+            );
+         })}
+      </>
+   );
 }

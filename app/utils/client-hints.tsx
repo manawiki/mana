@@ -4,11 +4,7 @@
  */
 import * as React from "react";
 
-import { getHintUtils } from "@epic-web/client-hints";
-import {
-   clientHint as colorSchemeHint,
-   subscribeToSchemeChange,
-} from "@epic-web/client-hints/color-scheme";
+import { clientHint as colorSchemeHint } from "@epic-web/client-hints/color-scheme";
 import { clientHint as timeZoneHint } from "@epic-web/client-hints/time-zone";
 import {
    useFetchers,
@@ -76,3 +72,125 @@ export function ClientHintCheck({ nonce }: { nonce?: string }) {
       />
    );
 }
+
+/**
+ * Subscribe to changes in the user's color scheme preference. Optionally pass
+ * in a cookie name to use for the cookie that will be set if different from the
+ * default.
+ */
+export function subscribeToSchemeChange(
+   subscriber: (value: "dark" | "light") => void,
+   cookieName: string = "CH-prefers-color-scheme",
+) {
+   const schemaMatch = window.matchMedia("(prefers-color-scheme: dark)");
+   function handleThemeChange() {
+      const value = schemaMatch.matches ? "dark" : "light";
+      const domain = document.location.hostname.split(".").slice(-2).join(".");
+      document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/; Domain=${domain}`;
+      subscriber(value);
+   }
+   schemaMatch.addEventListener("change", handleThemeChange);
+   return function cleanupSchemaChange() {
+      schemaMatch.removeEventListener("change", handleThemeChange);
+   };
+}
+
+export function getHintUtils<Hints extends Record<string, ClientHint<any>>>(
+   hints: Hints,
+) {
+   function getCookieValue(cookieString: string, name: string) {
+      const hint = hints[name];
+      if (!hint) {
+         throw new Error(
+            `Unknown client hint: ${
+               typeof name === "string" ? name : "Unknown"
+            }`,
+         );
+      }
+      const value = cookieString
+         .split(";")
+         .map((c: string) => c.trim())
+         .find((c: string) => c.startsWith(hint.cookieName + "="))
+         ?.split("=")[1];
+
+      return value ? decodeURIComponent(value) : null;
+   }
+
+   function getHints(request?: Request): ClientHintsValue<Hints> {
+      const cookieString =
+         typeof document !== "undefined"
+            ? document.cookie
+            : typeof request !== "undefined"
+              ? request.headers.get("Cookie") ?? ""
+              : "";
+
+      return Object.entries(hints).reduce((acc, [name, hint]) => {
+         const hintName = name;
+         if ("transform" in hint) {
+            // @ts-expect-error - this is fine (PRs welcome though)
+            acc[hintName] = hint.transform(
+               getCookieValue(cookieString, hintName) ?? hint.fallback,
+            );
+         } else {
+            // @ts-expect-error - this is fine (PRs welcome though)
+            acc[hintName] =
+               getCookieValue(cookieString, hintName) ?? hint.fallback;
+         }
+         return acc;
+      }, {} as ClientHintsValue<Hints>);
+   }
+
+   /**
+    * This returns a string of JavaScript that can be used to check if the client
+    * hints have changed and will reload the page if they have.
+    */
+   function getClientHintCheckScript() {
+      return `
+const domain = document.location.hostname.split(".").slice(-2).join(".");
+const cookies = document.cookie.split(';').map(c => c.trim()).reduce((acc, cur) => {
+	const [key, value] = cur.split('=');
+	acc[key] = value;
+	return acc;
+}, {});
+let cookieChanged = false;
+const hints = [
+${Object.values(hints)
+   .map((hint) => {
+      const cookieName = JSON.stringify(hint.cookieName);
+      return `{ name: ${cookieName}, actual: String(${hint.getValueCode}), cookie: cookies[${cookieName}] }`;
+   })
+   .join(",\n")}
+];
+for (const hint of hints) {
+	if (decodeURIComponent(hint.cookie) !== hint.actual) {
+		cookieChanged = true;
+		document.cookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/; Domain=' + domain;
+	}
+}
+// if the cookie changed, reload the page, unless the browser doesn't support
+// cookies (in which case we would enter an infinite loop of reloads)
+if (cookieChanged && navigator.cookieEnabled) {
+	window.location.reload();
+}
+			`;
+   }
+
+   return { getHints, getClientHintCheckScript };
+}
+
+export type ClientHint<Value> = {
+   cookieName: string;
+   getValueCode: string;
+   fallback: Value;
+   transform?: (value: string) => Value;
+};
+
+export type ClientHintsValue<ClientHintsRecord> = {
+   [K in keyof ClientHintsRecord]: ClientHintsRecord[K] extends ClientHint<
+      infer Value
+   >
+      ? ClientHintsRecord[K]["transform"] extends (value: string) => Value
+         ? ReturnType<ClientHintsRecord[K]["transform"]>
+         : ClientHintsRecord[K]["fallback"]
+      : never;
+};

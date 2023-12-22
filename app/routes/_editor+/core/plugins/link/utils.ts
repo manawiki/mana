@@ -107,7 +107,7 @@ export function tryWrapLink(editor: Editor): void {
     */
    const getWordUnderCaret = (
       text: string,
-      selection: Range
+      selection: Range,
    ): [string, number] => {
       const start = Range.isForward(selection)
          ? selection.anchor
@@ -123,7 +123,7 @@ export function tryWrapLink(editor: Editor): void {
    const [start] = Range.edges(selection);
    const [word, wordAnchorOffset] = getWordUnderCaret(
       Editor.string(editor, start.path),
-      selection
+      selection,
    );
 
    // too short word. Probably not the link
@@ -154,7 +154,7 @@ export function tryWrapLink(editor: Editor): void {
          offset: wordAnchorOffset + link.lastIndex,
       },
    });
-   const linkWithSSL = `https://${link.text}`;
+   const linkWithSSL = `${link.text}`;
    wrapLink(editor, linkWithSSL);
 }
 
