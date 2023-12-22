@@ -282,7 +282,7 @@ const CharacterList = ({ chars }: any) => {
                   <Link
                      key={cid}
                      prefetch="intent"
-                     to={`/zzz/c/disk-drive-sets/${cid}`}
+                     to={`/c/disk-drive-sets/${cid}`}
                      className="bg-2-sub border-color-sub shadow-1 flex items-baseline justify-center rounded-md border p-2 shadow-sm"
                   >
                      <div className="w-full">

@@ -239,7 +239,7 @@ const CharacterList = ({ chars }: any) => {
                   <Link
                      key={cid}
                      prefetch="intent"
-                     to={`/zzz/c/${collection_name}/${cid}`}
+                     to={`/c/${collection_name}/${cid}`}
                      className="bg-2-sub border-color-sub shadow-1 flex items-center justify-center rounded-md border p-2 shadow-sm"
                   >
                      {/* Character Icon */}
