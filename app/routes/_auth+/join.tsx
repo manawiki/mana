@@ -1,6 +1,5 @@
 import type {
    ActionFunction,
-   LinksFunction,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
@@ -17,9 +16,9 @@ import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { parseFormSafe } from "zodix";
 
-import { settings } from "mana-config";
 import { DotLoader } from "~/components/DotLoader";
 import { FormLabel } from "~/components/Forms";
+import type { loader as rootLoader } from "~/root";
 import {
    type FormResponse,
    assertIsPost,
@@ -28,7 +27,10 @@ import {
 } from "~/utils";
 import { i18nextServer } from "~/utils/i18n";
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -50,22 +52,27 @@ const JoinFormSchema = z.object({
       .string()
       .regex(
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
-         "Username contains invalid characters"
+         "Username contains invalid characters",
       )
       .min(3, "Username must be at least 3 characters long")
       .max(16, "Username cannot be more than 16 characters long")
       .toLowerCase(),
 });
 
-export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: `${settings.domainFull}/join` }];
-};
+export const meta: MetaFunction<
+   typeof loader,
+   {
+      root: typeof rootLoader;
+   }
+> = ({ data, matches }) => {
+   const settings = matches.find(({ id }: { id: string }) => id === "root")
+      ?.data.settings;
 
-export const meta: MetaFunction = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
+      { rel: "canonical", href: `${settings?.domainFull}/join` },
    ];
 };
 
@@ -210,16 +217,19 @@ export const action: ActionFunction = async ({
       if (issues.hasIssues()) {
          return json<FormResponse>(
             { serverIssues: issues.toArray() },
-            { status: 400 }
+            { status: 400 },
          );
       }
       try {
          await payload.create({
             collection: "users",
             data: {
+               //@ts-ignore
                username,
                email,
+               //@ts-ignore
                password,
+               //@ts-ignore
                sites: ["TLPWIBnfCr"],
             },
             user,
@@ -235,7 +245,7 @@ export const action: ActionFunction = async ({
    if (issues.hasIssues()) {
       return json<FormResponse>(
          { serverIssues: issues.toArray() },
-         { status: 400 }
+         { status: 400 },
       );
    }
    // Last resort error message

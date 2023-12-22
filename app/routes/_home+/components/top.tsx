@@ -1,5 +1,5 @@
-import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";

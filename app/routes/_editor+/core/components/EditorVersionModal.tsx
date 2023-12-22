@@ -7,8 +7,9 @@ import clsx from "clsx";
 import dt from "date-and-time";
 
 import type { Config } from "payload/generated-types";
-import { Image, Modal } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
+import { Modal } from "~/components/Modal";
 import { isAdding } from "~/utils";
 
 import { EditorView } from "./EditorView";
@@ -29,7 +30,7 @@ export function EditorVersionModal({
    const versions =
       collectionSlug == "contentEmbeds"
          ? data.entry.embeddedContent.find((item: any) => item?.id === pageId)
-         ?.versions ?? []
+              ?.versions ?? []
          : data?.versions ?? [];
 
    const fetcher = useFetcher();
@@ -68,9 +69,13 @@ export function EditorVersionModal({
                                  className="bg-3 shadow-1 flex h-5 w-5 items-center justify-center
                                           overflow-hidden rounded-full border border-zinc-200 shadow-sm dark:border-zinc-600"
                               >
-                                 {selectedVersion?.version?.versionAuthor?.avatar?.url ? (
+                                 {selectedVersion?.version?.versionAuthor
+                                    ?.avatar?.url ? (
                                     <Image
-                                       url={selectedVersion?.version?.versionAuthor?.avatar?.url}
+                                       url={
+                                          selectedVersion?.version
+                                             ?.versionAuthor?.avatar?.url
+                                       }
                                        options="aspect_ratio=1:1&height=80&width=80"
                                        alt="User Avatar"
                                     />
@@ -82,7 +87,10 @@ export function EditorVersionModal({
                                     />
                                  )}
                               </div>
-                              <div className="pl-2">{selectedVersion?.version?.versionAuthor?.username ?? ("Unknown contributor")}</div>
+                              <div className="pl-2">
+                                 {selectedVersion?.version?.versionAuthor
+                                    ?.username ?? "Unknown contributor"}
+                              </div>
                            </div>
                         </div>
                      </div>

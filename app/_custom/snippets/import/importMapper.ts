@@ -4,7 +4,7 @@ import { delay } from "~/utils";
 
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET } = process.env;
 
 let payload = null as any;
 
@@ -12,7 +12,6 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: CUSTOM_MONGO_URL as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;

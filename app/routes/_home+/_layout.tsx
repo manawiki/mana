@@ -1,8 +1,9 @@
 import { Link, Outlet, useLocation } from "@remix-run/react";
 
-import { LogoFull } from "~/components";
+import { LogoFull } from "~/components/Logo";
 
-import { LoggedIn, LoggedOut } from "../_auth+/src/components";
+import { LoggedIn } from "../_auth+/components/LoggedIn";
+import { LoggedOut } from "../_auth+/components/LoggedOut";
 
 export default function IndexLayout() {
    return (

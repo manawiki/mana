@@ -1,7 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 
-import { settings } from "mana-config";
-
 const toXmlSitemap = (urls: string[]) => {
    const urlsAsXml = urls
       .map((url) => `<sitemap><loc>${url}</loc></sitemap>`)
@@ -14,15 +12,19 @@ const toXmlSitemap = (urls: string[]) => {
     `;
 };
 
-export async function loader({ context: { payload } }: LoaderFunctionArgs) {
+export async function loader({
+   context: { payload },
+   request,
+}: LoaderFunctionArgs) {
    try {
       const { docs } = await payload.find({
          collection: "sites",
          depth: 0,
          limit: 500,
       });
+      const { hostname } = new URL(request.url);
       const sites = docs.map(
-         (item) => `${settings.domainFull}/${item.slug}/sitemap.xml`
+         (item) => `https://${hostname}/${item.slug}/sitemap.xml`,
       );
       const sitemap = toXmlSitemap([...sites]);
       return new Response(sitemap, {

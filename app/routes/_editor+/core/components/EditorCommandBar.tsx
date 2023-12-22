@@ -80,7 +80,7 @@ export const EditorCommandBar = ({
    };
 
    const actionPath =
-      collectionSlug == "contentEmbeds" ? `/${siteId}/c/embed` : undefined;
+      collectionSlug == "contentEmbeds" ? `/c/embed` : undefined;
 
    //@ts-ignore
    let _primaryOptions, _secondaryOptions;

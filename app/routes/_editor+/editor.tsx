@@ -9,6 +9,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
+import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { useDebouncedValue, useIsMount } from "~/utils";
 
 import { Toolbar } from "./core/components/Toolbar";
@@ -18,7 +19,6 @@ import { useEditor } from "./core/plugins";
 export function ManaEditor({
    fetcher,
    defaultValue,
-   siteId,
    pageId,
    subSectionId,
    entryId,
@@ -27,7 +27,6 @@ export function ManaEditor({
 }: {
    fetcher: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
-   siteId?: string | undefined;
    pageId?: string;
    subSectionId?: string | undefined;
    entryId?: string;
@@ -49,7 +48,6 @@ export function ManaEditor({
             {
                content: JSON.stringify(debouncedValue),
                intent: "update",
-               siteId,
                pageId,
                collectionSlug,
                collectionEntity,
@@ -85,6 +83,8 @@ export async function action({
 
    if (!user) throw redirect("/login", { status: 302 });
 
+   const { siteSlug } = getSiteSlug(request);
+
    switch (intent) {
       case "versionUpdate": {
          const { versionId } = await zx.parseForm(request, {
@@ -117,15 +117,14 @@ export async function action({
                });
             }
             case "homeContents": {
-               const { content, siteId } = await zx.parseForm(request, {
-                  siteId: z.string(),
+               const { content } = await zx.parseForm(request, {
                   content: z.string(),
                });
                const { docs } = await payload.find({
                   collection: collectionSlug,
                   where: {
                      "site.slug": {
-                        equals: siteId,
+                        equals: siteSlug,
                      },
                   },
                   overrideAccess: false,
@@ -146,14 +145,12 @@ export async function action({
             }
             case "contentEmbeds": {
                const {
-                  siteId,
                   content,
                   pageId,
                   subSectionId,
                   entryId,
                   collectionEntity,
                } = await zx.parseForm(request, {
-                  siteId: z.string(),
                   content: z.string(),
                   pageId: z.string(),
                   subSectionId: z.string(),
@@ -169,6 +166,7 @@ export async function action({
                      overrideAccess: false,
                      user,
                   });
+
                   return await payload.update({
                      collection: collectionSlug,
                      id: pageId,
@@ -186,7 +184,8 @@ export async function action({
                      data: {
                         //@ts-ignore
                         relationId: entryId,
-                        site: siteId as any,
+                        //TODO
+                        site: siteSlug as any,
                         //@ts-ignore
                         subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
