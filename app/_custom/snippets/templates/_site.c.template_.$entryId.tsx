@@ -3,13 +3,11 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import {
-   customEntryMeta,
-   fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/functions/entry";
+import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
+import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
+import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
 
-export { customEntryMeta as meta };
+export { entryMeta as meta };
 
 export async function loader({
    context: { payload, user },
