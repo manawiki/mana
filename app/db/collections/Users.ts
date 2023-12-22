@@ -4,6 +4,10 @@ import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
+console.log(
+   "PAYLOAD_PUBLIC_HOST_DOMAIN",
+   process.env.PAYLOAD_PUBLIC_HOST_DOMAIN,
+);
 
 export const Users: CollectionConfig = {
    slug: usersSlug,
