@@ -1,7 +1,10 @@
-import type { Agent as AgentType } from "payload/generated-custom-types";
-import { Disclosure } from "@headlessui/react";
-import { Image } from "~/components/Image";
 import { useState } from "react";
+
+import { Disclosure } from "@headlessui/react";
+
+import type { Agent as AgentType } from "payload/generated-custom-types";
+import { H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Main({ data: char }: { data: AgentType }) {
    const [level, setLevel] = useState(0);

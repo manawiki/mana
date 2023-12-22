@@ -1,6 +1,8 @@
-import type { Agent as AgentType } from "payload/generated-custom-types";
-import { Image } from "~/components/Image";
 import { useState } from "react";
+
+import type { Agent as AgentType } from "payload/generated-custom-types";
+import { H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Skills({ data: char }: { data: AgentType }) {
    const desc_icons = [

@@ -1,6 +1,7 @@
 import type { DiskDriveSet as DiskDriveSetType } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
 import { useState } from "react";
+import { H2 } from "~/components/Headers";
 
 export function Effects({ data: char }: { data: DiskDriveSetType }) {
    const desc_icons = [

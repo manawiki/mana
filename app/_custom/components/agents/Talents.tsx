@@ -1,4 +1,5 @@
 import type { Agent as AgentType } from "payload/generated-custom-types";
+import { H2 } from "~/components/Headers";
 import { Image } from "~/components/Image";
 
 export function Talents({ data: char }: { data: AgentType }) {
