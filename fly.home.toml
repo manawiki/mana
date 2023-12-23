@@ -11,6 +11,7 @@ kill_timeout = "5s"
 
 [env]
   PORT = "8080"
+  PAYLOADCMS_SECRET = ""
 
 [http_service]
   internal_port = 8080
