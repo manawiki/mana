@@ -13,12 +13,6 @@ jobs:
       name: Deploy home app
       runs-on: ubuntu-latest
       steps:
-         - uses: jacobtomlinson/gha-find-replace@v2
-           with:
-              find: 'PAYLOADCMS_SECRET = ""'
-              replace: ${{ format('PAYLOADCMS_SECRET = {0}', secrets.PAYLOADCMS_SECRET) }}
-              regex: false
-              include: "fly.home.toml"
          - uses: actions/checkout@v3
          - uses: superfly/flyctl-actions/setup-flyctl@master
          - run: flyctl deploy --config ./fly.home.toml --remote-only
