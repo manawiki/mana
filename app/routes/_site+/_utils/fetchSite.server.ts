@@ -121,7 +121,7 @@ export async function fetchSite({
 
    function updateKeys(data: Site) {
       return JSON.parse(
-         JSON.stringify(data).replace(
+         JSON.stringify(data)?.replace(
             pattern,
             //@ts-ignore
             (m) => `"${swaps[m.slice(1, -2)]}":`,
