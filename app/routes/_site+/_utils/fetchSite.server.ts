@@ -135,7 +135,7 @@ export async function fetchSite({
          siteSlug,
       });
 
-      return updateKeys(data.site.docs[0]);
+      return updateKeys(data?.site?.docs?.[0]);
    }
 
    //Otherwise fresh pull
@@ -144,5 +144,5 @@ export async function fetchSite({
       variables: { siteSlug },
    });
    //@ts-ignore
-   return updateKeys(data.site.docs[0]);
+   return updateKeys(data?.site?.docs?.[0]);
 }
