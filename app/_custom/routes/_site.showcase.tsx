@@ -286,7 +286,7 @@ const DisplayPlayerInfo = ({
             </div>
          </div>
          <div
-            className="border-color bg-2 shadow-1 mx-auto my-16 max-w-[360px] border-y px-12 
+            className="border-color bg-2 shadow-1 mx-auto my-16 max-w-[360px] border-y px-12
             py-9 shadow mobile:rounded-3xl mobile:border"
          >
             <InputUIDNote uid={uid} />
@@ -395,7 +395,7 @@ const PlayerHeader = ({ data, playerIcon }: any) => {
             <div
                className="pattern-opacity-50 pattern-wavy absolute
                    left-0 top-0
-                     h-full w-full pattern-bg-white pattern-zinc-200 
+                     h-full w-full pattern-bg-white pattern-zinc-200
                      pattern-size-6 dark:pattern-zinc-800 dark:pattern-bg-zinc-900"
             />
          </div>
@@ -526,7 +526,7 @@ const CharacterInfo = ({
 
    // Light Cone Stat Calculation
    const wlv = chardata?.equipment?.level;
-   const wrank = chardata?.equipment?.rank;
+   const wrank = chardata?.equipment?.promotion;
    var wsuffix = "";
    // Ascension Check, add "A" if ascended:
    if (
@@ -551,7 +551,7 @@ const CharacterInfo = ({
    // ============================
    var lightconebonuses: any = [];
 
-   lcbase?.skill_data[chardata?.equipment?.promotion - 1]?.stat_added?.map(
+   lcbase?.skill_data[chardata?.equipment?.rank - 1]?.stat_added?.map(
       (a: any) => {
          const tempbonus = {
             id: a?.stat_type?.id,
@@ -742,7 +742,7 @@ const CharacterInfo = ({
 
    // Character Base Stat Calculation
    const lv = chardata.level;
-   const rank = chardata.rank;
+   const rank = chardata.promotion;
    var suffix = "";
    // Ascension Check, add "A" if ascended:
    if (
@@ -993,7 +993,7 @@ const CharacterInfo = ({
                      {/* Eidolon Levels; if not unlocked, show 🔒 */}
                      <div className="absolute left-0 top-16 flex flex-col">
                         {charbase?.eidolons?.map((e: any, i: any) => {
-                           const elv = chardata?.promotion ?? 0;
+                           const elv = chardata?.rank ?? 0;
 
                            return elv > i ? (
                               <Tooltip placement="right" key={i}>
@@ -1065,8 +1065,8 @@ const CharacterInfo = ({
                      {/* Light Cone Image + Rarity */}
                      {lcbase !== undefined && (
                         <div
-                           className="max-desktop:border-color flex items-start 
-                        gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3 
+                           className="max-desktop:border-color flex items-start
+                        gap-3 dark:bg-bg2Dark max-desktop:border-y max-desktop:p-3
                         desktop:mb-4 desktop:rounded-md"
                         >
                            <Link
@@ -1116,7 +1116,7 @@ const CharacterInfo = ({
                                                 __html:
                                                    lcbase?.skill_data?.[
                                                       chardata?.equipment
-                                                         ?.promotion - 1
+                                                         ?.rank - 1
                                                    ]?.desc,
                                              }}
                                           ></div>
@@ -1157,10 +1157,10 @@ const CharacterInfo = ({
                                     Lv.{chardata?.equipment?.level}
                                  </span>
                                  <div
-                                    className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-600 
+                                    className="relative flex h-4 w-4 items-center justify-center rounded-full bg-yellow-600
                                  text-xs font-bold text-yellow-100"
                                  >
-                                    {superimp[chardata?.equipment?.promotion]}
+                                    {superimp[chardata?.equipment?.rank]}
                                  </div>
                               </div>
 
@@ -1447,7 +1447,7 @@ const CharacterInfo = ({
                                                 <div>
                                                    <div className="flex items-center gap-1">
                                                       <div
-                                                         className="inline-flex h-4 w-4 items-center 
+                                                         className="inline-flex h-4 w-4 items-center
                                              justify-center rounded-full bg-zinc-400 dark:bg-zinc-600"
                                                       >
                                                          <Image
@@ -1533,7 +1533,7 @@ const CharacterInfo = ({
                                     {set.name}
 
                                     <div
-                                       className="bg-2 relative flex h-6 w-6 items-center justify-center 
+                                       className="bg-2 relative flex h-6 w-6 items-center justify-center
                                        rounded-full font-bold text-green-400"
                                     >
                                        {set.num}
@@ -1561,7 +1561,7 @@ const CharacterInfo = ({
          </div>
          <button
             className="border-color shadow-1 absolute left-1/3 z-20 flex -translate-x-1/2 transform
-            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
+            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold
             shadow dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
             onClick={onDownloadImage}
             aria-label="Download"
@@ -1576,7 +1576,7 @@ const CharacterInfo = ({
                disabled={disableRefresh}
                type="submit"
                className="border-color shadow-1 absolute left-2/3 z-20 flex -translate-x-1/2 transform
-            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold 
+            items-center gap-2.5 rounded-b-xl border-2 bg-white py-2.5 pl-5 pr-6 text-sm font-bold
             shadow disabled:opacity-50 dark:bg-zinc-800 max-desktop:mt-[1px] max-desktop:border-t-0 desktop:mt-1 desktop:rounded-full"
                aria-label={disableRefresh ? "On cooldown..." : "Refresh"}
                title={disableRefresh ? "On cooldown..." : "Refresh"}
@@ -1637,7 +1637,7 @@ const ItemFrameSquare = ({
             alt={mat?.name}
          />
          <div
-            className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900 
+            className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900
                bg-opacity-70 px-1 py-0.5 text-xs font-bold text-white"
          >
             {lv}
@@ -1809,7 +1809,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
          </div>
          <div className="rotate-input relative mx-auto h-14 w-60 rounded-full shadow shadow-zinc-100 dark:shadow-zinc-800">
             <input
-               className="absolute left-1 top-1 z-10 h-[48px] w-[232px] rounded-full border-0 bg-white p-0 text-center 
+               className="absolute left-1 top-1 z-10 h-[48px] w-[232px] rounded-full border-0 bg-white p-0 text-center
                focus:ring-zinc-300 dark:bg-bg2Dark dark:focus:ring-zinc-600"
                required
                //    className="shadow-1 rounded border border-zinc-200 bg-white
@@ -1954,7 +1954,7 @@ query ($relicIdList: [String]) {
        rarity {
          display_number
        }
-     }  
+     }
    }
 }
 `;
@@ -2075,7 +2075,7 @@ query {
          url
        }
      }
-   } 
+   }
 }
 `;
 
