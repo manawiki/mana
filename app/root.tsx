@@ -95,16 +95,18 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
 
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
       : []),
