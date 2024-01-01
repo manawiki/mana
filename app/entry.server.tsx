@@ -5,7 +5,7 @@ import {
    type EntryContext,
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
+import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
 
@@ -21,7 +21,7 @@ export default async function handleRequest(
    responseHeaders: Headers,
    remixContext: EntryContext,
 ) {
-   const callbackName = isbot(request.headers.get("user-agent"))
+   const callbackName = isbot(request?.headers?.get("user-agent") ?? "")
       ? "onAllReady"
       : "onShellReady";
 
