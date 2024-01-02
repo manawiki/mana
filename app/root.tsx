@@ -34,7 +34,6 @@ import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
-import { rdtClientConfig } from "../rdt.config";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -206,7 +205,7 @@ let AppExport = withMetronome(App);
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, rdtClientConfig);
+   AppExport = withDevTools(AppExport);
 }
 
 export default AppExport;
