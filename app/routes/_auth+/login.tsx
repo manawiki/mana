@@ -20,9 +20,17 @@ import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
+import {
+   ErrorMessage,
+   Field,
+   FieldGroup,
+   Fieldset,
+   Label,
+} from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { Input } from "~/components/Input";
 import {
    type FormResponse,
    assertIsPost,
@@ -100,7 +108,7 @@ export default function Login() {
    const [isReset, setIsReset] = useState(false);
    return (
       <div
-         className="border-color bg-2 shadow-1 relative border-y
+         className="border-color bg-2 shadow-1 dark:shadow-zinc-800 relative border-y
                p-6 shadow-sm tablet:rounded-xl tablet:border"
       >
          {isReset ? (
@@ -124,95 +132,83 @@ export default function Login() {
          {isReset ? (
             <>
                <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zoPW.fields.email()}
-                        text={t("login.email")}
-                        error={zoPW.errors.email((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
+                  <Fieldset>
+                     <Field>
+                        <Label>{t("login.email")}</Label>
+                        <Input
                            autoFocus={true}
-                           name={zoPW.fields.email()}
                            type="email"
-                           className="input-text"
-                           autoComplete="email"
                            disabled={disabled}
+                           name={zoPW.fields.email()}
                         />
-                     </div>
-                  </fieldset>
-                  <button
+                        {zoPW.errors.email((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                  </Fieldset>
+                  <Button
                      name="intent"
                      value="reset-password"
                      type="submit"
-                     className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white
-                            hover:bg-zinc-600 focus:bg-zinc-400"
                      disabled={disabled}
                   >
                      {addingPasswordRest ? <DotLoader /> : t("pwReset.title")}
-                  </button>
+                  </Button>
                </Form>
             </>
          ) : (
             <>
                <Form ref={zo.ref} method="post" className="space-y-6" replace>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.email()}
-                        text={t("login.email")}
-                        error={zo.errors.email((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           autoFocus={email ? false : true}
-                           name={zo.fields.email()}
-                           type="email"
-                           className="input-text"
-                           autoComplete="email"
-                           disabled={disabled}
-                           defaultValue={email ?? ""}
-                        />
-                     </div>
-                  </fieldset>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.password()}
-                        text={t("login.password")}
-                        error={zo.errors.password((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           autoFocus={email ? true : false}
-                           name={zo.fields.password()}
-                           type="password"
-                           autoComplete="new-password"
-                           className="input-text"
-                           disabled={disabled}
-                        />
-                     </div>
+                  <Fieldset>
+                     <FieldGroup>
+                        <Field>
+                           <Label>{t("login.email")}</Label>
+                           <Input
+                              autoFocus={email ? false : true}
+                              type="email"
+                              disabled={disabled}
+                              defaultValue={email ?? ""}
+                              name={zo.fields.email()}
+                           />
+                           {zo.errors.email((err) => (
+                              <ErrorMessage>{err.message}</ErrorMessage>
+                           ))}
+                        </Field>
+                        <Field>
+                           <Label>{t("login.password")}</Label>
+                           <Input
+                              type="password"
+                              disabled={disabled}
+                              name={zo.fields.password()}
+                           />
+                           {zo.errors.password((err) => (
+                              <ErrorMessage>{err.message}</ErrorMessage>
+                           ))}
+                        </Field>
+                     </FieldGroup>
                      <button
                         type="button"
-                        className="pt-1.5 text-sm font-semibold text-blue-500"
+                        className="text-sm font-semibold text-blue-500 mt-3"
                         onClick={() => setIsReset(true)}
                      >
                         Forgot your password?
                      </button>
-                  </fieldset>
+                  </Fieldset>
                   <input
                      type="hidden"
                      name={zo.fields.redirectTo()}
                      value={redirectTo}
                   />
-                  <button
+                  <Button
                      name="intent"
                      value="login"
                      type="submit"
-                     className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                     className="w-full"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
-                  </button>
-                  <div className="!mt-4 flex items-center justify-center">
+                  </Button>
+                  <div className="pt-1 flex items-center justify-center">
                      <div className="text-center text-sm">
                         {t("login.dontHaveAccount")}
                         <Link

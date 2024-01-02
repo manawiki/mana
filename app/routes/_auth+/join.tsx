@@ -17,7 +17,14 @@ import { z } from "zod";
 import { parseFormSafe } from "zodix";
 
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
+import {
+   ErrorMessage,
+   Field,
+   FieldGroup,
+   Fieldset,
+   Label,
+} from "~/components/Fieldset";
+import { Input } from "~/components/Input";
 import type { loader as rootLoader } from "~/root";
 import {
    type FormResponse,
@@ -64,15 +71,11 @@ export const meta: MetaFunction<
    {
       root: typeof rootLoader;
    }
-> = ({ data, matches }) => {
-   const settings = matches.find(({ id }: { id: string }) => id === "root")
-      ?.data.settings;
-
+> = () => {
    return [
       {
-         title: `${data?.title} - Mana`,
+         title: `Join - Mana`,
       },
-      { rel: "canonical", href: `${settings?.domainFull}/join` },
    ];
 };
 
@@ -97,56 +100,45 @@ export default function Signup() {
             <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                {t("register.title")}
             </div>
-            <Form ref={zo.ref} method="post" className="space-y-4" replace>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.username()}
-                     text={t("register.username")}
-                     error={zo.errors.username((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        autoFocus={true}
-                        type="text"
-                        name={zo.fields.username()}
-                        autoComplete="username"
-                        className="input-text lowercase"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.email()}
-                     text={t("register.email")}
-                     error={zo.errors.email((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        name={zo.fields.email()}
-                        type="email"
-                        autoComplete="email"
-                        className="input-text"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.password()}
-                     text={t("register.password")}
-                     error={zo.errors.password((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        name={zo.fields.password()}
-                        type="password"
-                        autoComplete="new-password"
-                        className="input-text"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
+            <Form ref={zo.ref} method="post" replace>
+               <Fieldset>
+                  <FieldGroup>
+                     <Field>
+                        <Label>{t("register.username")}</Label>
+                        <Input
+                           type="text"
+                           disabled={disabled}
+                           className="lowercase"
+                           name={zo.fields.username()}
+                        />
+                        {zo.errors.username((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                     <Field>
+                        <Label>{t("register.email")}</Label>
+                        <Input
+                           type="email"
+                           disabled={disabled}
+                           name={zo.fields.email()}
+                        />
+                        {zo.errors.email((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                     <Field>
+                        <Label>{t("register.password")}</Label>
+                        <Input
+                           type="password"
+                           disabled={disabled}
+                           name={zo.fields.password()}
+                        />
+                        {zo.errors.password((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                  </FieldGroup>
+               </Fieldset>
                <button
                   name="intent"
                   value="join"

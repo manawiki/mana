@@ -57,5 +57,5 @@ module.exports = {
          desktop: "1400px",
       },
    },
-   plugins: [require("@tailwindcss/forms"), require("tailwindcss-bg-patterns")],
+   plugins: [require("tailwindcss-bg-patterns")],
 };

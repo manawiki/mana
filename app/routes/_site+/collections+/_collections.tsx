@@ -17,8 +17,6 @@ import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { assertIsPost, isProcessing, isAdding } from "~/utils";
 
-import { mainContainerStyle } from "../_index";
-
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),
    slug: z.string().min(1).max(40),
@@ -87,7 +85,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <main className={mainContainerStyle}>
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
             <div className="relative flex items-center pb-3">
                <h1 className="font-header text-2xl laptop:text-3xl font-bold pr-3">
                   Collections

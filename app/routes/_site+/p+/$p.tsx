@@ -46,7 +46,6 @@ import { fetchPost } from "./utils/fetchPost.server";
 import { fetchPostComments } from "./utils/fetchPostComments.server";
 import { fetchPostWithSlug } from "./utils/fetchPostWithSlug.server";
 import { AdPlaceholder, AdUnit } from "../_components/Ramp";
-import { mainContainerStyle } from "../_index";
 
 export async function loader({
    context: { payload, user },
@@ -202,7 +201,7 @@ export default function Post() {
                </Float>
             </>
          ) : (
-            <main className={mainContainerStyle}>
+            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
                <PostActionBar post={post} />
                <PostHeaderView post={post} />
                {/* @ts-ignore */}
@@ -703,7 +702,7 @@ export async function action({
 
 export const meta: MetaFunction<typeof loader, any> = ({ data, matches }) => {
    const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/_layout/layout",
+      ({ id }: { id: string }) => id === "routes/_site+/_layout",
    )?.data?.site.name;
 
    invariant(data?.post);
