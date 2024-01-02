@@ -145,7 +145,7 @@ export default function Signup() {
                   value="join"
                   type="submit"
                   color="dark/white"
-                  className="w-full h-11 mb-6"
+                  className="w-full h-10 mb-6"
                   disabled={disabled}
                >
                   {adding ? <DotLoader /> : t("register.action")}

@@ -38,7 +38,7 @@ export function SwitchField({ className, ...props }: HeadlessFieldProps) {
             className,
 
             // Base layout
-            "grid grid-cols-[1fr_auto] items-center gap-x-8 gap-y-1 sm:grid-cols-[1fr_auto]",
+            "grid grid-cols-[1fr_auto] items-center gap-x-8 gap-y-1 tablet:grid-cols-[1fr_auto]",
 
             // Control layout
             "[&>[data-slot=control]]:col-start-2 [&>[data-slot=control]]:self-center",
@@ -166,7 +166,7 @@ export function Switch({
             className,
 
             // Base styles
-            "group relative isolate inline-flex h-6 w-10 cursor-default rounded-full p-[3px] sm:h-5 sm:w-8",
+            "group relative isolate inline-flex h-6 w-10 cursor-default rounded-full p-[3px] tablet:h-5 tablet:w-8",
 
             // Transitions
             "transition duration-0 ease-in-out data-[changing]:duration-200",
@@ -200,7 +200,7 @@ export function Switch({
             aria-hidden="true"
             className={clsx(
                // Basic layout
-               "pointer-events-none relative inline-block size-[1.125rem] rounded-full sm:size-3.5",
+               "pointer-events-none relative inline-block size-[1.125rem] rounded-full tablet:size-3.5",
 
                // Transition
                "translate-x-0 transition duration-200 ease-in-out",
@@ -213,7 +213,7 @@ export function Switch({
 
                // Checked
                "group-data-[checked]:bg-[--switch] group-data-[checked]:shadow-[--switch-shadow] group-data-[checked]:ring-[--switch-ring]",
-               "group-data-[checked]:translate-x-4 sm:group-data-[checked]:translate-x-3",
+               "group-data-[checked]:translate-x-4 tablet:group-data-[checked]:translate-x-3",
 
                // Disabled
                "group-data-[disabled]:group-data-[checked]:bg-white group-data-[disabled]:group-data-[checked]:shadow group-data-[disabled]:group-data-[checked]:ring-black/5",

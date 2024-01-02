@@ -203,12 +203,12 @@ export default function Login() {
                      value="login"
                      type="submit"
                      color="dark/white"
-                     className="w-full h-11"
+                     className="w-full h-10"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
                   </Button>
-                  <div className="pt-1 flex items-center justify-center">
+                  <div className="flex items-center justify-center">
                      <div className="text-center text-sm">
                         {t("login.dontHaveAccount")}
                         <Link
