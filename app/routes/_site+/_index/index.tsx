@@ -45,9 +45,6 @@ export async function loader({
    return json({ home, isChanged, updateResults, versions, siteSlug });
 }
 
-export const mainContainerStyle =
-   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6";
-
 export default function SiteIndexMain() {
    const { home, siteSlug, isChanged } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
@@ -71,7 +68,7 @@ export default function SiteIndexMain() {
          placement="right-start"
          show
       >
-         <main className={mainContainerStyle}>
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
             <Suspense fallback="Loading...">
                <Await resolve={home}>
                   <ManaEditor
@@ -94,7 +91,7 @@ export default function SiteIndexMain() {
       </Float>
    ) : (
       home && (
-         <main className={mainContainerStyle}>
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
             <EditorView data={home} />
          </main>
       )

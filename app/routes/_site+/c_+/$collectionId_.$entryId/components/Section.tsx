@@ -516,8 +516,8 @@ function SectionTitle({
       return (
          <Link to={`#${section?.id}`}>
             <h2
-               className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-               border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
+               className="border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
+               border-2 font-header text-xl font-bold shadow-sm dark:bg-dark350 dark:shadow-black/30"
             >
                <div
                   className="pattern-dots absolute left-0 top-0 -z-0 h-full

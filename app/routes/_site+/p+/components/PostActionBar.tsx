@@ -9,7 +9,7 @@ import { Icon } from "~/components/Icon";
 
 export function PostActionBar({ post }: { post: Post }) {
    return (
-      <div className="pb-3 mb-4 border-b border-color border-zinc-100 flex items-center justify-between">
+      <div className="pb-3 mb-4 border-b border-color-secondary flex items-center justify-between">
          <Link
             to="/posts"
             className="flex items-center hover:underline group gap-2.5 group"

@@ -13,7 +13,6 @@ import { PostListHeader } from "./components/PostListHeader";
 import { PublishedPosts } from "./components/PublishedPosts";
 import { fetchMyPosts } from "./utils/fetchMyPosts";
 import { fetchPublishedPosts } from "./utils/fetchPublishedPosts";
-import { mainContainerStyle } from "../_index";
 
 export const meta: MetaFunction<
    null,
@@ -65,7 +64,7 @@ export async function loader({
 
 export default function PostList() {
    return (
-      <main className={mainContainerStyle}>
+      <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
          <PostListHeader />
          <MyPosts />
          <PublishedPosts />

@@ -136,7 +136,7 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="mb-2.5 mt-8 shadow-1 border-color relative overflow-hidden rounded-lg block
+               className="mb-2.5 mt-8 dark:shadow-black/30 border-color relative overflow-hidden rounded-lg block
                border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350
                scroll-mt-44 laptop:scroll-mt-52"
                {...attributes}
