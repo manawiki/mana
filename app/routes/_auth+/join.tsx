@@ -16,6 +16,7 @@ import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { parseFormSafe } from "zodix";
 
+import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import {
    ErrorMessage,
@@ -94,14 +95,14 @@ export default function Signup() {
    return (
       <>
          <div
-            className="border-color bg-2 shadow-1 relative 
+            className="border-color-sub bg-2-sub shadow-1 relative 
                   border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
          >
-            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+            <div className="border-color-sub mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                {t("register.title")}
             </div>
             <Form ref={zo.ref} method="post" replace>
-               <Fieldset>
+               <Fieldset className="pb-8">
                   <FieldGroup>
                      <Field>
                         <Label>{t("register.username")}</Label>
@@ -139,20 +140,20 @@ export default function Signup() {
                      </Field>
                   </FieldGroup>
                </Fieldset>
-               <button
+               <Button
                   name="intent"
                   value="join"
                   type="submit"
-                  className="!mt-6 mb-3 h-11 w-full rounded bg-zinc-500 px-4
-                        font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                  color="dark/white"
+                  className="w-full h-11 mb-6"
                   disabled={disabled}
                >
                   {adding ? <DotLoader /> : t("register.action")}
-               </button>
+               </Button>
                <div className="flex items-center justify-center">
                   <div className="text-1 text-center text-sm">
                      <Link
-                        className="font-bold text-blue-500"
+                        className="text-blue-500 hover:underline"
                         to={{
                            pathname: "/login",
                            search: searchParams.toString(),
