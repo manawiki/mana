@@ -27,7 +27,10 @@
       @apply overflow-y-scroll;
    }
    .border-color {
-      @apply border-[#ededed] dark:border-[#36393e];
+      @apply border-[#ededed] dark:border-darkBorder;
+   }
+   .border-color-secondary {
+      @apply border-zinc-100 dark:border-darkBorder;
    }
    .border-color-sub {
       @apply border-[#ededed] dark:border-zinc-700;
@@ -74,9 +77,6 @@ html.dark {
    }
    .shadow-1 {
       @apply shadow-zinc-300 dark:shadow-black/30;
-   }
-   .shadow-2 {
-      @apply shadow-zinc-500 dark:shadow-black;
    }
    .bg-1 {
       @apply bg-zinc-100 dark:bg-[#212324];
