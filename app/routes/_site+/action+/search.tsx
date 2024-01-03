@@ -206,14 +206,11 @@ export function SearchComboBox({
 
    return (
       <div className="h-full w-full">
-         <div className="absolute hidden laptop:block left-4 top-5">
-            <Icon name="search" className="text-1" size={18} />
-         </div>
          <Combobox onChange={handleChange}>
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
-                  className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
+                  className="h-full w-full border-0 p-0 bg-transparent outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}
@@ -289,7 +286,7 @@ export function SearchComboBox({
             </Transition>
          </Combobox>
          <button
-            className="absolute right-4 top-5"
+            className="absolute right-2 top-5"
             onClick={() => {
                setSearchToggle(false);
             }}
@@ -297,7 +294,12 @@ export function SearchComboBox({
             {isSearching ? (
                <Icon name="loader-2" className="mx-auto h-5 w-5 animate-spin" />
             ) : (
-               <Icon name="x" size={20} className="text-zinc-400" />
+               <Icon
+                  name="x"
+                  title="Close Search"
+                  size={20}
+                  className="text-zinc-400"
+               />
             )}
          </button>
       </div>

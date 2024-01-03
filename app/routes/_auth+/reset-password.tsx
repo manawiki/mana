@@ -12,7 +12,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
+import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
+import { Input } from "~/components/Input";
 import { assertIsPost, isAdding, isProcessing } from "~/utils";
 import { i18nextServer } from "~/utils/i18n";
 
@@ -63,22 +64,19 @@ export default function ResetPassword() {
             {t("pwReset.title")}
          </div>
          <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
-            <fieldset>
-               <FormLabel
-                  htmlFor={zoPW.fields.password()}
-                  text={t("pwReset.password")}
-                  error={zoPW.errors.password((err) => err.message)}
-               />
-               <div className="mt-1">
-                  <input
-                     name={zoPW.fields.password()}
+            <Fieldset>
+               <Field>
+                  <Label>{t("register.password")}</Label>
+                  <Input
                      type="password"
-                     autoComplete="new-password"
-                     className="input-text"
                      disabled={disabled}
+                     name={zoPW.fields.password()}
                   />
-               </div>
-            </fieldset>
+                  {zoPW.errors.password((err) => (
+                     <ErrorMessage>{err.message}</ErrorMessage>
+                  ))}
+               </Field>
+            </Fieldset>
             <input type="hidden" name={zoPW.fields.token()} value={token} />
             <button
                name="intent"

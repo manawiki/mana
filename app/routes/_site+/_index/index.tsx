@@ -17,6 +17,7 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchHomeContent } from "./utils/fetchHomeContent.server";
 import { fetchHomeUpdates } from "./utils/fetchHomeUpdates.server";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
+import { Icon } from "~/components/Icon";
 
 export async function loader({
    context: { payload, user },
@@ -45,9 +46,6 @@ export async function loader({
    return json({ home, isChanged, updateResults, versions, siteSlug });
 }
 
-export const mainContainerStyle =
-   "mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6";
-
 export default function SiteIndexMain() {
    const { home, siteSlug, isChanged } = useLoaderData<typeof loader>();
    const fetcher = useFetcher();
@@ -71,8 +69,8 @@ export default function SiteIndexMain() {
          placement="right-start"
          show
       >
-         <main className={mainContainerStyle}>
-            <Suspense fallback="Loading...">
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+            <Suspense fallback={<Loading />}>
                <Await resolve={home}>
                   <ManaEditor
                      key={siteSlug}
@@ -94,9 +92,21 @@ export default function SiteIndexMain() {
       </Float>
    ) : (
       home && (
-         <main className={mainContainerStyle}>
-            <EditorView data={home} />
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+            <Suspense fallback={<Loading />}>
+               <EditorView data={home} />
+            </Suspense>
          </main>
       )
    );
 }
+
+const Loading = () => (
+   <div className="flex items-center justify-center py-10">
+      <Icon
+         name="loader-2"
+         size={20}
+         className="animate-spin dark:text-zinc-500 text-zinc-400"
+      />
+   </div>
+);
