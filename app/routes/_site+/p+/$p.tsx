@@ -99,7 +99,7 @@ export default function Post() {
    const enableAds = post.site.enableAds;
 
    return (
-      <>
+      <Suspense fallback={<Loading />}>
          {hasAccess ? (
             <>
                <Float
@@ -219,25 +219,25 @@ export default function Post() {
          )}
          <div className="pt-10">
             <CommentHeader totalComments={post.totalComments ?? undefined} />
-            <Suspense
-               fallback={
-                  <div className="flex items-center justify-center py-10">
-                     <Icon
-                        name="loader-2"
-                        size={20}
-                        className="animate-spin dark:text-zinc-500 text-zinc-400"
-                     />
-                  </div>
-               }
-            >
+            <Suspense fallback={<Loading />}>
                <Await resolve={comments}>
                   {(comments) => <Comments comments={comments} />}
                </Await>
             </Suspense>
          </div>
-      </>
+      </Suspense>
    );
 }
+
+const Loading = () => (
+   <div className="flex items-center justify-center py-10">
+      <Icon
+         name="loader-2"
+         size={20}
+         className="animate-spin dark:text-zinc-500 text-zinc-400"
+      />
+   </div>
+);
 
 export async function action({
    context: { payload, user },
