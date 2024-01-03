@@ -14,7 +14,7 @@ type Props = {
 export function BlockLinkView({ element, children }: Props) {
    const { hostname, pathname } = new URL(element.url as string);
 
-   const isSafeLink = ["mana.wiki"].includes(hostname);
+   const isSafeLink = hostname.endsWith("mana.wiki");
 
    if (isSafeLink && element.icon) {
       return (
