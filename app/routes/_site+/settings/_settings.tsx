@@ -96,26 +96,27 @@ export default function Settings() {
                   Settings
                </h1>
                <div className="!absolute top-2.5 right-0 flex items-center gap-3">
-                  <Tooltip placement="top">
-                     <TooltipTrigger
-                        disabled={!isChanged || disabled}
-                        onClick={() => {
-                           //@ts-ignore
-                           zo.refObject.current.reset();
-                           setIsChanged(false);
-                        }}
-                        className="text-xs cursor-pointer hover:dark:bg-dark400 
+                  {isChanged && (
+                     <Tooltip placement="top">
+                        <TooltipTrigger
+                           onClick={() => {
+                              //@ts-ignore
+                              zo.refObject.current.reset();
+                              setIsChanged(false);
+                           }}
+                           className="text-xs cursor-pointer hover:dark:bg-dark400 
                                flex items-center justify-center w-7 h-7 rounded-full"
-                     >
-                        <Icon
-                           title="Reset"
-                           size={16}
-                           name="refresh-ccw"
-                           className="dark:text-zinc-500"
-                        />
-                     </TooltipTrigger>
-                     <TooltipContent>Reset</TooltipContent>
-                  </Tooltip>
+                        >
+                           <Icon
+                              title="Reset"
+                              size={16}
+                              name="refresh-ccw"
+                              className="dark:text-zinc-500"
+                           />
+                        </TooltipTrigger>
+                        <TooltipContent>Reset</TooltipContent>
+                     </Tooltip>
+                  )}
                   <input type="hidden" name="intent" value="saveSettings" />
                   <Button
                      type="submit"
