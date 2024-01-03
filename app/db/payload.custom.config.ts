@@ -38,6 +38,7 @@ export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
       url: `${process.env.MONGODB_URI}/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}-prod-db`,
+      transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
    admin: {
