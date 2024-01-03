@@ -9,7 +9,7 @@ import { timeAgo } from "~/utils/time-ago";
 export function PostAuthorHeader({ post }: { post: Post }) {
    return (
       <section>
-         <div className="border-color mb-3 flex items-center gap-3 border-y border-zinc-100 py-3">
+         <div className="mb-3 flex items-center gap-3 border-y border-color-secondary py-3">
             <div className="bg-1 border-color shadow-1 h-10 w-10 overflow-hidden rounded-full border-2 shadow-sm">
                {post?.author?.avatar ? (
                   <Image

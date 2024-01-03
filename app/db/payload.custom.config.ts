@@ -39,6 +39,7 @@ export default buildConfig({
    db: mongooseAdapter({
       url: `${process.env.MONGODB_URI}/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}-prod-db`,
    }),
+   cors: "*",
    admin: {
       bundler: viteBundler(),
       //Ensure that the build directory is not emptied on build

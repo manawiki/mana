@@ -11,8 +11,10 @@ import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 
 import { UserDesktopMenu } from "./UserMenu";
 
-function SideBarItem({ site }: { site: Site }) {
+function SideBarItem({ site, siteSlug }: { site: Site; siteSlug?: string }) {
    const sitePath = site.domain ? site.domain : `${site.slug}.mana.wiki`;
+   const isActive = siteSlug === site.slug;
+
    return (
       <a
          className="bg-2 shadow-1 rounded-full shadow"
@@ -26,21 +28,23 @@ function SideBarItem({ site }: { site: Site }) {
                   url={site?.icon?.url ?? ""}
                />
             </div>
-            {/* {isActive && (
+            {isActive && (
                <span className="absolute -left-1 top-2 h-7 w-2.5 rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden" />
-            )} */}
+            )}
          </>
       </a>
    );
 }
 
 export function ColumnOne({ site }: { site: Site }) {
-   const { following, user } = useRouteLoaderData("root") as {
+   const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
       user: User;
+      siteSlug: string;
    };
 
    const location = useLocation();
+
    return (
       <section
          className="bg-1 border-color relative top-0 z-50
@@ -70,7 +74,10 @@ export function ColumnOne({ site }: { site: Site }) {
                            {following?.map((item) => (
                               <li key={item.id}>
                                  <div className="relative flex items-center justify-center">
-                                    <SideBarItem site={item} />
+                                    <SideBarItem
+                                       site={item}
+                                       siteSlug={siteSlug}
+                                    />
                                  </div>
                               </li>
                            ))}
@@ -79,7 +86,7 @@ export function ColumnOne({ site }: { site: Site }) {
                   )}
                   <div className="absolute bottom-3 left-0 w-full">
                      <div className="flex items-center justify-center flex-col gap-2">
-                        <UserDesktopMenu user={user} />
+                        <UserDesktopMenu />
                      </div>
                   </div>
                   <AdminOrStaffOrOwner>

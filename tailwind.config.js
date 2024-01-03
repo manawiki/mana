@@ -9,6 +9,7 @@ module.exports = {
          colors: {
             light: "#555555",
             dark: "#CBD5E0",
+            darkBorder: "#36393e",
             bg1Dark: "#212324",
             bg2Dark: "#282A2B",
             bg3Dark: "#2E3132",
@@ -57,5 +58,5 @@ module.exports = {
          desktop: "1400px",
       },
    },
-   plugins: [require("@tailwindcss/forms"), require("tailwindcss-bg-patterns")],
+   plugins: [require("tailwindcss-bg-patterns")],
 };

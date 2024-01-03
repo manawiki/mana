@@ -12,7 +12,6 @@ import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
 import { settings } from "./app/config";
-import { rdtServerConfig } from "./rdt.config";
 
 // patch in Remix runtime globals
 installGlobals();
@@ -139,7 +138,7 @@ async function startCore() {
    app.use(payload.authenticate);
 
    // This makes sure the build is wrapped on reload by RDT
-   if (rdt) build = rdt.withServerDevTools(build, rdtServerConfig);
+   if (rdt) build = rdt.withServerDevTools(build);
 
    // Check if the server is running in development mode and reflect realtime changes in the codebase.
    // We'll also inject payload in the remix handler so we can use it in our routes.
@@ -190,7 +189,7 @@ function createProductionRequestHandler(): RequestHandler {
 function createDevRequestHandler(): RequestHandler {
    async function handleServerUpdate() {
       // This makes sure the build is wrapped on reload by RDT
-      build = rdt.withServerDevTools(await reimportServer(), rdtServerConfig);
+      build = rdt.withServerDevTools(await reimportServer());
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {

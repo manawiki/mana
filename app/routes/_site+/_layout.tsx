@@ -71,8 +71,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
    scripts({ data }) {
-      const enableAds = data.site.enableAds;
-      const gaTag = data.site.gaTagId;
+      const enableAds = data?.site?.enableAds;
+      const gaTag = data?.site?.gaTagId;
 
       //disable scripts in development
       if (process.env.NODE_ENV === "development") return [];

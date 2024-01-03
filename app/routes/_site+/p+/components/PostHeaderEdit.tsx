@@ -91,7 +91,7 @@ export function PostHeaderEdit({
             />
          </div>
          <PostAuthorHeader post={post} />
-         <div className="border-color relative mb-6 flex items-center gap-3 border-b border-zinc-100 pb-3">
+         <div className="border-color-secondary relative mb-6 flex items-center gap-3 border-b pb-3">
             <TextareaAutosize
                className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
                   p-0 text-sm font-semibold focus:ring-transparent"
