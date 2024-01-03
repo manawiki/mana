@@ -15,13 +15,19 @@ import {
 
 export default function IndexLayout() {
    return (
-      <>
+      <div className="relative min-h-screen">
          <main className="flex flex-col overflow-hidden">
             <Header />
             <Outlet />
          </main>
          <Footer />
-      </>
+         <div
+            className="pattern-dots absolute left-0
+                  top-0 h-full  w-full
+                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+         />
+      </div>
    );
 }
 
@@ -96,13 +102,13 @@ function Header() {
 
 function Footer() {
    return (
-      <footer className="py-4 fixed bottom-0 w-full h-20">
+      <footer className="py-4 w-full h-20 absolute bottom-0">
          <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-center gap-4">
             <a
                href="https://discord.com/invite/nRNM35ytD7"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2-sub border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +124,7 @@ function Footer() {
                href="https://github.com/manawiki"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2-sub border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   className="h-9 w-9 fill-current"
@@ -132,7 +138,7 @@ function Footer() {
                href="https://twitter.com/mana_wiki"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2-sub border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   className="h-8 w-8 fill-current"

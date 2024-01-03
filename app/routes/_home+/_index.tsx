@@ -140,12 +140,6 @@ const Discover = () => {
 
    return (
       <>
-         <div
-            className="pattern-dots absolute left-0
-                  top-0 h-full  w-full
-                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
-                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
-         />
          <section className="relative z-10 h-full">
             <LoggedIn>
                <div className="bg-3 pb-10 pt-20 mobile:px-4">
@@ -389,6 +383,12 @@ const Discover = () => {
                   )}
                </div>
             </div>
+            {/* <div
+               className="pattern-dots absolute left-0
+                  top-0 h-full  w-full
+                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            /> */}
          </section>
       </>
    );
