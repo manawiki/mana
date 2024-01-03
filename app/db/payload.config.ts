@@ -33,6 +33,7 @@ export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
       url: `${process.env.MONGODB_URI}/mana-prod`,
+      transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
    admin: {
