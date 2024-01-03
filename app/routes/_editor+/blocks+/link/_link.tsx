@@ -181,8 +181,7 @@ type Fields = {
 export function BlockLink({ element, children }: Props) {
    let { hostname, pathname } = new URL(element.url as string);
 
-   let domain = hostname.split(".").slice(-2).join(".");
-   const isSafeLink = ["mana.wiki"].includes(domain);
+   const isSafeLink = hostname.endsWith("mana.wiki");
 
    let url = element.url && new URL(element.url).pathname;
    let pathSection = url && url.split("/");
