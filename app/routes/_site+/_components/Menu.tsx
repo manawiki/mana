@@ -1,8 +1,8 @@
 import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 
-import { Image } from "~/components/Image";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { pinnedLinkUrlGenerator } from "~/utils/pinnedLinkUrlGenerator";
@@ -16,39 +16,30 @@ export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
       <>
          <LoggedIn>
             {following?.length === 0 ? null : (
-               <div className="flex-grow space-y-3">
+               <div className="grid grid-cols-4 mobile:grid-cols-5 tablet:grid-cols-9 laptop:grid-cols-10 gap-4">
                   {following?.map((item) => (
-                     <NavLink
-                        reloadDocument={true}
-                        key={item.id}
-                        onClick={() => setMenuOpen(false)}
-                        className="shadow-1 bg-2-sub border-color relative flex w-full items-center 
-                        justify-between gap-3 rounded-xl border pr-4 shadow-sm"
-                        to={`/${item.slug}`}
-                     >
-                        {({ isActive }) => (
-                           <>
-                              <div className="flex w-full items-center gap-3 truncate p-2">
-                                 <div className="h-7 w-7 flex-none ">
-                                    <Image
-                                       className="border-color overflow-hidden rounded-full border shadow-sm"
-                                       width={32}
-                                       height={32}
-                                       alt="Site Logo"
-                                       options="aspect_ratio=1:1&height=120&width=120"
-                                       url={item.icon?.url ?? ""}
-                                    />
-                                 </div>
-                                 <div className="truncate text-sm font-bold">
-                                    {item.name}
-                                 </div>
-                              </div>
-                              {isActive && (
-                                 <div className="h-2.5 w-2.5 flex-none rounded-full bg-blue-500" />
-                              )}
-                           </>
-                        )}
-                     </NavLink>
+                     <>
+                        <Link
+                           reloadDocument={true}
+                           key={item.id}
+                           onClick={() => setMenuOpen(false)}
+                           className=""
+                           to={
+                              item.domain
+                                 ? item.domain
+                                 : `https://${item.slug}.mana.wiki`
+                           }
+                        >
+                           <Image
+                              className="border-color overflow-hidden rounded-full border shadow-sm"
+                              width={50}
+                              height={50}
+                              alt="Site Logo"
+                              options="aspect_ratio=1:1&height=120&width=120"
+                              url={item.icon?.url ?? ""}
+                           />
+                        </Link>
+                     </>
                   ))}
                </div>
             )}
@@ -219,11 +210,7 @@ export const PrimaryMenuLinks = ({
                </div>
             )}
          </NavLink>
-         <NavLink
-            className="block"
-            prefetch="intent"
-            to={`/${site.slug}/collections`}
-         >
+         <NavLink className="block" prefetch="intent" to="/collections">
             {({ isActive }) => (
                <div
                   className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"

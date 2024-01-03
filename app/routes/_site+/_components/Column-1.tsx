@@ -37,7 +37,7 @@ function SideBarItem({ site, siteSlug }: { site: Site; siteSlug?: string }) {
 }
 
 export function ColumnOne({ site }: { site: Site }) {
-   const { following, user, siteSlug } = useRouteLoaderData("root") as {
+   const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
       user: User;
       siteSlug: string;
@@ -86,7 +86,7 @@ export function ColumnOne({ site }: { site: Site }) {
                   )}
                   <div className="absolute bottom-3 left-0 w-full">
                      <div className="flex items-center justify-center flex-col gap-2">
-                        <UserDesktopMenu user={user} />
+                        <UserDesktopMenu />
                      </div>
                   </div>
                   <AdminOrStaffOrOwner>

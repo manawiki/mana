@@ -227,8 +227,8 @@ export function ColumnThree({
                                  <Icon name="search" title="Search" size={18} />
                               </button>
                               <button
-                                 className="dark:bg-zinc-700 border-color-sub shadow-1 flex h-10 w-10 items-center justify-center rounded-full
-                                             border shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
+                                 className="dark:bg-zinc-700 dark:border-zinc-600 dark:shadow-zinc-950/40 bg-white flex h-10 w-10 items-center justify-center rounded-full
+                                             border-2 shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
                                  aria-label="Menu"
                                  onClick={() => setPrimaryMenuOpen(true)}
                               >
