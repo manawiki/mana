@@ -203,7 +203,7 @@ export default function Login() {
                      value="login"
                      type="submit"
                      color="dark/white"
-                     className="w-full h-10"
+                     className="w-full h-10 cursor-pointer"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}

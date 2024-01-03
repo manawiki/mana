@@ -6,8 +6,8 @@ import {
    isOwnComment,
    isCommentDeletedField,
    deleteComment,
+   canMutateCommentsFieldAsSiteAdmin,
 } from "../../access/comments";
-import { canMutateFieldAsSiteAdmin } from "../../access/site";
 import { isLoggedIn, isStaff } from "../../access/user";
 import {
    updateCommentCount,
@@ -42,7 +42,7 @@ export const Comments: CollectionConfig = {
          name: "isPinned",
          type: "checkbox",
          access: {
-            update: canMutateFieldAsSiteAdmin("comments"),
+            update: canMutateCommentsFieldAsSiteAdmin("comments"),
          },
       },
       {

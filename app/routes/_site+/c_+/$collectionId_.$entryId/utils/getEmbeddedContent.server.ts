@@ -2,7 +2,7 @@ import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 
-import { isSiteOwnerOrAdmin } from "~/access/site";
+import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { cacheThis } from "~/utils/cache.server";
 

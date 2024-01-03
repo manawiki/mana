@@ -8,7 +8,7 @@ import { Images } from "./Images";
 import { PostContents } from "./PostContents";
 import { Posts } from "./Posts";
 import { PostTags } from "./PostTags";
-import { Sites } from "./Sites";
+import { Sites } from "./site/config";
 import { Updates } from "./Updates";
 import { Users } from "./Users";
 

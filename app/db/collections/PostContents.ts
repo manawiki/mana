@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canMutateAsSiteAdmin, canRead } from "../../access/site";
+import { canMutateAsSiteAdmin, canRead } from "./site/access";
 import { isStaffFieldLevel } from "../../access/user";
 import { replaceVersionAuthor } from "../hooks/replaceVersionAuthor";
 import type { User } from "../payload-types";
