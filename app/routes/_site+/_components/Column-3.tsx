@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
@@ -33,12 +34,18 @@ export function ColumnThree({
    return (
       <>
          <section className="max-laptop:border-color bg-3 max-laptop:border-b max-laptop:pt-14">
-            <section className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] laptop:sticky laptop:top-0">
+            <section
+               className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] max-laptop:px-3 shadow-sm dark:shadow-zinc-900/30
+               laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b"
+            >
                <div
-                  className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-b-2xl laptop:border border-color-sub
-                dark:bg-dark350 bg-zinc-50 border-zinc-200/70 dark:border-zinc-600/50 shadow-1 border-b shadow-sm laptop:border-t-0"
-               >
-                  <div className="relative mx-auto flex h-[60px] items-center justify-between pl-3 pr-2.5">
+                  className="pattern-dots absolute left-0
+                   top-0 -z-0 h-full
+                     w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
+                     pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+               />
+               <div className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-b-2xl">
+                  <div className="relative mx-auto flex h-[60px] items-center justify-between">
                      {searchToggle ? (
                         <SearchComboBox
                            siteType={site.type}
@@ -119,9 +126,27 @@ export function ColumnThree({
                                         max-w-md origin-top-right transform transition-all"
                                              >
                                                 <div
-                                                   className="border-color-sub bg-2-sub shadow-1 rounded-lg border
-                                            p-1.5 shadow-sm"
+                                                   className="border-color-sub bg-3-sub shadow-1 rounded-lg border
+                                                   p-1 shadow-md dark:shadow-zinc-800/80 space-y-0.5"
                                                 >
+                                                   <AdminOrStaffOrOwner>
+                                                      <Menu.Item>
+                                                         <Link
+                                                            to="/settings"
+                                                            className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
+                                                      p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                         >
+                                                            <div className="flex-grow">
+                                                               Settings
+                                                            </div>
+                                                            <Icon
+                                                               size={14}
+                                                               name="settings"
+                                                               className="text-zinc-400 w-4.5 h-4.5"
+                                                            />
+                                                         </Link>
+                                                      </Menu.Item>
+                                                   </AdminOrStaffOrOwner>
                                                    <Menu.Item>
                                                       <fetcher.Form
                                                          action="/action/follow"
@@ -131,7 +156,7 @@ export function ColumnThree({
                                                             name="intent"
                                                             value="unfollow"
                                                             className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
-                                                      px-2 py-1.5 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                                      p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                          >
                                                             <div className="flex-grow">
                                                                {t(
@@ -139,7 +164,7 @@ export function ColumnThree({
                                                                )}
                                                             </div>
                                                             <Icon
-                                                               size={16}
+                                                               size={14}
                                                                name="log-out"
                                                                className="text-zinc-400 w-4.5 h-4.5"
                                                             />
@@ -192,18 +217,18 @@ export function ColumnThree({
                                  </div>
                               </NotFollowingSite>
                               <button
-                                 className="bg-3-sub border-color-sub shadow-1 flex h-10 w-10 items-center justify-center
-                                   rounded-full border shadow-sm"
+                                 className="dark:bg-zinc-700 dark:border-zinc-600 shadow-1 flex h-10 w-10 items-center justify-center
+                                   rounded-full border-2 shadow-sm bg-white hover:bg-zinc-50 dark:hover:bg-zinc-600"
                                  aria-label="Search"
                                  onClick={() => {
                                     setSearchToggle(true);
                                  }}
                               >
-                                 <Icon name="search" className="w-5 h-5" />
+                                 <Icon name="search" title="Search" size={18} />
                               </button>
                               <button
-                                 className="bg-3-sub border-color-sub shadow-1 flex h-10 w-10 items-center justify-center rounded-full
-                                             border shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
+                                 className="dark:bg-zinc-700 dark:border-zinc-600 dark:shadow-zinc-950/40 bg-white flex h-10 w-10 items-center justify-center rounded-full
+                                             border-2 shadow-sm transition duration-300 active:translate-y-0.5 laptop:hidden"
                                  aria-label="Menu"
                                  onClick={() => setPrimaryMenuOpen(true)}
                               >

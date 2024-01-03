@@ -7,8 +7,9 @@ import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 
-import { FormLabel } from "~/components/Forms";
+import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { Input } from "~/components/Input";
 import { Modal } from "~/components/Modal";
 import { BlockType } from "~/routes/_editor+/core/types";
 import {
@@ -191,23 +192,20 @@ export function NewSiteModal() {
                            />
                         </label>
                      </div>
-                     <fieldset className="pb-5">
-                        <FormLabel
-                           htmlFor={zo.fields.siteName()}
-                           text={t("new.siteName")}
-                           error={zo.errors.siteName((err) => err.message)}
-                        />
-                        <div className="mt-1">
-                           <input
-                              required
-                              autoFocus={true}
-                              name={zo.fields.siteName()}
+                     <Fieldset>
+                        <Field>
+                           <Label>{t("register.username")}</Label>
+                           <Input
                               type="text"
-                              className="input-text"
                               disabled={disabled}
+                              className="lowercase"
+                              name={zo.fields.siteName()}
                            />
-                        </div>
-                     </fieldset>
+                           {zo.errors.siteName((err) => (
+                              <ErrorMessage>{err.message}</ErrorMessage>
+                           ))}
+                        </Field>
+                     </Fieldset>
                      <button
                         name="intent"
                         value="addSite"
@@ -273,6 +271,7 @@ export const action: ActionFunction = async ({
                //@ts-expect-error
                owner: userId,
                id: siteId,
+               //@ts-expect-error
                slug: siteId,
                //@ts-expect-error
                icon: icon.id,

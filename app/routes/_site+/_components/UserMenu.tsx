@@ -6,9 +6,7 @@ import clsx from "clsx";
 import { Drawer } from "vaul";
 
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import { Modal } from "~/components/Modal";
-import type { User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { LoggedOutMobile } from "~/routes/_auth+/components/LoggedOutMobile";
@@ -16,7 +14,7 @@ import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { isAdding } from "~/utils";
 import { useTheme } from "~/utils/client-hints";
 
-export function UserDesktopMenu({ user }: { user: User }) {
+export function UserDesktopMenu() {
    const [isMenuOpen, setMenuOpen] = useState(false);
    const { sitePath } = useRouteLoaderData("root") as { sitePath: string };
 
@@ -28,18 +26,9 @@ export function UserDesktopMenu({ user }: { user: User }) {
                   onClick={() => setMenuOpen(true)}
                   className="border-4 border-zinc-300 dark:border-zinc-700 transition duration-300 
                   active:translate-y-0.5 dark:hover:border-zinc-600  
-                  rounded-full flex items-center justify-center w-12 h-12 bg-3 shadow shadow-1 hover:border-zinc-400"
+                  rounded-full flex items-center justify-center laptop:w-12 laptop:h-12 bg-3 shadow shadow-1 hover:border-zinc-400"
                >
-                  {user?.avatar?.url ? (
-                     <Image
-                        alt="User Pfp"
-                        className="rounded-full overflow-hidden"
-                        options="aspect_ratio=1:1&height=120&width=120"
-                        url={user?.avatar?.url ?? ""}
-                     />
-                  ) : (
-                     <Icon name="user" size={20} />
-                  )}
+                  <Icon name="user" size={22} />
                </button>
             </section>
             <Modal

@@ -121,7 +121,7 @@ export async function fetchSite({
 
    function updateKeys(data: Site) {
       return JSON.parse(
-         JSON.stringify(data).replace(
+         JSON.stringify(data)?.replace(
             pattern,
             //@ts-ignore
             (m) => `"${swaps[m.slice(1, -2)]}":`,
@@ -135,7 +135,7 @@ export async function fetchSite({
          siteSlug,
       });
 
-      return updateKeys(data.site.docs[0]);
+      return updateKeys(data?.site?.docs?.[0]);
    }
 
    //Otherwise fresh pull
@@ -144,5 +144,5 @@ export async function fetchSite({
       variables: { siteSlug },
    });
    //@ts-ignore
-   return updateKeys(data.site.docs[0]);
+   return updateKeys(data?.site?.docs?.[0]);
 }

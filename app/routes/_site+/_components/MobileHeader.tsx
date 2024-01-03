@@ -1,12 +1,11 @@
-import { Link, useRouteLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { Image } from "~/components/Image";
 import { Icon } from "~/components/Icon";
-import type { Site, User } from "~/db/payload-types";
+import type { Site } from "~/db/payload-types";
+import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { isAdding } from "~/utils";
 
 export function MobileHeader({
@@ -24,9 +23,6 @@ export function MobileHeader({
 }) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
-   const { user } = useRouteLoaderData("root") as {
-      user: User;
-   };
 
    return (
       <>
@@ -83,16 +79,7 @@ export function MobileHeader({
                      justify-center rounded-xl border shadow-sm"
                      onClick={() => setUserMenuOpen(true)}
                   >
-                     {user?.avatar?.url ? (
-                        <Image
-                           alt="User Pfp"
-                           className="rounded-full overflow-hidden w-6 h-6"
-                           options="aspect_ratio=1:1&height=60&width=60"
-                           url={user?.avatar?.url ?? ""}
-                        />
-                     ) : (
-                        <Icon name="user" size={20} />
-                     )}
+                     <Icon name="user" size={20} />
                   </button>
                </div>
             </LoggedIn>
@@ -101,7 +88,7 @@ export function MobileHeader({
                   prefetch="intent"
                   reloadDocument={true}
                   to={`/login?redirectTo=/${site.slug}`}
-                  className="shadow-1 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
+                  className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                >
                   Follow
@@ -110,7 +97,7 @@ export function MobileHeader({
                   <Link
                      prefetch="intent"
                      to="/join"
-                     className="shadow-1 group relative inline-flex h-8 items-center justify-center overflow-hidden 
+                     className="dark:shadow-zinc-950/40 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                  rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
                   >
                      <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
@@ -124,8 +111,8 @@ export function MobileHeader({
                   </Link>
                   <Link
                      prefetch="intent"
-                     className="dark:border-zinc-600 dark:bg-dark450 shadow-1 flex h-8 items-center
-                                 justify-center rounded-lg border px-3 text-center
+                     className="dark:border-zinc-600 dark:bg-dark450 dark:shadow-zinc-950/40 flex h-8 items-center
+                                 justify-center rounded-lg border px-3 text-center bg-white
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"
                      to={`/login?redirectTo=${location.pathname}`}
                   >

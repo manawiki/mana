@@ -20,7 +20,6 @@ import { isAdding, useDebouncedValue } from "~/utils";
 
 export async function loader({
    context: { payload, user },
-   params,
    request,
 }: LoaderFunctionArgs) {
    const { siteSlug } = getSiteSlug(request);
@@ -30,20 +29,24 @@ export async function loader({
       type: z.string(),
    });
 
-   let { hostname } = new URL(request.url);
-   let [, domain, tld] = hostname.split(".");
-
    if (type == "core") {
       try {
-         const searchUrl = `${request.url}api/search?where[site.slug][equals]=${siteSlug}&where[name][contains]=${q}&depth=1&sort=-priority`;
-         //@ts-ignore
-         const { docs: searchResults } = (await (
-            await fetch(searchUrl, {
-               headers: {
-                  cookie: request.headers.get("cookie") ?? "",
+         const { docs: searchResults } = await payload.find({
+            collection: "search",
+            where: {
+               "site.slug": {
+                  equals: siteSlug,
                },
-            })
-         ).json()) as Search[];
+               name: {
+                  contains: q,
+               },
+            },
+            depth: 1,
+            sort: "-priority",
+            overrideAccess: false,
+            user,
+         });
+
          return json(
             { searchResults },
             { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
@@ -54,12 +57,25 @@ export async function loader({
    }
    if (type == "custom") {
       try {
-         const searchUrl = `${request.url}api/search?where[site.slug][equals]=${siteSlug}&where[name][contains]=${q}&depth=1&sort=-priority`;
-         const customSearchUrl = `https://${siteSlug}-db.${domain}.${tld}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
+         const customSearchUrl = `https://${siteSlug}-db.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([
-               await (await fetch(searchUrl)).json(),
+               await payload.find({
+                  collection: "search",
+                  where: {
+                     "site.slug": {
+                        equals: siteSlug,
+                     },
+                     name: {
+                        contains: q,
+                     },
+                  },
+                  depth: 1,
+                  sort: "-priority",
+                  overrideAccess: false,
+                  user,
+               }),
                await (await fetch(customSearchUrl)).json(),
             ]);
 
@@ -83,27 +99,27 @@ const searchLinkUrlGenerator = (item: any, siteSlug?: string) => {
    switch (type) {
       case "customPages": {
          const slug = item.slug;
-         return `/${siteSlug}/${slug}`;
+         return `/${slug}`;
       }
       case "collections": {
          const slug = item.slug;
-         return `/${siteSlug}/c/${slug}`;
+         return `/c/${slug}`;
       }
       case "entries": {
          const id = item.id;
          const collection = item.collectionEntity;
-         return `/${siteSlug}/c/${collection}/${id}`;
+         return `/c/${collection}/${id}`;
       }
       case "posts": {
          const id = item.id;
          const slug = item.slug;
-         return `/${siteSlug}/p/${id}/${slug}`;
+         return `/p/${id}/${slug}`;
       }
       //Custom site
       default:
          const id = item.doc.value;
          const collection = item.doc.relationTo;
-         return `/${siteSlug}/c/${collection}/${id}`;
+         return `/c/${collection}/${id}`;
    }
 };
 
@@ -190,14 +206,11 @@ export function SearchComboBox({
 
    return (
       <div className="h-full w-full">
-         <div className="absolute hidden laptop:block left-4 top-5">
-            <Icon name="search" className="text-1" size={18} />
-         </div>
          <Combobox onChange={handleChange}>
             <div className="relative h-full w-full focus:outline-none">
                <Combobox.Input
                   autoFocus
-                  className="h-full w-full border-0 laptop:rounded-full p-0 bg-transparent laptop:pl-8 outline-none !ring-transparent"
+                  className="h-full w-full border-0 p-0 bg-transparent outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}
@@ -273,7 +286,7 @@ export function SearchComboBox({
             </Transition>
          </Combobox>
          <button
-            className="absolute right-4 top-5"
+            className="absolute right-2 top-5"
             onClick={() => {
                setSearchToggle(false);
             }}
@@ -281,7 +294,12 @@ export function SearchComboBox({
             {isSearching ? (
                <Icon name="loader-2" className="mx-auto h-5 w-5 animate-spin" />
             ) : (
-               <Icon name="x" size={20} className="text-zinc-400" />
+               <Icon
+                  name="x"
+                  title="Close Search"
+                  size={20}
+                  className="text-zinc-400"
+               />
             )}
          </button>
       </div>

@@ -11,7 +11,7 @@ export function PostHeaderView({ post }: { post: Post }) {
          </h1>
          <PostAuthorHeader post={post} />
          {post.subtitle && (
-            <div className="text-1 border-color mb-5 border-b border-zinc-100 pb-3 text-sm font-semibold">
+            <div className="text-1 mb-5 border-b border-color-secondary pb-3 text-sm font-semibold">
                {post.subtitle}
             </div>
          )}
