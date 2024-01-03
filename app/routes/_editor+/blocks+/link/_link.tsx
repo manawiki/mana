@@ -1,20 +1,19 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
-import useSWR from "swr";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
+import { gqlEndpoint, gqlFormat } from "~/utils";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -181,6 +180,7 @@ type Fields = {
 export function BlockLink({ element, children }: Props) {
    let { hostname, pathname } = new URL(element.url as string);
 
+   // todo: we should avoid hardcoding this, maybe check hostname again current host?
    const isSafeLink = hostname.endsWith("mana.wiki");
 
    let url = element.url && new URL(element.url).pathname;
@@ -203,10 +203,17 @@ export function BlockLink({ element, children }: Props) {
 
    const editor = useSlate();
 
-   const { data }: { data: Fields } = useSWR(
-      canFetch && `blocks/link${linkDataQuery}`,
-      swrRestFetcher,
-   );
+   const fetcher = useFetcher({ key: linkDataQuery });
+
+   // we'll use fetcher to fetch the link icon if it's not already fetched
+   useEffect(() => {
+      console.log(canFetch, fetcher.data);
+      if (canFetch && fetcher.data == undefined) {
+         fetcher.load("/blocks/link" + linkDataQuery);
+      }
+   }, [canFetch, fetcher, linkDataQuery]);
+
+   const data = fetcher.data as Fields | undefined;
 
    // If iconURL property is null and we get data then update
    if (canFetch && data) {
