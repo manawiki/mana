@@ -20,8 +20,8 @@ import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
 import { onKeyDown } from "~/routes/_editor+/core/utils";
-import { isAdding, isProcessing, useDebouncedValue, useIsMount } from "~/utils";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { isAdding, isProcessing, useDebouncedValue, useIsMount } from "~/utils";
 
 import { Toolbar } from "../../core/components/Toolbar";
 import type { UpdatesElement, CustomElement } from "../../core/types";
@@ -117,8 +117,8 @@ export function BlockUpdates({ element }: Props) {
                      type="submit"
                   >
                      <div
-                        className="shadow-1 border-color inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 
-                           rounded-full border border-zinc-200 bg-gradient-to-br from-white
+                        className="inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 
+                           rounded-full border border-zinc-200 bg-gradient-to-br from-white dark:border-darkBorder
                            to-zinc-50  text-xs font-bold shadow-sm transition hover:border-zinc-300
                            hover:bg-white hover:!shadow active:!shadow-none dark:from-bg3Dark
                            dark:to-bg2Dark dark:text-zinc-200 dark:hover:border-zinc-700"

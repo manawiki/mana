@@ -17,6 +17,7 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchHomeContent } from "./utils/fetchHomeContent.server";
 import { fetchHomeUpdates } from "./utils/fetchHomeUpdates.server";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
+import { Icon } from "~/components/Icon";
 
 export async function loader({
    context: { payload, user },
@@ -69,7 +70,7 @@ export default function SiteIndexMain() {
          show
       >
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
-            <Suspense fallback="Loading...">
+            <Suspense fallback={<Loading />}>
                <Await resolve={home}>
                   <ManaEditor
                      key={siteSlug}
@@ -92,8 +93,20 @@ export default function SiteIndexMain() {
    ) : (
       home && (
          <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
-            <EditorView data={home} />
+            <Suspense fallback={<Loading />}>
+               <EditorView data={home} />
+            </Suspense>
          </main>
       )
    );
 }
+
+const Loading = () => (
+   <div className="flex items-center justify-center py-10">
+      <Icon
+         name="loader-2"
+         size={20}
+         className="animate-spin dark:text-zinc-500 text-zinc-400"
+      />
+   </div>
+);

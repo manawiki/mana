@@ -108,24 +108,21 @@ export default function Login() {
    const [isReset, setIsReset] = useState(false);
    return (
       <div
-         className="border-color bg-2 shadow-1 dark:shadow-zinc-800 relative border-y
-               p-6 shadow-sm tablet:rounded-xl tablet:border"
+         className="border-color-sub bg-2-sub shadow-1 relative 
+      border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
       >
          {isReset ? (
-            <div className="border-color mb-6 flex items-center justify-between border-b-2 pb-4">
-               <div className="text-xl font-bold">Reset Password</div>
+            <div className="border-color mb-6 flex items-center border-b-2 pb-4">
                <button
-                  className="bg-3 shadow-1 flex items-center gap-2
-                        rounded-full py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
+                  className="flex items-center gap-2 rounded-full py-2 pr-4 text-sm font-bold"
                   onClick={() => setIsReset(false)}
                >
-                  <Icon name="arrow-left" className="text-blue-500" size={24}>
-                     Back
-                  </Icon>
+                  <Icon name="arrow-left" className="text-blue-500" size={20} />
                </button>
+               <div className="text-xl font-bold">Reset Password</div>
             </div>
          ) : (
-            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+            <div className="border-color-sub mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                {t("login.title")}
             </div>
          )}
@@ -147,9 +144,11 @@ export default function Login() {
                      </Field>
                   </Fieldset>
                   <Button
+                     color="dark/white"
                      name="intent"
                      value="reset-password"
                      type="submit"
+                     className="text-sm"
                      disabled={disabled}
                   >
                      {addingPasswordRest ? <DotLoader /> : t("pwReset.title")}
@@ -188,7 +187,7 @@ export default function Login() {
                      </FieldGroup>
                      <button
                         type="button"
-                        className="text-sm font-semibold text-blue-500 mt-3"
+                        className="text-sm text-blue-500 mt-3 hover:underline"
                         onClick={() => setIsReset(true)}
                      >
                         Forgot your password?
@@ -203,16 +202,17 @@ export default function Login() {
                      name="intent"
                      value="login"
                      type="submit"
-                     className="w-full"
+                     color="dark/white"
+                     className="w-full h-10"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
                   </Button>
-                  <div className="pt-1 flex items-center justify-center">
+                  <div className="flex items-center justify-center">
                      <div className="text-center text-sm">
                         {t("login.dontHaveAccount")}
                         <Link
-                           className="pl-1 font-bold text-blue-500"
+                           className="pl-1 text-blue-500 hover:underline"
                            to={{
                               pathname: "/join",
                               search: searchParams.toString(),

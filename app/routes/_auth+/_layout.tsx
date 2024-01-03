@@ -1,6 +1,8 @@
-import { Link, Outlet } from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 
-import { Icon } from "~/components/Icon";
+import { Button } from "~/components/Button";
+import { Logo } from "~/components/Logo";
+
 export default function AuthLayout() {
    return (
       <main>
@@ -10,19 +12,14 @@ export default function AuthLayout() {
          />
          <div
             className="absolute left-0 top-0 -z-0 h-full w-full bg-gradient-to-b
-            from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg1Dark/80 dark:to-bg1Dark/50"
+            from-zinc-200/50 via-transparent to-zinc-50/80 dark:from-bg2Dark/80 dark:to-bg2Dark/50"
          />
          <div className="relative mt-16 tablet:mx-auto tablet:mt-40 tablet:max-w-[440px]">
             <Outlet />
             <div className="flex items-center justify-center pt-10">
-               <Link
-                  className="bg-2 border-color shadow-1 flex items-center gap-2 rounded-full border py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
-                  to="/"
-               >
-                  <Icon name="arrow-left" size={16} className="text-1">
-                     Back
-                  </Icon>
-               </Link>
+               <Button color="light" className="h-11 w-11" href="/">
+                  <Logo className="w-5 h-5" />
+               </Button>
             </div>
          </div>
       </main>

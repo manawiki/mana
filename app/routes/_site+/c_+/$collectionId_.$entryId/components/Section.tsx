@@ -12,7 +12,6 @@ import {
 } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
-import { lazily } from "react-lazily";
 
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -21,6 +20,7 @@ import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIs
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
+import { ManaEditor } from "~/routes/_editor+/editor.tsx";
 import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionId_.$entryId/_entry";
 
 import type { Section } from "./Sections";
@@ -29,7 +29,6 @@ import { TableOfContents } from "../../_components/TableOfContents";
 
 // we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
 //@ts-ignore
-const { ManaEditor } = lazily(() => import("~/routes/_editor+/editor.tsx"));
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
