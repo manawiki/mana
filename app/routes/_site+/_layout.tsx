@@ -32,7 +32,7 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = getSiteSlug(request);
 
-   const site = await fetchSite({ siteSlug, user });
+   const site = await fetchSite({ siteSlug, user, request });
 
    if (!site) {
       throw new Response(null, {

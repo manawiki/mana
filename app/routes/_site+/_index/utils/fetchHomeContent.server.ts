@@ -4,7 +4,7 @@ import qs from "qs";
 import invariant from "tiny-invariant";
 
 import type { HomeContent, User } from "payload/generated-types";
-import { isSiteOwnerOrAdmin } from "~/access/site";
+import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function fetchHomeContent({

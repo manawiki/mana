@@ -13,7 +13,6 @@ import { jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { isSiteOwnerOrAdmin } from "~/access/site";
 import { Button } from "~/components/Button";
 import {
    Description,
@@ -29,6 +28,7 @@ import { Switch, SwitchField } from "~/components/Switch";
 import { Strong, Text, TextLink } from "~/components/Text";
 import { Textarea } from "~/components/Textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
+import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding, isProcessing } from "~/utils";
 
@@ -281,7 +281,6 @@ export const meta: MetaFunction<typeof loader, any> = ({ matches }) => {
 export async function action({
    context: { payload, user },
    request,
-   params,
 }: ActionFunctionArgs) {
    const formData = await zx.parseForm(request, SettingsSchema);
 

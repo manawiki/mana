@@ -1,13 +1,4 @@
-import { GraphQLClient } from "graphql-request";
-
-const authGraphQLClient = (siteSlug?: string) =>
-   new GraphQLClient(gqlEndpoint({ siteSlug }), {
-      ...(process.env.MANA_APP_KEY && {
-         headers: {
-            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-         },
-      }),
-   });
+import { request as gqlRequest } from "graphql-request";
 
 export function gqlEndpoint({
    siteSlug,
@@ -61,13 +52,20 @@ export function authGQLFetcher({
    document,
    variables,
    siteSlug,
+   request,
 }: {
    document?: any;
    variables?: any;
    siteSlug?: string;
+   request: Request;
 }) {
    try {
-      return authGraphQLClient(siteSlug).request(document, variables);
+      return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
+         cookie: request?.headers.get("cookie") ?? "",
+         ...(process.env.MANA_APP_KEY && {
+            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+         }),
+      });
    } catch (err) {
       console.log(err);
    }

@@ -6,9 +6,11 @@ import { authGQLFetcher } from "~/utils/fetchers.server";
 export async function fetchSite({
    siteSlug,
    user,
+   request,
 }: {
    siteSlug: string | undefined;
    user?: User;
+   request: Request;
 }): Promise<Site> {
    const QUERY = gql`
       query ($siteSlug: String!) {
@@ -22,6 +24,7 @@ export async function fetchSite({
                about
                isPublic
                gaTagId
+               gaPropertyId
                domain
                followers
                enableAds
@@ -142,6 +145,7 @@ export async function fetchSite({
    const data = await authGQLFetcher({
       document: QUERY,
       variables: { siteSlug },
+      request,
    });
    //@ts-ignore
    return updateKeys(data?.site?.docs?.[0]);
