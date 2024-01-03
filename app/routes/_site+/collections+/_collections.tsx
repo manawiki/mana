@@ -17,8 +17,6 @@ import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { assertIsPost, isProcessing, isAdding } from "~/utils";
 
-import { mainContainerStyle } from "../_index";
-
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),
    slug: z.string().min(1).max(40),
@@ -87,7 +85,7 @@ export default function CollectionIndex() {
 
    return (
       <>
-         <main className={mainContainerStyle}>
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
             <div className="relative flex items-center pb-3">
                <h1 className="font-header text-2xl laptop:text-3xl font-bold pr-3">
                   Collections
@@ -246,7 +244,7 @@ export default function CollectionIndex() {
                            prefetch="intent"
                            to={`/c/${row.slug}`}
                            className="relative flex items-center justify-between shadow-zinc-100 gap-2 dark:bg-dark350 dark:hover:border-zinc-600/70
-                           p-2 border-color-sub shadow-sm shadow-1 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
+                           p-2 border-color-sub shadow-sm dark:shadow-black/20 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
                         >
                            <div className="flex items-center gap-3">
                               <div className="border-color-sub border bg-3-sub justify-center shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">

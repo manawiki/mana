@@ -144,7 +144,7 @@ export const EditorCommandBar = ({
                      <Tooltip placement="top">
                         <TooltipTrigger
                            className="flex cursor-default hover:border-zinc-300 dark:hover:border-dark500 shadow shadow-1 relative
-                           border-2 border-zinc-200 border-color-sub bg-2-sub rounded-full h-9 w-9 items-center justify-center z-10"
+                           border-2 border-zinc-200 dark:border-zinc-500 bg-2-sub rounded-full h-9 w-9 items-center justify-center z-10"
                         >
                            {isAutoSaving ? (
                               <Icon

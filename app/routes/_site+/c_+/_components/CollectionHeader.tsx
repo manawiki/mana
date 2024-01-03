@@ -74,7 +74,7 @@ export function CollectionHeader() {
             </div>
          </div>
          <section
-            className="border-b border-zinc-200/50 border-color max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
+            className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
             shadow-zinc-200/40 dark:shadow-zinc-800/80 shadow-sm relative z-10"
          >
             <div className="mx-auto max-w-[728px] flex items-center border-t py-1.5 border-zinc-100 dark:border-zinc-700/40">

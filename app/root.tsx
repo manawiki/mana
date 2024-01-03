@@ -34,7 +34,6 @@ import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 import { i18nextServer } from "./utils/i18n";
-import { rdtClientConfig } from "../rdt.config";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -95,16 +94,18 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
 
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
       : []),
@@ -204,7 +205,7 @@ let AppExport = withMetronome(App);
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, rdtClientConfig);
+   AppExport = withDevTools(AppExport);
 }
 
 export default AppExport;
