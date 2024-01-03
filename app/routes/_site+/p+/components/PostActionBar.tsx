@@ -96,7 +96,7 @@ export function PostActionBar({ post }: { post: Post }) {
                className="text-zinc-200/70 text-lg -rotate-[30deg] dark:text-zinc-700"
             />
             <button
-               className="rounded-md text-[10px] flex items-center shadow-sm shadow-yellow-300 shadow-1 ml-3
+               className="rounded-md text-[10px] flex items-center shadow-sm shadow-yellow-300 dark:shadow-yellow-500/10 ml-3
                               justify-center dark:bg-dark450 bg-yellow-50/70 w-6 h-6"
             >
                <Icon className="text-yellow-400" name="bookmark" size={14} />

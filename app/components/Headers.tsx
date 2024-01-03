@@ -1,7 +1,7 @@
 export const H2 = ({ text }: { text: string | undefined }) => {
    return (
       <h2
-         className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
+         className="dark:shadow-zinc-800/50 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
       border-2 font-header text-xl font-bold shadow-sm shadow-zinc-50 dark:bg-dark350"
       >
          <div

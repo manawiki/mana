@@ -69,7 +69,7 @@ export function Input({
                "relative block w-full appearance-none rounded-lg px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing[3])-1px)] tablet:py-[calc(theme(spacing[1.5])-1px)]",
 
                // Typography
-               "text-base/6 text-zinc-950 placeholder:text-zinc-500 tablet:text-tablet/6 dark:text-white",
+               "text-base/6 placeholder:text-zinc-500 tablet:text-sm dark:text-white",
 
                // Border
                "border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20",

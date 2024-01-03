@@ -36,7 +36,7 @@ export function Legend({ ...props }: HeadlessLegendProps) {
          data-slot="legend"
          className={clsx(
             props.className,
-            "text-base/6 font-semibold data-[disabled]:opacity-50 tablet:text-tablet/6",
+            "font-bold data-[disabled]:opacity-50",
          )}
       />
    );
@@ -82,7 +82,7 @@ export function Label({
          data-slot="label"
          className={clsx(
             className,
-            "select-none text-sm data-[disabled]:opacity-50 tablet:text-tablet/6",
+            "select-none !font-semibold data-[disabled]:opacity-50 text-sm",
          )}
       />
    );
@@ -99,7 +99,7 @@ export function Description({
          data-slot="description"
          className={clsx(
             className,
-            "text-sm text-zinc-500 data-[disabled]:opacity-50 tablet:text-tablet/6 dark:text-zinc-400",
+            "text-sm text-zinc-500 data-[disabled]:opacity-50 dark:text-zinc-400",
          )}
       />
    );
