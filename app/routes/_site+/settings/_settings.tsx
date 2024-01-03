@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { redirect } from "@remix-run/node";
 import type {
@@ -83,6 +83,12 @@ export default function Settings() {
    const accessText = site.isPublic ? "publicly" : "privately";
 
    const [isChanged, setIsChanged] = useState(false);
+
+   useEffect(() => {
+      if (!saving) {
+         setIsChanged(false);
+      }
+   }, [saving]);
 
    return (
       <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
