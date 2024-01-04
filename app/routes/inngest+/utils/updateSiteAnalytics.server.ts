@@ -4,10 +4,13 @@ import type { PaginatedDocs } from "payload/database";
 import qs from "qs";
 
 import type { Collection, CustomPage, Entry, Post } from "~/db/payload-types";
-import { gqlFormat } from "~/utils";
-import { authGQLFetcher, authRestFetcher } from "~/utils/fetchers.server";
+import {
+   authGQLFetcher,
+   authRestFetcher,
+   gqlFormat,
+} from "~/utils/fetchers.server";
 
-import { inngest } from "./client";
+import { inngest } from "./inngest-client";
 
 export const updateSiteAnalytics = inngest.createFunction(
    { id: "site-analytics-report" },

@@ -31,9 +31,11 @@ import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
+} from "~/utils/http.server";
+import {
    getMultipleFormData,
    uploadImage,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";

@@ -14,10 +14,6 @@ export function gqlEndpoint({
       : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
 }
 
-export function swrRestFetcher(...args: any) {
-   return fetch(args).then((res) => res.json());
-}
-
 export function authRestFetcher({
    path,
    method,
@@ -57,7 +53,7 @@ export function authGQLFetcher({
    document?: any;
    variables?: any;
    siteSlug?: string;
-   request: Request;
+   request?: Request;
 }) {
    try {
       return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
@@ -70,3 +66,5 @@ export function authGQLFetcher({
       console.log(err);
    }
 }
+
+export { gqlFormat } from "./to-words";

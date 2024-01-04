@@ -8,14 +8,14 @@ import { ReactEditor, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { Image } from "~/components/Image";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
+import { isAdding } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
 import {
-   isAdding,
-   assertIsPost,
    getMultipleFormData,
    uploadImage,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import type { CustomElement, ImageElement } from "../core/types";
 type Props = {

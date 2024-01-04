@@ -13,7 +13,7 @@ import { zx } from "zodix";
 import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { gqlEndpoint, gqlFormat } from "~/utils";
+import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 

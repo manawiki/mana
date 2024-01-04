@@ -6,7 +6,7 @@ import { zx } from "zodix";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import type { loader as siteLayoutLoader } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { safeNanoID } from "~/utils";
+import { safeNanoID } from "~/utils/nanoid";
 
 import { MyPosts } from "./components/MyPosts";
 import { PostListHeader } from "./components/PostListHeader";

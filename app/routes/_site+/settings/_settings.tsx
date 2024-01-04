@@ -30,7 +30,7 @@ import { Textarea } from "~/components/Textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
-import { isAdding, isProcessing } from "~/utils";
+import { isAdding, isProcessing } from "~/utils/form";
 
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 

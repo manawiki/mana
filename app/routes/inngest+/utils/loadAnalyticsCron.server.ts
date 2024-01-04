@@ -4,7 +4,7 @@ import type { PaginatedDocs } from "payload/database";
 import type { Site } from "~/db/payload-types";
 import { authGQLFetcher } from "~/utils/fetchers.server";
 
-import { inngest } from "./client";
+import { inngest } from "./inngest-client";
 
 export const loadAnalyticsCron = inngest.createFunction(
    { id: "site-analytics-load" },

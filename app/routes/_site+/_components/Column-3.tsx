@@ -11,7 +11,7 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOw
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import { isAdding } from "~/utils";
+import { isAdding } from "~/utils/form";
 
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
