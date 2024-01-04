@@ -31,13 +31,8 @@ import {
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-   safeRedirect,
-} from "~/utils";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost, safeRedirect } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n";
 
 const LoginFormSchema = z.object({

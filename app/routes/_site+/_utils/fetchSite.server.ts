@@ -1,7 +1,6 @@
 import type { Site, User } from "payload/generated-types";
-import { gqlEndpoint } from "~/utils";
 import { gql, gqlRequestWithCache } from "~/utils/cache.server";
-import { authGQLFetcher } from "~/utils/fetchers.server";
+import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
 export async function fetchSite({
    siteSlug,

@@ -15,7 +15,8 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import { assertIsPost, isProcessing, isAdding } from "~/utils";
+import { isProcessing, isAdding } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
 
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),

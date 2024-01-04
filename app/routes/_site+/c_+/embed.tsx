@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { assertIsPost } from "~/utils";
+import { assertIsPost } from "~/utils/http.server";
 
 export async function action({
    context: { payload, user },

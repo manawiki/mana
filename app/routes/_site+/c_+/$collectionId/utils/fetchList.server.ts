@@ -1,6 +1,6 @@
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { gqlEndpoint } from "~/utils";
 import { gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlEndpoint } from "~/utils/fetchers.server";
 
 export interface ListFetchType {
    request: Request;

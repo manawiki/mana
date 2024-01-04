@@ -1,9 +1,9 @@
 import { serve } from "inngest/remix";
 
-import { inngest } from "~/routes/inngest+/utils/client";
+import { inngest } from "~/routes/inngest+/utils/inngest-client";
 
-import { loadAnalyticsCron } from "./utils/loadAnalyticsCron";
-import { updateSiteAnalytics } from "./utils/updateSiteAnalytics";
+import { loadAnalyticsCron } from "./utils/loadAnalyticsCron.server";
+import { updateSiteAnalytics } from "./utils/updateSiteAnalytics.server";
 
 const handler = serve({
    client: inngest,

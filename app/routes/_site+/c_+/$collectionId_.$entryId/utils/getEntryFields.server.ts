@@ -7,8 +7,8 @@ import { zx } from "zodix";
 
 import type { Entry, User } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { gqlFormat, gqlEndpoint } from "~/utils";
 import { gqlRequestWithCache, gql, cacheThis } from "~/utils/cache.server";
+import { gqlFormat, gqlEndpoint } from "~/utils/fetchers.server";
 
 export async function getEntryFields({
    payload,

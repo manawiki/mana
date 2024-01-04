@@ -3,8 +3,8 @@ import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import type { Payload } from "payload";
 
 import type { Comment, User } from "payload/generated-types";
-import { gqlEndpoint } from "~/utils";
 import { gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlEndpoint } from "~/utils/fetchers.server";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
 

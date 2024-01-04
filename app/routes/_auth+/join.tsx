@@ -27,12 +27,8 @@ import {
 } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
 import type { loader as rootLoader } from "~/root";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-} from "~/utils";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n";
 
 export async function loader({

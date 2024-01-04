@@ -14,7 +14,8 @@ import { zx } from "zodix";
 import { DotLoader } from "~/components/DotLoader";
 import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
-import { assertIsPost, isAdding, isProcessing } from "~/utils";
+import { isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n";
 
 const PasswordResetSchema = z.object({
