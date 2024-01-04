@@ -11,8 +11,8 @@ import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { LoggedOutMobile } from "~/routes/_auth+/components/LoggedOutMobile";
 import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
-import { isAdding } from "~/utils/form";
 import { useTheme } from "~/utils/client-hints";
+import { isAdding } from "~/utils/form";
 
 export function UserDesktopMenu() {
    const [isMenuOpen, setMenuOpen] = useState(false);

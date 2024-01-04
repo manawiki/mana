@@ -8,6 +8,7 @@ import type { Descendant } from "slate";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
@@ -17,7 +18,6 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchHomeContent } from "./utils/fetchHomeContent.server";
 import { fetchHomeUpdates } from "./utils/fetchHomeUpdates.server";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
-import { Icon } from "~/components/Icon";
 
 export async function loader({
    context: { payload, user },
