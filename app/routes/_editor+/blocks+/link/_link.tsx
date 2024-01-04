@@ -205,35 +205,36 @@ export function BlockLink({ element, children }: Props) {
 
    const fetcher = useFetcher({ key: linkDataQuery });
 
-   // we'll use fetcher to fetch the link icon if it's not already fetched
-   useEffect(() => {
-      console.log(canFetch, fetcher.data);
-      if (canFetch && fetcher.data == undefined && fetcher.state === "idle") {
-         fetcher.load("/blocks/link" + linkDataQuery);
-      }
-   }, [canFetch, fetcher, linkDataQuery]);
-
    const data = fetcher.data as Fields | undefined;
 
-   // If iconURL property is null and we get data then update
-   if (canFetch && data) {
-      const path = ReactEditor.findPath(editor, element);
+   useEffect(() => {
+      // we'll use fetcher to fetch the link icon if it's not already fetched
+      if (canFetch && data == undefined && fetcher.state === "idle") {
+         fetcher.load("/blocks/link" + linkDataQuery);
+      }
 
-      const newProperties: Partial<CustomElement> = {
-         view: "icon-inline",
-         ...data,
-      };
+      // Once we have the data, Slate will update the element
+      if (canFetch && data) {
+         const path = ReactEditor.findPath(editor, element);
 
-      Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-      //We update the child text
-      Transforms.insertText(editor, data.name, {
-         at: path,
-      });
-      //Move cursor out of the "link" so they can continue typing
-      Transforms.move(editor, { unit: "offset" });
-   }
+         const newProperties: Partial<CustomElement> = {
+            view: "icon-inline",
+            ...data,
+         };
+
+         Transforms.setNodes<CustomElement>(editor, newProperties, {
+            at: path,
+         });
+         //We update the child text
+         Transforms.insertText(editor, data.name, {
+            at: path,
+         });
+         //Move cursor out of the "link" so they can continue typing
+         Transforms.move(editor, { unit: "offset" });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- Slate elements aren't stable
+   }, [canFetch, fetcher, linkDataQuery]);
+
    if (isSafeLink && element.icon) {
       return (
          <span
