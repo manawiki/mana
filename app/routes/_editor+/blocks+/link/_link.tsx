@@ -208,7 +208,7 @@ export function BlockLink({ element, children }: Props) {
    // we'll use fetcher to fetch the link icon if it's not already fetched
    useEffect(() => {
       console.log(canFetch, fetcher.data);
-      if (canFetch && fetcher.data == undefined) {
+      if (canFetch && fetcher.data == undefined && fetcher.state === "idle") {
          fetcher.load("/blocks/link" + linkDataQuery);
       }
    }, [canFetch, fetcher, linkDataQuery]);
