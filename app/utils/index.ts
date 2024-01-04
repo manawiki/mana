@@ -4,5 +4,5 @@ export * from "./upload-handler.server";
 export * from "./nanoid";
 export { gqlFormat } from "./to-words";
 export * from "./use-debounce";
-export { gqlEndpoint, swrRestFetcher } from "./fetchers.server";
+export { gqlEndpoint } from "./fetchers.server";
 export { delay } from "./delay";

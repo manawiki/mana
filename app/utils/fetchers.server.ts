@@ -14,10 +14,6 @@ export function gqlEndpoint({
       : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
 }
 
-export function swrRestFetcher(...args: any) {
-   return fetch(args).then((res) => res.json());
-}
-
 export function authRestFetcher({
    path,
    method,
