@@ -33,7 +33,7 @@ import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost, safeRedirect } from "~/utils/http.server";
-import { i18nextServer } from "~/utils/i18n";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const LoginFormSchema = z.object({
    email: z
