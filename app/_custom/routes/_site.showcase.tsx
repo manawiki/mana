@@ -15,15 +15,15 @@ import {
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
+import type { Material } from "payload/generated-custom-types";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Material } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { isLoading } from "~/utils";
 import { fetchWithCache } from "~/utils/cache.server";
+import { isLoading } from "~/utils/form";
 
 // Sample data, will import via API for real case
 // import { showcaseSample } from "./showcaseSample";
