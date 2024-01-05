@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
-import { isAdding } from "~/utils";
+import { isAdding } from "~/utils/form";
 
 export const PostUnpublishModal = ({
    isUnpublishOpen,

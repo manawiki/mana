@@ -10,7 +10,7 @@ import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { useDebouncedValue, useIsMount } from "~/utils";
+import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
@@ -83,7 +83,7 @@ export async function action({
 
    if (!user) throw redirect("/login", { status: 302 });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "versionUpdate": {

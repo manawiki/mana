@@ -4,7 +4,7 @@ import { select } from "payload-query";
 import invariant from "tiny-invariant";
 
 import type { User } from "payload/generated-types";
-import { isSiteOwnerOrAdmin } from "~/access/site";
+import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
 

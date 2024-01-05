@@ -10,7 +10,7 @@ import type { Config } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Modal } from "~/components/Modal";
-import { isAdding } from "~/utils";
+import { isAdding } from "~/utils/form";
 
 import { EditorView } from "./EditorView";
 

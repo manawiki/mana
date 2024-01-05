@@ -16,7 +16,7 @@ import type { Config } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { EditorVersionModal } from "~/routes/_editor+/core/components/EditorVersionModal";
-import { isProcessing } from "~/utils";
+import { isProcessing } from "~/utils/form";
 
 export const command_button = `border border-color-sub shadow-sm shadow-1 hover:border-zinc-300 bg-3-sub flex h-9 w-9 items-center justify-center rounded-full dark:hover:border-zinc-600`;
 

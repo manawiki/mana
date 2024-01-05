@@ -1,9 +1,10 @@
 import { useRouteError } from "@remix-run/react";
-import { H2Default } from "~/components/H2";
 
 export function ErrorBoundary() {
    //todo we should use a typeguard here instead
    const error = useRouteError() as Error;
+
+   console.log(error);
 
    return (
       <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-12">

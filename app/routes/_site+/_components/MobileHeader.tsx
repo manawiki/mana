@@ -6,7 +6,7 @@ import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import { isAdding } from "~/utils";
+import { isAdding } from "~/utils/form";
 
 export function MobileHeader({
    location,

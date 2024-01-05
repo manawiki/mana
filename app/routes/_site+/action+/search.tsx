@@ -16,13 +16,14 @@ import type { Search, Site } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { isAdding, useDebouncedValue } from "~/utils";
+import { isAdding } from "~/utils/form";
+import { useDebouncedValue } from "~/utils/use-debounce";
 
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { q, type } = zx.parseQuery(request, {
       q: z.string(),

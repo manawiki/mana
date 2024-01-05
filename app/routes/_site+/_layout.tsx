@@ -27,12 +27,12 @@ import { fetchSite } from "./_utils/fetchSite.server";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export async function loader({
-   context: { user },
+   context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const site = await fetchSite({ siteSlug, user });
+   const site = await fetchSite({ siteSlug, user, request });
 
    if (!site) {
       throw new Response(null, {
@@ -42,6 +42,7 @@ export async function loader({
    }
 
    //If site is not set to public, limit access to staff and site admins/owners only
+   //TODO Make this into a permission instead
    const hasAccess = isStaffOrSiteAdminOrStaffOrOwnerServer(user, site);
 
    if (!hasAccess && !site.isPublic) {
