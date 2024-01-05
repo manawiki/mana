@@ -26,7 +26,7 @@ export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
                            className="flex items-center justify-center"
                            to={
                               item.domain
-                                 ? item.domain
+                                 ? `https://${item.domain}`
                                  : `https://${item.slug}.mana.wiki`
                            }
                         >
