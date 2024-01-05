@@ -72,6 +72,26 @@ export default function Settings() {
                      </div>
                   )}
                </NavLink>
+               <NavLink
+                  end
+                  to="/settings/members"
+                  className={({ isActive }) =>
+                     clsx(
+                        isActive ? "" : "text-1",
+                        "flex items-center relative h-full",
+                     )
+                  }
+               >
+                  {({ isActive }) => (
+                     <div className="hover:dark:bg-dark400 hover:bg-white hover:shadow-sm flex items-center gap-2 rounded-lg pl-2 pr-3 py-1.5">
+                        {isActive && (
+                           <div className="bg-blue-500 h-[3px] left-1/2 -translate-x-1/2 rounded-sm w-full absolute -bottom-[2px]" />
+                        )}
+                        <Icon size={14} name="user" className="text-1" />
+                        Members
+                     </div>
+                  )}
+               </NavLink>
             </div>
          </div>
          <main className="max-w-[728px] laptop:w-[728px] py-6 max-tablet:px-3 mx-auto">
