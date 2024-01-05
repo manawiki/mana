@@ -389,7 +389,7 @@ export function BlockSelector({
                      >
                         <Dialog.Panel>
                            <div
-                              className="border-color-sub relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
+                              className="dark:border-zinc-600/40 relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
                    border-zinc-200 bg-white drop-shadow-lg  dark:bg-dark350 laptop:w-[728px] laptop:max-w-[728px]"
                            >
                               <div className="bg-2-sub relative z-10 inline-flex w-full gap-3 p-3">

@@ -2,8 +2,8 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 
 import type { User, Collection } from "~/db/payload-types";
-import { gqlFormat, gqlEndpoint } from "~/utils";
 import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlFormat, gqlEndpoint } from "~/utils/fetchers.server";
 
 import type { CollectionsAllSchema } from "../_list";
 

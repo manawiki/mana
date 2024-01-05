@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { assertIsDelete } from "~/utils";
+import { assertIsDelete } from "~/utils/http.server";
 
 export const action: ActionFunction = async ({
    context: { payload, user },

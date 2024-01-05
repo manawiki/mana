@@ -8,7 +8,7 @@ import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
-import { isAdding } from "~/utils";
+import { isAdding } from "~/utils/form";
 
 export function CircleImageUploader({
    intent,

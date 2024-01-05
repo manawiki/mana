@@ -1,6 +1,6 @@
 import Payload from "payload";
 
-import { delay } from "~/utils";
+import { delay } from "~/utils/delay";
 
 require("dotenv").config();
 

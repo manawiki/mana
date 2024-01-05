@@ -59,6 +59,7 @@ export async function gqlRequestWithCache(
    query: string,
    variables?: any,
    ttl?: number,
+   request?: Request,
 ) {
    const key = `${url}${query}${JSON.stringify(variables)}`;
 
@@ -66,7 +67,9 @@ export async function gqlRequestWithCache(
       cache,
       key,
       async getFreshValue() {
-         const response = await gqlRequest(url, query, variables);
+         const response = await gqlRequest(url, query, variables, {
+            cookie: request?.headers.get("cookie") ?? "",
+         });
          return response;
       },
       ttl: ttl ?? 300_000, // how long to live in ms

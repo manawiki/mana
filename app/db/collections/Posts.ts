@@ -2,7 +2,8 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin, canReadPost } from "../../access/site";
+import { canMutateAsSiteAdmin } from "./site/access";
+import { canReadPost } from "../../access/post";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const Posts: CollectionConfig = {
@@ -12,7 +13,6 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      //@ts-ignore
       read: canReadPost(),
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),

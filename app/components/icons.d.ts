@@ -1,4 +1,8 @@
 export type IconName =
+  | "external-link"
+  | "globe"
+  | "pie-chart"
+  | "line-chart"
   | "flame"
   | "file-code-2"
   | "archive"

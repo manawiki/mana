@@ -1,8 +1,7 @@
 import { request as gqlRequest } from "graphql-request";
 
-import { gqlEndpoint } from "~/utils";
 import { fetchWithCache, gqlRequestWithCache } from "~/utils/cache.server";
-import { authRestFetcher } from "~/utils/fetchers.server";
+import { authRestFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
 import type { RestOrGraphql } from "./_entryTypes";
 import { getEmbeddedContent } from "./getEmbeddedContent.server";

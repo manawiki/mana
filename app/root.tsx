@@ -27,13 +27,13 @@ import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
 import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 import { useIsBot } from "~/utils/isBotProvider";
 import { getTheme } from "~/utils/theme.server";
 
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { i18nextServer } from "./utils/i18n";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -41,7 +41,7 @@ export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    let { hostname } = new URL(request.url);
    let [subDomain] = hostname.split(".");
@@ -63,6 +63,7 @@ export const loader = async ({
       icon: {
          url: site?.icon?.url,
       },
+      domain: site?.domain,
       name: site.name,
       slug: site?.slug,
       type: site?.type,

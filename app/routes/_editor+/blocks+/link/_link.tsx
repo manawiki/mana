@@ -1,20 +1,19 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import { request as gqlRequest, gql } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
-import useSWR from "swr";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { gqlEndpoint, gqlFormat, swrRestFetcher } from "~/utils";
+import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -181,8 +180,8 @@ type Fields = {
 export function BlockLink({ element, children }: Props) {
    let { hostname, pathname } = new URL(element.url as string);
 
-   let domain = hostname.split(".").slice(-2).join(".");
-   const isSafeLink = ["mana.wiki"].includes(domain);
+   // todo: we should avoid hardcoding this, maybe check hostname again current host?
+   const isSafeLink = hostname.endsWith("mana.wiki");
 
    let url = element.url && new URL(element.url).pathname;
    let pathSection = url && url.split("/");
@@ -204,30 +203,38 @@ export function BlockLink({ element, children }: Props) {
 
    const editor = useSlate();
 
-   const { data }: { data: Fields } = useSWR(
-      canFetch && `blocks/link${linkDataQuery}`,
-      swrRestFetcher,
-   );
+   const fetcher = useFetcher({ key: linkDataQuery });
 
-   // If iconURL property is null and we get data then update
-   if (canFetch && data) {
-      const path = ReactEditor.findPath(editor, element);
+   const data = fetcher.data as Fields | undefined;
 
-      const newProperties: Partial<CustomElement> = {
-         view: "icon-inline",
-         ...data,
-      };
+   useEffect(() => {
+      // we'll use fetcher to fetch the link icon if it's not already fetched
+      if (canFetch && data == undefined && fetcher.state === "idle") {
+         fetcher.load("/blocks/link" + linkDataQuery);
+      }
 
-      Transforms.setNodes<CustomElement>(editor, newProperties, {
-         at: path,
-      });
-      //We update the child text
-      Transforms.insertText(editor, data.name, {
-         at: path,
-      });
-      //Move cursor out of the "link" so they can continue typing
-      Transforms.move(editor, { unit: "offset" });
-   }
+      // Once we have the data, Slate will update the element
+      if (canFetch && data) {
+         const path = ReactEditor.findPath(editor, element);
+
+         const newProperties: Partial<CustomElement> = {
+            view: "icon-inline",
+            ...data,
+         };
+
+         Transforms.setNodes<CustomElement>(editor, newProperties, {
+            at: path,
+         });
+         //We update the child text
+         Transforms.insertText(editor, data.name, {
+            at: path,
+         });
+         //Move cursor out of the "link" so they can continue typing
+         Transforms.move(editor, { unit: "offset" });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- Slate elements aren't stable
+   }, [canFetch, fetcher, linkDataQuery]);
+
    if (isSafeLink && element.icon) {
       return (
          <span

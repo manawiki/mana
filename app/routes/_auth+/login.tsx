@@ -31,14 +31,9 @@ import {
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-   safeRedirect,
-} from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost, safeRedirect } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -203,7 +198,7 @@ export default function Login() {
                      value="login"
                      type="submit"
                      color="dark/white"
-                     className="w-full h-10"
+                     className="w-full h-10 cursor-pointer"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
