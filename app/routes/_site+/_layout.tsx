@@ -27,10 +27,10 @@ import { fetchSite } from "./_utils/fetchSite.server";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 export async function loader({
-   context: { user },
+   context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const site = await fetchSite({ siteSlug, user, request });
 

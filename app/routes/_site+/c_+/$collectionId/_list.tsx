@@ -62,7 +62,7 @@ export async function loader({
       collectionId: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { page } = zx.parseQuery(request, CollectionsAllSchema);
 

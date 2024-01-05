@@ -40,7 +40,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { q, status, page } = zx.parseQuery(request, PostsAllSchema);
 
@@ -79,7 +79,7 @@ export const action = async ({
 }: LoaderFunctionArgs) => {
    if (!user || !user.id) throw redirect("/login", { status: 302 });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),

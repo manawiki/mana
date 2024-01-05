@@ -18,7 +18,7 @@ export async function getEmbeddedContent({
    params: Params;
    request: any;
 }) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    //We can't use param since it won't exist on a custom site
    const url = new URL(request.url).pathname;

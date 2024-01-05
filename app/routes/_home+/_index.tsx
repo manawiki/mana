@@ -292,7 +292,7 @@ const Discover = () => {
                               reloadDocument={!dev}
                               to={
                                  site.domain
-                                    ? site.domain
+                                    ? `https://${site.domain}`
                                     : `https://${site.slug}.mana.wiki`
                               }
                               key={site.id}

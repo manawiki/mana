@@ -99,7 +99,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { filterOption, groupSelectQuery } = zx.parseQuery(request, {
       filterOption: z.string(),

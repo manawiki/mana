@@ -83,7 +83,7 @@ export async function action({
 
    if (!user) throw redirect("/login", { status: 302 });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "versionUpdate": {
