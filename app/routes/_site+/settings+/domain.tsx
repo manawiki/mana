@@ -8,6 +8,7 @@ import type {
 import {
    useFetcher,
    useLoaderData,
+   useRevalidator,
    useRouteLoaderData,
 } from "@remix-run/react";
 import { request as gqlRequest } from "graphql-request";
@@ -36,6 +37,7 @@ const endpoint = "https://api.fly.io/graphql";
 const DOMAIN_SCHEMA = z.object({
    intent: z.string().min(1).optional(),
    siteId: z.string(),
+   flyAppId: z.string(),
    domain: z.string().refine(
       (subdomain) => {
          const levels = subdomain.split(".");
@@ -53,6 +55,27 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
+   const domainData = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+         v4IP: {
+            exists: true,
+         },
+         flyAppId: {
+            exists: true,
+         },
+      },
+      depth: 0,
+   });
+
+   //If flyAppId exists, use it, otherwise use default
+   const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
+   const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
+
+   //If domain exists, we need to fetch the certificate data
    const existingDomain = await payload.find({
       collection: "sites",
       where: {
@@ -114,11 +137,11 @@ export async function loader({
 
       const domain = existingDomain.docs[0]?.domain;
 
-      const data = await gqlRequest(
+      const certData = await gqlRequest(
          endpoint,
          graphql_query,
          {
-            appName: "mana",
+            appName: flyAppId,
             hostname: domain,
          },
          {
@@ -128,9 +151,9 @@ export async function loader({
          },
       );
 
-      return json(data);
+      return json({ certData, ipv4, flyAppId });
    }
-   return null;
+   return json({ ipv4, flyAppId });
 }
 
 export default function Settings() {
@@ -141,7 +164,7 @@ export default function Settings() {
    };
 
    //@ts-ignore
-   const certificate = data?.app?.certificate;
+   const certificate = data?.certData?.app?.certificate;
 
    const isCertsIssued = certificate?.issued?.nodes?.length == 2;
 
@@ -151,13 +174,18 @@ export default function Settings() {
 
    //Check if domain is a subdomain
    //@ts-ignore
-   let [subDomain] = site?.domain ? site?.domain.split(".") : [];
+   const levels = site?.domain ? site?.domain.split(".") : [];
+   let [subDomain] = levels;
+   const isSubDomain = levels.length <= 1;
 
    const addingDomain = isAdding(fetcher, "addDomain");
    const deletingDomain = isAdding(fetcher, "deleteDomain");
 
+   const revalidator = useRevalidator();
+
    return (
       <fetcher.Form method="post" ref={zo.ref}>
+         <input type="hidden" name="flyAppId" value={data?.flyAppId} />
          <Field className="pb-4">
             <Label>Domain Name</Label>
             <Description>Setup a custom domain name for your site</Description>
@@ -185,6 +213,7 @@ export default function Settings() {
                         intent: "deleteDomain",
                         siteId: site.id,
                         domain: site.domain,
+                        flyAppId: data?.flyAppId,
                      },
                      {
                         method: "post",
@@ -227,6 +256,7 @@ export default function Settings() {
                      {site.domain}
                   </span>
                </div>
+
                <div
                   className="px-4 py-3 mb-4 flex items-center gap-3 rounded-xl bg-zinc-50 dark:bg-dark450
                   border dark:border-zinc-600 border-zinc-200 shadow-sm dark:shadow-zinc-800/50"
@@ -270,10 +300,32 @@ export default function Settings() {
                            <div className="text-sm font-bold">
                               {certificate.clientStatus}...
                            </div>
-                           {certificate.clientStatus ==
-                              "Awaiting certificates" && (
-                              <Badge color="blue">1 to 5 min wait...</Badge>
-                           )}
+                           <div className="flex items-center gap-3">
+                              {certificate.clientStatus ==
+                                 "Awaiting certificates" && (
+                                 <Badge color="teal">1 to 5 min wait...</Badge>
+                              )}
+                              <BadgeButton
+                                 color="blue"
+                                 disabled={revalidator.state === "loading"}
+                                 onClick={() => revalidator.revalidate()}
+                              >
+                                 Check Again
+                                 {revalidator.state === "idle" ? (
+                                    <Icon
+                                       name="refresh-ccw"
+                                       size={14}
+                                       className="ml-0.5"
+                                    />
+                                 ) : (
+                                    <Icon
+                                       size={14}
+                                       name="loader-2"
+                                       className="ml-0.5 animate-spin"
+                                    />
+                                 )}
+                              </BadgeButton>
+                           </div>
                         </div>
                      </>
                   )}
@@ -308,7 +360,7 @@ export default function Settings() {
                      <div className="flex items-center justify-between gap-4">
                         <Record
                            name
-                           value={subDomain ? subDomain : "@"}
+                           value={isSubDomain ? subDomain : "@"}
                            type="A"
                         />
                         <Icon
@@ -316,7 +368,7 @@ export default function Settings() {
                            size={16}
                            className="flex-none text-1 mt-5"
                         />
-                        <Record value="149.248.204.56" />
+                        <Record value={data?.ipv4} />
                      </div>
                   </div>
                   <div>
@@ -385,7 +437,7 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionFunctionArgs) {
-   const { intent, domain, siteId } = await zx.parseForm(
+   const { intent, domain, siteId, flyAppId } = await zx.parseForm(
       request,
       DOMAIN_SCHEMA,
    );
@@ -398,11 +450,11 @@ export async function action({
       depth: 0,
    });
 
-   invariant(user, "User must be logged in to mutate domain names");
+   invariant(user?.roles, "User must be logged in to mutate domain names");
 
    const isOwner = isSiteOwner(user?.id, site.owner);
 
-   if (!isOwner) throw redirect("/404", 404);
+   if (!isOwner && !user?.roles.includes("staff")) throw redirect("/404", 404);
 
    switch (intent) {
       case "deleteDomain": {
@@ -445,7 +497,7 @@ export async function action({
             endpoint,
             graphql_query,
             {
-               appId: "mana",
+               appId: flyAppId,
                hostname: domain,
             },
             {
@@ -516,7 +568,7 @@ export async function action({
                endpoint,
                graphql_query,
                {
-                  appId: "mana",
+                  appId: flyAppId,
                   hostname: domain,
                },
                {
