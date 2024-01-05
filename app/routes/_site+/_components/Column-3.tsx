@@ -44,7 +44,7 @@ export function ColumnThree({
                      w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
                      pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
                />
-               <div className="relative mx-auto w-full laptop:max-w-[736px] laptop:rounded-b-2xl">
+               <div className="relative mx-auto w-full laptop:max-w-[728px] laptop:rounded-b-2xl">
                   <div className="relative mx-auto flex h-[60px] items-center justify-between">
                      {searchToggle ? (
                         <SearchComboBox
@@ -132,7 +132,7 @@ export function ColumnThree({
                                                    <AdminOrStaffOrOwner>
                                                       <Menu.Item>
                                                          <Link
-                                                            to="/settings"
+                                                            to="/settings/site"
                                                             className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
                                                       p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
                                                          >

@@ -23,7 +23,7 @@ export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
                            reloadDocument={true}
                            key={item.id}
                            onClick={() => setMenuOpen(false)}
-                           className=""
+                           className="flex items-center justify-center"
                            to={
                               item.domain
                                  ? item.domain

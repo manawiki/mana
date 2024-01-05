@@ -57,7 +57,9 @@ export function authGQLFetcher({
 }) {
    try {
       return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
-         cookie: request?.headers.get("cookie") ?? "",
+         ...(request && {
+            cookie: request?.headers.get("cookie") ?? "",
+         }),
          ...(process.env.MANA_APP_KEY && {
             Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
          }),

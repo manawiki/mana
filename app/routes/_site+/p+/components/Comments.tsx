@@ -226,7 +226,7 @@ function CommentRow({
                            )
                         }
                         className="border shadow-sm shadow-emerald-100 dark:shadow-emerald-950/50 active:border-emerald-300 group
-                        hover:dark:border-emerald-600/70 border-emerald-300/60 bg-emerald-50/50 hover:bg-emerald-50 dark:bg-emerald-950/10
+                        hover:dark:border-emerald-600/70 dark:hover:bg-emerald-950 border-emerald-300/60 bg-emerald-50/50 hover:bg-emerald-50 dark:bg-emerald-950/10
                       dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center dark:active:border-emerald-600"
                      >
                         <Icon
@@ -245,7 +245,7 @@ function CommentRow({
                      <button
                         onClick={() => setReplyOpen(!isReplyOpen)}
                         className="shadow-sm dark:shadow-zinc-800 flex items-center gap-0.5 border dark:border-zinc-600/50 mr-1
-                     dark:hover:border-zinc-500/50 rounded-full bg-3-sub pl-1 pr-2.5 bg-zinc-50 hover:border-zinc-300"
+                     dark:hover:border-zinc-500/50 rounded-full dark:bg-dark350 pl-1 pr-2.5 bg-zinc-50 hover:border-zinc-300"
                      >
                         <div className="w-5 h-5 rounded text-1 flex items-center justify-center">
                            {isReplyOpen ? (
