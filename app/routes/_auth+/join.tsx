@@ -29,7 +29,7 @@ import { Input } from "~/components/Input";
 import type { loader as rootLoader } from "~/root";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { i18nextServer } from "~/utils/i18n";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 export async function loader({
    context: { user },
@@ -141,7 +141,7 @@ export default function Signup() {
                   value="join"
                   type="submit"
                   color="dark/white"
-                  className="w-full h-10 mb-6"
+                  className="w-full h-10 mb-6 cursor-pointer"
                   disabled={disabled}
                >
                   {adding ? <DotLoader /> : t("register.action")}

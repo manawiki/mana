@@ -42,6 +42,7 @@ export async function loader({
    }
 
    //If site is not set to public, limit access to staff and site admins/owners only
+   //TODO Make this into a permission instead
    const hasAccess = isStaffOrSiteAdminOrStaffOrOwnerServer(user, site);
 
    if (!hasAccess && !site.isPublic) {

@@ -13,6 +13,15 @@ export const isSiteOwnerOrAdmin = (userId: string, site: Site | undefined) => {
    return false;
 };
 
+export const isSiteOwner = (
+   userId: string,
+   siteOwner: Site["owner"] | undefined,
+) => {
+   const isSiteOwner = userId == (siteOwner as any);
+   if (isSiteOwner) return true;
+   return false;
+};
+
 export const canRead =
    (
       collectionSlug:
