@@ -103,9 +103,13 @@ export default function SiteSettings() {
                   viewable at{" "}
                   <TextLink
                      target="_blank"
-                     href={`https://${site.slug}.mana.wiki`}
+                     href={
+                        site.domain
+                           ? `https://${site.domain}`
+                           : `https://${site.slug}.mana.wiki`
+                     }
                   >
-                     {site.slug}.mana.wiki
+                     {site.domain ? site.domain : `${site.slug}.mana.wiki`}
                   </TextLink>
                   . You can change this to a custom domain{" "}
                   <TextLink href="/settings/domain">here</TextLink>.
