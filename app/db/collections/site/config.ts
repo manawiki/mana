@@ -110,6 +110,30 @@ export const Sites: CollectionConfig = {
          ],
       },
       {
+         name: "flyAppId",
+         type: "text",
+      },
+      {
+         name: "flyAppDBId",
+         type: "text",
+      },
+      {
+         name: "v6IP",
+         type: "text",
+      },
+      {
+         name: "v6IPDB",
+         type: "text",
+      },
+      {
+         name: "v4IP",
+         type: "text",
+      },
+      {
+         name: "v4IPDB",
+         type: "text",
+      },
+      {
          name: "domain",
          type: "text",
          unique: true,
