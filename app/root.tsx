@@ -41,7 +41,7 @@ export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    let { hostname } = new URL(request.url);
    let [subDomain] = hostname.split(".");

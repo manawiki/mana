@@ -227,7 +227,7 @@ export const action = async ({
       intent: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "createUpdate": {

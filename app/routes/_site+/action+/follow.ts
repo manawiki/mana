@@ -15,7 +15,7 @@ export async function action({
       intent: z.enum(["publish", "followSite", "unfollow"]),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    if (!user) throw redirect("/login", { status: 302 });
 

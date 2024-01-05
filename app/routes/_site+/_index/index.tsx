@@ -23,7 +23,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
    });

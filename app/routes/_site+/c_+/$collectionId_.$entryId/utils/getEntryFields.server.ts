@@ -25,7 +25,7 @@ export async function getEntryFields({
       entryId: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const url = new URL(request.url).pathname;
 

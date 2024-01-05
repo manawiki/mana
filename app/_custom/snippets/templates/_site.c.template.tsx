@@ -15,11 +15,13 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    const { list } = await fetchList({
-      params,
+      request,
       gql: {
          query: QUERY,
          variables: {},
       },
+      payload,
+      user,
    });
    return json({ list });
 }

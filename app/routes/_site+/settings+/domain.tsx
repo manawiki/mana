@@ -36,7 +36,6 @@ const endpoint = "https://api.fly.io/graphql";
 const DOMAIN_SCHEMA = z.object({
    intent: z.string().min(1).optional(),
    siteId: z.string(),
-
    domain: z.string().refine(
       (subdomain) => {
          const levels = subdomain.split(".");
@@ -52,7 +51,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const existingDomain = await payload.find({
       collection: "sites",
