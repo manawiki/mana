@@ -1,0 +1,49 @@
+	  "importtest__itemtypes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_000a__ItemTypes.ts",
+	  "importtest__rarities": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_000b__Rarities.ts",
+	  "importtest__releasestatuses": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_000c__ReleaseStatuses.ts",
+	  "importtest__cerarities": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_001a__CERarities.ts",
+	  "importtest__cetypeimages": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_001b__CETypeImage.ts",
+	  "importtest__cetypespecifics": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_001e__CETypeSpecific.ts",
+	  "importtest__cvs": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_001c__CVs.ts",
+	  "importtest__illustrators": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_001d__Illustrators.ts",
+	  "importtest_materials": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_101_Materials.ts",
+	  "importtest_ces": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201_CEs.ts",
+	  
+	  "importtest__alignments": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201a__Alignments.ts",
+	  "importtest__attributes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201b__Attributes.ts",
+	  "importtest__classes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201c__Classes.ts",
+	  "importtest__commandcards": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201d__CommandCards.ts",
+	  "importtest__enemytraits": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201e__EnemyTrait.ts",
+	  "importtest__fieldtypes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201f__FieldType.ts",
+	  "importtest__targets": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201g__Target.ts",
+	  "importtest__traits": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201h__Trait.ts",
+	  "importtest__statuseffects": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201i__StatusEffect.ts",
+	  "importtest__buffcategories": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201j__BuffCategory.ts",
+	  "importtest__skillclassificationspecifics": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201k__SkillClassificationSpecific.ts",
+	  "importtest__skillimages": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201l__SkillImage.ts",
+	  "importtest__tags": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_201m__Tag.ts",
+	  
+	  "importtest_servantskills": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_202_ServantSkills.ts",
+	  
+	  "importtest__classskilltypes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_202a__ClassSkillType.ts",
+	  
+	  "importtest_classskills": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_203_ClassSkill.ts",
+	  "importtest-appendskills": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_204_AppendSkill.ts",
+	  
+	  "importtest__npclassifications": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_204a__NPClassifications.ts",
+	  "importtest__npattacktypes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_204b__NPAttackTypes.ts",
+	  
+	  "importtest_noblephantasms": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205_NoblePhantasms.ts",
+	  
+	  "importtest__levelupskillimportanceclassifications": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205a__LevelUpSkillImportanceClassification.ts",
+	  "importtest__chapters": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205b__Chapter.ts",
+	  "importtest__interludequestrewards": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205c__InterludeQuestReward.ts",
+	  "importtest__starrarities": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205d__StarRarity.ts",
+	  "importtest__growthcurves": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205e__GrowthCurve.ts",
+	  "importtest__decklayouts": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205f__DeckLayout.ts",
+	  "importtest__genders": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205g__Gender.ts",
+	  "importtest__availabilities": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205h__Availability.ts",
+	  "importtest__questtypes": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_205i__QuestType.ts",
+	  
+	  "importtest_servants": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_301_Servants.ts",
+	  "importtest_servantstats": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/import/import_301a_ServantStats.ts"
