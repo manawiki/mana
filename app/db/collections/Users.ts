@@ -94,6 +94,11 @@ export const Users: CollectionConfig = {
          unique: true,
       },
       {
+         name: "stripeCustomerId",
+         type: "text",
+         unique: true,
+      },
+      {
          name: "email",
          type: "email",
          label: "User email",

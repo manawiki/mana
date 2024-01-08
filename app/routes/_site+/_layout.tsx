@@ -6,7 +6,7 @@ import type {
    MetaFunction,
    SerializeFrom,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData, useLocation } from "@remix-run/react";
+import { useLoaderData, useLocation } from "@remix-run/react";
 import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
 import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/utils/isStaffSiteAdminOwner.server";
@@ -19,7 +19,6 @@ import { ColumnThree } from "./_components/Column-3";
 import { ColumnFour } from "./_components/Column-4";
 import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
-import { MobileTray, FollowingTrayContent } from "./_components/MobileTray";
 import { RampScripts } from "./_components/RampScripts";
 import { fetchSite } from "./_utils/fetchSite.server";
 
@@ -58,6 +57,48 @@ export async function loader({
             "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
          },
       },
+   );
+}
+
+export default function SiteLayout() {
+   const { site } = useLoaderData<typeof loader>() || {};
+   const location = useLocation();
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+   const [searchToggle, setSearchToggle] = useState(false);
+   const gaTag = site?.gaTagId;
+   const enableAds = site?.enableAds;
+
+   useEffect(() => {
+      if (process.env.NODE_ENV === "production" && gaTag) {
+         gtag.pageview(location.pathname, gaTag);
+      }
+      //Hide the search on path change
+      setSearchToggle(false);
+   }, [location, gaTag]);
+
+   return (
+      <>
+         <MobileHeader site={site} setUserMenuOpen={setUserMenuOpen} />
+         <main
+            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
+                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
+         >
+            <ColumnOne
+               site={site}
+               setUserMenuOpen={setUserMenuOpen}
+               isUserMenuOpen={isUserMenuOpen}
+            />
+            <ColumnTwo site={site} />
+            <ColumnThree
+               searchToggle={searchToggle}
+               setSearchToggle={setSearchToggle}
+               site={site}
+            />
+            <ColumnFour site={site} />
+         </main>
+         <GAScripts gaTrackingId={gaTag} />
+         <RampScripts enableAds={enableAds} />
+      </>
    );
 }
 
@@ -101,65 +142,3 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
       return [];
    },
 };
-
-export default function SiteIndex() {
-   const { site } = useLoaderData<typeof loader>() || {};
-   const fetcher = useFetcher();
-   const location = useLocation();
-   const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
-   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
-   const [searchToggle, setSearchToggle] = useState(false);
-   const gaTag = site?.gaTagId;
-   const enableAds = site?.enableAds;
-
-   useEffect(() => {
-      if (process.env.NODE_ENV === "production" && gaTag) {
-         gtag.pageview(location.pathname, gaTag);
-      }
-      //Hide the search on path change
-      setSearchToggle(false);
-   }, [location, gaTag]);
-
-   return (
-      <>
-         <MobileHeader
-            location={location}
-            site={site}
-            fetcher={fetcher}
-            setFollowerMenuOpen={setFollowerMenuOpen}
-            setUserMenuOpen={setUserMenuOpen}
-         />
-         <main>
-            <div
-               className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
-                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
-            >
-               <ColumnOne
-                  site={site}
-                  setUserMenuOpen={setUserMenuOpen}
-                  isUserMenuOpen={isUserMenuOpen}
-               />
-               <ColumnTwo site={site} />
-               <ColumnThree
-                  searchToggle={searchToggle}
-                  setSearchToggle={setSearchToggle}
-                  site={site}
-               />
-               <ColumnFour site={site} />
-            </div>
-            {/* ==== Follows: Mobile ==== */}
-            <MobileTray
-               onOpenChange={setFollowerMenuOpen}
-               open={isFollowerMenuOpen}
-            >
-               <FollowingTrayContent
-                  site={site}
-                  setFollowerMenuOpen={setFollowerMenuOpen}
-               />
-            </MobileTray>
-         </main>
-         <GAScripts gaTrackingId={gaTag} />
-         <RampScripts enableAds={enableAds} />
-      </>
-   );
-}

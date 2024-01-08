@@ -3,11 +3,6 @@ import { Fragment, useState } from "react";
 
 import { Switch, Tab } from "@headlessui/react";
 import { useFetcher, useRouteLoaderData } from "@remix-run/react";
-import {
-   EmbeddedCheckoutProvider,
-   EmbeddedCheckout,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 import clsx from "clsx";
 
 import { Dialog } from "~/components/Dialog";
@@ -18,9 +13,7 @@ import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { useTheme } from "~/utils/client-hints";
 import { isAdding } from "~/utils/form";
 
-const stripePromise = loadStripe(
-   "pk_test_51NIHqPHY2vBdJM8edEvVJJsZYBTB61TXs3R5oFPhD0kPNLXmCBCCGgOicF3S7EGVkp7YGTeKmVD2g5LsV7iC3pIj00UJr87Pmn",
-);
+import { Billing } from "./Billing";
 
 export function UserMenu({
    isUserMenuOpen,
@@ -30,11 +23,6 @@ export function UserMenu({
    setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) {
    const { sitePath } = useRouteLoaderData("root") as { sitePath: string };
-   const fetcher = useFetcher();
-
-   //@ts-ignore
-   const clientSecret = fetcher.data?.clientSecret;
-   const options = { clientSecret };
 
    return (
       <>
@@ -49,16 +37,11 @@ export function UserMenu({
                   <Icon name="user" size={22} />
                </button>
             </section>
-            <Dialog
-               className="min-h-400px"
-               size="5xl"
-               onClose={setUserMenuOpen}
-               open={isUserMenuOpen}
-            >
+            <Dialog size="5xl" onClose={setUserMenuOpen} open={isUserMenuOpen}>
                <Tab.Group
                   vertical
                   as="div"
-                  className="laptop:flex laptop:items-start gap-6"
+                  className="laptop:min-h-[400px] h-full laptop:flex laptop:items-start gap-8"
                >
                   <div className="flex laptop:flex-col laptop:w-64 max-laptop:pb-8">
                      <Tab.List className="max-laptop:flex flex-grow space-y-1">
@@ -125,33 +108,7 @@ export function UserMenu({
                         </button>
                      </Tab.Panel>
                      <Tab.Panel>
-                        <div id="checkout">
-                           <button
-                              onClick={() =>
-                                 fetcher.submit(
-                                    { intent: "setupUserPayments" },
-                                    {
-                                       method: "post",
-                                       action: "/auth-actions",
-                                    },
-                                 )
-                              }
-                              className="h-10 w-full rounded-md bg-red-500 text-sm font-bold text-white
-                                     focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
-                           >
-                              Setup
-                           </button>
-                           {clientSecret && (
-                              <>
-                                 <EmbeddedCheckoutProvider
-                                    stripe={stripePromise}
-                                    options={options}
-                                 >
-                                    <EmbeddedCheckout />
-                                 </EmbeddedCheckoutProvider>
-                              </>
-                           )}
-                        </div>
+                        <Billing />
                      </Tab.Panel>
                      <Tab.Panel>
                         <UserDeleteSection />
