@@ -1,7 +1,8 @@
-import type { Servant as ServantType } from "payload/generated-custom-types";
-import { H2, H3 } from "~/components";
-import { Image } from "~/components";
 import { Disclosure } from "@headlessui/react";
+
+import type { Servant as ServantType } from "payload/generated-custom-types";
+import { H3, H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Skills({ data: servant }: { data: ServantType }) {
    const skilllist = servant?.skills;

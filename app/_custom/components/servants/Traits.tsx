@@ -1,5 +1,5 @@
 import type { Servant as ServantType } from "payload/generated-custom-types";
-import { H3 } from "~/components";
+import { H3 } from "~/components/Headers";
 
 export function Traits({ data: servant }: { data: ServantType }) {
    return (

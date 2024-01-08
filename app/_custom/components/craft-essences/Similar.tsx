@@ -1,6 +1,8 @@
-import type { CraftEssence as CraftEssenceType } from "payload/generated-custom-types";
-import { H2, Image } from "~/components";
 import { Link } from "@remix-run/react";
+
+import type { CraftEssence as CraftEssenceType } from "payload/generated-custom-types";
+import { H2 } from "~/components/Headers";
+import { Image } from "~/components/Image";
 
 export function Similar({ data: ce }: { data: CraftEssenceType }) {
    return (

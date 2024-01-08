@@ -1,6 +1,7 @@
-import type { Servant as ServantType } from "payload/generated-custom-types";
-import { Image } from "~/components";
 import { useState } from "react";
+
+import type { Servant as ServantType } from "payload/generated-custom-types";
+import { Image } from "~/components/Image";
 
 const thformat = "p-2 leading-none text-left";
 const tdformat = "p-2 leading-none text-center";

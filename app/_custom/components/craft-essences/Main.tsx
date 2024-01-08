@@ -1,5 +1,5 @@
 import type { CraftEssence as CraftEssenceType } from "payload/generated-custom-types";
-import { Image } from "~/components";
+import { Image } from "~/components/Image";
 
 export function Main({ data: ce }: { data: CraftEssenceType }) {
    const mainStatDisplay = [

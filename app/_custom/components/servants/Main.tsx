@@ -1,7 +1,9 @@
-import type { Servant as ServantType } from "payload/generated-custom-types";
-import { Image } from "~/components";
-import { Link } from "@remix-run/react";
 import React, { useState } from "react";
+
+import { Link } from "@remix-run/react";
+
+import type { Servant as ServantType } from "payload/generated-custom-types";
+import { Image } from "~/components/Image";
 
 export function Main({ data: servant }: { data: ServantType }) {
    return (
