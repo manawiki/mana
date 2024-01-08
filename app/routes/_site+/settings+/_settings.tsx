@@ -30,7 +30,10 @@ export async function loader({
 export default function Settings() {
    return (
       <div className="max-laptop:pt-[61px]">
-         <div className="bg-3 z-10 sticky top-[117px] laptop:top-[61px] dark:bg-bg2Dark border-b-2 border-color dark:bg-dark300 bg-zinc-50 h-12 max-tablet:px-3">
+         <div
+            className="bg-3 z-10 sticky top-[117px] laptop:top-[61px] dark:bg-bg2Dark
+            border-b-2 border-color dark:bg-dark300 bg-zinc-50 h-12 max-tablet:px-3"
+         >
             <div className="flex items-center gap-4 font-semibold text-sm relative max-w-[728px] mx-auto laptop:w-[728px] h-full">
                <NavLink
                   end
@@ -89,6 +92,26 @@ export default function Settings() {
                         )}
                         <Icon size={14} name="user" className="text-1" />
                         Members
+                     </div>
+                  )}
+               </NavLink>
+               <NavLink
+                  end
+                  to="/settings/payouts"
+                  className={({ isActive }) =>
+                     clsx(
+                        isActive ? "" : "text-1",
+                        "flex items-center relative h-full",
+                     )
+                  }
+               >
+                  {({ isActive }) => (
+                     <div className="hover:dark:bg-dark400 hover:bg-white hover:shadow-sm flex items-center gap-2 rounded-lg pl-2 pr-3 py-1.5">
+                        {isActive && (
+                           <div className="bg-blue-500 h-[3px] left-1/2 -translate-x-1/2 rounded-sm w-full absolute -bottom-[2px]" />
+                        )}
+                        <Icon size={15} name="wallet-2" className="text-1" />
+                        Payouts
                      </div>
                   )}
                </NavLink>

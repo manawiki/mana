@@ -10,11 +10,11 @@ export function Record({
    name,
    type,
 }: {
-   value: string;
+   value: string | undefined;
    name?: Boolean;
-   type?: "A" | "CNAME";
+   type?: "A" | "CNAME" | "AAAA";
 }) {
-   const [recordValue] = useState(value);
+   const [recordValue] = useState(value ?? "");
 
    const [copySuccess, setCopySuccess] = useState(
       <Icon name="copy" size={14} />,

@@ -3,10 +3,8 @@ import { Drawer } from "vaul";
 
 import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
-import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 
 import { FollowingListMobile, PinnedList, PrimaryMenuLinks } from "./Menu";
-import { ThemeToggleMobile } from "./UserMenu";
 
 export const MobileTray = ({
    children,
@@ -45,14 +43,6 @@ export const MenuTrayContent = ({
             <PrimaryMenuLinks site={site} onOpenChange={onOpenChange} />
             <PinnedList site={site} onOpenChange={onOpenChange} />
          </div>
-         <LoggedOut>
-            <div
-               className="shadow-1 bg-3-sub border-color-sub relative flex w-full items-center
-                  justify-between gap-3 rounded-xl border py-2.5 pl-4 pr-3 shadow-sm"
-            >
-               <ThemeToggleMobile />
-            </div>
-         </LoggedOut>
       </menu>
    );
 };
