@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from "react";
+
 import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
@@ -19,7 +21,7 @@ export function MobileHeader({
    site: Site;
    fetcher: any;
    setFollowerMenuOpen: any;
-   setUserMenuOpen: any;
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) {
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
@@ -36,11 +38,7 @@ export function MobileHeader({
                   <div className="flex items-center gap-3">
                      <NotFollowingSite>
                         <div className="flex items-center">
-                           <fetcher.Form
-                              action={`/${site.slug}`}
-                              className="w-full"
-                              method="post"
-                           >
+                           <fetcher.Form className="w-full" method="post">
                               <button
                                  name="intent"
                                  value="followSite"
@@ -87,7 +85,7 @@ export function MobileHeader({
                <Link
                   prefetch="intent"
                   reloadDocument={true}
-                  to={`/login?redirectTo=/${site.slug}`}
+                  to={`/login?redirectTo=/`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                >

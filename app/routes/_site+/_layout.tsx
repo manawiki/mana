@@ -21,7 +21,6 @@ import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { MobileTray, FollowingTrayContent } from "./_components/MobileTray";
 import { RampScripts } from "./_components/RampScripts";
-import { UserTrayContent } from "./_components/UserMenu";
 import { fetchSite } from "./_utils/fetchSite.server";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
@@ -135,17 +134,19 @@ export default function SiteIndex() {
                className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
                      laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
             >
-               <ColumnOne site={site} />
+               <ColumnOne
+                  site={site}
+                  setUserMenuOpen={setUserMenuOpen}
+                  isUserMenuOpen={isUserMenuOpen}
+               />
                <ColumnTwo site={site} />
                <ColumnThree
                   searchToggle={searchToggle}
                   setSearchToggle={setSearchToggle}
                   site={site}
-                  fetcher={fetcher}
                />
                <ColumnFour site={site} />
             </div>
-
             {/* ==== Follows: Mobile ==== */}
             <MobileTray
                onOpenChange={setFollowerMenuOpen}
@@ -155,11 +156,6 @@ export default function SiteIndex() {
                   site={site}
                   setFollowerMenuOpen={setFollowerMenuOpen}
                />
-            </MobileTray>
-
-            {/* ==== User Menu: Mobile ==== */}
-            <MobileTray onOpenChange={setUserMenuOpen} open={isUserMenuOpen}>
-               <UserTrayContent onOpenChange={setUserMenuOpen} />
             </MobileTray>
          </main>
          <GAScripts gaTrackingId={gaTag} />

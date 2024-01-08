@@ -12,7 +12,7 @@ export function Record({
 }: {
    value: string | undefined;
    name?: Boolean;
-   type?: "A" | "CNAME";
+   type?: "A" | "CNAME" | "AAAA";
 }) {
    const [recordValue] = useState(value ?? "");
 

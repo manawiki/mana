@@ -23,6 +23,7 @@ export function TextLink({
    ...props
 }: React.ComponentPropsWithoutRef<typeof Link>) {
    return (
+      // eslint-disable-next-line jsx-a11y/anchor-has-content
       <Link
          {...props}
          className={clsx(
