@@ -1,17 +1,17 @@
 import { useState } from "react";
 
-import { Link, Outlet, useLocation } from "@remix-run/react";
+import {
+   Link,
+   Outlet,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { LogoFull } from "~/components/Logo";
-
-import { LoggedIn } from "../_auth+/components/LoggedIn";
-import { LoggedOut } from "../_auth+/components/LoggedOut";
-import { MobileTray } from "../_site+/_components/MobileTray";
-import {
-   UserDesktopMenu,
-   UserTrayContent,
-} from "../_site+/_components/UserMenu";
+import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
+import { UserMenu } from "~/routes/_auth+/components/UserMenu";
 
 export default function IndexLayout() {
    return (
@@ -36,12 +36,13 @@ function Header() {
 
    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
+   const { loginPath, joinPath } = useRouteLoaderData("root") as {
+      loginPath: string;
+      joinPath: string;
+   };
+
    return (
       <header className="z-50 w-full absolute">
-         {/* ==== User Menu: Mobile ==== */}
-         <MobileTray onOpenChange={setUserMenuOpen} open={isUserMenuOpen}>
-            <UserTrayContent onOpenChange={setUserMenuOpen} />
-         </MobileTray>
          <div className="flex items-center justify-between">
             <LoggedIn>
                <div className="mx-auto max-w-[680px] w-full flex items-center justify-between px-4 tablet:px-0 border-b-2 py-4 border-color">
@@ -49,7 +50,10 @@ function Header() {
                      <LogoFull />
                   </Link>
                   <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
-                     <UserDesktopMenu />
+                     <UserMenu
+                        isUserMenuOpen={isUserMenuOpen}
+                        setUserMenuOpen={setUserMenuOpen}
+                     />
                      <button
                         className="flex h-9 w-9 items-center laptop:hidden justify-center"
                         onClick={() => setUserMenuOpen(true)}
@@ -68,7 +72,7 @@ function Header() {
                      <ul className="flex items-center justify-end gap-3">
                         <li>
                            <Link
-                              to="/join"
+                              to={joinPath}
                               className="group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                     rounded-lg px-3 py-2  text-indigo-600 shadow shadow-zinc-950 transition duration-300 ease-out"
                            >
@@ -86,7 +90,7 @@ function Header() {
                            <Link
                               className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
                                     text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                              to={`/login?redirectTo=${location.pathname}`}
+                              to={`${loginPath}?redirectTo=${location.pathname}`}
                            >
                               Login
                            </Link>

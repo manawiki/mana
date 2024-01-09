@@ -32,6 +32,7 @@ import {
    assertIsPatch,
    assertIsPost,
 } from "~/utils/http.server";
+import { loginPath } from "~/utils/login-path.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -274,7 +275,7 @@ export async function action({
 
    const url = new URL(request.url).pathname;
 
-   if (!user) throw redirect(`/login?redirectTo=${url}`, { status: 302 });
+   if (!user) throw redirect(`${loginPath}?redirectTo=${url}`, { status: 302 });
 
    switch (intent) {
       case "updateTitle": {

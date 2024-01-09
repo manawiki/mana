@@ -6,6 +6,7 @@ import { zx } from "zodix";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import type { loader as siteLayoutLoader } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { loginPath } from "~/utils/login-path.server";
 import { safeNanoID } from "~/utils/nanoid";
 
 import { MyPosts } from "./components/MyPosts";
@@ -77,7 +78,7 @@ export const action = async ({
    request,
    params,
 }: LoaderFunctionArgs) => {
-   if (!user || !user.id) throw redirect("/login", { status: 302 });
+   if (!user || !user.id) throw redirect(loginPath, { status: 302 });
 
    const { siteSlug } = await getSiteSlug(request, payload, user);
 

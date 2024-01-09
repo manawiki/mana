@@ -4,6 +4,7 @@ import type { PaginatedDocs } from "payload/database";
 import qs from "qs";
 
 import type { Collection, CustomPage, Entry, Post } from "~/db/payload-types";
+import { apiDBPath, apiPath } from "~/utils/api-path.server";
 import {
    authGQLFetcher,
    authRestFetcher,
@@ -413,13 +414,13 @@ export const updateSiteAnalytics = inngest.createFunction(
                   if (collection.customDatabase == true) {
                      const totalCustomEntries = await authRestFetcher({
                         method: "GET",
-                        path: `https://${siteSlug}-db.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/${collection.slug}`,
+                        path: `https://${siteSlug}-db.${apiDBPath}/api/${collection.slug}`,
                      });
                      return totalCustomEntries.totalDocs;
                   }
                   const totalCoreEntries = await authRestFetcher({
                      method: "GET",
-                     path: `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}api/entries${entryTotalQuery}`,
+                     path: `https://${apiPath}/api/entries${entryTotalQuery}`,
                   });
                   return totalCoreEntries.totalDocs;
                },
@@ -430,7 +431,7 @@ export const updateSiteAnalytics = inngest.createFunction(
       //Update site with new data
       await authRestFetcher({
          method: "PATCH",
-         path: `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}api/sites/${siteId}`,
+         path: `https://${apiPath}/api/sites/${siteId}`,
          body: {
             ...(getPostsTotal.totalDocs && {
                totalPosts: getPostsTotal.totalDocs,

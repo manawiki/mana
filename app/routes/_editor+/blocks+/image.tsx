@@ -12,6 +12,7 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { isAdding } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
+import { loginPath } from "~/utils/login-path.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -33,6 +34,7 @@ export function BlockImage({ element }: Props) {
 
    useEffect(() => {
       if (fetcher.state === "idle" && fetcher.data != null) {
+         //@ts-ignore
          const { id, url } = fetcher.data;
          const path = ReactEditor.findPath(editor, element);
          const newProperties: Partial<CustomElement> = {
@@ -156,7 +158,10 @@ export async function action({
       intent: z.string(),
    });
 
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   if (!user || !user.id)
+      return redirect(loginPath, {
+         status: 302,
+      });
 
    switch (intent) {
       case "addBlockImage": {
