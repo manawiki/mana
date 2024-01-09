@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-import { Link, Outlet, useLocation } from "@remix-run/react";
+import {
+   Link,
+   Outlet,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { LogoFull } from "~/components/Logo";
@@ -30,6 +35,11 @@ function Header() {
    const location = useLocation();
 
    const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+
+   const { loginPath, joinPath } = useRouteLoaderData("root") as {
+      loginPath: string;
+      joinPath: string;
+   };
 
    return (
       <header className="z-50 w-full absolute">
@@ -62,7 +72,7 @@ function Header() {
                      <ul className="flex items-center justify-end gap-3">
                         <li>
                            <Link
-                              to="/join"
+                              to={joinPath}
                               className="group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                     rounded-lg px-3 py-2  text-indigo-600 shadow shadow-zinc-950 transition duration-300 ease-out"
                            >
@@ -80,7 +90,7 @@ function Header() {
                            <Link
                               className="flex h-[34px] items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 px-3 text-center 
                                     text-xs font-extrabold uppercase text-white shadow-sm shadow-zinc-950"
-                              to={`/login?redirectTo=${location.pathname}`}
+                              to={`${loginPath}?redirectTo=${location.pathname}`}
                            >
                               Login
                            </Link>
