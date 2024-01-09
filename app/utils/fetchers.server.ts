@@ -7,12 +7,17 @@ export function gqlEndpoint({
 }: {
    siteSlug?: string | undefined | null;
 }) {
-   //Custom sites
-   if (siteSlug) return `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
+   let graphQLPath = "http://localhost:3000/api/graphql";
 
-   return process.env.NODE_ENV == "development"
-      ? "http://localhost:3000/api/graphql"
-      : `https://${apiPath}/api/graphql`;
+   //Custom sites
+   if (siteSlug)
+      graphQLPath = `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
+
+   if (process.env.NODE_ENV == "production")
+      graphQLPath = `https://${apiPath}/api/graphql`;
+
+   console.log("gqlEndpoint", graphQLPath);
+   return graphQLPath;
 }
 
 export function authRestFetcher({
