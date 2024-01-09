@@ -9,7 +9,6 @@ import {
    Link,
    useActionData,
    useNavigation,
-   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
@@ -27,7 +26,6 @@ import {
    Label,
 } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
-import type { loader as rootLoader } from "~/root";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
@@ -64,12 +62,7 @@ const JoinFormSchema = z.object({
       .toLowerCase(),
 });
 
-export const meta: MetaFunction<
-   typeof loader,
-   {
-      root: typeof rootLoader;
-   }
-> = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: `Join - Mana`,
@@ -89,9 +82,7 @@ export default function Signup() {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
-   const { loginPath } = useRouteLoaderData("root") as {
-      loginPath: string;
-   };
+
    return (
       <>
          <div
@@ -155,7 +146,7 @@ export default function Signup() {
                      <Link
                         className="text-blue-500 hover:underline"
                         to={{
-                           pathname: loginPath,
+                           pathname: "/login",
                            search: searchParams.toString(),
                         }}
                      >

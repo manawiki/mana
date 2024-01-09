@@ -34,7 +34,6 @@ import { getTheme } from "~/utils/theme.server";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { joinPath, loginPath } from "./utils/login-path.server";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -85,8 +84,6 @@ export const loader = async ({
          user,
          siteSlug,
          following,
-         loginPath,
-         joinPath,
       },
       { headers },
    );
