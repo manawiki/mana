@@ -280,30 +280,31 @@ export const action: ActionFunction = async ({
          });
          try {
             // So subdomains can share the cookie, we will use the rest api to set the cookie manually
-            const json = await payload.login({
+            await payload.login({
                collection: "users",
                data: { email, password },
+               res,
             });
 
-            const hostname = new URL(request.url).hostname;
+            // const hostname = new URL(request.url).hostname;
 
-            // set the cookie on domain level so all subdomains can access it
-            let domain = hostname.split(".").slice(-2).join(".");
+            // // set the cookie on domain level so all subdomains can access it
+            // let domain = hostname.split(".").slice(-2).join(".");
 
-            if (!json.token) throw new Error("No token found");
+            // if (!json.token) throw new Error("No token found");
 
-            return redirect(redirectTo || "/", {
-               headers: {
-                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
-                     httpOnly: true,
-                     // secure: process.env.NODE_ENV === "production",
-                     sameSite: "lax",
-                     path: "/",
-                     maxAge: 60 * 60 * 24 * 30, // 30 days
-                     domain,
-                  }),
-               },
-            });
+            // return redirect(redirectTo || "/", {
+            //    headers: {
+            //       "Set-Cookie": cookie.serialize("payload-token", json.token, {
+            //          httpOnly: true,
+            //          // secure: process.env.NODE_ENV === "production",
+            //          sameSite: "lax",
+            //          path: "/",
+            //          maxAge: 60 * 60 * 24 * 30, // 30 days
+            //          domain,
+            //       }),
+            //    },
+            // });
          } catch (error) {
             return redirectWithError(
                `/login${signUpEmail ? `?email=${email}` : ""}`,
