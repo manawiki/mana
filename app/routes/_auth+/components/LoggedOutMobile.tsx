@@ -6,7 +6,8 @@ import { LoggedOut } from "./LoggedOut";
 export const LoggedOutMobile = () => {
    const location = useLocation();
    const { t } = useTranslation(["site", "auth"]);
-   const { loginPath, joinPath } = useRouteLoaderData("root") as {
+   const { hostname, loginPath, joinPath } = useRouteLoaderData("root") as {
+      hostname: string;
       loginPath: string;
       joinPath: string;
    };
@@ -32,7 +33,9 @@ export const LoggedOutMobile = () => {
                className="dark:bg-dark400 flex h-10 w-full items-center justify-center
         rounded-full border border-zinc-200 bg-zinc-100 text-center text-sm
        font-bold dark:border-zinc-600"
-               to={`${loginPath}/login?redirectTo=${location.pathname}`}
+               to={`${loginPath}?redirectTo=https://${
+                  hostname + location.pathname
+               }`}
             >
                {t("login.action", { ns: "auth" })}
             </Link>

@@ -273,9 +273,7 @@ export async function action({
 
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const url = new URL(request.url).pathname;
-
-   if (!user) throw redirect(`${loginPath}?redirectTo=${url}`, { status: 302 });
+   if (!user) throw redirect(loginPath, { status: 302 });
 
    switch (intent) {
       case "updateTitle": {

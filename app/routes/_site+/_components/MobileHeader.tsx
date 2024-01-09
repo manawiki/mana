@@ -32,7 +32,8 @@ export function MobileHeader({
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
 
-   const { loginPath, joinPath } = useRouteLoaderData("root") as {
+   const { hostname, loginPath, joinPath } = useRouteLoaderData("root") as {
+      hostname: string;
       loginPath: string;
       joinPath: string;
    };
@@ -96,7 +97,7 @@ export function MobileHeader({
                <Link
                   prefetch="intent"
                   reloadDocument={true}
-                  to={`${loginPath}/login?redirectTo=/`}
+                  to={`${loginPath}?redirectTo=https://${hostname}`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                >
@@ -123,7 +124,9 @@ export function MobileHeader({
                      className="dark:border-zinc-600 dark:bg-dark450 dark:shadow-zinc-950/40 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center bg-white
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"
-                     to={`${loginPath}/login?redirectTo=${location.pathname}`}
+                     to={`${loginPath}?redirectTo=https://${
+                        hostname + location.pathname
+                     }`}
                   >
                      {t("login.action", { ns: "auth" })}
                   </Link>
