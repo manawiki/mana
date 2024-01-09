@@ -56,7 +56,10 @@ export const action: ActionFunction = async ({
    context: { payload, user },
    request,
 }) => {
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   if (!user || !user.id)
+      return redirect("/login", {
+         status: 302,
+      });
 
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["entryUpdateIcon", "entryDeleteIcon"]),

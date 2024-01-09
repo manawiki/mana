@@ -15,7 +15,9 @@ export const Users: CollectionConfig = {
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
-                  : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/verify?token=${token}`;
+                  : `https://${
+                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                    }/verify?token=${token}`;
 
             return `
             <span>Hey ${user.email}, thanks for registering at Mana.</span>
@@ -45,7 +47,9 @@ export const Users: CollectionConfig = {
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
-                  : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/reset-password?token=${token}`;
+                  : `https://${
+                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                    }/reset-password?token=${token}`;
 
             return `
             <br><br>
@@ -68,11 +72,6 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain:
-            serverEnv == "development"
-               ? "localhost"
-               : `.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}`,
-         secure: serverEnv !== "development",
          sameSite: "lax",
       },
    },

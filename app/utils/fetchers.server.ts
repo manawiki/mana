@@ -1,17 +1,18 @@
 import { request as gqlRequest } from "graphql-request";
 
+import { apiDBPath, apiPath } from "./api-path.server";
+
 export function gqlEndpoint({
    siteSlug,
 }: {
    siteSlug?: string | undefined | null;
 }) {
    //Custom sites
-   if (siteSlug)
-      return `https://${siteSlug}-db.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
+   if (siteSlug) return `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
 
    return process.env.NODE_ENV == "development"
       ? "http://localhost:3000/api/graphql"
-      : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
+      : `https://${apiPath}/api/graphql`;
 }
 
 export function authRestFetcher({
