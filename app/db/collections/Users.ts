@@ -68,11 +68,6 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain:
-            serverEnv == "development"
-               ? "localhost"
-               : `.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}`,
-         secure: serverEnv !== "development",
          sameSite: "lax",
       },
    },

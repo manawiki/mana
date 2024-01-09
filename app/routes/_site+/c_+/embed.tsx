@@ -6,6 +6,7 @@ import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
 import { assertIsPost } from "~/utils/http.server";
+import { loginPath } from "~/utils/login-path.server";
 
 export async function action({
    context: { payload, user },
@@ -20,7 +21,10 @@ export async function action({
       entryId: z.string(),
    });
 
-   if (!user) throw redirect("/login", { status: 302 });
+   if (!user)
+      throw redirect(loginPath, {
+         status: 302,
+      });
 
    switch (intent) {
       case "unpublish": {

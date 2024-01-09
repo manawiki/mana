@@ -12,6 +12,7 @@ import {
    useActionData,
    useLoaderData,
    useNavigation,
+   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
@@ -34,6 +35,7 @@ import { Input } from "~/components/Input";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost, safeRedirect } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
+import { loginPath } from "~/utils/login-path.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -101,6 +103,11 @@ export default function Login() {
    });
 
    const [isReset, setIsReset] = useState(false);
+
+   const { joinPath } = useRouteLoaderData("root") as {
+      joinPath: string;
+   };
+
    return (
       <div
          className="border-color-sub bg-2-sub shadow-1 relative 
@@ -209,7 +216,7 @@ export default function Login() {
                         <Link
                            className="pl-1 text-blue-500 hover:underline"
                            to={{
-                              pathname: "/join",
+                              pathname: joinPath,
                               search: searchParams.toString(),
                            }}
                         >
@@ -286,7 +293,7 @@ export const action: ActionFunction = async ({
             });
          } catch (error) {
             return redirectWithError(
-               `/login${signUpEmail ? `?email=${email}` : ""}`,
+               `${loginPath}${signUpEmail ? `?email=${email}` : ""}`,
                "The email or password provided is incorrect",
             );
          }

@@ -9,6 +9,7 @@ import {
    Link,
    useActionData,
    useNavigation,
+   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
@@ -88,6 +89,9 @@ export default function Signup() {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
+   const { loginPath } = useRouteLoaderData("root") as {
+      loginPath: string;
+   };
    return (
       <>
          <div
@@ -151,7 +155,7 @@ export default function Signup() {
                      <Link
                         className="text-blue-500 hover:underline"
                         to={{
-                           pathname: "/login",
+                           pathname: loginPath,
                            search: searchParams.toString(),
                         }}
                      >
