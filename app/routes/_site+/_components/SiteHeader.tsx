@@ -33,8 +33,9 @@ export function SiteHeader({
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
 
-   const { loginPath } = useRouteLoaderData("root") as {
+   const { loginPath, hostname } = useRouteLoaderData("root") as {
       loginPath: string;
+      hostname: string;
    };
 
    return (
@@ -187,7 +188,7 @@ export function SiteHeader({
                               <Link
                                  prefetch="intent"
                                  reloadDocument={true}
-                                 to={`${loginPath}?redirectTo=/`}
+                                 to={`${loginPath}?redirectTo=https://${hostname}`}
                                  className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
                         text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
                               >

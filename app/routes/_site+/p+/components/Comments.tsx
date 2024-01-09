@@ -26,9 +26,10 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils/form";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   const { user, loginPath } = useRouteLoaderData("root") as {
+   const { user, loginPath, hostname } = useRouteLoaderData("root") as {
       user: User;
       loginPath: string;
+      hostname: string;
    };
 
    let location = useLocation();
@@ -57,7 +58,9 @@ export function Comments({ comments }: { comments: Comment[] }) {
                      <div className="mb-5 text-sm pl-4 border-l-2 border-color-sub">
                         <Link
                            className="underline font-bold pr-1 hover:text-blue-500"
-                           to={`${loginPath}?redirectTo=${location.pathname}`}
+                           to={`${loginPath}?redirectTo=https://${
+                              hostname + location.pathname
+                           }`}
                         >
                            Login
                         </Link>
