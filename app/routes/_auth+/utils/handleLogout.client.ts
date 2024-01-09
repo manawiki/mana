@@ -1,18 +1,6 @@
-import { log } from "console";
-
 export async function handleLogout(sitePath: string) {
-   let logoutUrl =
-      process.env.NODE_ENV === "development"
-         ? `http://localhost:3000/api/users/logout`
-         : `https://mana.wiki/api/users/logout`;
-
-   if (document?.location?.origin)
-      logoutUrl = `${document.location.origin}/api/users/logout`;
-
-   console.log(logoutUrl);
-
    try {
-      await fetch(logoutUrl, {
+      await fetch("api/users/logout", {
          method: "POST",
          credentials: "include",
          headers: {
