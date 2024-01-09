@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Link, useFetcher, useRouteLoaderData } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
@@ -32,11 +32,6 @@ export function SiteHeader({
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
-
-   const { loginPath, hostname } = useRouteLoaderData("root") as {
-      loginPath: string;
-      hostname: string;
-   };
 
    return (
       <section
@@ -188,7 +183,7 @@ export function SiteHeader({
                               <Link
                                  prefetch="intent"
                                  reloadDocument={true}
-                                 to={`${loginPath}?redirectTo=https://${hostname}`}
+                                 to={`/login?redirectTo=/`}
                                  className="flex h-9 items-center justify-center rounded-full bg-zinc-700 px-3.5
                         text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
                               >

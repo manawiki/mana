@@ -10,7 +10,6 @@ import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { loginPath } from "~/utils/login-path.server";
 import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "./core/components/Toolbar";
@@ -83,7 +82,7 @@ export async function action({
    });
 
    if (!user)
-      throw redirect(loginPath, {
+      throw redirect("/login", {
          status: 302,
       });
 

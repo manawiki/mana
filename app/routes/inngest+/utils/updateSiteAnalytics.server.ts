@@ -387,7 +387,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       const getPostsTotal = (await authRestFetcher({
          method: "GET",
-         path: `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/posts${postTotalQuery}`,
+         path: `https://${apiPath}/api/posts${postTotalQuery}`,
       })) as PaginatedDocs<Post>;
 
       //Get total site entries
