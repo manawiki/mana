@@ -20,7 +20,6 @@ import { Modal } from "~/components/Modal";
 import { BlockType } from "~/routes/_editor+/core/types";
 import { isAdding, isProcessing, type FormResponse } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { loginPath } from "~/utils/login-path.server";
 import { safeNanoID } from "~/utils/nanoid";
 import {
    getMultipleFormData,
@@ -85,11 +84,6 @@ export function NewSiteModal() {
       }
    }, [adding, zo.refObject]);
 
-   const { loginPath, joinPath } = useRouteLoaderData("root") as {
-      loginPath: string;
-      joinPath: string;
-   };
-
    return (
       <>
          <div className="flex items-center justify-center">
@@ -125,7 +119,7 @@ export function NewSiteModal() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                      <Link
-                        to={joinPath}
+                        to="/join"
                         className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
                            py-2 font-medium text-indigo-600 transition duration-300 ease-out"
                      >
@@ -142,7 +136,7 @@ export function NewSiteModal() {
                         className="border-color bg-3 shadow-1 flex h-10 items-center
                            justify-center rounded-full border text-center text-sm
                            font-bold shadow-sm"
-                        to={loginPath}
+                        to="/login"
                      >
                         {t("login.action", { ns: "auth" })}
                      </Link>
@@ -256,7 +250,7 @@ export const action: ActionFunction = async ({
 }) => {
    assertIsPost(request);
    if (!user) {
-      return redirect(loginPath);
+      return redirect("/login");
    }
 
    const issues = createCustomIssues(SiteSchema);

@@ -12,9 +12,9 @@ import {
    useActionData,
    useLoaderData,
    useNavigation,
-   useRouteLoaderData,
    useSearchParams,
 } from "@remix-run/react";
+import * as cookie from "cookie";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
@@ -35,7 +35,6 @@ import { Input } from "~/components/Input";
 import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost, safeRedirect } from "~/utils/http.server";
 import { i18nextServer } from "~/utils/i18n/i18next.server";
-import { loginPath } from "~/utils/login-path.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -103,11 +102,6 @@ export default function Login() {
    });
 
    const [isReset, setIsReset] = useState(false);
-
-   const { joinPath } = useRouteLoaderData("root") as {
-      joinPath: string;
-   };
-
    return (
       <div
          className="border-color-sub bg-2-sub shadow-1 relative 
@@ -216,7 +210,7 @@ export default function Login() {
                         <Link
                            className="pl-1 text-blue-500 hover:underline"
                            to={{
-                              pathname: joinPath,
+                              pathname: "/join",
                               search: searchParams.toString(),
                            }}
                         >
@@ -285,15 +279,34 @@ export const action: ActionFunction = async ({
             email: z.string().email().optional(),
          });
          try {
-            await payload.login({
+            // So subdomains can share the cookie, we will use the rest api to set the cookie manually
+            const json = await payload.login({
                collection: "users",
                data: { email, password },
-               //@ts-ignore
-               res,
+            });
+
+            const hostname = new URL(request.url).hostname;
+
+            // set the cookie on domain level so all subdomains can access it
+            let domain = hostname.split(".").slice(-2).join(".");
+
+            if (!json.token) throw new Error("No token found");
+
+            return redirect(redirectTo || "/", {
+               headers: {
+                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
+                     httpOnly: true,
+                     secure: process.env.NODE_ENV === "production",
+                     sameSite: "lax",
+                     path: "/",
+                     maxAge: 60 * 60 * 24 * 30, // 30 days
+                     domain,
+                  }),
+               },
             });
          } catch (error) {
             return redirectWithError(
-               `${loginPath}${signUpEmail ? `?email=${email}` : ""}`,
+               `/login${signUpEmail ? `?email=${email}` : ""}`,
                "The email or password provided is incorrect",
             );
          }

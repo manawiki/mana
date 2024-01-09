@@ -1,11 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
 
-import {
-   Link,
-   useFetcher,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, useFetcher, useLocation } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
@@ -31,11 +26,6 @@ export function MobileHeader({
    const location = useLocation();
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
-
-   const { loginPath, joinPath } = useRouteLoaderData("root") as {
-      loginPath: string;
-      joinPath: string;
-   };
 
    return (
       <>
@@ -96,7 +86,7 @@ export function MobileHeader({
                <Link
                   prefetch="intent"
                   reloadDocument={true}
-                  to={`${loginPath}/login?redirectTo=/`}
+                  to={`/login?redirectTo=${location.pathname}`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                >
@@ -105,7 +95,7 @@ export function MobileHeader({
                <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4 border-b border-color">
                   <Link
                      prefetch="intent"
-                     to={joinPath}
+                     to="/join"
                      className="dark:shadow-zinc-950/40 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                  rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
                   >
@@ -123,7 +113,7 @@ export function MobileHeader({
                      className="dark:border-zinc-600 dark:bg-dark450 dark:shadow-zinc-950/40 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center bg-white
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"
-                     to={`${loginPath}/login?redirectTo=${location.pathname}`}
+                     to={`/login?redirectTo=${location.pathname}`}
                   >
                      {t("login.action", { ns: "auth" })}
                   </Link>

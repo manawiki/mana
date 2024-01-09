@@ -6,7 +6,6 @@ import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
 import { assertIsPost } from "~/utils/http.server";
-import { loginPath } from "~/utils/login-path.server";
 
 export async function action({
    context: { payload, user },
@@ -22,7 +21,7 @@ export async function action({
    });
 
    if (!user)
-      throw redirect(loginPath, {
+      throw redirect("/login", {
          status: 302,
       });
 

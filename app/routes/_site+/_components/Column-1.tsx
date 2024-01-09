@@ -24,11 +24,9 @@ export function ColumnOne({
    isUserMenuOpen: boolean;
    setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
 }) {
-   const { following, siteSlug, loginPath } = useRouteLoaderData("root") as {
+   const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
-      user: User;
       siteSlug: string;
-      loginPath: string;
    };
 
    const location = useLocation();
@@ -89,7 +87,7 @@ export function ColumnOne({
                      <div className="flex items-center justify-center flex-col gap-3">
                         <DarkModeToggle />
                         <Link
-                           to={`${loginPath}?redirectTo=${location.pathname}`}
+                           to={`/login?redirectTo=${location.pathname}`}
                            className="border-4 border-zinc-300 transition duration-300 active:translate-y-0.5 dark:hover:border-zinc-700  
                            rounded-full flex items-center justify-center w-12 h-12 bg-3 dark:border-zinc-700 hover:border-zinc-200"
                         >
