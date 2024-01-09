@@ -35,10 +35,10 @@ export async function loader({
    return json({ title });
 }
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
    ];
 };

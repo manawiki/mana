@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { json, redirect, type ActionFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import {
+   Form,
+   Link,
+   useActionData,
+   useNavigation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
@@ -131,7 +137,6 @@ export function NewSiteModal() {
                            justify-center rounded-full border text-center text-sm
                            font-bold shadow-sm"
                         to="/login"
-                        // to={`/login?redirectTo=${location.pathname}`}
                      >
                         {t("login.action", { ns: "auth" })}
                      </Link>

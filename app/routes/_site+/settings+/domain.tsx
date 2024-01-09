@@ -14,7 +14,7 @@ import {
 import { request as gqlRequest } from "graphql-request";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import { useZorm } from "react-zorm";
-import { jsonWithSuccess } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -24,7 +24,7 @@ import { Button } from "~/components/Button";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import { Text } from "~/components/Text";
+import { Code, Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
@@ -41,10 +41,11 @@ const DOMAIN_SCHEMA = z.object({
    domain: z.string().refine(
       (subdomain) => {
          const levels = subdomain.split(".");
-         return levels.length <= 3;
+         return levels.length == 2 || levels.length == 3;
       },
       {
-         message: "Subdomain can only have up to 3 levels",
+         message:
+            "Subdomain can only have up to 3 levels, but no less than 2 levels",
       },
    ),
 });
@@ -74,6 +75,7 @@ export async function loader({
    //If flyAppId exists, use it, otherwise use default
    const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
    const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
+   const ipv6 = domainData.docs[0]?.v6IP ?? "";
 
    //If domain exists, we need to fetch the certificate data
    const existingDomain = await payload.find({
@@ -151,9 +153,9 @@ export async function loader({
          },
       );
 
-      return json({ certData, ipv4, flyAppId });
+      return json({ certData, ipv4, ipv6, flyAppId });
    }
-   return json({ ipv4, flyAppId });
+   return json({ ipv4, ipv6, flyAppId });
 }
 
 export default function Settings() {
@@ -176,78 +178,81 @@ export default function Settings() {
    //@ts-ignore
    const levels = site?.domain ? site?.domain.split(".") : [];
    let [subDomain] = levels;
-   const isSubDomain = levels.length <= 1;
-
+   const isSubDomain = levels.length == 3;
    const addingDomain = isAdding(fetcher, "addDomain");
    const deletingDomain = isAdding(fetcher, "deleteDomain");
 
    const revalidator = useRevalidator();
 
    return (
-      <fetcher.Form method="post" ref={zo.ref}>
-         <input type="hidden" name="flyAppId" value={data?.flyAppId} />
-         <Field className="pb-4">
-            <Label>Domain Name</Label>
-            <Description>Setup a custom domain name for your site</Description>
-            <Input
-               placeholder="example.com"
-               defaultValue={site.domain ?? ""}
-               name={zo.fields.domain()}
-               type="text"
-            />
-            {zo.errors.domain((err) => (
-               <ErrorMessage>{err.message}</ErrorMessage>
-            ))}
-         </Field>
-         <input type="hidden" name={zo.fields.intent()} value="addDomain" />
-         <input type="hidden" name={zo.fields.siteId()} value={site.id} />
-         {site.domain ? (
-            <Button
-               className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
-               color="zinc"
-               type="button"
-               onClick={() => {
-                  fetcher.submit(
-                     //@ts-ignore
-                     {
-                        intent: "deleteDomain",
-                        siteId: site.id,
-                        domain: site.domain,
-                        flyAppId: data?.flyAppId,
-                     },
-                     {
-                        method: "post",
-                     },
-                  );
-               }}
-            >
-               {deletingDomain ? (
-                  <Icon
-                     size={18}
-                     name="loader-2"
-                     className="mx-auto animate-spin"
-                  />
-               ) : (
-                  "Remove"
-               )}
-            </Button>
-         ) : (
-            <Button
-               className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
-               color="blue"
-               type="submit"
-            >
-               {addingDomain ? (
-                  <Icon
-                     size={18}
-                     name="loader-2"
-                     className="mx-auto animate-spin"
-                  />
-               ) : (
-                  "Add"
-               )}
-            </Button>
-         )}
+      <>
+         <fetcher.Form method="post" ref={zo.ref}>
+            <input type="hidden" name="flyAppId" value={data?.flyAppId} />
+            <Field className="pb-4">
+               <Label>Domain Name</Label>
+               <Description>
+                  Setup a custom domain name for your site
+               </Description>
+               <Input
+                  placeholder="example.com"
+                  defaultValue={site.domain ?? ""}
+                  name={zo.fields.domain()}
+                  type="text"
+               />
+               {zo.errors.domain((err) => (
+                  <ErrorMessage>{err.message}</ErrorMessage>
+               ))}
+            </Field>
+            <input type="hidden" name={zo.fields.intent()} value="addDomain" />
+            <input type="hidden" name={zo.fields.siteId()} value={site.id} />
+            {site.domain ? (
+               <Button
+                  className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
+                  color="zinc"
+                  type="button"
+                  onClick={() => {
+                     fetcher.submit(
+                        //@ts-ignore
+                        {
+                           intent: "deleteDomain",
+                           siteId: site.id,
+                           domain: site.domain,
+                           flyAppId: data?.flyAppId,
+                        },
+                        {
+                           method: "post",
+                        },
+                     );
+                  }}
+               >
+                  {deletingDomain ? (
+                     <Icon
+                        size={18}
+                        name="loader-2"
+                        className="mx-auto animate-spin"
+                     />
+                  ) : (
+                     "Remove"
+                  )}
+               </Button>
+            ) : (
+               <Button
+                  className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
+                  color="blue"
+                  type="submit"
+               >
+                  {addingDomain ? (
+                     <Icon
+                        size={18}
+                        name="loader-2"
+                        className="mx-auto animate-spin"
+                     />
+                  ) : (
+                     "Add"
+                  )}
+               </Button>
+            )}
+         </fetcher.Form>
          {site.domain && (
             <div className="border-y-2 border-dashed border-color mt-6 py-6">
                <div className="pb-4 !text-base">
@@ -256,7 +261,6 @@ export default function Settings() {
                      {site.domain}
                   </span>
                </div>
-
                <div
                   className="px-4 py-3 mb-4 flex items-center gap-3 rounded-xl bg-zinc-50 dark:bg-dark450
                   border dark:border-zinc-600 border-zinc-200 shadow-sm dark:shadow-zinc-800/50"
@@ -330,11 +334,12 @@ export default function Settings() {
                      </>
                   )}
                </div>
-
-               <div className="space-y-8 pt-3">
-                  <div>
-                     <div className="pb-1 flex items-center gap-2">
-                        Domain Configuration
+               <div className="space-y-10 pt-3">
+                  <section>
+                     <div className="pb-1.5 flex items-center gap-2">
+                        <span className="font-semibold">
+                           Domain Configuration
+                        </span>
                         {!certificate?.configured ? (
                            <Icon
                               name="loader-2"
@@ -357,23 +362,38 @@ export default function Settings() {
                      <Text className="pb-4">
                         Add DNS entries to direct visitors to your site.
                      </Text>
-                     <div className="flex items-center justify-between gap-4">
-                        <Record
-                           name
-                           value={isSubDomain ? subDomain : "@"}
-                           type="A"
-                        />
-                        <Icon
-                           name="arrow-right"
-                           size={16}
-                           className="flex-none text-1 mt-5"
-                        />
-                        <Record value={data?.ipv4} />
+                     <div className="space-y-5">
+                        <div className="flex items-center justify-between gap-4">
+                           <Record
+                              name
+                              value={isSubDomain ? subDomain : "@"}
+                              type="A"
+                           />
+                           <Icon
+                              name="arrow-right"
+                              size={16}
+                              className="flex-none text-1 mt-5"
+                           />
+                           <Record value={data?.ipv4} />
+                        </div>
+                        {!isSubDomain && data?.flyAppId != "mana" && (
+                           <div className="flex items-center justify-between gap-4">
+                              <Record name value="@" type="AAAA" />
+                              <Icon
+                                 name="arrow-right"
+                                 size={16}
+                                 className="flex-none text-1 mt-5"
+                              />
+                              <Record value={data?.ipv6} />
+                           </div>
+                        )}
                      </div>
-                  </div>
-                  <div>
-                     <div className="pb-1 flex items-center gap-2">
-                        Domain ownership verification
+                  </section>
+                  <section>
+                     <div className="pb-1.5 flex items-center gap-2">
+                        <span className="font-semibold">
+                           Domain ownership verification
+                        </span>
                         {!certificate?.acmeDnsConfigured ? (
                            <Icon
                               name="loader-2"
@@ -400,7 +420,7 @@ export default function Settings() {
                         <Record
                            name
                            value={
-                              subDomain
+                              isSubDomain
                                  ? `_acme-challenge.${subDomain}`
                                  : "_acme-challenge"
                            }
@@ -413,11 +433,30 @@ export default function Settings() {
                         />
                         <Record value={certificate.dnsValidationTarget} />
                      </div>
-                  </div>
+                     <Text className="pt-5">
+                        If you’re using Cloudflare, you might be using their
+                        Universal SSL feature which inserts a TXT record of{" "}
+                        <Code>
+                           _acme_challenge{isSubDomain ? `.${subDomain}` : ""}
+                        </Code>{" "}
+                        for your domain.
+                        <Text className="pt-4">
+                           This can interfere with our certificate
+                           validation/challenge and you should{" "}
+                           <TextLink
+                              target="_blank"
+                              href="https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/disable-universal-ssl/#disable-universal-ssl-certificate"
+                           >
+                              disable
+                           </TextLink>{" "}
+                           this feature.
+                        </Text>
+                     </Text>
+                  </section>
                </div>
             </div>
          )}
-      </fetcher.Form>
+      </>
    );
 }
 
@@ -458,112 +497,42 @@ export async function action({
 
    switch (intent) {
       case "deleteDomain": {
-         await payload.update({
-            collection: "sites",
-            id: siteId,
-            data: {
-               //@ts-ignore
-               domain: "",
-            },
-            user,
-            overrideAccess: false,
-         });
-
-         const mutation = {
-            mutation: {
-               __variables: {
-                  appId: "ID!",
-                  hostname: "String!",
-               },
-               deleteCertificate: {
-                  __args: {
-                     appId: new VariableType("appId"),
-                     hostname: new VariableType("hostname"),
-                  },
-                  app: {
-                     name: true,
-                  },
-                  certificate: {
-                     hostname: true,
-                     id: true,
-                  },
-               },
-            },
-         };
-         const graphql_query = jsonToGraphQLQuery(mutation, {
-            pretty: true,
-         });
-         await gqlRequest(
-            endpoint,
-            graphql_query,
-            {
-               appId: flyAppId,
-               hostname: domain,
-            },
-            {
-               ...(process.env.FLY_API_TOKEN && {
-                  authorization: "Bearer " + process.env.FLY_API_TOKEN,
-               }),
-            },
-         );
-         return jsonWithSuccess(null, "Domain name removed...");
-      }
-      case "addDomain": {
-         const existingDomain = await payload.find({
-            collection: "sites",
-            where: {
-               domain: {
-                  equals: domain,
-               },
-            },
-            depth: 0,
-         });
-
-         //If domain doesn't exist, add it
-         if (existingDomain.totalDocs == 0) {
+         try {
             await payload.update({
                collection: "sites",
                id: siteId,
                data: {
                   //@ts-ignore
-                  domain: domain,
+                  domain: "",
                },
                user,
                overrideAccess: false,
             });
+
             const mutation = {
                mutation: {
                   __variables: {
                      appId: "ID!",
                      hostname: "String!",
                   },
-                  addCertificate: {
+                  deleteCertificate: {
                      __args: {
                         appId: new VariableType("appId"),
                         hostname: new VariableType("hostname"),
                      },
+                     app: {
+                        name: true,
+                     },
                      certificate: {
-                        configured: true,
-                        acmeDnsConfigured: true,
-                        acmeAlpnConfigured: true,
-                        certificateAuthority: true,
-                        certificateRequestedAt: true,
-                        dnsProvider: true,
-                        dnsValidationInstructions: true,
-                        dnsValidationHostname: true,
-                        dnsValidationTarget: true,
                         hostname: true,
                         id: true,
-                        source: true,
                      },
                   },
                },
             };
-
             const graphql_query = jsonToGraphQLQuery(mutation, {
                pretty: true,
             });
-
             await gqlRequest(
                endpoint,
                graphql_query,
@@ -577,8 +546,90 @@ export async function action({
                   }),
                },
             );
+            return jsonWithSuccess(null, "Domain name removed...");
+         } catch (err: unknown) {
+            console.log(err);
+            return jsonWithError(null, "Error, unable to delete domain.");
+         }
+      }
+      case "addDomain": {
+         try {
+            const existingDomain = await payload.find({
+               collection: "sites",
+               where: {
+                  domain: {
+                     equals: domain,
+                  },
+               },
+               depth: 0,
+            });
+            if (existingDomain.totalDocs == 1) {
+               return jsonWithError(null, "Domain name already exists...");
+            }
+            //If domain doesn't exist, add it
+            if (existingDomain.totalDocs == 0) {
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     domain: domain,
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               const mutation = {
+                  mutation: {
+                     __variables: {
+                        appId: "ID!",
+                        hostname: "String!",
+                     },
+                     addCertificate: {
+                        __args: {
+                           appId: new VariableType("appId"),
+                           hostname: new VariableType("hostname"),
+                        },
+                        certificate: {
+                           configured: true,
+                           acmeDnsConfigured: true,
+                           acmeAlpnConfigured: true,
+                           certificateAuthority: true,
+                           certificateRequestedAt: true,
+                           dnsProvider: true,
+                           dnsValidationInstructions: true,
+                           dnsValidationHostname: true,
+                           dnsValidationTarget: true,
+                           hostname: true,
+                           id: true,
+                           source: true,
+                        },
+                     },
+                  },
+               };
 
-            return jsonWithSuccess(null, "Domain name added...");
+               const graphql_query = jsonToGraphQLQuery(mutation, {
+                  pretty: true,
+               });
+
+               await gqlRequest(
+                  endpoint,
+                  graphql_query,
+                  {
+                     appId: flyAppId,
+                     hostname: domain,
+                  },
+                  {
+                     ...(process.env.FLY_API_TOKEN && {
+                        authorization: "Bearer " + process.env.FLY_API_TOKEN,
+                     }),
+                  },
+               );
+
+               return jsonWithSuccess(null, "Domain name added...");
+            }
+         } catch (err: unknown) {
+            console.log(err);
+            return jsonWithError(null, "Error, unable to add domain.");
          }
       }
    }

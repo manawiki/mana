@@ -1,5 +1,6 @@
 import { request as gqlRequest } from "graphql-request";
 
+import { apiDBPath } from "~/utils/api-path.server";
 import { fetchWithCache, gqlRequestWithCache } from "~/utils/cache.server";
 import { authRestFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
@@ -28,7 +29,7 @@ export async function fetchEntry({
       siteSlug: entry.siteSlug,
    });
 
-   const restPath = `https://${entry.siteSlug}-db.mana.wiki/api/${
+   const restPath = `https://${entry.siteSlug}-db.${apiDBPath}/api/${
       entry.collectionSlug
    }/${entry.id}?depth=${rest?.depth ?? 2}`;
 
