@@ -133,6 +133,7 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
+               console.log(docs);
                invariant(docs[0]);
                return await payload.update({
                   collection: collectionSlug,
