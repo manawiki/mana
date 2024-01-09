@@ -30,11 +30,6 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
-   ...(process.env.NODE_ENV == "production" && {
-      serverURL: `https://${
-         process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
-      }`,
-   }),
    editor: slateEditor({}),
    db: mongooseAdapter({
       url: `${process.env.MONGODB_URI}/mana-prod`,
