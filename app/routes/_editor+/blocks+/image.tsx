@@ -12,7 +12,6 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { isAdding } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { loginPath } from "~/utils/login-path.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -159,7 +158,7 @@ export async function action({
    });
 
    if (!user || !user.id)
-      return redirect(loginPath, {
+      return redirect("/login", {
          status: 302,
       });
 

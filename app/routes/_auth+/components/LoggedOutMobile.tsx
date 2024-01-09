@@ -1,4 +1,4 @@
-import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { LoggedOut } from "./LoggedOut";
@@ -6,16 +6,12 @@ import { LoggedOut } from "./LoggedOut";
 export const LoggedOutMobile = () => {
    const location = useLocation();
    const { t } = useTranslation(["site", "auth"]);
-   const { loginPath, joinPath } = useRouteLoaderData("root") as {
-      loginPath: string;
-      joinPath: string;
-   };
 
    return (
       <LoggedOut>
          <div className="grid w-full grid-cols-2 gap-4">
             <Link
-               to={joinPath}
+               to="/join"
                className="group relative inline-flex h-10 w-full items-center justify-center overflow-hidden 
         rounded-full p-4 px-5 font-medium text-indigo-600 transition duration-300 ease-out"
             >
@@ -32,7 +28,7 @@ export const LoggedOutMobile = () => {
                className="dark:bg-dark400 flex h-10 w-full items-center justify-center
         rounded-full border border-zinc-200 bg-zinc-100 text-center text-sm
        font-bold dark:border-zinc-600"
-               to={`${loginPath}/login?redirectTo=${location.pathname}`}
+               to={`/login?redirectTo=${location.pathname}`}
             >
                {t("login.action", { ns: "auth" })}
             </Link>

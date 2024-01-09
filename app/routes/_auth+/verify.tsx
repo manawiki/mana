@@ -6,7 +6,6 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { Icon } from "~/components/Icon";
-import { loginPath } from "~/utils/login-path.server";
 
 export async function loader({
    context: { payload, user },
@@ -26,7 +25,7 @@ export async function loader({
 
    if (result) {
       return redirectWithSuccess(
-         `${loginPath}?email=${email}`,
+         `/login?email=${email}`,
          "Your email has been verified. You can now login.",
       );
    }
