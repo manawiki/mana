@@ -289,6 +289,8 @@ export const action: ActionFunction = async ({
             // So subdomains can share the cookie, we will use the rest api to
             const url = new URL(request.url);
 
+            console.log(url);
+
             const res = await fetch(url.origin + "/api/users/login", {
                method: "POST",
                headers: {
@@ -302,11 +304,12 @@ export const action: ActionFunction = async ({
 
             const json = await res.json();
 
+            // set the cookie on domain level
             let domain = url.hostname.split(".").slice(-2).join(".");
 
             return redirect(redirectTo ?? "/", {
                headers: {
-                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
+                  "Set-Cookie": cookie.serialize("payload-token", json?.token, {
                      httpOnly: true,
                      secure: process.env.NODE_ENV === "production",
                      sameSite: "lax",
