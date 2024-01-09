@@ -279,38 +279,22 @@ export const action: ActionFunction = async ({
             email: z.string().email().optional(),
          });
          try {
-            // await payload.login({
-            //    collection: "users",
-            //    data: { email, password },
-            //    //@ts-ignore
-            //    res,
-            // });
-
             // So subdomains can share the cookie, we will use the rest api to set the cookie manually
-            const url = new URL(request.url);
-
-            let http =
-               process.env.NODE_ENV === "production" ? "https://" : "http://";
-
-            const res = await fetch(http + url.host + "/api/users/login", {
-               method: "POST",
-               headers: {
-                  "Content-Type": "application/json",
-               },
-               body: JSON.stringify({
-                  email,
-                  password,
-               }),
+            const json = await payload.login({
+               collection: "users",
+               data: { email, password },
             });
 
-            const json = await res.json();
+            const hostname = new URL(request.url).hostname;
 
             // set the cookie on domain level so all subdomains can access it
-            let domain = url.hostname.split(".").slice(-2).join(".");
+            let domain = hostname.split(".").slice(-2).join(".");
+
+            if (!json.token) throw new Error("No token found");
 
             return redirect(redirectTo || "/", {
                headers: {
-                  "Set-Cookie": cookie.serialize("payload-token", json?.token, {
+                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
                      httpOnly: true,
                      secure: process.env.NODE_ENV === "production",
                      sameSite: "lax",
