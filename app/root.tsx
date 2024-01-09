@@ -77,6 +77,7 @@ export const loader = async ({
             theme: getTheme(request) ?? hints.theme,
          },
          sitePath: request.url,
+         hostname,
          subDomain,
          toast,
          locale,

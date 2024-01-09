@@ -14,7 +14,7 @@ import {
 import { request as gqlRequest } from "graphql-request";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import { useZorm } from "react-zorm";
-import { jsonWithSuccess } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -376,7 +376,7 @@ export default function Settings() {
                            />
                            <Record value={data?.ipv4} />
                         </div>
-                        {!isSubDomain && (
+                        {!isSubDomain && data?.flyAppId != "mana" && (
                            <div className="flex items-center justify-between gap-4">
                               <Record name value="@" type="AAAA" />
                               <Icon
@@ -497,112 +497,42 @@ export async function action({
 
    switch (intent) {
       case "deleteDomain": {
-         await payload.update({
-            collection: "sites",
-            id: siteId,
-            data: {
-               //@ts-ignore
-               domain: "",
-            },
-            user,
-            overrideAccess: false,
-         });
-
-         const mutation = {
-            mutation: {
-               __variables: {
-                  appId: "ID!",
-                  hostname: "String!",
-               },
-               deleteCertificate: {
-                  __args: {
-                     appId: new VariableType("appId"),
-                     hostname: new VariableType("hostname"),
-                  },
-                  app: {
-                     name: true,
-                  },
-                  certificate: {
-                     hostname: true,
-                     id: true,
-                  },
-               },
-            },
-         };
-         const graphql_query = jsonToGraphQLQuery(mutation, {
-            pretty: true,
-         });
-         await gqlRequest(
-            endpoint,
-            graphql_query,
-            {
-               appId: flyAppId,
-               hostname: domain,
-            },
-            {
-               ...(process.env.FLY_API_TOKEN && {
-                  authorization: "Bearer " + process.env.FLY_API_TOKEN,
-               }),
-            },
-         );
-         return jsonWithSuccess(null, "Domain name removed...");
-      }
-      case "addDomain": {
-         const existingDomain = await payload.find({
-            collection: "sites",
-            where: {
-               domain: {
-                  equals: domain,
-               },
-            },
-            depth: 0,
-         });
-
-         //If domain doesn't exist, add it
-         if (existingDomain.totalDocs == 0) {
+         try {
             await payload.update({
                collection: "sites",
                id: siteId,
                data: {
                   //@ts-ignore
-                  domain: domain,
+                  domain: "",
                },
                user,
                overrideAccess: false,
             });
+
             const mutation = {
                mutation: {
                   __variables: {
                      appId: "ID!",
                      hostname: "String!",
                   },
-                  addCertificate: {
+                  deleteCertificate: {
                      __args: {
                         appId: new VariableType("appId"),
                         hostname: new VariableType("hostname"),
                      },
+                     app: {
+                        name: true,
+                     },
                      certificate: {
-                        configured: true,
-                        acmeDnsConfigured: true,
-                        acmeAlpnConfigured: true,
-                        certificateAuthority: true,
-                        certificateRequestedAt: true,
-                        dnsProvider: true,
-                        dnsValidationInstructions: true,
-                        dnsValidationHostname: true,
-                        dnsValidationTarget: true,
                         hostname: true,
                         id: true,
-                        source: true,
                      },
                   },
                },
             };
-
             const graphql_query = jsonToGraphQLQuery(mutation, {
                pretty: true,
             });
-
             await gqlRequest(
                endpoint,
                graphql_query,
@@ -616,8 +546,90 @@ export async function action({
                   }),
                },
             );
+            return jsonWithSuccess(null, "Domain name removed...");
+         } catch (err: unknown) {
+            console.log(err);
+            return jsonWithError(null, "Error, unable to delete domain.");
+         }
+      }
+      case "addDomain": {
+         try {
+            const existingDomain = await payload.find({
+               collection: "sites",
+               where: {
+                  domain: {
+                     equals: domain,
+                  },
+               },
+               depth: 0,
+            });
+            if (existingDomain.totalDocs == 1) {
+               return jsonWithError(null, "Domain name already exists...");
+            }
+            //If domain doesn't exist, add it
+            if (existingDomain.totalDocs == 0) {
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     domain: domain,
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               const mutation = {
+                  mutation: {
+                     __variables: {
+                        appId: "ID!",
+                        hostname: "String!",
+                     },
+                     addCertificate: {
+                        __args: {
+                           appId: new VariableType("appId"),
+                           hostname: new VariableType("hostname"),
+                        },
+                        certificate: {
+                           configured: true,
+                           acmeDnsConfigured: true,
+                           acmeAlpnConfigured: true,
+                           certificateAuthority: true,
+                           certificateRequestedAt: true,
+                           dnsProvider: true,
+                           dnsValidationInstructions: true,
+                           dnsValidationHostname: true,
+                           dnsValidationTarget: true,
+                           hostname: true,
+                           id: true,
+                           source: true,
+                        },
+                     },
+                  },
+               };
 
-            return jsonWithSuccess(null, "Domain name added...");
+               const graphql_query = jsonToGraphQLQuery(mutation, {
+                  pretty: true,
+               });
+
+               await gqlRequest(
+                  endpoint,
+                  graphql_query,
+                  {
+                     appId: flyAppId,
+                     hostname: domain,
+                  },
+                  {
+                     ...(process.env.FLY_API_TOKEN && {
+                        authorization: "Bearer " + process.env.FLY_API_TOKEN,
+                     }),
+                  },
+               );
+
+               return jsonWithSuccess(null, "Domain name added...");
+            }
+         } catch (err: unknown) {
+            console.log(err);
+            return jsonWithError(null, "Error, unable to add domain.");
          }
       }
    }

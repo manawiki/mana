@@ -26,7 +26,9 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils/form";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   const { user } = useRouteLoaderData("root") as { user: User };
+   const { user } = useRouteLoaderData("root") as {
+      user: User;
+   };
 
    let location = useLocation();
 

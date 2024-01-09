@@ -16,6 +16,7 @@ import type { Search, Site } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
@@ -58,7 +59,7 @@ export async function loader({
    }
    if (type == "custom") {
       try {
-         const customSearchUrl = `https://${siteSlug}-db.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
+         const customSearchUrl = `https://${siteSlug}-db.${apiDBPath}/api/search?where[name][contains]=${q}&depth=1&sort=-priority`;
 
          const [{ docs: coreSearchResults }, { docs: customSearchResults }] =
             await Promise.all([

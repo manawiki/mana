@@ -16,7 +16,10 @@ export function ColumnFour({
 }) {
    return (
       <section className="relative z-30 laptop:block max-laptop:bg-2-sub">
-         <div className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto">
+         <div
+            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1
+            h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px]"
+         >
             <div className="laptop:h-full flex flex-col">
                {/* Mobile */}
                <section className="py-4 max-tablet:px-3 laptop:hidden max-laptop:max-w-[728px] mx-auto w-full">

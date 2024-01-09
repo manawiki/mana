@@ -26,7 +26,6 @@ export function ColumnOne({
 }) {
    const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
-      user: User;
       siteSlug: string;
    };
 
