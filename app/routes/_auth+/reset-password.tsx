@@ -14,8 +14,10 @@ import { zx } from "zodix";
 import { DotLoader } from "~/components/DotLoader";
 import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
-import { assertIsPost, isAdding, isProcessing } from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+import { isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
+import { loginPath } from "~/utils/login-path.server";
 
 const PasswordResetSchema = z.object({
    password: z.string().min(8, "Password must be at least 8 characters long"),
@@ -116,12 +118,12 @@ export const action: ActionFunction = async ({
          });
 
          return redirectWithSuccess(
-            "/login",
+            loginPath,
             "Your password has been reset. You can now login.",
          );
       } catch (error) {
          return redirectWithError(
-            "/login",
+            loginPath,
             "Something went wrong. Please try again.",
          );
       }

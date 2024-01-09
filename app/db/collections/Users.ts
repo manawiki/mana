@@ -68,11 +68,6 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain:
-            serverEnv == "development"
-               ? "localhost"
-               : `.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}`,
-         secure: serverEnv !== "development",
          sameSite: "lax",
       },
    },
@@ -90,6 +85,11 @@ export const Users: CollectionConfig = {
    fields: [
       {
          name: "username",
+         type: "text",
+         unique: true,
+      },
+      {
+         name: "stripeCustomerId",
          type: "text",
          unique: true,
       },

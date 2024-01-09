@@ -2,6 +2,10 @@
 import type { Access, FieldAccess } from "payload/types";
 import invariant from "tiny-invariant";
 
+import type { User } from "~/db/payload-types";
+
+import { isSiteOwnerOrAdmin } from "../db/collections/site/access";
+
 export const isOwnComment: Access = ({ req: { user } }) => {
    if (user) {
       return {
@@ -78,3 +82,23 @@ export const isCommentDeletedField: FieldAccess = ({ doc }) => {
    if (doc?.isDeleted == true) return false;
    return true;
 };
+
+export const canMutateCommentsFieldAsSiteAdmin =
+   (collectionSlug: "comments"): FieldAccess<{ id: string }, unknown, User> =>
+   async ({ req: { user, payload }, id: resultId, data }) => {
+      if (user) {
+         if (user?.roles?.includes("staff")) return true;
+         const userId = user.id;
+         // Update and Delete
+         if (resultId) {
+            const item = await payload.findByID({
+               collection: collectionSlug,
+               id: resultId,
+               depth: 1,
+            });
+            if (item.site) return isSiteOwnerOrAdmin(userId, item.site);
+         }
+      }
+      // Reject everyone else
+      return false;
+   };

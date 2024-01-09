@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { loginPath } from "~/utils/login-path.server";
 
 export async function action({
    context: { payload, user },
@@ -15,9 +16,12 @@ export async function action({
       intent: z.enum(["publish", "followSite", "unfollow"]),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   if (!user) throw redirect("/login", { status: 302 });
+   if (!user)
+      throw redirect(loginPath, {
+         status: 302,
+      });
 
    switch (intent) {
       case "followSite": {

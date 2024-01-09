@@ -54,7 +54,8 @@ import { Modal } from "~/components/Modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 // eslint-disable-next-line import/order
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { gqlEndpoint, gqlFormat, swrRestFetcher, useIsMount } from "~/utils";
+import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
+import { useIsMount } from "~/utils/use-debounce";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -98,7 +99,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { filterOption, groupSelectQuery } = zx.parseQuery(request, {
       filterOption: z.string(),
@@ -302,9 +303,12 @@ export function BlockGroup({
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 
    //Get collection data, used to populate select
+
+   const fetcher = (...args: [any]) => fetch(...args).then((res) => res.json());
+
    const { data: collectionData } = useSWR(
       `/api/collections?where[site.slug][equals]=${siteSlug}&[hiddenCollection][equals]=false`,
-      swrRestFetcher,
+      fetcher,
    );
    const selectOptions = collectionData
       ? [...defaultOptions, ...collectionData?.docs]
@@ -325,7 +329,7 @@ export function BlockGroup({
 
    const { data: entryData } = useSWR(
       `/blocks/group${groupDataQuery}`,
-      swrRestFetcher,
+      fetcher,
    );
 
    const filteredEntries =

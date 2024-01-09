@@ -21,7 +21,9 @@ import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { withLinkify } from "~/routes/_editor+/core/plugins/link/withLinkify";
 import { onKeyDown } from "~/routes/_editor+/core/utils";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { isAdding, isProcessing, useDebouncedValue, useIsMount } from "~/utils";
+import { isAdding, isProcessing } from "~/utils/form";
+import { loginPath } from "~/utils/login-path.server";
+import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "../../core/components/Toolbar";
 import type { UpdatesElement, CustomElement } from "../../core/types";
@@ -220,13 +222,13 @@ export const action = async ({
    request,
    params,
 }: LoaderFunctionArgs) => {
-   if (!user || !user.id) throw redirect("/login", { status: 302 });
+   if (!user || !user.id) throw redirect(loginPath, { status: 302 });
 
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "createUpdate": {

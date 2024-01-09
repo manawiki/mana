@@ -1,28 +1,41 @@
-import { Link } from "@remix-run/react";
+import { useState, type Dispatch, type SetStateAction } from "react";
+
+import {
+   Link,
+   useFetcher,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
-import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import { isAdding } from "~/utils";
+import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
+import { isAdding } from "~/utils/form";
+
+import { FollowingTrayContent, MobileTray } from "./MobileTray";
 
 export function MobileHeader({
-   location,
-   site,
-   fetcher,
-   setFollowerMenuOpen,
    setUserMenuOpen,
+   site,
 }: {
-   location: any;
-   site: Site;
-   fetcher: any;
-   setFollowerMenuOpen: any;
-   setUserMenuOpen: any;
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
+   site: SerializeFrom<typeof siteLoaderType>["site"];
 }) {
-   const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
+   const fetcher = useFetcher({ key: "site" });
+   const adding = isAdding(fetcher, "followSite");
+   const location = useLocation();
+
+   const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
+
+   const { loginPath, joinPath } = useRouteLoaderData("root") as {
+      loginPath: string;
+      joinPath: string;
+   };
 
    return (
       <>
@@ -36,11 +49,7 @@ export function MobileHeader({
                   <div className="flex items-center gap-3">
                      <NotFollowingSite>
                         <div className="flex items-center">
-                           <fetcher.Form
-                              action={`/${site.slug}`}
-                              className="w-full"
-                              method="post"
-                           >
+                           <fetcher.Form className="w-full" method="post">
                               <button
                                  name="intent"
                                  value="followSite"
@@ -87,7 +96,7 @@ export function MobileHeader({
                <Link
                   prefetch="intent"
                   reloadDocument={true}
-                  to={`/login?redirectTo=/${site.slug}`}
+                  to={`${loginPath}/login?redirectTo=/`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"
                >
@@ -96,7 +105,7 @@ export function MobileHeader({
                <div className="relative z-10 flex w-full items-center justify-end gap-3 py-4 border-b border-color">
                   <Link
                      prefetch="intent"
-                     to="/join"
+                     to={joinPath}
                      className="dark:shadow-zinc-950/40 group relative inline-flex h-8 items-center justify-center overflow-hidden 
                                  rounded-lg px-3 py-2 font-medium text-indigo-600 shadow shadow-zinc-400 transition duration-300 ease-out"
                   >
@@ -114,7 +123,7 @@ export function MobileHeader({
                      className="dark:border-zinc-600 dark:bg-dark450 dark:shadow-zinc-950/40 flex h-8 items-center
                                  justify-center rounded-lg border px-3 text-center bg-white
                                  text-xs font-bold uppercase shadow-sm shadow-zinc-300"
-                     to={`/login?redirectTo=${location.pathname}`}
+                     to={`${loginPath}/login?redirectTo=${location.pathname}`}
                   >
                      {t("login.action", { ns: "auth" })}
                   </Link>
@@ -126,6 +135,15 @@ export function MobileHeader({
                            pattern-zinc-200 pattern-size-2 dark:pattern-bg-bg2Dark"
             />
          </header>
+         <MobileTray
+            onOpenChange={setFollowerMenuOpen}
+            open={isFollowerMenuOpen}
+         >
+            <FollowingTrayContent
+               site={site}
+               setFollowerMenuOpen={setFollowerMenuOpen}
+            />
+         </MobileTray>
       </>
    );
 }

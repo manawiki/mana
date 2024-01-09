@@ -1,6 +1,6 @@
-import type { OptionType } from "../components/select";
 import type { Time, TimeDisplay, DisplayFormat } from "./types";
 import { Meridiem } from "./types";
+import type { OptionType } from "../components/select";
 
 const option = (n: number) => ({
    value: n,

@@ -7,12 +7,12 @@ import type {
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { assertIsDelete, assertIsPost } from "~/utils/http.server";
+import { loginPath } from "~/utils/login-path.server";
 import {
-   assertIsDelete,
-   assertIsPost,
    getMultipleFormData,
    uploadImage,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import { Entry } from "./components/Entry";
 import { fetchEntry } from "./utils/fetchEntry.server";
@@ -57,7 +57,10 @@ export const action: ActionFunction = async ({
    context: { payload, user },
    request,
 }) => {
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   if (!user || !user.id)
+      return redirect(loginPath, {
+         status: 302,
+      });
 
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["entryUpdateIcon", "entryDeleteIcon"]),

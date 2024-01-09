@@ -15,18 +15,21 @@ import { Editable, Slate } from "slate-react";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Comment, User } from "~/db/payload-types";
-import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { Toolbar } from "~/routes/_editor+/core/components/Toolbar";
 import { useEditor } from "~/routes/_editor+/core/plugins";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { isAdding, isProcessing } from "~/utils";
+import { isAdding, isProcessing } from "~/utils/form";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   const { user } = useRouteLoaderData("root") as { user: User };
+   const { user, loginPath } = useRouteLoaderData("root") as {
+      user: User;
+      loginPath: string;
+   };
 
    let location = useLocation();
 
@@ -54,7 +57,7 @@ export function Comments({ comments }: { comments: Comment[] }) {
                      <div className="mb-5 text-sm pl-4 border-l-2 border-color-sub">
                         <Link
                            className="underline font-bold pr-1 hover:text-blue-500"
-                           to={`/login?redirectTo=${location.pathname}`}
+                           to={`${loginPath}?redirectTo=${location.pathname}`}
                         >
                            Login
                         </Link>
@@ -226,7 +229,7 @@ function CommentRow({
                            )
                         }
                         className="border shadow-sm shadow-emerald-100 dark:shadow-emerald-950/50 active:border-emerald-300 group
-                        hover:dark:border-emerald-600/70 border-emerald-300/60 bg-emerald-50/50 hover:bg-emerald-50 dark:bg-emerald-950/10
+                        hover:dark:border-emerald-600/70 dark:hover:bg-emerald-950 border-emerald-300/60 bg-emerald-50/50 hover:bg-emerald-50 dark:bg-emerald-950/10
                       dark:border-emerald-700/50 w-5 h-5 rounded-md flex items-center justify-center dark:active:border-emerald-600"
                      >
                         <Icon
@@ -245,7 +248,7 @@ function CommentRow({
                      <button
                         onClick={() => setReplyOpen(!isReplyOpen)}
                         className="shadow-sm dark:shadow-zinc-800 flex items-center gap-0.5 border dark:border-zinc-600/50 mr-1
-                     dark:hover:border-zinc-500/50 rounded-full bg-3-sub pl-1 pr-2.5 bg-zinc-50 hover:border-zinc-300"
+                     dark:hover:border-zinc-500/50 rounded-full dark:bg-dark350 pl-1 pr-2.5 bg-zinc-50 hover:border-zinc-300"
                      >
                         <div className="w-5 h-5 rounded text-1 flex items-center justify-center">
                            {isReplyOpen ? (

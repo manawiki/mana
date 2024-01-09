@@ -9,8 +9,8 @@ import { Transforms } from "slate";
 import { ReactEditor, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
-import { delay } from "~/utils";
 import { useTheme } from "~/utils/client-hints";
+import { delay } from "~/utils/delay";
 
 import type { CodeBlockElement, CustomElement } from "../core/types";
 

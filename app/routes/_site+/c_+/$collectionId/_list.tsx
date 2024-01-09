@@ -25,14 +25,17 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { isAdding } from "~/utils/form";
 import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
+} from "~/utils/http.server";
+import { loginPath } from "~/utils/login-path.server";
+import {
    getMultipleFormData,
-   isAdding,
    uploadImage,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import { fetchListCore } from "./utils/fetchListCore.server";
 import { listMeta } from "./utils/listMeta";
@@ -60,7 +63,7 @@ export async function loader({
       collectionId: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { page } = zx.parseQuery(request, CollectionsAllSchema);
 
@@ -266,7 +269,7 @@ export const action: ActionFunction = async ({
    context: { payload, user },
    request,
 }) => {
-   if (!user || !user.id) return redirect("/login", { status: 302 });
+   if (!user || !user.id) return redirect(loginPath, { status: 302 });
 
    const { intent } = await zx.parseForm(request, {
       intent: z.enum([

@@ -2,7 +2,7 @@ import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 
-import { isSiteOwnerOrAdmin } from "~/access/site";
+import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { cacheThis } from "~/utils/cache.server";
 
@@ -18,7 +18,7 @@ export async function getEmbeddedContent({
    params: Params;
    request: any;
 }) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    //We can't use param since it won't exist on a custom site
    const url = new URL(request.url).pathname;
