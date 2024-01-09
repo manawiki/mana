@@ -43,9 +43,6 @@ export const loader = async ({
 }: LoaderFunctionArgs) => {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   let { hostname } = new URL(request.url);
-   let [subDomain] = hostname.split(".");
-
    const locale = await i18nextServer.getLocale(request);
    // Extracts the toast from the request
    const { toast, headers } = await getToast(request);
@@ -70,6 +67,8 @@ export const loader = async ({
    }));
    const hints = getHints(request);
 
+   const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
+
    return json(
       {
          requestInfo: {
@@ -77,8 +76,7 @@ export const loader = async ({
             theme: getTheme(request) ?? hints.theme,
          },
          sitePath: request.url,
-         hostname,
-         subDomain,
+         stripePublicKey,
          toast,
          locale,
          user,
