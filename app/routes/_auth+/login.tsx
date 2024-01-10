@@ -14,6 +14,7 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
+import * as cookie from "cookie";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
@@ -31,14 +32,9 @@ import {
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-   safeRedirect,
-} from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost, safeRedirect } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -203,7 +199,7 @@ export default function Login() {
                      value="login"
                      type="submit"
                      color="dark/white"
-                     className="w-full h-10"
+                     className="w-full h-10 cursor-pointer"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
@@ -283,11 +279,32 @@ export const action: ActionFunction = async ({
             email: z.string().email().optional(),
          });
          try {
-            await payload.login({
+            // So subdomains can share the cookie, we will use the rest api to set the cookie manually
+            const json = await payload.login({
                collection: "users",
                data: { email, password },
-               //@ts-ignore
-               res,
+            });
+
+            const hostname = new URL(request.url).hostname;
+
+            // set the cookie on domain level so all subdomains can access it
+            let domain = hostname.split(".").slice(-2).join(".");
+
+            if (!json.token) throw new Error("No token found");
+
+            return redirect(redirectTo || "/", {
+               headers: {
+                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
+                     httpOnly: true,
+                     secure:
+                        process.env.NODE_ENV === "production" &&
+                        domain !== "localhost",
+                     sameSite: "lax",
+                     path: "/",
+                     maxAge: 60 * 60 * 24 * 30, // 30 days
+                     domain,
+                  }),
+               },
             });
          } catch (error) {
             return redirectWithError(

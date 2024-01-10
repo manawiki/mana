@@ -2,12 +2,16 @@ import { Suspense } from "react";
 
 import { offset, shift } from "@floating-ui/react";
 import { Float } from "@headlessui-float/react";
-import { type LoaderFunctionArgs, json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Await, useFetcher, useLoaderData } from "@remix-run/react";
+import { jsonWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import type { Config } from "payload/generated-types";
+import { Icon } from "~/components/Icon";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
@@ -17,13 +21,12 @@ import { ManaEditor } from "~/routes/_editor+/editor";
 import { fetchHomeContent } from "./utils/fetchHomeContent.server";
 import { fetchHomeUpdates } from "./utils/fetchHomeUpdates.server";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
-import { Icon } from "~/components/Icon";
 
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
    });
@@ -35,7 +38,7 @@ export async function loader({
       request,
    });
 
-   const { home, isChanged, versions } = await fetchHomeContent({
+   const { home, homeContentId, isChanged, versions } = await fetchHomeContent({
       page,
       payload,
       siteSlug,
@@ -43,11 +46,20 @@ export async function loader({
       request,
    });
 
-   return json({ home, isChanged, updateResults, versions, siteSlug });
+   return json({
+      home,
+      homeContentId,
+      isChanged,
+      updateResults,
+      versions,
+      siteSlug,
+   });
 }
 
 export default function SiteIndexMain() {
-   const { home, siteSlug, isChanged } = useLoaderData<typeof loader>();
+   const { home, homeContentId, siteSlug, isChanged } =
+      useLoaderData<typeof loader>();
+
    const fetcher = useFetcher();
    const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
 
@@ -84,7 +96,7 @@ export default function SiteIndexMain() {
          <div>
             <EditorCommandBar
                collectionSlug="homeContents"
-               siteId={siteSlug}
+               homeContentId={homeContentId}
                fetcher={fetcher}
                isChanged={isChanged}
             />
@@ -110,3 +122,38 @@ const Loading = () => (
       />
    </div>
 );
+
+export async function action({
+   context: { payload, user },
+   request,
+   params,
+}: ActionFunctionArgs) {
+   const { intent, collectionSlug, homeContentId } = await zx.parseForm(
+      request,
+      {
+         homeContentId: z.string(),
+         intent: z.enum(["publish"]),
+         collectionSlug: z.custom<keyof Config["collections"]>(),
+      },
+   );
+
+   if (!user)
+      throw redirect("/login", {
+         status: 302,
+      });
+
+   switch (intent) {
+      case "publish": {
+         await payload.update({
+            collection: collectionSlug,
+            id: homeContentId,
+            data: {
+               _status: "published",
+            },
+            overrideAccess: false,
+            user,
+         });
+         return jsonWithSuccess(null, "Successfully published");
+      }
+   }
+}

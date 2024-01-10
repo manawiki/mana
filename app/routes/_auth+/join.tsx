@@ -26,14 +26,9 @@ import {
    Label,
 } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
-import type { loader as rootLoader } from "~/root";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-} from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 export async function loader({
    context: { user },
@@ -52,10 +47,7 @@ const JoinFormSchema = z.object({
       .string()
       .email("Invalid email")
       .transform((email) => email.toLowerCase()),
-   password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .toLowerCase(),
+   password: z.string().min(8, "Password must be at least 8 characters long"),
    username: z
       .string()
       .regex(
@@ -67,12 +59,7 @@ const JoinFormSchema = z.object({
       .toLowerCase(),
 });
 
-export const meta: MetaFunction<
-   typeof loader,
-   {
-      root: typeof rootLoader;
-   }
-> = () => {
+export const meta: MetaFunction = () => {
    return [
       {
          title: `Join - Mana`,
@@ -92,6 +79,7 @@ export default function Signup() {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
+
    return (
       <>
          <div
@@ -145,7 +133,7 @@ export default function Signup() {
                   value="join"
                   type="submit"
                   color="dark/white"
-                  className="w-full h-10 mb-6"
+                  className="w-full h-10 mb-6 cursor-pointer"
                   disabled={disabled}
                >
                   {adding ? <DotLoader /> : t("register.action")}

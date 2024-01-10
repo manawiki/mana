@@ -14,8 +14,9 @@ import { zx } from "zodix";
 import { DotLoader } from "~/components/DotLoader";
 import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
 import { Input } from "~/components/Input";
-import { assertIsPost, isAdding, isProcessing } from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+import { isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const PasswordResetSchema = z.object({
    password: z.string().min(8, "Password must be at least 8 characters long"),
@@ -34,10 +35,10 @@ export async function loader({
    return json({ title });
 }
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
    ];
 };

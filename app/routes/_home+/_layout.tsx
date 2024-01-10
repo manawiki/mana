@@ -4,14 +4,9 @@ import { Link, Outlet, useLocation } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { LogoFull } from "~/components/Logo";
-
-import { LoggedIn } from "../_auth+/components/LoggedIn";
-import { LoggedOut } from "../_auth+/components/LoggedOut";
-import { MobileTray } from "../_site+/_components/MobileTray";
-import {
-   UserDesktopMenu,
-   UserTrayContent,
-} from "../_site+/_components/UserMenu";
+import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
+import { UserMenu } from "~/routes/_auth+/components/UserMenu";
 
 export default function IndexLayout() {
    return (
@@ -38,10 +33,6 @@ function Header() {
 
    return (
       <header className="z-50 w-full absolute">
-         {/* ==== User Menu: Mobile ==== */}
-         <MobileTray onOpenChange={setUserMenuOpen} open={isUserMenuOpen}>
-            <UserTrayContent onOpenChange={setUserMenuOpen} />
-         </MobileTray>
          <div className="flex items-center justify-between">
             <LoggedIn>
                <div className="mx-auto max-w-[680px] w-full flex items-center justify-between px-4 tablet:px-0 border-b-2 py-4 border-color">
@@ -49,7 +40,10 @@ function Header() {
                      <LogoFull />
                   </Link>
                   <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
-                     <UserDesktopMenu />
+                     <UserMenu
+                        isUserMenuOpen={isUserMenuOpen}
+                        setUserMenuOpen={setUserMenuOpen}
+                     />
                      <button
                         className="flex h-9 w-9 items-center laptop:hidden justify-center"
                         onClick={() => setUserMenuOpen(true)}

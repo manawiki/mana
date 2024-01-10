@@ -3,9 +3,9 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
-import { List } from "~/routes/_site+/c_+/_components/List";
-import { customListMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
+import { customListMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
+import { List } from "~/routes/_site+/c_+/_components/List";
 
 export { customListMeta as meta };
 
@@ -15,11 +15,13 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    const { list } = await fetchList({
-      params,
+      request,
       gql: {
          query: QUERY,
          variables: {},
       },
+      payload,
+      user,
    });
    return json({ list });
 }

@@ -31,9 +31,11 @@ import {
    assertIsDelete,
    assertIsPatch,
    assertIsPost,
+} from "~/utils/http.server";
+import {
    getMultipleFormData,
    uploadImage,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
@@ -52,7 +54,7 @@ export async function loader({
    params,
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { page } = zx.parseQuery(request, {
       page: z.coerce.number().optional(),
@@ -268,11 +270,9 @@ export async function action({
       p: z.string(),
    });
 
-   const { siteSlug } = getSiteSlug(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const url = new URL(request.url).pathname;
-
-   if (!user) throw redirect(`/login?redirectTo=${url}`, { status: 302 });
+   if (!user) throw redirect("/login", { status: 302 });
 
    switch (intent) {
       case "updateTitle": {

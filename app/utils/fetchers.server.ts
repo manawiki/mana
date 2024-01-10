@@ -1,13 +1,6 @@
-import { GraphQLClient } from "graphql-request";
+import { request as gqlRequest } from "graphql-request";
 
-const authGraphQLClient = (siteSlug?: string) =>
-   new GraphQLClient(gqlEndpoint({ siteSlug }), {
-      ...(process.env.MANA_APP_KEY && {
-         headers: {
-            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
-         },
-      }),
-   });
+import { apiDBPath, apiPath } from "./api-path.server";
 
 export function gqlEndpoint({
    siteSlug,
@@ -15,16 +8,11 @@ export function gqlEndpoint({
    siteSlug?: string | undefined | null;
 }) {
    //Custom sites
-   if (siteSlug)
-      return `https://${siteSlug}-db.${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
+   if (siteSlug) return `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
 
    return process.env.NODE_ENV == "development"
       ? "http://localhost:3000/api/graphql"
-      : `https://${process.env.PAYLOAD_PUBLIC_HOST_DOMAIN}/api/graphql`;
-}
-
-export function swrRestFetcher(...args: any) {
-   return fetch(args).then((res) => res.json());
+      : `https://${apiPath}/api/graphql`;
 }
 
 export function authRestFetcher({
@@ -61,14 +49,25 @@ export function authGQLFetcher({
    document,
    variables,
    siteSlug,
+   request,
 }: {
    document?: any;
    variables?: any;
    siteSlug?: string;
+   request?: Request;
 }) {
    try {
-      return authGraphQLClient(siteSlug).request(document, variables);
+      return gqlRequest(gqlEndpoint({ siteSlug }), document, variables, {
+         ...(request && {
+            cookie: request?.headers.get("cookie") ?? "",
+         }),
+         ...(process.env.MANA_APP_KEY && {
+            Authorization: `users API-Key ${process.env.MANA_APP_KEY}`,
+         }),
+      });
    } catch (err) {
       console.log(err);
    }
 }
+
+export { gqlFormat } from "./to-words";

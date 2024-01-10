@@ -1,14 +1,37 @@
-import type { CollectionConfig } from "payload/types";
+import type {
+   CollectionAfterDeleteHook,
+   CollectionConfig,
+} from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "../../access/site";
+import { canMutateAsSiteAdmin } from "./site/access";
 
 export const entriesSlug = "entries";
+
+const afterDeleteHook: CollectionAfterDeleteHook = async ({
+   req: { payload },
+   doc,
+}) => {
+   try {
+      await payload.delete({
+         collection: "contentEmbeds",
+         where: {
+            relationId: { equals: doc.id },
+         },
+      });
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
+};
+
 export const Entries: CollectionConfig = {
    slug: entriesSlug,
    admin: {
       useAsTitle: "name",
+   },
+   hooks: {
+      afterDelete: [afterDeleteHook],
    },
    access: {
       create: canMutateAsSiteAdmin("entries"),

@@ -13,41 +13,14 @@ export const isSiteOwnerOrAdmin = (userId: string, site: Site | undefined) => {
    return false;
 };
 
-export const canReadPost =
-   () =>
-   //@ts-ignore
-   async ({ req: { user, payload }, id }) => {
-      if (!user)
-         return {
-            publishedAt: {
-               exists: true,
-            },
-         };
-
-      if (user && user.roles.includes("staff")) return true;
-
-      //Singleton
-      if (user && id) {
-         const content = await payload.findByID({
-            collection: "posts",
-            id,
-         });
-         const hasAccess = isSiteOwnerOrAdmin(user.id, content?.site);
-         if (!hasAccess)
-            return {
-               publishedAt: {
-                  exists: true,
-               },
-            };
-         return hasAccess;
-      }
-      //List
-      return {
-         publishedAt: {
-            exists: true,
-         },
-      };
-   };
+export const isSiteOwner = (
+   userId: string,
+   siteOwner: Site["owner"] | undefined,
+) => {
+   const isSiteOwner = userId == (siteOwner as any);
+   if (isSiteOwner) return true;
+   return false;
+};
 
 export const canRead =
    (
@@ -131,22 +104,27 @@ export const canMutateAsSiteAdmin =
       return false;
    };
 
-export const canMutateFieldAsSiteAdmin =
-   (collectionSlug: "comments"): FieldAccess<{ id: string }, unknown, User> =>
-   async ({ req: { user, payload }, id: resultId, data }) => {
-      if (user) {
-         if (user?.roles?.includes("staff")) return true;
-         const userId = user.id;
-         // Update and Delete
-         if (resultId) {
-            const item = await payload.findByID({
-               collection: collectionSlug,
-               id: resultId,
-               depth: 1,
-            });
-            if (item.site) return isSiteOwnerOrAdmin(userId, item.site);
-         }
+export const siteFieldAsSiteAdmin: FieldAccess<
+   { id: string },
+   unknown,
+   User
+> = async ({ req: { user, payload }, id, data }) => {
+   if (user) {
+      if (user?.roles?.includes("staff")) return true;
+      console.log(user?.id);
+      const userId = user?.id;
+
+      // Read and Update
+      if (id) {
+         const item = await payload.findByID({
+            collection: "sites",
+            id,
+            depth: 1,
+         });
+         if (item) return isSiteOwnerOrAdmin(userId, item);
       }
-      // Reject everyone else
-      return false;
-   };
+   }
+
+   // Reject everyone else
+   return false;
+};

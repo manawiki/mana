@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { assertIsPost } from "~/utils";
+import { assertIsPost } from "~/utils/http.server";
 
 export async function action({
    context: { payload, user },
@@ -16,11 +16,12 @@ export async function action({
       intent: z.enum(["unpublish", "publish"]),
       pageId: z.string(),
       collectionSlug: z.custom<keyof Config["collections"]>(),
-      collectionId: z.string(),
-      entryId: z.string(),
    });
 
-   if (!user) throw redirect("/login", { status: 302 });
+   if (!user)
+      throw redirect("/login", {
+         status: 302,
+      });
 
    switch (intent) {
       case "unpublish": {

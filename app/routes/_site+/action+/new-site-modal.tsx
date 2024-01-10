@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { json, redirect, type ActionFunction } from "@remix-run/node";
-import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import {
+   Form,
+   Link,
+   useActionData,
+   useNavigation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import { createCustomIssues, useZorm } from "react-zorm";
@@ -12,15 +18,13 @@ import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Modal } from "~/components/Modal";
 import { BlockType } from "~/routes/_editor+/core/types";
+import { isAdding, isProcessing, type FormResponse } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { safeNanoID } from "~/utils/nanoid";
 import {
-   assertIsPost,
-   isAdding,
-   isProcessing,
    getMultipleFormData,
    uploadImage,
-   safeNanoID,
-   type FormResponse,
-} from "~/utils";
+} from "~/utils/upload-handler.server";
 
 import { LoggedIn } from "../../_auth+/components/LoggedIn";
 import { LoggedOut } from "../../_auth+/components/LoggedOut";
@@ -133,7 +137,6 @@ export function NewSiteModal() {
                            justify-center rounded-full border text-center text-sm
                            font-bold shadow-sm"
                         to="/login"
-                        // to={`/login?redirectTo=${location.pathname}`}
                      >
                         {t("login.action", { ns: "auth" })}
                      </Link>
