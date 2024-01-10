@@ -1,5 +1,4 @@
-import { NavLink, useRouteLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { NavLink, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
@@ -8,9 +7,8 @@ import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { PinnedSideMenu } from "./Menu";
 
 export function ColumnTwo() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    return (
       <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
          <div className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[230px]">

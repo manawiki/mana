@@ -1,5 +1,9 @@
-import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import {
+   Link,
+   useLoaderData,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import type { User } from "~/db/payload-types";
@@ -14,13 +18,11 @@ import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 import { SidebarItem } from "./SidebarItem";
 
 export function ColumnOne() {
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
       siteSlug: string;
-   };
-
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
    };
 
    const location = useLocation();

@@ -2,8 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Link, useFetcher, useRouteLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
@@ -25,9 +24,8 @@ export function SiteHeader({
    setSearchToggle: Dispatch<SetStateAction<boolean>>;
    searchToggle: boolean;
 }) {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");

@@ -1,12 +1,6 @@
 import { useState } from "react";
 
-import {
-   Link,
-   useFetcher,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
@@ -20,9 +14,7 @@ import { isAdding } from "~/utils/form";
 import { FollowingTrayContent, MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
