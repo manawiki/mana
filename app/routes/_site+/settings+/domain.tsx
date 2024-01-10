@@ -66,15 +66,45 @@ export async function loader({
          slug: {
             equals: siteSlug,
          },
-         domain: {
+         customDomainInvoiceId: {
             exists: true,
          },
-         customDomainInvoiceId: {
+         and: [
+            {
+               domain: {
+                  exists: true,
+               },
+            },
+            {
+               domain: {
+                  not_equals: "",
+               },
+            },
+         ],
+      },
+      depth: 0,
+   });
+
+   const customFlyDomainData = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+         v4IP: {
+            exists: true,
+         },
+         flyAppId: {
             exists: true,
          },
       },
       depth: 0,
    });
+
+   //If flyAppId exists, it a custom site with own server, otherwise use default
+   const flyAppId = customFlyDomainData.docs[0]?.flyAppId ?? "mana";
+   const ipv4 = customFlyDomainData.docs[0]?.v4IP ?? "149.248.204.56";
+   const ipv6 = customFlyDomainData.docs[0]?.v6IP ?? "";
 
    if (domainExists.totalDocs === 0) {
       //If domain is not setup, check if user already purchased domain access
@@ -108,7 +138,7 @@ export async function loader({
             //Check if user has a default payment method setup
             //@ts-ignore
             if (customer?.invoice_settings?.default_payment_method) {
-               return json({ canPurchaseDomain: true });
+               return json({ canPurchaseDomain: true, flyAppId });
             }
          }
 
@@ -117,32 +147,11 @@ export async function loader({
       }
 
       //Domain already purchased, but not setup
-      return json({ canSetupDomain: true });
+      return json({ canSetupDomain: true, flyAppId });
    }
 
-   //If domain exists, we need to fetch the certificate data
+   //If domain exists and fly already created the cert, we then fetch the certificate data
    if (domainExists.totalDocs === 1) {
-      const domainData = await payload.find({
-         collection: "sites",
-         where: {
-            slug: {
-               equals: siteSlug,
-            },
-            v4IP: {
-               exists: true,
-            },
-            flyAppId: {
-               exists: true,
-            },
-         },
-         depth: 0,
-      });
-
-      //If flyAppId exists, it a custom site with own server, otherwise use default
-      const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
-      const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
-      const ipv6 = domainData.docs[0]?.v6IP ?? "";
-
       const query = {
          query: {
             __variables: {
@@ -299,7 +308,6 @@ export default function Settings() {
                </div>
             </>
          )}
-
          <fetcher.Form
             className={clsx(
                data?.canPurchaseDomain
@@ -649,11 +657,19 @@ export async function action({
 
             const payInvoice = await stripe.invoices.pay(invoice.id);
 
-            if (payInvoice) {
-               return jsonWithSuccess(
-                  null,
-                  "Success purchasing domain. You will receive an email shortly with your domain details.",
-               );
+            if (payInvoice.status === "paid") {
+               const updateSite = await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     customDomainInvoiceId: invoice.id,
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               if (updateSite)
+                  return jsonWithSuccess(null, "Successfully purchased domain");
             }
          } catch (err: any) {
             // Error code will be authentication_required if authentication is needed
@@ -738,18 +754,8 @@ export async function action({
             if (existingDomain.totalDocs == 1) {
                return jsonWithError(null, "Domain name already exists...");
             }
-            //If domain doesn't exist, add it
+            //If domain doesn't exist, create a cert on fly
             if (existingDomain.totalDocs == 0) {
-               await payload.update({
-                  collection: "sites",
-                  id: siteId,
-                  data: {
-                     //@ts-ignore
-                     domain: domain,
-                  },
-                  user,
-                  overrideAccess: false,
-               });
                const mutation = {
                   mutation: {
                      __variables: {
@@ -783,7 +789,7 @@ export async function action({
                   pretty: true,
                });
 
-               await gqlRequest(
+               const setupFlyDomain = await gqlRequest(
                   endpoint,
                   graphql_query,
                   {
@@ -796,8 +802,20 @@ export async function action({
                      }),
                   },
                );
-
-               return jsonWithSuccess(null, "Domain name added...");
+               if (setupFlyDomain) {
+                  const updateSite = await payload.update({
+                     collection: "sites",
+                     id: siteId,
+                     data: {
+                        //@ts-ignore
+                        domain: domain,
+                     },
+                     user,
+                     overrideAccess: false,
+                  });
+                  if (updateSite)
+                     return jsonWithSuccess(null, "Domain name added...");
+               }
             }
          } catch (err: unknown) {
             console.log(err);
