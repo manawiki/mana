@@ -480,6 +480,7 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
          <main className="mx-auto max-w-[728px] group relative">
             <ManaEditor
                key={data?.id}
+               siteId={entry?.siteId}
                fetcher={fetcher}
                collectionSlug="contentEmbeds"
                subSectionId={subSection?.id}
@@ -493,7 +494,6 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
             <EditorCommandBar
                collectionSlug="contentEmbeds"
                collectionId={entry.collectionSlug}
-               siteId={entry.siteSlug}
                entryId={entry?.id}
                pageId={data?.id}
                fetcher={fetcher}

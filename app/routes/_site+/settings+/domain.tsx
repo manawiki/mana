@@ -11,6 +11,7 @@ import {
    useRevalidator,
    useRouteLoaderData,
 } from "@remix-run/react";
+import clsx from "clsx";
 import { request as gqlRequest } from "graphql-request";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import { useZorm } from "react-zorm";
@@ -24,7 +25,7 @@ import { Button } from "~/components/Button";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import { Code, Strong, Text, TextLink } from "~/components/Text";
+import { Code, Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
@@ -32,7 +33,6 @@ import { stripe } from "~/utils/stripe.server";
 
 import { Record } from "./components/Record";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
-import clsx from "clsx";
 
 const endpoint = "https://api.fly.io/graphql";
 

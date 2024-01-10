@@ -27,7 +27,7 @@ export const EditorCommandBar = ({
    collectionId,
    entryId,
    pageId,
-   siteId,
+   homeContentId,
    primaryOptions,
    secondaryOptions,
    children,
@@ -38,7 +38,7 @@ export const EditorCommandBar = ({
    collectionId?: string;
    entryId?: string;
    pageId?: string;
-   siteId?: string;
+   homeContentId?: string;
    primaryOptions?: ReactNode;
    secondaryOptions?: ReactNode;
    children?: ReactNode;
@@ -74,7 +74,7 @@ export const EditorCommandBar = ({
       collectionSlug,
       intent: "publish",
       ...(pageId && { pageId }),
-      ...(siteId && { siteId }),
+      ...(homeContentId && { homeContentId }),
       ...(collectionId && { collectionId }),
       ...(entryId && { entryId }),
    };

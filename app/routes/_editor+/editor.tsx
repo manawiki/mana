@@ -20,6 +20,7 @@ export function ManaEditor({
    fetcher,
    defaultValue,
    pageId,
+   siteId,
    subSectionId,
    entryId,
    collectionEntity,
@@ -28,6 +29,7 @@ export function ManaEditor({
    fetcher: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
    pageId?: string;
+   siteId?: string;
    subSectionId?: string | undefined;
    entryId?: string;
    collectionEntity?: string;
@@ -48,6 +50,7 @@ export function ManaEditor({
             {
                content: JSON.stringify(debouncedValue),
                intent: "update",
+               siteId,
                pageId,
                collectionSlug,
                collectionEntity,
@@ -148,12 +151,14 @@ export async function action({
             }
             case "contentEmbeds": {
                const {
+                  siteId,
                   content,
                   pageId,
                   subSectionId,
                   entryId,
                   collectionEntity,
                } = await zx.parseForm(request, {
+                  siteId: z.string(),
                   content: z.string(),
                   pageId: z.string(),
                   subSectionId: z.string(),
@@ -169,6 +174,7 @@ export async function action({
                      overrideAccess: false,
                      user,
                   });
+                  console.log("got here");
 
                   return await payload.update({
                      collection: collectionSlug,
@@ -187,8 +193,7 @@ export async function action({
                      data: {
                         //@ts-ignore
                         relationId: entryId,
-                        //TODO
-                        site: siteSlug as any,
+                        site: siteId as any,
                         //@ts-ignore
                         subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
