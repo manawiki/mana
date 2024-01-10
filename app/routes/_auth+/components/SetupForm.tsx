@@ -6,7 +6,7 @@ import {
    useStripe,
 } from "@stripe/react-stripe-js";
 
-export function SetupForm({ clientSecret }: { clientSecret: string }) {
+export function SetupForm() {
    const stripe = useStripe();
    const elements = useElements();
 

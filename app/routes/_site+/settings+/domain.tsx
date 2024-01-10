@@ -24,7 +24,7 @@ import { Button } from "~/components/Button";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import { Code, Text, TextLink } from "~/components/Text";
+import { Code, Strong, Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
@@ -32,6 +32,7 @@ import { stripe } from "~/utils/stripe.server";
 
 import { Record } from "./components/Record";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
+import clsx from "clsx";
 
 const endpoint = "https://api.fly.io/graphql";
 
@@ -55,53 +56,93 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
+   invariant(user, "User must be logged in to mutate domain names");
+
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const domainData = await payload.find({
+   const domainExists = await payload.find({
       collection: "sites",
       where: {
          slug: {
             equals: siteSlug,
          },
-         v4IP: {
+         domain: {
             exists: true,
          },
-         flyAppId: {
+         customDomainInvoiceId: {
             exists: true,
          },
       },
       depth: 0,
    });
 
-   //If flyAppId exists, use it, otherwise use default
-   const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
-   const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
-   const ipv6 = domainData.docs[0]?.v6IP ?? "";
+   if (domainExists.totalDocs === 0) {
+      //If domain is not setup, check if user already purchased domain access
+      const domainAccessUnlocked = await payload.find({
+         collection: "sites",
+         where: {
+            slug: {
+               equals: siteSlug,
+            },
+            customDomainInvoiceId: {
+               exists: true,
+            },
+         },
+         depth: 0,
+      });
+
+      //User hasn't unlocked domain access, check if they can purchase a domain
+      if (domainAccessUnlocked.totalDocs === 0) {
+         //Check if user has billing setup
+         const userData = await payload.findByID({
+            collection: "users",
+            id: user.id,
+            depth: 0,
+         });
+
+         //User has billing setup, they can purchase a domain
+         if (userData?.stripeCustomerId) {
+            const customer = await stripe.customers.retrieve(
+               userData?.stripeCustomerId,
+            );
+            //Check if user has a default payment method setup
+            //@ts-ignore
+            if (customer?.invoice_settings?.default_payment_method) {
+               return json({ canPurchaseDomain: true });
+            }
+         }
+
+         //User doesn't have a stripeCustomerId, they need to add a payment method
+         return json({ billingAccountSetupRequired: true });
+      }
+
+      //Domain already purchased, but not setup
+      return json({ canSetupDomain: true });
+   }
 
    //If domain exists, we need to fetch the certificate data
-   const existingDomain = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteSlug,
+   if (domainExists.totalDocs === 1) {
+      const domainData = await payload.find({
+         collection: "sites",
+         where: {
+            slug: {
+               equals: siteSlug,
+            },
+            v4IP: {
+               exists: true,
+            },
+            flyAppId: {
+               exists: true,
+            },
          },
-         and: [
-            {
-               domain: {
-                  exists: true,
-               },
-            },
-            {
-               domain: {
-                  not_equals: "",
-               },
-            },
-         ],
-      },
-      depth: 0,
-   });
+         depth: 0,
+      });
 
-   if (existingDomain.totalDocs === 1) {
+      //If flyAppId exists, it a custom site with own server, otherwise use default
+      const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
+      const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
+      const ipv6 = domainData.docs[0]?.v6IP ?? "";
+
       const query = {
          query: {
             __variables: {
@@ -138,7 +179,7 @@ export async function loader({
          pretty: true,
       });
 
-      const domain = existingDomain.docs[0]?.domain;
+      const domain = domainExists.docs[0]?.domain;
 
       const certData = await gqlRequest(
          endpoint,
@@ -153,10 +194,14 @@ export async function loader({
             }),
          },
       );
-
-      return json({ certData, ipv4, ipv6, flyAppId });
+      return json({
+         certData,
+         ipv4,
+         ipv6,
+         flyAppId,
+      });
    }
-   return json({ ipv4, ipv6, flyAppId });
+   return null;
 }
 
 export default function Settings() {
@@ -185,29 +230,87 @@ export default function Settings() {
 
    const revalidator = useRevalidator();
 
+   const disabled =
+      deletingDomain ||
+      !data?.canSetupDomain ||
+      data.billingAccountSetupRequired;
+
    return (
       <>
-         <fetcher.Form method="post" ref={zo.ref}>
-            {/* <Button
-               className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
-               color="zinc"
-               type="button"
-               onClick={() => {
-                  fetcher.submit(
-                     {
-                        intent: "purchaseDomain",
-                        siteId: site.id,
-                     },
-                     {
-                        method: "post",
-                     },
-                  );
-               }}
-            >
-               Purchase
-            </Button> */}
+         {data?.billingAccountSetupRequired && <div>User billing setup</div>}
+         {data?.canPurchaseDomain && (
+            <>
+               <div
+                  className="shadow-sm dark:shadow-zinc-800 
+               border border-zinc-300/70 dark:border-zinc-600/50 bg-zinc-50 dark:bg-dark350 px-4 py-3.5 rounded-xl mb-4"
+               >
+                  <div
+                     className="flex items-center justify-between border-b
+               pb-3 mb-3 border-zinc-300/70 dark:border-zinc-600/50"
+                  >
+                     <div className="space-y-0.5">
+                        <div className="font-bold">Custom domain</div>
+                        <div className="text-sm text-1">
+                           Link a custom domain to your mana site
+                        </div>
+                     </div>
+                     <div className="laptop:flex text-right max-laptop:space-y-2 items-center gap-4">
+                        <Button
+                           className="!text-sm laptop:order-2 laptop:w-[82px] h-9 cursor-pointer"
+                           color="dark/white"
+                           type="button"
+                           onClick={() => {
+                              fetcher.submit(
+                                 {
+                                    intent: "purchaseDomain",
+                                    siteId: site.id,
+                                 },
+                                 {
+                                    method: "post",
+                                 },
+                              );
+                           }}
+                        >
+                           Purchase
+                        </Button>
+                        <div className="laptop:order-1 text-zinc-500 dark:text-zinc-400 text-sm">
+                           One-time{" "}
+                           <span className="dark:text-zinc-200 text-zinc-600 font-bold underline">
+                              $50 fee
+                           </span>
+                        </div>
+                     </div>
+                  </div>
+                  <div className="text-xs">
+                     Mana charges a one-time $50 USD fee to use a custom domain
+                     for your site.
+                  </div>
+               </div>
+               <div className="flex items-center gap-5 py-4">
+                  <span className="h-[1px] rounded-full bg-zinc-100 dark:bg-zinc-700/50 flex-grow" />
+                  <span className="text-sm text-1">
+                     <Icon
+                        className="dark:text-zinc-500 text-zinc-300"
+                        name="lock"
+                        size={16}
+                     />
+                  </span>
+                  <span className="h-[1px] rounded-full bg-zinc-100 dark:bg-zinc-700/50 flex-grow" />
+               </div>
+            </>
+         )}
+
+         <fetcher.Form
+            className={clsx(
+               data?.canPurchaseDomain
+                  ? "border-b dark:border-zinc-700/50 pb-6"
+                  : "",
+            )}
+            method="post"
+            ref={zo.ref}
+         >
             <input type="hidden" name="flyAppId" value={data?.flyAppId} />
-            <Field className="pb-4">
+            <Field disabled={disabled} className="pb-4">
                <Label>Domain Name</Label>
                <Description>
                   Setup a custom domain name for your site
@@ -229,6 +332,7 @@ export default function Settings() {
                   className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
                   color="zinc"
                   type="button"
+                  disabled={disabled}
                   onClick={() => {
                      fetcher.submit(
                         {
@@ -258,6 +362,7 @@ export default function Settings() {
                   className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
                   color="blue"
                   type="submit"
+                  disabled={disabled}
                >
                   {addingDomain ? (
                      <Icon
@@ -271,6 +376,7 @@ export default function Settings() {
                </Button>
             )}
          </fetcher.Form>
+
          {site.domain && (
             <div className="border-y-2 border-dashed border-color mt-6 py-6">
                <div className="pb-4 !text-base">
@@ -455,7 +561,8 @@ export default function Settings() {
                         If you’re using Cloudflare, you might be using their
                         Universal SSL feature which inserts a TXT record of{" "}
                         <Code>
-                           _acme_challenge{isSubDomain ? `.${subDomain}` : ""}
+                           _acme_challenge
+                           {isSubDomain ? `.${subDomain}` : ""}
                         </Code>{" "}
                         for your domain.
                         <Text className="pt-4">

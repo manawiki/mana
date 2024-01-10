@@ -27,6 +27,10 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
+         name: "customDomainInvoiceId",
+         type: "text",
+      },
+      {
          name: "trendingPages",
          type: "json",
       },
