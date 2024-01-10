@@ -1909,7 +1909,7 @@
   resolved "https://registry.yarnpkg.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
   integrity sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==
 
-"@payloadcms/bundler-vite@^0.1.5":
+"@payloadcms/bundler-vite@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@payloadcms/bundler-vite/-/bundler-vite-0.1.5.tgz#4c340dad8c0754a5e2c3c1148d91d01f05975e5c"
   integrity sha512-hTUtrovC9gKJ3FTEk5Gnk3dk/7+2dh3lQlTgWaAgW7loUTEdBKtL2y3LB0wMy4csY0bPIwQX61QbUkeMl7YRGQ==
@@ -1923,7 +1923,7 @@
     vite "^4.4.9"
     vite-plugin-virtual "^0.2.0"
 
-"@payloadcms/db-mongodb@^1.2.0":
+"@payloadcms/db-mongodb@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.2.0.tgz#9876da54ec18b5c01952f6db57a5d0f8259ed516"
   integrity sha512-cRgy2Dl/KXBxvm4kBkrRZcWge9R3dWC2taocjFxaTlzM0SQrQQtwGej8IiKmnUAswz897YzkQR4wQQwidEtb3A==
@@ -1945,7 +1945,7 @@
   dependencies:
     range-parser "^1.2.1"
 
-"@payloadcms/richtext-slate@^1.3.1":
+"@payloadcms/richtext-slate@1.3.1":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@payloadcms/richtext-slate/-/richtext-slate-1.3.1.tgz#049468143845fb0dd0aafaeb428bbb1d8a863e70"
   integrity sha512-DwHDn0F7PTGP1WGLQmpNRUdfhwHQwOFpBzXuQtIqlykkj5AAsZrLmfjQabTHPOzKZdLkMRrxhYOGERi4F1T5Hw==

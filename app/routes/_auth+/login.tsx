@@ -296,7 +296,9 @@ export const action: ActionFunction = async ({
                headers: {
                   "Set-Cookie": cookie.serialize("payload-token", json.token, {
                      httpOnly: true,
-                     secure: process.env.NODE_ENV === "production",
+                     secure:
+                        process.env.NODE_ENV === "production" &&
+                        domain !== "localhost",
                      sameSite: "lax",
                      path: "/",
                      maxAge: 60 * 60 * 24 * 30, // 30 days
