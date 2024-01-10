@@ -8,7 +8,11 @@ import { zx } from "zodix";
 import type { Entry, User } from "payload/generated-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlRequestWithCache, gql, cacheThis } from "~/utils/cache.server";
-import { gqlFormat, gqlEndpoint } from "~/utils/fetchers.server";
+import {
+   gqlFormat,
+   gqlEndpoint,
+   authGQLFetcher,
+} from "~/utils/fetchers.server";
 
 export async function getEntryFields({
    payload,
@@ -31,24 +35,39 @@ export async function getEntryFields({
 
    const collectionId = url.split("/")[2];
 
-   const collectionData = await cacheThis(
-      () =>
-         payload.find({
-            collection: "collections",
-            where: {
-               "site.slug": {
-                  equals: siteSlug,
-               },
-               slug: {
-                  equals: collectionId,
-               },
-            },
-            draft: true,
-            user,
-            overrideAccess: false,
-         }),
-      `collection-${siteSlug}-${collectionId}`,
-   );
+   const collectionData = user
+      ? await payload.find({
+           collection: "collections",
+           where: {
+              "site.slug": {
+                 equals: siteSlug,
+              },
+              slug: {
+                 equals: collectionId,
+              },
+           },
+           draft: true,
+           user,
+           overrideAccess: false,
+        })
+      : await cacheThis(
+           () =>
+              payload.find({
+                 collection: "collections",
+                 where: {
+                    "site.slug": {
+                       equals: siteSlug,
+                    },
+                    slug: {
+                       equals: collectionId,
+                    },
+                 },
+                 draft: true,
+                 user,
+                 overrideAccess: false,
+              }),
+           `collection-${siteSlug}-${collectionId}`,
+        );
 
    const collection = collectionData.docs[0];
 
@@ -78,10 +97,17 @@ export async function getEntryFields({
          siteSlug: collection.site.slug,
       });
 
-      const { entryData }: { entryData: PaginatedDocs<Entry> } =
-         await gqlRequestWithCache(endpoint, entryQuery, {
-            entryId,
-         });
+      const { entryData }: { entryData: PaginatedDocs<Entry> } = user
+         ? await gqlRequestWithCache(endpoint, entryQuery, {
+              entryId,
+           })
+         : await authGQLFetcher({
+              siteSlug: siteSlug,
+              document: entryQuery,
+              variables: {
+                 entryId,
+              },
+           });
 
       const entry = entryData?.docs[0];
 
@@ -102,35 +128,61 @@ export async function getEntryFields({
       };
    }
    //This is a core site, so we use the local api
-   const coreEntryData = await cacheThis(
-      () =>
-         payload.find({
-            collection: "entries",
-            where: {
-               "site.slug": {
-                  equals: siteSlug,
-               },
-               "collectionEntity.slug": {
-                  equals: collectionId,
-               },
-               or: [
-                  {
-                     slug: {
-                        equals: entryId,
-                     },
-                  },
-                  {
-                     id: {
-                        equals: entryId,
-                     },
-                  },
-               ],
-            },
-            user,
-            overrideAccess: false,
-         }),
-      `entries-${siteSlug}-${collectionId}-${entryId}`,
-   );
+   const coreEntryData = user
+      ? await payload.find({
+           collection: "entries",
+           where: {
+              "site.slug": {
+                 equals: siteSlug,
+              },
+              "collectionEntity.slug": {
+                 equals: collectionId,
+              },
+              or: [
+                 {
+                    slug: {
+                       equals: entryId,
+                    },
+                 },
+                 {
+                    id: {
+                       equals: entryId,
+                    },
+                 },
+              ],
+           },
+           user,
+           overrideAccess: false,
+        })
+      : await cacheThis(
+           () =>
+              payload.find({
+                 collection: "entries",
+                 where: {
+                    "site.slug": {
+                       equals: siteSlug,
+                    },
+                    "collectionEntity.slug": {
+                       equals: collectionId,
+                    },
+                    or: [
+                       {
+                          slug: {
+                             equals: entryId,
+                          },
+                       },
+                       {
+                          id: {
+                             equals: entryId,
+                          },
+                       },
+                    ],
+                 },
+                 user,
+                 overrideAccess: false,
+              }),
+           `entries-${siteSlug}-${collectionId}-${entryId}`,
+        );
 
    const entryData = coreEntryData.docs[0];
 
