@@ -1,5 +1,6 @@
 import type {
    CollectionAfterChangeHook,
+   CollectionAfterDeleteHook,
    CollectionConfig,
 } from "payload/types";
 
@@ -49,6 +50,43 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
    return doc;
 };
 
+const afterDeleteHook: CollectionAfterDeleteHook = async ({
+   req: { payload },
+   id, // id of document to delete
+   doc, // deleted document
+}) => {
+   try {
+      const siteId = doc.site.id;
+      const currentCollections = await payload.findByID({
+         collection: "sites",
+         id: siteId,
+      });
+
+      if (currentCollections?.collections) {
+         let collections = [] as string[];
+
+         if (doc.site?.collections.length > 1) {
+            //Delete existing collection from site
+            collections = currentCollections.collections
+               .map(({ id }: { id: string }) => id)
+               .filter((item) => item !== id)
+               .filter((e) => e);
+         }
+
+         payload.update({
+            collection: "sites",
+            id: siteId,
+            data: {
+               //@ts-ignore
+               collections: collections,
+            },
+         });
+      }
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
+};
+
 export const Collections: CollectionConfig = {
    slug: collectionsSlug,
    admin: {
@@ -62,6 +100,7 @@ export const Collections: CollectionConfig = {
    },
    hooks: {
       afterChange: [afterChangeHook],
+      afterDelete: [afterDeleteHook],
    },
    fields: [
       {
@@ -143,7 +182,6 @@ export const Collections: CollectionConfig = {
                name: "id",
                type: "text",
                required: true,
-               unique: true,
             },
             {
                name: "name",
@@ -165,18 +203,11 @@ export const Collections: CollectionConfig = {
                name: "subSections",
                type: "array",
                label: "Sub-Sections",
-               defaultValue: [
-                  {
-                     name: "Main",
-                     type: "editor",
-                  },
-               ],
                fields: [
                   {
                      name: "id",
                      type: "text",
                      required: true,
-                     unique: true,
                   },
                   {
                      name: "name",

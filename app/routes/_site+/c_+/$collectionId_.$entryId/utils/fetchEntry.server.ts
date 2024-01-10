@@ -53,6 +53,8 @@ export async function fetchEntry({
       GQLorREST,
       getEmbeddedContent({
          id: entry.id as string,
+         //@ts-ignore
+         siteSlug: entry.siteSlug,
          payload,
          params,
          request,

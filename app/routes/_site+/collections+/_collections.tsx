@@ -1,8 +1,13 @@
 import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Switch } from "@headlessui/react";
-import { type ActionFunction, type MetaFunction, json } from "@remix-run/node";
-import { Link, Outlet, useFetcher, useMatches } from "@remix-run/react";
+import { json } from "@remix-run/node";
+import type {
+   SerializeFrom,
+   ActionFunction,
+   MetaFunction,
+} from "@remix-run/node";
+import { Link, Outlet, useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
@@ -13,8 +18,8 @@ import { zx } from "zodix";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isProcessing, isAdding } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
 
@@ -61,9 +66,8 @@ function SlugField({ zo }: { zo: Zorm<typeof CollectionSchema> }) {
 }
 
 export default function CollectionIndex() {
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
    };
 
    //Show/hide the collection creation form
@@ -350,8 +354,19 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
-                  //@ts-ignore
-                  sections: [{ id: "main", name: "Main", showTitle: false }],
+                  sections: [
+                     {
+                        id: "main",
+                        name: "Main",
+                        subSections: [
+                           {
+                              id: "main",
+                              main: "main",
+                              type: "editor",
+                           },
+                        ],
+                     },
+                  ],
                },
                user,
                overrideAccess: false,
