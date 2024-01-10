@@ -340,7 +340,6 @@ export default function Settings() {
                   className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
                   color="zinc"
                   type="button"
-                  disabled={disabled}
                   onClick={() => {
                      fetcher.submit(
                         {
@@ -682,17 +681,6 @@ export async function action({
             DOMAIN_SCHEMA,
          );
          try {
-            await payload.update({
-               collection: "sites",
-               id: siteId,
-               data: {
-                  //@ts-ignore
-                  domain: "",
-               },
-               user,
-               overrideAccess: false,
-            });
-
             const mutation = {
                mutation: {
                   __variables: {
@@ -717,7 +705,7 @@ export async function action({
             const graphql_query = jsonToGraphQLQuery(mutation, {
                pretty: true,
             });
-            await gqlRequest(
+            const deleteFlyCert = await gqlRequest(
                endpoint,
                graphql_query,
                {
@@ -730,7 +718,19 @@ export async function action({
                   }),
                },
             );
-            return jsonWithSuccess(null, "Domain name removed...");
+            if (deleteFlyCert) {
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     domain: "",
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               return jsonWithSuccess(null, "Domain name removed...");
+            }
          } catch (err: unknown) {
             console.log(err);
             return jsonWithError(null, "Error, unable to delete domain.");
