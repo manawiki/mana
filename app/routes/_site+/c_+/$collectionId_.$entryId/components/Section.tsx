@@ -20,7 +20,7 @@ import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIs
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { ManaEditor } from "~/routes/_editor+/editor.tsx";
+import { ManaEditor } from "~/routes/_editor+/editor";
 import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionId_.$entryId/_entry";
 
 import type { Section } from "./Sections";
