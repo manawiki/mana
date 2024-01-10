@@ -18,6 +18,7 @@ import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlEndpoint } from "~/utils/fetchers.server";
 import { useDebouncedValue } from "~/utils/use-debounce";
 
 import { Top } from "./components/top";
@@ -77,10 +78,7 @@ export async function loader({
     }
    `;
 
-   const data = await gqlRequestWithCache(
-      new URL(request.url).origin + "/api/graphql",
-      QUERY,
-   );
+   const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
 
    const sites = data.sites;
 

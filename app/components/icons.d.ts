@@ -1,5 +1,4 @@
 export type IconName =
-  | "credit-card"
    | "wallet-2"
    | "external-link"
    | "globe"

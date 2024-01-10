@@ -28,7 +28,6 @@ import { Code, Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
-import { stripe } from "~/utils/stripe.server";
 
 import { Record } from "./components/Record";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
@@ -188,24 +187,6 @@ export default function Settings() {
    return (
       <>
          <fetcher.Form method="post" ref={zo.ref}>
-            {/* <Button
-               className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
-               color="zinc"
-               type="button"
-               onClick={() => {
-                  fetcher.submit(
-                     {
-                        intent: "purchaseDomain",
-                        siteId: site.id,
-                     },
-                     {
-                        method: "post",
-                     },
-                  );
-               }}
-            >
-               Purchase
-            </Button> */}
             <input type="hidden" name="flyAppId" value={data?.flyAppId} />
             <Field className="pb-4">
                <Label>Domain Name</Label>
@@ -231,10 +212,11 @@ export default function Settings() {
                   type="button"
                   onClick={() => {
                      fetcher.submit(
+                        //@ts-ignore
                         {
                            intent: "deleteDomain",
                            siteId: site.id,
-                           domain: site.domain ?? "",
+                           domain: site.domain,
                            flyAppId: data?.flyAppId,
                         },
                         {
@@ -494,10 +476,10 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionFunctionArgs) {
-   const { intent, siteId } = await zx.parseForm(request, {
-      intent: z.string(),
-      siteId: z.string(),
-   });
+   const { intent, domain, siteId, flyAppId } = await zx.parseForm(
+      request,
+      DOMAIN_SCHEMA,
+   );
 
    const site = await payload.findByID({
       collection: "sites",
@@ -514,50 +496,7 @@ export async function action({
    if (!isOwner && !user?.roles.includes("staff")) throw redirect("/404", 404);
 
    switch (intent) {
-      case "purchaseDomain": {
-         try {
-            const stripeUser = await payload.findByID({
-               collection: "users",
-               id: user.id,
-               user,
-               overrideAccess: false,
-            });
-
-            if (!stripeUser.stripeCustomerId) {
-               return jsonWithError(
-                  null,
-                  "You must add a payment method before purchasing a domain",
-               );
-            }
-            const invoice = await stripe.invoices.create({
-               customer: stripeUser.stripeCustomerId,
-               auto_advance: true,
-               collection_method: "charge_automatically",
-            });
-            await stripe.invoiceItems.create({
-               invoice: invoice.id,
-               customer: stripeUser.stripeCustomerId,
-               price: "price_1OVK2IHY2vBdJM8emeVNeZ7q",
-            });
-
-            const payInvoice = await stripe.invoices.pay(invoice.id);
-
-            if (payInvoice) {
-               return jsonWithSuccess(
-                  null,
-                  "Success purchasing domain. You will receive an email shortly with your domain details.",
-               );
-            }
-         } catch (err: any) {
-            // Error code will be authentication_required if authentication is needed
-            console.log("Error code is: ", err.code);
-         }
-      }
       case "deleteDomain": {
-         const { domain, flyAppId, siteId } = await zx.parseForm(
-            request,
-            DOMAIN_SCHEMA,
-         );
          try {
             await payload.update({
                collection: "sites",
@@ -614,10 +553,6 @@ export async function action({
          }
       }
       case "addDomain": {
-         const { domain, flyAppId, siteId } = await zx.parseForm(
-            request,
-            DOMAIN_SCHEMA,
-         );
          try {
             const existingDomain = await payload.find({
                collection: "sites",

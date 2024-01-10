@@ -33,7 +33,6 @@ export async function loader({
          return json({ customerPaymentMethods: customerPaymentMethods.data });
       }
    }
-   return null;
 }
 
 export const action: ActionFunction = async ({
@@ -63,9 +62,6 @@ export const action: ActionFunction = async ({
             const existingStripeUser = await payload.find({
                collection: "users",
                where: {
-                  id: {
-                     equals: user.id,
-                  },
                   stripeCustomerId: {
                      exists: true,
                   },

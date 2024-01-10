@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useFetcher, useRouteLoaderData } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -8,20 +8,17 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Text } from "~/components/Text";
-import type { loader as rootLoaderType } from "~/root";
 import type { loader as userLoaderType } from "~/routes/_auth+/auth-actions";
 import { useTheme } from "~/utils/client-hints";
 import { isAdding } from "~/utils/form";
 
 import { SetupForm } from "./SetupForm";
 
+const stripePromise = loadStripe(
+   "pk_test_51NIHqPHY2vBdJM8edEvVJJsZYBTB61TXs3R5oFPhD0kPNLXmCBCCGgOicF3S7EGVkp7YGTeKmVD2g5LsV7iC3pIj00UJr87Pmn",
+);
+
 export function Billing() {
-   const { stripePublicKey } = useRouteLoaderData("root") as SerializeFrom<
-      typeof rootLoaderType
-   >;
-
-   const stripePromise = loadStripe(stripePublicKey);
-
    const fetcher = useFetcher();
 
    //@ts-ignore
@@ -33,7 +30,7 @@ export function Billing() {
    const data = fetcher.data as SerializeFrom<typeof userLoaderType>;
 
    useEffect(() => {
-      if (fetcher.state === "idle" && fetcher.data == null) {
+      if (data == undefined && fetcher.state === "idle") {
          fetcher.load("/auth-actions");
       }
    }, [fetcher]);
@@ -41,72 +38,65 @@ export function Billing() {
    return (
       <>
          <div className="pb-4 font-bold">Payment Methods</div>
-         {clientSecret && (
-            <div className="p-[1px]">
-               <Elements
-                  stripe={stripePromise}
-                  options={{
-                     clientSecret: clientSecret,
-                     appearance: {
-                        theme: theme == "dark" ? "night" : "stripe",
-                     },
-                  }}
+         <div className="pb-3">
+            <div
+               className="dark:bg-dark350 bg-zinc-50 flex items-center mb-4
+                justify-between border border-color-sub px-4 py-3.5 rounded-xl"
+            >
+               <div className="flex-grow text-sm font-semibold">
+                  Add a payment method to your account
+               </div>
+               <Button
+                  color="blue"
+                  className="text-sm w-14"
+                  onClick={() =>
+                     fetcher.submit(
+                        { intent: "setupUserPayments" },
+                        {
+                           method: "post",
+                           action: "/auth-actions",
+                        },
+                     )
+                  }
                >
-                  <SetupForm clientSecret={clientSecret} />
-               </Elements>
+                  {adding ? (
+                     <Icon name="loader-2" size={16} className="animate-spin" />
+                  ) : (
+                     <>Add</>
+                  )}
+               </Button>
             </div>
-         )}
-         {data?.customerPaymentMethods ? (
-            <div className="pb-5">
+            {clientSecret && (
+               <div className="p-[1px]">
+                  <Elements
+                     stripe={stripePromise}
+                     options={{
+                        clientSecret: clientSecret,
+                        appearance: {
+                           theme: theme == "dark" ? "night" : "stripe",
+                        },
+                     }}
+                  >
+                     <SetupForm clientSecret={clientSecret} />
+                  </Elements>
+               </div>
+            )}
+         </div>
+         {data?.customerPaymentMethods && (
+            <>
+               <Text className="border-b-2 border-color pb-2 mb-2 font-semibold">
+                  Existing Payment Methods
+               </Text>
                {data?.customerPaymentMethods?.map((row) => {
                   return (
-                     <div
-                        className="flex items-center shadow-sm dark:shadow-zinc-800 justify-between gap-3 
-                        border dark:border-zinc-700 rounded-lg bg-3-sub px-3 py-2"
-                        key={row.type}
-                     >
-                        <div className="flex items-center gap-3">
-                           {row.type === "card" && (
-                              <Icon name="credit-card" size={18} className="" />
-                           )}
-                           <span className="text-1">{row.card?.brand}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           <div className="flex items-center gap-1">
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                           </div>
-                           <span>{row.card?.last4}</span>
-                        </div>
+                     <div className="flex items-center gap-3" key={row.type}>
+                        <span>{row.card?.brand}</span>
+                        <span>{row.card?.last4}</span>
                      </div>
                   );
                })}
-            </div>
-         ) : (
-            <Text>No payment methods</Text>
+            </>
          )}
-         <div className="flex items-center justify-end">
-            <Button
-               className="text-sm cursor-pointer"
-               onClick={() =>
-                  fetcher.submit(
-                     { intent: "setupUserPayments" },
-                     {
-                        method: "post",
-                        action: "/auth-actions",
-                     },
-                  )
-               }
-            >
-               {adding ? (
-                  <Icon name="loader-2" size={16} className="animate-spin" />
-               ) : (
-                  <>Add payment method</>
-               )}
-            </Button>
-         </div>
       </>
    );
 }
