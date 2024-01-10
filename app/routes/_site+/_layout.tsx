@@ -40,7 +40,6 @@ export async function loader({
    }
 
    //If site is not set to public, limit access to staff and site admins/owners only
-   //TODO Make this into a permission instead
    const hasAccess = isStaffOrSiteAdminOrStaffOrOwnerServer(user, site);
 
    if (!hasAccess && !site.isPublic) {
@@ -63,7 +62,6 @@ export async function loader({
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
-   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
    const [searchToggle, setSearchToggle] = useState(false);
    const gaTag = site?.gaTagId;
    const enableAds = site?.enableAds;
@@ -78,23 +76,18 @@ export default function SiteLayout() {
 
    return (
       <>
-         <MobileHeader site={site} setUserMenuOpen={setUserMenuOpen} />
+         <MobileHeader />
          <main
             className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
                      laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
          >
-            <ColumnOne
-               site={site}
-               setUserMenuOpen={setUserMenuOpen}
-               isUserMenuOpen={isUserMenuOpen}
-            />
-            <ColumnTwo site={site} />
+            <ColumnOne />
+            <ColumnTwo />
             <ColumnThree
                searchToggle={searchToggle}
                setSearchToggle={setSearchToggle}
-               site={site}
             />
-            <ColumnFour site={site} />
+            <ColumnFour />
          </main>
          <GAScripts gaTrackingId={gaTag} />
          <RampScripts enableAds={enableAds} />

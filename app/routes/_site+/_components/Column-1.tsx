@@ -1,5 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
-
 import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 
@@ -15,18 +13,14 @@ import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 
 import { SidebarItem } from "./SidebarItem";
 
-export function ColumnOne({
-   site,
-   isUserMenuOpen,
-   setUserMenuOpen,
-}: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
-   isUserMenuOpen: boolean;
-   setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
-}) {
+export function ColumnOne() {
    const { following, siteSlug } = useRouteLoaderData("root") as {
       following: User["sites"];
       siteSlug: string;
+   };
+
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
    };
 
    const location = useLocation();
@@ -72,10 +66,7 @@ export function ColumnOne({
                   )}
                   <div className="absolute bottom-3 left-0 w-full">
                      <div className="flex items-center justify-center flex-col gap-2">
-                        <UserMenu
-                           isUserMenuOpen={isUserMenuOpen}
-                           setUserMenuOpen={setUserMenuOpen}
-                        />
+                        <UserMenu />
                      </div>
                   </div>
                   <AdminOrStaffOrOwner>

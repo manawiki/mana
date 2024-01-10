@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Link, useFetcher } from "@remix-run/react";
+import { Link, useFetcher, useRouteLoaderData } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
@@ -19,14 +19,15 @@ import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
 export function SiteHeader({
-   site,
    setSearchToggle,
    searchToggle,
 }: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
    setSearchToggle: Dispatch<SetStateAction<boolean>>;
    searchToggle: boolean;
 }) {
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
+   };
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");
