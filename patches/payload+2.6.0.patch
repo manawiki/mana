@@ -1,3 +1,21 @@
+diff --git a/node_modules/payload/dist/auth/operations/forgotPassword.js b/node_modules/payload/dist/auth/operations/forgotPassword.js
+index 969c319..5b33db4 100644
+--- a/node_modules/payload/dist/auth/operations/forgotPassword.js
++++ b/node_modules/payload/dist/auth/operations/forgotPassword.js
+@@ -67,12 +67,7 @@ async function forgotPassword(incomingArgs) {
+             req
+         });
+         if (!disableEmail) {
+-            const serverURL = config.serverURL !== null && config.serverURL !== '' ? config.serverURL : `${req.protocol}://${req.get('host')}`;
+-            let html = `${t('authentication:youAreReceivingResetPassword')}
+-    <a href="${serverURL}${config.routes.admin}/reset/${token}">
+-     ${serverURL}${config.routes.admin}/reset/${token}
+-    </a>
+-    ${t('authentication:youDidNotRequestPassword')}`;
++            let html = ""
+             if (typeof collectionConfig.auth.forgotPassword.generateEmailHTML === 'function') {
+                 html = await collectionConfig.auth.forgotPassword.generateEmailHTML({
+                     req,
 diff --git a/node_modules/payload/dist/auth/sendVerificationEmail.js b/node_modules/payload/dist/auth/sendVerificationEmail.js
 index f7e0694..c8aae79 100644
 --- a/node_modules/payload/dist/auth/sendVerificationEmail.js
