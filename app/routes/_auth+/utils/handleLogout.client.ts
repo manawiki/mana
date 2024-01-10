@@ -1,13 +1,6 @@
 export async function handleLogout(sitePath: string) {
-   const safeSitePath = sitePath.replace("http", "https");
-
-   const logoutUrl =
-      process.env.NODE_ENV === "development"
-         ? `http://localhost:3000/api/users/logout`
-         : `${safeSitePath}api/users/logout`;
-
    try {
-      await fetch(logoutUrl, {
+      await fetch("api/users/logout", {
          method: "POST",
          credentials: "include",
          headers: {
