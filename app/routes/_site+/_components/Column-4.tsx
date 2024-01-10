@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useRouteLoaderData } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 
 import { Icon } from "~/components/Icon";
@@ -9,11 +9,11 @@ import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 
 import { PinnedList, PrimaryMenuLinks } from "./Menu";
 
-export function ColumnFour({
-   site,
-}: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
-}) {
+export function ColumnFour() {
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
+   };
+
    return (
       <section className="relative z-30 laptop:block max-laptop:bg-2-sub">
          <div

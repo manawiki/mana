@@ -58,6 +58,28 @@ export async function loader({
 }: LoaderFunctionArgs) {
    invariant(user, "User must be logged in to mutate domain names");
 
+   let result = {
+      ipv4: "",
+      ipv6: "",
+      flyAppId: "",
+      certData: {
+         app: {
+            certificate: {
+               issued: {
+                  nodes: [],
+               },
+               clientStatus: "",
+               configured: "",
+               acmeDnsConfigured: "",
+               dnsValidationTarget: "",
+            },
+         },
+      },
+      canPurchaseDomain: false,
+      billingAccountSetupRequired: false,
+      canSetupDomain: false,
+   };
+
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const domainExists = await payload.find({
@@ -101,10 +123,10 @@ export async function loader({
       depth: 0,
    });
 
-   //If flyAppId exists, it a custom site with own server, otherwise use default
-   const flyAppId = customFlyDomainData.docs[0]?.flyAppId ?? "mana";
-   const ipv4 = customFlyDomainData.docs[0]?.v4IP ?? "149.248.204.56";
-   const ipv6 = customFlyDomainData.docs[0]?.v6IP ?? "";
+   //If flyAppId exists, it's a custom site with own server, otherwise use default
+   result.flyAppId = customFlyDomainData.docs[0]?.flyAppId ?? "mana";
+   result.ipv4 = customFlyDomainData.docs[0]?.v4IP ?? "149.248.204.56";
+   result.ipv6 = customFlyDomainData.docs[0]?.v6IP ?? "";
 
    if (domainExists.totalDocs === 0) {
       //If domain is not setup, check if user already purchased domain access
@@ -138,16 +160,21 @@ export async function loader({
             //Check if user has a default payment method setup
             //@ts-ignore
             if (customer?.invoice_settings?.default_payment_method) {
-               return json({ canPurchaseDomain: true, flyAppId });
+               result.canPurchaseDomain = true;
+               return json(result);
             }
          }
 
          //User doesn't have a stripeCustomerId, they need to add a payment method
-         return json({ billingAccountSetupRequired: true });
+         result.billingAccountSetupRequired = true;
+
+         return json(result);
       }
 
       //Domain already purchased, but not setup
-      return json({ canSetupDomain: true, flyAppId });
+      result.canSetupDomain = true;
+
+      return json(result);
    }
 
    //If domain exists and fly already created the cert, we then fetch the certificate data
@@ -190,11 +217,11 @@ export async function loader({
 
       const domain = domainExists.docs[0]?.domain;
 
-      const certData = await gqlRequest(
+      result.certData = await gqlRequest(
          endpoint,
          graphql_query,
          {
-            appName: flyAppId,
+            appName: result.flyAppId,
             hostname: domain,
          },
          {
@@ -203,25 +230,27 @@ export async function loader({
             }),
          },
       );
-      return json({
-         certData,
-         ipv4,
-         ipv6,
-         flyAppId,
-      });
+      return json(result);
    }
-   return null;
+   return json(result);
 }
 
 export default function Settings() {
-   const data = useLoaderData<typeof loader>();
+   const {
+      canPurchaseDomain,
+      canSetupDomain,
+      billingAccountSetupRequired,
+      flyAppId,
+      ipv4,
+      ipv6,
+      certData,
+   } = useLoaderData<typeof loader>();
 
    const { site } = useRouteLoaderData("routes/_site+/_layout") as {
       site: SerializeFrom<typeof siteLoaderType>["site"];
    };
 
-   //@ts-ignore
-   const certificate = data?.certData?.app?.certificate;
+   const certificate = certData?.app?.certificate;
 
    const isCertsIssued = certificate?.issued?.nodes?.length == 2;
 
@@ -240,14 +269,12 @@ export default function Settings() {
    const revalidator = useRevalidator();
 
    const disabled =
-      deletingDomain ||
-      !data?.canSetupDomain ||
-      data.billingAccountSetupRequired;
+      deletingDomain || !canSetupDomain || billingAccountSetupRequired;
 
    return (
       <>
-         {data?.billingAccountSetupRequired && <div>User billing setup</div>}
-         {data?.canPurchaseDomain && (
+         {billingAccountSetupRequired && <div>User billing setup</div>}
+         {canPurchaseDomain && (
             <>
                <div
                   className="shadow-sm dark:shadow-zinc-800 
@@ -310,14 +337,12 @@ export default function Settings() {
          )}
          <fetcher.Form
             className={clsx(
-               data?.canPurchaseDomain
-                  ? "border-b dark:border-zinc-700/50 pb-6"
-                  : "",
+               canPurchaseDomain ? "border-b dark:border-zinc-700/50 pb-6" : "",
             )}
             method="post"
             ref={zo.ref}
          >
-            <input type="hidden" name="flyAppId" value={data?.flyAppId} />
+            <input type="hidden" name="flyAppId" value={flyAppId} />
             <Field disabled={disabled} className="pb-4">
                <Label>Domain Name</Label>
                <Description>
@@ -346,7 +371,7 @@ export default function Settings() {
                            intent: "deleteDomain",
                            siteId: site.id,
                            domain: site.domain ?? "",
-                           flyAppId: data?.flyAppId,
+                           flyAppId: flyAppId,
                         },
                         {
                            method: "post",
@@ -505,9 +530,9 @@ export default function Settings() {
                               size={16}
                               className="flex-none text-1 mt-5"
                            />
-                           <Record value={data?.ipv4} />
+                           <Record value={ipv4} />
                         </div>
-                        {!isSubDomain && data?.flyAppId != "mana" && (
+                        {!isSubDomain && flyAppId != "mana" && (
                            <div className="flex items-center justify-between gap-4">
                               <Record name value="@" type="AAAA" />
                               <Icon
@@ -515,7 +540,7 @@ export default function Settings() {
                                  size={16}
                                  className="flex-none text-1 mt-5"
                               />
-                              <Record value={data?.ipv6} />
+                              <Record value={ipv6} />
                            </div>
                         )}
                      </div>
