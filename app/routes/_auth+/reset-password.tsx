@@ -7,28 +7,26 @@ import { redirect, json } from "@remix-run/node";
 import { Form, useNavigation, useSearchParams } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
+import { redirectWithError, redirectWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
-import { assertIsPost, isAdding, isProcessing } from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
-import {
-   commitSession,
-   getSession,
-   setErrorMessage,
-   setSuccessMessage,
-} from "~/utils/message.server";
-
-
+import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
+import { Input } from "~/components/Input";
+import { isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const PasswordResetSchema = z.object({
    password: z.string().min(8, "Password must be at least 8 characters long"),
    token: z.string(),
 });
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -37,10 +35,10 @@ export async function loader({ context: { user }, request }: LoaderFunctionArgs)
    return json({ title });
 }
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
    ];
 };
@@ -67,22 +65,19 @@ export default function ResetPassword() {
             {t("pwReset.title")}
          </div>
          <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
-            <fieldset>
-               <FormLabel
-                  htmlFor={zoPW.fields.password()}
-                  text={t("pwReset.password")}
-                  error={zoPW.errors.password((err) => err.message)}
-               />
-               <div className="mt-1">
-                  <input
-                     name={zoPW.fields.password()}
+            <Fieldset>
+               <Field>
+                  <Label>{t("register.password")}</Label>
+                  <Input
                      type="password"
-                     autoComplete="new-password"
-                     className="input-text"
                      disabled={disabled}
+                     name={zoPW.fields.password()}
                   />
-               </div>
-            </fieldset>
+                  {zoPW.errors.password((err) => (
+                     <ErrorMessage>{err.message}</ErrorMessage>
+                  ))}
+               </Field>
+            </Fieldset>
             <input type="hidden" name={zoPW.fields.token()} value={token} />
             <button
                name="intent"
@@ -111,7 +106,6 @@ export const action: ActionFunction = async ({
 
    if (result.success) {
       const { password, token } = result.data;
-      const session = await getSession(request.headers.get("cookie"));
       try {
          await payload.resetPassword({
             collection: "users",
@@ -121,18 +115,16 @@ export const action: ActionFunction = async ({
             },
             overrideAccess: true,
          });
-         setSuccessMessage(
-            session,
-            "Your password has been reset. You can now login."
+
+         return redirectWithSuccess(
+            "/login",
+            "Your password has been reset. You can now login.",
          );
-         return redirect(`/login`, {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
       } catch (error) {
-         setErrorMessage(session, "Something went wrong. Please try again.");
-         return redirect("/login", {
-            headers: { "Set-Cookie": await commitSession(session) },
-         });
+         return redirectWithError(
+            "/login",
+            "Something went wrong. Please try again.",
+         );
       }
    }
 };

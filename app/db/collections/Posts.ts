@@ -2,7 +2,8 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin, canRead } from "../../access/site";
+import { canMutateAsSiteAdmin } from "./site/access";
+import { canReadPost } from "../../access/post";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const Posts: CollectionConfig = {
@@ -12,7 +13,7 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      read: canRead("posts"),
+      read: canReadPost(),
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),
@@ -30,6 +31,7 @@ export const Posts: CollectionConfig = {
       {
          name: "slug",
          type: "text",
+         index: true,
       },
       {
          name: "subtitle",
@@ -38,17 +40,21 @@ export const Posts: CollectionConfig = {
       {
          name: "publishedAt",
          type: "date",
+         index: true,
       },
       {
          name: "content",
-         type: "json",
+         type: "relationship",
+         relationTo: "postContents",
+         required: true,
+         hasMany: false,
       },
       {
          name: "author",
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
@@ -62,6 +68,12 @@ export const Posts: CollectionConfig = {
          maxDepth: 1,
       },
       {
+         name: "tags",
+         type: "relationship",
+         relationTo: "postTags",
+         hasMany: true,
+      },
+      {
          name: "banner",
          type: "upload",
          relationTo: "images",
@@ -71,11 +83,19 @@ export const Posts: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
-   ],
-   versions: {
-      drafts: {
-         autosave: true,
+      {
+         name: "totalComments",
+         type: "number",
       },
-      maxPerDoc: 20,
-   },
+      {
+         name: "totalBookmarks",
+         type: "number",
+      },
+      {
+         name: "maxCommentDepth",
+         type: "number",
+         defaultValue: 1,
+         min: 1,
+      },
+   ],
 };

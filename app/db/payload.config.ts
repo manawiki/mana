@@ -5,18 +5,16 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { cloudStorage } from "@payloadcms/plugin-cloud-storage";
 import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { slateEditor } from "@payloadcms/richtext-slate";
-import dotenv from "dotenv";
 import { buildConfig } from "payload/config";
 import { selectPlugin } from "payload-query";
 
 import { collections } from "./collections";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
-import { corsConfig, settings } from "../../mana.config";
 
-dotenv.config();
-
-const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET ?? "";
+const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET
+   ? process.env.PAYLOAD_PUBLIC_BUCKET
+   : "mana-prod";
 
 const adapter = s3Adapter({
    config: {
@@ -32,11 +30,12 @@ const adapter = s3Adapter({
 });
 
 export default buildConfig({
-   serverURL: settings.domainFull,
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: process.env.MONGO_URL ?? false,
+      url: `${process.env.MONGODB_URI}/mana-prod`,
+      transactionOptions: false, //disable mongo transactions
    }),
+   cors: "*",
    admin: {
       bundler: viteBundler(),
       //Ensure that the build directory is not emptied on build
@@ -61,10 +60,6 @@ export default buildConfig({
       },
    },
    plugins: [
-      async (config) => {
-         const { cors } = await corsConfig();
-         return { ...config, cors };
-      },
       selectPlugin(),
       cloudStorage({
          collections: {

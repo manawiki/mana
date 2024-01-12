@@ -14,17 +14,18 @@ import clsx from "clsx";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
-import { Image } from "~/components";
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
-import { useDebouncedValue } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
+import { gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlEndpoint } from "~/utils/fetchers.server";
+import { useDebouncedValue } from "~/utils/use-debounce";
 
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
-import { LoggedOut, LoggedIn } from "../_auth+/src/components";
-import { FollowingListMobile } from "../_site+/$siteId+/src/components";
+import { LoggedIn } from "../_auth+/components/LoggedIn";
+import { LoggedOut } from "../_auth+/components/LoggedOut";
+import { FollowingListMobile } from "../_site+/_components/Menu";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -43,61 +44,42 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const { data, errors } = await fetchWithCache(
-      `${settings.domainFull}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: `
-            query {
-               sites: Sites(
-                 ${page ? `page:${page}` : ""}
-                 where: {
-                   status: { equals: verified }
-                   ${c != null && "all" ? `category: { equals: ${c} }` : ""}
-                   ${
-                      q
-                         ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
-                         : ""
-                   }
-                 }
-               ) {
-                 totalDocs
-                 totalPages
-                 pagingCounter
-                 hasPrevPage
-                 prevPage
-                 hasNextPage
-                 docs {
-                   id
-                   name
-                   type
-                   slug
-                   status
-                   about
-                   icon {
-                     url
-                   }
-                 }
-               }
-             }
-            `,
-            variables: {
-               page,
-               q,
-               c,
-            },
-         }),
-      },
-   );
+   const QUERY = gql`query {
+      sites: Sites(
+        ${page ? `page:${page}` : ""}
+        where: {
+          status: { equals: verified }
+          ${c != null && "all" ? `category: { equals: ${c} }` : ""}
+          ${
+             q
+                ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
+                : ""
+          }
+        }
+      ) {
+        totalDocs
+        totalPages
+        pagingCounter
+        hasPrevPage
+        prevPage
+        hasNextPage
+        docs {
+          id
+          name
+          type
+          slug
+          status
+          about
+          icon {
+            url
+          }
+        }
+      }
+    }
+   `;
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
+   const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
+
    const sites = data.sites;
 
    return json(
@@ -161,20 +143,27 @@ const Discover = () => {
       <>
          <section className="relative z-10 h-full">
             <LoggedIn>
-               <div className="bg-gradient-to-b from-white to-zinc-100 pt-20 dark:from-bg3Dark dark:to-bg1Dark">
-                  <div className="mx-auto max-w-[680px] max-laptop:px-4">
-                     <div className="pb-3 pl-1 text-sm font-bold">
+               <div className="bg-3 pb-10 pt-20 mobile:px-4">
+                  <div className="mx-auto max-w-[680px] px-4 mobile:px-0">
+                     <div className="pt-2 pb-3 text-sm font-bold pl-0.5">
                         Following
                      </div>
-                     <FollowingListMobile />
-                     <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
+                     <div className="pb-3">
+                        <FollowingListMobile />
+                     </div>
+                     <div className="text-sm font-bold pt-5 pl-0.5">
+                        Explore
+                     </div>
                   </div>
                </div>
             </LoggedIn>
-            <div className="border-color border-t pb-20">
-               <div className="relative z-20 mx-auto max-w-[680px] max-laptop:px-4">
+            <div className="border-color border-t pb-20 px-4 tablet:px-0 relative">
+               <div className="relative z-20 mx-auto max-w-[680px]">
                   <div className="flex items-center justify-center">
-                     <div className="bg-2 shadow-1 border-color relative -mt-[28px] h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200">
+                     <div
+                        className="bg-3-sub dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-[28px]
+                         h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200"
+                     >
                         <>
                            <div className="relative flex h-full w-full items-center gap-2">
                               <span className="absolute left-[16px] top-[17px]">
@@ -242,8 +231,8 @@ const Discover = () => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Icon name="globe-2" className="h-3.5 w-3.5">
@@ -258,8 +247,8 @@ const Discover = () => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  {/* <Gamepad2 size={16} /> */}
@@ -275,8 +264,8 @@ const Discover = () => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
                                  <Icon name="component" className="h-3.5 w-3.5">
@@ -301,9 +290,13 @@ const Discover = () => {
                            <Link
                               //don't reload document on dev
                               reloadDocument={!dev}
-                              to={`/${site.slug}`}
+                              to={
+                                 site.domain
+                                    ? `https://${site.domain}`
+                                    : `https://${site.slug}.mana.wiki`
+                              }
                               key={site.id}
-                              className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
+                              className="border-color-sub bg-3-sub dark:shadow-zinc-900/50 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
                            >
                               <div
                                  className="shadow-1 border-1 h-11 w-11 flex-none
@@ -391,6 +384,12 @@ const Discover = () => {
                   )}
                </div>
             </div>
+            {/* <div
+               className="pattern-dots absolute left-0
+                  top-0 h-full  w-full
+                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            /> */}
          </section>
       </>
    );

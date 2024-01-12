@@ -1,31 +1,14 @@
 import compression from "compression";
 import express from "express";
 import morgan from "morgan";
-import nodemailer from "nodemailer";
 import payload from "payload";
 import invariant from "tiny-invariant";
 
-import { settings, corsConfig } from "./mana.config";
-
 require("dotenv").config();
-const cors = require("cors");
-
-const transport = nodemailer.createTransport({
-   host: process.env.PAYLOAD_NODEMAILER_HOST,
-   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT as string),
-   secure: false,
-   auth: {
-      user: process.env.PAYLOAD_NODEMAILER_USER,
-      pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
-   },
-});
 
 //Start custom database (payload instance only)
 async function startCustom() {
    const app = express();
-
-   const { corsOrigins } = await corsConfig();
-   app.use(cors({ origin: corsOrigins }));
 
    // Redirect all traffic at root to admin UI
    app.get("/", function (_, res) {
@@ -44,21 +27,6 @@ async function startCustom() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.PAYLOAD_NODEMAILER_HOST
-         ? {
-              email: {
-                 transport,
-                 fromName: settings.fromName,
-                 fromAddress: settings.fromEmail,
-              },
-           }
-         : {
-              email: {
-                 fromName: "Admin",
-                 fromAddress: "admin@example.com",
-                 logMockCredentials: true, // Optional
-              },
-           }),
    });
 
    app.use(compression());

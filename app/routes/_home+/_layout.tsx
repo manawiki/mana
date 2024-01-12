@@ -1,58 +1,59 @@
-import {
-   Link,
-   Outlet,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, Outlet, useLocation } from "@remix-run/react";
 
-import { LogoFull } from "~/components";
-import type { User } from "~/db/payload-types";
-
-import { LoggedIn, LoggedOut } from "../_auth+/src/components";
+import { Icon } from "~/components/Icon";
+import { LogoFull } from "~/components/Logo";
+import { useUserMenuState } from "~/root";
+import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
+import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
+import { UserMenu } from "~/routes/_auth+/components/UserMenu";
 
 export default function IndexLayout() {
    return (
-      <div className="">
-         <main className="flex min-h-screen flex-col overflow-hidden">
-            <div className="grow">
-               <Header />
-               <Outlet />
-            </div>
+      <div className="relative min-h-screen">
+         <main className="flex flex-col overflow-hidden">
+            <Header />
+            <Outlet />
          </main>
+         <Footer />
          <div
             className="pattern-dots absolute left-0
-            top-0 h-full  w-full
-            pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
-            dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
-         ></div>
-         <Footer />
+                  top-0 h-full  w-full
+                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+         />
       </div>
    );
 }
 
-const Header = () => {
-   const { user } = useRouteLoaderData("root") as {
-      user: User;
-   };
+function Header() {
    const location = useLocation();
+   const [setUserMenuOpen] = useUserMenuState();
 
    return (
-      <header className="absolute z-30 w-full">
-         <div className="mx-auto max-w-6xl px-4">
-            <div className="flex h-16 items-center justify-between">
-               <LoggedIn>
+      <header className="z-50 w-full absolute">
+         <div className="flex items-center justify-between">
+            <LoggedIn>
+               <div className="mx-auto max-w-[680px] w-full flex items-center justify-between px-4 tablet:px-0 border-b-2 py-4 border-color">
                   <Link className="block" to="/">
                      <LogoFull />
                   </Link>
-               </LoggedIn>
-               <LoggedOut>
+                  <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
+                     <UserMenu />
+                     <button
+                        className="flex h-9 w-9 items-center laptop:hidden justify-center"
+                        onClick={() => setUserMenuOpen(true)}
+                     >
+                        <Icon name="user" className="text-1" size={22} />
+                     </button>
+                  </div>
+               </div>
+            </LoggedIn>
+            <LoggedOut>
+               <div className="mx-auto max-w-[924px] p-4 flex items-center justify-between w-full">
                   <Link className="block text-white" to="/">
                      <LogoFull />
                   </Link>
-               </LoggedOut>
-               <nav className="flex items-center gap-4">
-                  {/* <UserMenu /> */}
-                  <LoggedOut>
+                  <nav className="flex items-center gap-4">
                      <ul className="flex items-center justify-end gap-3">
                         <li>
                            <Link
@@ -80,23 +81,23 @@ const Header = () => {
                            </Link>
                         </li>
                      </ul>
-                  </LoggedOut>
-               </nav>
-            </div>
+                  </nav>
+               </div>
+            </LoggedOut>
          </div>
       </header>
    );
-};
+}
 
-const Footer = () => {
+function Footer() {
    return (
-      <footer className="border-color border-t py-4">
+      <footer className="py-4 w-full h-20 absolute bottom-0">
          <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-center gap-4">
             <a
                href="https://discord.com/invite/nRNM35ytD7"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +113,7 @@ const Footer = () => {
                href="https://github.com/manawiki"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   className="h-9 w-9 fill-current"
@@ -126,7 +127,7 @@ const Footer = () => {
                href="https://twitter.com/mana_wiki"
                rel="noreferrer"
                target="_blank"
-               className="border-1 bg-2 border-color shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
+               className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
             >
                <svg
                   className="h-8 w-8 fill-current"
@@ -139,4 +140,4 @@ const Footer = () => {
          </div>
       </footer>
    );
-};
+}

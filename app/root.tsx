@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -16,42 +17,46 @@ import {
    ScrollRestoration,
    useLoaderData,
    useMatches,
+   useOutletContext,
 } from "@remix-run/react";
-import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/index.css";
+import { getToast } from "remix-toast";
 import { ExternalScripts } from "remix-utils/external-scripts";
+import { Toaster, toast as notify } from "sonner";
 
-import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
+import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 import { useIsBot } from "~/utils/isBotProvider";
-import {
-   ThemeBody,
-   ThemeHead,
-   ThemeProvider,
-   useTheme,
-} from "~/utils/theme-provider";
-import { getThemeSession } from "~/utils/theme.server";
+import { getTheme } from "~/utils/theme.server";
 
-import { toast } from "./components/Toaster";
+import { settings } from "./config";
+import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { i18nextServer } from "./utils/i18n";
-import { commitSession, getSession } from "./utils/message.server";
-import type { ToastMessage } from "./utils/message.server";
-import { rdtClientConfig } from "../rdt.config";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+type ContextType = [
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>,
+   isUserMenuOpen: boolean,
+];
+
+export function useUserMenuState() {
+   return useOutletContext<ContextType>();
+}
 
 export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
-   const themeSession = await getThemeSession(request);
+   const { siteSlug } = await getSiteSlug(request, payload, user);
+
    const locale = await i18nextServer.getLocale(request);
-   const session = await getSession(request.headers.get("cookie"));
-   const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
+   // Extracts the toast from the request
+   const { toast, headers } = await getToast(request);
 
    const userData = user
       ? await payload.findByID({
@@ -66,62 +71,52 @@ export const loader = async ({
       icon: {
          url: site?.icon?.url,
       },
+      domain: site?.domain,
       name: site.name,
       slug: site?.slug,
       type: site?.type,
    }));
+   const hints = getHints(request);
 
-   const data = {
-      toastMessage,
-      locale,
-      user,
-      siteTheme: themeSession.getTheme(),
-      following,
-   };
+   const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
 
    return json(
-      { ...data },
-      { headers: { "Set-Cookie": await commitSession(session) } },
+      {
+         requestInfo: {
+            ...hints,
+            theme: getTheme(request) ?? hints.theme,
+         },
+         sitePath: request.url,
+         stripePublicKey,
+         toast,
+         locale,
+         user,
+         siteSlug,
+         following,
+      },
+      { headers },
    );
 };
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
    { title: settings.title },
    { charSet: "utf-8" },
 ];
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
 
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
-   //add preconnects to cdn to improve first bits
-   {
-      rel: "preconnect",
-      href: `https://${settings.domain}`,
-      crossOrigin: "anonymous",
-   },
-   {
-      rel: "preconnect",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-      crossOrigin: "anonymous",
-   },
-
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
-   {
-      rel: "dns-prefetch",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-   },
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
       : []),
@@ -133,10 +128,10 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
-   const [theme] = useTheme();
+   const { locale, toast, sitePath } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+   const theme = useTheme();
 
    useChangeLanguage(locale);
 
@@ -146,23 +141,17 @@ function App() {
    };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
+   // Hook to show the toasts
    useEffect(() => {
-      if (!toastMessage) {
-         return;
+      if (toast?.type === "error") {
+         notify.error(toast.message);
       }
-      const { message, type } = toastMessage;
+      if (toast?.type === "success") {
+         notify.success(toast.message);
+      }
+   }, [toast]);
 
-      switch (type) {
-         case "success":
-            toast.success(message);
-            break;
-         case "error":
-            toast.error(message);
-            break;
-         default:
-            throw new Error(`${type} is not handled`);
-      }
-   }, [toastMessage]);
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
    return (
       <html
@@ -171,6 +160,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
+            {isBot ? null : <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -181,6 +171,8 @@ function App() {
                name="format-detection"
                content="telephone=no, date=no, email=no, address=no"
             />
+            {/* add preconnect to cdn to improve first bits */}
+            <link rel="preconnect" href={sitePath} crossOrigin="anonymous" />
             <link
                sizes="32x32"
                rel="icon"
@@ -207,12 +199,12 @@ function App() {
             />
             <Meta />
             <Links />
-            <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet />
-            <Toaster />
-            <ThemeBody ssrTheme={Boolean(siteTheme)} />
+            <Outlet
+               context={[setUserMenuOpen, isUserMenuOpen] satisfies ContextType}
+            />
+            <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
             <ExternalScripts />
@@ -222,23 +214,13 @@ function App() {
    );
 }
 
-export function AppWithProviders() {
-   const { siteTheme } = useLoaderData<typeof loader>();
-
-   return (
-      <ThemeProvider specifiedTheme={siteTheme}>
-         <App />
-      </ThemeProvider>
-   );
-}
-
-let AppExport = withMetronome(AppWithProviders);
+let AppExport = withMetronome(App);
 
 // Toggle Remix Dev Tools
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, rdtClientConfig);
+   AppExport = withDevTools(AppExport);
 }
 
 export default AppExport;

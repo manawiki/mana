@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "../../access/site";
+import { canMutateAsSiteAdmin } from "./site/access";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const Updates: CollectionConfig = {
@@ -19,7 +19,7 @@ export const Updates: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },

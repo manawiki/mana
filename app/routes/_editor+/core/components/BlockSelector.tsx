@@ -122,6 +122,18 @@ export function BlockSelector({
          },
       },
       {
+         label: "HTML Block",
+         icon: <Icon name="file-code-2" size={18} />,
+         description: "Embed a block of HTML code",
+         onSelect: () => {
+            onInsertBelow({
+               id: nanoid(),
+               type: BlockType.HTMLBlock,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
          label: "Image",
          icon: <Icon name="image-plus" size={18} />,
          description: "Embed an Image",
@@ -377,7 +389,7 @@ export function BlockSelector({
                      >
                         <Dialog.Panel>
                            <div
-                              className="border-color-sub relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
+                              className="dark:border-zinc-600/40 relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
                    border-zinc-200 bg-white drop-shadow-lg  dark:bg-dark350 laptop:w-[728px] laptop:max-w-[728px]"
                            >
                               <div className="bg-2-sub relative z-10 inline-flex w-full gap-3 p-3">

@@ -11,8 +11,7 @@ import payload from "payload";
 import sourceMapSupport from "source-map-support";
 import invariant from "tiny-invariant";
 
-import { settings, corsConfig } from "./mana.config";
-import { rdtServerConfig } from "./rdt.config";
+import { settings } from "./app/config";
 
 // patch in Remix runtime globals
 installGlobals();
@@ -39,14 +38,12 @@ const WATCH_PATH = path.resolve("./build/version.txt");
  */
 let build = require(BUILD_PATH);
 
-const cors = require("cors");
-
 const transport = nodemailer.createTransport({
-   host: process.env.PAYLOAD_NODEMAILER_HOST,
+   host: process.env.PAYLOAD_NODEMAILER_HOST ?? "live.smtp.mailtrap.io",
    port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT ?? "587"),
    secure: false,
    auth: {
-      user: process.env.PAYLOAD_NODEMAILER_USER,
+      user: process.env.PAYLOAD_NODEMAILER_USER ?? "api",
       pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
    },
 });
@@ -54,8 +51,6 @@ const transport = nodemailer.createTransport({
 //Start core site (remix + payload instance)
 async function startCore() {
    const app = express();
-   const { corsOrigins } = await corsConfig();
-   app.use(cors({ origin: corsOrigins }));
 
    invariant(process.env.PAYLOADCMS_SECRET, "PAYLOADCMS_SECRET is required");
 
@@ -143,7 +138,7 @@ async function startCore() {
    app.use(payload.authenticate);
 
    // This makes sure the build is wrapped on reload by RDT
-   if (rdt) build = rdt.withServerDevTools(build, rdtServerConfig);
+   if (rdt) build = rdt.withServerDevTools(build);
 
    // Check if the server is running in development mode and reflect realtime changes in the codebase.
    // We'll also inject payload in the remix handler so we can use it in our routes.
@@ -156,7 +151,7 @@ async function startCore() {
    const port = process.env.PORT || 3000;
 
    app.listen(port, () => {
-      console.log(`Express server listening on port http://localhost:${port}`);
+      console.log(`Express server listening on port http://localhost:3000`);
 
       if (process.env.NODE_ENV === "development") {
          broadcastDevReady(build);
@@ -170,7 +165,11 @@ startCore();
 function createProductionRequestHandler(): RequestHandler {
    function getLoadContext(req: any, res: any) {
       const userData = req.user
-         ? { id: req?.user?.id, roles: req?.user?.roles }
+         ? {
+              id: req?.user?.id,
+              roles: req?.user?.roles,
+              avatar: { url: req?.user?.avatar?.url },
+           }
          : undefined;
       return {
          payload: req.payload,
@@ -190,7 +189,7 @@ function createProductionRequestHandler(): RequestHandler {
 function createDevRequestHandler(): RequestHandler {
    async function handleServerUpdate() {
       // This makes sure the build is wrapped on reload by RDT
-      build = rdt.withServerDevTools(await reimportServer(), rdtServerConfig);
+      build = rdt.withServerDevTools(await reimportServer());
 
       // Add debugger to assist in v2 dev debugging
       if (build?.assets === undefined) {
@@ -217,7 +216,11 @@ function createDevRequestHandler(): RequestHandler {
             mode: "development",
             getLoadContext(req, res) {
                const userData = req.user
-                  ? { id: req?.user?.id, roles: req?.user?.roles }
+                  ? {
+                       id: req?.user?.id,
+                       roles: req?.user?.roles,
+                       avatar: { url: req?.user?.avatar?.url },
+                    }
                   : undefined;
                return {
                   payload: req.payload,

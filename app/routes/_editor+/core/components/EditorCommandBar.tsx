@@ -16,7 +16,7 @@ import type { Config } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { EditorVersionModal } from "~/routes/_editor+/core/components/EditorVersionModal";
-import { isProcessing } from "~/utils";
+import { isProcessing } from "~/utils/form";
 
 export const command_button = `border border-color-sub shadow-sm shadow-1 hover:border-zinc-300 bg-3-sub flex h-9 w-9 items-center justify-center rounded-full dark:hover:border-zinc-600`;
 
@@ -27,7 +27,7 @@ export const EditorCommandBar = ({
    collectionId,
    entryId,
    pageId,
-   siteId,
+   homeContentId,
    primaryOptions,
    secondaryOptions,
    children,
@@ -38,7 +38,7 @@ export const EditorCommandBar = ({
    collectionId?: string;
    entryId?: string;
    pageId?: string;
-   siteId?: string;
+   homeContentId?: string;
    primaryOptions?: ReactNode;
    secondaryOptions?: ReactNode;
    children?: ReactNode;
@@ -74,13 +74,13 @@ export const EditorCommandBar = ({
       collectionSlug,
       intent: "publish",
       ...(pageId && { pageId }),
-      ...(siteId && { siteId }),
+      ...(homeContentId && { homeContentId }),
       ...(collectionId && { collectionId }),
       ...(entryId && { entryId }),
    };
 
    const actionPath =
-      collectionSlug == "contentEmbeds" ? `/${siteId}/c/embed` : undefined;
+      collectionSlug == "contentEmbeds" ? `/c/embed` : undefined;
 
    //@ts-ignore
    let _primaryOptions, _secondaryOptions;
@@ -144,7 +144,7 @@ export const EditorCommandBar = ({
                      <Tooltip placement="top">
                         <TooltipTrigger
                            className="flex cursor-default hover:border-zinc-300 dark:hover:border-dark500 shadow shadow-1 relative
-                           border-2 border-zinc-200 border-color-sub bg-2-sub rounded-full h-9 w-9 items-center justify-center z-10"
+                           border-2 border-zinc-200 dark:border-zinc-500 bg-2-sub rounded-full h-9 w-9 items-center justify-center z-10"
                         >
                            {isAutoSaving ? (
                               <Icon

@@ -9,7 +9,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { useDebouncedValue, useIsMount } from "~/utils";
+import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
@@ -18,8 +19,8 @@ import { useEditor } from "./core/plugins";
 export function ManaEditor({
    fetcher,
    defaultValue,
-   siteId,
    pageId,
+   siteId,
    subSectionId,
    entryId,
    collectionEntity,
@@ -27,8 +28,8 @@ export function ManaEditor({
 }: {
    fetcher: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
-   siteId?: string | undefined;
    pageId?: string;
+   siteId?: string;
    subSectionId?: string | undefined;
    entryId?: string;
    collectionEntity?: string;
@@ -83,7 +84,12 @@ export async function action({
       collectionSlug: z.custom<keyof Config["collections"]>(),
    });
 
-   if (!user) throw redirect("/login", { status: 302 });
+   if (!user)
+      throw redirect("/login", {
+         status: 302,
+      });
+
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "versionUpdate": {
@@ -99,7 +105,7 @@ export async function action({
       }
       case "update": {
          switch (collectionSlug) {
-            case "posts": {
+            case "postContents": {
                const { content, pageId } = await zx.parseForm(request, {
                   content: z.string(),
                   pageId: z.string(),
@@ -117,15 +123,14 @@ export async function action({
                });
             }
             case "homeContents": {
-               const { content, siteId } = await zx.parseForm(request, {
-                  siteId: z.string(),
+               const { content } = await zx.parseForm(request, {
                   content: z.string(),
                });
                const { docs } = await payload.find({
                   collection: collectionSlug,
                   where: {
                      "site.slug": {
-                        equals: siteId,
+                        equals: siteSlug,
                      },
                   },
                   overrideAccess: false,
@@ -169,6 +174,8 @@ export async function action({
                      overrideAccess: false,
                      user,
                   });
+                  console.log("got here");
+
                   return await payload.update({
                      collection: collectionSlug,
                      id: pageId,
@@ -183,10 +190,11 @@ export async function action({
                } catch (error) {
                   return await payload.create({
                      collection: collectionSlug,
-                     //@ts-ignore
                      data: {
+                        //@ts-ignore
                         relationId: entryId,
                         site: siteId as any,
+                        //@ts-ignore
                         subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
                         content: JSON.parse(content),

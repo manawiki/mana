@@ -1,6 +1,5 @@
 import type {
    ActionFunction,
-   LinksFunction,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
@@ -17,18 +16,24 @@ import { createCustomIssues, useZorm } from "react-zorm";
 import { z } from "zod";
 import { parseFormSafe } from "zodix";
 
-import { settings } from "mana-config";
+import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
 import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-} from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
+   ErrorMessage,
+   Field,
+   FieldGroup,
+   Fieldset,
+   Label,
+} from "~/components/Fieldset";
+import { Input } from "~/components/Input";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
-export async function loader({ context: { user }, request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user },
+   request,
+}: LoaderFunctionArgs) {
    if (user) {
       return redirect("/");
    }
@@ -42,29 +47,22 @@ const JoinFormSchema = z.object({
       .string()
       .email("Invalid email")
       .transform((email) => email.toLowerCase()),
-   password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .toLowerCase(),
+   password: z.string().min(8, "Password must be at least 8 characters long"),
    username: z
       .string()
       .regex(
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
-         "Username contains invalid characters"
+         "Username contains invalid characters",
       )
       .min(3, "Username must be at least 3 characters long")
       .max(16, "Username cannot be more than 16 characters long")
       .toLowerCase(),
 });
 
-export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: `${settings.domainFull}/join` }];
-};
-
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction = () => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `Join - Mana`,
       },
    ];
 };
@@ -81,79 +79,69 @@ export default function Signup() {
       //@ts-ignore
       customIssues: formResponse?.serverIssues,
    });
+
    return (
       <>
          <div
-            className="border-color bg-2 shadow-1 relative 
+            className="border-color-sub bg-2-sub shadow-1 relative 
                   border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
          >
-            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+            <div className="border-color-sub mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                {t("register.title")}
             </div>
-            <Form ref={zo.ref} method="post" className="space-y-4" replace>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.username()}
-                     text={t("register.username")}
-                     error={zo.errors.username((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        autoFocus={true}
-                        type="text"
-                        name={zo.fields.username()}
-                        autoComplete="username"
-                        className="input-text lowercase"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.email()}
-                     text={t("register.email")}
-                     error={zo.errors.email((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        name={zo.fields.email()}
-                        type="email"
-                        autoComplete="email"
-                        className="input-text"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <fieldset>
-                  <FormLabel
-                     htmlFor={zo.fields.password()}
-                     text={t("register.password")}
-                     error={zo.errors.password((err) => err.message)}
-                  />
-                  <div className="mt-1">
-                     <input
-                        name={zo.fields.password()}
-                        type="password"
-                        autoComplete="new-password"
-                        className="input-text"
-                        disabled={disabled}
-                     />
-                  </div>
-               </fieldset>
-               <button
+            <Form ref={zo.ref} method="post" replace>
+               <Fieldset className="pb-8">
+                  <FieldGroup>
+                     <Field>
+                        <Label>{t("register.username")}</Label>
+                        <Input
+                           type="text"
+                           disabled={disabled}
+                           className="lowercase"
+                           name={zo.fields.username()}
+                        />
+                        {zo.errors.username((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                     <Field>
+                        <Label>{t("register.email")}</Label>
+                        <Input
+                           type="email"
+                           disabled={disabled}
+                           name={zo.fields.email()}
+                        />
+                        {zo.errors.email((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                     <Field>
+                        <Label>{t("register.password")}</Label>
+                        <Input
+                           type="password"
+                           disabled={disabled}
+                           name={zo.fields.password()}
+                        />
+                        {zo.errors.password((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                  </FieldGroup>
+               </Fieldset>
+               <Button
                   name="intent"
                   value="join"
                   type="submit"
-                  className="!mt-6 mb-3 h-11 w-full rounded bg-zinc-500 px-4
-                        font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                  color="dark/white"
+                  className="w-full h-10 mb-6 cursor-pointer"
                   disabled={disabled}
                >
                   {adding ? <DotLoader /> : t("register.action")}
-               </button>
+               </Button>
                <div className="flex items-center justify-center">
                   <div className="text-1 text-center text-sm">
                      <Link
-                        className="font-bold text-blue-500"
+                        className="text-blue-500 hover:underline"
                         to={{
                            pathname: "/login",
                            search: searchParams.toString(),
@@ -210,16 +198,19 @@ export const action: ActionFunction = async ({
       if (issues.hasIssues()) {
          return json<FormResponse>(
             { serverIssues: issues.toArray() },
-            { status: 400 }
+            { status: 400 },
          );
       }
       try {
          await payload.create({
             collection: "users",
             data: {
+               //@ts-ignore
                username,
                email,
+               //@ts-ignore
                password,
+               //@ts-ignore
                sites: ["TLPWIBnfCr"],
             },
             user,
@@ -235,7 +226,7 @@ export const action: ActionFunction = async ({
    if (issues.hasIssues()) {
       return json<FormResponse>(
          { serverIssues: issues.toArray() },
-         { status: 400 }
+         { status: 400 },
       );
    }
    // Last resort error message

@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import type {
    ActionFunction,
-   LinksFunction,
    LoaderFunctionArgs,
    MetaFunction,
 } from "@remix-run/node";
@@ -15,29 +14,27 @@ import {
    useNavigation,
    useSearchParams,
 } from "@remix-run/react";
+import * as cookie from "cookie";
 import { useTranslation } from "react-i18next";
 import { useZorm } from "react-zorm";
+import { jsonWithError, jsonWithSuccess, redirectWithError } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
+import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
-import { FormLabel } from "~/components/Forms";
+import {
+   ErrorMessage,
+   Field,
+   FieldGroup,
+   Fieldset,
+   Label,
+} from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
-import {
-   type FormResponse,
-   assertIsPost,
-   isAdding,
-   isProcessing,
-   safeRedirect,
-} from "~/utils";
-import { i18nextServer } from "~/utils/i18n";
-import {
-   commitSession,
-   getSession,
-   setErrorMessage,
-   setSuccessMessage,
-} from "~/utils/message.server";
+import { Input } from "~/components/Input";
+import { type FormResponse, isAdding, isProcessing } from "~/utils/form";
+import { assertIsPost, safeRedirect } from "~/utils/http.server";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 
 const LoginFormSchema = z.object({
    email: z
@@ -71,15 +68,10 @@ export async function loader({
 
    return json({ title, email });
 }
-
-export const links: LinksFunction = () => {
-   return [{ rel: "canonical", href: `${settings.domainFull}/login` }];
-};
-
-export const meta: MetaFunction = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
    return [
       {
-         title: `${data.title} - Mana`,
+         title: `${data?.title} - Mana`,
       },
    ];
 };
@@ -112,123 +104,111 @@ export default function Login() {
    const [isReset, setIsReset] = useState(false);
    return (
       <div
-         className="border-color bg-2 shadow-1 relative border-y
-               p-6 shadow-sm tablet:rounded-xl tablet:border"
+         className="border-color-sub bg-2-sub shadow-1 relative 
+      border-y p-6 shadow-sm tablet:rounded-xl tablet:border"
       >
          {isReset ? (
-            <div className="border-color mb-6 flex items-center justify-between border-b-2 pb-4">
-               <div className="text-xl font-bold">Reset Password</div>
+            <div className="border-color mb-6 flex items-center border-b-2 pb-4">
                <button
-                  className="bg-3 shadow-1 flex items-center gap-2
-                        rounded-full py-2 pl-3 pr-4 text-sm font-bold shadow-sm"
+                  className="flex items-center gap-2 rounded-full py-2 pr-4 text-sm font-bold"
                   onClick={() => setIsReset(false)}
                >
-                  <Icon name="arrow-left" className="text-blue-500" size={24}>
-                     Back
-                  </Icon>
+                  <Icon name="arrow-left" className="text-blue-500" size={20} />
                </button>
+               <div className="text-xl font-bold">Reset Password</div>
             </div>
          ) : (
-            <div className="border-color mb-6 border-b-2 pb-4 text-center text-xl font-bold">
+            <div className="border-color-sub mb-6 border-b-2 pb-4 text-center text-xl font-bold">
                {t("login.title")}
             </div>
          )}
          {isReset ? (
             <>
                <Form ref={zoPW.ref} method="post" className="space-y-6" replace>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zoPW.fields.email()}
-                        text={t("login.email")}
-                        error={zoPW.errors.email((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
+                  <Fieldset>
+                     <Field>
+                        <Label>{t("login.email")}</Label>
+                        <Input
                            autoFocus={true}
-                           name={zoPW.fields.email()}
                            type="email"
-                           className="input-text"
-                           autoComplete="email"
                            disabled={disabled}
+                           name={zoPW.fields.email()}
                         />
-                     </div>
-                  </fieldset>
-                  <button
+                        {zoPW.errors.email((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                  </Fieldset>
+                  <Button
+                     color="dark/white"
                      name="intent"
                      value="reset-password"
                      type="submit"
-                     className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white
-                            hover:bg-zinc-600 focus:bg-zinc-400"
+                     className="text-sm"
                      disabled={disabled}
                   >
                      {addingPasswordRest ? <DotLoader /> : t("pwReset.title")}
-                  </button>
+                  </Button>
                </Form>
             </>
          ) : (
             <>
                <Form ref={zo.ref} method="post" className="space-y-6" replace>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.email()}
-                        text={t("login.email")}
-                        error={zo.errors.email((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           autoFocus={email ? false : true}
-                           name={zo.fields.email()}
-                           type="email"
-                           className="input-text"
-                           autoComplete="email"
-                           disabled={disabled}
-                           defaultValue={email ?? ""}
-                        />
-                     </div>
-                  </fieldset>
-                  <fieldset>
-                     <FormLabel
-                        htmlFor={zo.fields.password()}
-                        text={t("login.password")}
-                        error={zo.errors.password((err) => err.message)}
-                     />
-                     <div className="mt-1">
-                        <input
-                           autoFocus={email ? true : false}
-                           name={zo.fields.password()}
-                           type="password"
-                           autoComplete="new-password"
-                           className="input-text"
-                           disabled={disabled}
-                        />
-                     </div>
+                  <Fieldset>
+                     <FieldGroup>
+                        <Field>
+                           <Label>{t("login.email")}</Label>
+                           <Input
+                              autoFocus={email ? false : true}
+                              type="email"
+                              disabled={disabled}
+                              defaultValue={email ?? ""}
+                              name={zo.fields.email()}
+                           />
+                           {zo.errors.email((err) => (
+                              <ErrorMessage>{err.message}</ErrorMessage>
+                           ))}
+                        </Field>
+                        <Field>
+                           <Label>{t("login.password")}</Label>
+                           <Input
+                              type="password"
+                              disabled={disabled}
+                              name={zo.fields.password()}
+                           />
+                           {zo.errors.password((err) => (
+                              <ErrorMessage>{err.message}</ErrorMessage>
+                           ))}
+                        </Field>
+                     </FieldGroup>
                      <button
                         type="button"
-                        className="pt-1.5 text-sm font-semibold text-blue-500"
+                        className="text-sm text-blue-500 mt-3 hover:underline"
                         onClick={() => setIsReset(true)}
                      >
                         Forgot your password?
                      </button>
-                  </fieldset>
+                  </Fieldset>
                   <input
                      type="hidden"
                      name={zo.fields.redirectTo()}
                      value={redirectTo}
                   />
-                  <button
+                  <Button
                      name="intent"
                      value="login"
                      type="submit"
-                     className="h-11 w-full rounded bg-zinc-500 px-4 font-bold text-white hover:bg-zinc-600 focus:bg-zinc-400"
+                     color="dark/white"
+                     className="w-full h-10 cursor-pointer"
                      disabled={disabled}
                   >
                      {adding ? <DotLoader /> : t("login.action")}
-                  </button>
-                  <div className="!mt-4 flex items-center justify-center">
+                  </Button>
+                  <div className="flex items-center justify-center">
                      <div className="text-center text-sm">
                         {t("login.dontHaveAccount")}
                         <Link
-                           className="pl-1 font-bold text-blue-500"
+                           className="pl-1 text-blue-500 hover:underline"
                            to={{
                               pathname: "/join",
                               search: searchParams.toString(),
@@ -259,7 +239,6 @@ export const action: ActionFunction = async ({
    });
 
    if (intent === "reset-password") {
-      const session = await getSession(request.headers.get("cookie"));
       const result = await zx.parseFormSafe(request, PasswordResetSchema);
 
       if (result.success) {
@@ -273,34 +252,26 @@ export const action: ActionFunction = async ({
                disableEmail: false,
             });
             if (token) {
-               const session = await getSession(request.headers.get("cookie"));
-               setSuccessMessage(
-                  session,
+               return jsonWithSuccess(
+                  null,
                   "We sent you an email with a link to reset your password",
                );
-               return redirect("/login", {
-                  headers: { "Set-Cookie": await commitSession(session) },
-               });
             }
-            setErrorMessage(
-               session,
+            return jsonWithError(
+               null,
                "This email doesn't exist, do you want to create a new account?",
             );
-            return redirect("/login", {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
          } catch (error) {
-            setErrorMessage(session, "Something went wrong");
-            return redirect("/login", {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
+            return jsonWithError(
+               null,
+               "Oops! Something went wrong. Please try again later.",
+            );
          }
       }
       return;
    }
 
    if (intent === "login") {
-      const session = await getSession(request.headers.get("cookie"));
       const result = await zx.parseFormSafe(request, LoginFormSchema);
       if (result.success) {
          const { email, password, redirectTo } = result.data;
@@ -308,19 +279,38 @@ export const action: ActionFunction = async ({
             email: z.string().email().optional(),
          });
          try {
-            await payload.login({
+            // So subdomains can share the cookie, we will use the rest api to set the cookie manually
+            const json = await payload.login({
                collection: "users",
                data: { email, password },
-               res,
+            });
+
+            const hostname = new URL(request.url).hostname;
+
+            // set the cookie on domain level so all subdomains can access it
+            let domain = hostname.split(".").slice(-2).join(".");
+
+            if (!json.token) throw new Error("No token found");
+
+            return redirect(redirectTo || "/", {
+               headers: {
+                  "Set-Cookie": cookie.serialize("payload-token", json.token, {
+                     httpOnly: true,
+                     secure:
+                        process.env.NODE_ENV === "production" &&
+                        domain !== "localhost",
+                     sameSite: "lax",
+                     path: "/",
+                     maxAge: 60 * 60 * 24 * 30, // 30 days
+                     domain,
+                  }),
+               },
             });
          } catch (error) {
-            setErrorMessage(
-               session,
+            return redirectWithError(
+               `/login${signUpEmail ? `?email=${email}` : ""}`,
                "The email or password provided is incorrect",
             );
-            return redirect(`/login${signUpEmail ? `?email=${email}` : ""}`, {
-               headers: { "Set-Cookie": await commitSession(session) },
-            });
          }
          return redirect(safeRedirect(redirectTo));
       }
