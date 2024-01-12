@@ -1,23 +1,20 @@
 // Core Imports
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import { H3, Image } from "~/components";
-import {
-   customEntryMeta,
-   fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/functions/entry";
-export { customEntryMeta as meta };
 
-// Custom Site / Collection Config Imports
-import type { Material as MaterialType } from "~/db/payload-custom-types";
-import { Materials } from "../../../collections/materials";
-
-// Custom Component Imports
 import { Main } from "~/_custom/components/materials/Main";
 import { Obtain } from "~/_custom/components/materials/Obtain";
+import type { Material as MaterialType } from "~/db/payload-custom-types";
+import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
+import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
+import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
+
+// Custom Site / Collection Config Imports
+
+// Custom Component Imports
+export { entryMeta as meta };
 
 // Loader definition - loads Entry data!
 export async function loader({
@@ -47,7 +44,6 @@ const SECTIONS = {
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
    const mat = entry?.data?.Material as MaterialType;
-   console.log(mat);
 
    return <Entry customComponents={SECTIONS} customData={mat} />;
 }

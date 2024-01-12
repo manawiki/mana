@@ -1,24 +1,23 @@
 // Core Imports
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
-import { Entry } from "~/routes/_site+/$siteId.c_+/components/Entry";
-import { H3, Image } from "~/components";
-import {
-   customEntryMeta,
-   fetchEntry,
-} from "~/routes/_site+/$siteId.c_+/functions/entry";
-export { customEntryMeta as meta };
 
-// Custom Site / Collection Config Imports
-import type { Character as CharacterType } from "~/db/payload-custom-types";
-import { Characters } from "../../../collections/characters";
-
-// Custom Component Imports
+import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
 import { Main } from "~/_custom/components/characters/Main";
 import { Skills } from "~/_custom/components/characters/Skills";
-import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
+import type { Character as CharacterType } from "~/db/payload-custom-types";
+import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
+import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
+import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
+
+import { Characters } from "../../../collections/characters";
+
+// Custom Site / Collection Config Imports
+
+// Custom Component Imports
+export { entryMeta as meta };
 
 // Loader definition - loads Entry data!
 export async function loader({
