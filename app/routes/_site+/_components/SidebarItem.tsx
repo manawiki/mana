@@ -21,15 +21,18 @@ export function SidebarItem({
          <>
             {site?.icon?.url ? (
                <Image
-                  className="size-11 rounded-full overflow-hidden"
+                  className="size-11 rounded-full overflow-hidden dark:shadow-zinc-900
+                  border border-zinc-200 shadow-sm shadow-zinc-300  dark:border-zinc-500"
                   alt="Site Logo"
                   options="aspect_ratio=1:1&height=120&width=120"
                   url={site?.icon?.url ?? ""}
                />
             ) : (
                <div
-                  className="size-[47px] dark:bg-dark400 border border-zinc-300/80 hover:border-zinc-300 
-               dark:border-zinc-600 dark:hover:border-zinc-600 rounded-full overflow-hidden flex items-center justify-center"
+                  className="size-[46px] dark:bg-dark400 border border-zinc-300/70
+                   bg-white shadow shadow-zinc-200 dark:shadow-zinc-900
+                dark:border-zinc-600 rounded-full 
+                  overflow-hidden flex items-center justify-center"
                >
                   <LogoBW className="size-6 text-stone-400 dark:text-zinc-400" />
                </div>

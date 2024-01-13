@@ -82,6 +82,19 @@ export const canReadSite: Access = async ({
    id: resultId,
    data,
 }) => {
+   if (user) {
+      if (user.roles.includes("staff")) return true;
+      const userId = user.id;
+      // Update and Delete
+      if (resultId) {
+         const site = await payload.findByID({
+            collection: "sites",
+            id: resultId,
+            depth: 0,
+         });
+         if (site) return isSiteOwnerOrAdmin(userId, site);
+      }
+   }
    return {
       isPublic: {
          equals: true,

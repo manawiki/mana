@@ -44,7 +44,7 @@ export function SiteHeader({
               w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
               pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
          />
-         <div className="relative mx-auto w-full laptop:max-w-[728px] laptop:rounded-b-2xl">
+         <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
             <div className="relative mx-auto flex h-[60px] items-center justify-between">
                {searchToggle ? (
                   <SearchComboBox
@@ -57,11 +57,11 @@ export function SiteHeader({
                         <Link
                            prefetch="intent"
                            to="/"
-                           className="flex items-center group h-full"
+                           className="flex items-center group h-14"
                         >
                            <div
-                              className="dark:bg-dark400 border-2 dark:border-zinc-700 shadow-1 bg-white overflow-hidden
-                              text-1 flex h-9 w-9 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-200
+                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden
+                              text-1 flex h-10 w-10 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
                               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
                            >
                               {site?.icon?.url ? (
@@ -75,7 +75,7 @@ export function SiteHeader({
                                  />
                               ) : (
                                  <>
-                                    <LogoBW className="size-4 text-stone-400 dark:text-stone-500" />
+                                    <LogoBW className="size-5 text-zinc-400" />
                                  </>
                               )}
                            </div>
@@ -83,15 +83,17 @@ export function SiteHeader({
                               <div className="font-bold truncate group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
                                  {site.name}
                               </div>
-                              <div className="text-[10px] flex items-center gap-1">
-                                 <Icon
-                                    name="users-2"
-                                    className="text-1 w-3 h-3"
-                                 />
-                                 <span className="dark:text-zinc-500 text-zinc-400">
-                                    {site?.followers}
-                                 </span>
-                              </div>
+                              {site?.followers && (
+                                 <div className="text-[10px] flex items-center gap-1">
+                                    <Icon
+                                       name="users-2"
+                                       className="text-1 w-3 h-3"
+                                    />
+                                    <span className="dark:text-zinc-500 text-zinc-400">
+                                       {site?.followers}
+                                    </span>
+                                 </div>
+                              )}
                            </div>
                            {/* {site.about} */}
                         </Link>

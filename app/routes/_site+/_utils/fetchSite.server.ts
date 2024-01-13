@@ -1,3 +1,5 @@
+import { redirect } from "@remix-run/server-runtime";
+
 import type { Site, User } from "payload/generated-types";
 import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
@@ -136,8 +138,10 @@ export async function fetchSite({
       const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY, {
          siteSlug,
       });
+      let site = data?.site?.docs?.[0];
+      if (!site) throw redirect("/login?redirectTo=/");
 
-      return updateKeys(data?.site?.docs?.[0]);
+      return updateKeys(site);
    }
 
    //Otherwise fresh pull
@@ -146,6 +150,11 @@ export async function fetchSite({
       variables: { siteSlug },
       request,
    });
+
    //@ts-ignore
-   return updateKeys(data?.site?.docs?.[0]);
+   let site = data?.site?.docs?.[0];
+   if (!site) throw redirect("/404");
+
+   //@ts-ignore
+   return updateKeys(site);
 }
