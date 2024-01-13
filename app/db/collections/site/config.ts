@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite, siteFieldAsSiteAdmin } from "./access";
+import { canEditSite } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../../access/user";
 
@@ -26,13 +26,7 @@ export const Sites: CollectionConfig = {
          name: "about",
          type: "text",
       },
-      {
-         name: "trendingPages",
-         type: "json",
-         access: {
-            update: isStaffFieldLevel,
-         },
-      },
+
       {
          name: "isPublic",
          type: "checkbox",
@@ -45,10 +39,7 @@ export const Sites: CollectionConfig = {
          label: "Enable Ads",
          defaultValue: false,
       },
-      {
-         name: "followers",
-         type: "number",
-      },
+
       {
          name: "collections",
          type: "relationship",
@@ -74,13 +65,37 @@ export const Sites: CollectionConfig = {
          ],
       },
       {
-         name: "slug",
+         name: "admins",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
+         name: "contributors",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "banner",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "favicon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "id",
          type: "text",
-         unique: true,
-         index: true,
-         access: {
-            update: isStaffFieldLevel,
-         },
       },
       {
          name: "gaTagId",
@@ -91,6 +106,44 @@ export const Sites: CollectionConfig = {
          name: "gaPropertyId",
          label: "Google Analytics property id",
          type: "text",
+      },
+      {
+         name: "domain",
+         type: "text",
+         unique: true,
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "customDomainInvoiceId",
+         type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "trendingPages",
+         type: "json",
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "slug",
+         type: "text",
+         unique: true,
+         index: true,
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "followers",
+         type: "number",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "type",
@@ -154,22 +207,6 @@ export const Sites: CollectionConfig = {
          },
       },
       {
-         name: "domain",
-         type: "text",
-         unique: true,
-         access: {
-            update: siteFieldAsSiteAdmin,
-         },
-      },
-      {
-         name: "customDomainInvoiceId",
-         type: "text",
-         access: {
-            read: siteFieldAsSiteAdmin,
-            update: siteFieldAsSiteAdmin,
-         },
-      },
-      {
          name: "status",
          type: "select",
          access: {
@@ -215,39 +252,6 @@ export const Sites: CollectionConfig = {
          access: {
             update: isStaffFieldLevel,
          },
-      },
-      {
-         name: "admins",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
-         name: "contributors",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "banner",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "favicon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "id",
-         type: "text",
       },
       {
          name: "totalPosts",

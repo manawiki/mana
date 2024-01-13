@@ -688,8 +688,6 @@ export async function action({
                      //@ts-ignore
                      customDomainInvoiceId: invoice.id,
                   },
-                  user,
-                  overrideAccess: false,
                });
 
                if (updateSite)
@@ -748,11 +746,8 @@ export async function action({
                   collection: "sites",
                   id: siteId,
                   data: {
-                     //@ts-ignore
-                     domain: "",
+                     domain: null,
                   },
-                  user,
-                  overrideAccess: false,
                });
                return jsonWithSuccess(null, "Domain name removed...");
             }
@@ -835,8 +830,6 @@ export async function action({
                         //@ts-ignore
                         domain: domain,
                      },
-                     user,
-                     overrideAccess: false,
                   });
                   if (updateSite)
                      return jsonWithSuccess(null, "Domain name added...");
