@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { siteFieldAsSiteAdmin } from "./access";
+import { canEditSite, siteFieldAsSiteAdmin } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../../access/user";
 
@@ -13,7 +13,7 @@ export const Sites: CollectionConfig = {
    access: {
       create: isLoggedIn,
       read: (): boolean => true,
-      update: isStaff,
+      update: canEditSite,
       delete: isStaff,
    },
    fields: [
@@ -27,12 +27,11 @@ export const Sites: CollectionConfig = {
          type: "text",
       },
       {
-         name: "customDomainInvoiceId",
-         type: "text",
-      },
-      {
          name: "trendingPages",
          type: "json",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "isPublic",
@@ -79,6 +78,9 @@ export const Sites: CollectionConfig = {
          type: "text",
          unique: true,
          index: true,
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "gaTagId",
@@ -89,19 +91,12 @@ export const Sites: CollectionConfig = {
          name: "gaPropertyId",
          label: "Google Analytics property id",
          type: "text",
-         access: {
-            read: siteFieldAsSiteAdmin,
-            update: siteFieldAsSiteAdmin,
-         },
       },
       {
          name: "type",
          type: "select",
          required: true,
          defaultValue: "core",
-         access: {
-            update: siteFieldAsSiteAdmin,
-         },
          options: [
             {
                label: "Core",
@@ -112,35 +107,67 @@ export const Sites: CollectionConfig = {
                value: "custom",
             },
          ],
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "flyAppId",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "flyAppDBId",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v6IP",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v6IPDB",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v4IP",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v4IPDB",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "domain",
          type: "text",
          unique: true,
+         access: {
+            update: siteFieldAsSiteAdmin,
+         },
+      },
+      {
+         name: "customDomainInvoiceId",
+         type: "text",
+         access: {
+            read: siteFieldAsSiteAdmin,
+            update: siteFieldAsSiteAdmin,
+         },
       },
       {
          name: "status",
@@ -185,6 +212,9 @@ export const Sites: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          hasMany: false,
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "admins",
@@ -222,10 +252,16 @@ export const Sites: CollectionConfig = {
       {
          name: "totalPosts",
          type: "number",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "totalEntries",
          type: "number",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
    ],
    hooks: {

@@ -89,7 +89,7 @@ export async function loader({
             equals: siteSlug,
          },
          customDomainInvoiceId: {
-            exists: true,
+            not_equals: null,
          },
          and: [
             {
@@ -137,7 +137,7 @@ export async function loader({
                equals: siteSlug,
             },
             customDomainInvoiceId: {
-               exists: true,
+               not_equals: "",
             },
          },
          depth: 0,
@@ -680,7 +680,6 @@ export async function action({
             });
 
             const payInvoice = await stripe.invoices.pay(invoice.id);
-
             if (payInvoice.status === "paid") {
                const updateSite = await payload.update({
                   collection: "sites",
@@ -692,6 +691,7 @@ export async function action({
                   user,
                   overrideAccess: false,
                });
+
                if (updateSite)
                   return jsonWithSuccess(null, "Successfully purchased domain");
             }
