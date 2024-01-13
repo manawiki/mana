@@ -1,46 +1,48 @@
 import { useEffect, useState } from "react";
 
-import { json, redirect, type ActionFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import type { SerializeFrom, ActionFunction } from "@remix-run/node";
 import {
    Form,
    Link,
-   useActionData,
    useNavigation,
    useRouteLoaderData,
 } from "@remix-run/react";
-import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
-import { createCustomIssues, useZorm } from "react-zorm";
+import { Value, useZorm } from "react-zorm";
 import { z } from "zod";
+import { zx } from "zodix";
 
-import { ErrorMessage, Field, Fieldset, Label } from "~/components/Fieldset";
+import { Button } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import { DotLoader } from "~/components/DotLoader";
+import {
+   Description,
+   ErrorMessage,
+   Field,
+   FieldGroup,
+   Label,
+} from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import { Modal } from "~/components/Modal";
-import { BlockType } from "~/routes/_editor+/core/types";
-import { isAdding, isProcessing, type FormResponse } from "~/utils/form";
+import type { loader as rootLoaderType } from "~/root";
+import { isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
-import { safeNanoID } from "~/utils/nanoid";
-import {
-   getMultipleFormData,
-   uploadImage,
-} from "~/utils/upload-handler.server";
 
 import { LoggedIn } from "../../_auth+/components/LoggedIn";
 import { LoggedOut } from "../../_auth+/components/LoggedOut";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),
-   siteIcon: z
-      .any()
-      .refine((file) => file?.size <= 500000, `Max image size is 5MB.`)
-      .refine(
-         (file) =>
-            ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
-               file?.type,
-            ),
-         "Only .jpg, .jpeg, .png and .webp formats are supported.",
-      ),
+   siteSlug: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Slug contains invalid characters",
+      )
+      .min(3, "Slug must be at least 3 characters long")
+      .max(16, "Slug cannot be more than 16 characters long")
+      .toLowerCase(),
 });
 
 export const handle = {
@@ -54,32 +56,16 @@ export function NewSiteModal() {
    const disabled = isProcessing(transition.state);
    const { t } = useTranslation(handle?.i18n);
 
-   //Image preview after upload
-   const [, setPicture] = useState(null);
-   const [imgData, setImgData] = useState(null);
-   const onChangePicture = (e: any) => {
-      if (e.target.files[0]) {
-         setPicture(e.target.files[0]);
-         const reader = new FileReader() as any;
-         reader.addEventListener("load", () => {
-            setImgData(reader.result);
-         });
-         reader.readAsDataURL(e.target.files[0]);
-      }
-   };
-
    const adding = isAdding(transition, "addSite");
-   const formResponse = useActionData<FormResponse>();
-   const zo = useZorm("newSite", SiteSchema, {
-      //@ts-ignore
-      customIssues: formResponse?.serverIssues,
-   });
+   const zo = useZorm("newSite", SiteSchema);
 
+   const { user } = useRouteLoaderData("root") as {
+      user: SerializeFrom<typeof rootLoaderType>["user"];
+   };
    useEffect(() => {
       if (!adding) {
          //@ts-ignore
          zo.refObject.current && zo.refObject.current.reset();
-         setImgData(null);
          setIsOpen(false);
       }
    }, [adding, zo.refObject]);
@@ -88,8 +74,9 @@ export function NewSiteModal() {
       <>
          <div className="flex items-center justify-center">
             <button
-               className="bg-2 shadow-1 text-1 flex h-12 w-12 items-center justify-center
-               rounded-full shadow-sm transition duration-300 active:translate-y-0.5"
+               className="dark:bg-dark400 border-2 dark:border-zinc-700 shadow-1 bg-white
+               text-1 flex h-12 w-12 items-center justify-center dark:hover:border-zinc-600 border-zinc-200
+               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 hover:border-zinc-300"
                type="button"
                aria-label="Create New Site"
                onClick={() => setIsOpen(true)}
@@ -97,149 +84,103 @@ export function NewSiteModal() {
                <Icon name="plus" size={20} />
             </button>
          </div>
-         <Modal
-            onClose={() => {
-               setIsOpen(false);
-            }}
-            show={isOpen}
+         <Dialog
+            className="relative"
+            size="md"
+            onClose={setIsOpen}
+            open={isOpen}
          >
-            <div
-               className="bg-2 mx-5 max-w-md transform rounded-2xl
-               p-6 text-left align-middle shadow-xl transition-all"
-            >
-               <LoggedOut>
-                  <div className="space-y-2 pb-8 pt-6">
-                     <div className="text-center font-header text-xl font-bold">
-                        Login to create a new wiki on Mana!
-                     </div>
-                     <div className="text-1 text-center">
-                        Mana is currently in its early stages of development and
-                        has yet to reach a stable release!
-                     </div>
+            <LoggedOut>
+               <div className="space-y-2 pb-8 pt-6">
+                  <div className="text-center font-header text-xl font-bold">
+                     Login to create a new wiki on Mana!
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
-                     <Link
-                        to="/join"
-                        className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
+               </div>
+               <div className="grid grid-cols-2 gap-4">
+                  <Link
+                     to="/join"
+                     className="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-4 px-5 
                            py-2 font-medium text-indigo-600 transition duration-300 ease-out"
-                     >
-                        <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
-                        <span
-                           className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
+                  >
+                     <span className="absolute inset-0 h-full w-full bg-gradient-to-br from-yellow-500 via-blue-500 to-purple-600"></span>
+                     <span
+                        className="ease absolute bottom-0 right-0 mb-32 mr-4 block h-64 w-64 origin-bottom-left translate-x-24 
                            rotate-45 transform rounded-full bg-teal-500 opacity-30 transition duration-500 group-hover:rotate-90"
-                        ></span>
-                        <span className="relative text-sm font-bold text-white">
-                           {t("login.signUp", { ns: "auth" })}
-                        </span>
-                     </Link>
-                     <Link
-                        className="border-color bg-3 shadow-1 flex h-10 items-center
+                     ></span>
+                     <span className="relative text-sm font-bold text-white">
+                        {t("login.signUp", { ns: "auth" })}
+                     </span>
+                  </Link>
+                  <Link
+                     className="border-color bg-3 shadow-1 flex h-10 items-center
                            justify-center rounded-full border text-center text-sm
                            font-bold shadow-sm"
-                        to="/login"
-                     >
-                        {t("login.action", { ns: "auth" })}
-                     </Link>
-                  </div>
-               </LoggedOut>
-               <LoggedIn>
-                  <div className="pb-6 pt-4 text-center">
-                     <div className="pb-1 font-header text-xl font-bold">
-                        Create a new site
-                     </div>
-                     <p className="text-1 px-3 text-sm">
-                        You can update both the name and icon later. A square
-                        image with a 1:1 aspect ratio is recommended.
-                     </p>
-                  </div>
-                  <Form
-                     ref={zo.ref}
-                     method="post"
-                     action="/action/new-site-modal"
-                     encType="multipart/form-data"
-                     replace
+                     to="/login"
                   >
-                     <div className="flex items-center justify-center pb-4">
-                        <label className="cursor-pointer">
-                           {imgData ? (
-                              <div
-                                 className="flex h-[72px] w-[72px] items-center justify-center overflow-hidden 
-                                                            rounded-full"
-                              >
-                                 <img
-                                    width={80}
-                                    height={80}
-                                    className="aspect-square object-contain"
-                                    alt="preview"
-                                    src={imgData}
-                                 />
-                              </div>
-                           ) : (
-                              <div
-                                 className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-2 border-dashed
-                                                            border-zinc-500 bg-white hover:border-zinc-700 hover:bg-zinc-100
-                                                            dark:bg-zinc-600 dark:hover:border-zinc-400"
-                              >
-                                 <Icon
-                                    name="image-plus"
-                                    className="h-5 w-5 text-zinc-400"
-                                 />
-                              </div>
-                           )}
-                           <input
-                              //@ts-ignore
-                              name={zo.fields.siteIcon()}
-                              type="file"
-                              className="hidden"
-                              onChange={onChangePicture}
-                           />
-                        </label>
-                     </div>
-                     <Fieldset>
-                        <Field>
-                           <Label>{t("register.username")}</Label>
-                           <Input
-                              type="text"
-                              disabled={disabled}
-                              className="lowercase"
-                              name={zo.fields.siteName()}
-                           />
-                           {zo.errors.siteName((err) => (
-                              <ErrorMessage>{err.message}</ErrorMessage>
-                           ))}
-                        </Field>
-                     </Fieldset>
-                     <button
-                        name="intent"
-                        value="addSite"
-                        type="submit"
-                        className="h-11 w-full rounded bg-zinc-500 px-4 text-white hover:bg-zinc-600 focus:bg-zinc-400"
-                        disabled={disabled}
-                     >
-                        {adding ? (
-                           <Icon
-                              name="loader-2"
-                              className="mx-auto h-5 w-5 animate-spin text-zinc-300"
-                           />
-                        ) : (
-                           t("new.action")
-                        )}
-                     </button>
-                  </Form>
-               </LoggedIn>
-               <button
-                  name="intent"
-                  value="addSite"
-                  type="button"
-                  className="absolute right-2 top-2 flex h-9 w-9
-                              items-center justify-center rounded-full
-                            hover:bg-red-50 dark:hover:bg-zinc-700"
-                  onClick={() => setIsOpen(false)}
-               >
-                  <Icon name="x" className="h-6 w-6 text-red-400" />
-               </button>
-            </div>
-         </Modal>
+                     {t("login.action", { ns: "auth" })}
+                  </Link>
+               </div>
+            </LoggedOut>
+            <LoggedIn>
+               <div className="pb-3 mb-3 font-header text-xl font-bold border-b-2 border-color">
+                  Create a new site
+               </div>
+               <Form ref={zo.ref} method="post" action="/action/new-site-modal">
+                  <FieldGroup>
+                     <Field>
+                        <Label>Name</Label>
+                        <Input
+                           type="text"
+                           disabled={disabled}
+                           className="lowercase"
+                           name={zo.fields.siteName()}
+                        />
+                        {zo.errors.siteName((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                     </Field>
+                     <Field>
+                        <Label>Slug</Label>
+                        <Input
+                           type="text"
+                           disabled={disabled}
+                           className="lowercase"
+                           name={zo.fields.siteSlug()}
+                        />
+                        {zo.errors.siteSlug((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
+                        <Description className="flex items-center gap-1">
+                           <span>Your site will be available at</span>
+                           <div className="underline underline-offset-1 dark:decoration-zinc-500">
+                              <span className="dark:text-zinc-200">
+                                 {user?.username}
+                              </span>
+                              -
+                              <Value zorm={zo} name={zo.fields.siteSlug()}>
+                                 {(value) => (
+                                    <span className="dark:text-zinc-200">
+                                       {value}
+                                    </span>
+                                 )}
+                              </Value>
+                              <span>.mana.wiki</span>
+                           </div>
+                        </Description>
+                     </Field>
+                  </FieldGroup>
+                  <Button
+                     name="intent"
+                     value="addSite"
+                     type="submit"
+                     disabled={disabled}
+                     className="mt-6 h-10 w-full"
+                  >
+                     {adding ? <DotLoader /> : t("new.action")}
+                  </Button>
+               </Form>
+            </LoggedIn>
+         </Dialog>
       </>
    );
 }
@@ -253,105 +194,59 @@ export const action: ActionFunction = async ({
       return redirect("/login");
    }
 
-   const issues = createCustomIssues(SiteSchema);
+   const { siteName, siteSlug } = await zx.parseForm(request, SiteSchema);
+   try {
+      const userId = user.id;
+      const userName = user.username;
+      const siteId = `${userName}-${siteSlug}`;
 
-   const result = await getMultipleFormData({
-      request,
-      prefix: "siteIcon",
-      schema: SiteSchema,
-   });
+      await payload.create({
+         collection: "sites",
+         data: {
+            name: siteName,
+            //@ts-expect-error
+            owner: userId,
+            id: siteId,
+            //@ts-expect-error
+            slug: siteId,
+            type: "core",
+         },
+         overrideAccess: false,
+         user,
+      });
 
-   if (result.success) {
-      const { siteName, siteIcon } = result.data;
-      try {
-         const icon = await uploadImage({ payload, image: siteIcon, user });
-         const userId = user.id;
-         const siteId = safeNanoID();
-         await payload.create({
-            collection: "sites",
-            data: {
-               name: siteName,
-               //@ts-expect-error
-               owner: userId,
-               id: siteId,
-               //@ts-expect-error
-               slug: siteId,
-               //@ts-expect-error
-               icon: icon.id,
-               type: "core",
-            },
-            overrideAccess: false,
-            user,
-         });
+      const userData = user
+         ? await payload.findByID({
+              collection: "users",
+              id: userId,
+              user,
+           })
+         : undefined;
 
-         const initialValue = [
-            {
-               id: nanoid(),
-               type: BlockType.Updates,
-               children: [{ text: "" }],
-            },
-            {
-               id: nanoid(),
-               type: BlockType.Paragraph,
-               children: [{ text: "" }],
-            },
-         ];
-
-         await payload.create({
-            collection: "homeContents",
-            data: {
-               content: initialValue,
-               //@ts-expect-error
-               site: siteId,
-            },
-            overrideAccess: false,
-            user,
-         });
-
-         const userData = user
-            ? await payload.findByID({
-                 collection: "users",
-                 id: userId,
-                 user,
-              })
-            : undefined;
-
-         //We need to get the current sites of the user, then prepare the new sites array
-         const userCurrentSites = userData?.sites || [];
-         const sites = userCurrentSites.map((site) =>
-            typeof site === "string" ? site : site?.id,
-         );
-
-         //Finally we update the user with the new site id
-         //@ts-ignore
-         await payload.update({
-            collection: "users",
-            id: userId,
-            data: { sites: [...sites, siteId] },
-            overrideAccess: false,
-            user,
-         });
-
-         return redirect(
-            process.env.NODE_ENV == "development"
-               ? `http://localhost:3000`
-               : `https://${siteId}.mana.wiki`,
-         );
-      } catch (error) {
-         return json({
-            error: "Something went wrong...unable to create new site.",
-         });
-      }
-   }
-   //If user input has problems
-   if (issues.hasIssues()) {
-      return json<FormResponse>(
-         { serverIssues: issues.toArray() },
-         { status: 400 },
+      //We need to get the current sites of the user, then prepare the new sites array
+      const userCurrentSites = userData?.sites || [];
+      const sites = userCurrentSites.map((site) =>
+         typeof site === "string" ? site : site?.id,
       );
+
+      //Finally we update the user with the new site id
+      //@ts-ignore
+      await payload.update({
+         collection: "users",
+         id: userId,
+         data: { sites: [...sites, siteId] },
+         overrideAccess: false,
+         user,
+      });
+
+      return redirect(
+         process.env.NODE_ENV == "development"
+            ? `http://localhost:3000`
+            : `https://${siteId}.mana.wiki`,
+      );
+   } catch (error) {
+      return json({
+         error: "Something went wrong...unable to create new site.",
+      });
    }
-   // Last resort error message
-   return json({
-      error: "Something went wrong...unable to create new site",
-   });
 };

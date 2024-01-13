@@ -7,7 +7,6 @@ import {
 
 import { Icon } from "~/components/Icon";
 import type { User } from "~/db/payload-types";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { UserMenu } from "~/routes/_auth+/components/UserMenu";
@@ -71,9 +70,7 @@ export function ColumnOne() {
                         <UserMenu />
                      </div>
                   </div>
-                  <AdminOrStaffOrOwner>
-                     <NewSiteModal />
-                  </AdminOrStaffOrOwner>
+                  <NewSiteModal />
                </LoggedIn>
                <LoggedOut>
                   <div className="absolute bottom-4 left-0 w-full">

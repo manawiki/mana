@@ -106,8 +106,8 @@
       "tlds": "^1.242.0",
       "ts-deepmerge": "^6.0.3",
       "url-slug": "^4.0.1",
-      "vaul": "^0.7.9",
-      "zod": "^3.22.1",
+      "vaul": "^0.8.0",
+      "zod": "^3.22.4",
       "zodix": "^0.4.4"
    },
    "devDependencies": {
