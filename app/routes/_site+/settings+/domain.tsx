@@ -22,6 +22,7 @@ import { zx } from "zodix";
 
 import { Badge, BadgeButton } from "~/components/Badge";
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
@@ -89,7 +90,7 @@ export async function loader({
             equals: siteSlug,
          },
          customDomainInvoiceId: {
-            not_equals: null,
+            not_equals: "",
          },
          and: [
             {
@@ -127,7 +128,6 @@ export async function loader({
    result.flyAppId = customFlyDomainData.docs[0]?.flyAppId ?? "mana";
    result.ipv4 = customFlyDomainData.docs[0]?.v4IP ?? "149.248.204.56";
    result.ipv6 = customFlyDomainData.docs[0]?.v6IP ?? "";
-
    if (domainExists.totalDocs === 0) {
       //If domain is not setup, check if user already purchased domain access
       const domainAccessUnlocked = await payload.find({
@@ -136,9 +136,18 @@ export async function loader({
             slug: {
                equals: siteSlug,
             },
-            customDomainInvoiceId: {
-               not_equals: "",
-            },
+            and: [
+               {
+                  customDomainInvoiceId: {
+                     exists: true,
+                  },
+               },
+               {
+                  customDomainInvoiceId: {
+                     not_equals: "",
+                  },
+               },
+            ],
          },
          depth: 0,
       });
@@ -265,6 +274,7 @@ export default function Settings() {
    const isSubDomain = levels.length == 3;
    const addingDomain = isAdding(fetcher, "addDomain");
    const deletingDomain = isAdding(fetcher, "deleteDomain");
+   const purchasingDomain = isAdding(fetcher, "purchaseDomain");
 
    const revalidator = useRevalidator();
 
@@ -307,7 +317,7 @@ export default function Settings() {
                               );
                            }}
                         >
-                           Purchase
+                           {purchasingDomain ? <DotLoader /> : "Purchase"}
                         </Button>
                         <div className="laptop:order-1 text-zinc-500 dark:text-zinc-400 text-sm">
                            One-time{" "}
