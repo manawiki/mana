@@ -71,9 +71,7 @@ export function ColumnOne() {
                         <UserMenu />
                      </div>
                   </div>
-                  <AdminOrStaffOrOwner>
-                     <NewSiteModal />
-                  </AdminOrStaffOrOwner>
+                  <NewSiteModal />
                </LoggedIn>
                <LoggedOut>
                   <div className="absolute bottom-4 left-0 w-full">
