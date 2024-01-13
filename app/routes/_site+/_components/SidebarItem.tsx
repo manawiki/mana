@@ -17,22 +17,22 @@ export function SidebarItem({
    const isActive = siteSlug === site.slug;
 
    return (
-      <a
-         className="bg-3-sub border border-zinc-300/80 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600 
-         shadow-1 rounded-full shadow overflow-hidden flex items-center justify-center h-11 w-11"
-         href={`https://${sitePath}`}
-      >
+      <a href={`https://${sitePath}`}>
          <>
             {site?.icon?.url ? (
                <Image
+                  className="size-11 rounded-full overflow-hidden"
                   alt="Site Logo"
                   options="aspect_ratio=1:1&height=120&width=120"
                   url={site?.icon?.url ?? ""}
                />
             ) : (
-               <>
-                  <LogoBW className="size-6 text-stone-400 dark:text-stone-500" />
-               </>
+               <div
+                  className="size-[47px] dark:bg-dark400 border border-zinc-300/80 hover:border-zinc-300 
+               dark:border-zinc-600 dark:hover:border-zinc-600 rounded-full overflow-hidden flex items-center justify-center"
+               >
+                  <LogoBW className="size-6 text-stone-400 dark:text-zinc-400" />
+               </div>
             )}
             {isActive && (
                <span className="absolute -left-1 top-2 h-7 w-2.5 rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden" />

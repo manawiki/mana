@@ -76,3 +76,15 @@ export const canEditSite: Access = async ({
    // Reject everyone else
    return false;
 };
+
+export const canReadSite: Access = async ({
+   req: { user, payload },
+   id: resultId,
+   data,
+}) => {
+   return {
+      isPublic: {
+         equals: true,
+      },
+   };
+};
