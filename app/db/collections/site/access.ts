@@ -80,12 +80,10 @@ export const canEditSite: Access = async ({
 export const canReadSite: Access = async ({
    req: { user, payload },
    id: resultId,
-   data,
 }) => {
    if (user) {
       if (user.roles.includes("staff")) return true;
       const userId = user.id;
-      // Update and Delete
       if (resultId) {
          const site = await payload.findByID({
             collection: "sites",
