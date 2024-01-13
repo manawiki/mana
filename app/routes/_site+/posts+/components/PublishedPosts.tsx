@@ -15,7 +15,7 @@ import { PublishedPostRow } from "./PublishedPostRow";
 import type { loader } from "../_posts";
 
 export function PublishedPosts() {
-   const { publishedPosts, siteId } = useLoaderData<typeof loader>();
+   const { publishedPosts } = useLoaderData<typeof loader>();
    const transition = useNavigation();
    const isSearching = isLoading(transition);
    const [searchParams, setSearchParams] = useSearchParams({});

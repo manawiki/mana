@@ -174,7 +174,6 @@ export async function action({
                      overrideAccess: false,
                      user,
                   });
-                  console.log("got here");
 
                   return await payload.update({
                      collection: collectionSlug,

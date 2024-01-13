@@ -28,7 +28,7 @@ export const PostContents: CollectionConfig = {
          type: "relationship",
          relationTo: "sites",
          hasMany: false,
-         maxDepth: 0,
+         maxDepth: 1,
       },
       {
          name: "versionAuthor",

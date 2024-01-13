@@ -12,19 +12,16 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    invariant(user);
-   const existingStripeUser = await payload.find({
+   const existingStripeUser = await payload.findByID({
       collection: "users",
-      where: {
-         stripeCustomerId: {
-            exists: true,
-         },
-      },
+      id: user.id,
       user,
       overrideAccess: false,
    });
 
-   //@ts-ignore
-   const customerId = existingStripeUser.docs[0]?.stripeCustomerId as string;
+   const customerId = existingStripeUser.stripeCustomerId
+      ? existingStripeUser.stripeCustomerId
+      : false;
 
    if (customerId) {
       const customerPaymentMethods =

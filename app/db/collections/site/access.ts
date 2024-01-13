@@ -111,7 +111,6 @@ export const siteFieldAsSiteAdmin: FieldAccess<
 > = async ({ req: { user, payload }, id, data }) => {
    if (user) {
       if (user?.roles?.includes("staff")) return true;
-      console.log(user?.id);
       const userId = user?.id;
 
       // Read and Update

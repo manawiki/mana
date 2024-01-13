@@ -43,18 +43,16 @@ export async function fetchMyPosts({
                     },
                  }
                : status == "draft"
-               ? {
-                    publishedAt: {
-                       exists: false,
-                    },
-                 }
-               : {}),
+                 ? {
+                      publishedAt: {
+                         exists: false,
+                      },
+                   }
+                 : {}),
          },
          page: page ?? 1,
          sort: "-updatedAt",
          depth: 2,
-         overrideAccess: false,
-         user,
       });
 
       const postSelect: Select<Post> = {
