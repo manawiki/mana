@@ -2,6 +2,7 @@ import type { Payload } from "payload";
 import { type Select } from "payload-query";
 
 import type { Post, User } from "payload/generated-types";
+import { cacheThis } from "~/utils/cache.server";
 
 import { filterAuthorFields } from "./filterAuthorFields";
 import type { PostsAllSchema } from "../_posts";
@@ -26,29 +27,73 @@ export async function fetchPublishedPosts({
       banner: true,
    };
 
-   const data = await payload.find({
-      collection: "posts",
-      where: {
-         "site.slug": {
-            equals: siteSlug,
-         },
-         publishedAt: {
-            exists: true,
-         },
-         ...(q
-            ? {
-                 name: {
-                    contains: q,
+   const data = user
+      ? await payload.find({
+           collection: "posts",
+           where: {
+              "site.slug": {
+                 equals: siteSlug,
+              },
+              ...(q
+                 ? {
+                      name: {
+                         contains: q,
+                      },
+                   }
+                 : {}),
+              and: [
+                 {
+                    publishedAt: {
+                       exists: true,
+                    },
                  },
-              }
-            : {}),
-      },
-      depth: 2,
-      overrideAccess: false,
-      user,
-      sort: "-publishedAt",
-   });
-
+                 {
+                    publishedAt: {
+                       not_equals: null,
+                    },
+                 },
+              ],
+           },
+           depth: 2,
+           overrideAccess: false,
+           user,
+           sort: "-publishedAt",
+        })
+      : await cacheThis(
+           () =>
+              payload.find({
+                 collection: "posts",
+                 where: {
+                    "site.slug": {
+                       equals: siteSlug,
+                    },
+                    ...(q
+                       ? {
+                            name: {
+                               contains: q,
+                            },
+                         }
+                       : {}),
+                    and: [
+                       {
+                          publishedAt: {
+                             exists: true,
+                          },
+                       },
+                       {
+                          publishedAt: {
+                             not_equals: null,
+                          },
+                       },
+                    ],
+                 },
+                 depth: 2,
+                 overrideAccess: false,
+                 user,
+                 sort: "-publishedAt",
+              }),
+           `publishedPosts-${siteSlug}`,
+        );
    const { docs } = filterAuthorFields(data, postSelect);
 
    return { docs };

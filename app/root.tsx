@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -16,6 +17,7 @@ import {
    ScrollRestoration,
    useLoaderData,
    useMatches,
+   useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/index.css";
@@ -36,6 +38,15 @@ import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+type ContextType = [
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>,
+   isUserMenuOpen: boolean,
+];
+
+export function useUserMenuState() {
+   return useOutletContext<ContextType>();
+}
 
 export const loader = async ({
    context: { user, payload },
@@ -140,6 +151,8 @@ function App() {
       }
    }, [toast]);
 
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+
    return (
       <html
          lang={locale}
@@ -188,7 +201,9 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet />
+            <Outlet
+               context={[setUserMenuOpen, isUserMenuOpen] satisfies ContextType}
+            />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}

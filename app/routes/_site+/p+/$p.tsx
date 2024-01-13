@@ -491,6 +491,21 @@ export async function action({
             overrideAccess: false,
             user,
          });
+         // if the slug is already generated, and publishedAt is null, we need to update the publishedAt field too
+         //@ts-ignore
+         if (postData?.slug != postData.id && postData.publishedAt == null) {
+            await payload.update({
+               collection: "posts",
+               id: postData.id,
+               data: {
+                  _status: "published",
+                  //@ts-ignore
+                  publishedAt: new Date().toISOString(),
+               },
+               overrideAccess: false,
+               user,
+            });
+         }
          return jsonWithSuccess(null, "Latest update published");
       }
       case "deletePost": {
@@ -509,23 +524,6 @@ export async function action({
             user,
          });
 
-         await payload.delete({
-            collection: "postContents",
-            id: postData?.id,
-            overrideAccess: false,
-            user,
-         });
-
-         const bannerId = post?.banner?.id;
-
-         if (bannerId) {
-            await payload.delete({
-               collection: "images",
-               id: bannerId,
-               overrideAccess: false,
-               user,
-            });
-         }
          const postTitle = post?.name;
 
          return redirectWithSuccess(

@@ -1,9 +1,8 @@
-import { useState } from "react";
-
 import { Link, Outlet, useLocation } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { LogoFull } from "~/components/Logo";
+import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { UserMenu } from "~/routes/_auth+/components/UserMenu";
@@ -28,8 +27,7 @@ export default function IndexLayout() {
 
 function Header() {
    const location = useLocation();
-
-   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+   const [setUserMenuOpen] = useUserMenuState();
 
    return (
       <header className="z-50 w-full absolute">
@@ -40,10 +38,7 @@ function Header() {
                      <LogoFull />
                   </Link>
                   <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
-                     <UserMenu
-                        isUserMenuOpen={isUserMenuOpen}
-                        setUserMenuOpen={setUserMenuOpen}
-                     />
+                     <UserMenu />
                      <button
                         className="flex h-9 w-9 items-center laptop:hidden justify-center"
                         onClick={() => setUserMenuOpen(true)}

@@ -1,10 +1,10 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { useState } from "react";
 
-import { Link, useFetcher, useLocation } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
+import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
@@ -13,19 +13,16 @@ import { isAdding } from "~/utils/form";
 
 import { FollowingTrayContent, MobileTray } from "./MobileTray";
 
-export function MobileHeader({
-   setUserMenuOpen,
-   site,
-}: {
-   setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
-   site: SerializeFrom<typeof siteLoaderType>["site"];
-}) {
+export function MobileHeader() {
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
+   const [setUserMenuOpen] = useUserMenuState();
 
    return (
       <>

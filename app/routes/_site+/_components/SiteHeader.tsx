@@ -2,12 +2,12 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Link, useFetcher } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { LogoBW } from "~/components/Logo";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -19,14 +19,14 @@ import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
 export function SiteHeader({
-   site,
    setSearchToggle,
    searchToggle,
 }: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
    setSearchToggle: Dispatch<SetStateAction<boolean>>;
    searchToggle: boolean;
 }) {
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");
@@ -57,17 +57,27 @@ export function SiteHeader({
                         <Link
                            prefetch="intent"
                            to="/"
-                           className="flex items-center group truncate"
+                           className="flex items-center group h-full"
                         >
-                           <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
-                              <Image
-                                 width={40}
-                                 height={40}
-                                 //@ts-ignore
-                                 url={site.icon?.url}
-                                 options="aspect_ratio=1:1&height=120&width=120"
-                                 alt="Site Logo"
-                              />
+                           <div
+                              className="dark:bg-dark400 border-2 dark:border-zinc-700 shadow-1 bg-white overflow-hidden
+                              text-1 flex h-9 w-9 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-200
+                              rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
+                           >
+                              {site?.icon?.url ? (
+                                 <Image
+                                    width={40}
+                                    height={40}
+                                    //@ts-ignore
+                                    url={site.icon?.url}
+                                    options="aspect_ratio=1:1&height=120&width=120"
+                                    alt="Site Logo"
+                                 />
+                              ) : (
+                                 <>
+                                    <LogoBW className="size-4 text-stone-400 dark:text-stone-500" />
+                                 </>
+                              )}
                            </div>
                            <div className="truncate pl-3 text-sm">
                               <div className="font-bold truncate group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">

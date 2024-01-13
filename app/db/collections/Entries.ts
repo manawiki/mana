@@ -5,7 +5,7 @@ import type {
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "./site/access";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 
 export const entriesSlug = "entries";
 
