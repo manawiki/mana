@@ -13,8 +13,13 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 
 export { listMeta as meta };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({
+   context: { user, payload },
+   request,
+}: LoaderFunctionArgs) {
    const { list } = await fetchList({
+      payload,
+      user,
       request,
       gql: {
          query: CHARACTERS,
