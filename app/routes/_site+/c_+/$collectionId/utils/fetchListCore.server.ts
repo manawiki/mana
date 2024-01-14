@@ -19,23 +19,37 @@ export async function fetchListCore({
    siteSlug: string;
    user?: User;
 }) {
-   const collectionData = await cacheThis(
-      () =>
-         payload.find({
-            collection: "collections",
-            where: {
-               "site.slug": {
-                  equals: siteSlug,
-               },
-               slug: {
-                  equals: collectionId,
-               },
-            },
-            overrideAccess: false,
-            user,
-         }),
-      `list-collection-${siteSlug}-${collectionId}`,
-   );
+   const collectionData = user
+      ? await payload.find({
+           collection: "collections",
+           where: {
+              "site.slug": {
+                 equals: siteSlug,
+              },
+              slug: {
+                 equals: collectionId,
+              },
+           },
+           overrideAccess: false,
+           user,
+        })
+      : await cacheThis(
+           () =>
+              payload.find({
+                 collection: "collections",
+                 where: {
+                    "site.slug": {
+                       equals: siteSlug,
+                    },
+                    slug: {
+                       equals: collectionId,
+                    },
+                 },
+                 overrideAccess: false,
+                 user,
+              }),
+           `list-collection-${siteSlug}-${collectionId}`,
+        );
 
    const collectionEntry = collectionData?.docs[0];
 
@@ -74,24 +88,39 @@ export async function fetchListCore({
    }
 
    //Otherwise pull data from core
-   const data = await cacheThis(
-      () =>
-         payload.find({
-            collection: "entries",
-            where: {
-               site: {
-                  equals: collectionEntry?.site?.id,
-               },
-               "collectionEntity.slug": {
-                  equals: collectionId,
-               },
-            },
-            depth: 1,
-            overrideAccess: false,
-            user,
-         }),
-      `list-entries-${siteSlug}-${collectionId}`,
-   );
+   const data = user
+      ? await payload.find({
+           collection: "entries",
+           where: {
+              site: {
+                 equals: collectionEntry?.site?.id,
+              },
+              "collectionEntity.slug": {
+                 equals: collectionId,
+              },
+           },
+           depth: 1,
+           overrideAccess: false,
+           user,
+        })
+      : await cacheThis(
+           () =>
+              payload.find({
+                 collection: "entries",
+                 where: {
+                    site: {
+                       equals: collectionEntry?.site?.id,
+                    },
+                    "collectionEntity.slug": {
+                       equals: collectionId,
+                    },
+                 },
+                 depth: 1,
+                 overrideAccess: false,
+                 user,
+              }),
+           `list-entries-${siteSlug}-${collectionId}`,
+        );
 
    const filtered = data.docs.map((doc) => {
       return {

@@ -1,29 +1,30 @@
 import { useEffect } from "react";
 
 import { arrayMove } from "@dnd-kit/sortable";
-import {
-   type ActionFunction,
-   type LoaderFunctionArgs,
-   json,
-   redirect,
+import { json, redirect } from "@remix-run/node";
+import type {
+   SerializeFrom,
+   ActionFunction,
+   LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
    Link,
    useLoaderData,
    useSearchParams,
    useFetcher,
-   useMatches,
    useParams,
+   useRouteLoaderData,
 } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Entry, Site } from "payload/generated-types";
+import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
 import {
@@ -44,6 +45,7 @@ import { List } from "../_components/List";
 const EntrySchema = z.object({
    name: z.string(),
    collectionId: z.string(),
+   siteId: z.string(),
 });
 
 export const CollectionsAllSchema = z.object({
@@ -95,10 +97,10 @@ export default function CollectionList() {
    const addingUpdate = isAdding(fetcher, "addEntry");
    const zoEntry = useZorm("newEntry", EntrySchema);
 
-   //Site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
    };
+
    const { collectionId } = useParams();
 
    const collection = site?.collections?.find(
@@ -135,6 +137,11 @@ export default function CollectionList() {
                         <input
                            value={collection?.id}
                            name={zoEntry.fields.collectionId()}
+                           type="hidden"
+                        />
+                        <input
+                           value={site?.id}
+                           name={zoEntry.fields.siteId()}
                            type="hidden"
                         />
                         <button
@@ -284,20 +291,22 @@ export const action: ActionFunction = async ({
    switch (intent) {
       case "addEntry": {
          assertIsPost(request);
-         const { name, collectionId, siteId } = await zx.parseForm(request, {
-            name: z.string(),
-            collectionId: z.string(),
-            siteId: z.string(),
-         });
+         const { name, collectionId, siteId } = await zx.parseForm(
+            request,
+            EntrySchema,
+         );
          try {
+            const entryId = nanoid(12);
+
             return await payload.create({
                collection: "entries",
                data: {
                   name,
-                  id: nanoid(12),
+                  id: entryId,
                   author: user?.id as any,
                   collectionEntity: collectionId as any,
                   site: siteId as any,
+                  slug: entryId as any,
                },
                user,
                overrideAccess: false,

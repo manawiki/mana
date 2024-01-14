@@ -3,61 +3,102 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 
 import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
-import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { cacheThis } from "~/utils/cache.server";
 
 export async function getEmbeddedContent({
    id,
    user,
    payload,
+   siteSlug,
    request,
 }: {
    id: string;
+   siteSlug: string;
    user: any;
    payload: Payload;
    params: Params;
    request: any;
 }) {
-   const { siteSlug } = await getSiteSlug(request, payload, user);
-
    //We can't use param since it won't exist on a custom site
    const url = new URL(request.url).pathname;
    const collectionId = url.split("/")[2];
 
-   if (user) {
-      const { docs } = await payload.find({
-         collection: "contentEmbeds",
-         where: {
-            "site.slug": {
-               equals: siteSlug,
+   const { docs: publishedEmbed } = await cacheThis(
+      () =>
+         payload.find({
+            collection: "contentEmbeds",
+            where: {
+               "site.slug": {
+                  equals: siteSlug,
+               },
+               "collectionEntity.slug": {
+                  equals: collectionId,
+               },
+               relationId: {
+                  equals: id,
+               },
             },
-            "collectionEntity.slug": {
-               equals: collectionId,
-            },
-            relationId: {
-               equals: id,
-            },
-         },
-         depth: 1,
-         overrideAccess: false,
-         user,
-      });
+            depth: 0,
+            overrideAccess: false,
+            user,
+         }),
+      `contentEmbeds-${siteSlug}-${collectionId}-${id}`,
+   );
 
-      const hasAccess = isSiteOwnerOrAdmin(user?.id, docs[0]?.site);
+   if (!user) {
+      return publishedEmbed.map((item) => ({
+         isChanged: false,
+         id: item.id,
+         content: item.content,
+         subSectionId: item.subSectionId,
+      }));
+   }
+   //If user is logged in, check if they have access to the site
+   const site = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+      },
+      depth: 0,
+      overrideAccess: false,
+      user,
+   });
+
+   if (user) {
+      const hasAccess = isSiteOwnerOrAdmin(user?.id, site.docs[0]);
 
       if (hasAccess) {
+         const { docs: draftEmbed } = await payload.find({
+            collection: "contentEmbeds",
+            where: {
+               "site.slug": {
+                  equals: siteSlug,
+               },
+               "collectionEntity.slug": {
+                  equals: collectionId,
+               },
+               relationId: {
+                  equals: id,
+               },
+            },
+            draft: true,
+            depth: 0,
+            overrideAccess: false,
+            user,
+         });
+
          const result = await Promise.all(
-            docs.map(async (item) => {
-               //Pull Embed drafts to compare if an update is needed
-               const draftEmbed = await payload.findByID({
+            draftEmbed.map(async (item) => {
+               //Pull published embeds to compare if an update is needed
+               const publishedEmbed = await payload.findByID({
                   collection: "contentEmbeds",
                   id: item.id,
                   depth: 0,
-                  draft: true,
                   overrideAccess: false,
                   user,
                });
-
                const versionData = await payload.findVersions({
                   collection: "contentEmbeds",
                   depth: 0,
@@ -95,12 +136,12 @@ export async function getEmbeddedContent({
                   });
 
                const isChanged =
-                  JSON.stringify(draftEmbed.content) !=
+                  JSON.stringify(publishedEmbed.content) !=
                      JSON.stringify(item.content) || versions.length == 0;
 
                return {
                   id: item.id,
-                  content: draftEmbed.content,
+                  content: item.content,
                   subSectionId: item.subSectionId,
                   isChanged,
                   versions,
@@ -111,37 +152,7 @@ export async function getEmbeddedContent({
       }
 
       //If no access, return content field from original query
-      return docs.map((item) => ({
-         isChanged: false,
-         id: item.id,
-         content: item.content,
-         subSectionId: item.subSectionId,
-      }));
-   }
-
-   if (!user) {
-      const { docs } = await cacheThis(
-         () =>
-            payload.find({
-               collection: "contentEmbeds",
-               where: {
-                  "site.slug": {
-                     equals: siteSlug,
-                  },
-                  "collectionEntity.slug": {
-                     equals: collectionId,
-                  },
-                  relationId: {
-                     equals: id,
-                  },
-               },
-               depth: 1,
-               overrideAccess: false,
-               user,
-            }),
-         `contentEmbeds-${siteSlug}-${collectionId}-${id}`,
-      );
-      return docs.map((item) => ({
+      return publishedEmbed.map((item) => ({
          isChanged: false,
          id: item.id,
          content: item.content,

@@ -72,6 +72,7 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
+         secure: serverEnv !== "development",
          sameSite: "lax",
       },
    },

@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Switch, Tab } from "@headlessui/react";
@@ -8,6 +7,7 @@ import clsx from "clsx";
 import { Dialog } from "~/components/Dialog";
 import { Icon } from "~/components/Icon";
 import { Modal } from "~/components/Modal";
+import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { useTheme } from "~/utils/client-hints";
@@ -15,15 +15,9 @@ import { isAdding } from "~/utils/form";
 
 import { Billing } from "./Billing";
 
-export function UserMenu({
-   isUserMenuOpen,
-   setUserMenuOpen,
-}: {
-   isUserMenuOpen: boolean;
-   setUserMenuOpen: Dispatch<SetStateAction<boolean>>;
-}) {
+export function UserMenu() {
    const { sitePath } = useRouteLoaderData("root") as { sitePath: string };
-
+   const [setUserMenuOpen, isUserMenuOpen] = useUserMenuState();
    return (
       <>
          <LoggedIn>

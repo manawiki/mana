@@ -3,7 +3,7 @@ FROM node:18-bookworm-slim as base
 FROM base as builder
 
 WORKDIR /home/node
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
 COPY . .
 RUN yarn install
@@ -14,7 +14,7 @@ FROM base as runtime
 ENV NODE_ENV=production
 
 WORKDIR /home/node
-COPY package*.json  ./
+COPY package.json yarn.lock  ./
 
 RUN yarn install --production
 COPY --from=builder /home/node/dist ./dist

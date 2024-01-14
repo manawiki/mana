@@ -1,7 +1,6 @@
 import type { Payload } from "payload";
 
 import type { User } from "~/db/payload-types";
-import { cacheThis } from "~/utils/cache.server";
 
 /**
  * Retrieves the site slug based on the request object.
@@ -21,21 +20,17 @@ export async function getSiteSlug(
 
    let { hostname } = new URL(request.url);
 
-   const site = await cacheThis(
-      () =>
-         payload.find({
-            collection: "sites",
-            where: {
-               domain: {
-                  equals: hostname,
-               },
-            },
-            overrideAccess: false,
-            user,
-            depth: 0,
-         }),
-      hostname,
-   );
+   const site = await payload.find({
+      collection: "sites",
+      where: {
+         domain: {
+            equals: hostname,
+         },
+      },
+      overrideAccess: false,
+      user,
+      depth: 0,
+   });
 
    if (site?.totalDocs == 1) {
       return {

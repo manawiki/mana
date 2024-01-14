@@ -2,7 +2,8 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin, canRead } from "./site/access";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
+import { canRead } from "../../access/canRead";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const ContentEmbeds: CollectionConfig = {
