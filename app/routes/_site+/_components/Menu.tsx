@@ -7,6 +7,8 @@ import type { Site, User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { pinnedLinkUrlGenerator } from "~/utils/pinnedLinkUrlGenerator";
 
+import { SidebarItem } from "./SidebarItem";
+
 export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
    const { following } = useRouteLoaderData("root") as {
       following: User["sites"];
@@ -16,30 +18,9 @@ export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
       <>
          <LoggedIn>
             {following?.length === 0 ? null : (
-               <div className="grid grid-cols-4 mobile:grid-cols-5 tablet:grid-cols-9 laptop:grid-cols-10 gap-4">
+               <div className="grid justify-items-center grid-cols-5 mobile:grid-cols-5 tablet:grid-cols-9 laptop:grid-cols-10 gap-4">
                   {following?.map((item) => (
-                     <>
-                        <Link
-                           reloadDocument={true}
-                           key={item.id}
-                           onClick={() => setMenuOpen(false)}
-                           className="flex items-center justify-center"
-                           to={
-                              item.domain
-                                 ? `https://${item.domain}`
-                                 : `https://${item.slug}.mana.wiki`
-                           }
-                        >
-                           <Image
-                              className="border-color overflow-hidden rounded-full border shadow-sm"
-                              width={50}
-                              height={50}
-                              alt="Site Logo"
-                              options="aspect_ratio=1:1&height=120&width=120"
-                              url={item.icon?.url ?? ""}
-                           />
-                        </Link>
-                     </>
+                     <SidebarItem key={item.slug} site={item} />
                   ))}
                </div>
             )}

@@ -8,7 +8,10 @@ export function gqlEndpoint({
    siteSlug?: string | undefined | null;
 }) {
    //Custom sites
-   if (siteSlug) return `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
+   if (siteSlug)
+      return process.env.NODE_ENV == "development"
+         ? "http://localhost:4000/api/graphql"
+         : `https://${siteSlug}-db.${apiDBPath}/api/graphql`;
 
    return process.env.NODE_ENV == "development"
       ? "http://localhost:3000/api/graphql"

@@ -63,8 +63,6 @@ export async function fetchPost({
          collection: "postContents",
          id: postData.id,
          draft: true,
-         user,
-         overrideAccess: false,
       });
       const versionData = await payload.findVersions({
          collection: "postContents",

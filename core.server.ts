@@ -39,11 +39,11 @@ const WATCH_PATH = path.resolve("./build/version.txt");
 let build = require(BUILD_PATH);
 
 const transport = nodemailer.createTransport({
-   host: process.env.PAYLOAD_NODEMAILER_HOST,
+   host: process.env.PAYLOAD_NODEMAILER_HOST ?? "live.smtp.mailtrap.io",
    port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT ?? "587"),
    secure: false,
    auth: {
-      user: process.env.PAYLOAD_NODEMAILER_USER,
+      user: process.env.PAYLOAD_NODEMAILER_USER ?? "api",
       pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
    },
 });
@@ -168,6 +168,7 @@ function createProductionRequestHandler(): RequestHandler {
          ? {
               id: req?.user?.id,
               roles: req?.user?.roles,
+              username: req?.user?.username,
               avatar: { url: req?.user?.avatar?.url },
            }
          : undefined;
@@ -219,6 +220,7 @@ function createDevRequestHandler(): RequestHandler {
                   ? {
                        id: req?.user?.id,
                        roles: req?.user?.roles,
+                       username: req?.user?.username,
                        avatar: { url: req?.user?.avatar?.url },
                     }
                   : undefined;

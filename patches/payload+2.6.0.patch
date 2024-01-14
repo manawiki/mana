@@ -1,0 +1,40 @@
+diff --git a/node_modules/payload/dist/auth/operations/forgotPassword.js b/node_modules/payload/dist/auth/operations/forgotPassword.js
+index 969c319..5b33db4 100644
+--- a/node_modules/payload/dist/auth/operations/forgotPassword.js
++++ b/node_modules/payload/dist/auth/operations/forgotPassword.js
+@@ -67,12 +67,7 @@ async function forgotPassword(incomingArgs) {
+             req
+         });
+         if (!disableEmail) {
+-            const serverURL = config.serverURL !== null && config.serverURL !== '' ? config.serverURL : `${req.protocol}://${req.get('host')}`;
+-            let html = `${t('authentication:youAreReceivingResetPassword')}
+-    <a href="${serverURL}${config.routes.admin}/reset/${token}">
+-     ${serverURL}${config.routes.admin}/reset/${token}
+-    </a>
+-    ${t('authentication:youDidNotRequestPassword')}`;
++            let html = ""
+             if (typeof collectionConfig.auth.forgotPassword.generateEmailHTML === 'function') {
+                 html = await collectionConfig.auth.forgotPassword.generateEmailHTML({
+                     req,
+diff --git a/node_modules/payload/dist/auth/sendVerificationEmail.js b/node_modules/payload/dist/auth/sendVerificationEmail.js
+index f7e0694..c8aae79 100644
+--- a/node_modules/payload/dist/auth/sendVerificationEmail.js
++++ b/node_modules/payload/dist/auth/sendVerificationEmail.js
+@@ -12,15 +12,8 @@ async function sendVerificationEmail(args) {
+     // Verify token from e-mail
+     const { collection: { config: collectionConfig }, config, disableEmail, emailOptions, req, sendEmail, token, user } = args;
+     if (!disableEmail) {
+-        const serverURL = config.serverURL !== null && config.serverURL !== '' ? config.serverURL : `${req.protocol}://${req.get('host')}`;
+-        const verificationURL = `${serverURL}${config.routes.admin}/${collectionConfig.slug}/verify/${token}`;
+-        let html = `${req.t('authentication:newAccountCreated', {
+-            interpolation: {
+-                escapeValue: false
+-            },
+-            serverURL: config.serverURL,
+-            verificationURL
+-        })}`;
++
++        let html= "";
+         const verify = collectionConfig.auth.verify;
+         // Allow config to override email content
+         if (typeof verify.generateEmailHTML === 'function') {
