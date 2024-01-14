@@ -16,7 +16,6 @@ export async function fetchSite({
    request: Request;
    payload: Payload;
 }): Promise<Site> {
-   console.log("siteSlug", siteSlug);
    //Rename keys to "name"
    const swaps = {
       collectionName: "name",
