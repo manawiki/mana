@@ -77,22 +77,59 @@ export const canEditSite: Access = async ({
    return false;
 };
 
-export const canReadSite: Access = async ({
-   req: { user, payload },
-   id: resultId,
-}) => {
-   if (user) {
-      if (user.roles.includes("staff")) return true;
-      const userId = user.id;
-      if (resultId) {
-         const site = await payload.findByID({
-            collection: "sites",
-            id: resultId,
-            depth: 0,
-         });
-         if (site) return isSiteOwnerOrAdmin(userId, site);
-      }
+// export const canReadSite: Access = async ({
+//    req: { user, payload },
+//    id: resultId,
+// }) => {
+//    if (user) {
+//       if (user.roles.includes("staff")) return true;
+//       const userId = user.id;
+//       if (resultId) {
+//          const site = await payload.findByID({
+//             collection: "sites",
+//             id: resultId,
+//             depth: 0,
+//          });
+//          if (site) return isSiteOwnerOrAdmin(userId, site);
+//       }
+//    }
+//    return {
+//       isPublic: {
+//          equals: true,
+//       },
+//    };
+// };
+
+export const canReadSite: Access = async ({ req: { user, payload }, id }) => {
+   console.log(user);
+   if (!user)
+      return {
+         isPublic: {
+            equals: true,
+         },
+      };
+
+   if (user && user.roles.includes("staff")) return true;
+
+   //Singleton
+   if (user && id) {
+      const site = await payload.findByID({
+         collection: "sites",
+         id,
+         depth: 0,
+      });
+      const hasAccess = isSiteOwnerOrAdmin(user.id, site);
+      console.log(hasAccess);
+
+      if (!hasAccess)
+         return {
+            isPublic: {
+               equals: true,
+            },
+         };
+      return hasAccess;
    }
+   //List
    return {
       isPublic: {
          equals: true,

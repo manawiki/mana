@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite } from "./access";
+import { canEditSite, canReadSite } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../../access/user";
 
@@ -12,8 +12,8 @@ export const Sites: CollectionConfig = {
    },
    access: {
       create: isLoggedIn,
-      read: () => true,
-      // read: canReadSite,
+      // read: () => true,
+      read: canReadSite,
       update: canEditSite,
       delete: isStaff,
    },

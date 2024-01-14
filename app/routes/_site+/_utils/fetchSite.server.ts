@@ -16,9 +16,6 @@ export async function fetchSite({
    request: Request;
    payload: Payload;
 }): Promise<Site> {
-   console.log(user);
-   console.log(request?.headers.get("cookie"));
-
    //Rename keys to "name"
    const swaps = {
       collectionName: "name",
