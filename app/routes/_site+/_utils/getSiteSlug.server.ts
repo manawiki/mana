@@ -21,6 +21,8 @@ export async function getSiteSlug(
 
    let { hostname } = new URL(request.url);
 
+   console.log("hostname", hostname);
+
    const site = await cacheThis(
       () =>
          payload.find({
@@ -36,7 +38,7 @@ export async function getSiteSlug(
          }),
       hostname,
    );
-
+   console.log("site", site);
    if (site?.totalDocs == 1) {
       return {
          siteSlug: site.docs[0]?.slug ?? "hq",
