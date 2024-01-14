@@ -29,7 +29,7 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const site = await fetchSite({ siteSlug, user, request });
+   const site = await fetchSite({ siteSlug, user, request, payload });
 
    return await json({ site });
 }

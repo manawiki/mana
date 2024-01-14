@@ -174,7 +174,7 @@ export function NewSiteModal() {
                      value="addSite"
                      type="submit"
                      disabled={disabled}
-                     className="mt-6 h-10 w-full"
+                     className="mt-6 h-10 w-full cursor-pointer"
                   >
                      {adding ? <DotLoader /> : t("new.action")}
                   </Button>
