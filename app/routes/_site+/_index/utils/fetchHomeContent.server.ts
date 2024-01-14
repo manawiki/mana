@@ -85,18 +85,18 @@ export async function fetchHomeContent({
                return result;
             });
 
-         const home = select({ id: false, content: true }, data).content;
+         const home = select({ id: true, content: true }, data).content;
 
          const isChanged =
             JSON.stringify(home) != JSON.stringify(homeData.content);
 
-         return { home, isChanged, versions };
+         return { home, homeContentId: homeData.id, isChanged, versions };
       }
 
       //If no access, return content field from original query
       const home = docs[0]?.content;
 
-      return { home, isChanged: false };
+      return { home, homeContentId: homeData.id, isChanged: false };
    }
 
    //For anon users, use cached endpoint call.

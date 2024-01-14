@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { siteFieldAsSiteAdmin } from "./access";
+import { canEditSite, canReadSite } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../../access/user";
 
@@ -12,8 +12,9 @@ export const Sites: CollectionConfig = {
    },
    access: {
       create: isLoggedIn,
-      read: (): boolean => true,
-      update: isStaff,
+      // read: () => true,
+      read: canReadSite,
+      update: canEditSite,
       delete: isStaff,
    },
    fields: [
@@ -26,10 +27,7 @@ export const Sites: CollectionConfig = {
          name: "about",
          type: "text",
       },
-      {
-         name: "trendingPages",
-         type: "json",
-      },
+
       {
          name: "isPublic",
          type: "checkbox",
@@ -42,10 +40,7 @@ export const Sites: CollectionConfig = {
          label: "Enable Ads",
          defaultValue: false,
       },
-      {
-         name: "followers",
-         type: "number",
-      },
+
       {
          name: "collections",
          type: "relationship",
@@ -71,10 +66,37 @@ export const Sites: CollectionConfig = {
          ],
       },
       {
-         name: "slug",
+         name: "admins",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
+         name: "contributors",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+      },
+      {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "banner",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "favicon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "id",
          type: "text",
-         unique: true,
-         index: true,
       },
       {
          name: "gaTagId",
@@ -85,9 +107,43 @@ export const Sites: CollectionConfig = {
          name: "gaPropertyId",
          label: "Google Analytics property id",
          type: "text",
+      },
+      {
+         name: "domain",
+         type: "text",
+         unique: true,
          access: {
-            read: siteFieldAsSiteAdmin,
-            update: siteFieldAsSiteAdmin,
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "customDomainInvoiceId",
+         type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "trendingPages",
+         type: "json",
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "slug",
+         type: "text",
+         unique: true,
+         index: true,
+         access: {
+            update: isStaffFieldLevel,
+         },
+      },
+      {
+         name: "followers",
+         type: "number",
+         access: {
+            update: isStaffFieldLevel,
          },
       },
       {
@@ -95,9 +151,6 @@ export const Sites: CollectionConfig = {
          type: "select",
          required: true,
          defaultValue: "core",
-         access: {
-            update: siteFieldAsSiteAdmin,
-         },
          options: [
             {
                label: "Core",
@@ -108,35 +161,51 @@ export const Sites: CollectionConfig = {
                value: "custom",
             },
          ],
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "flyAppId",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "flyAppDBId",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v6IP",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v6IPDB",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v4IP",
          type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "v4IPDB",
          type: "text",
-      },
-      {
-         name: "domain",
-         type: "text",
-         unique: true,
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "status",
@@ -181,47 +250,23 @@ export const Sites: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          hasMany: false,
-      },
-      {
-         name: "admins",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
-         name: "contributors",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "banner",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "favicon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "id",
-         type: "text",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "totalPosts",
          type: "number",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
       {
          name: "totalEntries",
          type: "number",
+         access: {
+            update: isStaffFieldLevel,
+         },
       },
    ],
    hooks: {

@@ -11,6 +11,7 @@ import {
    useRevalidator,
    useRouteLoaderData,
 } from "@remix-run/react";
+import clsx from "clsx";
 import { request as gqlRequest } from "graphql-request";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import { useZorm } from "react-zorm";
@@ -21,6 +22,7 @@ import { zx } from "zodix";
 
 import { Badge, BadgeButton } from "~/components/Badge";
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
@@ -28,6 +30,7 @@ import { Code, Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/collections/site/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
+import { stripe } from "~/utils/stripe.server";
 
 import { Record } from "./components/Record";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
@@ -54,35 +57,40 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   const { siteSlug } = await getSiteSlug(request, payload, user);
+   invariant(user, "User must be logged in to mutate domain names");
 
-   const domainData = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteSlug,
-         },
-         v4IP: {
-            exists: true,
-         },
-         flyAppId: {
-            exists: true,
+   let result = {
+      ipv4: "",
+      ipv6: "",
+      flyAppId: "",
+      certData: {
+         app: {
+            certificate: {
+               issued: {
+                  nodes: [],
+               },
+               clientStatus: "",
+               configured: "",
+               acmeDnsConfigured: "",
+               dnsValidationTarget: "",
+            },
          },
       },
-      depth: 0,
-   });
+      canPurchaseDomain: false,
+      billingAccountSetupRequired: false,
+      canSetupDomain: false,
+   };
 
-   //If flyAppId exists, use it, otherwise use default
-   const flyAppId = domainData.docs[0]?.flyAppId ?? "mana";
-   const ipv4 = domainData.docs[0]?.v4IP ?? "149.248.204.56";
-   const ipv6 = domainData.docs[0]?.v6IP ?? "";
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   //If domain exists, we need to fetch the certificate data
-   const existingDomain = await payload.find({
+   const domainExists = await payload.find({
       collection: "sites",
       where: {
          slug: {
             equals: siteSlug,
+         },
+         customDomainInvoiceId: {
+            not_equals: "",
          },
          and: [
             {
@@ -100,7 +108,86 @@ export async function loader({
       depth: 0,
    });
 
-   if (existingDomain.totalDocs === 1) {
+   const customFlyDomainData = await payload.find({
+      collection: "sites",
+      where: {
+         slug: {
+            equals: siteSlug,
+         },
+         v4IP: {
+            exists: true,
+         },
+         flyAppId: {
+            exists: true,
+         },
+      },
+      depth: 0,
+   });
+
+   //If flyAppId exists, it's a custom site with own server, otherwise use default
+   result.flyAppId = customFlyDomainData.docs[0]?.flyAppId ?? "mana";
+   result.ipv4 = customFlyDomainData.docs[0]?.v4IP ?? "149.248.204.56";
+   result.ipv6 = customFlyDomainData.docs[0]?.v6IP ?? "";
+   if (domainExists.totalDocs === 0) {
+      //If domain is not setup, check if user already purchased domain access
+      const domainAccessUnlocked = await payload.find({
+         collection: "sites",
+         where: {
+            slug: {
+               equals: siteSlug,
+            },
+            and: [
+               {
+                  customDomainInvoiceId: {
+                     exists: true,
+                  },
+               },
+               {
+                  customDomainInvoiceId: {
+                     not_equals: "",
+                  },
+               },
+            ],
+         },
+         depth: 0,
+      });
+
+      //User hasn't unlocked domain access, check if they can purchase a domain
+      if (domainAccessUnlocked.totalDocs === 0) {
+         //Check if user has billing setup
+         const userData = await payload.findByID({
+            collection: "users",
+            id: user.id,
+            depth: 0,
+         });
+
+         //User has billing setup, they can purchase a domain
+         if (userData?.stripeCustomerId) {
+            const customer = await stripe.customers.retrieve(
+               userData?.stripeCustomerId,
+            );
+            //Check if user has a default payment method setup
+            //@ts-ignore
+            if (customer?.invoice_settings?.default_payment_method) {
+               result.canPurchaseDomain = true;
+               return json(result);
+            }
+         }
+
+         //User doesn't have a stripeCustomerId, they need to add a payment method
+         result.billingAccountSetupRequired = true;
+
+         return json(result);
+      }
+
+      //Domain already purchased, but not setup
+      result.canSetupDomain = true;
+
+      return json(result);
+   }
+
+   //If domain exists and fly already created the cert, we then fetch the certificate data
+   if (domainExists.totalDocs === 1) {
       const query = {
          query: {
             __variables: {
@@ -137,13 +224,13 @@ export async function loader({
          pretty: true,
       });
 
-      const domain = existingDomain.docs[0]?.domain;
+      const domain = domainExists.docs[0]?.domain;
 
-      const certData = await gqlRequest(
+      result.certData = await gqlRequest(
          endpoint,
          graphql_query,
          {
-            appName: flyAppId,
+            appName: result.flyAppId,
             hostname: domain,
          },
          {
@@ -152,21 +239,27 @@ export async function loader({
             }),
          },
       );
-
-      return json({ certData, ipv4, ipv6, flyAppId });
+      return json(result);
    }
-   return json({ ipv4, ipv6, flyAppId });
+   return json(result);
 }
 
 export default function Settings() {
-   const data = useLoaderData<typeof loader>();
+   const {
+      canPurchaseDomain,
+      canSetupDomain,
+      billingAccountSetupRequired,
+      flyAppId,
+      ipv4,
+      ipv6,
+      certData,
+   } = useLoaderData<typeof loader>();
 
    const { site } = useRouteLoaderData("routes/_site+/_layout") as {
       site: SerializeFrom<typeof siteLoaderType>["site"];
    };
 
-   //@ts-ignore
-   const certificate = data?.certData?.app?.certificate;
+   const certificate = certData?.app?.certificate;
 
    const isCertsIssued = certificate?.issued?.nodes?.length == 2;
 
@@ -181,14 +274,86 @@ export default function Settings() {
    const isSubDomain = levels.length == 3;
    const addingDomain = isAdding(fetcher, "addDomain");
    const deletingDomain = isAdding(fetcher, "deleteDomain");
+   const purchasingDomain = isAdding(fetcher, "purchaseDomain");
 
    const revalidator = useRevalidator();
 
+   const disabled =
+      deletingDomain || !canSetupDomain || billingAccountSetupRequired;
+
    return (
       <>
-         <fetcher.Form method="post" ref={zo.ref}>
-            <input type="hidden" name="flyAppId" value={data?.flyAppId} />
-            <Field className="pb-4">
+         {billingAccountSetupRequired && <div>User billing setup</div>}
+         {canPurchaseDomain && (
+            <>
+               <div
+                  className="shadow-sm dark:shadow-zinc-800 
+               border border-zinc-300/70 dark:border-zinc-600/50 bg-zinc-50 dark:bg-dark350 px-4 py-3.5 rounded-xl mb-4"
+               >
+                  <div
+                     className="flex items-center justify-between border-b
+               pb-3 mb-3 border-zinc-300/70 dark:border-zinc-600/50"
+                  >
+                     <div className="space-y-0.5">
+                        <div className="font-bold">Custom domain</div>
+                        <div className="text-sm text-1">
+                           Link a custom domain to your mana site
+                        </div>
+                     </div>
+                     <div className="laptop:flex text-right max-laptop:space-y-2 items-center gap-4">
+                        <Button
+                           className="!text-sm laptop:order-2 laptop:w-[82px] h-9 cursor-pointer"
+                           color="dark/white"
+                           type="button"
+                           onClick={() => {
+                              fetcher.submit(
+                                 {
+                                    intent: "purchaseDomain",
+                                    siteId: site.id,
+                                 },
+                                 {
+                                    method: "post",
+                                 },
+                              );
+                           }}
+                        >
+                           {purchasingDomain ? <DotLoader /> : "Purchase"}
+                        </Button>
+                        <div className="laptop:order-1 text-zinc-500 dark:text-zinc-400 text-sm">
+                           One-time{" "}
+                           <span className="dark:text-zinc-200 text-zinc-600 font-bold underline">
+                              $50 fee
+                           </span>
+                        </div>
+                     </div>
+                  </div>
+                  <div className="text-xs">
+                     Mana charges a one-time $50 USD fee to use a custom domain
+                     for your site.
+                  </div>
+               </div>
+               <div className="flex items-center gap-5 py-4">
+                  <span className="h-[1px] rounded-full bg-zinc-100 dark:bg-zinc-700/50 flex-grow" />
+                  <span className="text-sm text-1">
+                     <Icon
+                        className="dark:text-zinc-500 text-zinc-300"
+                        name="lock"
+                        size={16}
+                     />
+                  </span>
+                  <span className="h-[1px] rounded-full bg-zinc-100 dark:bg-zinc-700/50 flex-grow" />
+               </div>
+            </>
+         )}
+         <fetcher.Form
+            className={clsx(
+               canPurchaseDomain ? "border-b dark:border-zinc-700/50 pb-6" : "",
+            )}
+            method="post"
+            ref={zo.ref}
+         >
+            <input type="hidden" name="flyAppId" value={flyAppId} />
+            <Field disabled={disabled} className="pb-4">
                <Label>Domain Name</Label>
                <Description>
                   Setup a custom domain name for your site
@@ -212,12 +377,11 @@ export default function Settings() {
                   type="button"
                   onClick={() => {
                      fetcher.submit(
-                        //@ts-ignore
                         {
                            intent: "deleteDomain",
                            siteId: site.id,
-                           domain: site.domain,
-                           flyAppId: data?.flyAppId,
+                           domain: site.domain ?? "",
+                           flyAppId: flyAppId,
                         },
                         {
                            method: "post",
@@ -240,6 +404,7 @@ export default function Settings() {
                   className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
                   color="blue"
                   type="submit"
+                  disabled={disabled}
                >
                   {addingDomain ? (
                      <Icon
@@ -253,6 +418,7 @@ export default function Settings() {
                </Button>
             )}
          </fetcher.Form>
+
          {site.domain && (
             <div className="border-y-2 border-dashed border-color mt-6 py-6">
                <div className="pb-4 !text-base">
@@ -374,9 +540,9 @@ export default function Settings() {
                               size={16}
                               className="flex-none text-1 mt-5"
                            />
-                           <Record value={data?.ipv4} />
+                           <Record value={ipv4} />
                         </div>
-                        {!isSubDomain && data?.flyAppId != "mana" && (
+                        {!isSubDomain && flyAppId != "mana" && (
                            <div className="flex items-center justify-between gap-4">
                               <Record name value="@" type="AAAA" />
                               <Icon
@@ -384,7 +550,7 @@ export default function Settings() {
                                  size={16}
                                  className="flex-none text-1 mt-5"
                               />
-                              <Record value={data?.ipv6} />
+                              <Record value={ipv6} />
                            </div>
                         )}
                      </div>
@@ -437,7 +603,8 @@ export default function Settings() {
                         If you’re using Cloudflare, you might be using their
                         Universal SSL feature which inserts a TXT record of{" "}
                         <Code>
-                           _acme_challenge{isSubDomain ? `.${subDomain}` : ""}
+                           _acme_challenge
+                           {isSubDomain ? `.${subDomain}` : ""}
                         </Code>{" "}
                         for your domain.
                         <Text className="pt-4">
@@ -476,10 +643,10 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionFunctionArgs) {
-   const { intent, domain, siteId, flyAppId } = await zx.parseForm(
-      request,
-      DOMAIN_SCHEMA,
-   );
+   const { intent, siteId } = await zx.parseForm(request, {
+      intent: z.string(),
+      siteId: z.string(),
+   });
 
    const site = await payload.findByID({
       collection: "sites",
@@ -496,19 +663,57 @@ export async function action({
    if (!isOwner && !user?.roles.includes("staff")) throw redirect("/404", 404);
 
    switch (intent) {
-      case "deleteDomain": {
+      case "purchaseDomain": {
          try {
-            await payload.update({
-               collection: "sites",
-               id: siteId,
-               data: {
-                  //@ts-ignore
-                  domain: "",
-               },
+            const stripeUser = await payload.findByID({
+               collection: "users",
+               id: user.id,
                user,
                overrideAccess: false,
             });
 
+            if (!stripeUser.stripeCustomerId) {
+               return jsonWithError(
+                  null,
+                  "You must add a payment method before purchasing a domain",
+               );
+            }
+            const invoice = await stripe.invoices.create({
+               customer: stripeUser.stripeCustomerId,
+               auto_advance: true,
+               collection_method: "charge_automatically",
+            });
+            await stripe.invoiceItems.create({
+               invoice: invoice.id,
+               customer: stripeUser.stripeCustomerId,
+               price: "price_1OVK2IHY2vBdJM8emeVNeZ7q",
+            });
+
+            const payInvoice = await stripe.invoices.pay(invoice.id);
+            if (payInvoice.status === "paid") {
+               const updateSite = await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     customDomainInvoiceId: invoice.id,
+                  },
+               });
+
+               if (updateSite)
+                  return jsonWithSuccess(null, "Successfully purchased domain");
+            }
+         } catch (err: any) {
+            // Error code will be authentication_required if authentication is needed
+            console.log("Error code is: ", err.code);
+         }
+      }
+      case "deleteDomain": {
+         const { domain, flyAppId, siteId } = await zx.parseForm(
+            request,
+            DOMAIN_SCHEMA,
+         );
+         try {
             const mutation = {
                mutation: {
                   __variables: {
@@ -533,7 +738,7 @@ export async function action({
             const graphql_query = jsonToGraphQLQuery(mutation, {
                pretty: true,
             });
-            await gqlRequest(
+            const deleteFlyCert = await gqlRequest(
                endpoint,
                graphql_query,
                {
@@ -546,13 +751,26 @@ export async function action({
                   }),
                },
             );
-            return jsonWithSuccess(null, "Domain name removed...");
+            if (deleteFlyCert) {
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     domain: null,
+                  },
+               });
+               return jsonWithSuccess(null, "Domain name removed...");
+            }
          } catch (err: unknown) {
             console.log(err);
             return jsonWithError(null, "Error, unable to delete domain.");
          }
       }
       case "addDomain": {
+         const { domain, flyAppId, siteId } = await zx.parseForm(
+            request,
+            DOMAIN_SCHEMA,
+         );
          try {
             const existingDomain = await payload.find({
                collection: "sites",
@@ -566,18 +784,8 @@ export async function action({
             if (existingDomain.totalDocs == 1) {
                return jsonWithError(null, "Domain name already exists...");
             }
-            //If domain doesn't exist, add it
+            //If domain doesn't exist, create a cert on fly
             if (existingDomain.totalDocs == 0) {
-               await payload.update({
-                  collection: "sites",
-                  id: siteId,
-                  data: {
-                     //@ts-ignore
-                     domain: domain,
-                  },
-                  user,
-                  overrideAccess: false,
-               });
                const mutation = {
                   mutation: {
                      __variables: {
@@ -611,7 +819,7 @@ export async function action({
                   pretty: true,
                });
 
-               await gqlRequest(
+               const setupFlyDomain = await gqlRequest(
                   endpoint,
                   graphql_query,
                   {
@@ -624,8 +832,18 @@ export async function action({
                      }),
                   },
                );
-
-               return jsonWithSuccess(null, "Domain name added...");
+               if (setupFlyDomain) {
+                  const updateSite = await payload.update({
+                     collection: "sites",
+                     id: siteId,
+                     data: {
+                        //@ts-ignore
+                        domain: domain,
+                     },
+                  });
+                  if (updateSite)
+                     return jsonWithSuccess(null, "Domain name added...");
+               }
             }
          } catch (err: unknown) {
             console.log(err);

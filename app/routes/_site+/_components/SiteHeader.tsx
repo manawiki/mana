@@ -2,12 +2,12 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
-import { Link, useFetcher } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { LogoBW } from "~/components/Logo";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -19,14 +19,14 @@ import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
 export function SiteHeader({
-   site,
    setSearchToggle,
    searchToggle,
 }: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
    setSearchToggle: Dispatch<SetStateAction<boolean>>;
    searchToggle: boolean;
 }) {
+   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+
    const fetcher = useFetcher({ key: "site" });
 
    const adding = isAdding(fetcher, "followSite");
@@ -44,7 +44,7 @@ export function SiteHeader({
               w-full pattern-bg-white pattern-zinc-500 pattern-opacity-10 
               pattern-size-1 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
          />
-         <div className="relative mx-auto w-full laptop:max-w-[728px] laptop:rounded-b-2xl">
+         <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
             <div className="relative mx-auto flex h-[60px] items-center justify-between">
                {searchToggle ? (
                   <SearchComboBox
@@ -57,31 +57,43 @@ export function SiteHeader({
                         <Link
                            prefetch="intent"
                            to="/"
-                           className="flex items-center group truncate"
+                           className="flex items-center group h-14"
                         >
-                           <div className="shadow-1 h-9 w-9 flex-none overflow-hidden rounded-full shadow">
-                              <Image
-                                 width={40}
-                                 height={40}
-                                 //@ts-ignore
-                                 url={site.icon?.url}
-                                 options="aspect_ratio=1:1&height=120&width=120"
-                                 alt="Site Logo"
-                              />
+                           <div
+                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden
+                              text-1 flex h-10 w-10 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
+                              rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
+                           >
+                              {site?.icon?.url ? (
+                                 <Image
+                                    width={40}
+                                    height={40}
+                                    //@ts-ignore
+                                    url={site.icon?.url}
+                                    options="aspect_ratio=1:1&height=120&width=120"
+                                    alt="Site Logo"
+                                 />
+                              ) : (
+                                 <>
+                                    <LogoBW className="size-5 text-zinc-400" />
+                                 </>
+                              )}
                            </div>
                            <div className="truncate pl-3 text-sm">
                               <div className="font-bold truncate group-hover:underline decoration-zinc-300 underline-offset-2 dark:decoration-zinc-600">
                                  {site.name}
                               </div>
-                              <div className="text-[10px] flex items-center gap-1">
-                                 <Icon
-                                    name="users-2"
-                                    className="text-1 w-3 h-3"
-                                 />
-                                 <span className="dark:text-zinc-500 text-zinc-400">
-                                    {site?.followers}
-                                 </span>
-                              </div>
+                              {site?.followers && (
+                                 <div className="text-[10px] flex items-center gap-1">
+                                    <Icon
+                                       name="users-2"
+                                       className="text-1 w-3 h-3"
+                                    />
+                                    <span className="dark:text-zinc-500 text-zinc-400">
+                                       {site?.followers}
+                                    </span>
+                                 </div>
+                              )}
                            </div>
                            {/* {site.about} */}
                         </Link>

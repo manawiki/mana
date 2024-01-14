@@ -10,7 +10,6 @@ export async function action({
    context: { payload, user },
    request,
 }: ActionFunctionArgs) {
-   console.log("got here");
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["publish", "followSite", "unfollow"]),
    });

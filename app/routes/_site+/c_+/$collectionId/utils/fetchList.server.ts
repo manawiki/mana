@@ -3,7 +3,7 @@ import type { Payload } from "payload";
 import type { User } from "~/db/payload-types";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlRequestWithCache } from "~/utils/cache.server";
-import { gqlEndpoint } from "~/utils/fetchers.server";
+import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
 export interface ListFetchType {
    request: Request;
@@ -26,11 +26,19 @@ export async function fetchList({
       siteSlug,
    });
 
-   const data = gql?.query
-      ? await gqlRequestWithCache(gqlPath, gql?.query, {
-           ...gql?.variables,
-        })
-      : undefined;
+   const data =
+      gql?.query && !user
+         ? await gqlRequestWithCache(gqlPath, gql?.query, {
+              ...gql?.variables,
+           })
+         : gql?.query &&
+           (await authGQLFetcher({
+              siteSlug: siteSlug,
+              variables: {
+                 ...gql?.variables,
+              },
+              document: gql?.query,
+           }));
 
    return {
       list: {

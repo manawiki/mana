@@ -16,8 +16,6 @@ export async function action({
       intent: z.enum(["unpublish", "publish"]),
       pageId: z.string(),
       collectionSlug: z.custom<keyof Config["collections"]>(),
-      collectionId: z.string(),
-      entryId: z.string(),
    });
 
    if (!user)
