@@ -23,21 +23,17 @@ export async function getSiteSlug(
 
    console.log("hostname", hostname);
 
-   const site = await cacheThis(
-      () =>
-         payload.find({
-            collection: "sites",
-            where: {
-               domain: {
-                  equals: hostname,
-               },
-            },
-            overrideAccess: false,
-            user,
-            depth: 0,
-         }),
-      hostname,
-   );
+   const site = await payload.find({
+      collection: "sites",
+      where: {
+         domain: {
+            equals: hostname,
+         },
+      },
+      overrideAccess: false,
+      user,
+      depth: 0,
+   });
    console.log("site", site);
    if (site?.totalDocs == 1) {
       return {
