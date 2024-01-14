@@ -47,14 +47,11 @@ const JoinFormSchema = z.object({
       .string()
       .email("Invalid email")
       .transform((email) => email.toLowerCase()),
-   password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .toLowerCase(),
+   password: z.string().min(8, "Password must be at least 8 characters long"),
    username: z
       .string()
       .regex(
-         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         new RegExp(/^[a-z0-9]+(-[a-z0-9]+)*$/),
          "Username contains invalid characters",
       )
       .min(3, "Username must be at least 3 characters long")

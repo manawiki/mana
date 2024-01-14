@@ -20,7 +20,7 @@ import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIs
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { initialValue } from "~/routes/_editor+/core/utils";
-import { ManaEditor } from "~/routes/_editor+/editor.tsx";
+import { ManaEditor } from "~/routes/_editor+/editor";
 import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionId_.$entryId/_entry";
 
 import type { Section } from "./Sections";
@@ -480,6 +480,7 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
          <main className="mx-auto max-w-[728px] group relative">
             <ManaEditor
                key={data?.id}
+               siteId={entry?.siteId}
                fetcher={fetcher}
                collectionSlug="contentEmbeds"
                subSectionId={subSection?.id}
@@ -493,7 +494,6 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
             <EditorCommandBar
                collectionSlug="contentEmbeds"
                collectionId={entry.collectionSlug}
-               siteId={entry.siteSlug}
                entryId={entry?.id}
                pageId={data?.id}
                fetcher={fetcher}

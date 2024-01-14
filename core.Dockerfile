@@ -6,7 +6,8 @@ ENV PAYLOAD_PUBLIC_IS_HOME $PAYLOAD_PUBLIC_IS_HOME
 FROM base as builder
 
 WORKDIR /home/node
-COPY package*.json ./
+COPY package.json yarn.lock ./
+COPY ./patches ./patches
 
 COPY . .
 RUN yarn install
@@ -17,7 +18,8 @@ FROM base as runtime
 ENV NODE_ENV=production
 
 WORKDIR /home/node
-COPY package*.json  ./
+COPY package.json yarn.lock  ./
+COPY ./patches ./patches
 
 RUN yarn install --production
 COPY --from=builder /home/node/public ./public

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -16,6 +17,7 @@ import {
    ScrollRestoration,
    useLoaderData,
    useMatches,
+   useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import rdtStylesheet from "remix-development-tools/index.css";
@@ -37,14 +39,20 @@ import tailwindStylesheetUrl from "./styles/global.css";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
+type ContextType = [
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>,
+   isUserMenuOpen: boolean,
+];
+
+export function useUserMenuState() {
+   return useOutletContext<ContextType>();
+}
+
 export const loader = async ({
    context: { user, payload },
    request,
 }: LoaderFunctionArgs) => {
    const { siteSlug } = await getSiteSlug(request, payload, user);
-
-   let { hostname } = new URL(request.url);
-   let [subDomain] = hostname.split(".");
 
    const locale = await i18nextServer.getLocale(request);
    // Extracts the toast from the request
@@ -70,6 +78,8 @@ export const loader = async ({
    }));
    const hints = getHints(request);
 
+   const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
+
    return json(
       {
          requestInfo: {
@@ -77,8 +87,7 @@ export const loader = async ({
             theme: getTheme(request) ?? hints.theme,
          },
          sitePath: request.url,
-         hostname,
-         subDomain,
+         stripePublicKey,
          toast,
          locale,
          user,
@@ -142,6 +151,8 @@ function App() {
       }
    }, [toast]);
 
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+
    return (
       <html
          lang={locale}
@@ -190,7 +201,9 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet />
+            <Outlet
+               context={[setUserMenuOpen, isUserMenuOpen] satisfies ContextType}
+            />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}

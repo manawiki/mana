@@ -12,19 +12,16 @@ export async function loader({
    request,
 }: LoaderFunctionArgs) {
    invariant(user);
-   const existingStripeUser = await payload.find({
+   const existingStripeUser = await payload.findByID({
       collection: "users",
-      where: {
-         stripeCustomerId: {
-            exists: true,
-         },
-      },
+      id: user.id,
       user,
       overrideAccess: false,
    });
 
-   //@ts-ignore
-   const customerId = existingStripeUser.docs[0]?.stripeCustomerId as string;
+   const customerId = existingStripeUser.stripeCustomerId
+      ? existingStripeUser.stripeCustomerId
+      : false;
 
    if (customerId) {
       const customerPaymentMethods =
@@ -33,6 +30,7 @@ export async function loader({
          return json({ customerPaymentMethods: customerPaymentMethods.data });
       }
    }
+   return null;
 }
 
 export const action: ActionFunction = async ({
@@ -62,6 +60,9 @@ export const action: ActionFunction = async ({
             const existingStripeUser = await payload.find({
                collection: "users",
                where: {
+                  id: {
+                     equals: user.id,
+                  },
                   stripeCustomerId: {
                      exists: true,
                   },

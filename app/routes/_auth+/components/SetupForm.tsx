@@ -6,7 +6,7 @@ import {
    useStripe,
 } from "@stripe/react-stripe-js";
 
-export function SetupForm({ clientSecret }: { clientSecret: string }) {
+export function SetupForm() {
    const stripe = useStripe();
    const elements = useElements();
 
@@ -26,7 +26,11 @@ export function SetupForm({ clientSecret }: { clientSecret: string }) {
       const { error } = await stripe.confirmSetup({
          elements,
          confirmParams: {
-            return_url: "http://localhost:3000",
+            return_url: `${
+               process.env.NODE_ENV == "development"
+                  ? "http://localhost:3000"
+                  : "https://mana.wiki"
+            }/user/confirm-payment-method`,
          },
       });
 
