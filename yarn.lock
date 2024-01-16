@@ -1923,10 +1923,10 @@
     vite "^4.4.9"
     vite-plugin-virtual "^0.2.0"
 
-"@payloadcms/db-mongodb@1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.2.0.tgz#9876da54ec18b5c01952f6db57a5d0f8259ed516"
-  integrity sha512-cRgy2Dl/KXBxvm4kBkrRZcWge9R3dWC2taocjFxaTlzM0SQrQQtwGej8IiKmnUAswz897YzkQR4wQQwidEtb3A==
+"@payloadcms/db-mongodb@1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.3.2.tgz#038430eed7cd7aab9e6c2d7a805b572320f7d72c"
+  integrity sha512-4eXlhy1tLHNY6fluLZF89mgkveyPoMqvoC3z763iBbowECz5dWd8lWKuO43ce+N38TDeRRjfzG2x0HzwPuVzLQ==
   dependencies:
     bson-objectid "2.0.4"
     deepmerge "4.3.1"
@@ -9731,10 +9731,10 @@ payload-query@^1.0.2:
   dependencies:
     ts-powertools "0.0.3"
 
-payload@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/payload/-/payload-2.8.1.tgz#c47c08489efef7478b38f4119f40c4376384760c"
-  integrity sha512-g+FbNWmmx4b/4I9fLxXbx5cKNPCwWJBDTH2SoLqCooAsX5r/NS78Ae5KcWwRH+xVdoiMXG2vQ9Li4npJ+ckJlQ==
+payload@2.8.2:
+  version "2.8.2"
+  resolved "https://registry.yarnpkg.com/payload/-/payload-2.8.2.tgz#7d5f9edc2357e84638a06c60d74367e087177a7a"
+  integrity sha512-n1WXnhZKe/wHFz4akW+w16OUzCU45i2fFJzgiXakMGC58JbvpDGo/yh287ENrdiHOdtb/a/YkPsKpa6lbZ+gBA==
   dependencies:
     "@date-io/date-fns" "2.16.0"
     "@dnd-kit/core" "6.0.8"
