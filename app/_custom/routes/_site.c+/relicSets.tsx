@@ -23,6 +23,7 @@ export async function loader({
       gql: {
          query: QUERY_RELIC_SETS,
       },
+      payload,
    });
 
    //@ts-ignore

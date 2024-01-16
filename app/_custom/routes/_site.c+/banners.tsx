@@ -22,6 +22,7 @@ export async function loader({
       gql: {
          query: BANNERS,
       },
+      payload,
    });
 
    // Sort banners by banner_id

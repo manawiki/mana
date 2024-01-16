@@ -4,8 +4,8 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 // import { characters } from "./characters";
-
 import type { Material } from "payload/generated-custom-types";
+
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
@@ -14,12 +14,16 @@ import { List } from "~/routes/_site+/c_+/_components/List";
 
 export { listMeta as meta };
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({
+   request,
+   context: { payload },
+}: LoaderFunctionArgs) {
    const { list } = await fetchList({
       request,
       gql: {
          query: QUERY_RECIPES,
       },
+      payload,
    });
 
    //@ts-ignore

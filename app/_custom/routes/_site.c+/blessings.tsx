@@ -12,12 +12,16 @@ import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
 import { List } from "~/routes/_site+/c_+/_components/List";
 
 export { listMeta as meta };
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({
+   request,
+   context: { payload },
+}: LoaderFunctionArgs) {
    const { list } = await fetchList({
       request,
       gql: {
          query: QUERY_BLESSINGS,
       },
+      payload,
    });
 
    //@ts-ignore
