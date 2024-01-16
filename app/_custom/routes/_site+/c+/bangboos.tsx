@@ -22,7 +22,7 @@ export async function loader({
       gql: {
          query: BANGBOOS,
       },
-      payloade,
+      payload,
    });
 
    //@ts-ignore
