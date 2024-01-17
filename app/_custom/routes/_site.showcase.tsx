@@ -62,7 +62,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
    if (!uid) return null;
 
-   const showcaseDataUrl = `https://starrail-profiles.fly.dev/api/showcase/${uid}`;
+   const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
    console.log(showcaseData);
    if (showcaseData.detail)
