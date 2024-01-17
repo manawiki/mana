@@ -4,7 +4,7 @@ import { ContentEmbeds } from "./ContentEmbeds";
 import { CustomPages } from "./CustomPages";
 import { Entries } from "./Entries";
 import { HomeContents } from "./HomeContents";
-import { Images } from "./Images";
+import { Images } from "./images/config";
 import { PostContents } from "./PostContents";
 import { Posts } from "./Posts";
 import { PostTags } from "./PostTags";

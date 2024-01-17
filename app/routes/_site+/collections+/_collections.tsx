@@ -356,10 +356,13 @@ export const action: ActionFunction = async ({
                   customDatabase,
                   sections: [
                      {
+                        //@ts-ignore
                         id: "main",
+                        //@ts-ignore
                         name: "Main",
                         subSections: [
                            {
+                              //@ts-ignore
                               id: "main",
                               main: "main",
                               type: "editor",

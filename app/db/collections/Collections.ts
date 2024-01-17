@@ -16,12 +16,18 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
 }) => {
    try {
       if (operation === "create") {
-         const siteId = doc.site.id;
+         const siteId = doc.site;
+
          const currentCollections = await payload.findByID({
             collection: "sites",
             id: siteId,
+            depth: 0,
          });
-         if (!currentCollections?.collections) {
+
+         if (
+            !currentCollections?.collections ||
+            currentCollections?.collections?.length === 0
+         ) {
             payload.update({
                collection: "sites",
                id: siteId,
@@ -30,10 +36,12 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
                },
             });
          }
-         if (currentCollections?.collections) {
-            const prevCollections = currentCollections.collections.map(
-               ({ id }: { id: string }) => id,
-            );
+         if (
+            currentCollections?.collections &&
+            currentCollections?.collections?.length > 0
+         ) {
+            const prevCollections = currentCollections.collections;
+
             payload.update({
                collection: "sites",
                id: siteId,

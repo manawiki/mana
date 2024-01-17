@@ -8,7 +8,7 @@ import { slateEditor } from "@payloadcms/richtext-slate";
 import { buildConfig } from "payload/config";
 
 import { Users } from "./collections/CustomUsers";
-import { Images } from "./collections/Images";
+import { Images } from "./collections/images/config";
 import { Logo } from "./components/Logo";
 import searchPlugin from "./plugins/search";
 import {
