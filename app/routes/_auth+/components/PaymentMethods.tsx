@@ -6,6 +6,7 @@ import type { SerializeFrom } from "@remix-run/server-runtime";
 import { Icon } from "~/components/Icon";
 import { Text } from "~/components/Text";
 import type { loader as userLoaderType } from "~/routes/_auth+/auth-actions";
+import { isLoading } from "~/utils/form";
 
 export function PaymentMethods() {
    const fetcher = useFetcher();
@@ -17,15 +18,18 @@ export function PaymentMethods() {
          fetcher.load("/auth-actions");
       }
    }, [fetcher]);
+
+   const loading = isLoading(fetcher);
+
    return (
       <>
          {data?.customerPaymentMethods ? (
-            <div className="pb-5">
+            <div className="pb-4">
                {data?.customerPaymentMethods?.map((row) => {
                   return (
                      <div
                         className="flex items-center shadow-sm dark:shadow-zinc-800 justify-between gap-3 
-                        border dark:border-zinc-700 rounded-lg bg-3-sub px-3 py-2"
+                        border dark:border-zinc-700 rounded-lg bg-3-sub px-3 py-2 bg-zinc-50"
                         key={row.type}
                      >
                         <div className="flex items-center gap-3">
@@ -36,16 +40,21 @@ export function PaymentMethods() {
                         </div>
                         <div className="flex items-center gap-2">
                            <div className="flex items-center gap-1">
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
-                              <span className="w-1 h-1 rounded-full block dark:bg-zinc-500" />
+                              <span className="w-1 h-1 rounded-full block bg-zinc-300 dark:bg-zinc-500" />
+                              <span className="w-1 h-1 rounded-full block bg-zinc-300 dark:bg-zinc-500" />
+                              <span className="w-1 h-1 rounded-full block bg-zinc-300 dark:bg-zinc-500" />
+                              <span className="w-1 h-1 rounded-full block bg-zinc-300 dark:bg-zinc-500" />
                            </div>
                            <span>{row.card?.last4}</span>
                         </div>
                      </div>
                   );
                })}
+            </div>
+         ) : loading ? (
+            <div className="space-y-2 pb-3">
+               <div className="animate-pulse bg-zinc-100 dark:bg-dark400 h-6 w-full rounded" />
+               <div className="animate-pulse bg-zinc-100 dark:bg-dark400 h-6 w-full rounded" />
             </div>
          ) : (
             <Text>No payment methods</Text>
