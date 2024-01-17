@@ -9,7 +9,6 @@ import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import type { loader as rootLoaderType } from "~/root";
 import { useTheme } from "~/utils/client-hints";
-import { isAdding } from "~/utils/form";
 
 import { PaymentMethods } from "./PaymentMethods";
 import { SetupForm } from "./SetupForm";
@@ -41,7 +40,6 @@ export function Billing() {
       },
       layout: "accordion",
    };
-   const adding = isAdding(fetcher, "setupUserPayments");
    const [isPaymentSetupFormOpen, setIsPaymentSetupFormOpen] = useState(false);
 
    return (
@@ -82,32 +80,9 @@ export function Billing() {
             </>
          ) : (
             <>
-               <PaymentMethods />
-               <div className="flex items-center justify-end">
-                  <Button
-                     className="text-sm cursor-pointer"
-                     onClick={() => {
-                        fetcher.submit(
-                           { intent: "setupUserPayments" },
-                           {
-                              method: "post",
-                              action: "/auth-actions",
-                           },
-                        );
-                        setIsPaymentSetupFormOpen(true);
-                     }}
-                  >
-                     {adding ? (
-                        <Icon
-                           name="loader-2"
-                           size={16}
-                           className="animate-spin"
-                        />
-                     ) : (
-                        <>Add payment method</>
-                     )}
-                  </Button>
-               </div>
+               <PaymentMethods
+                  setIsPaymentSetupFormOpen={setIsPaymentSetupFormOpen}
+               />
             </>
          )}
       </>

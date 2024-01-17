@@ -3,13 +3,18 @@ import { useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Text } from "~/components/Text";
 import type { loader as userLoaderType } from "~/routes/_auth+/auth-actions";
-import { isLoading } from "~/utils/form";
+import { isAdding, isLoading } from "~/utils/form";
 
-export function PaymentMethods() {
-   const fetcher = useFetcher();
+export function PaymentMethods({
+   setIsPaymentSetupFormOpen,
+}: {
+   setIsPaymentSetupFormOpen: (value: boolean) => void;
+}) {
+   const fetcher = useFetcher({ key: "billing" });
 
    const data = fetcher.data as SerializeFrom<typeof userLoaderType>;
 
@@ -20,6 +25,7 @@ export function PaymentMethods() {
    }, [fetcher]);
 
    const loading = isLoading(fetcher);
+   const adding = isAdding(fetcher, "setupUserPayments");
 
    return (
       <>
@@ -57,7 +63,34 @@ export function PaymentMethods() {
                <div className="animate-pulse bg-zinc-100 dark:bg-dark400 h-6 w-full rounded" />
             </div>
          ) : (
-            <Text>No payment methods</Text>
+            <>
+               <Text>No payment methods</Text>
+               <div className="flex items-center justify-end">
+                  <Button
+                     className="text-sm cursor-pointer"
+                     onClick={() => {
+                        fetcher.submit(
+                           { intent: "setupUserPayments" },
+                           {
+                              method: "post",
+                              action: "/auth-actions",
+                           },
+                        );
+                        setIsPaymentSetupFormOpen(true);
+                     }}
+                  >
+                     {adding ? (
+                        <Icon
+                           name="loader-2"
+                           size={16}
+                           className="animate-spin"
+                        />
+                     ) : (
+                        <>Add payment method</>
+                     )}
+                  </Button>
+               </div>
+            </>
          )}
       </>
    );

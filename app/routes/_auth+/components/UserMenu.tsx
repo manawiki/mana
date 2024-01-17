@@ -67,7 +67,7 @@ export function UserMenu() {
                               </button>
                            )}
                         </Tab>
-                        <Tab as={Fragment}>
+                        {/* <Tab as={Fragment}>
                            {({ selected }) => (
                               <button
                                  className={clsx(
@@ -80,7 +80,7 @@ export function UserMenu() {
                                  Advanced
                               </button>
                            )}
-                        </Tab>
+                        </Tab> */}
                      </Tab.List>
                   </div>
                   <Tab.Panels className="w-full overflow-auto">
@@ -104,9 +104,7 @@ export function UserMenu() {
                      <Tab.Panel>
                         <Billing />
                      </Tab.Panel>
-                     <Tab.Panel>
-                        <UserDeleteSection />
-                     </Tab.Panel>
+                     <Tab.Panel>{/* <UserDeleteSection /> */}</Tab.Panel>
                   </Tab.Panels>
                </Tab.Group>
             </Dialog>
