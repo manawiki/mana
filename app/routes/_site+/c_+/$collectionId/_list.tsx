@@ -17,6 +17,7 @@ import {
 } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useZorm } from "react-zorm";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -285,6 +286,7 @@ export const action: ActionFunction = async ({
          "collectionDeleteIcon",
          "updateSection",
          "updateSectionOrder",
+         "updateCollectionName",
       ]),
    });
 
@@ -318,10 +320,12 @@ export const action: ActionFunction = async ({
          }
       }
       case "addSection": {
-         assertIsPost(request);
-         const { collectionId, sectionId, name, showTitle } =
-            await zx.parseForm(request, SectionSchema);
          try {
+            assertIsPost(request);
+
+            const { collectionId, sectionId, name, showTitle, type, showAd } =
+               await zx.parseForm(request, SectionSchema);
+
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
@@ -334,7 +338,19 @@ export const action: ActionFunction = async ({
                id: collectionData.id,
                data: {
                   sections: [
-                     { id: sectionId, name, showTitle },
+                     {
+                        id: sectionId,
+                        name,
+                        showTitle,
+                        showAd,
+                        subSections: [
+                           {
+                              id: sectionId,
+                              name,
+                              type,
+                           },
+                        ],
+                     },
                      //@ts-ignore
                      ...collectionData?.sections,
                   ],
@@ -501,6 +517,29 @@ export const action: ActionFunction = async ({
             overrideAccess: false,
             user,
          });
+      }
+      case "updateCollectionName": {
+         const { name, collectionId } = await zx.parseForm(request, {
+            name: z.string().min(3),
+            collectionId: z.string(),
+         });
+         try {
+            await payload.update({
+               collection: "collections",
+               id: collectionId,
+               data: {
+                  name,
+               },
+               user,
+               overrideAccess: false,
+            });
+            return jsonWithSuccess(null, "Collection name updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update collection name",
+            );
+         }
       }
    }
 };

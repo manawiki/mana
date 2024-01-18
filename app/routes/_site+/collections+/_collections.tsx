@@ -343,6 +343,8 @@ export const action: ActionFunction = async ({
                //TODO when toast behavior is improved, work on this
                return;
             }
+
+            const sectionId = "main";
             return await payload.create({
                collection: "collections",
                data: {
@@ -357,20 +359,22 @@ export const action: ActionFunction = async ({
                   sections: [
                      {
                         //@ts-ignore
-                        id: "main",
+                        id: sectionId,
                         //@ts-ignore
                         name: "Main",
                         subSections: [
                            {
                               //@ts-ignore
-                              id: "main",
-                              main: "main",
+                              id: sectionId,
+                              //@ts-ignore
+                              name: "Main",
                               type: "editor",
                            },
                         ],
                      },
                   ],
                },
+               depth: 0,
                user,
                overrideAccess: false,
             });
