@@ -6,6 +6,8 @@ import {
    useStripe,
 } from "@stripe/react-stripe-js";
 
+import { Button } from "~/components/Button";
+
 export function SetupForm() {
    const stripe = useStripe();
    const elements = useElements();
@@ -44,11 +46,22 @@ export function SetupForm() {
    };
 
    return (
-      <form onSubmit={handleSubmit}>
-         <PaymentElement />
-         <button disabled={!stripe}>Submit</button>
-         {/* Show error message to your customers */}
-         {errorMessage && <div>{errorMessage}</div>}
-      </form>
+      <>
+         <form onSubmit={handleSubmit}>
+            <PaymentElement
+               options={{
+                  layout: "accordion",
+               }}
+               className="pb-5 overflow-hidden"
+            />
+            <div className="flex items-center justify-end">
+               <Button disabled={!stripe} className="text-sm">
+                  Submit
+               </Button>
+            </div>
+            {/* Show error message to your customers */}
+            {errorMessage && <div>{errorMessage}</div>}
+         </form>
+      </>
    );
 }

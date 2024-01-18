@@ -473,7 +473,17 @@ export async function action({
                   overrideAccess: false,
                   user,
                });
-               if (updatedPost)
+               //Update the postContents collection to published
+               const publishedPost = await payload.update({
+                  collection: "postContents",
+                  id: postData.id,
+                  data: {
+                     _status: "published",
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+               if (updatedPost && publishedPost)
                   return redirectWithSuccess(
                      //@ts-ignore
                      `/p/${updatedPost.slug}`,
@@ -481,7 +491,7 @@ export async function action({
                   );
             }
          }
-         //Update the postContents collection to published
+         //Otherwise this is a regular publish, just update the postContents collection to published
          await payload.update({
             collection: "postContents",
             id: postData.id,

@@ -9,7 +9,7 @@ export function List({ children }: { children: ReactNode }) {
    return (
       <>
          <CollectionHeader />
-         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-3 laptop:py-4 laptop:pb-14">
+         <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-3 laptop:py-4 laptop:pb-14">
             <AdminOrStaffOrOwner>
                <Sections />
             </AdminOrStaffOrOwner>

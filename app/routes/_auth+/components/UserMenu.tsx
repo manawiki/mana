@@ -4,14 +4,20 @@ import { Switch, Tab } from "@headlessui/react";
 import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 
+import {
+   Alert,
+   AlertActions,
+   AlertDescription,
+   AlertTitle,
+} from "~/components/Alert";
+import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Icon } from "~/components/Icon";
-import { Modal } from "~/components/Modal";
 import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { useTheme } from "~/utils/client-hints";
-import { isAdding } from "~/utils/form";
+import { isAdding, isProcessing } from "~/utils/form";
 
 import { Billing } from "./Billing";
 
@@ -67,7 +73,7 @@ export function UserMenu() {
                               </button>
                            )}
                         </Tab>
-                        <Tab as={Fragment}>
+                        {/* <Tab as={Fragment}>
                            {({ selected }) => (
                               <button
                                  className={clsx(
@@ -80,7 +86,7 @@ export function UserMenu() {
                                  Advanced
                               </button>
                            )}
-                        </Tab>
+                        </Tab> */}
                      </Tab.List>
                   </div>
                   <Tab.Panels className="w-full overflow-auto">
@@ -104,9 +110,7 @@ export function UserMenu() {
                      <Tab.Panel>
                         <Billing />
                      </Tab.Panel>
-                     <Tab.Panel>
-                        <UserDeleteSection />
-                     </Tab.Panel>
+                     <Tab.Panel>{/* <UserDeleteSection /> */}</Tab.Panel>
                   </Tab.Panels>
                </Tab.Group>
             </Dialog>
@@ -119,6 +123,8 @@ function UserDeleteSection() {
    const fetcher = useFetcher();
    const deleting = isAdding(fetcher, "deleteUserAccount");
    const [isDeleteOpen, setDeleteOpen] = useState(false);
+
+   const disabled = isProcessing(fetcher.state);
 
    return (
       <div className="relative z-50 w-full">
@@ -139,55 +145,44 @@ function UserDeleteSection() {
                </button>
             </div>
          </div>
-         <Modal
-            onClose={() => {
-               setDeleteOpen(false);
-            }}
-            show={isDeleteOpen}
-         >
-            <div
-               className="bg-2 mx-5 max-w-md transform rounded-2xl
-      p-8 text-left align-middle shadow-xl transition-all"
-            >
-               <div className="pb-6">
-                  <div className="pb-2 text-center text-lg font-bold">
-                     This will permanently delete your account
-                  </div>
-                  <div className="text-1 text-center">
-                     You cannot undo this action.
-                  </div>
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                  <button
-                     className="h-10 rounded-md bg-zinc-200 text-sm 
-            font-bold focus:bg-zinc-100 dark:bg-zinc-700 dark:focus:bg-zinc-600"
-                     onClick={() => setDeleteOpen(false)}
-                  >
-                     Cancel
-                  </button>
-                  <button
-                     onClick={() =>
-                        fetcher.submit(
-                           { intent: "deleteUserAccount" },
-                           {
-                              method: "delete",
-                              action: "/auth-actions",
-                           },
-                        )
-                     }
-                     className="h-10 w-full rounded-md bg-red-500 text-sm font-bold text-white
-                                     focus:bg-red-400 dark:bg-red-600 dark:focus:bg-red-500"
-                  >
-                     {deleting ? (
-                        <></>
-                     ) : (
-                        // <Loader2 className="mx-auto h-5 w-5 animate-spin text-red-200" />
-                        "Delete"
-                     )}
-                  </button>
-               </div>
-            </div>
-         </Modal>
+         <Alert onClose={setDeleteOpen} open={isDeleteOpen}>
+            <AlertTitle>This will permanently delete your account</AlertTitle>
+            <AlertDescription>You cannot undo this action.</AlertDescription>
+            <AlertActions>
+               <Button
+                  plain
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  onClick={() => setDeleteOpen(false)}
+               >
+                  Cancel
+               </Button>
+               <Button
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  color="red"
+                  onClick={() =>
+                     fetcher.submit(
+                        { intent: "deleteUserAccount" },
+                        {
+                           method: "delete",
+                           action: "/auth-actions",
+                        },
+                     )
+                  }
+               >
+                  {deleting ? (
+                     <Icon
+                        name="loader-2"
+                        size={16}
+                        className="mx-auto animate-spin"
+                     />
+                  ) : (
+                     "Delete"
+                  )}
+               </Button>
+            </AlertActions>
+         </Alert>
       </div>
    );
 }
