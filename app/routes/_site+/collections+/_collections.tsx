@@ -343,6 +343,8 @@ export const action: ActionFunction = async ({
                //TODO when toast behavior is improved, work on this
                return;
             }
+
+            const sectionId = "main";
             return await payload.create({
                collection: "collections",
                data: {
@@ -356,18 +358,23 @@ export const action: ActionFunction = async ({
                   customDatabase,
                   sections: [
                      {
-                        id: "main",
+                        //@ts-ignore
+                        id: sectionId,
+                        //@ts-ignore
                         name: "Main",
                         subSections: [
                            {
-                              id: "main",
-                              main: "main",
+                              //@ts-ignore
+                              id: sectionId,
+                              //@ts-ignore
+                              name: "Main",
                               type: "editor",
                            },
                         ],
                      },
                   ],
                },
+               depth: 0,
                user,
                overrideAccess: false,
             });

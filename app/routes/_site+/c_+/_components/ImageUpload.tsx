@@ -24,7 +24,6 @@ export function CircleImageUploader({
    const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
       site: null,
    };
-
    const fetcher = useFetcher();
    const isImageAdding = isAdding(fetcher, `${intent}UpdateIcon`);
    const isImageDeleting = isAdding(fetcher, `${intent}DeleteIcon`);
@@ -39,6 +38,7 @@ export function CircleImageUploader({
          const formData = new FormData();
          entityId && formData.append("entityId", entityId);
          formData.append("intent", `${intent}UpdateIcon`);
+         formData.append("siteId", `${site?.id}`);
          formData.append("image", e.dataTransfer.files[0]);
          fetcher.submit(formData, {
             encType: "multipart/form-data",
@@ -78,6 +78,7 @@ export function CircleImageUploader({
                            intent: `${intent}DeleteIcon`,
                            imageId: image?.id,
                            entityId: entityId,
+                           site: site.id,
                         },
                         {
                            method: "delete",
@@ -161,6 +162,7 @@ export function CircleImageUploader({
                {entityId && (
                   <input name="entityId" value={entityId} type="hidden" />
                )}
+               <input name="siteId" value={site?.id} type="hidden" />
                <input
                   type="hidden"
                   name="intent"
