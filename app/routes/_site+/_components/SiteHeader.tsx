@@ -35,7 +35,7 @@ export function SiteHeader({
 
    return (
       <section
-         className="z-40 w-full laptop:z-50 fixed max-laptop:top-[56px] max-laptop:px-3 shadow-sm dark:shadow-zinc-900/30
+         className="z-30 w-full laptop:z-50 fixed max-laptop:top-[56px] max-laptop:px-3 shadow-sm dark:shadow-zinc-900/30
         laptop:sticky laptop:top-0 dark:bg-dark350 bg-white border-color border-b"
       >
          <div
