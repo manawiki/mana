@@ -7,9 +7,9 @@ import { s3Adapter } from "@payloadcms/plugin-cloud-storage/s3";
 import { slateEditor } from "@payloadcms/richtext-slate";
 import { buildConfig } from "payload/config";
 
-import { Users } from "./collections/CustomUsers";
-import { Images } from "./collections/images/config";
 import { Logo } from "./components/Logo";
+import { CustomImages } from "./custom/CustomImages";
+import { Users } from "./custom/CustomUsers";
 import searchPlugin from "./plugins/search";
 import {
    CustomCollections,
@@ -105,5 +105,5 @@ export default buildConfig({
    typescript: {
       outputFile: path.resolve(__dirname, "./payload-custom-types.ts"),
    },
-   collections: [Users, Images, ...CustomCollections],
+   collections: [Users, CustomImages, ...CustomCollections],
 });
