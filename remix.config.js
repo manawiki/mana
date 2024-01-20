@@ -15,6 +15,11 @@ module.exports = {
    // default remix convention from picking up routes
    ignoredRouteFiles: ["**/.*"],
    routes: manaRoutes,
+   browserNodeBuiltinsPolyfill: {
+      modules: {
+         buffer: true,
+      },
+   },
 };
 
 // flat routes with mana characteristics

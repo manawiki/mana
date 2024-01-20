@@ -24,7 +24,7 @@ import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrSta
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding, isProcessing } from "~/utils/form";
 
-import { CircleImageUploader } from "./ImageUpload";
+import { CollectionImageUploader } from "./CollectionImageUploader";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
 const CollectionSchema = z.object({
@@ -159,7 +159,7 @@ export function CollectionHeader() {
                   </fetcher.Form>
                </AdminOrStaffOrOwner>
                <div className="flex-none group relative tablet:-mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
-                  <CircleImageUploader
+                  <CollectionImageUploader
                      image={icon}
                      actionPath={actionPath}
                      intent={intent}
