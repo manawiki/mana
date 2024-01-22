@@ -1,28 +1,31 @@
 /* eslint-disable import/no-cycle */
 import { type RenderElementProps, useReadOnly } from "slate-react";
+import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
 
-import {
-   BlockEventItem,
-   BlockEvents,
-} from "../../$siteId.blocks+/events/_events";
+import { BlockCodeBlock } from "../../blocks+/codeblock";
+import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import {
    BlockEventItemView,
    BlockEventsView,
-} from "../../$siteId.blocks+/events/events-view";
-import { BlockGroup, BlockGroupItem } from "../../$siteId.blocks+/group/_group";
+} from "../../blocks+/events/events-view";
+import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
 import {
    BlockGroupItemView,
    BlockGroupView,
-} from "../../$siteId.blocks+/group/group-view";
-import { BlockImage } from "../../$siteId.blocks+/image";
-import { BlockLink } from "../../$siteId.blocks+/link/_link";
-import { BlockLinkView } from "../../$siteId.blocks+/link/link-view";
-import { BlockToggleBlock } from "../../$siteId.blocks+/toggleblock";
-import { BlockTwoColumn } from "../../$siteId.blocks+/two-column";
-import { BlockUpdates } from "../../$siteId.blocks+/updates/_updates";
-import { BlockUpdatesView } from "../../$siteId.blocks+/updates/updates-view";
+} from "../../blocks+/group/group-view";
+import { BlockHTMLBlock } from "../../blocks+/htmlblock";
+import { BlockImage } from "../../blocks+/image";
+import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
+import { BlockInlineAd } from "../../blocks+/inline-ad";
+import { BlockLink } from "../../blocks+/link/_link";
+import { BlockLinkView } from "../../blocks+/link/link-view";
+import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
+import { BlockToggleBlock } from "../../blocks+/toggleblock";
+import { BlockTwoColumn } from "../../blocks+/two-column";
+import { BlockUpdates } from "../../blocks+/updates/_updates";
+import { BlockUpdatesView } from "../../blocks+/updates/updates-view";
 import { BlockType } from "../types";
 
 // Note: {children} must be rendered in every element otherwise bugs occur
@@ -59,6 +62,19 @@ export function EditorBlocks({
             />
          );
       }
+      case BlockType.Tabs: {
+         return (
+            <BlockTabs
+               readOnly={readOnly}
+               element={element}
+               children={children}
+            />
+         );
+      }
+      case BlockType.TabsItem: {
+         //@ts-ignore
+         return <BlockTabsItem element={element} children={children} />;
+      }
       case BlockType.TwoColumn: {
          return (
             <BlockTwoColumn
@@ -75,12 +91,55 @@ export function EditorBlocks({
             </p>
          );
       }
+      case BlockType.CodeBlock: {
+         return (
+            <BlockCodeBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.HTMLBlock: {
+         return (
+            <BlockHTMLBlock
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.InfoBox: {
+         return (
+            <BlockInfoBox
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               {...attributes}
+            />
+         );
+      }
+      case BlockType.InfoBoxItem: {
+         return (
+            <BlockInfoBoxItem
+               readOnly={readOnly}
+               element={element}
+               {...attributes}
+            />
+         );
+      }
       case BlockType.H2: {
+         //@ts-ignore
+         const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
             <h2
+               id={id}
+               className="mb-2.5 mt-8 dark:shadow-black/30 border-color relative overflow-hidden rounded-lg block
+               border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350
+               scroll-mt-44 laptop:scroll-mt-52"
                {...attributes}
-               className="shadow-1 border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-         border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350"
             >
                <div
                   className="pattern-dots absolute left-0
@@ -95,16 +154,19 @@ export function EditorBlocks({
          );
       }
       case BlockType.H3: {
+         //@ts-ignore
+         const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
             <h3
-               className="flex items-center gap-3 py-2 font-header text-lg"
+               id={id}
+               className="flex items-center gap-3 py-2 font-header text-lg scroll-mt-32 laptop:scroll-mt-16"
                {...attributes}
             >
                <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
                   className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-               ></div>
+               />
             </h3>
          );
       }
@@ -180,7 +242,15 @@ export function EditorBlocks({
          return (
             <div {...attributes} contentEditable={false}>
                <BlockImage element={element} />
-               <div style={{ display: "none" }}>{children}</div>
+               <div className="hidden">{children}</div>
+            </div>
+         );
+      }
+      case BlockType.InlineAd: {
+         return (
+            <div contentEditable={false}>
+               <BlockInlineAd element={element} {...attributes} />
+               <div className="hidden">{children}</div>
             </div>
          );
       }

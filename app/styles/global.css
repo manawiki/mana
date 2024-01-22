@@ -7,7 +7,7 @@
    .rtl {
       direction: rtl;
    }
-   @variants responsive {
+   .responsive {
       /* Hide scrollbar for Chrome, Safari and Opera */
       .no-scrollbar::-webkit-scrollbar {
          display: none;
@@ -27,7 +27,10 @@
       @apply overflow-y-scroll;
    }
    .border-color {
-      @apply border-[#ededed] dark:border-[#36393e];
+      @apply border-[#ededed] dark:border-darkBorder;
+   }
+   .border-color-secondary {
+      @apply border-zinc-100 dark:border-darkBorder;
    }
    .border-color-sub {
       @apply border-[#ededed] dark:border-zinc-700;
@@ -46,11 +49,11 @@
 /* Since dark/light class is set at html level, we can't declare styles inline  */
 
 html.light {
-   @apply bg-zinc-50;
+   @apply bg-white;
 }
 
 html.dark {
-   @apply bg-bg2Dark;
+   @apply bg-dark350 laptop:bg-bg3Dark;
 }
 
 @layer components {
@@ -74,9 +77,6 @@ html.dark {
    }
    .shadow-1 {
       @apply shadow-zinc-300 dark:shadow-black/30;
-   }
-   .shadow-2 {
-      @apply shadow-zinc-500 dark:shadow-black;
    }
    .bg-1 {
       @apply bg-zinc-100 dark:bg-[#212324];

@@ -1,12 +1,13 @@
 FROM node:18-bookworm-slim as base
 
-ARG STATIC_URL
-ENV STATIC_URL $STATIC_URL
+ARG PAYLOAD_PUBLIC_IS_HOME
+ENV PAYLOAD_PUBLIC_IS_HOME $PAYLOAD_PUBLIC_IS_HOME
 
 FROM base as builder
 
 WORKDIR /home/node
-COPY package*.json ./
+COPY package.json yarn.lock ./
+COPY ./patches ./patches
 
 COPY . .
 RUN yarn install
@@ -17,13 +18,14 @@ FROM base as runtime
 ENV NODE_ENV=production
 
 WORKDIR /home/node
-COPY package*.json  ./
+COPY package.json yarn.lock  ./
+COPY ./patches ./patches
 
 RUN yarn install --production
 COPY --from=builder /home/node/public ./public
 COPY --from=builder /home/node/dist ./dist
 COPY --from=builder /home/node/build ./build
 
-EXPOSE 4040
+EXPOSE 8080
 
 CMD ["yarn", "run", "start:core"]

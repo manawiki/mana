@@ -1,3 +1,4 @@
+//@ts-nocheck
 import type { SearchConfig, SyncWithSearch } from "../../types";
 
 const syncWithSearch: SyncWithSearch = async (args) => {
@@ -5,9 +6,9 @@ const syncWithSearch: SyncWithSearch = async (args) => {
       req: { payload },
       doc,
       operation,
-      // @ts-expect-error
+      //@ts-ignore
       collection,
-      // @ts-expect-error
+      //@ts-ignore
       searchConfig,
    } = args;
 
@@ -42,7 +43,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
          } catch (err: unknown) {
             payload.logger.error(err);
             payload.logger.error(
-               `Error gathering default priority for search documents related to ${collection}`
+               `Error gathering default priority for search documents related to ${collection}`,
             );
          }
       } else {
@@ -78,8 +79,9 @@ const syncWithSearch: SyncWithSearch = async (args) => {
                depth: 0,
             });
 
+            //@ts-ignore
             const docs: Array<{
-               id: string;
+               id: string | number;
                priority?: number;
             }> = searchDocQuery?.docs || [];
 
@@ -94,12 +96,12 @@ const syncWithSearch: SyncWithSearch = async (args) => {
                         payload.delete({
                            collection: "search",
                            id: duplicativeDocID,
-                        })
-                     ) // eslint-disable-line function-paren-newline
+                        }),
+                     ), // eslint-disable-line function-paren-newline
                   );
                } catch (err: unknown) {
                   payload.logger.error(
-                     `Error deleting duplicative search documents.`
+                     `Error deleting duplicative search documents.`,
                   );
                }
             }
@@ -131,7 +133,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
                      });
                   } catch (err: unknown) {
                      payload.logger.error(
-                        `Error deleting search document: ${err}`
+                        `Error deleting search document: ${err}`,
                      );
                   }
                }
@@ -146,7 +148,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
                   });
                } catch (err: unknown) {
                   payload.logger.error(
-                     `Error creating search document: ${err}`
+                     `Error creating search document: ${err}`,
                   );
                }
             }
@@ -156,7 +158,7 @@ const syncWithSearch: SyncWithSearch = async (args) => {
       }
    } catch (err: unknown) {
       payload.logger.error(
-         `Error syncing search document related to ${collection} with id: '${id}': ${err}`
+         `Error syncing search document related to ${collection} with id: '${id}': ${err}`,
       );
    }
 

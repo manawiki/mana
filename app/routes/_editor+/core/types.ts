@@ -2,7 +2,7 @@ import type { BaseEditor, BaseOperation, Descendant } from "slate";
 import type { ReactEditor } from "slate-react";
 
 import type { Site, Collection } from "payload/generated-types";
-import type { Time } from "~/components/datepicker/time-picker/types";
+import type { Time } from "~/routes/_site+/_components/_datepicker/time-picker/types";
 
 declare module "slate" {
    interface CustomTypes {
@@ -26,9 +26,16 @@ export enum BlockType {
    GroupItem = "group-item",
    Updates = "updates",
    ToggleBlock = "toggle-block",
+   Tabs = "tabs",
+   TabsItem = "tabs-item",
    Events = "events",
    EventItem = "event-item",
    TwoColumn = "two-column",
+   CodeBlock = "code-block",
+   HTMLBlock = "html-block",
+   InlineAd = "inline-ad",
+   InfoBox = "info-box",
+   InfoBoxItem = "info-box-item",
 }
 
 export type TextBlock =
@@ -46,6 +53,32 @@ export type BlockElement = {
 
 export type ParagraphElement = BlockElement & {
    type: BlockType.Paragraph;
+};
+
+export type CodeBlockElement = BlockElement & {
+   type: BlockType.CodeBlock;
+   value?: string;
+};
+
+export type HTMLBlockElement = BlockElement & {
+   type: BlockType.HTMLBlock;
+   value?: string;
+};
+
+export type InfoBoxElement = {
+   id: string;
+   type: BlockType.InfoBox;
+   children: [InfoBoxItemElement];
+};
+
+export type InfoBoxItemElement = BlockElement & {
+   type: BlockType.InfoBoxItem;
+   infoBoxLeftContent?: [Descendant];
+   infoBoxRightContent?: [Descendant];
+};
+
+export type InlineAdElement = BlockElement & {
+   type: BlockType.InlineAd;
 };
 
 export type HeadingElement = BlockElement & {
@@ -88,6 +121,18 @@ export type EventsElement = {
    id: string;
    type: BlockType.Events;
    children: [EventItemElement];
+};
+
+export type TabsItemElement = BlockElement & {
+   type: BlockType.TabsItem;
+   tabContent?: [Descendant];
+};
+
+export type TabsElement = {
+   id: string;
+   type: BlockType.Tabs;
+   tabs: string[];
+   children: [TabsItemElement];
 };
 
 export type ListElement = BlockElement & {
@@ -162,12 +207,19 @@ export type CustomElement =
    | LinkElement
    | UpdatesElement
    | ToggleBlockElement
+   | TabsElement
+   | TabsItemElement
    | ListElement
    | GroupElement
    | GroupItemElement
    | EventsElement
    | EventItemElement
-   | TwoColumnElement;
+   | TwoColumnElement
+   | CodeBlockElement
+   | HTMLBlockElement
+   | InlineAdElement
+   | InfoBoxElement
+   | InfoBoxItemElement;
 
 export type CustomText = {
    text: string;
@@ -176,6 +228,13 @@ export type CustomText = {
    italic?: boolean;
    underline?: boolean;
    strikeThrough?: boolean;
+   small?: boolean;
+   color?: string;
 };
 
-export type Format = "bold" | "underline" | "strikeThrough" | "italic";
+export type Format =
+   | "bold"
+   | "underline"
+   | "strikeThrough"
+   | "italic"
+   | "small";

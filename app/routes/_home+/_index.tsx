@@ -1,40 +1,31 @@
 import { useEffect, useState } from "react";
 
 import { RadioGroup } from "@headlessui/react";
-import { json, type LinksFunction, type LoaderFunctionArgs } from "@remix-run/node";
 import {
-   Link,
-   useLoaderData,
-   useRouteLoaderData,
-   useSearchParams,
-} from "@remix-run/react";
+   json,
+   type LinksFunction,
+   type LoaderFunctionArgs,
+} from "@remix-run/node";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import AOS from "aos";
 import aosStyles from "aos/dist/aos.css";
 import clsx from "clsx";
-import {
-   ChevronLeft,
-   ChevronRight,
-   Component,
-   Gamepad2,
-   Globe2,
-   Search,
-   X,
-} from "lucide-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { settings } from "mana-config";
-import { Image, Logo } from "~/components";
+import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
-import { useDebouncedValue } from "~/hooks";
-import { LoggedIn, LoggedOut, LoggedOutMobile } from "~/modules/auth";
-import { siteHomeShouldReload } from "~/utils";
-import { fetchWithCache } from "~/utils/cache.server";
+import { gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { gqlEndpoint } from "~/utils/fetchers.server";
+import { useDebouncedValue } from "~/utils/use-debounce";
 
 import { Top } from "./components/top";
 import indexStyles from "./styles.css";
-import { FollowingListMobile } from "../_site+/$siteId+/components";
+import { LoggedIn } from "../_auth+/components/LoggedIn";
+import { LoggedOut } from "../_auth+/components/LoggedOut";
+import { FollowingListMobile } from "../_site+/_components/Menu";
 
 export const meta: MetaFunction = () => [
    { title: "Mana - A new kind of wiki" },
@@ -53,66 +44,47 @@ export async function loader({
       page: z.coerce.number().optional(),
    });
 
-   const { data, errors } = await fetchWithCache(
-      `${settings.domainFull}/api/graphql`,
-      {
-         method: "POST",
-         headers: {
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({
-            query: `
-            query {
-               sites: Sites(
-                 ${page ? `page:${page}` : ""}
-                 where: {
-                   status: { equals: verified }
-                   ${c != null && "all" ? `category: { equals: ${c} }` : ""}
-                   ${
-                      q
-                         ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
-                         : ""
-                   }
-                 }
-               ) {
-                 totalDocs
-                 totalPages
-                 pagingCounter
-                 hasPrevPage
-                 prevPage
-                 hasNextPage
-                 docs {
-                   id
-                   name
-                   type
-                   slug
-                   status
-                   about
-                   icon {
-                     url
-                   }
-                 }
-               }
-             }
-            `,
-            variables: {
-               page,
-               q,
-               c,
-            },
-         }),
+   const QUERY = gql`query {
+      sites: Sites(
+        ${page ? `page:${page}` : ""}
+        where: {
+          status: { equals: verified }
+          ${c != null && "all" ? `category: { equals: ${c} }` : ""}
+          ${
+             q
+                ? `OR: [{ name: { contains: "${q}" } }, { about: { contains: "${q}" } }]`
+                : ""
+          }
+        }
+      ) {
+        totalDocs
+        totalPages
+        pagingCounter
+        hasPrevPage
+        prevPage
+        hasNextPage
+        docs {
+          id
+          name
+          type
+          slug
+          status
+          about
+          icon {
+            url
+          }
+        }
       }
-   );
+    }
+   `;
 
-   if (errors) {
-      console.error(JSON.stringify(errors)); // eslint-disable-line no-console
-      throw new Error();
-   }
+   const data = await gqlRequestWithCache(gqlEndpoint({}), QUERY);
+
    const sites = data.sites;
 
    return json(
-      { q, sites },
-      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } }
+      { q, sites, dev: process.env.NODE_ENV === "development" ?? undefined },
+      { headers: { "Cache-Control": "public, s-maxage=60, max-age=60" } },
    );
 }
 
@@ -126,10 +98,6 @@ export const links: LinksFunction = () => [
 ];
 
 export default function IndexMain() {
-   const { isMobileApp } = useRouteLoaderData("root") as {
-      isMobileApp: Boolean;
-   };
-
    useEffect(() => {
       AOS.init({
          once: true,
@@ -144,29 +112,14 @@ export default function IndexMain() {
          <LoggedOut>
             <Top />
          </LoggedOut>
-         {isMobileApp && (
-            <LoggedOut>
-               <div className="bg-3 relative z-10 px-5 py-10">
-                  <Logo className="mx-auto mb-4 h-7 w-7" />
-                  <div className="pb-4 text-center text-sm font-bold">
-                     Login to view the sites you <b>follow</b>
-                  </div>
-                  <div className="px-10">
-                     <LoggedOutMobile />
-                  </div>
-                  <div className="pt-12 text-center text-sm font-bold">
-                     Explore Discoverable Sites
-                  </div>
-               </div>
-            </LoggedOut>
-         )}
-         <Discover isMobileApp={isMobileApp} />
+         <Discover />
       </>
    );
 }
 
-const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
-   const { q, sites } = useLoaderData<typeof loader>() || {};
+const Discover = () => {
+   const { q, sites, dev } = useLoaderData<typeof loader>() || {};
+
    const [query, setQuery] = useState(q);
    const debouncedValue = useDebouncedValue(query, 500);
    const [searchParams, setSearchParams] = useSearchParams({});
@@ -190,24 +143,32 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
       <>
          <section className="relative z-10 h-full">
             <LoggedIn>
-               <div className="bg-gradient-to-b from-white to-zinc-100 pt-20 dark:from-bg3Dark dark:to-bg1Dark">
-                  <div className="mx-auto max-w-[680px] max-laptop:px-4">
-                     <div className="pb-3 pl-1 text-sm font-bold">
+               <div className="bg-3 pb-10 pt-20 mobile:px-4">
+                  <div className="mx-auto max-w-[680px] px-4 mobile:px-0">
+                     <div className="pt-2 pb-3 text-sm font-bold pl-0.5">
                         Following
                      </div>
-                     <FollowingListMobile isMobileApp={isMobileApp} />
-                     <div className="pl-1 pt-8 text-sm font-bold">Explore</div>
+                     <div className="pb-3">
+                        <FollowingListMobile />
+                     </div>
+                     <div className="text-sm font-bold pt-5 pl-0.5">
+                        Explore
+                     </div>
                   </div>
                </div>
             </LoggedIn>
-            <div className="border-color border-t pb-20">
-               <div className="relative z-20 mx-auto max-w-[680px] max-laptop:px-4">
+            <div className="border-color border-t pb-20 px-4 tablet:px-0 relative">
+               <div className="relative z-20 mx-auto max-w-[680px]">
                   <div className="flex items-center justify-center">
-                     <div className="bg-2 shadow-1 border-color relative -mt-[28px] h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200">
+                     <div
+                        className="bg-3-sub dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-[28px]
+                         h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200"
+                     >
                         <>
                            <div className="relative flex h-full w-full items-center gap-2">
                               <span className="absolute left-[16px] top-[17px]">
-                                 <Search size={20} />
+                                 {/* <Search size={20} /> */}
+                                 <Icon name="search" className="h-5 w-5" />
                               </span>
                               <input
                                  type="text"
@@ -231,7 +192,10 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setQuery("");
                                  }}
                               >
-                                 <X size={22} className="text-red-500" />
+                                 <Icon
+                                    name="x"
+                                    className="text-red-500 w-[22px] h-[22px]"
+                                 />
                               </button>
                            )}
                         </>
@@ -248,7 +212,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.set("c", value);
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            } else
                               setSearchParams(
@@ -256,7 +220,7 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     searchParams.delete("c");
                                     return searchParams;
                                  },
-                                 { preventScrollReset: false }
+                                 { preventScrollReset: false },
                               );
                            setCategory(value);
                         }}
@@ -267,12 +231,13 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Globe2 size={15} />
-                                 <span>All</span>
+                                 <Icon name="globe-2" className="h-3.5 w-3.5">
+                                    All
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -282,12 +247,14 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Gamepad2 size={16} />
-                                 <span>Gaming</span>
+                                 {/* <Gamepad2 size={16} /> */}
+                                 <Icon name="gamepad-2" className="h-4 w-4">
+                                    Gaming
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -297,12 +264,13 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                  className={clsx(
                                     checked
                                        ? "!border-transparent bg-zinc-700 text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-800"
-                                       : "bg-3 border-color",
-                                    "shadow-1 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm"
+                                       : "dark:bg-zinc-700 dark:border-zinc-600 bg-white ",
+                                    "dark:shadow-zinc-900/40 shadow-zinc-200 flex h-8 cursor-pointer items-center gap-2 rounded-lg border px-2.5 text-xs font-bold uppercase shadow-sm",
                                  )}
                               >
-                                 <Component size={14} />
-                                 <span>Other</span>
+                                 <Icon name="component" className="h-3.5 w-3.5">
+                                    Other
+                                 </Icon>
                               </div>
                            )}
                         </RadioGroup.Option>
@@ -320,12 +288,15 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                      ) : (
                         sites?.docs.map((site: Site) => (
                            <Link
-                              reloadDocument={siteHomeShouldReload({
-                                 site,
-                              })}
-                              to={`/${site.slug}`}
+                              //don't reload document on dev
+                              reloadDocument={!dev}
+                              to={
+                                 site.domain
+                                    ? `https://${site.domain}`
+                                    : `https://${site.slug}.mana.wiki`
+                              }
                               key={site.id}
-                              className="border-color bg-3 shadow-1 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
+                              className="border-color-sub bg-3-sub dark:shadow-zinc-900/50 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
                            >
                               <div
                                  className="shadow-1 border-1 h-11 w-11 flex-none
@@ -372,15 +343,15 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.prevPage as any
+                                          sites.prevPage as any,
                                        );
                                        return searchParams;
                                     })
                                  }
                               >
-                                 <ChevronLeft
-                                    size={18}
-                                    className="text-zinc-500"
+                                 <Icon
+                                    name="chevron-left"
+                                    className="text-zinc-500 w-4.5 h-4.5"
                                  />
                                  Prev
                               </button>
@@ -395,16 +366,16 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                                     setSearchParams((searchParams) => {
                                        searchParams.set(
                                           "page",
-                                          sites.nextPage as any
+                                          sites.nextPage as any,
                                        );
                                        return searchParams;
                                     })
                                  }
                               >
                                  Next
-                                 <ChevronRight
-                                    size={18}
-                                    className="text-zinc-500"
+                                 <Icon
+                                    name="chevron-right"
+                                    className="text-zinc-500 w-4.5 h-4.5"
                                  />
                               </button>
                            ) : null}
@@ -413,6 +384,12 @@ const Discover = ({ isMobileApp }: { isMobileApp: Boolean }) => {
                   )}
                </div>
             </div>
+            {/* <div
+               className="pattern-dots absolute left-0
+                  top-0 h-full  w-full
+                  pb-6 pattern-bg-white pattern-zinc-400 pattern-opacity-10 pattern-size-4 
+                  dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+            /> */}
          </section>
       </>
    );

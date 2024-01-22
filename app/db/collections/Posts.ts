@@ -1,9 +1,40 @@
-import type { CollectionConfig } from "payload/types";
+import type {
+   CollectionAfterDeleteHook,
+   CollectionConfig,
+} from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin, canRead } from "../../access/site";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
+import { canReadPost } from "../../access/post";
 import { isStaffFieldLevel } from "../../access/user";
+
+const afterDeleteHook: CollectionAfterDeleteHook = async ({
+   req: { payload, user },
+   id,
+   doc,
+}) => {
+   try {
+      await payload.delete({
+         collection: "postContents",
+         id,
+         overrideAccess: true,
+         user,
+      });
+      const bannerId = doc.banner.id;
+
+      if (bannerId) {
+         await payload.delete({
+            collection: "images",
+            id: bannerId,
+            overrideAccess: false,
+            user,
+         });
+      }
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
+};
 
 export const Posts: CollectionConfig = {
    slug: "posts",
@@ -12,10 +43,13 @@ export const Posts: CollectionConfig = {
    },
    access: {
       create: canMutateAsSiteAdmin("posts"),
-      read: canRead("posts"),
+      read: canReadPost(),
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),
+   },
+   hooks: {
+      afterDelete: [afterDeleteHook],
    },
    fields: [
       {
@@ -30,6 +64,7 @@ export const Posts: CollectionConfig = {
       {
          name: "slug",
          type: "text",
+         index: true,
       },
       {
          name: "subtitle",
@@ -38,17 +73,21 @@ export const Posts: CollectionConfig = {
       {
          name: "publishedAt",
          type: "date",
+         index: true,
       },
       {
          name: "content",
-         type: "json",
+         type: "relationship",
+         relationTo: "postContents",
+         required: true,
+         hasMany: false,
       },
       {
          name: "author",
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
@@ -62,6 +101,12 @@ export const Posts: CollectionConfig = {
          maxDepth: 1,
       },
       {
+         name: "tags",
+         type: "relationship",
+         relationTo: "postTags",
+         hasMany: true,
+      },
+      {
          name: "banner",
          type: "upload",
          relationTo: "images",
@@ -71,11 +116,19 @@ export const Posts: CollectionConfig = {
          type: "upload",
          relationTo: "images",
       },
-   ],
-   versions: {
-      drafts: {
-         autosave: true,
+      {
+         name: "totalComments",
+         type: "number",
       },
-      maxPerDoc: 20,
-   },
+      {
+         name: "totalBookmarks",
+         type: "number",
+      },
+      {
+         name: "maxCommentDepth",
+         type: "number",
+         defaultValue: 1,
+         min: 1,
+      },
+   ],
 };

@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -16,100 +17,109 @@ import {
    ScrollRestoration,
    useLoaderData,
    useMatches,
+   useOutletContext,
 } from "@remix-run/react";
-import { Toaster } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
+import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
+import { getToast } from "remix-toast";
+import { ExternalScripts } from "remix-utils/external-scripts";
+import { Toaster, toast as notify } from "sonner";
 
-import { settings } from "mana-config";
 import customStylesheetUrl from "~/_custom/styles.css";
 import type { Site } from "~/db/payload-types";
 import fonts from "~/styles/fonts.css";
+import { ClientHintCheck, getHints, useTheme } from "~/utils/client-hints";
+import { i18nextServer } from "~/utils/i18n/i18next.server";
 import { useIsBot } from "~/utils/isBotProvider";
-import {
-   ThemeBody,
-   ThemeHead,
-   ThemeProvider,
-   useTheme,
-} from "~/utils/theme-provider";
-import { getThemeSession } from "~/utils/theme.server";
+import { getTheme } from "~/utils/theme.server";
 
-import { toast } from "./components/Toaster";
+import { settings } from "./config";
+import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { isNativeSSR } from "./utils";
-import { i18nextServer } from "./utils/i18n";
-import { commitSession, getSession } from "./utils/message.server";
-import type { ToastMessage } from "./utils/message.server";
-import { rdtClientConfig } from "../rdt.config";
+
+export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+type ContextType = [
+   setUserMenuOpen: Dispatch<SetStateAction<boolean>>,
+   isUserMenuOpen: boolean,
+];
+
+export function useUserMenuState() {
+   return useOutletContext<ContextType>();
+}
 
 export const loader = async ({
-   context: { user },
+   context: { user, payload },
    request,
-   params,
 }: LoaderFunctionArgs) => {
-   const themeSession = await getThemeSession(request);
-   const locale = await i18nextServer.getLocale(request);
-   const session = await getSession(request.headers.get("cookie"));
-   const toastMessage = (session.get("toastMessage") as ToastMessage) ?? null;
-   const { isMobileApp, isIOS, isAndroid } = isNativeSSR(request);
-   // const isCustomDomain = customDomainRouting({ params, request, isMobileApp });
-   // if (isCustomDomain) {
-   //    return redirect(isCustomDomain);
-   // }
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const sharedData = {
-      isMobileApp,
-      isIOS,
-      isAndroid,
-      toastMessage,
-      locale,
-      user,
-      siteTheme: themeSession.getTheme(),
-   };
+   const locale = await i18nextServer.getLocale(request);
+   // Extracts the toast from the request
+   const { toast, headers } = await getToast(request);
+
+   const userData = user
+      ? await payload.findByID({
+           collection: "users",
+           id: user.id,
+           user,
+        })
+      : undefined;
+
+   const following = userData?.sites?.map((site) => ({
+      id: site?.id,
+      icon: {
+         url: site?.icon?.url,
+      },
+      domain: site?.domain,
+      name: site.name,
+      slug: site?.slug,
+      type: site?.type,
+   }));
+   const hints = getHints(request);
+
+   const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
 
    return json(
-      { ...sharedData },
-      { headers: { "Set-Cookie": await commitSession(session) } },
+      {
+         requestInfo: {
+            ...hints,
+            theme: getTheme(request) ?? hints.theme,
+         },
+         sitePath: request.url,
+         stripePublicKey,
+         toast,
+         locale,
+         user,
+         siteSlug,
+         following,
+      },
+      { headers },
    );
 };
 
-export const meta: MetaFunction = () => [
+export const meta: MetaFunction<typeof loader> = ({ data }) => [
    { title: settings.title },
    { charSet: "utf-8" },
 ];
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
-   { rel: "preload", href: fonts, as: "style", crossOrigin: "anonymous" },
+   { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
+   { rel: "preload", href: reactCropUrl, as: "style" },
 
-   { rel: "stylesheet", href: fonts, crossOrigin: "anonymous" },
+   { rel: "stylesheet", href: reactCropUrl },
+   { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
 
-   //add preconnects to cdn to improve first bits
-   {
-      rel: "preconnect",
-      href: `https://${settings.domain}`,
-      crossOrigin: "anonymous",
-   },
-   {
-      rel: "preconnect",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-      crossOrigin: "anonymous",
-   },
-
    //add dns-prefetch as fallback support for older browsers
-   { rel: "dns-prefetch", href: `https://static.mana.wiki` },
-   {
-      rel: "dns-prefetch",
-      href: `https://${
-         settings.siteId ? `${settings.siteId}-static` : "static"
-      }.mana.wiki`,
-   },
+   { rel: "preconnect", href: "https://static.mana.wiki" },
+   { rel: "dns-prefetch", href: "https://static.mana.wiki" },
+
    ...(process.env.NODE_ENV === "development"
       ? [{ rel: "stylesheet", href: rdtStylesheet }]
       : []),
@@ -121,10 +131,11 @@ export const handle = {
 };
 
 function App() {
-   const { locale, siteTheme, toastMessage } = useLoaderData<typeof loader>();
-   const [theme] = useTheme();
+   const { locale, toast, sitePath } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
+   const theme = useTheme();
+
    useChangeLanguage(locale);
 
    //site data should live in layout, this may be potentially brittle if we shift site architecture around
@@ -133,31 +144,26 @@ function App() {
    };
    const favicon = site?.favicon?.url ?? site?.icon?.url ?? "/favicon.ico";
 
+   // Hook to show the toasts
    useEffect(() => {
-      if (!toastMessage) {
-         return;
+      if (toast?.type === "error") {
+         notify.error(toast.message);
       }
-      const { message, type } = toastMessage;
+      if (toast?.type === "success") {
+         notify.success(toast.message);
+      }
+   }, [toast]);
 
-      switch (type) {
-         case "success":
-            toast.success(message);
-            break;
-         case "error":
-            toast.error(message);
-            break;
-         default:
-            throw new Error(`${type} is not handled`);
-      }
-   }, [toastMessage]);
+   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
    return (
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body ${theme ?? ""}`}
+         className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
+            {isBot ? null : <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -168,6 +174,8 @@ function App() {
                name="format-detection"
                content="telephone=no, date=no, email=no, address=no"
             />
+            {/* add preconnect to cdn to improve first bits */}
+            <link rel="preconnect" href={sitePath} crossOrigin="anonymous" />
             <link
                sizes="32x32"
                rel="icon"
@@ -194,37 +202,28 @@ function App() {
             />
             <Meta />
             <Links />
-            <ThemeHead ssrTheme={Boolean(siteTheme)} />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet />
-            <Toaster />
-            <ThemeBody ssrTheme={Boolean(siteTheme)} />
+            <Outlet
+               context={[setUserMenuOpen, isUserMenuOpen] satisfies ContextType}
+            />
+            <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
+            <ExternalScripts />
             <LiveReload />
          </body>
       </html>
    );
 }
 
-export function AppWithProviders() {
-   const { siteTheme } = useLoaderData<typeof loader>();
-
-   return (
-      <ThemeProvider specifiedTheme={siteTheme}>
-         <App />
-      </ThemeProvider>
-   );
-}
-
-let AppExport = withMetronome(AppWithProviders);
+let AppExport = withMetronome(App);
 
 // Toggle Remix Dev Tools
 if (process.env.NODE_ENV === "development") {
    const { withDevTools } = require("remix-development-tools");
 
-   AppExport = withDevTools(AppExport, rdtClientConfig);
+   AppExport = withDevTools(AppExport);
 }
 
 export default AppExport;
@@ -235,35 +234,3 @@ export function useChangeLanguage(locale: string) {
       i18n.changeLanguage(locale);
    }, [locale, i18n]);
 }
-
-// const customDomainRouting = ({
-//    params,
-//    request,
-//    isMobileApp,
-// }: {
-//    params: Params;
-//    request: Request;
-//    isMobileApp: Boolean;
-// }) => {
-//    if (customConfig?.domain && process.env.NODE_ENV == "production") {
-//       const { siteId } = zx.parseParams(params, {
-//          siteId: z.string().optional(),
-//       });
-//       const { pathname } = new URL(request.url as string);
-
-//       //If current path is not siteId and not currently home, redirect to home
-//       if (siteId && siteId != customConfig?.siteId && pathname != "/") {
-//          return "/";
-//       }
-
-//       //redirect "/$sited" to "/"
-//       if (
-//          pathname != "/" &&
-//          pathname == `/${customConfig?.siteId}` && //Only redirect on site index
-//          siteId == customConfig?.siteId //Make sure client ID is equal to config id before redirect
-//       ) {
-//          return "/";
-//       }
-//    }
-//    return;
-// };

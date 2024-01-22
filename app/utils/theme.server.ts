@@ -1,35 +1,32 @@
-import { createCookieSessionStorage } from "@remix-run/node";
+import * as cookie from "cookie";
 
-import { settings } from "mana-config";
+const cookieName = "en-theme";
+export type Theme = "light" | "dark" | "system";
 
-import { isTheme } from "./theme-provider";
-import type { Theme } from "./theme-provider";
-
-const sessionSecret = process.env.PAYLOADCMS_SECRET ?? "DEFAULT_SECRET";
-const isDev = process.env.NODE_ENV == "development";
-
-const themeStorage = createCookieSessionStorage({
-   cookie: {
-      name: "theme",
-      secure: isDev ? false : true,
-      path: "/",
-      domain: isDev ? "localhost" : `.${settings.domain}`,
-      secrets: [sessionSecret],
-      httpOnly: isDev ? false : true,
-      sameSite: isDev ? "lax" : "none",
-   },
-});
-
-async function getThemeSession(request: Request) {
-   const session = await themeStorage.getSession(request.headers.get("Cookie"));
-   return {
-      getTheme: () => {
-         const themeValue = session.get("theme");
-         return isTheme(themeValue) ? themeValue : null;
-      },
-      setTheme: (theme: Theme) => session.set("theme", theme),
-      commit: () => themeStorage.commitSession(session),
-   };
+export function getTheme(request: Request): Theme | null {
+   const cookieHeader = request.headers.get("cookie");
+   const parsed = cookieHeader
+      ? cookie.parse(cookieHeader)[cookieName]
+      : "light";
+   if (parsed === "light" || parsed === "dark") return parsed;
+   return null;
 }
 
-export { getThemeSession };
+export function setTheme(theme: Theme | "system", request: Request) {
+   let { hostname } = new URL(request.url);
+
+   // Remove subdomain
+   let domain = hostname.split(".").slice(-2).join(".");
+
+   return theme === "system"
+      ? cookie.serialize(cookieName, "", {
+           path: "/",
+           maxAge: -1,
+           domain,
+        })
+      : cookie.serialize(cookieName, theme, {
+           path: "/",
+           maxAge: 31536000,
+           domain,
+        });
+}

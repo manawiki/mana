@@ -1,6 +1,8 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canMutateAsSiteAdmin, canRead } from "../../access/site";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
+import { canRead } from "../../access/canRead";
+import { replaceVersionAuthor } from "../hooks/replaceVersionAuthor";
 
 export const HomeContents: CollectionConfig = {
    slug: "homeContents",
@@ -17,6 +19,16 @@ export const HomeContents: CollectionConfig = {
          type: "json",
       },
       {
+         name: "versionAuthor",
+         type: "relationship",
+         relationTo: "users",
+         maxDepth: 3,
+         required: false,
+         admin: {
+            hidden: true,
+         },
+      },
+      {
          name: "site",
          type: "relationship",
          relationTo: "sites",
@@ -25,6 +37,9 @@ export const HomeContents: CollectionConfig = {
          maxDepth: 1,
       },
    ],
+   hooks: {
+      beforeChange: [replaceVersionAuthor],
+   },
    versions: {
       drafts: {
          autosave: true,

@@ -1,10 +1,10 @@
 import type {
    CollectionAfterChangeHook,
+   CollectionAfterDeleteHook,
    CollectionConfig,
 } from "payload/types";
-import invariant from "tiny-invariant";
 
-import { canMutateAsSiteAdmin } from "../../access/site";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const collectionsSlug = "collections";
@@ -16,28 +16,84 @@ const afterChangeHook: CollectionAfterChangeHook = async ({
 }) => {
    try {
       if (operation === "create") {
-         const siteId = doc.site.id;
+         //If depth is greater that 0, need to check the nested site
+         const siteId = doc.site ?? doc.site.id;
+
          const currentCollections = await payload.findByID({
             collection: "sites",
             id: siteId,
+            depth: 0,
          });
-         invariant(currentCollections.collections);
-         const prevCollections = currentCollections.collections.map(
-            ({ id }: { id: string }) => id,
-         );
-         payload.update({
-            collection: "sites",
-            id: siteId,
-            data: {
-               collections: [...prevCollections, doc.id],
-            },
-         });
+
+         if (
+            !currentCollections?.collections ||
+            currentCollections?.collections?.length === 0
+         ) {
+            payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  collections: [doc.id],
+               },
+            });
+         }
+         if (
+            currentCollections?.collections &&
+            currentCollections?.collections?.length > 0
+         ) {
+            const prevCollections = currentCollections.collections;
+
+            payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  collections: [...prevCollections, doc.id],
+               },
+            });
+         }
       }
    } catch (err: unknown) {
       payload.logger.error(`${err}`);
    }
 
    return doc;
+};
+
+const afterDeleteHook: CollectionAfterDeleteHook = async ({
+   req: { payload },
+   id, // id of document to delete
+   doc, // deleted document
+}) => {
+   try {
+      const siteId = doc.site.id;
+      const currentCollections = await payload.findByID({
+         collection: "sites",
+         id: siteId,
+      });
+
+      if (currentCollections?.collections) {
+         let collections = [] as string[];
+
+         if (doc.site?.collections.length > 1) {
+            //Delete existing collection from site
+            collections = currentCollections.collections
+               .map(({ id }: { id: string }) => id)
+               .filter((item) => item !== id)
+               .filter((e) => e);
+         }
+
+         payload.update({
+            collection: "sites",
+            id: siteId,
+            data: {
+               //@ts-ignore
+               collections: collections,
+            },
+         });
+      }
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
 };
 
 export const Collections: CollectionConfig = {
@@ -53,6 +109,7 @@ export const Collections: CollectionConfig = {
    },
    hooks: {
       afterChange: [afterChangeHook],
+      afterDelete: [afterDeleteHook],
    },
    fields: [
       {
@@ -133,10 +190,62 @@ export const Collections: CollectionConfig = {
             {
                name: "id",
                type: "text",
+               required: true,
             },
             {
                name: "name",
                type: "text",
+            },
+            {
+               name: "showTitle",
+               type: "checkbox",
+               label: "Display Title",
+               defaultValue: false,
+            },
+            {
+               name: "showAd",
+               type: "checkbox",
+               label: "Show Ad",
+               defaultValue: false,
+            },
+            {
+               name: "subSections",
+               type: "array",
+               label: "Sub-Sections",
+               fields: [
+                  {
+                     name: "id",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "name",
+                     type: "text",
+                  },
+                  {
+                     name: "type",
+                     type: "select",
+                     required: true,
+                     options: [
+                        {
+                           label: "Editor",
+                           value: "editor",
+                        },
+                        {
+                           label: "Custom Template",
+                           value: "customTemplate",
+                        },
+                        {
+                           label: "Q & A",
+                           value: "qna",
+                        },
+                        {
+                           label: "Comments",
+                           value: "comments",
+                        },
+                     ],
+                  },
+               ],
             },
          ],
       },

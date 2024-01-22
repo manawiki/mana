@@ -9,7 +9,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { useDebouncedValue, useIsMount } from "~/hooks";
+import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "./core/components/Toolbar";
 import { EditorWithDnD } from "./core/dnd";
@@ -18,18 +19,18 @@ import { useEditor } from "./core/plugins";
 export function ManaEditor({
    fetcher,
    defaultValue,
-   siteId,
    pageId,
-   sectionId,
+   siteId,
+   subSectionId,
    entryId,
    collectionEntity,
    collectionSlug,
 }: {
-   fetcher: FetcherWithComponents<never>;
-   defaultValue: Descendant[];
-   siteId?: string | undefined;
+   fetcher: FetcherWithComponents<unknown>;
+   defaultValue: unknown[];
    pageId?: string;
-   sectionId?: string;
+   siteId?: string;
+   subSectionId?: string | undefined;
    entryId?: string;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
@@ -53,7 +54,7 @@ export function ManaEditor({
                pageId,
                collectionSlug,
                collectionEntity,
-               sectionId,
+               subSectionId,
                entryId,
             },
             { method: "patch", action: "/editor" },
@@ -62,12 +63,14 @@ export function ManaEditor({
    }, [debouncedValue]);
 
    return (
-      <div className="relative mx-auto max-w-[728px] pb-4">
-         <Slate onChange={setValue} editor={editor} initialValue={value}>
-            <Toolbar />
-            <EditorWithDnD editor={editor} />
-         </Slate>
-      </div>
+      <Slate
+         onChange={setValue}
+         editor={editor}
+         initialValue={value as Descendant[]}
+      >
+         <Toolbar />
+         <EditorWithDnD editor={editor} />
+      </Slate>
    );
 }
 
@@ -81,7 +84,12 @@ export async function action({
       collectionSlug: z.custom<keyof Config["collections"]>(),
    });
 
-   if (!user) throw redirect("/login", { status: 302 });
+   if (!user)
+      throw redirect("/login", {
+         status: 302,
+      });
+
+   const { siteSlug } = await getSiteSlug(request, payload, user);
 
    switch (intent) {
       case "versionUpdate": {
@@ -97,7 +105,7 @@ export async function action({
       }
       case "update": {
          switch (collectionSlug) {
-            case "posts": {
+            case "postContents": {
                const { content, pageId } = await zx.parseForm(request, {
                   content: z.string(),
                   pageId: z.string(),
@@ -115,15 +123,14 @@ export async function action({
                });
             }
             case "homeContents": {
-               const { content, siteId } = await zx.parseForm(request, {
-                  siteId: z.string(),
+               const { content } = await zx.parseForm(request, {
                   content: z.string(),
                });
                const { docs } = await payload.find({
                   collection: collectionSlug,
                   where: {
                      "site.slug": {
-                        equals: siteId,
+                        equals: siteSlug,
                      },
                   },
                   overrideAccess: false,
@@ -147,14 +154,14 @@ export async function action({
                   siteId,
                   content,
                   pageId,
-                  sectionId,
+                  subSectionId,
                   entryId,
                   collectionEntity,
                } = await zx.parseForm(request, {
                   siteId: z.string(),
                   content: z.string(),
                   pageId: z.string(),
-                  sectionId: z.string(),
+                  subSectionId: z.string(),
                   entryId: z.string(),
                   collectionEntity: z.string(),
                });
@@ -182,11 +189,12 @@ export async function action({
                } catch (error) {
                   return await payload.create({
                      collection: collectionSlug,
-                     //@ts-ignore
                      data: {
+                        //@ts-ignore
                         relationId: entryId,
                         site: siteId as any,
-                        sectionId: sectionId,
+                        //@ts-ignore
+                        subSectionId: subSectionId,
                         collectionEntity: collectionEntity as any,
                         content: JSON.parse(content),
                      },

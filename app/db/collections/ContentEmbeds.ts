@@ -2,7 +2,8 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin, canRead } from "../../access/site";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
+import { canRead } from "../../access/canRead";
 import { isStaffFieldLevel } from "../../access/user";
 
 export const ContentEmbeds: CollectionConfig = {
@@ -24,7 +25,7 @@ export const ContentEmbeds: CollectionConfig = {
          type: "relationship",
          relationTo: "users",
          required: true,
-         defaultValue: ({ user }: { user: User }) => user.id,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          access: {
             update: isStaffFieldLevel,
          },
@@ -35,7 +36,7 @@ export const ContentEmbeds: CollectionConfig = {
          type: "text",
       },
       {
-         name: "sectionId",
+         name: "subSectionId",
          type: "text",
       },
       {

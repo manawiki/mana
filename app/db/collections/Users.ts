@@ -1,20 +1,23 @@
 import type { CollectionConfig } from "payload/types";
 
-import { settings } from "../../../mana.config";
 import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";
+
 export const Users: CollectionConfig = {
    slug: usersSlug,
    auth: {
+      useAPIKey: true,
       verify: {
          generateEmailHTML: ({ token, user }) => {
             // Use the token provided to allow your user to verify their account
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
-                  : `${settings.domainFull}/verify?token=${token}`;
+                  : `https://${
+                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                    }/verify?token=${token}`;
 
             return `
             <span>Hey ${user.email}, thanks for registering at Mana.</span>
@@ -39,12 +42,14 @@ export const Users: CollectionConfig = {
       },
       forgotPassword: {
          generateEmailHTML: (prop) => {
-            const  token  = prop?.token;
+            const token = prop?.token;
             // Use the token provided to allow your user to verify their account
             const url =
                serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
-                  : `${settings.domainFull}/reset-password?token=${token}`;
+                  : `https://${
+                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                    }/reset-password?token=${token}`;
 
             return `
             <br><br>
@@ -67,10 +72,8 @@ export const Users: CollectionConfig = {
          },
       },
       cookies: {
-         domain:
-            serverEnv == "development" ? "localhost" : `.${settings.domain}`,
-         secure: serverEnv == "development" ? false : true,
-         sameSite: serverEnv == "development" ? "lax" : "none",
+         secure: serverEnv !== "development",
+         sameSite: "lax",
       },
    },
    admin: {
@@ -91,6 +94,11 @@ export const Users: CollectionConfig = {
          unique: true,
       },
       {
+         name: "stripeCustomerId",
+         type: "text",
+         unique: true,
+      },
+      {
          name: "email",
          type: "email",
          label: "User email",
@@ -102,7 +110,6 @@ export const Users: CollectionConfig = {
       },
       {
          name: "roles",
-         saveToJWT: true,
          type: "select",
          hasMany: true,
          defaultValue: ["user"],
@@ -123,7 +130,6 @@ export const Users: CollectionConfig = {
       },
       {
          name: "sites",
-         saveToJWT: true,
          type: "relationship",
          relationTo: "sites",
          hasMany: true,
