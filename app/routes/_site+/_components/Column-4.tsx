@@ -12,7 +12,7 @@ export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    return (
-      <section className="relative z-30 laptop:block max-laptop:bg-2-sub">
+      <section className="relative laptop:z-30 laptop:block max-laptop:bg-2-sub">
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px]"
