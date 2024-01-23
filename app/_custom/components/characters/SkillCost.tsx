@@ -9,10 +9,10 @@ import { Image } from "~/components/Image";
 // Max60: 1601 Gold
 // Max70: 1781 Gold
 
-export const BreakCost = ({ data: char }: { data: CharacterType }) => {
+export const SkillCost = ({ data: char }: { data: CharacterType }) => {
   return (
     <>
-      <H2 text="Break Cost" />
+      <H2 text="Skill Cost" />
       <div
         dangerouslySetInnerHTML={{
           __html: `<style>
@@ -41,21 +41,37 @@ export const BreakCost = ({ data: char }: { data: CharacterType }) => {
       <table className="talent-table w-full overflow-auto text-sm">
         <thead>
           <tr className="text-sm">
-            <th>Level</th>
+            <th>Skill Lv</th>
             <th>Materials</th>
           </tr>
         </thead>
         <tbody>
-          {char.break_data?.map((promo, index) => {
+          {char.skill_level_up?.map((promo, index) => {
             return (
               <>
-                {promo.required_item?.length > 0 ? (
+                {promo.item_cost?.length > 0 ? (
                   <tr key={index}>
                     <th className="px-3 py-0 text-center text-xs font-bold">
-                      <div>Lv {promo.max_level}</div>
+                      <div>
+                        {promo.skill?.name} Lv{promo.level}
+                      </div>
+                      <div>
+                        <div className="inline-block align-top">
+                          {promo.gold_cost}
+                        </div>
+                        <div className="inline-block align-top bg-gray-600 mx-1">
+                          <Image
+                            height={15}
+                            className="object-contain"
+                            url="https://static.mana.wiki/endfield/item_gold_icon.png"
+                            options="height=15"
+                            alt={"GoldIcon"}
+                          />
+                        </div>
+                      </div>
                     </th>
                     <td className="px-1 py-1 pl-3">
-                      {promo.required_item?.map((mat, key) => (
+                      {promo.item_cost?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                       ))}
                     </td>
@@ -88,12 +104,13 @@ const ItemQtyFrame = ({ mat }: { mat: ItemQtyFrameProps }) => {
     <div className="relative inline-block text-center" key={mat?.id}>
       <a href={`/c/materials/${mat.item?.id}`}>
         <div className="relative mr-0.5 mt-0.5 inline-block h-11 w-11 align-middle text-xs">
-          <Image
-            height={44}
-            className="object-contain"
-            url={mat.item?.icon?.url ?? "no_image_42df124128"}
-            options="height=44"
+          <img
+            src={mat.item?.icon?.url ?? "no_image_42df124128"}
+            className={`object-contain`}
             alt={mat.item?.name}
+            loading="lazy"
+            width="44"
+            height="44"
           />
         </div>
         <div

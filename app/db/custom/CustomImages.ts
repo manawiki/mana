@@ -2,16 +2,15 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
+import { isStaff, isStaffFieldLevel } from "../../access/user";
 
-export const imagesSlug = "images";
-export const Images: CollectionConfig = {
-   slug: imagesSlug,
+export const CustomImages: CollectionConfig = {
+   slug: "images",
    access: {
       read: (): boolean => true, // Everyone can read Images
       update: isStaff,
       delete: isStaff,
-      create: isStaffOrSelf,
+      create: isStaff,
    },
    fields: [
       {
@@ -32,6 +31,10 @@ export const Images: CollectionConfig = {
             update: isStaffFieldLevel,
          },
          maxDepth: 1,
+      },
+      {
+         name: "site",
+         type: "text",
       },
    ],
 };

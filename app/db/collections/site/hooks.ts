@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid";
 import type { CollectionAfterChangeHook } from "payload/types";
 
 export const afterCreateSite: CollectionAfterChangeHook = async ({
@@ -16,20 +17,20 @@ export const afterCreateSite: CollectionAfterChangeHook = async ({
                _status: "published",
                content: [
                   {
-                     id: "viwnxpInwb-HSLnwixmaU",
-                     type: "h2",
+                     id: nanoid(),
+                     type: "paragraph",
                      children: [
                         {
-                           text: "Welcome to Mana",
+                           text: "This page was automatically generated during site creation. Feel free to edit it.",
                         },
                      ],
                   },
                   {
-                     id: "jsowPnsUbN-UmsYfOpFtY",
-                     type: "paragraph",
+                     id: nanoid(),
+                     type: "updates",
                      children: [
                         {
-                           text: "This page was automatically generated during site creation, and it looks like it hasn't been replaced yet.",
+                           text: "",
                         },
                      ],
                   },

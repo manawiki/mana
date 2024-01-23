@@ -20,6 +20,7 @@ import {
    useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
 import { ExternalScripts } from "remix-utils/external-scripts";
@@ -108,7 +109,9 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
+   { rel: "preload", href: reactCropUrl, as: "style" },
 
+   { rel: "stylesheet", href: reactCropUrl },
    { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },

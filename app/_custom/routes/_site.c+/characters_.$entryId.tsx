@@ -14,9 +14,11 @@ import { Characters } from "../../collections/characters";
 import { ImageGallery } from "~/_custom/components/characters/ImageGallery";
 import { Main } from "~/_custom/components/characters/Main";
 import { Skills } from "~/_custom/components/characters/Skills";
+import { FactorySkills } from "~/_custom/components/characters/FactorySkills";
 import { Profile } from "~/_custom/components/characters/Profile";
 import { VoiceLines } from "~/_custom/components/characters/VoiceLines";
 import { BreakCost } from "~/_custom/components/characters/BreakCost";
+import { SkillCost } from "~/_custom/components/characters/SkillCost";
 
 // Custom Site / Collection Config Imports
 
@@ -46,7 +48,9 @@ export async function loader({
 const SECTIONS = {
   main: Main,
   skills: Skills,
+  factory: FactorySkills,
   break: BreakCost,
+  skillcost: SkillCost,
   profile: Profile,
   voice: VoiceLines,
   gallery: ImageGallery,
@@ -133,6 +137,21 @@ const QUERY = gql`
           }
         }
       }
+      factory_skills {
+        factory_skill {
+          name
+          desc
+          icon {
+            url
+          }
+          building_type
+          type {
+            data_key
+            name
+          }
+        }
+        break_stage
+      }
       profile_record {
         title
         text
@@ -152,6 +171,27 @@ const QUERY = gql`
             }
             icon {
               url
+            }
+          }
+          count
+        }
+      }
+      skill_level_up {
+        skill {
+          name
+        }
+        level
+        gold_cost
+        item_cost {
+          item {
+            id
+            name
+            slug
+            icon {
+              url
+            }
+            rarity {
+              id
             }
           }
           count
