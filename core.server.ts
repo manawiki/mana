@@ -61,7 +61,7 @@ async function startCore() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.PAYLOAD_NODEMAILER_HOST
+      ...(process.env.PAYLOAD_NODEMAILER_PASSWORD
          ? {
               email: {
                  transport,
@@ -168,6 +168,7 @@ function createProductionRequestHandler(): RequestHandler {
          ? {
               id: req?.user?.id,
               roles: req?.user?.roles,
+              username: req?.user?.username,
               avatar: { url: req?.user?.avatar?.url },
            }
          : undefined;
@@ -219,6 +220,7 @@ function createDevRequestHandler(): RequestHandler {
                   ? {
                        id: req?.user?.id,
                        roles: req?.user?.roles,
+                       username: req?.user?.username,
                        avatar: { url: req?.user?.avatar?.url },
                     }
                   : undefined;

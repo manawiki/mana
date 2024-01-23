@@ -30,6 +30,7 @@ export async function fetchListCore({
                  equals: collectionId,
               },
            },
+           depth: 0,
            overrideAccess: false,
            user,
         })
@@ -45,6 +46,7 @@ export async function fetchListCore({
                        equals: collectionId,
                     },
                  },
+                 depth: 0,
                  overrideAccess: false,
                  user,
               }),
@@ -93,7 +95,7 @@ export async function fetchListCore({
            collection: "entries",
            where: {
               site: {
-                 equals: collectionEntry?.site?.id,
+                 equals: collectionEntry?.site,
               },
               "collectionEntity.slug": {
                  equals: collectionId,
@@ -109,7 +111,7 @@ export async function fetchListCore({
                  collection: "entries",
                  where: {
                     site: {
-                       equals: collectionEntry?.site?.id,
+                       equals: collectionEntry?.site,
                     },
                     "collectionEntity.slug": {
                        equals: collectionId,

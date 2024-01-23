@@ -9,7 +9,6 @@ import type {
 import { useLoaderData, useLocation } from "@remix-run/react";
 import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
-import { isStaffOrSiteAdminOrStaffOrOwnerServer } from "~/routes/_auth+/utils/isStaffSiteAdminOwner.server";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import * as gtag from "~/utils/gtags.client";
 
@@ -30,33 +29,9 @@ export async function loader({
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const site = await fetchSite({ siteSlug, user, request });
+   const site = await fetchSite({ siteSlug, user, request, payload });
 
-   if (!site) {
-      throw new Response(null, {
-         status: 404,
-         statusText: "Not Found",
-      });
-   }
-
-   //If site is not set to public, limit access to staff and site admins/owners only
-   const hasAccess = isStaffOrSiteAdminOrStaffOrOwnerServer(user, site);
-
-   if (!hasAccess && !site.isPublic) {
-      throw new Response(null, {
-         status: 404,
-         statusText: "Not Found",
-      });
-   }
-
-   return await json(
-      { site },
-      {
-         headers: {
-            "Cache-Control": `public, s-maxage=60${user ? "" : ", max-age=60"}`,
-         },
-      },
-   );
+   return await json({ site });
 }
 
 export default function SiteLayout() {

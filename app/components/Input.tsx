@@ -66,7 +66,7 @@ export function Input({
                   ],
 
                // Basic layout
-               "relative block w-full appearance-none rounded-lg px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing[3])-1px)] tablet:py-[calc(theme(spacing[1.5])-1px)]",
+               "relative block w-full appearance-none rounded-lg px-[calc(theme(spacing[3.5])-1px)] py-[calc(theme(spacing[2.5])-1px)] tablet:px-[calc(theme(spacing[3])-1px)] tablet:py-[calc(theme(spacing[2])-1px)]",
 
                // Typography
                "text-base/6 placeholder:text-zinc-500 tablet:text-sm dark:text-white",

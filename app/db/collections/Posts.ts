@@ -1,10 +1,40 @@
-import type { CollectionConfig } from "payload/types";
+import type {
+   CollectionAfterDeleteHook,
+   CollectionConfig,
+} from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "./site/access";
+import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { canReadPost } from "../../access/post";
 import { isStaffFieldLevel } from "../../access/user";
+
+const afterDeleteHook: CollectionAfterDeleteHook = async ({
+   req: { payload, user },
+   id,
+   doc,
+}) => {
+   try {
+      await payload.delete({
+         collection: "postContents",
+         id,
+         overrideAccess: true,
+         user,
+      });
+      const bannerId = doc.banner.id;
+
+      if (bannerId) {
+         await payload.delete({
+            collection: "images",
+            id: bannerId,
+            overrideAccess: false,
+            user,
+         });
+      }
+   } catch (err: unknown) {
+      payload.logger.error(`${err}`);
+   }
+};
 
 export const Posts: CollectionConfig = {
    slug: "posts",
@@ -17,6 +47,9 @@ export const Posts: CollectionConfig = {
       update: canMutateAsSiteAdmin("posts"),
       delete: canMutateAsSiteAdmin("posts"),
       readVersions: canMutateAsSiteAdmin("posts"),
+   },
+   hooks: {
+      afterDelete: [afterDeleteHook],
    },
    fields: [
       {

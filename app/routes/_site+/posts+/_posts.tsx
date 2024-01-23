@@ -11,7 +11,7 @@ import { safeNanoID } from "~/utils/nanoid";
 import { MyPosts } from "./components/MyPosts";
 import { PostListHeader } from "./components/PostListHeader";
 import { PublishedPosts } from "./components/PublishedPosts";
-import { fetchMyPosts } from "./utils/fetchMyPosts";
+import { fetchMyPosts } from "./utils/fetchMyPosts.server";
 import { fetchPublishedPosts } from "./utils/fetchPublishedPosts";
 
 export const meta: MetaFunction<
