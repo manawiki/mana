@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import { Switch, Tab } from "@headlessui/react";
 import { useFetcher, useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { lazily } from "react-lazily";
+// import { lazily } from "react-lazily";
 
 import {
    Alert,
@@ -20,12 +20,12 @@ import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { useTheme } from "~/utils/client-hints";
 import { isAdding, isProcessing } from "~/utils/form";
 
-// import { Billing } from "./Billing";
-const { Billing } = lazily(
-   () =>
-      // @ts-expect-error -- we'll add tsconfig module later
-      import("./Billing"),
-);
+import { Billing } from "./Billing";
+// const { Billing } = lazily(
+//    () =>
+//       // @ts-expect-error -- we'll add tsconfig module later
+//       import("./Billing"),
+// );
 
 export function UserMenu() {
    const { sitePath } = useRouteLoaderData("root") as { sitePath: string };
