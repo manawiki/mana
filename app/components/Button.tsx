@@ -215,7 +215,7 @@ export const Button = React.forwardRef(function Button(
    ) : (
       <HeadlessButton
          {...props}
-         className={clsx(classes, "cursor-default")}
+         className={clsx(classes, "cursor-pointer text-sm")}
          ref={ref}
       >
          <TouchTarget>{children}</TouchTarget>

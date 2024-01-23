@@ -61,7 +61,7 @@ async function startCore() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.PAYLOAD_NODEMAILER_HOST
+      ...(process.env.PAYLOAD_NODEMAILER_PASSWORD
          ? {
               email: {
                  transport,

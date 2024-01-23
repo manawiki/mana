@@ -7,7 +7,7 @@ export function Image({
    height,
    ...props
 }: {
-   url?: string;
+   url?: string | null | undefined;
    options?: string;
 } & React.ImgHTMLAttributes<HTMLImageElement>) {
    const searchParams = new URLSearchParams(options);

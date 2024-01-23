@@ -75,12 +75,13 @@ export const action: ActionFunction = async ({
             schema: z.any(),
          });
          if (result.success) {
-            const { image, entityId } = result.data;
+            const { image, entityId, siteId } = result.data;
             try {
                const upload = await uploadImage({
                   payload,
                   image: image,
                   user,
+                  siteId,
                });
                return await payload.update({
                   collection: "entries",
@@ -118,7 +119,7 @@ export const action: ActionFunction = async ({
             collection: "entries",
             id: entityId,
             data: {
-               icon: "" as any,
+               icon: null,
             },
             overrideAccess: false,
             user,

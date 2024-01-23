@@ -8,7 +8,7 @@ import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 export interface ListFetchType {
    request: Request;
    payload: Payload;
-   user: User | undefined;
+   user?: User;
    gql?: {
       query: string;
       variables?: {};
