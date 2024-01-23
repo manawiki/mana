@@ -16,14 +16,14 @@ export function SiteIconUploader({
    siteIcon,
    preparedFile,
    setPreparedFile,
-   replaceImage,
-   setReplaceImage,
+   previewImage,
+   setPreviewImage,
 }: {
    siteIcon: string | null | undefined;
-   preparedFile: File | {};
-   setPreparedFile: React.Dispatch<React.SetStateAction<File | {}>>;
-   replaceImage: boolean;
-   setReplaceImage: React.Dispatch<React.SetStateAction<boolean>>;
+   preparedFile: File | undefined;
+   setPreparedFile: React.Dispatch<React.SetStateAction<undefined>>;
+   previewImage: string | null | undefined;
+   setPreviewImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
    const [dragActive, setDragActive] = useState(false);
    const [imgSrc, setImgSrc] = useState("");
@@ -34,7 +34,6 @@ export function SiteIconUploader({
    const [aspect, setAspect] = useState<number | undefined>(1);
    const [scale, setScale] = useState(1);
    const [rotate, setRotate] = useState(0);
-   const [previewImage, setPreviewImage] = useState("");
 
    function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
       if (e.target.files && e.target.files.length > 0) {
@@ -98,9 +97,6 @@ export function SiteIconUploader({
                const file = new File([buffer], "filename", {
                   type: fileType,
                });
-               if (!replaceImage) {
-                  setReplaceImage(true);
-               }
                setIsOpen(false);
                setPreparedFile(file);
             }
@@ -169,7 +165,6 @@ export function SiteIconUploader({
                scale,
                rotate,
             );
-            console.log(previewSrc);
             setPreviewImage(previewSrc);
          }
       }
@@ -186,7 +181,7 @@ export function SiteIconUploader({
             }}
             open={isOpen}
          >
-            {!!imgSrc && (
+            {imgSrc && (
                <>
                   <ReactCrop
                      crop={crop}
@@ -228,7 +223,7 @@ export function SiteIconUploader({
                   !siteIcon &&
                      "border-dashed border-color-sub border-2 bg-2-sub",
                   `flex cursor-pointer items-center justify-center rounded-full 
-                shadow-sm z-10 relative size-20 flex-none group
+                shadow-sm z-0 relative size-20 flex-none group
                 `,
                )}
             >
@@ -246,7 +241,7 @@ export function SiteIconUploader({
                )}
                <div
                   className="absolute flex items-center justify-center dark:border-zinc-500 border shadow-sm 
-              w-6 h-6 dark:bg-zinc-600 bg-zinc-50 border-zinc-300 rounded-full -top-1 -right-1 shadow-1 z-30"
+              w-6 h-6 dark:bg-zinc-600 bg-zinc-50 border-zinc-300 rounded-full -top-1 -right-1 shadow-1 z-20"
                >
                   <Icon
                      title="Upload Image"
@@ -256,7 +251,7 @@ export function SiteIconUploader({
                   />
                </div>
                <div className="flex items-center justify-center rounded-full overflow-hidden relative">
-                  {siteIcon && !replaceImage ? (
+                  {siteIcon && !previewImage ? (
                      <>
                         <Image
                            //@ts-ignore
@@ -264,7 +259,7 @@ export function SiteIconUploader({
                            options="aspect_ratio=1:1&height=120&width=120"
                            alt="Image"
                         />
-                        <div className="hidden group-hover:block absolute inset-0 size-20 z-20 rounded-full overflow-hidden">
+                        <div className="hidden group-hover:block absolute inset-0 size-20 z-10 rounded-full overflow-hidden">
                            <div className="inset-0 size-20 bg-zinc-950/50" />
                            <div className="absolute inset-0 flex items-center justify-center">
                               <Icon
@@ -278,7 +273,7 @@ export function SiteIconUploader({
                   ) : (
                      <>
                         {/* Cropped image preview */}
-                        {!!completedCrop && !isOpen && previewImage ? (
+                        {completedCrop && !isOpen && previewImage ? (
                            <>
                               <img
                                  alt="Crop preview"
@@ -287,7 +282,7 @@ export function SiteIconUploader({
                               />
                               <div className="group-hover:block hidden absolute w-full h-full rounded-full overflow-hidden">
                                  <span className="inset-0 w-full h-full bg-zinc-950/50 z-10 absolute" />
-                                 <div className="absolute inset-0 flex items-center justify-center z-20">
+                                 <div className="absolute inset-0 flex items-center justify-center z-10">
                                     <Icon
                                        size={18}
                                        name="pencil"

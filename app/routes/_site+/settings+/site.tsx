@@ -8,11 +8,12 @@ import type {
 } from "@remix-run/node";
 import { useFetcher, useRouteLoaderData, useSubmit } from "@remix-run/react";
 import { useZorm } from "react-zorm";
-import { jsonWithSuccess } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 import {
    Description,
    Field,
@@ -43,6 +44,7 @@ const SettingsSiteSchema = z.object({
    slug: z.string().min(1),
    isPublic: z.coerce.boolean(),
    enableAds: z.coerce.boolean(),
+   siteIconId: z.string().optional(),
    gaTagId: z.string().optional(),
    gaPropertyId: z.string().optional(),
 });
@@ -71,13 +73,13 @@ export default function SiteSettings() {
    }, [saving]);
 
    //Icon Cropping
-   const [preparedFile, setPreparedFile] = useState({});
+   const siteIcon = site.icon?.url;
+   const [preparedFile, setPreparedFile] = useState();
+   const [previewImage, setPreviewImage] = useState("");
 
-   // We need to set the formData here since we can't write to a read-only, hidden, input type if we want to submit it with a file upload
+   // Append the images to the form data if they exist
    let submit = useSubmit();
    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-      event.preventDefault();
-
       const $form = event.currentTarget;
 
       const formData = new FormData($form);
@@ -90,14 +92,12 @@ export default function SiteSettings() {
          encType: "multipart/form-data",
       });
    }
-   const siteIcon = site.icon?.url;
-
-   const [replaceImage, setReplaceImage] = useState(siteIcon ? false : true);
 
    return (
       <>
          <fetcher.Form
-            onSubmit={handleSubmit}
+            //Only onSubmit if we have an uploaded file
+            onSubmit={preparedFile && handleSubmit}
             encType="multipart/form-data"
             className="h-full relative"
             method="POST"
@@ -105,6 +105,12 @@ export default function SiteSettings() {
             ref={zo.ref}
          >
             <input type="hidden" name={zo.fields.siteId()} value={site.id} />
+            <input type="hidden" name={zo.fields.siteId()} value={site.id} />
+            <input
+               type="hidden"
+               name={zo.fields.siteIconId()}
+               value={site.icon?.id}
+            />
             <div className="max-laptop:space-y-6 laptop:flex items-start gap-8">
                <FieldGroup>
                   <Field>
@@ -157,8 +163,8 @@ export default function SiteSettings() {
                      siteIcon={siteIcon}
                      preparedFile={preparedFile}
                      setPreparedFile={setPreparedFile}
-                     replaceImage={replaceImage}
-                     setReplaceImage={setReplaceImage}
+                     previewImage={previewImage}
+                     setPreviewImage={setPreviewImage}
                   />
                </section>
             </div>
@@ -235,8 +241,8 @@ export default function SiteSettings() {
                         onClick={() => {
                            //@ts-ignore
                            zo.refObject.current.reset();
-                           setReplaceImage(false);
                            setIsChanged(false);
+                           setPreviewImage("");
                         }}
                         className="text-xs cursor-pointer hover:dark:bg-dark400 
                       flex items-center justify-center w-7 h-7 rounded-full"
@@ -258,15 +264,7 @@ export default function SiteSettings() {
                   className="cursor-pointer !font-bold text-sm h-9 w-16"
                   disabled={!isChanged || disabled}
                >
-                  {saving ? (
-                     <Icon
-                        size={16}
-                        name="loader-2"
-                        className="mx-auto animate-spin"
-                     />
-                  ) : (
-                     "Save"
-                  )}
+                  {saving ? <DotLoader /> : "Save"}
                </Button>
             </div>
          </fetcher.Form>
@@ -294,7 +292,6 @@ export async function action({
    const { intent } = await zx.parseForm(request, {
       intent: z.enum(["saveSettings", "addDomain"]),
    });
-   console.log(intent);
 
    if (!user) throw redirect("/404", 404);
 
@@ -306,9 +303,35 @@ export async function action({
             schema: z.any(),
          });
          if (result.success) {
-            const { image, siteId } = result.data;
+            const { image, siteId, siteIconId } = result.data;
 
-            if (image) {
+            if (image && !siteIconId) {
+               const upload = await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+                  siteId,
+               });
+
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     icon: upload?.id,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            //If existing icon, delete it and upload new one
+            if (image && siteIconId) {
+               await payload.delete({
+                  collection: "images",
+                  id: siteIconId,
+                  overrideAccess: false,
+                  user,
+               });
                const upload = await uploadImage({
                   payload,
                   image: image,
@@ -328,19 +351,23 @@ export async function action({
                });
             }
 
-            // await payload.update({
-            //    collection: "sites",
-            //    id: formData.siteId,
-            //    //@ts-ignore
-            //    data: {
-            //       ...formData,
-            //    },
-            //    overrideAccess: false,
-            //    user,
-            // });
+            await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  ...result.data,
+               },
+               overrideAccess: false,
+               user,
+            });
+            return jsonWithSuccess(null, "Settings updated");
          }
-
-         return jsonWithSuccess(null, "Settings updated");
+         if (result.error) {
+            return jsonWithError(
+               null,
+               "Something went wrong, unable to save settings...",
+            );
+         }
       }
    }
 }

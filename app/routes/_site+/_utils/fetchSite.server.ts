@@ -99,6 +99,7 @@ const QUERY = gql`
             url
          }
          icon {
+            id
             url
          }
          favicon {
