@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { Transition } from "@headlessui/react";
 import { redirect } from "@remix-run/node";
 import type {
    MetaFunction,
@@ -27,7 +28,6 @@ import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Strong, TextLink, Text } from "~/components/Text";
 import { Textarea } from "~/components/Textarea";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding, isProcessing } from "~/utils/form";
 import {
@@ -161,7 +161,7 @@ export default function SiteSettings() {
                <section className="laptop:w-[300px]">
                   <SiteIconUploader
                      siteIcon={siteIcon}
-                     preparedFile={preparedFile}
+                     //@ts-ignore
                      setPreparedFile={setPreparedFile}
                      previewImage={previewImage}
                      setPreviewImage={setPreviewImage}
@@ -234,39 +234,50 @@ export default function SiteSettings() {
                   </Field>
                </FieldGroup>
             </Fieldset>
-            <div className="pt-6 flex items-center gap-3 justify-end">
-               {isChanged && (
-                  <Tooltip placement="top">
-                     <TooltipTrigger
-                        onClick={() => {
-                           //@ts-ignore
-                           zo.refObject.current.reset();
-                           setIsChanged(false);
-                           setPreviewImage("");
-                        }}
-                        className="text-xs cursor-pointer hover:dark:bg-dark400 
-                      flex items-center justify-center w-7 h-7 rounded-full"
-                     >
-                        <Icon
-                           title="Reset"
-                           size={16}
-                           name="refresh-ccw"
-                           className="dark:text-zinc-500"
-                        />
-                     </TooltipTrigger>
-                     <TooltipContent>Reset</TooltipContent>
-                  </Tooltip>
-               )}
-               <input type="hidden" name="intent" value="saveSettings" />
-               <Button
-                  type="submit"
-                  color="dark/white"
-                  className="cursor-pointer !font-bold text-sm h-9 w-16"
-                  disabled={!isChanged || disabled}
+            <Transition
+               show={isChanged}
+               enter="transition ease-out duration-200"
+               enterFrom="opacity-0 translate-y-1"
+               enterTo="opacity-100 translate-y-0"
+               leave="transition ease-in duration-200"
+               leaveFrom="opacity-100 translate-y-0"
+               leaveTo="opacity-0 translate-y-1"
+               className="w-full max-tablet:inset-x-0 max-tablet:px-3 z-30 fixed bottom-8 tablet:w-[728px]"
+            >
+               <div
+                  className="mt-6 flex items-center gap-5 justify-between dark:bg-dark450 
+                  border dark:border-zinc-600 shadow-lg dark:shadow-zinc-900/50 rounded-lg py-3 px-2.5"
                >
-                  {saving ? <DotLoader /> : "Save"}
-               </Button>
-            </div>
+                  <button
+                     type="button"
+                     onClick={() => {
+                        //@ts-ignore
+                        zo.refObject.current.reset();
+                        setIsChanged(false);
+                        setPreviewImage("");
+                     }}
+                     className="text-sm h-8 font-semibold cursor-pointer rounded-lg
+                     dark:hover:bg-dark500 gap-2 flex items-center justify-center pl-2 pr-3.5"
+                  >
+                     <Icon
+                        title="Reset"
+                        size={14}
+                        name="refresh-ccw"
+                        className="dark:text-zinc-500"
+                     />
+                     <span>Reset</span>
+                  </button>
+                  <input type="hidden" name="intent" value="saveSettings" />
+                  <Button
+                     type="submit"
+                     color="dark/white"
+                     className="cursor-pointer !font-bold text-sm h-8 w-[62px]"
+                     disabled={!isChanged || disabled}
+                  >
+                     {saving ? <DotLoader /> : "Save"}
+                  </Button>
+               </div>
+            </Transition>
          </fetcher.Form>
       </>
    );

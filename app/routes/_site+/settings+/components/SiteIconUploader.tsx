@@ -14,14 +14,12 @@ import { imgPreview } from "../utils/imgPreview";
 
 export function SiteIconUploader({
    siteIcon,
-   preparedFile,
    setPreparedFile,
    previewImage,
    setPreviewImage,
 }: {
    siteIcon: string | null | undefined;
-   preparedFile: File | undefined;
-   setPreparedFile: React.Dispatch<React.SetStateAction<undefined>>;
+   setPreparedFile: React.Dispatch<React.SetStateAction<undefined | File>>;
    previewImage: string | null | undefined;
    setPreviewImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
@@ -31,9 +29,8 @@ export function SiteIconUploader({
    const [crop, setCrop] = useState<Crop>();
    const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
    const [isOpen, setIsOpen] = useState(false);
-   const [aspect, setAspect] = useState<number | undefined>(1);
    const [scale, setScale] = useState(1);
-   const [rotate, setRotate] = useState(0);
+   const aspect = 1;
 
    function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
       if (e.target.files && e.target.files.length > 0) {
@@ -163,7 +160,6 @@ export function SiteIconUploader({
                imgRef.current,
                completedCrop,
                scale,
-               rotate,
             );
             setPreviewImage(previewSrc);
          }
@@ -198,10 +194,22 @@ export function SiteIconUploader({
                         ref={imgRef}
                         alt="Crop me"
                         src={imgSrc}
+                        style={{ transform: `scale(${scale})` }}
                         onLoad={onImageLoad}
                      />
                   </ReactCrop>
                   <div className="pt-4">
+                     <input
+                        disabled={!imgSrc}
+                        onChange={(e) => setScale(Number(e.target.value))}
+                        type="range"
+                        name="scale"
+                        min={1}
+                        max={2}
+                        step="0.1"
+                        value={scale}
+                        className="w-full mb-4"
+                     />
                      <Button
                         type="button"
                         className="w-full"
@@ -304,7 +312,7 @@ export function SiteIconUploader({
                </div>
             </label>
             <div className="text-sm text-gray-500 dark:text-gray-400 pt-2">
-               We recommend a size of at least 512x512 pixels.
+               We recommend a size of at least 256x256 pixels.
             </div>
          </div>
          <div className="pt-5">
