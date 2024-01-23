@@ -35,6 +35,7 @@ import {
    uploadImage,
 } from "~/utils/upload-handler.server";
 
+import { SiteBannerUploader } from "./components/SiteBannerUploader";
 import { SiteIconUploader } from "./components/SiteIconUploader";
 
 const SettingsSiteSchema = z.object({
@@ -44,9 +45,13 @@ const SettingsSiteSchema = z.object({
    slug: z.string().min(1),
    isPublic: z.coerce.boolean(),
    enableAds: z.coerce.boolean(),
+   siteIcon: z.any().optional(),
    siteIconId: z.string().optional(),
+   siteBannerId: z.string().optional(),
+   siteBanner: z.any().optional(),
    gaTagId: z.string().optional(),
    gaPropertyId: z.string().optional(),
+   intent: z.string(),
 });
 
 export default function SiteSettings() {
@@ -74,8 +79,12 @@ export default function SiteSettings() {
 
    //Icon Cropping
    const siteIcon = site.icon?.url;
-   const [preparedFile, setPreparedFile] = useState();
-   const [previewImage, setPreviewImage] = useState("");
+   const [preparedIconFile, setPreparedIconFile] = useState();
+   const [previewIconImage, setPreviewIconImage] = useState("");
+
+   const siteBanner = site.banner?.url;
+   const [preparedBannerFile, setPreparedBannerFile] = useState();
+   const [previewBannerImage, setPreviewBannerImage] = useState("");
 
    // Append the images to the form data if they exist
    let submit = useSubmit();
@@ -84,8 +93,8 @@ export default function SiteSettings() {
 
       const formData = new FormData($form);
 
-      //@ts-ignore
-      formData.set("image", preparedFile);
+      preparedIconFile && formData.set("siteIcon", preparedIconFile);
+      preparedBannerFile && formData.set("siteBanner", preparedBannerFile);
 
       submit(formData, {
          method: "POST",
@@ -97,7 +106,7 @@ export default function SiteSettings() {
       <>
          <fetcher.Form
             //Only onSubmit if we have an uploaded file
-            onSubmit={preparedFile && handleSubmit}
+            onSubmit={(preparedIconFile || preparedBannerFile) && handleSubmit}
             encType="multipart/form-data"
             className="h-full relative"
             method="POST"
@@ -105,11 +114,15 @@ export default function SiteSettings() {
             ref={zo.ref}
          >
             <input type="hidden" name={zo.fields.siteId()} value={site.id} />
-            <input type="hidden" name={zo.fields.siteId()} value={site.id} />
             <input
                type="hidden"
                name={zo.fields.siteIconId()}
                value={site.icon?.id}
+            />
+            <input
+               type="hidden"
+               name={zo.fields.siteBannerId()}
+               value={site.banner?.id}
             />
             <div className="max-laptop:space-y-6 laptop:flex items-start gap-8">
                <FieldGroup>
@@ -158,33 +171,26 @@ export default function SiteSettings() {
                      />
                   </Field>
                </FieldGroup>
-               <section className="laptop:w-[300px]">
+               <section className="laptop:w-[300px] space-y-6">
                   <SiteIconUploader
                      siteIcon={siteIcon}
                      //@ts-ignore
-                     setPreparedFile={setPreparedFile}
-                     previewImage={previewImage}
-                     setPreviewImage={setPreviewImage}
+                     setPreparedFile={setPreparedIconFile}
+                     previewImage={previewIconImage}
+                     setPreviewImage={setPreviewIconImage}
+                  />
+                  <SiteBannerUploader
+                     siteBanner={siteBanner}
+                     //@ts-ignore
+                     setPreparedFile={setPreparedBannerFile}
+                     previewImage={previewBannerImage}
+                     setPreviewImage={setPreviewBannerImage}
                   />
                </section>
             </div>
             <section className="pt-6 space-y-4">
-               <SwitchField className="p-4 rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50">
-                  <Label>Enable Ads</Label>
-                  <Description>
-                     Earn revenue by displaying ads on your site
-                  </Description>
-                  <Switch
-                     onChange={() => setIsChanged(true)}
-                     //@ts-ignore
-                     defaultChecked={site.enableAds}
-                     color="dark/white"
-                     value="true"
-                     name={zo.fields.enableAds()}
-                  />
-               </SwitchField>
                <SwitchField className="p-4 rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50 mb-6">
-                  <Label>Allow Public Access</Label>
+                  <Label>Public Access</Label>
                   <Description>
                      Make your site public to allow anyone to view it
                   </Description>
@@ -195,6 +201,20 @@ export default function SiteSettings() {
                      value="true"
                      color="dark/white"
                      name={zo.fields.isPublic()}
+                  />
+               </SwitchField>
+               <SwitchField className="p-4 rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50">
+                  <Label>Enable Ads</Label>
+                  <Description>
+                     Earn revenue by displaying ads on your site
+                  </Description>
+                  <Switch
+                     onChange={() => setIsChanged(true)}
+                     //@ts-ignore
+                     defaultChecked={site.enableAds ?? false}
+                     color="dark/white"
+                     value="true"
+                     name={zo.fields.enableAds()}
                   />
                </SwitchField>
             </section>
@@ -245,7 +265,7 @@ export default function SiteSettings() {
                className="w-full max-tablet:inset-x-0 max-tablet:px-3 z-30 fixed bottom-8 tablet:w-[728px]"
             >
                <div
-                  className="mt-6 flex items-center gap-5 justify-between dark:bg-dark450 
+                  className="mt-6 flex items-center gap-5 justify-between dark:bg-dark450 bg-white
                   border dark:border-zinc-600 shadow-lg dark:shadow-zinc-900/50 rounded-lg py-3 px-2.5"
                >
                   <button
@@ -254,7 +274,8 @@ export default function SiteSettings() {
                         //@ts-ignore
                         zo.refObject.current.reset();
                         setIsChanged(false);
-                        setPreviewImage("");
+                        setPreviewIconImage("");
+                        setPreviewBannerImage("");
                      }}
                      className="text-sm h-8 font-semibold cursor-pointer rounded-lg
                      dark:hover:bg-dark500 gap-2 flex items-center justify-center pl-2 pr-3.5"
@@ -310,16 +331,18 @@ export async function action({
       case "saveSettings": {
          const result = await getMultipleFormData({
             request,
-            prefix: "siteIcon",
-            schema: z.any(),
+            prefix: "site",
+            schema: SettingsSiteSchema,
          });
          if (result.success) {
-            const { image, siteId, siteIconId } = result.data;
+            const { siteIcon, siteIconId, siteBanner, siteBannerId, siteId } =
+               result.data;
 
-            if (image && !siteIconId) {
+            //Icon
+            if (siteIcon && !siteIconId) {
                const upload = await uploadImage({
                   payload,
-                  image: image,
+                  image: siteIcon,
                   user,
                   siteId,
                });
@@ -336,7 +359,7 @@ export async function action({
                });
             }
             //If existing icon, delete it and upload new one
-            if (image && siteIconId) {
+            if (siteIcon && siteIconId) {
                await payload.delete({
                   collection: "images",
                   id: siteIconId,
@@ -345,7 +368,7 @@ export async function action({
                });
                const upload = await uploadImage({
                   payload,
-                  image: image,
+                  image: siteIcon,
                   user,
                   siteId,
                });
@@ -356,6 +379,52 @@ export async function action({
                   data: {
                      //@ts-ignore
                      icon: upload?.id,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            //Banner
+            if (siteBanner && !siteBannerId) {
+               const upload = await uploadImage({
+                  payload,
+                  image: siteBanner,
+                  user,
+                  siteId,
+               });
+
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     banner: upload?.id,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            }
+            //If existing banner, delete it and upload new one
+            if (siteBanner && siteBannerId) {
+               await payload.delete({
+                  collection: "images",
+                  id: siteBannerId,
+                  overrideAccess: false,
+                  user,
+               });
+               const upload = await uploadImage({
+                  payload,
+                  image: siteBanner,
+                  user,
+                  siteId,
+               });
+
+               await payload.update({
+                  collection: "sites",
+                  id: siteId,
+                  data: {
+                     //@ts-ignore
+                     banner: upload?.id,
                   },
                   overrideAccess: false,
                   user,
