@@ -19,7 +19,7 @@ const uploadHandler = ({ prefix }: { prefix: string }) =>
          file: ({ filename }) =>
             `${prefix}-${nanoid()}${extname(filename ?? "")}`,
       }),
-      unstable_createMemoryUploadHandler()
+      unstable_createMemoryUploadHandler(),
    );
 
 /**
@@ -39,7 +39,7 @@ export async function getMultipleFormData<T extends ZodRawShape | ZodTypeAny>({
 }) {
    const formData = await unstable_parseMultipartFormData(
       request,
-      uploadHandler({ prefix })
+      uploadHandler({ prefix }),
    );
    const finalSchema = schema instanceof ZodType ? schema : z.object(schema);
    return await finalSchema.safeParseAsync(parseFormAny(formData));
@@ -51,18 +51,22 @@ export async function uploadImage({
    payload,
    user,
    image,
+   siteId,
 }: {
    payload: Payload;
    image: {
       filepath: string;
    };
    user: any;
+   siteId?: string;
 }) {
    const imageUploadResult = await payload.create({
       collection: "images",
+      //@ts-ignore
       data: {
          id: nanoid(),
          createdBy: user.id,
+         ...(siteId && { site: siteId }),
       },
       filePath: path.resolve(__dirname, image.filepath),
       user,

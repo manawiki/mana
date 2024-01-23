@@ -17,6 +17,7 @@ import {
 } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useZorm } from "react-zorm";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -27,11 +28,7 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOw
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
-import {
-   assertIsDelete,
-   assertIsPatch,
-   assertIsPost,
-} from "~/utils/http.server";
+import { assertIsPatch, assertIsPost } from "~/utils/http.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -285,6 +282,7 @@ export const action: ActionFunction = async ({
          "collectionDeleteIcon",
          "updateSection",
          "updateSectionOrder",
+         "updateCollectionName",
       ]),
    });
 
@@ -318,10 +316,12 @@ export const action: ActionFunction = async ({
          }
       }
       case "addSection": {
-         assertIsPost(request);
-         const { collectionId, sectionId, name, showTitle } =
-            await zx.parseForm(request, SectionSchema);
          try {
+            assertIsPost(request);
+
+            const { collectionId, sectionId, name, showTitle, type, showAd } =
+               await zx.parseForm(request, SectionSchema);
+
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
@@ -334,7 +334,19 @@ export const action: ActionFunction = async ({
                id: collectionData.id,
                data: {
                   sections: [
-                     { id: sectionId, name, showTitle },
+                     {
+                        id: sectionId,
+                        name,
+                        showTitle,
+                        showAd,
+                        subSections: [
+                           {
+                              id: sectionId,
+                              name,
+                              type,
+                           },
+                        ],
+                     },
                      //@ts-ignore
                      ...collectionData?.sections,
                   ],
@@ -452,12 +464,13 @@ export const action: ActionFunction = async ({
             schema: z.any(),
          });
          if (result.success) {
-            const { image, entityId } = result.data;
+            const { image, entityId, siteId } = result.data;
             try {
                const upload = await uploadImage({
                   payload,
                   image: image,
                   user,
+                  siteId,
                });
                return await payload.update({
                   collection: "collections",
@@ -480,26 +493,54 @@ export const action: ActionFunction = async ({
          });
       }
       case "collectionDeleteIcon": {
-         assertIsDelete(request);
-         const { imageId, entityId } = await zx.parseForm(request, {
-            imageId: z.string(),
-            entityId: z.string(),
+         try {
+            const { imageId, entityId } = await zx.parseForm(request, {
+               imageId: z.string(),
+               entityId: z.string(),
+            });
+            await payload.delete({
+               collection: "images",
+               id: imageId,
+               overrideAccess: false,
+               user,
+            });
+            return await payload.update({
+               collection: "collections",
+               id: entityId,
+               data: {
+                  icon: "" as any,
+               },
+               overrideAccess: false,
+               user,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to delete image.",
+            });
+         }
+      }
+      case "updateCollectionName": {
+         const { name, collectionId } = await zx.parseForm(request, {
+            name: z.string().min(3),
+            collectionId: z.string(),
          });
-         await payload.delete({
-            collection: "images",
-            id: imageId,
-            overrideAccess: false,
-            user,
-         });
-         return await payload.update({
-            collection: "collections",
-            id: entityId,
-            data: {
-               icon: "" as any,
-            },
-            overrideAccess: false,
-            user,
-         });
+         try {
+            await payload.update({
+               collection: "collections",
+               id: collectionId,
+               data: {
+                  name,
+               },
+               user,
+               overrideAccess: false,
+            });
+            return jsonWithSuccess(null, "Collection name updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update collection name",
+            );
+         }
       }
    }
 };

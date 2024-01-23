@@ -96,9 +96,11 @@ const QUERY = gql`
          totalPosts
          trendingPages
          banner {
+            id
             url
          }
          icon {
+            id
             url
          }
          favicon {
