@@ -57,6 +57,21 @@ html.dark {
 }
 
 @layer components {
+   input[type="range"] {
+      @apply appearance-none bg-transparent;
+   }
+
+   input[type="range"]::-webkit-slider-runnable-track {
+      @apply bg-zinc-200 dark:bg-dark500 rounded-full;
+   }
+
+   input[type="range"]::-moz-range-track {
+      @apply bg-zinc-200 dark:bg-dark500 rounded-full;
+   }
+
+   input[type="range"]::-ms-track {
+      @apply bg-zinc-200 dark:bg-dark500 rounded-full;
+   }
    .input-text {
       @apply border-color
         focus:bg-2

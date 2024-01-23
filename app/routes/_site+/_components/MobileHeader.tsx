@@ -36,28 +36,33 @@ export function MobileHeader() {
                   <div className="flex items-center gap-3">
                      <NotFollowingSite>
                         <div className="flex items-center">
-                           <fetcher.Form className="w-full" method="post">
-                              <button
-                                 name="intent"
-                                 value="followSite"
-                                 className="flex h-8 items-center justify-center rounded-full bg-black
-                                                px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
-                              >
-                                 {adding ? (
-                                    <Icon
-                                       name="loader-2"
-                                       className="mx-auto h-5 w-5 animate-spin"
-                                    />
-                                 ) : (
-                                    t("follow.actionFollow")
-                                 )}
-                              </button>
-                           </fetcher.Form>
+                           <button
+                              onClick={() => {
+                                 fetcher.submit(
+                                    { intent: "followSite" },
+                                    {
+                                       method: "post",
+                                       action: "/action/follow",
+                                    },
+                                 );
+                              }}
+                              className="flex h-8  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
+                                 px-3.5 text-xs font-bold text-white dark:bg-white dark:text-black shadow-zinc-400 shadow"
+                           >
+                              {adding ? (
+                                 <Icon
+                                    name="loader-2"
+                                    className="mx-auto h-5 w-5 animate-spin"
+                                 />
+                              ) : (
+                                 t("follow.actionFollow")
+                              )}
+                           </button>
                         </div>
                      </NotFollowingSite>
                      <button
                         className="bg-3-sub shadow-1 border-color-sub flex items-center justify-center
-                                       gap-1 rounded-full border p-1.5 pl-3 text-sm font-bold shadow-sm"
+                                       rounded-full border p-1.5 pl-3 text-sm font-bold shadow"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
                         <div className="pr-2 text-xs">My Follows</div>

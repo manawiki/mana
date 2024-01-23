@@ -12,13 +12,13 @@ import { Image } from "~/components/Image";
 
 import { imgPreview } from "../utils/imgPreview";
 
-export function SiteIconUploader({
-   siteIcon,
+export function SiteBannerUploader({
+   siteBanner,
    setPreparedFile,
    previewImage,
    setPreviewImage,
 }: {
-   siteIcon: string | null | undefined;
+   siteBanner: string | null | undefined;
    setPreparedFile: React.Dispatch<React.SetStateAction<undefined | File>>;
    previewImage: string | null | undefined;
    setPreviewImage: React.Dispatch<React.SetStateAction<string>>;
@@ -30,7 +30,7 @@ export function SiteIconUploader({
    const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
    const [isOpen, setIsOpen] = useState(false);
    const [scale, setScale] = useState(1);
-   const aspect = 1;
+   const aspect = 1.6 / 1;
 
    function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
       if (e.target.files && e.target.files.length > 0) {
@@ -169,9 +169,9 @@ export function SiteIconUploader({
 
    return (
       <section className="laptop:w-[300px]">
-         <div className="text-sm font-semibold pb-2">Icon</div>
+         <div className="text-sm font-semibold pb-2">Banner</div>
          <Dialog
-            size="tablet"
+            size="md"
             onClose={() => {
                setIsOpen(false);
             }}
@@ -184,11 +184,10 @@ export function SiteIconUploader({
                      onChange={(crop) => setCrop(crop)}
                      onComplete={(c) => setCompletedCrop(c)}
                      aspect={aspect}
-                     circularCrop
-                     minWidth={120}
-                     minHeight={120}
-                     maxWidth={512}
-                     maxHeight={512}
+                     minWidth={300}
+                     minHeight={170}
+                     maxWidth={600}
+                     maxHeight={340}
                   >
                      <img
                         ref={imgRef}
@@ -228,11 +227,11 @@ export function SiteIconUploader({
                   dragActive
                      ? "border-zinc-400 dark:border-zinc-600"
                      : "hover:border-zinc-200 dark:hover:border-zinc-600",
-                  !siteIcon &&
+                  !siteBanner &&
                      !previewImage &&
                      "border-dashed border-color-sub border-2 bg-2-sub",
-                  `flex cursor-pointer items-center justify-center rounded-full 
-                shadow-sm z-0 relative size-20 flex-none group
+                  `flex cursor-pointer items-center justify-center rounded-lg 
+                shadow-sm z-0 relative flex-none group h-[170px] w-[300px] overflow-hidden
                 `,
                )}
             >
@@ -248,28 +247,15 @@ export function SiteIconUploader({
                      }}
                   />
                )}
-               <div
-                  className="absolute flex items-center justify-center dark:border-zinc-500 border shadow-sm 
-              w-6 h-6 dark:bg-zinc-600 bg-zinc-50 border-zinc-300 rounded-full -top-1 -right-1 shadow-1 z-20"
-               >
-                  <Icon
-                     title="Upload Image"
-                     name="image-plus"
-                     className="mx-auto"
-                     size={12}
-                  />
-               </div>
-               <div className="flex items-center justify-center rounded-full overflow-hidden relative">
-                  {siteIcon && !previewImage ? (
+               <div className="overflow-hidden relative">
+                  {siteBanner && !previewImage ? (
                      <>
                         <Image
-                           //@ts-ignore
-                           url={siteIcon}
-                           options="aspect_ratio=1:1&height=120&width=120"
+                           url={siteBanner}
+                           options="aspect_ratio=1.6:1&height=400"
                            alt="Image"
                         />
-                        <div className="hidden group-hover:block absolute inset-0 size-20 z-10 rounded-full overflow-hidden">
-                           <div className="inset-0 size-20 bg-zinc-900/50" />
+                        <div className="group-hover:block hidden absolute inset-0 w-full h-full z-10 overflow-hidden bg-zinc-900/50">
                            <div className="absolute inset-0 flex items-center justify-center">
                               <Icon
                                  size={18}
@@ -286,10 +272,12 @@ export function SiteIconUploader({
                            <>
                               <img
                                  alt="Crop preview"
+                                 className="rounded"
+                                 width={300}
+                                 height={170}
                                  src={previewImage}
-                                 className="rounded-full"
                               />
-                              <div className="group-hover:block hidden absolute w-full h-full rounded-full overflow-hidden">
+                              <div className="group-hover:block hidden absolute w-full h-full overflow-hidden inset-0">
                                  <span className="inset-0 w-full h-full bg-zinc-900/50 z-10 absolute" />
                                  <div className="absolute inset-0 flex items-center justify-center z-10">
                                     <Icon
@@ -301,20 +289,26 @@ export function SiteIconUploader({
                               </div>
                            </>
                         ) : (
-                           <Icon
-                              title="Upload Image"
-                              name="upload"
-                              className="text-1"
-                              size={18}
-                           />
+                           <>
+                              <div className="flex items-center justify-center pb-3">
+                                 <Icon
+                                    title="Upload Image"
+                                    name="upload"
+                                    size={18}
+                                 />
+                              </div>
+                              <div className="text-sm text-center">
+                                 Click to upload or drag and drop
+                              </div>
+                              <div className="text-xs text-1 text-center px-4 pt-1">
+                                 300x170px
+                              </div>
+                           </>
                         )}
                      </>
                   )}
                </div>
             </label>
-            <div className="text-sm text-gray-500 dark:text-gray-400 pt-2">
-               We recommend a size of at least 256x256 pixels.
-            </div>
          </div>
       </section>
    );
