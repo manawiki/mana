@@ -1,24 +1,24 @@
 import { useState } from "react";
 
-import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
+import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 
-import { FollowingTrayContent, MobileTray } from "./MobileTray";
+import { FollowingListMobile } from "./Menu";
+import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { site } = useLoaderData<typeof siteLoaderType>() || {};
-
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
+
+   const isUserPath = location.pathname.startsWith("/user");
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
 
@@ -51,32 +51,34 @@ export function MobileHeader() {
                            />
                         </svg>
                      </a>
-                     <NotFollowingSite>
-                        <div className="flex items-center">
-                           <button
-                              onClick={() => {
-                                 fetcher.submit(
-                                    { intent: "followSite" },
-                                    {
-                                       method: "post",
-                                       action: "/action/follow",
-                                    },
-                                 );
-                              }}
-                              className="flex h-8  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
+                     {!isUserPath && (
+                        <NotFollowingSite>
+                           <div className="flex items-center">
+                              <button
+                                 onClick={() => {
+                                    fetcher.submit(
+                                       { intent: "followSite" },
+                                       {
+                                          method: "post",
+                                          action: "/action/follow",
+                                       },
+                                    );
+                                 }}
+                                 className="flex h-8  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
                                  px-3.5 text-xs font-bold text-white dark:bg-white dark:text-black shadow-zinc-400 shadow"
-                           >
-                              {adding ? (
-                                 <Icon
-                                    name="loader-2"
-                                    className="mx-auto h-5 w-5 animate-spin"
-                                 />
-                              ) : (
-                                 t("follow.actionFollow")
-                              )}
-                           </button>
-                        </div>
-                     </NotFollowingSite>
+                              >
+                                 {adding ? (
+                                    <Icon
+                                       name="loader-2"
+                                       className="mx-auto h-5 w-5 animate-spin"
+                                    />
+                                 ) : (
+                                    t("follow.actionFollow")
+                                 )}
+                              </button>
+                           </div>
+                        </NotFollowingSite>
+                     )}
                      <button
                         className="bg-3-sub border-zinc-200 shadow-zinc-200 dark:shadow-zinc-900/50 flex items-center justify-center
                                        rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
@@ -150,10 +152,19 @@ export function MobileHeader() {
             onOpenChange={setFollowerMenuOpen}
             open={isFollowerMenuOpen}
          >
-            <FollowingTrayContent
-               site={site}
-               setFollowerMenuOpen={setFollowerMenuOpen}
-            />
+            <menu className="flex h-full flex-col">
+               <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
+               <LoggedIn>
+                  <Link
+                     reloadDocument={true}
+                     className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
+                   text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
+                     to="https://mana.wiki"
+                  >
+                     Explore
+                  </Link>
+               </LoggedIn>
+            </menu>
          </MobileTray>
       </>
    );

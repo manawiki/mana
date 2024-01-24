@@ -198,7 +198,7 @@ export function ColumnFour() {
                      </div>
                      <span
                         className="bg-gradient-to-t dark:from-bg3Dark laptop:dark:from-bg2Dark dark:to-transparent 
-                           from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
+                           from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
                      />
                      <div
                         className="pattern-dots absolute left-0 top-0 z-0 h-full
