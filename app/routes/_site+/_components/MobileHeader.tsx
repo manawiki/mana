@@ -4,7 +4,6 @@ import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
-import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
@@ -22,7 +21,6 @@ export function MobileHeader() {
    const location = useLocation();
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
-   const [setUserMenuOpen] = useUserMenuState();
 
    return (
       <>
@@ -75,13 +73,15 @@ export function MobileHeader() {
                         </div>
                      </button>
                   </div>
-                  <button
-                     className="bg-3-sub shadow-1 border-color-sub flex h-9 w-9 items-center
-                     justify-center rounded-xl border shadow-sm"
-                     onClick={() => setUserMenuOpen(true)}
+                  <Link
+                     prefetch="intent"
+                     to="/user/account"
+                     className="border-2 border-zinc-300 dark:border-zinc-700 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-600 size-8
+                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-1 hover:border-zinc-400"
                   >
-                     <Icon name="user" size={20} />
-                  </button>
+                     <Icon name="user" size={18} />
+                  </Link>
                </div>
             </LoggedIn>
             <LoggedOut>

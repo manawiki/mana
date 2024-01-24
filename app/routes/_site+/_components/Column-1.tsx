@@ -9,7 +9,6 @@ import { Icon } from "~/components/Icon";
 import type { User } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
-import { UserMenu } from "~/routes/_auth+/components/UserMenu";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { NewSiteModal } from "~/routes/_site+/action+/new-site-modal";
 import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
@@ -67,7 +66,17 @@ export function ColumnOne() {
                   )}
                   <div className="absolute bottom-3 left-0 w-full">
                      <div className="flex items-center justify-center flex-col gap-2">
-                        <UserMenu />
+                        <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
+                           <Link
+                              prefetch="intent"
+                              to="/user/account"
+                              className="border-4 border-zinc-300 dark:border-zinc-700 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-600  
+                  rounded-full flex items-center justify-center laptop:w-12 laptop:h-12 bg-3 shadow shadow-1 hover:border-zinc-400"
+                           >
+                              <Icon name="user" size={22} />
+                           </Link>
+                        </section>
                      </div>
                   </div>
                   <NewSiteModal />
