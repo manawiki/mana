@@ -13,7 +13,7 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   if (!user) throw redirect("/404", 404);
+   if (!user) throw redirect("/");
    return null;
 }
 
