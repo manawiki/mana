@@ -15,6 +15,7 @@ import { zx } from "zodix";
 import type { Search, Site } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
@@ -167,13 +168,9 @@ const LabelType = ({ type }: { type: any }) => {
    }
 };
 
-export function SearchComboBox({
-   setSearchToggle,
-   siteType,
-}: {
-   setSearchToggle: any;
-   siteType: Site["type"];
-}) {
+export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
+   const [, setSearchToggle] = useSearchToggleState();
+
    //use local loader to pull searchResults
    const fetcher = useFetcher();
    const [query, setQuery] = useState("");
