@@ -170,7 +170,9 @@ ${Object.values(hints)
 for (const hint of hints) {
 	if (decodeURIComponent(hint.cookie) !== hint.actual) {
 		cookieChanged = true;
-		document.cookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/; Domain=' + domain;
+		let newCookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/; Domain=';
+      if( domain !== "fly.dev" ) { newCookie += domain; }
+      document.cookie = newCookie;
 	}
 }
 // if the cookie changed, reload the page, unless the browser doesn't support
