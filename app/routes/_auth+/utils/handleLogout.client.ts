@@ -1,6 +1,4 @@
-import { useFetcher } from "@remix-run/react";
-
-export async function handleLogout(sitePath: string) {
+export async function handleLogout() {
    try {
       await fetch("api/users/logout", {
          method: "POST",
@@ -10,20 +8,10 @@ export async function handleLogout(sitePath: string) {
          },
       });
 
-      // console.log("Logout response:", await res.json());
-
       // We need to do this because the payload rest logout has the wrong cookie domain
       await fetch("/logout", {
          method: "POST",
-         // headers: {
-         //    "Content-Type": "application/json",
-         // },
-         // body: JSON.stringify({
-         //    intent: "logout",
-         // }),
       });
-
-      // console.log("Logout response:", res);
 
       location.reload();
    } catch (error) {

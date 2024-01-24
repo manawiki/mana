@@ -1,4 +1,4 @@
-import { Link, Outlet, useRouteLoaderData } from "@remix-run/react";
+import { Link, Outlet } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
@@ -6,8 +6,6 @@ import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
 import { UserMenuLink } from "./components/UserMenuLink";
 
 export default function UserLayout() {
-   const { sitePath } = useRouteLoaderData("root") as { sitePath: string };
-
    return (
       <main
          className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr] 
@@ -33,7 +31,7 @@ export default function UserLayout() {
             </div>
             <button
                onClick={() => {
-                  handleLogout(sitePath);
+                  handleLogout();
                }}
                type="submit"
                className="desktop:py-2 desktop:px-3 max-desktop:p-2 bg-zinc-200/60 group max-desktop:justify-center

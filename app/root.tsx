@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
 import { withMetronome } from "@metronome-sh/react";
 import type {
@@ -16,6 +17,7 @@ import {
    ScrollRestoration,
    useLoaderData,
    useMatches,
+   useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
@@ -37,6 +39,15 @@ import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
+
+type ContextType = [
+   searchToggle: boolean,
+   setSearchToggle: Dispatch<SetStateAction<boolean>>,
+];
+
+export function useSearchToggleState() {
+   return useOutletContext<ContextType>();
+}
 
 export const loader = async ({
    context: { user, payload },
@@ -76,7 +87,6 @@ export const loader = async ({
             ...hints,
             theme: getTheme(request) ?? hints.theme,
          },
-         sitePath: request.url,
          stripePublicKey,
          toast,
          locale,
@@ -120,7 +130,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, toast, sitePath } = useLoaderData<typeof loader>();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
@@ -143,6 +153,8 @@ function App() {
       }
    }, [toast]);
 
+   const [searchToggle, setSearchToggle] = useState(false);
+
    return (
       <html
          lang={locale}
@@ -162,7 +174,6 @@ function App() {
                content="telephone=no, date=no, email=no, address=no"
             />
             {/* add preconnect to cdn to improve first bits */}
-            <link rel="preconnect" href={sitePath} crossOrigin="anonymous" />
             <link
                sizes="32x32"
                rel="icon"
@@ -191,7 +202,9 @@ function App() {
             <Links />
          </head>
          <body className="text-light dark:text-dark">
-            <Outlet />
+            <Outlet
+               context={[searchToggle, setSearchToggle] satisfies ContextType}
+            />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}

@@ -32,6 +32,25 @@ export function MobileHeader() {
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
+                     <a
+                        className="border-2 border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                     active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
+                        href="https://mana.wiki"
+                     >
+                        <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 20 20"
+                           fill="currentColor"
+                           className="size-4"
+                        >
+                           <path
+                              fill-rule="evenodd"
+                              d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
+                              clip-rule="evenodd"
+                           />
+                        </svg>
+                     </a>
                      <NotFollowingSite>
                         <div className="flex items-center">
                            <button
@@ -59,12 +78,12 @@ export function MobileHeader() {
                         </div>
                      </NotFollowingSite>
                      <button
-                        className="bg-3-sub shadow-1 border-color-sub flex items-center justify-center
-                                       rounded-full border p-1.5 pl-3 text-sm font-bold shadow"
+                        className="bg-3-sub border-zinc-200 shadow-zinc-200 dark:shadow-zinc-900/50 flex items-center justify-center
+                                       rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
                         <div className="pr-2 text-xs">My Follows</div>
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full dark:bg-zinc-700">
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-dark450">
                            <Icon
                               name="chevron-down"
                               className="dark:text-white"
@@ -76,9 +95,9 @@ export function MobileHeader() {
                   <Link
                      prefetch="intent"
                      to="/user/account"
-                     className="border-2 border-zinc-300 dark:border-zinc-700 transition duration-300 
-                  active:translate-y-0.5 dark:hover:border-zinc-600 size-8
-                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-1 hover:border-zinc-400"
+                     className="border-2 border-zinc-300 dark:border-zinc-600 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-500 size-9
+                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-900 hover:border-zinc-400"
                   >
                      <Icon name="user" size={18} />
                   </Link>
