@@ -1,0 +1,10 @@
+import { UserMenuLink } from "./UserMenuLink";
+
+export function UserMenuItems() {
+   return (
+      <div className="space-y-1.5">
+         <UserMenuLink text="Account" icon="user" to="/user/account" />
+         <UserMenuLink text="Billing" icon="credit-card" to="/user/billing" />
+      </div>
+   );
+}

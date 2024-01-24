@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
@@ -9,6 +8,7 @@ import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { LogoBW } from "~/components/Logo";
+import { useSearchToggleState } from "~/root";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -19,13 +19,7 @@ import { isAdding } from "~/utils/form";
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
-export function SiteHeader({
-   setSearchToggle,
-   searchToggle,
-}: {
-   setSearchToggle: Dispatch<SetStateAction<boolean>>;
-   searchToggle: boolean;
-}) {
+export function SiteHeader() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    const fetcher = useFetcher({ key: "site" });
@@ -33,6 +27,8 @@ export function SiteHeader({
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
+
+   const [searchToggle, setSearchToggle] = useSearchToggleState();
 
    return (
       <section
@@ -48,20 +44,17 @@ export function SiteHeader({
          <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
             <div className="relative mx-auto flex h-[60px] items-center justify-between">
                {searchToggle ? (
-                  <SearchComboBox
-                     siteType={site.type}
-                     setSearchToggle={setSearchToggle}
-                  />
+                  <SearchComboBox siteType={site.type} />
                ) : (
                   <>
                      <div className="flex items-center truncate">
                         <Link
                            prefetch="intent"
                            to="/"
-                           className="flex items-center group h-14"
+                           className="flex items-center group h-14 truncate"
                         >
                            <div
-                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden
+                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden flex-none
                               text-1 flex h-10 w-10 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
                               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
                            >
