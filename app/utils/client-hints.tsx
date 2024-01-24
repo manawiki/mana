@@ -86,7 +86,13 @@ export function subscribeToSchemeChange(
    function handleThemeChange() {
       const value = schemaMatch.matches ? "dark" : "light";
       const domain = document.location.hostname.split(".").slice(-2).join(".");
-      document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/; Domain=${domain}`;
+
+      // don't set the domain if domain = fly.dev
+      // this is to prevent infinite reloads due to supercookie public suffix list https://publicsuffix.org/
+      // ideally, we should make sure this check is done for other dev environments as well
+      document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/; ${
+         domain !== "fly.dev" ? `Domain=${domain}` : ""
+      }`;
       subscriber(value);
    }
    schemaMatch.addEventListener("change", handleThemeChange);
