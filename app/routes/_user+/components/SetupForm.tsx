@@ -54,13 +54,15 @@ export function SetupForm() {
                }}
                className="pb-5 overflow-hidden"
             />
+            {errorMessage && (
+               <div className="text-sm text-red-500">{errorMessage}</div>
+            )}
+
             <div className="flex items-center justify-end">
-               <Button disabled={!stripe} className="text-sm">
-                  Submit
+               <Button type="submit" disabled={!stripe} className="text-sm">
+                  Add Payment Method
                </Button>
             </div>
-            {/* Show error message to your customers */}
-            {errorMessage && <div>{errorMessage}</div>}
          </form>
       </>
    );
