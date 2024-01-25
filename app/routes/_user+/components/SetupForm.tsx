@@ -7,12 +7,14 @@ import {
 } from "@stripe/react-stripe-js";
 
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 
 export function SetupForm() {
    const stripe = useStripe();
    const elements = useElements();
 
    const [errorMessage, setErrorMessage] = useState(null);
+   const [isLoading, setLoading] = useState(false);
 
    const handleSubmit = async (event: any) => {
       // We don't want to let default form submission happen here,
@@ -24,6 +26,7 @@ export function SetupForm() {
          // Make sure to disable form submission until Stripe.js has loaded.
          return null;
       }
+      setLoading(true);
 
       const { error } = await stripe.confirmSetup({
          elements,
@@ -35,13 +38,10 @@ export function SetupForm() {
             }/user/confirm-payment-method`,
          },
       });
+      setLoading(false);
 
       if (error) {
          setErrorMessage(error.message as any);
-      } else {
-         // Your customer will be redirected to your `return_url`. For some payment
-         // methods like iDEAL, your customer will be redirected to an intermediate
-         // site first to authorize the payment, then redirected to the `return_url`.
       }
    };
 
@@ -59,8 +59,12 @@ export function SetupForm() {
             )}
 
             <div className="flex items-center justify-end">
-               <Button type="submit" disabled={!stripe} className="text-sm">
-                  Add Payment Method
+               <Button
+                  type="submit"
+                  disabled={!stripe || isLoading}
+                  className="text-sm cursor-pointer w-44 h-8"
+               >
+                  {isLoading ? <DotLoader /> : "Add Payment Method"}
                </Button>
             </div>
          </form>

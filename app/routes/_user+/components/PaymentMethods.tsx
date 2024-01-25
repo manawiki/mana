@@ -1,6 +1,7 @@
 import { useFetcher, useLoaderData } from "@remix-run/react";
 
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
 import type { loader as billingLoaderType } from "~/routes/_user+/user+/billing";
 import { isAdding } from "~/utils/form";
@@ -13,7 +14,7 @@ export function PaymentMethods({
    const fetcher = useFetcher({ key: "billing" });
    const adding = isAdding(fetcher, "setupUserPayments");
    const data = useLoaderData<typeof billingLoaderType>();
-   console.log(data);
+
    return (
       <>
          {data?.customerPaymentMethods ? (
@@ -63,7 +64,7 @@ export function PaymentMethods({
                      No payment methods...
                   </div>
                   <Button
-                     className="text-sm cursor-pointer"
+                     className="text-sm cursor-pointer w-44 h-8"
                      onClick={() => {
                         fetcher.submit(
                            { intent: "setupUserPayments" },
@@ -74,15 +75,7 @@ export function PaymentMethods({
                         setIsPaymentSetupFormOpen(true);
                      }}
                   >
-                     {adding ? (
-                        <Icon
-                           name="loader-2"
-                           size={16}
-                           className="animate-spin"
-                        />
-                     ) : (
-                        <>Add payment method</>
-                     )}
+                     {adding ? <DotLoader /> : <>Add payment method</>}
                   </Button>
                </div>
             </>
