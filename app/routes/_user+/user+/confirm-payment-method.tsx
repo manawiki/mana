@@ -37,14 +37,14 @@ export async function loader({
                },
             });
             return redirectWithSuccess(
-               "/",
+               "/user/billing",
                "Success! Your payment method has been saved.",
             );
          }
 
       case "processing":
          return redirectWithSuccess(
-            "/",
+            "/user/billing",
             "Processing payment details. We'll update you when processing is complete.",
          );
 
@@ -52,7 +52,7 @@ export async function loader({
          // Redirect your user back to your payment page to attempt collecting
          // payment again
          return redirectWithError(
-            "/",
+            "/user/billing",
             "Failed to process payment details. Please try another payment method.",
          );
    }
