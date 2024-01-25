@@ -16,6 +16,9 @@ function logoutHeader(request: Request) {
    // set the cookie on domain level so all subdomains can access it
    let domain = hostname.split(".").slice(-2).join(".");
 
+   // don't set cookie domain on fly.dev due to Public Suffix List supercookie issue
+   if (domain === "fly.dev") domain = "";
+
    // delete the cookie payload-token
    const deleteCookie = cookie.serialize("payload-token", "", {
       httpOnly: true,

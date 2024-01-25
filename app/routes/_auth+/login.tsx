@@ -290,6 +290,9 @@ export const action: ActionFunction = async ({
             // set the cookie on domain level so all subdomains can access it
             let domain = hostname.split(".").slice(-2).join(".");
 
+            // don't set cookie domain on fly.dev due to Public Suffix List supercookie issue
+            if (domain === "fly.dev") domain = "";
+
             if (!json.token) throw new Error("No token found");
 
             return redirect(redirectTo || "/", {
