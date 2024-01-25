@@ -53,7 +53,7 @@ html.light {
 }
 
 html.dark {
-   @apply bg-dark350 laptop:bg-bg3Dark;
+   @apply bg-bg3Dark;
 }
 
 @layer components {
