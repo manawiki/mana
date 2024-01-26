@@ -17,7 +17,7 @@ const afterDeleteHook: CollectionAfterDeleteHook = async ({
    try {
       await payload.delete({
          collection: "postContents",
-         id: doc.content,
+         id,
          overrideAccess: true,
          user,
       });

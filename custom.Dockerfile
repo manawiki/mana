@@ -1,25 +1,50 @@
-FROM node:18-bookworm-slim as base
+# syntax = docker/dockerfile:1
 
-FROM base as builder
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=20.8.0
+FROM node:${NODE_VERSION}-alpine as base
 
-WORKDIR /home/node
-COPY package.json yarn.lock ./
+LABEL fly_launch_runtime="Payload"
 
-COPY . .
-RUN yarn install
-RUN yarn custom-build
+# Remix app lives here
+WORKDIR /app
 
-FROM base as runtime
+# Set production environment
+ARG PAYLOAD_PUBLIC_IS_HOME
+ENV PAYLOAD_PUBLIC_IS_HOME $PAYLOAD_PUBLIC_IS_HOME
 
-ENV NODE_ENV=production
+ENV NODE_ENV="production"
+ARG YARN_VERSION=1.22.21
+RUN npm install -g yarn@$YARN_VERSION --force
 
-WORKDIR /home/node
-COPY package.json yarn.lock  ./
 
-RUN yarn install --production
-COPY --from=builder /home/node/dist ./dist
-COPY --from=builder /home/node/dist ./dist
+# Throw-away build stage to reduce size of final image
+FROM base as build
 
+# Install packages needed to build node modules
+RUN apk update && \
+    apk add build-base gyp pkgconfig python3
+
+# Install node modules
+COPY --link package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production=false
+
+# Copy application code
+COPY --link . .
+
+# Build application
+RUN yarn run custom-build
+
+# Remove development dependencies
+RUN yarn install --production=true
+
+
+# Final stage for app image
+FROM base
+
+# Copy built application
+COPY --from=build /app /app
+
+# Start the server by default, this can be overwritten at runtime
 EXPOSE 8080
-
 CMD ["yarn", "run", "start:custom"]

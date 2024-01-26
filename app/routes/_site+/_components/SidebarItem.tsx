@@ -8,10 +8,12 @@ export function SidebarItem({
    site,
    siteSlug,
    className,
+   isLoggedOut,
 }: {
    site: SerializeFrom<typeof siteLoaderType>["site"];
    siteSlug?: string;
    className?: string;
+   isLoggedOut?: boolean;
 }) {
    const sitePath = site.domain ? site.domain : `${site.slug}.mana.wiki`;
    const isActive = siteSlug === site.slug;
@@ -37,7 +39,7 @@ export function SidebarItem({
                   <LogoBW className="size-6 text-stone-400 dark:text-zinc-400" />
                </div>
             )}
-            {isActive && (
+            {(isActive || isLoggedOut) && (
                <span className="absolute -left-1 top-2 h-7 w-2.5 rounded-lg bg-zinc-600 dark:bg-zinc-400 max-laptop:hidden" />
             )}
          </>

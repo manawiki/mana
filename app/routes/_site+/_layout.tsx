@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { json } from "@remix-run/node";
 import type {
@@ -9,6 +9,7 @@ import type {
 import { useLoaderData, useLocation } from "@remix-run/react";
 import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
+import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import * as gtag from "~/utils/gtags.client";
 
@@ -37,9 +38,10 @@ export async function loader({
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
-   const [searchToggle, setSearchToggle] = useState(false);
    const gaTag = site?.gaTagId;
    const enableAds = site?.enableAds;
+
+   const [, setSearchToggle] = useSearchToggleState();
 
    useEffect(() => {
       if (process.env.NODE_ENV === "production" && gaTag) {
@@ -58,10 +60,7 @@ export default function SiteLayout() {
          >
             <ColumnOne />
             <ColumnTwo />
-            <ColumnThree
-               searchToggle={searchToggle}
-               setSearchToggle={setSearchToggle}
-            />
+            <ColumnThree />
             <ColumnFour />
          </main>
          <GAScripts gaTrackingId={gaTag} />

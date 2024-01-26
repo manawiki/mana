@@ -1,7 +1,5 @@
 import { redirect, type ActionFunctionArgs } from "@remix-run/node";
 import * as cookie from "cookie";
-import { z } from "zod";
-import { zx } from "zodix";
 
 // We need to do this because the payload rest logout has the wrong cookie domain
 export async function loader({ request }: ActionFunctionArgs) {
@@ -9,14 +7,6 @@ export async function loader({ request }: ActionFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-   // check if intent is logout
-   //    const { intent } = await zx.parseForm(request, {
-   //       intent: z.string(),
-   //    });
-
-   //    if (intent !== "logout") {
-   //       return new Response("Invalid intent", { status: 400 });
-   //    }
    return new Response("Logged out", logoutHeader(request));
 }
 
@@ -25,6 +15,9 @@ function logoutHeader(request: Request) {
 
    // set the cookie on domain level so all subdomains can access it
    let domain = hostname.split(".").slice(-2).join(".");
+
+   // don't set cookie domain on fly.dev due to Public Suffix List supercookie issue
+   if (domain === "fly.dev") domain = "";
 
    // delete the cookie payload-token
    const deleteCookie = cookie.serialize("payload-token", "", {

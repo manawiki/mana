@@ -100,7 +100,7 @@ export async function loader({
             },
             {
                domain: {
-                  not_equals: "",
+                  not_equals: null,
                },
             },
          ],

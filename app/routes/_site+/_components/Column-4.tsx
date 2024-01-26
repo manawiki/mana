@@ -1,4 +1,5 @@
 import { Link, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -12,7 +13,7 @@ export function ColumnFour() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    return (
-      <section className="relative z-30 laptop:block max-laptop:bg-2-sub">
+      <section className="relative laptop:z-30 laptop:block max-laptop:bg-2-sub">
          <div
             className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px]"
@@ -24,7 +25,7 @@ export function ColumnFour() {
                   <PinnedList site={site} />
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color">
-                  <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-dark350 laptop:dark:bg-bg2Dark">
+                  <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg3Dark laptop:dark:bg-bg2Dark">
                      <div className="max-laptop:max-w-[760px] mx-auto">
                         <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                            <div className="dark:bg-dark350/70 bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
@@ -56,31 +57,38 @@ export function ColumnFour() {
                                  <div className="rounded-full h-3 w-full dark:bg-dark500 bg-teal-50 relative overflow-hidden">
                                     <span className="absolute top-0 left-0 bg-teal-500 w-40 h-full" />
                                  </div> */}
-                        {site?.banner && (
-                           <section
-                              className="bg-3-sub border border-zinc-200 dark:border-zinc-700 flex items-center rounded-lg mx-4
-                              justify-center bg-white h-[170px] overflow-hidden shadow-sm shadow-1 relative z-20"
-                           >
-                              <Image
-                                 //@ts-ignore
-                                 url={site?.banner?.url}
-                                 options="aspect_ratio=1.6:1&height=400"
-                                 alt="Site Banner"
-                              />
-                              <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/90 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
-                              <div
-                                 className="absolute dark:[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] [text-shadow:_0_1px_0_rgb(255_255_255_/_40%)]
+                        <section
+                           className={clsx(
+                              site?.banner
+                                 ? "h-[170px] border-zinc-300 dark:border-zinc-700"
+                                 : "h-[70px] border-color",
+                              `bg-3 border flex items-center rounded-lg mx-4
+                              justify-center bg-white overflow-hidden shadow-sm shadow-1 relative z-20`,
+                           )}
+                        >
+                           {site?.banner && (
+                              <>
+                                 <Image
+                                    //@ts-ignore
+                                    url={site?.banner?.url}
+                                    options="aspect_ratio=1.6:1&height=400"
+                                    alt="Site Banner"
+                                 />
+                                 <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/90 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
+                              </>
+                           )}
+                           <div
+                              className="absolute dark:[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] [text-shadow:_0_1px_0_rgb(255_255_255_/_40%)]
                            dark:text-white bottom-0 text-sm left-0 p-4 z-20 space-y-1"
-                              >
-                                 <span className="font-bold">{site.name}</span>
-                                 {site.about && (
-                                    <div className="dark:text-zinc-400 text-xs">
-                                       {site.about}
-                                    </div>
-                                 )}
-                              </div>
-                           </section>
-                        )}
+                           >
+                              <span className="font-bold">{site.name}</span>
+                              {site.about && (
+                                 <div className="dark:text-zinc-400 text-xs">
+                                    {site.about}
+                                 </div>
+                              )}
+                           </div>
+                        </section>
                         <section className="ml-4 py-4 relative z-20">
                            <div className="flex items-center pb-3">
                               <span className="text-1 text-sm font-bold">
@@ -189,8 +197,8 @@ export function ColumnFour() {
                            )}
                      </div>
                      <span
-                        className="bg-gradient-to-t dark:from-dark350 laptop:dark:from-bg2Dark dark:to-transparent 
-                           from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
+                        className="bg-gradient-to-t dark:from-bg3Dark laptop:dark:from-bg2Dark dark:to-transparent 
+                           from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
                      />
                      <div
                         className="pattern-dots absolute left-0 top-0 z-0 h-full

@@ -20,6 +20,7 @@ import {
    useOutletContext,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
 import { ExternalScripts } from "remix-utils/external-scripts";
@@ -40,11 +41,11 @@ import tailwindStylesheetUrl from "./styles/global.css";
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
 type ContextType = [
-   setUserMenuOpen: Dispatch<SetStateAction<boolean>>,
-   isUserMenuOpen: boolean,
+   searchToggle: boolean,
+   setSearchToggle: Dispatch<SetStateAction<boolean>>,
 ];
 
-export function useUserMenuState() {
+export function useSearchToggleState() {
    return useOutletContext<ContextType>();
 }
 
@@ -86,7 +87,6 @@ export const loader = async ({
             ...hints,
             theme: getTheme(request) ?? hints.theme,
          },
-         sitePath: request.url,
          stripePublicKey,
          toast,
          locale,
@@ -108,7 +108,9 @@ export const links: LinksFunction = () => [
    { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
+   { rel: "preload", href: reactCropUrl, as: "style" },
 
+   { rel: "stylesheet", href: reactCropUrl },
    { rel: "stylesheet", href: fonts },
    { rel: "stylesheet", href: tailwindStylesheetUrl },
    { rel: "stylesheet", href: customStylesheetUrl },
@@ -128,7 +130,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, toast, sitePath } = useLoaderData<typeof loader>();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
@@ -151,7 +153,7 @@ function App() {
       }
    }, [toast]);
 
-   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
+   const [searchToggle, setSearchToggle] = useState(false);
 
    return (
       <html
@@ -172,7 +174,6 @@ function App() {
                content="telephone=no, date=no, email=no, address=no"
             />
             {/* add preconnect to cdn to improve first bits */}
-            <link rel="preconnect" href={sitePath} crossOrigin="anonymous" />
             <link
                sizes="32x32"
                rel="icon"
@@ -202,7 +203,7 @@ function App() {
          </head>
          <body className="text-light dark:text-dark">
             <Outlet
-               context={[setUserMenuOpen, isUserMenuOpen] satisfies ContextType}
+               context={[searchToggle, setSearchToggle] satisfies ContextType}
             />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
