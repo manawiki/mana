@@ -7,8 +7,14 @@ import { authGQLFetcher } from "~/utils/fetchers.server";
 import { inngest } from "./inngest-client";
 
 export const loadAnalyticsCron = inngest.createFunction(
-   { id: "site-analytics-load" },
+   {
+      id: "site-analytics-load",
+      onFailure: async ({ error, event, step }) => {
+         console.log(error);
+      },
+   },
    { event: "analytics/site.cron.send" },
+
    async ({ event, step }) => {
       const query = {
          query: {
