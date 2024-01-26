@@ -12,7 +12,6 @@ export const Sites: CollectionConfig = {
    },
    access: {
       create: isLoggedIn,
-      // read: () => true,
       read: canReadSite,
       update: canEditSite,
       delete: isStaff,

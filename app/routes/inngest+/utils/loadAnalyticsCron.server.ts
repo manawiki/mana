@@ -22,6 +22,18 @@ export const loadAnalyticsCron = inngest.createFunction(
                      gaPropertyId: {
                         exists: true,
                      },
+                     AND: [
+                        {
+                           gaTagId: {
+                              not_equals: "",
+                           },
+                        },
+                        {
+                           gaPropertyId: {
+                              not_equals: "",
+                           },
+                        },
+                     ],
                   },
                },
                docs: {
