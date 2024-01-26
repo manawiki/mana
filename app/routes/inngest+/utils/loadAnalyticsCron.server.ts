@@ -8,7 +8,7 @@ import { inngest } from "./inngest-client";
 
 export const loadAnalyticsCron = inngest.createFunction(
    { id: "site-analytics-load" },
-   { cron: "0 */4 * * *" },
+   { event: "analytics/site.cron.send" },
    async ({ event, step }) => {
       const query = {
          query: {
