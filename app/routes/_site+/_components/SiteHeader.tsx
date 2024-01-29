@@ -1,13 +1,14 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 
 import { Menu, Transition } from "@headlessui/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { LogoBW } from "~/components/Logo";
+import { useSearchToggleState } from "~/root";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { FollowingSite } from "~/routes/_auth+/components/FollowingSite";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -18,13 +19,7 @@ import { isAdding } from "~/utils/form";
 import { MenuTrayContent, MobileTray } from "./MobileTray";
 import SearchComboBox from "../action+/search";
 
-export function SiteHeader({
-   setSearchToggle,
-   searchToggle,
-}: {
-   setSearchToggle: Dispatch<SetStateAction<boolean>>;
-   searchToggle: boolean;
-}) {
+export function SiteHeader() {
    const { site } = useLoaderData<typeof siteLoaderType>() || {};
 
    const fetcher = useFetcher({ key: "site" });
@@ -32,6 +27,8 @@ export function SiteHeader({
    const adding = isAdding(fetcher, "followSite");
    const { t } = useTranslation(["site", "auth"]);
    const [isPrimaryMenu, setPrimaryMenuOpen] = useState(false);
+
+   const [searchToggle, setSearchToggle] = useSearchToggleState();
 
    return (
       <section
@@ -47,20 +44,17 @@ export function SiteHeader({
          <div className="relative mx-auto w-full laptop:max-w-[732px] laptop:rounded-b-2xl">
             <div className="relative mx-auto flex h-[60px] items-center justify-between">
                {searchToggle ? (
-                  <SearchComboBox
-                     siteType={site.type}
-                     setSearchToggle={setSearchToggle}
-                  />
+                  <SearchComboBox siteType={site.type} />
                ) : (
                   <>
                      <div className="flex items-center truncate">
                         <Link
                            prefetch="intent"
                            to="/"
-                           className="flex items-center group h-14"
+                           className="flex items-center group h-14 truncate"
                         >
                            <div
-                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden
+                              className="dark:bg-dark450 border dark:border-zinc-600 shadow-1 bg-zinc-50 overflow-hidden flex-none
                               text-1 flex h-10 w-10 items-center justify-center dark:group-hover:border-zinc-600 border-zinc-300/60
                               rounded-full shadow-sm transition duration-300 active:translate-y-0.5 group-hover:border-zinc-300"
                            >
@@ -160,28 +154,32 @@ export function SiteHeader({
                                                 </Menu.Item>
                                              </AdminOrStaffOrOwner>
                                              <Menu.Item>
-                                                <fetcher.Form
-                                                   action="/action/follow"
-                                                   method="post"
-                                                >
-                                                   <button
-                                                      name="intent"
-                                                      value="unfollow"
-                                                      className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
+                                                <button
+                                                   onClick={() => {
+                                                      fetcher.submit(
+                                                         { intent: "unfollow" },
+                                                         {
+                                                            method: "post",
+                                                            action:
+                                                               "/action/follow",
+                                                         },
+                                                      );
+                                                   }}
+                                                   type="submit"
+                                                   className="text-1 text-xs text-left flex w-full items-center gap-3 rounded-lg
                                                p-2 font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                                   >
-                                                      <div className="flex-grow">
-                                                         {t(
-                                                            "follow.actionUnfollow",
-                                                         )}
-                                                      </div>
-                                                      <Icon
-                                                         size={14}
-                                                         name="log-out"
-                                                         className="text-zinc-400 w-4.5 h-4.5"
-                                                      />
-                                                   </button>
-                                                </fetcher.Form>
+                                                >
+                                                   <div className="flex-grow">
+                                                      {t(
+                                                         "follow.actionUnfollow",
+                                                      )}
+                                                   </div>
+                                                   <Icon
+                                                      size={14}
+                                                      name="log-out"
+                                                      className="text-zinc-400 w-4.5 h-4.5"
+                                                   />
+                                                </button>
                                              </Menu.Item>
                                           </div>
                                        </Menu.Items>
@@ -205,27 +203,25 @@ export function SiteHeader({
                         </LoggedOut>
                         <NotFollowingSite>
                            <div className="flex items-center">
-                              <fetcher.Form
-                                 className="w-full"
-                                 method="post"
-                                 action="/action/follow"
+                              <button
+                                 onClick={() => {
+                                    fetcher.submit(
+                                       { intent: "followSite" },
+                                       {
+                                          method: "post",
+                                          action: "/action/follow",
+                                       },
+                                    );
+                                 }}
+                                 className="flex h-9 items-center justify-center rounded-full bg-black shadow dark:shadow-zinc-950
+                                 w-[72px] text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden shadow-zinc-400"
                               >
-                                 <button
-                                    name="intent"
-                                    value="followSite"
-                                    className="flex h-9 items-center justify-center rounded-full bg-black
-                           px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black max-laptop:hidden"
-                                 >
-                                    {adding ? (
-                                       <Icon
-                                          name="loader-2"
-                                          className="mx-auto h-5 w-5 animate-spin"
-                                       />
-                                    ) : (
-                                       t("follow.actionFollow")
-                                    )}
-                                 </button>
-                              </fetcher.Form>
+                                 {adding ? (
+                                    <DotLoader />
+                                 ) : (
+                                    t("follow.actionFollow")
+                                 )}
+                              </button>
                            </div>
                         </NotFollowingSite>
                         <button

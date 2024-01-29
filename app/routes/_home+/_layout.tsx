@@ -2,10 +2,8 @@ import { Link, Outlet, useLocation } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
 import { LogoFull } from "~/components/Logo";
-import { useUserMenuState } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
-import { UserMenu } from "~/routes/_auth+/components/UserMenu";
 
 export default function IndexLayout() {
    return (
@@ -27,7 +25,6 @@ export default function IndexLayout() {
 
 function Header() {
    const location = useLocation();
-   const [setUserMenuOpen] = useUserMenuState();
 
    return (
       <header className="z-50 w-full absolute">
@@ -38,13 +35,17 @@ function Header() {
                      <LogoFull />
                   </Link>
                   <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
-                     <UserMenu />
-                     <button
-                        className="flex h-9 w-9 items-center laptop:hidden justify-center"
-                        onClick={() => setUserMenuOpen(true)}
-                     >
-                        <Icon name="user" className="text-1" size={22} />
-                     </button>
+                     <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
+                        <Link
+                           prefetch="intent"
+                           to="/user/account"
+                           className="border-4 border-zinc-300 dark:border-zinc-700 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-600  
+                  rounded-full flex items-center justify-center laptop:w-12 laptop:h-12 bg-3 shadow shadow-1 hover:border-zinc-400"
+                        >
+                           <Icon name="user" size={22} />
+                        </Link>
+                     </section>
                   </div>
                </div>
             </LoggedIn>

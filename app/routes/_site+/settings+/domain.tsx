@@ -103,6 +103,11 @@ export async function loader({
                   not_equals: null,
                },
             },
+            {
+               domain: {
+                  not_equals: "",
+               },
+            },
          ],
       },
       depth: 0,
@@ -283,7 +288,6 @@ export default function Settings() {
 
    return (
       <>
-         {billingAccountSetupRequired && <div>User billing setup</div>}
          {canPurchaseDomain && (
             <>
                <div
@@ -345,80 +349,98 @@ export default function Settings() {
                </div>
             </>
          )}
-         <fetcher.Form
-            className={clsx(
-               canPurchaseDomain ? "border-b dark:border-zinc-700/50 pb-6" : "",
-            )}
-            method="post"
-            ref={zo.ref}
-         >
-            <input type="hidden" name="flyAppId" value={flyAppId} />
-            <Field disabled={disabled} className="pb-4">
-               <Label>Domain Name</Label>
-               <Description>
-                  Setup a custom domain name for your site
-               </Description>
-               <Input
-                  placeholder="example.com"
-                  defaultValue={site.domain ?? ""}
-                  name={zo.fields.domain()}
-                  type="text"
+         {billingAccountSetupRequired ? (
+            <div
+               className="p-4 rounded-xl border border-color-sub bg-2-sub shadow-sm 
+                       dark:shadow-zinc-800/50 mb-6 flex items-center justify-between"
+            >
+               <Text>
+                  Setup a{" "}
+                  <TextLink href="/user/billing">payment method</TextLink> to
+                  add a custom domain.
+               </Text>
+            </div>
+         ) : (
+            <fetcher.Form
+               className={clsx(
+                  canPurchaseDomain
+                     ? "border-b dark:border-zinc-700/50 pb-6"
+                     : "",
+               )}
+               method="post"
+               ref={zo.ref}
+            >
+               <input type="hidden" name="flyAppId" value={flyAppId} />
+               <Field disabled={disabled} className="pb-4">
+                  <Label>Domain Name</Label>
+                  <Description>
+                     Setup a custom domain name for your site
+                  </Description>
+                  <Input
+                     placeholder="example.com"
+                     defaultValue={site.domain ?? ""}
+                     name={zo.fields.domain()}
+                     type="text"
+                  />
+                  {zo.errors.domain((err) => (
+                     <ErrorMessage>{err.message}</ErrorMessage>
+                  ))}
+               </Field>
+               <input
+                  type="hidden"
+                  name={zo.fields.intent()}
+                  value="addDomain"
                />
-               {zo.errors.domain((err) => (
-                  <ErrorMessage>{err.message}</ErrorMessage>
-               ))}
-            </Field>
-            <input type="hidden" name={zo.fields.intent()} value="addDomain" />
-            <input type="hidden" name={zo.fields.siteId()} value={site.id} />
-            {site.domain ? (
-               <Button
-                  className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
-                  color="zinc"
-                  type="button"
-                  onClick={() => {
-                     fetcher.submit(
-                        {
-                           intent: "deleteDomain",
-                           siteId: site.id,
-                           domain: site.domain ?? "",
-                           flyAppId: flyAppId,
-                        },
-                        {
-                           method: "post",
-                        },
-                     );
-                  }}
-               >
-                  {deletingDomain ? (
-                     <Icon
-                        size={18}
-                        name="loader-2"
-                        className="mx-auto animate-spin"
-                     />
-                  ) : (
-                     "Remove"
-                  )}
-               </Button>
-            ) : (
-               <Button
-                  className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
-                  color="blue"
-                  type="submit"
-                  disabled={disabled}
-               >
-                  {addingDomain ? (
-                     <Icon
-                        size={18}
-                        name="loader-2"
-                        className="mx-auto animate-spin"
-                     />
-                  ) : (
-                     "Add"
-                  )}
-               </Button>
-            )}
-         </fetcher.Form>
-
+               <input type="hidden" name={zo.fields.siteId()} value={site.id} />
+               {site.domain ? (
+                  <Button
+                     className="text-sm tablet:text-xs !font-bold w-20 h-11 tablet:h-8 cursor-pointer"
+                     color="zinc"
+                     type="button"
+                     onClick={() => {
+                        fetcher.submit(
+                           {
+                              intent: "deleteDomain",
+                              siteId: site.id,
+                              domain: site.domain ?? "",
+                              flyAppId: flyAppId,
+                           },
+                           {
+                              method: "post",
+                           },
+                        );
+                     }}
+                  >
+                     {deletingDomain ? (
+                        <Icon
+                           size={18}
+                           name="loader-2"
+                           className="mx-auto animate-spin"
+                        />
+                     ) : (
+                        "Remove"
+                     )}
+                  </Button>
+               ) : (
+                  <Button
+                     className="text-sm tablet:text-xs !font-bold h-11 w-16 tablet:h-8 cursor-pointer"
+                     color="blue"
+                     type="submit"
+                     disabled={disabled}
+                  >
+                     {addingDomain ? (
+                        <Icon
+                           size={18}
+                           name="loader-2"
+                           className="mx-auto animate-spin"
+                        />
+                     ) : (
+                        "Add"
+                     )}
+                  </Button>
+               )}
+            </fetcher.Form>
+         )}
          {site.domain && (
             <div className="border-y-2 border-dashed border-color mt-6 py-6">
                <div className="pb-4 !text-base">

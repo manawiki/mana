@@ -10,7 +10,7 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOw
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
 import { isAdding } from "~/utils/form";
 
-export function CircleImageUploader({
+export function CollectionImageUploader({
    intent,
    actionPath,
    entityId,

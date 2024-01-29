@@ -18,6 +18,9 @@ export function setTheme(theme: Theme | "system", request: Request) {
    // Remove subdomain
    let domain = hostname.split(".").slice(-2).join(".");
 
+   // don't set cookie domain on fly.dev due to Public Suffix List supercookie issue
+   if (domain === "fly.dev") domain = "";
+
    return theme === "system"
       ? cookie.serialize(cookieName, "", {
            path: "/",

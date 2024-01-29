@@ -28,11 +28,7 @@ import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOw
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
-import {
-   assertIsDelete,
-   assertIsPatch,
-   assertIsPost,
-} from "~/utils/http.server";
+import { assertIsPatch, assertIsPost } from "~/utils/http.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -497,26 +493,31 @@ export const action: ActionFunction = async ({
          });
       }
       case "collectionDeleteIcon": {
-         assertIsDelete(request);
-         const { imageId, entityId } = await zx.parseForm(request, {
-            imageId: z.string(),
-            entityId: z.string(),
-         });
-         await payload.delete({
-            collection: "images",
-            id: imageId,
-            overrideAccess: false,
-            user,
-         });
-         return await payload.update({
-            collection: "collections",
-            id: entityId,
-            data: {
-               icon: "" as any,
-            },
-            overrideAccess: false,
-            user,
-         });
+         try {
+            const { imageId, entityId } = await zx.parseForm(request, {
+               imageId: z.string(),
+               entityId: z.string(),
+            });
+            await payload.delete({
+               collection: "images",
+               id: imageId,
+               overrideAccess: false,
+               user,
+            });
+            return await payload.update({
+               collection: "collections",
+               id: entityId,
+               data: {
+                  icon: "" as any,
+               },
+               overrideAccess: false,
+               user,
+            });
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to delete image.",
+            });
+         }
       }
       case "updateCollectionName": {
          const { name, collectionId } = await zx.parseForm(request, {

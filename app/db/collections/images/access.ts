@@ -15,7 +15,12 @@ export const canDeleteImages: Access = async ({
             id: resultId,
             depth: 1,
          });
-         if (image) return isSiteOwnerOrAdmin(userId, image.site);
+         //If image belongs to site, check if user is owner or admin of site
+         if (image && image.site) return isSiteOwnerOrAdmin(userId, image.site);
+         //Otherwise, check if user is owner of image
+         if (image) {
+            return user.id === image.createdBy.id;
+         }
       }
    }
    // Reject everyone else

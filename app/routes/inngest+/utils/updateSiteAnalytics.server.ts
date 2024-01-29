@@ -4,7 +4,7 @@ import type { PaginatedDocs } from "payload/database";
 import qs from "qs";
 
 import type { Collection, CustomPage, Entry, Post } from "~/db/payload-types";
-import { apiDBPath, apiPath } from "~/utils/api-path.server";
+import { apiDBPath } from "~/utils/api-path.server";
 import {
    authGQLFetcher,
    authRestFetcher,
@@ -64,7 +64,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
                const pathSection = path && path.split("/");
                //Exclude homepage
-               if (pathSection?.length == 2 && pathSection[1] == siteSlug) {
+               if (pathSection?.length == 2 && pathSection[1] == "") {
                   return false;
                }
                return true;
@@ -79,29 +79,29 @@ export const updateSiteAnalytics = inngest.createFunction(
 
                //Custom pages
                if (
-                  pathSection?.length == 3 &&
-                  pathSection[1] == siteSlug &&
-                  pathSection[2] != "collections" &&
-                  pathSection[2] != "posts"
+                  pathSection?.length == 2 &&
+                  pathSection[0] == siteSlug &&
+                  pathSection[1] != "collections" &&
+                  pathSection[1] != "posts"
                ) {
-                  return { customPageSlug: pathSection[2], pageViews, path };
+                  return { customPageSlug: pathSection[1], pageViews, path };
                }
                //Collection lists
-               if (pathSection?.length == 4 && pathSection[2] == "c") {
-                  return { listSlug: pathSection[3], pageViews, path };
+               if (pathSection?.length == 3 && pathSection[1] == "c") {
+                  return { listSlug: pathSection[2], pageViews, path };
                }
                //Entry pages
-               if (pathSection?.length == 5 && pathSection[2] == "c") {
+               if (pathSection?.length == 4 && pathSection[1] == "c") {
                   return {
-                     collectionSlug: pathSection[3],
-                     entrySlug: pathSection[4],
+                     collectionSlug: pathSection[2],
+                     entrySlug: pathSection[3],
                      pageViews,
                      path,
                   };
                }
                //Post singleton
-               if (pathSection?.length == 4 && pathSection[2] == "p") {
-                  return { postSlug: pathSection[3], pageViews, path };
+               if (pathSection?.length == 3 && pathSection[1] == "p") {
+                  return { postSlug: pathSection[2], pageViews, path };
                }
                return {
                   pageViews,
@@ -164,6 +164,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                customPageData,
             }: { customPageData: PaginatedDocs<CustomPage> } =
                await authGQLFetcher({
+                  useProd: true,
                   variables: {
                      customPageSlug: doc.customPageSlug,
                      siteId: siteId,
@@ -211,6 +212,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { postData }: { postData: PaginatedDocs<Post> } =
                await authGQLFetcher({
+                  useProd: true,
                   variables: {
                      siteId: siteId,
                      postSlug: doc?.postSlug,
@@ -278,6 +280,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { entryData }: { entryData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
+                  useProd: true,
                   siteSlug: customCollection ? siteSlug : undefined,
                   variables: {
                      entrySlug: doc.entrySlug,
@@ -342,6 +345,7 @@ export const updateSiteAnalytics = inngest.createFunction(
             //@ts-ignore
             const { listData }: { listData: PaginatedDocs<Entry> } =
                await authGQLFetcher({
+                  useProd: true,
                   siteSlug: customCollection ? siteSlug : undefined,
                   variables: {
                      listSlug: doc.listSlug,
@@ -379,6 +383,9 @@ export const updateSiteAnalytics = inngest.createFunction(
                site: {
                   equals: siteId,
                },
+               publishedAt: {
+                  exists: true,
+               },
             },
             depth: 0,
          },
@@ -387,7 +394,7 @@ export const updateSiteAnalytics = inngest.createFunction(
 
       const getPostsTotal = (await authRestFetcher({
          method: "GET",
-         path: `https://${apiPath}/api/posts${postTotalQuery}`,
+         path: `https://${apiDBPath}/api/posts${postTotalQuery}`,
       })) as PaginatedDocs<Post>;
 
       //Get total site entries
@@ -420,7 +427,7 @@ export const updateSiteAnalytics = inngest.createFunction(
                   }
                   const totalCoreEntries = await authRestFetcher({
                      method: "GET",
-                     path: `https://${apiPath}/api/entries${entryTotalQuery}`,
+                     path: `https://${apiDBPath}/api/entries${entryTotalQuery}`,
                   });
                   return totalCoreEntries.totalDocs;
                },
@@ -431,14 +438,10 @@ export const updateSiteAnalytics = inngest.createFunction(
       //Update site with new data
       await authRestFetcher({
          method: "PATCH",
-         path: `https://${apiPath}/api/sites/${siteId}`,
+         path: `https://${apiDBPath}/api/sites/${siteId}`,
          body: {
-            ...(getPostsTotal.totalDocs && {
-               totalPosts: getPostsTotal.totalDocs,
-            }),
-            ...(totalEntries && {
-               totalEntries: totalEntries,
-            }),
+            totalPosts: getPostsTotal.totalDocs ?? null,
+            totalEntries: totalEntries ?? null,
             ...(trendingPages && {
                trendingPages: trendingPages,
             }),

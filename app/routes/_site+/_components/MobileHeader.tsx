@@ -1,28 +1,38 @@
 import { useState } from "react";
 
-import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
-import { useUserMenuState } from "~/root";
+import { Image } from "~/components/Image";
+import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 
-import { FollowingTrayContent, MobileTray } from "./MobileTray";
+import { FollowingListMobile } from "./Menu";
+import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { site } = useLoaderData<typeof siteLoaderType>() || {};
+   const { user } = useRouteLoaderData("root") as SerializeFrom<
+      typeof rootLoaderType
+   >;
 
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
 
+   const isUserPath = location.pathname.startsWith("/user");
+
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
-   const [setUserMenuOpen] = useUserMenuState();
 
    return (
       <>
@@ -34,14 +44,40 @@ export function MobileHeader() {
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
-                     <NotFollowingSite>
-                        <div className="flex items-center">
-                           <fetcher.Form className="w-full" method="post">
+                     <a
+                        className="border-2 border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                     active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
+                        href="https://mana.wiki"
+                     >
+                        <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           viewBox="0 0 20 20"
+                           fill="currentColor"
+                           className="size-4"
+                        >
+                           <path
+                              fillRule="evenodd"
+                              d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z"
+                              clipRule="evenodd"
+                           />
+                        </svg>
+                     </a>
+                     {!isUserPath && (
+                        <NotFollowingSite>
+                           <div className="flex items-center">
                               <button
-                                 name="intent"
-                                 value="followSite"
-                                 className="flex h-8 items-center justify-center rounded-full bg-black
-                                                px-3.5 text-sm font-bold text-white dark:bg-white dark:text-black"
+                                 onClick={() => {
+                                    fetcher.submit(
+                                       { intent: "followSite" },
+                                       {
+                                          method: "post",
+                                          action: "/action/follow",
+                                       },
+                                    );
+                                 }}
+                                 className="flex h-8  w-[72px] items-center justify-center rounded-full bg-black dark:shadow-zinc-950
+                                 px-3.5 text-xs font-bold text-white dark:bg-white dark:text-black shadow-zinc-400 shadow"
                               >
                                  {adding ? (
                                     <Icon
@@ -52,16 +88,16 @@ export function MobileHeader() {
                                     t("follow.actionFollow")
                                  )}
                               </button>
-                           </fetcher.Form>
-                        </div>
-                     </NotFollowingSite>
+                           </div>
+                        </NotFollowingSite>
+                     )}
                      <button
-                        className="bg-3-sub shadow-1 border-color-sub flex items-center justify-center
-                                       gap-1 rounded-full border p-1.5 pl-3 text-sm font-bold shadow-sm"
+                        className="bg-3-sub border-zinc-200 shadow-zinc-200 dark:shadow-zinc-900/50 flex items-center justify-center
+                                       rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
                         <div className="pr-2 text-xs">My Follows</div>
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full dark:bg-zinc-700">
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-zinc-100 dark:bg-dark450">
                            <Icon
                               name="chevron-down"
                               className="dark:text-white"
@@ -70,13 +106,26 @@ export function MobileHeader() {
                         </div>
                      </button>
                   </div>
-                  <button
-                     className="bg-3-sub shadow-1 border-color-sub flex h-9 w-9 items-center
-                     justify-center rounded-xl border shadow-sm"
-                     onClick={() => setUserMenuOpen(true)}
+                  <Link
+                     prefetch="intent"
+                     to="/user/account"
+                     className="border-2 border-zinc-300 dark:border-zinc-600 transition duration-300 
+                  active:translate-y-0.5 dark:hover:border-zinc-500 size-9
+                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-900 hover:border-zinc-400"
                   >
-                     <Icon name="user" size={20} />
-                  </button>
+                     {user?.avatar?.url ? (
+                        <Image
+                           width={24}
+                           height={24}
+                           className="overflow-hidden rounded-full"
+                           url={user?.avatar?.url}
+                           options="aspect_ratio=1:1&height=60&width=60"
+                           alt="User Avatar"
+                        />
+                     ) : (
+                        <Icon name="user" size={18} />
+                     )}
+                  </Link>
                </div>
             </LoggedIn>
             <LoggedOut>
@@ -126,10 +175,19 @@ export function MobileHeader() {
             onOpenChange={setFollowerMenuOpen}
             open={isFollowerMenuOpen}
          >
-            <FollowingTrayContent
-               site={site}
-               setFollowerMenuOpen={setFollowerMenuOpen}
-            />
+            <menu className="flex h-full flex-col">
+               <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />
+               <LoggedIn>
+                  <Link
+                     reloadDocument={true}
+                     className="mx-20 my-9 rounded-full bg-zinc-800 px-5 py-3
+                   text-center text-sm font-bold text-white dark:bg-zinc-200 dark:text-zinc-700"
+                     to="https://mana.wiki"
+                  >
+                     Explore
+                  </Link>
+               </LoggedIn>
+            </menu>
          </MobileTray>
       </>
    );
