@@ -1,9 +1,17 @@
 import { useState } from "react";
 
-import { Link, useFetcher, useLocation } from "@remix-run/react";
+import {
+   Link,
+   useFetcher,
+   useLocation,
+   useRouteLoaderData,
+} from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "~/components/Icon";
+import { Image } from "~/components/Image";
+import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
@@ -13,6 +21,10 @@ import { FollowingListMobile } from "./Menu";
 import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
+   const { user } = useRouteLoaderData("root") as SerializeFrom<
+      typeof rootLoaderType
+   >;
+
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
    const adding = isAdding(fetcher, "followSite");
@@ -101,7 +113,18 @@ export function MobileHeader() {
                   active:translate-y-0.5 dark:hover:border-zinc-500 size-9
                   rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-900 hover:border-zinc-400"
                   >
-                     <Icon name="user" size={18} />
+                     {user?.avatar?.url ? (
+                        <Image
+                           width={24}
+                           height={24}
+                           className="overflow-hidden rounded-full"
+                           url={user?.avatar?.url}
+                           options="aspect_ratio=1:1&height=60&width=60"
+                           alt="User Avatar"
+                        />
+                     ) : (
+                        <Icon name="user" size={18} />
+                     )}
                   </Link>
                </div>
             </LoggedIn>

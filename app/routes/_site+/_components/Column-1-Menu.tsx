@@ -1,7 +1,10 @@
 import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 import { Icon } from "~/components/Icon";
-import type { Site, User } from "~/db/payload-types";
+import { Image } from "~/components/Image";
+import type { Site } from "~/db/payload-types";
+import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { Staff } from "~/routes/_auth+/components/Staff";
@@ -11,10 +14,9 @@ import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
 import { SidebarItem } from "./SidebarItem";
 
 export function ColumnOneMenu({ site }: { site?: Site }) {
-   const { following, siteSlug } = useRouteLoaderData("root") as {
-      following: User["sites"];
-      siteSlug: string;
-   };
+   const { following, siteSlug, user } = useRouteLoaderData(
+      "root",
+   ) as SerializeFrom<typeof rootLoaderType>;
 
    const isFollowing = following && following?.length > 0;
 
@@ -95,7 +97,18 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                               active:translate-y-0.5 dark:hover:border-zinc-600 rounded-2xl flex items-center 
                               justify-center laptop:size-11 bg-3 shadow shadow-1 hover:border-zinc-400"
                         >
-                           <Icon name="user" size={22} />
+                           {user?.avatar?.url ? (
+                              <Image
+                                 width={30}
+                                 height={30}
+                                 className="overflow-hidden rounded-full"
+                                 url={user?.avatar?.url}
+                                 options="aspect_ratio=1:1&height=60&width=60"
+                                 alt="User Avatar"
+                              />
+                           ) : (
+                              <Icon name="user" size={22} />
+                           )}
                         </Link>
                      </section>
                   </div>
