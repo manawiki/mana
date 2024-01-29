@@ -25,7 +25,7 @@ export function ColumnFour() {
                   <PinnedList site={site} />
                </section>
                <div className="relative max-laptop:border-t max-laptop:border-color">
-                  <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-dark350 laptop:dark:bg-bg2Dark">
+                  <div className="sticky top-0 w-full left-0 bg-zinc-50 dark:bg-bg3Dark laptop:dark:bg-bg2Dark">
                      <div className="max-laptop:max-w-[760px] mx-auto">
                         <section className="grid grid-cols-3 gap-4 p-4 relative z-20">
                            <div className="dark:bg-dark350/70 bg-white dark:shadow-zinc-800 shadow-sm border border-color px-3 py-1.5 rounded-lg">
@@ -197,8 +197,8 @@ export function ColumnFour() {
                            )}
                      </div>
                      <span
-                        className="bg-gradient-to-t dark:from-dark350 laptop:dark:from-bg2Dark dark:to-transparent 
-                           from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
+                        className="bg-gradient-to-t dark:from-bg3Dark laptop:dark:from-bg2Dark dark:to-transparent 
+                           from-white laptop:from-zinc-50 to-transparent w-full h-full absolute top-0 left-0 z-10"
                      />
                      <div
                         className="pattern-dots absolute left-0 top-0 z-0 h-full

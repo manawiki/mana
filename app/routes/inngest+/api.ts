@@ -7,6 +7,8 @@ import { updateSiteAnalytics } from "./utils/updateSiteAnalytics.server";
 
 const handler = serve({
    client: inngest,
+   serveHost: "https://mana.wiki",
+   servePath: "/inngest/api",
    functions: [loadAnalyticsCron, updateSiteAnalytics],
 });
 

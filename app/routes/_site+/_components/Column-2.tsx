@@ -11,19 +11,25 @@ export function ColumnTwo() {
 
    return (
       <section className="bg-2 border-color shadow-1 z-50 border-r laptop:shadow-sm laptop:shadow-1">
-         <div className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[230px]">
+         <div className="fixed bottom-0 flex flex-col top-0 z-50 mx-auto h-full overflow-y-auto shadow-sm  max-laptop:hidden laptop:w-[60px] desktop:w-[229px]">
             <div className="flex-grow">
                <NavLink
                   prefetch="intent"
                   end
-                  className="flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2
-                  relative border-b border-zinc-200/50 dark:border-zinc-700/40"
+                  className={({ isActive }) =>
+                     clsx(
+                        isActive
+                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
+                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                     )
+                  }
                   to="/"
                >
                   {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
                         {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
+                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
                            Home
@@ -45,14 +51,20 @@ export function ColumnTwo() {
                </NavLink>
                <NavLink
                   prefetch="intent"
-                  className="flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2
-                  relative border-b border-zinc-200/50 dark:border-zinc-700/40"
+                  className={({ isActive }) =>
+                     clsx(
+                        isActive
+                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
+                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                     )
+                  }
                   to="/posts"
                >
                   {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
                         {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
+                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
                         )}
                         <div className="max-desktop:hidden flex-grow font-bold text-sm">
                            Posts
@@ -74,14 +86,20 @@ export function ColumnTwo() {
                </NavLink>
                <NavLink
                   prefetch="intent"
-                  className="flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2
-                  relative border-b border-zinc-200/50 dark:border-zinc-700/40"
+                  className={({ isActive }) =>
+                     clsx(
+                        isActive
+                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
+                           : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
+                        "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
+                     )
+                  }
                   to="/collections"
                >
                   {({ isActive, isPending }) => (
                      <div className="flex items-center desktop:gap-2 w-full max-desktop:justify-center">
                         {(isActive || isPending) && (
-                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-600 bg-zinc-300" />
+                           <div className="w-3 h-3 absolute -left-1.5 rounded-full dark:bg-zinc-500 bg-zinc-400" />
                         )}
                         <div className="max-desktop:hidden flex-grow text-sm font-bold">
                            Collections

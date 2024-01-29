@@ -86,7 +86,13 @@ export function subscribeToSchemeChange(
    function handleThemeChange() {
       const value = schemaMatch.matches ? "dark" : "light";
       const domain = document.location.hostname.split(".").slice(-2).join(".");
-      document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/; Domain=${domain}`;
+
+      // don't set the domain if domain = fly.dev
+      // this is to prevent infinite reloads due to supercookie public suffix list https://publicsuffix.org/
+      // ideally, we should make sure this check is done for other dev environments as well
+      document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/; ${
+         domain !== "fly.dev" ? `Domain=${domain}` : ""
+      }`;
       subscriber(value);
    }
    schemaMatch.addEventListener("change", handleThemeChange);
@@ -164,7 +170,9 @@ ${Object.values(hints)
 for (const hint of hints) {
 	if (decodeURIComponent(hint.cookie) !== hint.actual) {
 		cookieChanged = true;
-		document.cookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/; Domain=' + domain;
+		let newCookie = encodeURIComponent(hint.name) + '=' + encodeURIComponent(hint.actual) + '; Max-Age=31536000; path=/; Domain=';
+      if( domain !== "fly.dev" ) { newCookie += domain; }
+      document.cookie = newCookie;
 	}
 }
 // if the cookie changed, reload the page, unless the browser doesn't support

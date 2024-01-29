@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/server-runtime";
 import type { Payload } from "payload";
 
 import type { Site, User } from "payload/generated-types";
-import { gql, gqlRequestWithCache } from "~/utils/cache.server";
+import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
 export async function fetchSite({
@@ -39,15 +39,19 @@ export async function fetchSite({
       );
    }
 
-   const getSite = await payload.find({
-      collection: "sites",
-      where: {
-         slug: {
-            equals: siteSlug,
-         },
-      },
-      depth: 0,
-   });
+   const getSite = await cacheThis(
+      () =>
+         payload.find({
+            collection: "sites",
+            where: {
+               slug: {
+                  equals: siteSlug,
+               },
+            },
+            depth: 0,
+         }),
+      `sites-slug-${siteSlug}`,
+   );
 
    const siteId = getSite?.docs?.[0]?.id;
 
