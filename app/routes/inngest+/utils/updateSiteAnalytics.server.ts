@@ -383,6 +383,9 @@ export const updateSiteAnalytics = inngest.createFunction(
                site: {
                   equals: siteId,
                },
+               publishedAt: {
+                  exists: true,
+               },
             },
             depth: 0,
          },
