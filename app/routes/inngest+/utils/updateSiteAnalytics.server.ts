@@ -383,6 +383,9 @@ export const updateSiteAnalytics = inngest.createFunction(
                site: {
                   equals: siteId,
                },
+               publishedAt: {
+                  exists: true,
+               },
             },
             depth: 0,
          },
@@ -437,12 +440,8 @@ export const updateSiteAnalytics = inngest.createFunction(
          method: "PATCH",
          path: `https://${apiDBPath}/api/sites/${siteId}`,
          body: {
-            ...(getPostsTotal.totalDocs && {
-               totalPosts: getPostsTotal.totalDocs,
-            }),
-            ...(totalEntries && {
-               totalEntries: totalEntries,
-            }),
+            totalPosts: getPostsTotal.totalDocs ?? null,
+            totalEntries: totalEntries ?? null,
             ...(trendingPages && {
                trendingPages: trendingPages,
             }),
