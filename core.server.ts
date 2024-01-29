@@ -169,7 +169,10 @@ function createProductionRequestHandler(): RequestHandler {
               id: req?.user?.id,
               roles: req?.user?.roles,
               username: req?.user?.username,
-              avatar: { url: req?.user?.avatar?.url },
+              avatar: {
+                 id: req?.user?.avatar?.id,
+                 url: req?.user?.avatar?.url,
+              },
            }
          : undefined;
       return {
@@ -221,7 +224,10 @@ function createDevRequestHandler(): RequestHandler {
                        id: req?.user?.id,
                        roles: req?.user?.roles,
                        username: req?.user?.username,
-                       avatar: { url: req?.user?.avatar?.url },
+                       avatar: {
+                          id: req?.user?.avatar?.id,
+                          url: req?.user?.avatar?.url,
+                       },
                     }
                   : undefined;
                return {
