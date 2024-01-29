@@ -19,7 +19,7 @@ export function PaymentMethods({
       <>
          {data?.customerPaymentMethods ? (
             <>
-               <div className="text-sm text-1 font-semibold pb-2 pt-2 pl-0.5">
+               <div className="text-sm text-1 font-semibold pb-2 pl-0.5">
                   Payment Methods
                </div>
                <div className="pb-4">

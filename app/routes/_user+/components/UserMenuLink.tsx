@@ -20,7 +20,7 @@ export function UserMenuLink({
                isActive
                   ? "bg-zinc-200/80 dark:bg-dark350 font-bold"
                   : "hover:bg-zinc-100 dark:hover:bg-dark400 font-semibold",
-               "desktop:py-2 desktop:px-3 max-desktop:p-2 laptop:justify-center desktop:justify-start flex items-center gap-2 rounded-lg text-sm",
+               "desktop:py-2 desktop:px-3 max-desktop:p-2 laptop:justify-center desktop:justify-start flex items-center gap-3 rounded-lg text-sm",
             )
          }
          to={to}

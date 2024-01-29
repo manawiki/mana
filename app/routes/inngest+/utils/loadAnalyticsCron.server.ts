@@ -7,7 +7,9 @@ import { authGQLFetcher } from "~/utils/fetchers.server";
 import { inngest } from "./inngest-client";
 
 export const loadAnalyticsCron = inngest.createFunction(
-   { id: "site-analytics-load" },
+   {
+      id: "site-analytics-load",
+   },
    { cron: "0 */4 * * *" },
    async ({ event, step }) => {
       const query = {
@@ -22,6 +24,18 @@ export const loadAnalyticsCron = inngest.createFunction(
                      gaPropertyId: {
                         exists: true,
                      },
+                     AND: [
+                        {
+                           gaTagId: {
+                              not_equals: "",
+                           },
+                        },
+                        {
+                           gaPropertyId: {
+                              not_equals: "",
+                           },
+                        },
+                     ],
                   },
                },
                docs: {

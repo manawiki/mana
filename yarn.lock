@@ -7264,10 +7264,10 @@ inline-style-parser@0.1.1:
   resolved "https://registry.yarnpkg.com/inline-style-parser/-/inline-style-parser-0.1.1.tgz#ec8a3b429274e9c0a1f1c4ffa9453a7fef72cea1"
   integrity sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==
 
-inngest@^3.7.1:
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/inngest/-/inngest-3.7.3.tgz#e918591aaaddb6efbcd8de3de62338e9038abaca"
-  integrity sha512-3PnQ08l/RVCLQO2X8sscC6BPbdRs+MvgJ2N3Myhk+3D/e4bQzRidB7ZG3k17Tp4V07plRCSO85wRtj93kB7/qw==
+inngest@^3.12.0:
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/inngest/-/inngest-3.12.0.tgz#05de1afa759e89e1265a33365a05c8b04c26f979"
+  integrity sha512-3T/vf73s8NibmOGwmdYcVHt8ALFmmOItAE/v01+NNhDkzVbSdfLYRWHJ9hIMfIE5Y+6wduaDZkyF0YPYC2J9Rg==
   dependencies:
     "@types/debug" "^4.1.12"
     canonicalize "^1.0.8"
