@@ -12,13 +12,17 @@ import { Image } from "~/components/Image";
 import { imgPreview } from "~/routes/_site+/settings+/utils/imgPreview";
 
 export function CircleIconUploader({
+   label,
    icon,
    setPreparedFile,
    previewImage,
    setPreviewImage,
 }: {
+   label: string;
    icon: string | null | undefined;
-   setPreparedFile: React.Dispatch<React.SetStateAction<undefined | File>>;
+   setPreparedFile: React.Dispatch<
+      React.SetStateAction<undefined | File | any>
+   >;
    previewImage: string | null | undefined;
    setPreviewImage: React.Dispatch<React.SetStateAction<string>>;
 }) {
@@ -167,8 +171,8 @@ export function CircleIconUploader({
    }, [isOpen]);
 
    return (
-      <section className="laptop:w-[300px]">
-         <div className="text-sm font-semibold pb-2">Icon</div>
+      <section className="pb-5">
+         <div className="text-sm font-semibold pb-2">{label}</div>
          <Dialog
             size="tablet"
             onClose={() => {
