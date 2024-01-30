@@ -48,6 +48,8 @@ export function Table({
                className={clsx(
                   className,
                   "-mx-[--gutter] overflow-x-auto whitespace-nowrap",
+                  framed &&
+                     "border-y tablet:border tablet:rounded-lg border-color-sub dark:bg-dark350 tablet:shadow-sm shadow-1",
                )}
             >
                <div
@@ -70,12 +72,7 @@ export function TableHead({
    className,
    ...props
 }: React.ComponentPropsWithoutRef<"thead">) {
-   return (
-      <thead
-         className={clsx(className, "text-zinc-500 dark:text-zinc-400")}
-         {...props}
-      />
-   );
+   return <thead className={clsx(className)} {...props} />;
 }
 
 export function TableBody(props: React.ComponentPropsWithoutRef<"tbody">) {
@@ -93,10 +90,12 @@ const TableRowContext = createContext<{
    href?: string;
    target?: string;
    title?: string;
+   grouped?: boolean;
 }>({
    href: undefined,
    target: undefined,
    title: undefined,
+   grouped: false,
 });
 
 export function TableRow({
@@ -142,14 +141,15 @@ export function TableHeader({
    className,
    ...props
 }: React.ComponentPropsWithoutRef<"th">) {
-   let { bleed, grid } = useContext(TableContext);
+   let { bleed, grid, framed } = useContext(TableContext);
 
    return (
       <th
          {...props}
          className={clsx(
             className,
-            "border-b border-b-zinc-950/5 px-4 py-2 font-medium first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))] dark:border-b-white/10",
+            framed && "bg-zinc-50 dark:bg-dark400",
+            "border-b border-color-sub font-semibold px-4 py-2.5 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
             grid &&
                "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
             !bleed && "tablet:first:pl-2 tablet:last:pr-2",

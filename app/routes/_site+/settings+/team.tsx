@@ -23,6 +23,7 @@ import {
    TableHeader,
    TableRow,
 } from "~/components/Table";
+import { TextLink } from "~/components/Text";
 import { authGQLFetcher } from "~/utils/fetchers.server";
 
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
@@ -70,53 +71,340 @@ export default function Members() {
    const { team } = useLoaderData<typeof loader>();
 
    return (
-      <div className="border rounded-xl border-color-sub px-4 overflow-hidden pt-1 bg-zinc-50 dark:bg-dark350">
-         <Table framed bleed dense className="[--gutter:theme(spacing.4)]">
-            <TableHead>
-               <TableRow>
-                  <TableHeader>User</TableHeader>
-                  <TableHeader>Role</TableHeader>
-                  <TableHeader className="relative w-0">
-                     <span className="sr-only">Actions</span>
-                  </TableHeader>
-               </TableRow>
-            </TableHead>
-            <TableBody>
-               {team.map((member) => (
-                  <TableRow key={member.id}>
-                     <TableCell>
-                        <div className="flex items-center gap-3">
-                           <Avatar
-                              src={member?.avatar?.url}
-                              initials={member?.username.charAt(0)}
-                              className="size-6"
-                           />
-                           <div>{member.username}</div>
-                        </div>
-                     </TableCell>
-                     <TableCell className="text-zinc-500">
-                        <RoleBadge role={member.role} />
-                     </TableCell>
-                     <TableCell>
-                        <Dropdown>
-                           <DropdownButton plain aria-label="More options">
-                              <Icon
-                                 name="more-horizontal"
-                                 size={16}
-                                 className="text-1"
+      <>
+         <div className="tablet:px-3 pb-5">
+            <Table framed bleed dense className="[--gutter:theme(spacing.3)]">
+               <TableHead>
+                  <TableRow>
+                     <TableHeader>User</TableHeader>
+                     <TableHeader>Role</TableHeader>
+                     <TableHeader className="relative w-0">
+                        <span className="sr-only">Actions</span>
+                     </TableHeader>
+                  </TableRow>
+               </TableHead>
+               <TableBody>
+                  {team.map((member) => (
+                     <TableRow key={member.id}>
+                        <TableCell>
+                           <div className="flex items-center gap-3">
+                              <Avatar
+                                 src={member?.avatar?.url}
+                                 initials={member?.username.charAt(0)}
+                                 className="size-6"
                               />
-                           </DropdownButton>
-                           <DropdownMenu anchor="bottom end">
-                              <DropdownItem>Promote to Admin</DropdownItem>
-                              <DropdownItem>Demote to Contributor</DropdownItem>
-                           </DropdownMenu>
-                        </Dropdown>
+                              <div>{member.username}</div>
+                           </div>
+                        </TableCell>
+                        <TableCell className="text-zinc-500">
+                           <RoleBadge role={member.role} />
+                        </TableCell>
+                        <TableCell>
+                           <Dropdown>
+                              <DropdownButton plain aria-label="More options">
+                                 <Icon
+                                    name="more-horizontal"
+                                    size={16}
+                                    className="text-1"
+                                 />
+                              </DropdownButton>
+                              <DropdownMenu anchor="bottom end">
+                                 <DropdownItem>Promote to Admin</DropdownItem>
+                                 <DropdownItem>
+                                    Demote to Contributor
+                                 </DropdownItem>
+                              </DropdownMenu>
+                           </Dropdown>
+                        </TableCell>
+                     </TableRow>
+                  ))}
+               </TableBody>
+            </Table>
+         </div>
+         <div className="tablet:px-3">
+            <Table
+               grid
+               bleed
+               dense
+               framed
+               className="[--gutter:theme(spacing.3)]"
+            >
+               <TableHead>
+                  <TableRow>
+                     <TableHeader>Permission</TableHeader>
+                     <TableHeader>Contributor</TableHeader>
+                     <TableHeader>Admin</TableHeader>
+                     <TableHeader>Owner</TableHeader>
+                  </TableRow>
+               </TableHead>
+               <TableBody>
+                  <TableRow>
+                     <TableCell>
+                        Edit{" "}
+                        <TextLink href="/settings/site">site settings</TextLink>
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
                      </TableCell>
                   </TableRow>
-               ))}
-            </TableBody>
-         </Table>
-      </div>
+                  <TableRow>
+                     <TableCell>
+                        Setup a{" "}
+                        <TextLink href="/settings/domain">
+                           custom domain
+                        </TextLink>
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableHeader colSpan={4} className="text-1">
+                        Posts
+                     </TableHeader>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Publish</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Delete any</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Delete own</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableHeader colSpan={4} className="text-1">
+                        Collections
+                     </TableHeader>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Delete</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableHeader colSpan={4} className="text-1">
+                        Entries
+                     </TableHeader>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Delete</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+               </TableBody>
+            </Table>
+         </div>
+      </>
    );
 }
 
@@ -140,10 +428,10 @@ function RoleBadge({ role }: { role: TeamMember["role"] }) {
          color = "purple";
          break;
       case "Admin":
-         color = "blue";
+         color = "amber";
          break;
       case "Contributor":
-         color = "green";
+         color = "emerald";
          break;
       default:
          color = "gray";

@@ -33,11 +33,15 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
          )}
          <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3">
             <LoggedIn>
-               <a
+               <Link
                   className="border-2 border-zinc-400/60 dark:border-zinc-600 transition duration-300 shadow-zinc-300 dark:shadow-zinc-900
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-2xl flex items-center mb-3 from-white to-zinc-100
                      justify-center laptop:size-11 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
-                  href="https://mana.wiki"
+                  to={
+                     process.env.NODE_ENV === "development"
+                        ? "/"
+                        : "https://mana.wiki"
+                  }
                >
                   <svg
                      xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +55,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         clipRule="evenodd"
                      />
                   </svg>
-               </a>
+               </Link>
                {isFollowing && (
                   <div className="border-t border-zinc-300 dark:border-dark350 border-dashed mx-5 mb-3" />
                )}
