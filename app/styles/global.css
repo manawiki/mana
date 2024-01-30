@@ -35,7 +35,7 @@
    .border-color-sub {
       @apply border-[#ededed] dark:border-zinc-700;
    }
-   table {
+   /* table {
       @apply border-collapse;
    }
    th {
@@ -43,7 +43,7 @@
    }
    td {
       @apply bg-3 border border-zinc-200 p-3 dark:border-zinc-700;
-   }
+   } */
 }
 
 /* Since dark/light class is set at html level, we can't declare styles inline  */
