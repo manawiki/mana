@@ -78,32 +78,36 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 };
 
 export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
-   scripts({ data }) {
+   scripts({ data, parentsData }) {
       const enableAds = data?.site?.enableAds;
       const gaTag = data?.site?.gaTagId;
+      const isBot = parentsData?.isbot;
 
-      //disable scripts in development
-      if (process.env.NODE_ENV === "development") return [];
+      //Load ad scripts if enabled
+      const gAnalytics = `https://www.googletagmanager.com/gtag/js?id=${gaTag}`;
+      const rampConfig = "//cdn.intergient.com/1025133/74686/ramp_config.js";
+      const rampCore = "//cdn.intergient.com/ramp_core.js";
 
-      if (enableAds || gaTag) {
-         const gAnalytics = {
-            src: `https://www.googletagmanager.com/gtag/js?id=${gaTag}`,
+      if (
+         enableAds &&
+         gaTag &&
+         process.env.NODE_ENV === "production" &&
+         !isBot
+      ) {
+         return [gAnalytics, rampConfig, rampCore].map((src) => ({
+            src,
             async: true,
-         };
-         //Load GTag with ads if enabled
-         if (enableAds) {
-            const rampConfig = {
-               src: "//cdn.intergient.com/1025133/74686/ramp_config.js",
+         }));
+      }
+
+      //Otherwise just load analytics
+      if (gaTag && process.env.NODE_ENV === "production" && !isBot) {
+         return [
+            {
+               src: gAnalytics,
                async: true,
-            };
-            const rampCore = {
-               src: "//cdn.intergient.com/ramp_core.js",
-               async: true,
-            };
-            return [gAnalytics, rampConfig, rampCore];
-         }
-         //Otherwise just load analytics
-         return [gAnalytics];
+            },
+         ];
       }
 
       return [];
