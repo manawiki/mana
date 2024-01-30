@@ -9,11 +9,13 @@ const TableContext = createContext<{
    dense: boolean;
    grid: boolean;
    striped: boolean;
+   framed: boolean;
 }>({
    bleed: false,
    dense: false,
    grid: false,
    striped: false,
+   framed: false,
 });
 
 export function Table({
@@ -21,6 +23,7 @@ export function Table({
    dense = false,
    grid = false,
    striped = false,
+   framed = false,
    className,
    children,
    ...props
@@ -29,11 +32,12 @@ export function Table({
    dense?: boolean;
    grid?: boolean;
    striped?: boolean;
+   framed?: boolean;
 } & React.ComponentPropsWithoutRef<"div">) {
    return (
       <TableContext.Provider
          value={
-            { bleed, dense, grid, striped } as React.ContextType<
+            { bleed, dense, grid, striped, framed } as React.ContextType<
                typeof TableContext
             >
          }
@@ -75,7 +79,14 @@ export function TableHead({
 }
 
 export function TableBody(props: React.ComponentPropsWithoutRef<"tbody">) {
-   return <tbody {...props} />;
+   let { striped } = useContext(TableContext);
+
+   return (
+      <tbody
+         className={clsx(!striped && "divide-y divide-color-sub")}
+         {...props}
+      />
+   );
 }
 
 const TableRowContext = createContext<{
@@ -138,7 +149,7 @@ export function TableHeader({
          {...props}
          className={clsx(
             className,
-            "border-b border-b-zinc-950/10 px-4 py-2 font-medium first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))] dark:border-b-white/10",
+            "border-b border-b-zinc-950/5 px-4 py-2 font-medium first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))] dark:border-b-white/10",
             grid &&
                "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
             !bleed && "tablet:first:pl-2 tablet:last:pr-2",
@@ -152,7 +163,7 @@ export function TableCell({
    children,
    ...props
 }: React.ComponentPropsWithoutRef<"td">) {
-   let { bleed, dense, grid, striped } = useContext(TableContext);
+   let { bleed, dense, grid, striped, framed } = useContext(TableContext);
    let { href, target, title } = useContext(TableRowContext);
    let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
 
@@ -163,7 +174,7 @@ export function TableCell({
          className={clsx(
             className,
             "relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
-            !striped && "border-b border-zinc-950/5 dark:border-white/5",
+            !striped && !framed && "border-b border-color",
             grid &&
                "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
             dense ? "py-2.5" : "py-4",

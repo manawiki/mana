@@ -31,7 +31,7 @@ type TeamMember = {
    id: string;
    username: string;
    avatar: {
-      url: string;
+      url?: string;
    };
    role: "Owner" | "Admin" | "Contributor";
 };
@@ -68,35 +68,10 @@ export async function loader({
 
 export default function Members() {
    const { team } = useLoaderData<typeof loader>();
-   console.log(team);
 
-   enum Role {
-      Owner = "Owner",
-      Admin = "Admin",
-      Contributor = "Contributor",
-   }
-   const RoleBadge: React.FC<{ role: Role }> = ({ role }) => {
-      let color = "" as any;
-      switch (role) {
-         case Role.Owner:
-            color = "purple";
-            break;
-         case Role.Admin:
-            color = "blue";
-            break;
-         case Role.Contributor:
-            color = "gray";
-            break;
-         default:
-            color = "gray";
-            break;
-      }
-
-      return <Badge color={color}>{role}</Badge>;
-   };
    return (
-      <div>
-         <Table className="[--gutter:theme(spacing.6)] tablet:[--gutter:theme(spacing.8)]">
+      <div className="border rounded-xl border-color-sub px-4 overflow-hidden pt-1 bg-zinc-50 dark:bg-dark350">
+         <Table framed bleed dense className="[--gutter:theme(spacing.4)]">
             <TableHead>
                <TableRow>
                   <TableHeader>User</TableHeader>
@@ -111,30 +86,31 @@ export default function Members() {
                   <TableRow key={member.id}>
                      <TableCell>
                         <div className="flex items-center gap-3">
-                           <Avatar src={member.avatar.url} className="size-6" />
+                           <Avatar
+                              src={member?.avatar?.url}
+                              initials={member?.username.charAt(0)}
+                              className="size-6"
+                           />
                            <div>{member.username}</div>
                         </div>
                      </TableCell>
                      <TableCell className="text-zinc-500">
-                        <RoleBadge role={member.role}>{member.role}</RoleBadge>
+                        <RoleBadge role={member.role} />
                      </TableCell>
                      <TableCell>
-                        <div className="-mx-3 -my-1.5 tablet:-mx-2.5">
-                           <Dropdown>
-                              <DropdownButton plain aria-label="More options">
-                                 <Icon
-                                    name="more-horizontal"
-                                    size={16}
-                                    className="text-1"
-                                 />
-                              </DropdownButton>
-                              <DropdownMenu anchor="bottom end">
-                                 <DropdownItem>View</DropdownItem>
-                                 <DropdownItem>Edit</DropdownItem>
-                                 <DropdownItem>Delete</DropdownItem>
-                              </DropdownMenu>
-                           </Dropdown>
-                        </div>
+                        <Dropdown>
+                           <DropdownButton plain aria-label="More options">
+                              <Icon
+                                 name="more-horizontal"
+                                 size={16}
+                                 className="text-1"
+                              />
+                           </DropdownButton>
+                           <DropdownMenu anchor="bottom end">
+                              <DropdownItem>Promote to Admin</DropdownItem>
+                              <DropdownItem>Demote to Contributor</DropdownItem>
+                           </DropdownMenu>
+                        </Dropdown>
                      </TableCell>
                   </TableRow>
                ))}
@@ -156,6 +132,26 @@ export const meta: MetaFunction = ({ matches }) => {
       },
    ];
 };
+
+function RoleBadge({ role }: { role: TeamMember["role"] }) {
+   let color = "" as any;
+   switch (role) {
+      case "Owner":
+         color = "purple";
+         break;
+      case "Admin":
+         color = "blue";
+         break;
+      case "Contributor":
+         color = "green";
+         break;
+      default:
+         color = "gray";
+         break;
+   }
+
+   return <Badge color={color}>{role}</Badge>;
+}
 
 const query = {
    query: {

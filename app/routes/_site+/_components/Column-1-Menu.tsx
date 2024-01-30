@@ -1,8 +1,8 @@
 import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
 import type { SerializeFrom } from "@remix-run/server-runtime";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
@@ -97,18 +97,12 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                               active:translate-y-0.5 dark:hover:border-zinc-600 rounded-2xl flex items-center 
                               justify-center laptop:size-11 bg-3 shadow shadow-1 hover:border-zinc-400"
                         >
-                           {user?.avatar?.url ? (
-                              <Image
-                                 width={30}
-                                 height={30}
-                                 className="overflow-hidden rounded-full"
-                                 url={user?.avatar?.url}
-                                 options="aspect_ratio=1:1&height=60&width=60"
-                                 alt="User Avatar"
-                              />
-                           ) : (
-                              <Icon name="user" size={22} />
-                           )}
+                           <Avatar
+                              src={user?.avatar?.url}
+                              initials={user?.username.charAt(0)}
+                              className="size-7"
+                              options="aspect_ratio=1:1&height=60&width=60"
+                           />
                         </Link>
                      </section>
                   </div>

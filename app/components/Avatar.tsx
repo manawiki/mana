@@ -17,6 +17,7 @@ type AvatarProps = {
    initials?: string;
    alt?: string;
    className?: string;
+   options?: string;
 };
 
 export function Avatar({
@@ -25,6 +26,7 @@ export function Avatar({
    initials,
    alt = "",
    className,
+   options,
    ...props
 }: AvatarProps & React.ComponentPropsWithoutRef<"span">) {
    return (
@@ -34,7 +36,7 @@ export function Avatar({
             className,
 
             // Basic layout
-            "inline-grid align-middle *:col-start-1 *:row-start-1",
+            "inline-grid align-middle *:col-start-1 *:row-start-1 dark:bg-dark450 bg-white",
 
             // Add the correct border radius
             square
@@ -62,10 +64,10 @@ export function Avatar({
                </text>
             </svg>
          )}
-         {src && <Image url={src} alt={alt} />}
+         {src && <Image url={src} alt={alt} options={options} />}
          {/* Add an inset border that sits on top of the image */}
          <span
-            className="ring-1 ring-inset ring-black/5 dark:ring-white/5 forced-colors:outline"
+            className="ring-1 ring-inset ring-black/10 dark:ring-white/5 forced-colors:outline"
             aria-hidden="true"
          />
       </span>
