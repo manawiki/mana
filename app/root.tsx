@@ -37,6 +37,7 @@ import { getTheme } from "~/utils/theme.server";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
+import { isbot } from "isbot";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -81,6 +82,8 @@ export const loader = async ({
 
    const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
 
+   const bot = isbot(request?.headers?.get("user-agent") ?? "");
+
    return json(
       {
          requestInfo: {
@@ -93,6 +96,7 @@ export const loader = async ({
          user,
          siteSlug,
          following,
+         isbot: bot,
       },
       { headers },
    );
