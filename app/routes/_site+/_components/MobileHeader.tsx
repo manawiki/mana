@@ -9,8 +9,8 @@ import {
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useTranslation } from "react-i18next";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -44,11 +44,15 @@ export function MobileHeader() {
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
-                     <a
-                        className="border-2 border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                     <Link
+                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
-                        href="https://mana.wiki"
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-400 mx-auto"
+                        to={
+                           process.env.NODE_ENV === "development"
+                              ? "/"
+                              : "https://mana.wiki"
+                        }
                      >
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +66,7 @@ export function MobileHeader() {
                               clipRule="evenodd"
                            />
                         </svg>
-                     </a>
+                     </Link>
                      {!isUserPath && (
                         <NotFollowingSite>
                            <div className="flex items-center">
@@ -109,22 +113,16 @@ export function MobileHeader() {
                   <Link
                      prefetch="intent"
                      to="/user/account"
-                     className="border-2 border-zinc-300 dark:border-zinc-600 transition duration-300 
+                     className="border border-zinc-300 dark:border-zinc-600 transition duration-300 
                   active:translate-y-0.5 dark:hover:border-zinc-500 size-9
-                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-900 hover:border-zinc-400"
+                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-800 hover:border-zinc-400"
                   >
-                     {user?.avatar?.url ? (
-                        <Image
-                           width={24}
-                           height={24}
-                           className="overflow-hidden rounded-full"
-                           url={user?.avatar?.url}
-                           options="aspect_ratio=1:1&height=60&width=60"
-                           alt="User Avatar"
-                        />
-                     ) : (
-                        <Icon name="user" size={18} />
-                     )}
+                     <Avatar
+                        src={user?.avatar?.url}
+                        initials={user?.username.charAt(0)}
+                        className="size-6"
+                        options="aspect_ratio=1:1&height=60&width=60"
+                     />
                   </Link>
                </div>
             </LoggedIn>

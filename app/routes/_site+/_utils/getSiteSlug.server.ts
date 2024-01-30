@@ -1,6 +1,6 @@
 import type { Payload } from "payload";
 
-import type { User } from "~/db/payload-types";
+import type { RemixRequestContext } from "remix.env";
 import { cacheThis } from "~/utils/cache.server";
 
 /**
@@ -13,7 +13,7 @@ import { cacheThis } from "~/utils/cache.server";
 export async function getSiteSlug(
    request: Request,
    payload: Payload,
-   user: User | undefined,
+   user: RemixRequestContext["user"],
 ) {
    let siteSlug = process.env.PAYLOAD_PUBLIC_SITE_SLUG ?? "hq";
 

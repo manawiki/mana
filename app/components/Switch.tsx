@@ -36,7 +36,7 @@ export function SwitchField({ className, ...props }: HeadlessFieldProps) {
          {...props}
          className={clsx(
             className,
-
+            "p-4 rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50 mb-6",
             // Base layout
             "grid grid-cols-[1fr_auto] items-center gap-x-8 gap-y-1 tablet:grid-cols-[1fr_auto]",
 

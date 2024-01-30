@@ -10,7 +10,7 @@ export function SidebarItem({
    className,
    isLoggedOut,
 }: {
-   site: SerializeFrom<typeof siteLoaderType>["site"];
+   site: SerializeFrom<typeof siteLoaderType>["site"] | any;
    siteSlug?: string;
    className?: string;
    isLoggedOut?: boolean;
