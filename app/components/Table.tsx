@@ -150,8 +150,7 @@ export function TableHeader({
             className,
             framed && "bg-zinc-50 dark:bg-dark400",
             "border-b border-color-sub font-semibold px-4 py-2.5 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
-            grid &&
-               "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
+            grid && "border-l border-color-sub first:border-l-0",
             !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}
       />
@@ -175,8 +174,7 @@ export function TableCell({
             className,
             "relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
             !striped && !framed && "border-b border-color",
-            grid &&
-               "border-l border-l-zinc-950/5 first:border-l-0 dark:border-l-white/5",
+            grid && "border-l border-color-sub first:border-l-0",
             dense ? "py-2.5" : "py-4",
             !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}

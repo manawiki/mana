@@ -74,19 +74,10 @@ export default function Members() {
       <>
          <div className="tablet:px-3 pb-5">
             <Table framed bleed dense className="[--gutter:theme(spacing.3)]">
-               <TableHead>
-                  <TableRow>
-                     <TableHeader>User</TableHeader>
-                     <TableHeader>Role</TableHeader>
-                     <TableHeader className="relative w-0">
-                        <span className="sr-only">Actions</span>
-                     </TableHeader>
-                  </TableRow>
-               </TableHead>
                <TableBody>
                   {team.map((member) => (
                      <TableRow key={member.id}>
-                        <TableCell>
+                        <TableCell className="w-full">
                            <div className="flex items-center gap-3">
                               <Avatar
                                  src={member?.avatar?.url}
@@ -96,7 +87,7 @@ export default function Members() {
                               <div>{member.username}</div>
                            </div>
                         </TableCell>
-                        <TableCell className="text-zinc-500">
+                        <TableCell className="text-zinc-500 text-right">
                            <RoleBadge role={member.role} />
                         </TableCell>
                         <TableCell>
@@ -184,6 +175,88 @@ export default function Members() {
                            name="minus"
                            size={20}
                            className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>
+                        Enable{" "}
+                        <TextLink href="/settings/payouts">
+                           monetization
+                        </TextLink>
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableHeader colSpan={4} className="text-1">
+                        Homepage
+                     </TableHeader>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Publish</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="minus"
+                           size={20}
+                           className="text-zinc-400 dark:text-zinc-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                  </TableRow>
+                  <TableRow>
+                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Icon
+                           name="check"
+                           size={20}
+                           className="text-green-500"
                         />
                      </TableCell>
                      <TableCell>
