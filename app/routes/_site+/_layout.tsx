@@ -81,12 +81,13 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
    scripts({ data, parentsData }) {
       const enableAds = data?.site?.enableAds;
       const gaTag = data?.site?.gaTagId;
-      const isBot = parentsData?.isbot;
+      const isBot = parentsData?.[0]?.isbot;
 
       //Load ad scripts if enabled
       const gAnalytics = `https://www.googletagmanager.com/gtag/js?id=${gaTag}`;
-      const rampConfig = "//cdn.intergient.com/1025133/74686/ramp_config.js";
-      const rampCore = "//cdn.intergient.com/ramp_core.js";
+      const rampConfig =
+         "https://cdn.intergient.com/1025133/74686/ramp_config.js";
+      const rampCore = "https://cdn.intergient.com/ramp_core.js";
 
       if (
          enableAds &&
@@ -96,7 +97,8 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
       ) {
          return [gAnalytics, rampConfig, rampCore].map((src) => ({
             src,
-            async: true,
+            defer: true,
+            preload: true,
          }));
       }
 
@@ -105,7 +107,8 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
          return [
             {
                src: gAnalytics,
-               async: true,
+               defer: true,
+               preload: true,
             },
          ];
       }
