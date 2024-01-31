@@ -21,7 +21,6 @@ import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampScripts } from "./_components/RampScripts";
 import { fetchSite } from "./_utils/fetchSite.server";
-import { GoogleAnalytics } from "~/utils/ga";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -64,7 +63,7 @@ export default function SiteLayout() {
             <ColumnThree />
             <ColumnFour />
          </main>
-         <GoogleAnalytics gaId={gaTag} />
+         <GAScripts gaTrackingId={gaTag} />
          <RampScripts enableAds={enableAds} />
       </>
    );
