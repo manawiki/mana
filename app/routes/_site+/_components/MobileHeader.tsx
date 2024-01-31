@@ -128,8 +128,6 @@ export function MobileHeader() {
             </LoggedIn>
             <LoggedOut>
                <Link
-                  prefetch="intent"
-                  reloadDocument={true}
                   to={`/login?redirectTo=${location.pathname}`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"

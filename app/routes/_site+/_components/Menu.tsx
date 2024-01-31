@@ -174,7 +174,8 @@ export const PrimaryMenuLinks = ({
          <NavLink className="block mb-2" prefetch="intent" to="posts">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon
@@ -194,7 +195,8 @@ export const PrimaryMenuLinks = ({
          <NavLink className="block" prefetch="intent" to="/collections">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon
