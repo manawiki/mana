@@ -78,10 +78,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 };
 
 export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
-   scripts({ data, parentsData }) {
+   scripts({ data }) {
       const enableAds = data?.site?.enableAds;
       const gaTag = data?.site?.gaTagId;
-      const isBot = parentsData?.[0]?.isbot;
 
       //Load ad scripts if enabled
       const gAnalytics = `https://www.googletagmanager.com/gtag/js?id=${gaTag}`;
@@ -89,12 +88,7 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
          "https://cdn.intergient.com/1025133/74686/ramp_config.js";
       const rampCore = "https://cdn.intergient.com/ramp_core.js";
 
-      if (
-         enableAds &&
-         gaTag &&
-         process.env.NODE_ENV === "production" &&
-         !isBot
-      ) {
+      if (enableAds && gaTag && process.env.NODE_ENV === "production") {
          return [gAnalytics, rampConfig, rampCore].map((src) => ({
             src,
             defer: true,
@@ -103,7 +97,7 @@ export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
       }
 
       //Otherwise just load analytics
-      if (gaTag && process.env.NODE_ENV === "production" && !isBot) {
+      if (gaTag && process.env.NODE_ENV === "production") {
          return [
             {
                src: gAnalytics,
