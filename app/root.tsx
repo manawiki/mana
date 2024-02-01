@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
+import { Partytown } from "@builder.io/partytown/react";
 import { withMetronome } from "@metronome-sh/react";
 import type {
    MetaFunction,
@@ -23,7 +24,6 @@ import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
-import { ExternalScripts } from "remix-utils/external-scripts";
 import { Toaster, toast as notify } from "sonner";
 
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -37,7 +37,6 @@ import { getTheme } from "~/utils/theme.server";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { isbot } from "isbot";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -199,6 +198,7 @@ function App() {
                type="image/x-icon"
                href={`${favicon}?width=192&height=192`}
             />
+            <Partytown debug={true} forward={["dataLayer.push"]} />
             <Meta />
             <Links />
          </head>
