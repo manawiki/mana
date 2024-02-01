@@ -1,23 +1,17 @@
 import { useEffect } from "react";
 
 import { json } from "@remix-run/node";
-import type {
-   LoaderFunctionArgs,
-   MetaFunction,
-   SerializeFrom,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData, useLocation } from "@remix-run/react";
-import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import * as gtag from "~/utils/gtags.client";
+import { GoogleAnalytics } from "~/utils/third-parties/google/ga";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
 import { ColumnThree } from "./_components/Column-3";
 import { ColumnFour } from "./_components/Column-4";
-import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampScripts } from "./_components/RampScripts";
 import { fetchSite } from "./_utils/fetchSite.server";
@@ -38,18 +32,20 @@ export async function loader({
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
-   const gaTag = site?.gaTagId;
-   const enableAds = site?.enableAds;
+   const gaTag = site?.gaTagId as any as string;
+   const enableAds = site?.enableAds as any as boolean;
 
    const [, setSearchToggle] = useSearchToggleState();
 
    useEffect(() => {
-      if (process.env.NODE_ENV === "production" && gaTag) {
-         gtag.pageview(location.pathname, gaTag);
-      }
+      //Google Analytics automatically tracks pageviews when the browser history state changes. This means that client-side navigations between Next.js routes will send pageview data without any configuration.
+      // if (process.env.NODE_ENV === "production" && gaTag) {
+      //    gtag.pageview(location.pathname, gaTag);
+      // }
+
       //Hide the search on path change
       setSearchToggle(false);
-   }, [location, gaTag]);
+   }, [setSearchToggle, location]);
 
    return (
       <>
@@ -63,7 +59,7 @@ export default function SiteLayout() {
             <ColumnThree />
             <ColumnFour />
          </main>
-         <GAScripts gaTrackingId={gaTag} />
+         <GoogleAnalytics gaId={gaTag} />
          <RampScripts enableAds={enableAds} />
       </>
    );
@@ -75,38 +71,4 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
          title: data?.site.name,
       },
    ];
-};
-
-export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
-   scripts({ data }) {
-      const enableAds = data?.site?.enableAds;
-      const gaTag = data?.site?.gaTagId;
-
-      //Load ad scripts if enabled
-      const gAnalytics = `https://www.googletagmanager.com/gtag/js?id=${gaTag}`;
-      const rampConfig =
-         "https://cdn.intergient.com/1025133/74686/ramp_config.js";
-      const rampCore = "https://cdn.intergient.com/ramp_core.js";
-
-      if (enableAds && gaTag && process.env.NODE_ENV === "production") {
-         return [gAnalytics, rampConfig, rampCore].map((src) => ({
-            src,
-            defer: true,
-            preload: true,
-         }));
-      }
-
-      //Otherwise just load analytics
-      if (gaTag && process.env.NODE_ENV === "production") {
-         return [
-            {
-               src: gAnalytics,
-               defer: true,
-               preload: true,
-            },
-         ];
-      }
-
-      return [];
-   },
 };

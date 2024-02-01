@@ -209,7 +209,6 @@ function App() {
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
-            {isBot ? null : <ExternalScripts />}
             <LiveReload />
          </body>
       </html>
