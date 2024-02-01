@@ -11910,6 +11910,11 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
+third-party-capital@^1.0.26:
+  version "1.0.26"
+  resolved "https://registry.yarnpkg.com/third-party-capital/-/third-party-capital-1.0.26.tgz#3d7e576b276c654fa30ace615cb7f8ceb7633e5f"
+  integrity sha512-Eu0m4o1YglJG1c4XqRLKGlV0QWJHL+zAooXdNmT1funYLIvIWtbOXRriGmmIzbpnbIGhvJUP+oV8xS5Yoj9GIA==
+
 thread-stream@^2.0.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/thread-stream/-/thread-stream-2.4.1.tgz#6d588b14f0546e59d3f306614f044bc01ce43351"

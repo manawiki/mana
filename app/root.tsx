@@ -82,8 +82,6 @@ export const loader = async ({
 
    const stripePublicKey = process.env.STRIPE_PUBLIC_KEY ?? "";
 
-   const bot = isbot(request?.headers?.get("user-agent") ?? "");
-
    return json(
       {
          requestInfo: {
@@ -96,7 +94,6 @@ export const loader = async ({
          user,
          siteSlug,
          following,
-         isbot: bot,
       },
       { headers },
    );
@@ -212,7 +209,6 @@ function App() {
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
             {isBot ? null : <Scripts />}
-            <ExternalScripts />
             <LiveReload />
          </body>
       </html>
