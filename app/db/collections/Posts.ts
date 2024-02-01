@@ -5,8 +5,8 @@ import type {
 
 import type { User } from "payload/generated-types";
 
+import { canReadPost } from "./posts/access";
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
-import { canReadPost } from "../../access/post";
 import { isStaffFieldLevel } from "../../access/user";
 
 const afterDeleteHook: CollectionAfterDeleteHook = async ({
