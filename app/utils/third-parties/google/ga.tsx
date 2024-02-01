@@ -35,8 +35,8 @@ export function GoogleAnalytics(props: GAParams) {
 
    return (
       <>
-         <Script
-            strategy="worker"
+         <script
+            type="text/partytown"
             id="_next-ga-init"
             dangerouslySetInnerHTML={{
                __html: `
@@ -47,8 +47,8 @@ export function GoogleAnalytics(props: GAParams) {
           gtag('config', '${gaId}');`,
             }}
          />
-         <Script
-            strategy="worker"
+         <script
+            type="text/partytown"
             id="_next-ga"
             src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
          />
