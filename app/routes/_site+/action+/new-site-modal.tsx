@@ -75,7 +75,7 @@ export function NewSiteModal() {
          <div className="flex items-center justify-center">
             <button
                className="dark:bg-dark400 border-2 dark:border-zinc-700 shadow-1 bg-white
-               text-1 flex h-12 w-12 items-center justify-center dark:hover:border-zinc-600 border-zinc-200
+               text-1 flex size-11 items-center justify-center dark:hover:border-zinc-600 border-zinc-200
                rounded-full shadow-sm transition duration-300 active:translate-y-0.5 hover:border-zinc-300"
                type="button"
                aria-label="Create New Site"

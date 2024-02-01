@@ -9,6 +9,7 @@ import { PostContents } from "./PostContents";
 import { Posts } from "./Posts";
 import { PostTags } from "./PostTags";
 import { Sites } from "./site/config";
+import { SiteApplications } from "./site-applications/SiteApplications";
 import { Updates } from "./Updates";
 import { Users } from "./Users";
 
@@ -26,4 +27,5 @@ export const collections = [
    PostTags,
    Comments,
    PostContents,
+   SiteApplications,
 ];
