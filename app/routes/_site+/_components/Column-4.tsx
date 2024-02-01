@@ -15,7 +15,7 @@ export function ColumnFour() {
    return (
       <section className="relative laptop:z-30 laptop:block max-laptop:bg-2-sub">
          <div
-            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1
+            className="flex flex-col laptop:fixed laptop:border-l laptop:shadow-sm laptop:shadow-1 no-scrollbar 
             h-full bg-2-sub laptop:bg-2 border-color laptop:overflow-y-auto laptop:w-[334px]"
          >
             <div className="laptop:h-full flex flex-col bg-zinc-50 dark:bg-bg2Dark">
@@ -127,40 +127,42 @@ export function ColumnFour() {
                   </div>
                   {/* @ts-ignore */}
                   {site?.trendingPages && site?.trendingPages.length > 0 && (
-                     <section className="ml-5">
-                        <div className="divide-y divide-color dark:divide-zinc-700/40 border-y border-color dark:border-zinc-700/40 font-semibold">
-                           {/* @ts-ignore */}
-                           {site?.trendingPages?.map((row: any) => (
-                              <Link
-                                 to={row.path}
-                                 key={row.path}
-                                 className="flex items-center gap-2 px-3 py-2 pl-0 group"
-                              >
-                                 <div className="text-sm flex-grow group-hover:underline">
-                                    {row.data.name}
-                                 </div>
-                                 <div
-                                    className="h-[26px] w-[26px] flex items-center justify-center rounded-full bg-white
-                                    border border-color-sub shadow-sm shadow-1 overflow-hidden dark:bg-dark400"
+                     <section className="max-laptop:bg-3">
+                        <div className="max-laptop:max-w-[760px] mx-auto pl-4 tablet:px-4 laptop:pl-5 laptop:pr-0">
+                           <div className="divide-y divide-color dark:divide-zinc-700/40 border-y border-color dark:border-zinc-700/40 font-semibold">
+                              {/* @ts-ignore */}
+                              {site?.trendingPages?.map((row: any) => (
+                                 <Link
+                                    to={row.path}
+                                    key={row.path}
+                                    className="flex items-center gap-2 pr-3 py-2 tablet:pr-0 laptop:pr-3 group"
                                  >
-                                    {row.data?.icon?.url ? (
-                                       <Image
-                                          width={40}
-                                          height={40}
-                                          url={row.data?.icon?.url}
-                                          options="aspect_ratio=1:1&height=54&width=54"
-                                          alt={row.data.name}
-                                       />
-                                    ) : (
-                                       <Icon
-                                          name="component"
-                                          className="dark:text-zinc-500 text-zinc-400 mx-auto"
-                                          size={16}
-                                       />
-                                    )}
-                                 </div>
-                              </Link>
-                           ))}
+                                    <div className="text-sm flex-grow group-hover:underline">
+                                       {row.data.name}
+                                    </div>
+                                    <div
+                                       className="h-[26px] w-[26px] flex items-center justify-center rounded-full bg-white
+                                    border border-color-sub shadow-sm shadow-1 overflow-hidden dark:bg-dark400"
+                                    >
+                                       {row.data?.icon?.url ? (
+                                          <Image
+                                             width={40}
+                                             height={40}
+                                             url={row.data?.icon?.url}
+                                             options="aspect_ratio=1:1&height=54&width=54"
+                                             alt={row.data.name}
+                                          />
+                                       ) : (
+                                          <Icon
+                                             name="component"
+                                             className="dark:text-zinc-500 text-zinc-400 mx-auto"
+                                             size={16}
+                                          />
+                                       )}
+                                    </div>
+                                 </Link>
+                              ))}
+                           </div>
                         </div>
                      </section>
                   )}
