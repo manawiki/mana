@@ -82,7 +82,10 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                {isFollowing && (
                   <div className="border-t border-zinc-300 dark:border-dark350 border-dashed mx-5 mb-3" />
                )}
-               <div className="fixed bottom-0 left-0 w-[70px] bg-1 border-r border-color py-3">
+               <NewSiteModal />
+            </LoggedIn>
+            <div className="fixed bottom-0 left-0 w-[70px] bg-1 border-r border-color py-3">
+               <LoggedIn>
                   <div className="flex items-center justify-center flex-col gap-1">
                      <Staff>
                         <a
@@ -110,12 +113,9 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         </Link>
                      </section>
                   </div>
-               </div>
-               <NewSiteModal />
-            </LoggedIn>
-            <LoggedOut>
-               <div className="absolute bottom-4 left-0 w-full">
-                  <div className="flex items-center justify-center flex-col gap-3">
+               </LoggedIn>
+               <LoggedOut>
+                  <div className="flex items-center justify-center flex-col gap-3 pb-1">
                      <DarkModeToggle />
                      <Link
                         to={`/login?redirectTo=${location.pathname}`}
@@ -126,8 +126,8 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                         <Icon name="user" size={20} />
                      </Link>
                   </div>
-               </div>
-            </LoggedOut>
+               </LoggedOut>
+            </div>
          </menu>
       </>
    );
