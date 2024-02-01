@@ -4,8 +4,8 @@ import type {
    ActionFunctionArgs,
    SerializeFrom,
 } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
-   redirect,
    useFetcher,
    useLoaderData,
    useRouteLoaderData,
@@ -28,6 +28,10 @@ export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
+   if (!user) {
+      throw redirect("/login?redirectTo=/apply");
+   }
+
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const { docs } = await payload.find({

@@ -22,12 +22,17 @@ export default function UserLayout() {
       <>
          <MobileHeader />
          <main
-            className="max-laptop:pt-14 laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr] 
-               laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr]"
+            className="max-laptop:pt-14 laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr] 
+               laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr]"
          >
-            <div className="max-laptop:hidden border-r border-color bg-1 flex items-center flex-col pt-3 relative">
-               <ColumnOneMenu />
-            </div>
+            <section className="bg-1 border-color relative top-0 z-50 max-laptop:fixed max-laptop:w-full laptop:border-r">
+               <div
+                  className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
+                  laptop:h-full laptop:w-[70px] laptop:overflow-y-auto laptop:pt-3 no-scrollbar"
+               >
+                  <ColumnOneMenu />
+               </div>
+            </section>
             <div className="max-laptop:hidden bg-2 border-r border-color px-3 py-4 flex flex-col justify-between">
                <UserMenuItems />
                <button

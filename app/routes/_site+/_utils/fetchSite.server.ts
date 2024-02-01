@@ -1,7 +1,8 @@
 import { redirect } from "@remix-run/server-runtime";
 import type { Payload } from "payload";
 
-import type { Site, User } from "payload/generated-types";
+import type { Site } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { authGQLFetcher, gqlEndpoint } from "~/utils/fetchers.server";
 
@@ -12,7 +13,7 @@ export async function fetchSite({
    payload,
 }: {
    siteSlug: string | undefined;
-   user?: User;
+   user?: RemixRequestContext["user"];
    request: Request;
    payload: Payload;
 }): Promise<Site> {

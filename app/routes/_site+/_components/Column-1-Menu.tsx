@@ -31,7 +31,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                </div>
             </LoggedOut>
          )}
-         <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3">
+         <menu className="w-full justify-between max-laptop:flex max-laptop:gap-3 relative">
             <LoggedIn>
                <Link
                   className="border-2 border-zinc-400/60 dark:border-zinc-600 transition duration-300 shadow-zinc-300 dark:shadow-zinc-900
@@ -82,7 +82,7 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                {isFollowing && (
                   <div className="border-t border-zinc-300 dark:border-dark350 border-dashed mx-5 mb-3" />
                )}
-               <div className="absolute bottom-0 left-0 w-full backdrop-blur-sm py-3">
+               <div className="fixed bottom-0 left-0 w-[70px] bg-1 border-r border-color py-3">
                   <div className="flex items-center justify-center flex-col gap-1">
                      <Staff>
                         <a

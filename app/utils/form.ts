@@ -5,10 +5,7 @@ export function isProcessing(state: "idle" | "submitting" | "loading") {
 }
 
 export function isAdding(item: any, type: string) {
-   return (
-      (item.state === "submitting" || item.state === "loading") &&
-      item.formData.get("intent") === type
-   );
+   return item.state === "submitting" && item.formData.get("intent") === type;
 }
 
 export function isLoading(item: any) {
