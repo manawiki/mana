@@ -1,13 +1,21 @@
+import { Suspense, useState } from "react";
+
 import {
    type MetaFunction,
    type LoaderFunctionArgs,
-   json,
+   defer,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Await, useLoaderData } from "@remix-run/react";
+import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
+import type { Payload } from "payload";
 
+import type { RemixRequestContext } from "remix.env";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";
+import { Button } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import { DotLoader } from "~/components/DotLoader";
 import {
    Dropdown,
    DropdownButton,
@@ -23,9 +31,11 @@ import {
    TableHeader,
    TableRow,
 } from "~/components/Table";
-import { TextLink } from "~/components/Text";
+import { Text } from "~/components/Text";
+import type { SiteApplication } from "~/db/payload-types";
 import { authGQLFetcher } from "~/utils/fetchers.server";
 
+import { PermissionTable } from "./components/PermissionTable";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 
 type TeamMember = {
@@ -37,14 +47,57 @@ type TeamMember = {
    role: "Owner" | "Admin" | "Contributor";
 };
 
+async function fetchApplicationData({
+   payload,
+   siteSlug,
+   user,
+}: {
+   payload: Payload;
+   siteSlug: string;
+   user: RemixRequestContext["user"];
+}) {
+   const { docs } = await payload.find({
+      collection: "siteApplications",
+      where: {
+         "site.slug": {
+            equals: siteSlug,
+         },
+      },
+      overrideAccess: false,
+      user,
+      depth: 2,
+      sort: "-createdAt",
+   });
+   const applications = docs.map((doc) => ({
+      id: doc.id,
+      createdBy: {
+         username: doc.createdBy.username,
+         avatar: {
+            url: doc.createdBy.avatar?.url,
+         },
+      },
+      createdAt: doc.createdBy.createdAt,
+      reviewReply: doc.reviewReply,
+      status: doc.status,
+      primaryDetails: doc.primaryDetails,
+      additionalNotes: doc.additionalNotes,
+   }));
+   return applications;
+}
+
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
-   const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+   const applications = fetchApplicationData({
+      payload,
+      siteSlug,
+      user,
+   });
 
+   const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
    const data = (await authGQLFetcher({
       variables: {
          siteSlug,
@@ -64,15 +117,18 @@ export async function loader({
       })),
    ] as TeamMember[];
 
-   return json({ team });
+   return defer({
+      applications,
+      team,
+   });
 }
 
 export default function Members() {
-   const { team } = useLoaderData<typeof loader>();
-
+   const { team, applications } = useLoaderData<typeof loader>();
    return (
-      <>
+      <div className="space-y-3">
          <div className="tablet:px-3 pb-5">
+            <h2 className="font-bold font-header pb-2">Team members</h2>
             <Table framed bleed dense className="[--gutter:theme(spacing.3)]">
                <TableBody>
                   {team.map((member) => (
@@ -112,372 +168,83 @@ export default function Members() {
                </TableBody>
             </Table>
          </div>
-         <div className="tablet:px-3">
-            <Table
-               grid
-               bleed
-               dense
-               framed
-               className="[--gutter:theme(spacing.3)]"
-            >
-               <TableHead>
-                  <TableRow>
-                     <TableHeader>Permission</TableHeader>
-                     <TableHeader>Contributor</TableHeader>
-                     <TableHeader>Admin</TableHeader>
-                     <TableHeader>Owner</TableHeader>
-                  </TableRow>
-               </TableHead>
-               <TableBody>
-                  <TableRow>
-                     <TableCell>
-                        Edit{" "}
-                        <TextLink href="/settings/site">site settings</TextLink>
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>
-                        Setup a{" "}
-                        <TextLink href="/settings/domain">
-                           custom domain
-                        </TextLink>
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>
-                        Enable{" "}
-                        <TextLink href="/settings/payouts">
-                           monetization
-                        </TextLink>
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableHeader colSpan={4} className="text-1">
-                        Homepage
-                     </TableHeader>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Publish</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Edit</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableHeader colSpan={4} className="text-1">
-                        Posts
-                     </TableHeader>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Publish</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Edit</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Delete any</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Delete own</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableHeader colSpan={4} className="text-1">
-                        Collections
-                     </TableHeader>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Edit</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Delete</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableHeader colSpan={4} className="text-1">
-                        Entries
-                     </TableHeader>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Edit</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                     <TableCell>Delete</TableCell>
-                     <TableCell>
-                        <Icon
-                           name="minus"
-                           size={20}
-                           className="text-zinc-400 dark:text-zinc-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                     <TableCell>
-                        <Icon
-                           name="check"
-                           size={20}
-                           className="text-green-500"
-                        />
-                     </TableCell>
-                  </TableRow>
-               </TableBody>
-            </Table>
+         <div className="tablet:px-3 pb-5">
+            <h2 className="font-bold font-header pb-2">Applications</h2>
+            <Suspense fallback={<DotLoader />}>
+               <Await resolve={applications}>
+                  {(applications) => (
+                     <>
+                        {applications ? (
+                           <Table
+                              framed
+                              bleed
+                              dense
+                              className="[--gutter:theme(spacing.3)]"
+                           >
+                              <TableHead>
+                                 <TableRow>
+                                    <TableHeader>User</TableHeader>
+                                    <TableHeader>Submitted</TableHeader>
+
+                                    <TableHeader>Status</TableHeader>
+                                    <TableHeader className="relative w-0">
+                                       <span className="sr-only">View</span>
+                                    </TableHeader>
+                                 </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                 {applications.map((application) => (
+                                    <TableRow key={application.id}>
+                                       <TableCell className="w-full">
+                                          <div className="flex items-center gap-3">
+                                             <Avatar
+                                                src={
+                                                   application.createdBy?.avatar
+                                                      ?.url
+                                                }
+                                                // @ts-ignore
+                                                initials={application?.createdBy?.username.charAt(
+                                                   0,
+                                                )}
+                                                className="size-6"
+                                             />
+                                             <div>
+                                                {application.createdBy.username}
+                                             </div>
+                                          </div>
+                                       </TableCell>
+                                       <TableCell>
+                                          {dt.format(
+                                             new Date(
+                                                application.createdAt as string,
+                                             ),
+                                             "MMM D",
+                                          )}
+                                       </TableCell>
+                                       <TableCell>
+                                          <ApplicationStatus
+                                             status={application.status}
+                                          />
+                                       </TableCell>
+                                       <TableCell>
+                                          <ApplicationViewer
+                                             application={application}
+                                          />
+                                       </TableCell>
+                                    </TableRow>
+                                 ))}
+                              </TableBody>
+                           </Table>
+                        ) : (
+                           <div>No applications</div>
+                        )}
+                     </>
+                  )}
+               </Await>
+            </Suspense>
          </div>
-      </>
+         <PermissionTable />
+      </div>
    );
 }
 
@@ -493,6 +260,86 @@ export const meta: MetaFunction = ({ matches }) => {
       },
    ];
 };
+
+//TODO Find a way to infer from the loader
+function ApplicationViewer({ application }: { application: any }) {
+   const [isOpen, setIsOpen] = useState(false);
+
+   const submitted = dt.format(
+      new Date(application.createdAt as string),
+      "MMMM DD, YYYY",
+   );
+
+   return (
+      <>
+         <Button className="!text-xs" onClick={() => setIsOpen(true)}>
+            View
+         </Button>
+         <Dialog
+            size="4xl"
+            onClose={() => {
+               setIsOpen(false);
+            }}
+            open={isOpen}
+         >
+            <>
+               <div className="pb-3 -mt-1 px-5 flex items-center justify-between border-b border-color -mx-5">
+                  <div className="flex items-center gap-2">
+                     <Avatar
+                        src={application.createdBy?.avatar?.url}
+                        initials={application?.createdBy?.username.charAt(0)}
+                        className="size-6"
+                     />
+                     <span>{application.createdBy.username}</span>
+                  </div>
+                  <Text>{submitted}</Text>
+               </div>
+               <div className="space-y-6 py-6">
+                  <div>
+                     <div className="text-1 pb-1 font-semibold">
+                        In what ways would you like to help?
+                     </div>
+                     <div>{application.primaryDetails}</div>
+                  </div>
+                  <div>
+                     <div className="text-1 pb-1 font-semibold">
+                        Anything else you'd like to share?
+                     </div>
+                     <div>{application.additionalNotes}</div>
+                  </div>
+               </div>
+               <div className="border-t border-color px-5 -mx-5 pt-3">
+                  things
+               </div>
+            </>
+         </Dialog>
+      </>
+   );
+}
+
+function ApplicationStatus({ status }: { status: SiteApplication["status"] }) {
+   let color = "" as any;
+   let statusLabel = "" as any;
+   switch (status) {
+      case "under-review":
+         color = "cyan";
+         statusLabel = "Needs Review";
+         break;
+      case "approved":
+         color = "green";
+         statusLabel = "Approved";
+         break;
+      case "denied":
+         color = "red";
+         statusLabel = "Denied";
+         break;
+      default:
+         color = "gray";
+         break;
+   }
+
+   return <Badge color={color}>{statusLabel}</Badge>;
+}
 
 function RoleBadge({ role }: { role: TeamMember["role"] }) {
    let color = "" as any;
