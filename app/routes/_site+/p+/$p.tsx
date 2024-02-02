@@ -101,7 +101,7 @@ export default function Post() {
    const enableAds = post.site.enableAds;
 
    return (
-      <Suspense fallback={<Loading />}>
+      <>
          {hasAccess ? (
             <>
                <Float
@@ -227,7 +227,7 @@ export default function Post() {
                </Await>
             </Suspense>
          </div>
-      </Suspense>
+      </>
    );
 }
 

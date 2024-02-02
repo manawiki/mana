@@ -6,12 +6,12 @@ import { useLoaderData, useLocation } from "@remix-run/react";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { GoogleAnalytics } from "~/utils/third-parties/google/ga";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
 import { ColumnThree } from "./_components/Column-3";
 import { ColumnFour } from "./_components/Column-4";
+import { GAScripts } from "./_components/GAScripts";
 import { MobileHeader } from "./_components/MobileHeader";
 import { RampScripts } from "./_components/RampScripts";
 import { fetchSite } from "./_utils/fetchSite.server";
@@ -51,15 +51,15 @@ export default function SiteLayout() {
       <>
          <MobileHeader />
          <main
-            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
-                     laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px]"
+            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
+                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
          >
             <ColumnOne />
             <ColumnTwo />
             <ColumnThree />
             <ColumnFour />
          </main>
-         <GoogleAnalytics gaId={gaTag} />
+         <GAScripts gaTrackingId={gaTag} />
          <RampScripts enableAds={enableAds} />
       </>
    );

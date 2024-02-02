@@ -3,7 +3,7 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 import invariant from "tiny-invariant";
 
-import type { User } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
@@ -17,7 +17,7 @@ export async function fetchPost({
 }: {
    p: string;
    payload: Payload;
-   user?: User;
+   user?: RemixRequestContext["user"];
    siteSlug: string;
    page: number | undefined;
 }) {
