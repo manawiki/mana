@@ -29,7 +29,6 @@ export const SiteApplications: CollectionConfig = {
          required: true,
          defaultValue: ({ user }: { user: RemixRequestContext["user"] }) =>
             user?.id,
-         maxDepth: 0,
       },
       {
          name: "site",
@@ -37,7 +36,6 @@ export const SiteApplications: CollectionConfig = {
          relationTo: "sites",
          required: true,
          hasMany: false,
-         maxDepth: 0,
       },
       {
          name: "status",

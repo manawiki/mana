@@ -1,7 +1,7 @@
 import type { Payload } from "payload";
 import invariant from "tiny-invariant";
 
-import type { User } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { cacheThis } from "~/utils/cache.server";
 
 /**
@@ -17,7 +17,7 @@ export async function fetchPostWithSlug({
    p: string;
    payload: Payload;
    siteSlug: string;
-   user?: User;
+   user?: RemixRequestContext["user"];
 }) {
    const { docs: postsAll } = !user
       ? await cacheThis(

@@ -2,7 +2,8 @@ import { request as gqlRequest } from "graphql-request";
 import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
 import type { Payload } from "payload";
 
-import type { Comment, User } from "payload/generated-types";
+import type { Comment } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
 
@@ -17,7 +18,7 @@ export async function fetchPostComments({
    p: string;
    payload: Payload;
    siteSlug: string;
-   user?: User;
+   user?: RemixRequestContext["user"];
 }) {
    const { postData } = await fetchPostWithSlug({
       p,
