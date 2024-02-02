@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
+import { Partytown } from "@builder.io/partytown/react";
 import { withMetronome } from "@metronome-sh/react";
 import type {
    MetaFunction,
@@ -23,7 +24,6 @@ import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
-import { ExternalScripts } from "remix-utils/external-scripts";
 import { Toaster, toast as notify } from "sonner";
 
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -37,7 +37,6 @@ import { getTheme } from "~/utils/theme.server";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
-import { isbot } from "isbot";
 
 export { ErrorBoundary } from "~/components/ErrorBoundary";
 
@@ -94,6 +93,7 @@ export const loader = async ({
          user,
          siteSlug,
          following,
+         origin: new URL(request.url).origin,
       },
       { headers },
    );
@@ -131,7 +131,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, toast } = useLoaderData<typeof loader>();
+   const { locale, toast, origin } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
@@ -163,7 +163,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
-            {isBot ? null : <ClientHintCheck />}
+            {!isBot && <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -199,6 +199,21 @@ function App() {
                type="image/x-icon"
                href={`${favicon}?width=192&height=192`}
             />
+            {process.env.NODE_ENV === "production" && !isBot && (
+               <Partytown
+                  debug={false}
+                  forward={["dataLayer.push"]}
+                  resolveUrl={(url) => {
+                     const proxyhosts = ["www.googletagmanager.com"];
+                     if (url.host && proxyhosts.includes(url.host)) {
+                        return new URL(
+                           origin + "/proxy" + url.pathname + url.search,
+                        );
+                     }
+                     return url;
+                  }}
+               />
+            )}
             <Meta />
             <Links />
          </head>
@@ -208,7 +223,7 @@ function App() {
             />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
-            {isBot ? null : <Scripts />}
+            {!isBot && <Scripts />}
             <LiveReload />
          </body>
       </html>
