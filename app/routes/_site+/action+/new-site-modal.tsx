@@ -64,7 +64,6 @@ export function NewSiteModal() {
    };
    useEffect(() => {
       if (!adding) {
-         //@ts-ignore
          zo.refObject.current && zo.refObject.current.reset();
          setIsOpen(false);
       }

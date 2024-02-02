@@ -49,7 +49,7 @@ export function Table({
                   className,
                   "-mx-[--gutter] overflow-x-auto whitespace-nowrap",
                   framed &&
-                     "border-y tablet:border tablet:rounded-lg border-color-sub dark:bg-dark350 tablet:shadow-sm shadow-1",
+                     "border-y tablet:border tablet:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
                )}
             >
                <div

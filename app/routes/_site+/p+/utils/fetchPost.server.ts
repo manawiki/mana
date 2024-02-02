@@ -4,7 +4,7 @@ import { select } from "payload-query";
 import invariant from "tiny-invariant";
 
 import type { RemixRequestContext } from "remix.env";
-import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
+import { isSiteOwnerOrAdmin } from "~/db/collections/sites/access";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
 

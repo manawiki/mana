@@ -1,6 +1,6 @@
 import type { Access } from "payload/types";
 
-import { isSiteOwnerOrAdmin } from "../site/access";
+import { isSiteOwnerOrAdmin } from "../sites/access";
 
 export const canDeleteImages: Access = async ({
    req: { user, payload },

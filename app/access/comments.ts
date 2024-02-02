@@ -4,7 +4,7 @@ import invariant from "tiny-invariant";
 
 import type { User } from "~/db/payload-types";
 
-import { isSiteOwnerOrAdmin } from "../db/collections/site/access";
+import { isSiteOwnerOrAdmin } from "../db/collections/sites/access";
 
 export const isOwnComment: Access = ({ req: { user } }) => {
    if (user) {

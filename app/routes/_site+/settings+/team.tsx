@@ -1,28 +1,19 @@
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 
 import { defer, redirect } from "@remix-run/node";
 import type {
-   SerializeFrom,
    MetaFunction,
    LoaderFunctionArgs,
    ActionFunctionArgs,
 } from "@remix-run/node";
-import {
-   Await,
-   useFetcher,
-   useLoaderData,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Await, useLoaderData } from "@remix-run/react";
 import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
-import { useZorm } from "react-zorm";
+import { jsonWithError } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { Avatar } from "~/components/Avatar";
-import { Badge } from "~/components/Badge";
-import { Button } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
 import { DotLoader } from "~/components/DotLoader";
 import {
    Dropdown,
@@ -30,7 +21,6 @@ import {
    DropdownItem,
    DropdownMenu,
 } from "~/components/Dropdown";
-import { Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import {
    Table,
@@ -41,17 +31,18 @@ import {
    TableRow,
 } from "~/components/Table";
 import { Text } from "~/components/Text";
-import { Textarea } from "~/components/Textarea";
 import type { SiteApplication } from "~/db/payload-types";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { authGQLFetcher } from "~/utils/fetchers.server";
-import { isProcessing } from "~/utils/form";
 
+import { ApplicationStatus } from "./components/ApplicationStatus";
+import { ApplicationViewer } from "./components/ApplicationViewer";
 import { PermissionTable } from "./components/PermissionTable";
+import { RoleBadge } from "./components/RoleBadge";
+import { ApplicationReviewSchema } from "./utils/ApplicationReviewSchema";
 import { fetchApplicationData } from "./utils/fetchApplicationData";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 
-type TeamMember = {
+export type TeamMember = {
    id: string;
    username: string;
    avatar: {
@@ -151,7 +142,7 @@ export default function Members() {
                <Await resolve={applications}>
                   {(applications) => (
                      <>
-                        {applications ? (
+                        {applications.length > 0 ? (
                            <Table
                               framed
                               bleed
@@ -205,7 +196,9 @@ export default function Members() {
                                        </TableCell>
                                        <TableCell>
                                           <ApplicationViewer
-                                             application={application}
+                                             application={
+                                                application as SiteApplication
+                                             }
                                           />
                                        </TableCell>
                                     </TableRow>
@@ -213,7 +206,9 @@ export default function Members() {
                               </TableBody>
                            </Table>
                         ) : (
-                           <div>No applications</div>
+                           <Text className="border-y tablet:border border-color-sub p-4 tablet:rounded-lg -mx-3 shadow-1 shadow-sm">
+                              No applications to review...
+                           </Text>
                         )}
                      </>
                   )}
@@ -238,129 +233,6 @@ export const meta: MetaFunction = ({ matches }) => {
    ];
 };
 
-const ApplicationReviewSchema = z.object({
-   siteId: z.string(),
-   reviewMessage: z.string().optional(),
-   applicantUserId: z.string(),
-});
-
-//TODO Find a way to infer from the loader
-function ApplicationViewer({ application }: { application: any }) {
-   const [isOpen, setIsOpen] = useState(false);
-
-   const submitted = dt.format(
-      new Date(application.createdAt as string),
-      "MMMM DD, YYYY",
-   );
-
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
-
-   const fetcher = useFetcher();
-   const zo = useZorm("applicationReview", ApplicationReviewSchema);
-
-   const disabled =
-      application.status !== "under-review" || isProcessing(fetcher.state);
-
-   return (
-      <>
-         <Button className="!text-xs" onClick={() => setIsOpen(true)}>
-            View
-         </Button>
-         <Dialog
-            size="4xl"
-            onClose={() => {
-               setIsOpen(false);
-            }}
-            open={isOpen}
-         >
-            <>
-               <div className="pb-3 -mt-1 px-5 flex items-center justify-between border-b border-color -mx-5">
-                  <div className="flex items-center gap-2">
-                     <Avatar
-                        src={application.createdBy?.avatar?.url}
-                        initials={application?.createdBy?.username.charAt(0)}
-                        className="size-6"
-                     />
-                     <span>{application.createdBy.username}</span>
-                  </div>
-                  <Text>{submitted}</Text>
-               </div>
-               <div className="space-y-6 max-tablet:pb-6 py-6">
-                  <div>
-                     <div className="text-1 pb-1 font-semibold">
-                        In what ways would you like to help?
-                     </div>
-                     <div>{application.primaryDetails}</div>
-                  </div>
-                  <div>
-                     <div className="text-1 pb-1 font-semibold">
-                        Anything else you'd like to share?
-                     </div>
-                     <div>{application.additionalNotes}</div>
-                  </div>
-               </div>
-               <div className="border-t border-color -mx-5 px-5 pt-5">
-                  <fetcher.Form method="post" ref={zo.ref}>
-                     <input
-                        name={zo.fields.siteId()}
-                        value={site?.id}
-                        type="hidden"
-                     />
-                     <input
-                        name={zo.fields.applicantUserId()}
-                        value={application?.createdBy.id}
-                        type="hidden"
-                     />
-                     <div className="tablet:flex tablet:items-end gap-6">
-                        <div className="tablet:w-4/5">
-                           <Field disabled={disabled} className="w-full">
-                              <Label>
-                                 Include an optional message to{" "}
-                                 <span className="italic text-1">
-                                    {application.createdBy.username}
-                                 </span>
-                              </Label>
-                              <Textarea
-                                 rows={2}
-                                 name={zo.fields.reviewMessage()}
-                                 defaultValue={
-                                    application?.reviewMessage as any
-                                 }
-                              />
-                           </Field>
-                        </div>
-                        <div className="max-tablet:justify-end max-tablet:py-4 flex items-center gap-3">
-                           <Button
-                              disabled={disabled}
-                              type="submit"
-                              name="intent"
-                              value="declineApplication"
-                           >
-                              <Icon name="x" size={16} />
-                              Decline
-                           </Button>
-                           <Button
-                              disabled={disabled}
-                              type="submit"
-                              color="green"
-                              name="intent"
-                              value="approveApplication"
-                           >
-                              <Icon name="check" size={16} />
-                              Approve
-                           </Button>
-                        </div>
-                     </div>
-                  </fetcher.Form>
-               </div>
-            </>
-         </Dialog>
-      </>
-   );
-}
-
 export async function action({
    context: { payload, user },
    request,
@@ -374,16 +246,36 @@ export async function action({
    switch (intent) {
       case "approveApplication": {
          try {
-            const { siteId, applicantUserId } = await zx.parseForm(
-               request,
-               ApplicationReviewSchema,
-            );
-            return await payload.update({
+            const { siteId, applicantUserId, reviewMessage } =
+               await zx.parseForm(request, ApplicationReviewSchema);
+            await payload.update({
                collection: "siteApplications",
                id: `${siteId}-${applicantUserId}`,
                data: {
                   status: "approved",
-                  site: siteId as any,
+                  reviewMessage: reviewMessage as any,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+            });
+            //@ts-ignore
+            if (site && site?.contributors?.includes(applicantUserId))
+               return jsonWithError(
+                  null,
+                  "User is already a contributor to this site",
+               );
+            return await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  //@ts-ignore
+                  contributors: [...site?.contributors, applicantUserId],
                },
                depth: 0,
                overrideAccess: false,
@@ -395,16 +287,14 @@ export async function action({
       }
       case "declineApplication": {
          try {
-            const { siteId, applicantUserId } = await zx.parseForm(
-               request,
-               ApplicationReviewSchema,
-            );
+            const { siteId, applicantUserId, reviewMessage } =
+               await zx.parseForm(request, ApplicationReviewSchema);
             return await payload.update({
                collection: "siteApplications",
                id: `${siteId}-${applicantUserId}`,
                data: {
                   status: "denied",
-                  site: siteId as any,
+                  reviewMessage: reviewMessage as any,
                },
                depth: 0,
                overrideAccess: false,
@@ -415,50 +305,6 @@ export async function action({
          }
       }
    }
-}
-
-function ApplicationStatus({ status }: { status: SiteApplication["status"] }) {
-   let color = "" as any;
-   let statusLabel = "" as any;
-   switch (status) {
-      case "under-review":
-         color = "cyan";
-         statusLabel = "Needs Review";
-         break;
-      case "approved":
-         color = "green";
-         statusLabel = "Approved";
-         break;
-      case "denied":
-         color = "red";
-         statusLabel = "Denied";
-         break;
-      default:
-         color = "gray";
-         break;
-   }
-
-   return <Badge color={color}>{statusLabel}</Badge>;
-}
-
-function RoleBadge({ role }: { role: TeamMember["role"] }) {
-   let color = "" as any;
-   switch (role) {
-      case "Owner":
-         color = "purple";
-         break;
-      case "Admin":
-         color = "amber";
-         break;
-      case "Contributor":
-         color = "emerald";
-         break;
-      default:
-         color = "gray";
-         break;
-   }
-
-   return <Badge color={color}>{role}</Badge>;
 }
 
 const query = {

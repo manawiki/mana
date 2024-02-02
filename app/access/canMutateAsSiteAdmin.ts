@@ -1,6 +1,6 @@
 import type { Access } from "payload/types";
 
-import { isSiteOwnerOrAdmin } from "../db/collections/site/access";
+import { isSiteOwnerOrAdmin } from "../db/collections/sites/access";
 
 export const canMutateAsSiteAdmin =
    (

@@ -128,6 +128,7 @@ export const TooltipTrigger = React.forwardRef<
 
    return (
       <button
+         type="button"
          ref={ref}
          // The user can style the trigger based on the state
          data-state={state.open ? "open" : "closed"}

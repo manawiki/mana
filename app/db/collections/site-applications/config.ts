@@ -3,6 +3,7 @@ import type { CollectionConfig } from "payload/types";
 import type { RemixRequestContext } from "remix.env";
 
 import {
+   applicationFieldAsSiteAdmin,
    canCreateApplication,
    canDeleteApplication,
    canReadApplication,
@@ -37,7 +38,6 @@ export const SiteApplications: CollectionConfig = {
          required: true,
          hasMany: false,
       },
-      //Limit field updating to site admins/owner
       {
          name: "status",
          type: "select",
@@ -55,6 +55,9 @@ export const SiteApplications: CollectionConfig = {
                value: "denied",
             },
          ],
+         access: {
+            update: applicationFieldAsSiteAdmin,
+         },
       },
       {
          name: "primaryDetails",
