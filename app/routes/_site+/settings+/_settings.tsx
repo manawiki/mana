@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/node";
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 
-import { isSiteOwnerOrAdmin } from "~/db/collections/sites/access";
+import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 
 import { SettingsMenuLink } from "./components/SettingsMenuLink";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";

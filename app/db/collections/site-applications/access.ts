@@ -2,7 +2,7 @@ import type { Access, FieldAccess } from "payload/types";
 
 import type { RemixRequestContext } from "remix.env";
 
-import { isSiteOwnerOrAdmin } from "../sites/access";
+import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 
 export const canReadApplication: Access = async ({
    req: { user, payload },

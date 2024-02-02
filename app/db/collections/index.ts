@@ -1,17 +1,17 @@
-import { Collections } from "./Collections";
-import { Comments } from "./Comments";
-import { ContentEmbeds } from "./ContentEmbeds";
-import { CustomPages } from "./CustomPages";
-import { Entries } from "./Entries";
-import { HomeContents } from "./HomeContents";
+import { Collections } from "./collections/config";
+import { Comments } from "./comments/config";
+import { ContentEmbeds } from "./content-embeds/config";
+import { CustomPages } from "./custom-pages/config";
+import { Entries } from "./entries/config";
+import { HomeContents } from "./home-contents/config";
 import { Images } from "./images/config";
-import { PostContents } from "./PostContents";
+import { PostContents } from "./post-contents/config";
+import { PostTags } from "./post-tags/config";
 import { Posts } from "./posts/config";
-import { PostTags } from "./PostTags";
 import { SiteApplications } from "./site-applications/config";
 import { Sites } from "./sites/config";
-import { Updates } from "./Updates";
-import { Users } from "./Users";
+import { Updates } from "./updates/config";
+import { Users } from "./users/config";
 
 export const collections = [
    Sites,

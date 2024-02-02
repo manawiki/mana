@@ -20,6 +20,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { isSiteOwner } from "~/db/access/isSiteOwner";
 import { Badge, BadgeButton } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
@@ -27,7 +28,6 @@ import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Code, Text, TextLink } from "~/components/Text";
-import { isSiteOwner } from "~/db/collections/sites/access";
 import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
 import { stripe } from "~/utils/stripe.server";

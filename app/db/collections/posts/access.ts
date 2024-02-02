@@ -1,6 +1,6 @@
 import type { Access } from "payload/types";
 
-import { isSiteOwnerOrAdmin } from "../sites/access";
+import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 
 export const canReadPost =
    (): Access =>
@@ -36,3 +36,48 @@ export const canReadPost =
          },
       };
    };
+
+export const canCreatePost: Access = async ({
+   req: { user, payload },
+   data,
+}) => {
+   if (user) {
+      if (user.roles.includes("staff")) return true;
+      const userId = user.id;
+      if (data) {
+         const site = await payload.findByID({
+            collection: "sites",
+            id: data.site,
+            depth: 0,
+         });
+         return isSiteOwnerOrAdmin(userId, site);
+      }
+   }
+   // Reject everyone else
+   return false;
+};
+
+export const canUpdatePost: Access = async ({ req: { user, payload }, id }) => {
+   if (user && id) {
+      const application = await payload.findByID({
+         collection: "siteApplications",
+         id,
+         depth: 1,
+      });
+
+      const hasAccess = isSiteOwnerOrAdmin(user.id, application.site);
+
+      if (!hasAccess)
+         return {
+            createdBy: {
+               equals: user.id,
+            },
+         };
+      return hasAccess;
+   }
+   return {
+      createdBy: {
+         equals: user.id,
+      },
+   };
+};

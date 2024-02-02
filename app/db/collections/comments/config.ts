@@ -7,12 +7,12 @@ import {
    isCommentDeletedField,
    deleteComment,
    canMutateCommentsFieldAsSiteAdmin,
-} from "../../access/comments";
-import { isLoggedIn, isStaff } from "../../access/user";
+} from "./access";
 import {
    updateCommentCount,
    updateCommentCountAfterDelete,
-} from "../hooks/updateCommentCount";
+} from "./updateCommentCount";
+import { isLoggedIn, isStaff } from "../users/access";
 
 export const Comments: CollectionConfig = {
    slug: "comments",

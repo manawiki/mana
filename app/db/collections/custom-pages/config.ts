@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
+import { isStaff } from "../users/access";
 export const CustomPages: CollectionConfig = {
    slug: "customPages",
    access: {

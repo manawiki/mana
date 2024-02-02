@@ -2,7 +2,7 @@ import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 import { select } from "payload-query";
 
-import { isSiteOwnerOrAdmin } from "~/db/collections/sites/access";
+import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 import { cacheThis } from "~/utils/cache.server";
 
 export async function getEmbeddedContent({

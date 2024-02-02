@@ -1,29 +1,8 @@
 import type { Access, FieldAccess } from "payload/types";
 
-import type { Site, User } from "payload/generated-types";
+import type { User } from "payload/generated-types";
 
-//Check if user is a site owner or admin?
-export const isSiteOwnerOrAdmin = (
-   userId: string,
-   site: Site | undefined | null,
-) => {
-   const siteAdmins = site?.admins;
-   const siteOwner = site?.owner;
-   const isSiteOwner = userId == (siteOwner as any);
-   //@ts-ignore
-   const isSiteAdmin = siteAdmins && siteAdmins.includes(userId);
-   if (isSiteOwner || isSiteAdmin) return true;
-   return false;
-};
-
-export const isSiteOwner = (
-   userId: string,
-   siteOwner: Site["owner"] | undefined,
-) => {
-   const isSiteOwner = userId == (siteOwner as any);
-   if (isSiteOwner) return true;
-   return false;
-};
+import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 
 export const siteFieldAsSiteAdmin: FieldAccess<
    { id: string },
