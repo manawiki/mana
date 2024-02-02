@@ -40,12 +40,9 @@ export function RampScripts({ enableAds }: { enableAds: boolean }) {
             />
             <Script
                id="_ramp-config"
-               src="https://cdn.intergient.com/1025133/74686/ramp_config.js"
+               src="/proxy/1025133/74686/ramp_config.js"
             />
-            <Script
-               id="_ramp-core"
-               src="https://cdn.intergient.com/ramp_core.js"
-            />
+            <Script id="_ramp-core" src="/proxy/ramp_core.js" />
          </>
       );
 }
