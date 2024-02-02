@@ -1,10 +1,9 @@
 import type { CollectionConfig } from "payload/types";
 
-import type { User } from "payload-types";
-
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { canRead } from "../../access/canRead";
 import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
+import type { User } from "../../payload-types";
 
 export const HomeContents: CollectionConfig = {
    slug: "homeContents",
