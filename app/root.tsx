@@ -93,7 +93,6 @@ export const loader = async ({
          user,
          siteSlug,
          following,
-         origin: new URL(request.url).origin,
       },
       { headers },
    );
@@ -131,7 +130,7 @@ export const handle = {
 };
 
 function App() {
-   const { locale, toast, origin } = useLoaderData<typeof loader>();
+   const { locale, toast } = useLoaderData<typeof loader>();
    const { i18n } = useTranslation();
    const isBot = useIsBot();
    const theme = useTheme();
@@ -203,11 +202,17 @@ function App() {
                <Partytown
                   debug={false}
                   forward={["dataLayer.push"]}
-                  resolveUrl={(url) => {
-                     const proxyhosts = ["www.googletagmanager.com"];
-                     if (url.host && proxyhosts.includes(url.host)) {
+                  resolveUrl={(url, location, type) => {
+                     //proxy gtag requests to avoid cors issues
+                     if (
+                        type === "script" &&
+                        url.host === "www.googletagmanager.com"
+                     ) {
                         return new URL(
-                           origin + "/proxy" + url.pathname + url.search,
+                           location.origin +
+                              "/proxy" +
+                              url.pathname +
+                              url.search,
                         );
                      }
                      return url;
