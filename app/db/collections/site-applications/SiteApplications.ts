@@ -37,6 +37,7 @@ export const SiteApplications: CollectionConfig = {
          required: true,
          hasMany: false,
       },
+      //Limit field updating to site admins/owner
       {
          name: "status",
          type: "select",
@@ -64,7 +65,7 @@ export const SiteApplications: CollectionConfig = {
          type: "textarea",
       },
       {
-         name: "reviewReply",
+         name: "reviewMessage",
          type: "textarea",
       },
    ],

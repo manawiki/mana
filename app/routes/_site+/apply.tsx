@@ -91,10 +91,10 @@ export default function Apply() {
                )}
             </div>
          </div>
-         {application?.reviewReply && (
+         {application?.reviewMessage && (
             <div className="py-3 px-4 text-sm rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50 mb-6">
                <div className="text-1 text-xs pb-1">Reviewer reply:</div>
-               {application?.reviewReply}
+               {application?.reviewMessage}
             </div>
          )}
          <fetcher.Form method="post" ref={zo.ref}>
@@ -169,8 +169,8 @@ export async function action({
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
-   console.log(intent);
-   if (!user) throw redirect("/login", 401);
+
+   if (!user) throw redirect("/login?redirectTo=/apply");
 
    switch (intent) {
       case "createApplication": {

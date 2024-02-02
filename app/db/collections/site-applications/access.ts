@@ -62,7 +62,25 @@ export const canCreateApplication: Access = async ({
 export const canUpdateApplication: Access = async ({
    req: { user, payload },
    id,
+   data,
 }) => {
+   if (user && data && data.site && id) {
+      const site = await payload.findByID({
+         collection: "sites",
+         id: data.site,
+         depth: 0,
+      });
+
+      const hasAccess = isSiteOwnerOrAdmin(user.id, site);
+
+      if (!hasAccess)
+         return {
+            createdBy: {
+               equals: user.id,
+            },
+         };
+      return hasAccess;
+   }
    return {
       createdBy: {
          equals: user.id,

@@ -1,16 +1,24 @@
 import { Suspense, useState } from "react";
 
-import {
-   type MetaFunction,
-   type LoaderFunctionArgs,
-   defer,
+import { defer, redirect } from "@remix-run/node";
+import type {
+   SerializeFrom,
+   MetaFunction,
+   LoaderFunctionArgs,
+   ActionFunctionArgs,
 } from "@remix-run/node";
-import { Await, useLoaderData } from "@remix-run/react";
+import {
+   Await,
+   useFetcher,
+   useLoaderData,
+   useRouteLoaderData,
+} from "@remix-run/react";
 import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
-import type { Payload } from "payload";
+import { useZorm } from "react-zorm";
+import { z } from "zod";
+import { zx } from "zodix";
 
-import type { RemixRequestContext } from "remix.env";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
@@ -22,6 +30,7 @@ import {
    DropdownItem,
    DropdownMenu,
 } from "~/components/Dropdown";
+import { Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import {
    Table,
@@ -32,10 +41,14 @@ import {
    TableRow,
 } from "~/components/Table";
 import { Text } from "~/components/Text";
+import { Textarea } from "~/components/Textarea";
 import type { SiteApplication } from "~/db/payload-types";
+import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { authGQLFetcher } from "~/utils/fetchers.server";
+import { isProcessing } from "~/utils/form";
 
 import { PermissionTable } from "./components/PermissionTable";
+import { fetchApplicationData } from "./utils/fetchApplicationData";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 
 type TeamMember = {
@@ -47,48 +60,12 @@ type TeamMember = {
    role: "Owner" | "Admin" | "Contributor";
 };
 
-async function fetchApplicationData({
-   payload,
-   siteSlug,
-   user,
-}: {
-   payload: Payload;
-   siteSlug: string;
-   user: RemixRequestContext["user"];
-}) {
-   const { docs } = await payload.find({
-      collection: "siteApplications",
-      where: {
-         "site.slug": {
-            equals: siteSlug,
-         },
-      },
-      overrideAccess: false,
-      user,
-      depth: 2,
-      sort: "-createdAt",
-   });
-   const applications = docs.map((doc) => ({
-      id: doc.id,
-      createdBy: {
-         username: doc.createdBy.username,
-         avatar: {
-            url: doc.createdBy.avatar?.url,
-         },
-      },
-      createdAt: doc.createdBy.createdAt,
-      reviewReply: doc.reviewReply,
-      status: doc.status,
-      primaryDetails: doc.primaryDetails,
-      additionalNotes: doc.additionalNotes,
-   }));
-   return applications;
-}
-
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
+   if (!user) throw redirect("/login?redirectTo=/settings/team");
+
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const applications = fetchApplicationData({
@@ -261,6 +238,12 @@ export const meta: MetaFunction = ({ matches }) => {
    ];
 };
 
+const ApplicationReviewSchema = z.object({
+   siteId: z.string(),
+   reviewMessage: z.string().optional(),
+   applicantUserId: z.string(),
+});
+
 //TODO Find a way to infer from the loader
 function ApplicationViewer({ application }: { application: any }) {
    const [isOpen, setIsOpen] = useState(false);
@@ -269,6 +252,16 @@ function ApplicationViewer({ application }: { application: any }) {
       new Date(application.createdAt as string),
       "MMMM DD, YYYY",
    );
+
+   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
+      site: SerializeFrom<typeof siteLoaderType>["site"];
+   };
+
+   const fetcher = useFetcher();
+   const zo = useZorm("applicationReview", ApplicationReviewSchema);
+
+   const disabled =
+      application.status !== "under-review" || isProcessing(fetcher.state);
 
    return (
       <>
@@ -294,7 +287,7 @@ function ApplicationViewer({ application }: { application: any }) {
                   </div>
                   <Text>{submitted}</Text>
                </div>
-               <div className="space-y-6 py-6">
+               <div className="space-y-6 max-tablet:pb-6 py-6">
                   <div>
                      <div className="text-1 pb-1 font-semibold">
                         In what ways would you like to help?
@@ -308,13 +301,120 @@ function ApplicationViewer({ application }: { application: any }) {
                      <div>{application.additionalNotes}</div>
                   </div>
                </div>
-               <div className="border-t border-color px-5 -mx-5 pt-3">
-                  things
+               <div className="border-t border-color -mx-5 px-5 pt-5">
+                  <fetcher.Form method="post" ref={zo.ref}>
+                     <input
+                        name={zo.fields.siteId()}
+                        value={site?.id}
+                        type="hidden"
+                     />
+                     <input
+                        name={zo.fields.applicantUserId()}
+                        value={application?.createdBy.id}
+                        type="hidden"
+                     />
+                     <div className="tablet:flex tablet:items-end gap-6">
+                        <div className="tablet:w-4/5">
+                           <Field disabled={disabled} className="w-full">
+                              <Label>
+                                 Include an optional message to{" "}
+                                 <span className="italic text-1">
+                                    {application.createdBy.username}
+                                 </span>
+                              </Label>
+                              <Textarea
+                                 rows={2}
+                                 name={zo.fields.reviewMessage()}
+                                 defaultValue={
+                                    application?.reviewMessage as any
+                                 }
+                              />
+                           </Field>
+                        </div>
+                        <div className="max-tablet:justify-end max-tablet:py-4 flex items-center gap-3">
+                           <Button
+                              disabled={disabled}
+                              type="submit"
+                              name="intent"
+                              value="declineApplication"
+                           >
+                              <Icon name="x" size={16} />
+                              Decline
+                           </Button>
+                           <Button
+                              disabled={disabled}
+                              type="submit"
+                              color="green"
+                              name="intent"
+                              value="approveApplication"
+                           >
+                              <Icon name="check" size={16} />
+                              Approve
+                           </Button>
+                        </div>
+                     </div>
+                  </fetcher.Form>
                </div>
             </>
          </Dialog>
       </>
    );
+}
+
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionFunctionArgs) {
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
+
+   if (!user) throw redirect("/login?redirectTo=/settings/team");
+
+   switch (intent) {
+      case "approveApplication": {
+         try {
+            const { siteId, applicantUserId } = await zx.parseForm(
+               request,
+               ApplicationReviewSchema,
+            );
+            return await payload.update({
+               collection: "siteApplications",
+               id: `${siteId}-${applicantUserId}`,
+               data: {
+                  status: "approved",
+                  site: siteId as any,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "declineApplication": {
+         try {
+            const { siteId, applicantUserId } = await zx.parseForm(
+               request,
+               ApplicationReviewSchema,
+            );
+            return await payload.update({
+               collection: "siteApplications",
+               id: `${siteId}-${applicantUserId}`,
+               data: {
+                  status: "denied",
+                  site: siteId as any,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+   }
 }
 
 function ApplicationStatus({ status }: { status: SiteApplication["status"] }) {
