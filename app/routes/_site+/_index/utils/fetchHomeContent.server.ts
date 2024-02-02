@@ -70,7 +70,7 @@ export async function fetchHomeContent({
                   {
                      id: false,
                      content: true,
-                     versionAuthor: true,
+                     author: true,
                      _status: true,
                   },
                   doc.version,

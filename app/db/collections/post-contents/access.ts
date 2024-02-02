@@ -3,42 +3,45 @@ import type { Access } from "payload/types";
 import { isSiteContributor } from "../../access/isSiteContributor";
 import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 
-export const canReadPost: Access = async ({ req: { user, payload }, id }) => {
+export const canReadPostContent: Access = async ({
+   req: { user, payload },
+   id,
+}) => {
    if (user) {
       if (user.roles.includes("staff")) return true;
 
       //Singleton
       if (id) {
-         const post = await payload.findByID({
-            collection: "posts",
+         const postContents = await payload.findByID({
+            collection: "postContents",
             id,
             depth: 1,
          });
-         const hasAccess = isSiteOwnerOrAdmin(user.id, post?.site);
+         const hasAccess = isSiteOwnerOrAdmin(user.id, postContents?.site);
          if (!hasAccess)
             return {
-               publishedAt: {
-                  exists: true,
+               _status: {
+                  equals: "published",
                },
             };
          return hasAccess;
       }
       //List
       return {
-         publishedAt: {
-            exists: true,
+         _status: {
+            equals: "published",
          },
       };
    }
-   //Anonymous users can only access published posts
+   //Anonymous users can only access published post contents
    return {
-      publishedAt: {
-         exists: true,
+      _status: {
+         equals: "published",
       },
    };
 };
 
-export const canCreatePost: Access = async ({
+export const canCreatePostContent: Access = async ({
    req: { user, payload },
    data,
 }) => {
@@ -54,6 +57,7 @@ export const canCreatePost: Access = async ({
          });
          const hasAccess =
             isSiteOwnerOrAdmin(userId, site) || isSiteContributor(userId, site);
+
          return hasAccess;
       }
    }
@@ -61,7 +65,7 @@ export const canCreatePost: Access = async ({
    return false;
 };
 
-export const canUpdateOrDeletePost: Access = async ({
+export const canUpdateOrDeletePostContent: Access = async ({
    req: { user, payload },
    id,
 }) => {
@@ -71,12 +75,12 @@ export const canUpdateOrDeletePost: Access = async ({
       const userId = user.id;
 
       if (id) {
-         const post = await payload.findByID({
-            collection: "posts",
+         const postContents = await payload.findByID({
+            collection: "postContents",
             id: id,
             depth: 1,
          });
-         const hasAccess = isSiteOwnerOrAdmin(userId, post.site);
+         const hasAccess = isSiteOwnerOrAdmin(userId, postContents.site);
 
          // If the user is the author, they can delete their own post
          if (!hasAccess)

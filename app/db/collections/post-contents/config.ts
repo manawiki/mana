@@ -1,7 +1,10 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
-import { canRead } from "../../access/canRead";
+import {
+   canCreatePostContent,
+   canReadPostContent,
+   canUpdateOrDeletePostContent,
+} from "./access";
 import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
 import type { User } from "../../payload-types";
 import { isStaffFieldLevel } from "../users/access";
@@ -9,11 +12,11 @@ import { isStaffFieldLevel } from "../users/access";
 export const PostContents: CollectionConfig = {
    slug: "postContents",
    access: {
-      create: canMutateAsSiteAdmin("postContents"),
-      read: canRead("postContents"),
-      update: canMutateAsSiteAdmin("postContents"),
-      delete: canMutateAsSiteAdmin("postContents"),
-      readVersions: canMutateAsSiteAdmin("postContents"),
+      create: canCreatePostContent,
+      read: canReadPostContent,
+      update: canUpdateOrDeletePostContent,
+      delete: canUpdateOrDeletePostContent,
+      readVersions: canUpdateOrDeletePostContent,
    },
    fields: [
       {
@@ -32,7 +35,7 @@ export const PostContents: CollectionConfig = {
          maxDepth: 1,
       },
       {
-         name: "versionAuthor",
+         name: "author",
          type: "relationship",
          relationTo: "users",
          maxDepth: 3,

@@ -1,5 +1,7 @@
 import type { CollectionConfig } from "payload/types";
 
+import type { User } from "payload-types";
+
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { canRead } from "../../access/canRead";
 import { replaceVersionAuthor } from "../../hooks/replaceVersionAuthor";
@@ -19,11 +21,12 @@ export const HomeContents: CollectionConfig = {
          type: "json",
       },
       {
-         name: "versionAuthor",
+         name: "author",
          type: "relationship",
          relationTo: "users",
          maxDepth: 3,
          required: false,
+         defaultValue: ({ user }: { user: User }) => user?.id,
          admin: {
             hidden: true,
          },

@@ -83,7 +83,7 @@ export async function fetchPost({
             const version = select(
                {
                   id: false,
-                  versionAuthor: true,
+                  author: true,
                   content: true,
                   _status: true,
                },
