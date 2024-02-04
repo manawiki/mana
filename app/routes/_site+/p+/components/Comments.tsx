@@ -21,7 +21,7 @@ import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
-export function Comments({ comments }: { comments: Comment[] }) {
+export function Comments({ comments }: { comments: Comment[] | null }) {
    const { user } = useRootLoaderData();
 
    let location = useLocation();

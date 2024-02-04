@@ -12,7 +12,7 @@ export const AdminOrStaffOrOwnerOrContributor = ({
    return hasAccess ? <>{children}</> : null;
 };
 
-function useIsStaffSiteAdminOwnerContributor() {
+export function useIsStaffSiteAdminOwnerContributor() {
    const { site } = useSiteLoaderData();
 
    const { user } = useRootLoaderData();

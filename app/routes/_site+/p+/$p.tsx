@@ -536,7 +536,7 @@ export async function action({
             data: {
                site: postData?.site.id as any,
                comment: JSON.parse(comment),
-               postParent: postData.id as any,
+               postParent: postData?.id as any,
                author: user.id as any,
                isTopLevel: true,
             },
