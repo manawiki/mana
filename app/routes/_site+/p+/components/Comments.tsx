@@ -2,19 +2,14 @@ import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import {
-   Link,
-   useFetcher,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, useFetcher, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Comment, User } from "~/db/payload-types";
+import type { Comment } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
@@ -24,11 +19,10 @@ import { Toolbar } from "~/routes/_editor+/core/components/Toolbar";
 import { useEditor } from "~/routes/_editor+/core/plugins";
 import { initialValue } from "~/routes/_editor+/core/utils";
 import { isAdding, isProcessing } from "~/utils/form";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 export function Comments({ comments }: { comments: Comment[] }) {
-   const { user } = useRouteLoaderData("root") as {
-      user: User;
-   };
+   const { user } = useRootLoaderData();
 
    let location = useLocation();
 

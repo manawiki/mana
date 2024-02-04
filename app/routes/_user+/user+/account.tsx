@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
-import { useFetcher, useRouteLoaderData, useSubmit } from "@remix-run/react";
+import { useFetcher, useSubmit } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import type { ActionFunction, SerializeFrom } from "@remix-run/server-runtime";
+import type { ActionFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
@@ -14,13 +14,13 @@ import { zx } from "zodix";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
-import type { loader as rootLoaderType } from "~/root";
 import { isAdding, isProcessing } from "~/utils/form";
 import { assertIsDelete } from "~/utils/http.server";
 import {
    getMultipleFormData,
    uploadImage,
 } from "~/utils/upload-handler.server";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { UserContainer } from "../components/UserContainer";
 import { CircleIconUploader } from "../components/UserIconUploader";
@@ -31,9 +31,8 @@ const UserAccountSchema = z.object({
 });
 
 export default function UserAccount() {
-   const { user } = useRouteLoaderData("root") as SerializeFrom<
-      typeof rootLoaderType
-   >;
+   const { user } = useRootLoaderData();
+
    const [isChanged, setIsChanged] = useState(false);
    const fetcher = useFetcher();
 

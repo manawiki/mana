@@ -6,16 +6,10 @@ import * as React from "react";
 
 import { clientHint as colorSchemeHint } from "@epic-web/client-hints/color-scheme";
 import { clientHint as timeZoneHint } from "@epic-web/client-hints/time-zone";
-import {
-   useFetchers,
-   useRevalidator,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import invariant from "tiny-invariant";
-
-import type { loader as rootLoader } from "~/root";
+import { useFetchers, useRevalidator } from "@remix-run/react";
 
 import type { Theme } from "./theme.server";
+import { useRootLoaderData } from "./useSiteLoaderData";
 
 const hintsUtils = getHintUtils({
    theme: colorSchemeHint,
@@ -29,8 +23,7 @@ export const { getHints } = hintsUtils;
  * @returns an object with the client hints and their values from the root loader
  */
 export function useHints() {
-   const data = useRouteLoaderData<typeof rootLoader>("root");
-   invariant(data?.requestInfo, "No requestInfo found in root loader");
+   const data = useRootLoaderData();
 
    return data.requestInfo;
 }

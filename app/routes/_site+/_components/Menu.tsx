@@ -1,18 +1,17 @@
-import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
+import { Link, NavLink } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Site, User } from "~/db/payload-types";
+import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { pinnedLinkUrlGenerator } from "~/utils/pinnedLinkUrlGenerator";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SidebarItem } from "./SidebarItem";
 
 export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
-   const { following } = useRouteLoaderData("root") as {
-      following: User["sites"];
-   };
+   const { following } = useRootLoaderData();
 
    return (
       <>

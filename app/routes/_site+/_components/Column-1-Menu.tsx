@@ -1,22 +1,19 @@
-import { Link, useLocation, useRouteLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useLocation } from "@remix-run/react";
 
 import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
-import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { Staff } from "~/routes/_auth+/components/Staff";
 import { NewSiteModal } from "~/routes/_site+/action+/new-site-modal";
 import { DarkModeToggle } from "~/routes/_site+/action+/theme-toggle";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SidebarItem } from "./SidebarItem";
 
 export function ColumnOneMenu({ site }: { site?: Site }) {
-   const { following, siteSlug, user } = useRouteLoaderData(
-      "root",
-   ) as SerializeFrom<typeof rootLoaderType>;
+   const { following, siteSlug, user } = useRootLoaderData();
 
    const isFollowing = following && following?.length > 0;
 

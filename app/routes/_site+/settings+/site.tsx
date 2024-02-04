@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
 import { redirect } from "@remix-run/node";
-import type {
-   MetaFunction,
-   SerializeFrom,
-   ActionFunctionArgs,
-} from "@remix-run/node";
-import { useFetcher, useRouteLoaderData, useSubmit } from "@remix-run/react";
+import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
+import { useFetcher, useSubmit } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
@@ -28,12 +24,12 @@ import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Strong, TextLink, Text } from "~/components/Text";
 import { Textarea } from "~/components/Textarea";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding, isProcessing } from "~/utils/form";
 import {
    getMultipleFormData,
    uploadImage,
 } from "~/utils/upload-handler.server";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SiteBannerUploader } from "./components/SiteBannerUploader";
 import { SiteIconUploader } from "./components/SiteIconUploader";
@@ -55,9 +51,8 @@ const SettingsSiteSchema = z.object({
 });
 
 export default function SiteSettings() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
+
    const accessText = site.isPublic ? "publicly" : "privately";
 
    const zo = useZorm("settings", SettingsSiteSchema);
