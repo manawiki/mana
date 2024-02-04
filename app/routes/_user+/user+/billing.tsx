@@ -1,15 +1,10 @@
 import { useState } from "react";
 
-import {
-   useRouteLoaderData,
-   type MetaFunction,
-   useFetcher,
-} from "@remix-run/react";
+import { type MetaFunction, useFetcher } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
 import type {
    ActionFunction,
    LoaderFunctionArgs,
-   SerializeFrom,
 } from "@remix-run/server-runtime";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -19,9 +14,9 @@ import { zx } from "zodix";
 
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
-import type { loader as rootLoaderType } from "~/root";
 import { useTheme } from "~/utils/client-hints";
 import { stripe } from "~/utils/stripe.server";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { PaymentMethods } from "../components/PaymentMethods";
 import { SetupForm } from "../components/SetupForm";
@@ -56,9 +51,7 @@ export async function loader({
 }
 
 export default function UserBilling() {
-   const { stripePublicKey } = useRouteLoaderData("root") as SerializeFrom<
-      typeof rootLoaderType
-   >;
+   const { stripePublicKey } = useRootLoaderData();
 
    const fetcher = useFetcher({ key: "billing" });
 

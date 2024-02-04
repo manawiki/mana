@@ -1,8 +1,12 @@
 import { useEffect } from "react";
 
 import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { useLoaderData, useLocation } from "@remix-run/react";
+import type {
+   LoaderFunctionArgs,
+   MetaFunction,
+   SerializeFrom,
+} from "@remix-run/node";
+import { useLoaderData, useLocation, useMatches } from "@remix-run/react";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
@@ -32,8 +36,8 @@ export async function loader({
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
-   const gaTag = site?.gaTagId as any as string;
-   const enableAds = site?.enableAds as any as boolean;
+   const gaTag = site?.gaTagId;
+   const enableAds = site?.enableAds;
 
    const [, setSearchToggle] = useSearchToggleState();
 
@@ -51,8 +55,8 @@ export default function SiteLayout() {
       <>
          <MobileHeader />
          <main
-            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
-                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
+            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
+           laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px]"
          >
             <ColumnOne />
             <ColumnTwo />

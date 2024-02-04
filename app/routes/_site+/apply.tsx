@@ -2,14 +2,9 @@ import type {
    MetaFunction,
    LoaderFunctionArgs,
    ActionFunctionArgs,
-   SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import {
-   useFetcher,
-   useLoaderData,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -19,8 +14,8 @@ import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Description, Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Textarea } from "~/components/Textarea";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding } from "~/utils/form";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { getSiteSlug } from "./_utils/getSiteSlug.server";
 
@@ -67,9 +62,7 @@ export default function Apply() {
 
    const zo = useZorm("siteApplication", SiteApplicationSchema);
 
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    const adding = isAdding(fetcher, "createApplication");
 
@@ -91,10 +84,10 @@ export default function Apply() {
                )}
             </div>
          </div>
-         {application?.reviewReply && (
+         {application?.reviewMessage && (
             <div className="py-3 px-4 text-sm rounded-xl border border-color-sub bg-2-sub shadow-sm dark:shadow-zinc-800/50 mb-6">
                <div className="text-1 text-xs pb-1">Reviewer reply:</div>
-               {application?.reviewReply}
+               {application?.reviewMessage}
             </div>
          )}
          <fetcher.Form method="post" ref={zo.ref}>
@@ -169,8 +162,8 @@ export async function action({
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
-   console.log(intent);
-   if (!user) throw redirect("/login", 401);
+
+   if (!user) throw redirect("/login?redirectTo=/apply");
 
    switch (intent) {
       case "createApplication": {

@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { json, redirect } from "@remix-run/node";
-import type { SerializeFrom, ActionFunction } from "@remix-run/node";
-import {
-   Form,
-   Link,
-   useNavigation,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import type { ActionFunction } from "@remix-run/node";
+import { Form, Link, useNavigation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Value, useZorm } from "react-zorm";
 import { z } from "zod";
@@ -25,9 +20,9 @@ import {
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import type { loader as rootLoaderType } from "~/root";
 import { isAdding, isProcessing } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { LoggedIn } from "../../_auth+/components/LoggedIn";
 import { LoggedOut } from "../../_auth+/components/LoggedOut";
@@ -59,12 +54,10 @@ export function NewSiteModal() {
    const adding = isAdding(transition, "addSite");
    const zo = useZorm("newSite", SiteSchema);
 
-   const { user } = useRouteLoaderData("root") as {
-      user: SerializeFrom<typeof rootLoaderType>["user"];
-   };
+   const { user } = useRootLoaderData();
+
    useEffect(() => {
       if (!adding) {
-         //@ts-ignore
          zo.refObject.current && zo.refObject.current.reset();
          setIsOpen(false);
       }

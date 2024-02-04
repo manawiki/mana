@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
+import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "./access";
 
 export const serverEnv = process.env.NODE_ENV;
 export const usersSlug = "users";

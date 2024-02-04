@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import invariant from "tiny-invariant";
 
 import type { RemixRequestContext } from "remix.env";
 import { cacheThis } from "~/utils/cache.server";
@@ -32,6 +31,8 @@ export async function fetchPostWithSlug({
                        equals: p,
                     },
                  },
+                 overrideAccess: false,
+                 user,
               }),
            `post-${p}`,
         )
@@ -45,10 +46,11 @@ export async function fetchPostWithSlug({
                  equals: p,
               },
            },
+           overrideAccess: false,
+           user,
         });
 
    const post = postsAll[0];
-   invariant(post, "Post doesn't exist");
 
    return { postData: post };
 }

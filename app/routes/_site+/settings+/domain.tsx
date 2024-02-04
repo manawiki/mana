@@ -2,15 +2,9 @@ import { json, redirect } from "@remix-run/node";
 import type {
    MetaFunction,
    LoaderFunctionArgs,
-   SerializeFrom,
    ActionFunctionArgs,
 } from "@remix-run/node";
-import {
-   useFetcher,
-   useLoaderData,
-   useRevalidator,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import { request as gqlRequest } from "graphql-request";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
@@ -27,10 +21,10 @@ import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Code, Text, TextLink } from "~/components/Text";
-import { isSiteOwner } from "~/db/collections/site/access";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
+import { isSiteOwner } from "~/db/access/isSiteOwner";
 import { isAdding } from "~/utils/form";
 import { stripe } from "~/utils/stripe.server";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { Record } from "./components/Record";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
@@ -260,9 +254,7 @@ export default function Settings() {
       certData,
    } = useLoaderData<typeof loader>();
 
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    const certificate = certData?.app?.certificate;
 

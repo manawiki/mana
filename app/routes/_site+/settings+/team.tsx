@@ -1,20 +1,19 @@
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 
-import {
-   type MetaFunction,
-   type LoaderFunctionArgs,
-   defer,
+import { defer, redirect } from "@remix-run/node";
+import type {
+   MetaFunction,
+   LoaderFunctionArgs,
+   ActionFunctionArgs,
 } from "@remix-run/node";
 import { Await, useLoaderData } from "@remix-run/react";
 import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
-import type { Payload } from "payload";
+import { jsonWithError } from "remix-toast";
+import { z } from "zod";
+import { zx } from "zodix";
 
-import type { RemixRequestContext } from "remix.env";
 import { Avatar } from "~/components/Avatar";
-import { Badge } from "~/components/Badge";
-import { Button } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
 import { DotLoader } from "~/components/DotLoader";
 import {
    Dropdown,
@@ -35,10 +34,15 @@ import { Text } from "~/components/Text";
 import type { SiteApplication } from "~/db/payload-types";
 import { authGQLFetcher } from "~/utils/fetchers.server";
 
+import { ApplicationStatus } from "./components/ApplicationStatus";
+import { ApplicationViewer } from "./components/ApplicationViewer";
 import { PermissionTable } from "./components/PermissionTable";
+import { RoleBadge } from "./components/RoleBadge";
+import { ApplicationReviewSchema } from "./utils/ApplicationReviewSchema";
+import { fetchApplicationData } from "./utils/fetchApplicationData";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 
-type TeamMember = {
+export type TeamMember = {
    id: string;
    username: string;
    avatar: {
@@ -47,48 +51,12 @@ type TeamMember = {
    role: "Owner" | "Admin" | "Contributor";
 };
 
-async function fetchApplicationData({
-   payload,
-   siteSlug,
-   user,
-}: {
-   payload: Payload;
-   siteSlug: string;
-   user: RemixRequestContext["user"];
-}) {
-   const { docs } = await payload.find({
-      collection: "siteApplications",
-      where: {
-         "site.slug": {
-            equals: siteSlug,
-         },
-      },
-      overrideAccess: false,
-      user,
-      depth: 2,
-      sort: "-createdAt",
-   });
-   const applications = docs.map((doc) => ({
-      id: doc.id,
-      createdBy: {
-         username: doc.createdBy.username,
-         avatar: {
-            url: doc.createdBy.avatar?.url,
-         },
-      },
-      createdAt: doc.createdBy.createdAt,
-      reviewReply: doc.reviewReply,
-      status: doc.status,
-      primaryDetails: doc.primaryDetails,
-      additionalNotes: doc.additionalNotes,
-   }));
-   return applications;
-}
-
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
+   if (!user) throw redirect("/login?redirectTo=/settings/team");
+
    const { siteSlug } = await getSiteSlug(request, payload, user);
 
    const applications = fetchApplicationData({
@@ -174,7 +142,7 @@ export default function Members() {
                <Await resolve={applications}>
                   {(applications) => (
                      <>
-                        {applications ? (
+                        {applications.length > 0 ? (
                            <Table
                               framed
                               bleed
@@ -228,7 +196,9 @@ export default function Members() {
                                        </TableCell>
                                        <TableCell>
                                           <ApplicationViewer
-                                             application={application}
+                                             application={
+                                                application as SiteApplication
+                                             }
                                           />
                                        </TableCell>
                                     </TableRow>
@@ -236,7 +206,9 @@ export default function Members() {
                               </TableBody>
                            </Table>
                         ) : (
-                           <div>No applications</div>
+                           <Text className="border-y tablet:border border-color-sub p-4 tablet:rounded-lg -mx-3 shadow-1 shadow-sm">
+                              No applications to review...
+                           </Text>
                         )}
                      </>
                   )}
@@ -261,104 +233,78 @@ export const meta: MetaFunction = ({ matches }) => {
    ];
 };
 
-//TODO Find a way to infer from the loader
-function ApplicationViewer({ application }: { application: any }) {
-   const [isOpen, setIsOpen] = useState(false);
+export async function action({
+   context: { payload, user },
+   request,
+}: ActionFunctionArgs) {
+   const { intent } = await zx.parseForm(request, {
+      intent: z.string(),
+   });
 
-   const submitted = dt.format(
-      new Date(application.createdAt as string),
-      "MMMM DD, YYYY",
-   );
+   if (!user) throw redirect("/login?redirectTo=/settings/team");
 
-   return (
-      <>
-         <Button className="!text-xs" onClick={() => setIsOpen(true)}>
-            View
-         </Button>
-         <Dialog
-            size="4xl"
-            onClose={() => {
-               setIsOpen(false);
-            }}
-            open={isOpen}
-         >
-            <>
-               <div className="pb-3 -mt-1 px-5 flex items-center justify-between border-b border-color -mx-5">
-                  <div className="flex items-center gap-2">
-                     <Avatar
-                        src={application.createdBy?.avatar?.url}
-                        initials={application?.createdBy?.username.charAt(0)}
-                        className="size-6"
-                     />
-                     <span>{application.createdBy.username}</span>
-                  </div>
-                  <Text>{submitted}</Text>
-               </div>
-               <div className="space-y-6 py-6">
-                  <div>
-                     <div className="text-1 pb-1 font-semibold">
-                        In what ways would you like to help?
-                     </div>
-                     <div>{application.primaryDetails}</div>
-                  </div>
-                  <div>
-                     <div className="text-1 pb-1 font-semibold">
-                        Anything else you'd like to share?
-                     </div>
-                     <div>{application.additionalNotes}</div>
-                  </div>
-               </div>
-               <div className="border-t border-color px-5 -mx-5 pt-3">
-                  things
-               </div>
-            </>
-         </Dialog>
-      </>
-   );
-}
-
-function ApplicationStatus({ status }: { status: SiteApplication["status"] }) {
-   let color = "" as any;
-   let statusLabel = "" as any;
-   switch (status) {
-      case "under-review":
-         color = "cyan";
-         statusLabel = "Needs Review";
-         break;
-      case "approved":
-         color = "green";
-         statusLabel = "Approved";
-         break;
-      case "denied":
-         color = "red";
-         statusLabel = "Denied";
-         break;
-      default:
-         color = "gray";
-         break;
+   switch (intent) {
+      case "approveApplication": {
+         try {
+            const { siteId, applicantUserId, reviewMessage } =
+               await zx.parseForm(request, ApplicationReviewSchema);
+            await payload.update({
+               collection: "siteApplications",
+               id: `${siteId}-${applicantUserId}`,
+               data: {
+                  status: "approved",
+                  reviewMessage: reviewMessage as any,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+            });
+            //@ts-ignore
+            if (site && site?.contributors?.includes(applicantUserId))
+               return jsonWithError(
+                  null,
+                  "User is already a contributor to this site",
+               );
+            return await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  //@ts-ignore
+                  contributors: [...site?.contributors, applicantUserId],
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "declineApplication": {
+         try {
+            const { siteId, applicantUserId, reviewMessage } =
+               await zx.parseForm(request, ApplicationReviewSchema);
+            return await payload.update({
+               collection: "siteApplications",
+               id: `${siteId}-${applicantUserId}`,
+               data: {
+                  status: "denied",
+                  reviewMessage: reviewMessage as any,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
    }
-
-   return <Badge color={color}>{statusLabel}</Badge>;
-}
-
-function RoleBadge({ role }: { role: TeamMember["role"] }) {
-   let color = "" as any;
-   switch (role) {
-      case "Owner":
-         color = "purple";
-         break;
-      case "Admin":
-         color = "amber";
-         break;
-      case "Contributor":
-         color = "emerald";
-         break;
-      default:
-         color = "gray";
-         break;
-   }
-
-   return <Badge color={color}>{role}</Badge>;
 }
 
 const query = {

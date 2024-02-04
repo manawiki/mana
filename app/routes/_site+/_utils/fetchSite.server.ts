@@ -176,6 +176,13 @@ const QUERY = gql`
                url
             }
          }
+         contributors {
+            id
+            username
+            avatar {
+               url
+            }
+         }
       }
    }
 `;

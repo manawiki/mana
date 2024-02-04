@@ -6,7 +6,11 @@ declare global {
    }
 }
 
-export function GAScripts({ gaTrackingId }: { gaTrackingId: string }) {
+export function GAScripts({
+   gaTrackingId,
+}: {
+   gaTrackingId: string | undefined | null;
+}) {
    let isBot = useIsBot();
 
    return (

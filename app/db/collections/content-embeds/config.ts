@@ -4,7 +4,7 @@ import type { User } from "payload/generated-types";
 
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { canRead } from "../../access/canRead";
-import { isStaffFieldLevel } from "../../access/user";
+import { isStaffFieldLevel } from "../users/access";
 
 export const ContentEmbeds: CollectionConfig = {
    slug: "contentEmbeds",

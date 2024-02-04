@@ -3,6 +3,7 @@ import type { CollectionConfig } from "payload/types";
 import type { RemixRequestContext } from "remix.env";
 
 import {
+   applicationFieldAsSiteAdmin,
    canCreateApplication,
    canDeleteApplication,
    canReadApplication,
@@ -54,6 +55,9 @@ export const SiteApplications: CollectionConfig = {
                value: "denied",
             },
          ],
+         access: {
+            update: applicationFieldAsSiteAdmin,
+         },
       },
       {
          name: "primaryDetails",
@@ -64,7 +68,7 @@ export const SiteApplications: CollectionConfig = {
          type: "textarea",
       },
       {
-         name: "reviewReply",
+         name: "reviewMessage",
          type: "textarea",
       },
    ],

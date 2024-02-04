@@ -4,7 +4,8 @@ import { select } from "payload-query";
 import invariant from "tiny-invariant";
 
 import type { RemixRequestContext } from "remix.env";
-import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
+import { isSiteContributor } from "~/db/access/isSiteContributor";
+import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
 
@@ -33,6 +34,8 @@ export async function fetchPost({
       const postById = await payload.findByID({
          collection: "posts",
          id: p,
+         overrideAccess: false,
+         user,
       });
 
       if (!postById) throw redirect("/404", 404);
@@ -55,7 +58,9 @@ export async function fetchPost({
    //Now we handle authenticated querying
    invariant(user, "Not logged in");
 
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
+   const hasAccess =
+      isSiteOwnerOrAdmin(user?.id, postData.site) ||
+      isSiteContributor(user?.id, postData.site);
 
    //If user has access, pull versions
    if (hasAccess) {
@@ -63,6 +68,8 @@ export async function fetchPost({
          collection: "postContents",
          id: postData.id,
          draft: true,
+         overrideAccess: false,
+         user,
       });
       const versionData = await payload.findVersions({
          collection: "postContents",
@@ -73,7 +80,6 @@ export async function fetchPost({
             },
          },
          limit: 20,
-         user,
          page,
       });
       const versions = versionData.docs
@@ -83,7 +89,7 @@ export async function fetchPost({
             const version = select(
                {
                   id: false,
-                  versionAuthor: true,
+                  author: true,
                   content: true,
                   _status: true,
                },

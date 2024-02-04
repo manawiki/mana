@@ -26,6 +26,7 @@ export async function fetchPostComments({
       siteSlug,
       user,
    });
+   if (!postData) return null;
 
    const postDataId = postData?.id;
 

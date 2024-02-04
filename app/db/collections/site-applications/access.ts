@@ -1,6 +1,8 @@
-import type { Access } from "payload/types";
+import type { Access, FieldAccess } from "payload/types";
 
-import { isSiteOwnerOrAdmin } from "../site/access";
+import type { RemixRequestContext } from "remix.env";
+
+import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 
 export const canReadApplication: Access = async ({
    req: { user, payload },
@@ -63,6 +65,23 @@ export const canUpdateApplication: Access = async ({
    req: { user, payload },
    id,
 }) => {
+   if (user && id) {
+      const application = await payload.findByID({
+         collection: "siteApplications",
+         id,
+         depth: 1,
+      });
+
+      const hasAccess = isSiteOwnerOrAdmin(user.id, application.site);
+
+      if (!hasAccess)
+         return {
+            createdBy: {
+               equals: user.id,
+            },
+         };
+      return hasAccess;
+   }
    return {
       createdBy: {
          equals: user.id,
@@ -81,4 +100,28 @@ export const canDeleteApplication: Access = async ({
          equals: user.id,
       },
    };
+};
+
+export const applicationFieldAsSiteAdmin: FieldAccess<
+   { id: string },
+   unknown,
+   RemixRequestContext["user"]
+> = async ({ req: { user, payload }, id }) => {
+   if (user) {
+      if (user?.roles?.includes("staff")) return true;
+      const userId = user?.id;
+
+      if (id) {
+         const application = await payload.findByID({
+            collection: "siteApplications",
+            id,
+            depth: 1,
+         });
+         if (application.site)
+            return isSiteOwnerOrAdmin(userId, application.site);
+      }
+   }
+
+   // Reject everyone else
+   return false;
 };

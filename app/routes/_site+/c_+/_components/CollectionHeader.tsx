@@ -8,9 +8,7 @@ import {
    NavLink,
    Link,
    useFetcher,
-   useRouteLoaderData,
 } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 import { useZorm } from "react-zorm";
 import { z } from "zod";
@@ -21,8 +19,8 @@ import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isAdding, isProcessing } from "~/utils/form";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionImageUploader } from "./CollectionImageUploader";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
@@ -34,9 +32,7 @@ const CollectionSchema = z.object({
 });
 
 export function CollectionHeader() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    //entry data should live in $collectionId_$entryId, this may be potentially brittle if we shift site architecture around
    const { entry } = (useMatches()?.[2]?.data as {

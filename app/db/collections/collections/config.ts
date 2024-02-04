@@ -5,7 +5,7 @@ import type {
 } from "payload/types";
 
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
-import { isStaffFieldLevel } from "../../access/user";
+import { isStaffFieldLevel } from "../users/access";
 
 export const collectionsSlug = "collections";
 

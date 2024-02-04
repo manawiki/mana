@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import { canEditSite, canReadSite } from "./access";
 import { afterCreateSite } from "./hooks";
-import { isStaff, isStaffFieldLevel, isLoggedIn } from "../../../access/user";
+import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
 
 export const sitesSlug = "sites";
 export const Sites: CollectionConfig = {
