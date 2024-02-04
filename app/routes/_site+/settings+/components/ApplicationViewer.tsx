@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-import type { SerializeFrom } from "@remix-run/node";
-import { useFetcher, useRouteLoaderData } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import dt from "date-and-time";
 import { useZorm } from "react-zorm";
 
@@ -14,8 +13,8 @@ import { Text } from "~/components/Text";
 import { Textarea } from "~/components/Textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { SiteApplication } from "~/db/payload-types";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isProcessing } from "~/utils/form";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { ApplicationStatus } from "./ApplicationStatus";
 import { ApplicationReviewSchema } from "../utils/ApplicationReviewSchema";
@@ -32,9 +31,7 @@ export function ApplicationViewer({
       "MMMM DD, YYYY",
    );
 
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    const fetcher = useFetcher();
    const zo = useZorm("applicationReview", ApplicationReviewSchema);

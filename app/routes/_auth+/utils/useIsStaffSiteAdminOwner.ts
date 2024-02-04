@@ -1,6 +1,7 @@
-import { useMatches, useRouteLoaderData } from "@remix-run/react";
-
-import type { User, Site } from "payload/generated-types";
+import {
+   useRootLoaderData,
+   useSiteLoaderData,
+} from "~/utils/useSiteLoaderData";
 
 /**
  * Determines if the current user is a staff member, site admin, or owner of the site.
@@ -8,11 +9,10 @@ import type { User, Site } from "payload/generated-types";
  */
 
 export function useIsStaffOrSiteAdminOrStaffOrOwner() {
-   const { user } = useRouteLoaderData("root") as { user: User };
+   const { user } = useRootLoaderData();
 
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
+   const { site } = useSiteLoaderData();
+
    //always false if not logged in
    if (!user || !user?.id) return false;
 

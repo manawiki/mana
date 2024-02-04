@@ -1,8 +1,12 @@
 import { useEffect } from "react";
 
 import { json } from "@remix-run/node";
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { useLoaderData, useLocation } from "@remix-run/react";
+import type {
+   LoaderFunctionArgs,
+   MetaFunction,
+   SerializeFrom,
+} from "@remix-run/node";
+import { useLoaderData, useLocation, useMatches } from "@remix-run/react";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";

@@ -1,29 +1,21 @@
 import { useState } from "react";
 
-import {
-   Link,
-   useFetcher,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
 import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
 import { isAdding } from "~/utils/form";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { FollowingListMobile } from "./Menu";
 import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { user } = useRouteLoaderData("root") as SerializeFrom<
-      typeof rootLoaderType
-   >;
+   const { user } = useRootLoaderData();
 
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });

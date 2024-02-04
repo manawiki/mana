@@ -1,8 +1,7 @@
-import { useRouteLoaderData } from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
-
-import type { RemixRequestContext } from "remix.env";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
+import {
+   useRootLoaderData,
+   useSiteLoaderData,
+} from "~/utils/useSiteLoaderData";
 
 export const AdminOrStaffOrOwnerOrContributor = ({
    children,
@@ -13,14 +12,10 @@ export const AdminOrStaffOrOwnerOrContributor = ({
    return hasAccess ? <>{children}</> : null;
 };
 
-export function useIsStaffSiteAdminOwnerContributor() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+function useIsStaffSiteAdminOwnerContributor() {
+   const { site } = useSiteLoaderData();
 
-   const { user } = useRouteLoaderData("root") as {
-      user: RemixRequestContext["user"];
-   };
+   const { user } = useRootLoaderData();
 
    //always false if not logged in
    if (!user || !user?.id) return false;

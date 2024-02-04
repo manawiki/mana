@@ -3,12 +3,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import {
-   Link,
-   useFetcher,
-   useNavigate,
-   useRouteLoaderData,
-} from "@remix-run/react";
+import { Link, useFetcher, useNavigate } from "@remix-run/react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -20,6 +15,7 @@ import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
 import { useDebouncedValue } from "~/utils/use-debounce";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 export async function loader({
    context: { payload, user },
@@ -175,7 +171,10 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
    const fetcher = useFetcher();
    const [query, setQuery] = useState("");
    const debouncedValue = useDebouncedValue(query, 100);
-   const { siteId } = useRouteLoaderData("root") as { siteId: string };
+   //todo - seems brittle, doublecheck
+   const {
+      site: { id: siteId },
+   } = useSiteLoaderData();
 
    //leave searchListItems as an empty array until fetcher is loaded
    const searchListItems = useMemo(
