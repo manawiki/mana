@@ -14,7 +14,8 @@ function cleanFile(file) {
    // Fix Payload depth issues
    content = content
       .replace(/string \| (?=[A-Z])/g, "")
-      .replace(/string\[\] \| (?=[A-Z])/g, "");
+      .replace(/string\[\] \| (?=[A-Z])/g, "")
+      .replace(/\(string \| null\) \| (?=[A-Z])/g, "");
 
    // Write the file
    fs.writeFileSync(file, content, "utf-8");
