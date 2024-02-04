@@ -1,7 +1,8 @@
 import type { Payload } from "payload";
 import { type Select } from "payload-query";
 
-import type { Post, User } from "payload/generated-types";
+import type { Post } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 
 import { filterAuthorFields } from "./filterAuthorFields";
 import type { PostsAllSchema } from "../_posts";
@@ -15,7 +16,7 @@ export async function fetchMyPosts({
 }: typeof PostsAllSchema._type & {
    payload: Payload;
    siteSlug: string;
-   user?: User;
+   user?: RemixRequestContext["user"];
 }) {
    /**
     * --------------------------------------------------------
@@ -53,6 +54,8 @@ export async function fetchMyPosts({
          page: page ?? 1,
          sort: "-updatedAt",
          depth: 2,
+         overrideAccess: false,
+         user,
       });
 
       const postSelect: Select<Post> = {

@@ -13,7 +13,7 @@ export const AdminOrStaffOrOwnerOrContributor = ({
    return hasAccess ? <>{children}</> : null;
 };
 
-function useIsStaffSiteAdminOwnerContributor() {
+export function useIsStaffSiteAdminOwnerContributor() {
    const { site } = useRouteLoaderData("routes/_site+/_layout") as {
       site: SerializeFrom<typeof siteLoaderType>["site"];
    };
@@ -35,9 +35,9 @@ function useIsStaffSiteAdminOwnerContributor() {
    )
       return true;
 
-   if (site?.admins?.some((e: any) => e.id === user.id)) return true;
+   if (site?.admins?.some((e) => e.id === user.id)) return true;
 
-   if (site?.contributors?.some((e: any) => e.id === user.id)) return true;
+   if (site?.contributors?.some((e) => e.id === user.id)) return true;
 
    // return false if none of the above
    return false;

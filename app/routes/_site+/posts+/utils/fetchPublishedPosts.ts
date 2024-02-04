@@ -1,7 +1,8 @@
 import type { Payload } from "payload";
 import { type Select } from "payload-query";
 
-import type { Post, User } from "payload/generated-types";
+import type { Post } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { cacheThis } from "~/utils/cache.server";
 
 import { filterAuthorFields } from "./filterAuthorFields";
@@ -15,7 +16,7 @@ export async function fetchPublishedPosts({
 }: typeof PostsAllSchema._type & {
    payload: Payload;
    siteSlug: string;
-   user?: User;
+   user?: RemixRequestContext["user"];
 }) {
    const postSelect: Select<Post> = {
       slug: true,

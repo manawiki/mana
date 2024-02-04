@@ -16,7 +16,6 @@ export const PostContents: CollectionConfig = {
       read: canReadPostContent,
       update: canUpdateOrDeletePostContent,
       delete: canUpdateOrDeletePostContent,
-      readVersions: canUpdateOrDeletePostContent,
    },
    fields: [
       {
