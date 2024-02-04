@@ -36,8 +36,8 @@ export async function loader({
 export default function SiteLayout() {
    const { site } = useLoaderData<typeof loader>() || {};
    const location = useLocation();
-   const gaTag = site?.gaTagId as any as string;
-   const enableAds = site?.enableAds as any as boolean;
+   const gaTag = site?.gaTagId;
+   const enableAds = site?.enableAds;
 
    const [, setSearchToggle] = useSearchToggleState();
 

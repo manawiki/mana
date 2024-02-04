@@ -1,6 +1,10 @@
 import { Script } from "~/utils/third-parties/Script";
 
-export function RampScripts({ enableAds }: { enableAds: boolean }) {
+export function RampScripts({
+   enableAds,
+}: {
+   enableAds: boolean | null | undefined;
+}) {
    if (process.env.NODE_ENV === "production" && enableAds)
       return (
          <>
