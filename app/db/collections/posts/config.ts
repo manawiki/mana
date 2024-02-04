@@ -98,6 +98,7 @@ export const Posts: CollectionConfig = {
          type: "number",
          defaultValue: 1,
          min: 1,
+         required: true,
       },
    ],
 };
