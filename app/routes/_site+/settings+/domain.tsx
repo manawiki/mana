@@ -672,7 +672,7 @@ export async function action({
 
    invariant(user?.roles, "User must be logged in to mutate domain names");
 
-   const isOwner = isSiteOwner(user?.id, site.owner);
+   const isOwner = isSiteOwner(user?.id, site?.owner as any);
 
    if (!isOwner && !user?.roles.includes("staff")) throw redirect("/404", 404);
 

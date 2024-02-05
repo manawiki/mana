@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite, canReadSite } from "./access";
+import { canEditSite, canReadSite, canUpdateSiteRoles } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
 
@@ -65,20 +65,6 @@ export const Sites: CollectionConfig = {
          ],
       },
       {
-         name: "admins",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
-         name: "contributors",
-         type: "relationship",
-         relationTo: "users",
-         hasMany: true,
-         maxDepth: 2,
-      },
-      {
          name: "icon",
          type: "upload",
          relationTo: "images",
@@ -106,6 +92,26 @@ export const Sites: CollectionConfig = {
          name: "gaPropertyId",
          label: "Google Analytics property id",
          type: "text",
+      },
+      {
+         name: "admins",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+         access: {
+            update: canUpdateSiteRoles,
+         },
+      },
+      {
+         name: "contributors",
+         type: "relationship",
+         relationTo: "users",
+         hasMany: true,
+         maxDepth: 2,
+         access: {
+            update: canUpdateSiteRoles,
+         },
       },
       {
          name: "domain",

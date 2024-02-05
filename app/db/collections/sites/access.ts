@@ -2,7 +2,10 @@ import type { Access, FieldAccess } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
+import { isSiteAdmin } from "../../access/isSiteAdmin";
+import { isSiteOwner } from "../../access/isSiteOwner";
 import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
+import { isSiteStaff } from "../../access/isSiteStaff";
 
 export const siteFieldAsSiteAdmin: FieldAccess<
    { id: string },
@@ -92,4 +95,32 @@ export const canReadSite: Access = async ({ req: { user, payload }, id }) => {
          equals: true,
       },
    };
+};
+
+export const canUpdateSiteRoles: FieldAccess = async ({
+   req: { user },
+   data,
+   doc,
+}) => {
+   if (user) {
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+
+      const newAdminData = data?.admins ?? [];
+      const existingAdminData = doc.admins ?? [];
+
+      const siteOwner = doc.owner;
+      const isOwner = isSiteOwner(user?.id, siteOwner);
+      const isAdmin = isSiteAdmin(user?.id, existingAdminData as any[]);
+
+      const adminChange = newAdminData.length !== existingAdminData.length;
+
+      //promote to admin from contributor
+      if (newAdminData.length > existingAdminData.length && adminChange) {
+         return isOwner;
+      }
+      return isOwner || isAdmin;
+   }
+   // Reject everyone else
+   return false;
 };

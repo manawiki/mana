@@ -64,7 +64,9 @@ export const canCreatePost: Access = async ({
             depth: 0,
          });
          const hasAccess =
-            isSiteOwnerOrAdmin(userId, site) || isSiteContributor(userId, site);
+            isSiteOwnerOrAdmin(userId, site) ||
+            //@ts-ignore
+            isSiteContributor(userId, site?.contributors);
          return hasAccess;
       }
    }

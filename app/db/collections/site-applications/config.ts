@@ -3,11 +3,10 @@ import type { CollectionConfig } from "payload/types";
 import type { RemixRequestContext } from "remix.env";
 
 import {
-   applicationFieldAsSiteAdmin,
+   updateApplicationFieldAsSiteAdmin,
    canCreateApplication,
-   canDeleteApplication,
    canReadApplication,
-   canUpdateApplication,
+   canUpdateDeleteApplication,
 } from "./access";
 
 export const SiteApplications: CollectionConfig = {
@@ -15,8 +14,8 @@ export const SiteApplications: CollectionConfig = {
    access: {
       create: canCreateApplication,
       read: canReadApplication,
-      update: canUpdateApplication,
-      delete: canDeleteApplication,
+      update: canUpdateDeleteApplication,
+      delete: canUpdateDeleteApplication,
    },
    fields: [
       {
@@ -56,7 +55,7 @@ export const SiteApplications: CollectionConfig = {
             },
          ],
          access: {
-            update: applicationFieldAsSiteAdmin,
+            update: updateApplicationFieldAsSiteAdmin,
          },
       },
       {

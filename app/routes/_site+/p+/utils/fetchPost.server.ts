@@ -59,10 +59,8 @@ export async function fetchPost({
    invariant(user, "Not logged in");
 
    const hasAccess =
-      //@ts-ignore
-      isSiteOwnerOrAdmin(user?.id, postData?.site) ||
-      //@ts-ignore
-      isSiteContributor(user?.id, postData?.site);
+      isSiteOwnerOrAdmin(user?.id, postData?.site as any) ||
+      isSiteContributor(user?.id, postData?.site.contributors as any[]);
 
    //If user has access, pull versions
    if (hasAccess) {

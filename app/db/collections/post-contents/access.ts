@@ -75,7 +75,8 @@ export const canCreatePostContent: Access = async ({
             depth: 0,
          });
          const hasAccess =
-            isSiteOwnerOrAdmin(userId, site) || isSiteContributor(userId, site);
+            isSiteOwnerOrAdmin(userId, site) ||
+            isSiteContributor(userId, site?.contributors as any[]);
 
          return hasAccess;
       }

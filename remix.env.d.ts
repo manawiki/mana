@@ -10,7 +10,7 @@ export interface RemixRequestContext {
    payload: Payload;
    user?: {
       id: string;
-      roles: string[];
+      roles: ["staff" | "user"];
       username: string;
       avatar?: {
          id: string;

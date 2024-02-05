@@ -8,6 +8,11 @@ import {
    DropdownMenu,
 } from "~/components/Dropdown";
 import { Icon } from "~/components/Icon";
+import { TableCell } from "~/components/Table";
+import { isSiteAdmin } from "~/db/access/isSiteAdmin";
+import { isSiteOwner } from "~/db/access/isSiteOwner";
+import { isSiteStaff } from "~/db/access/isSiteStaff";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { TeamMember } from "../team";
 
@@ -20,44 +25,100 @@ export function RoleActions({
 }) {
    const fetcher = useFetcher();
 
+   const { site } = useSiteLoaderData();
+
+   const isOwner = isSiteOwner(currentUser?.id, site?.owner?.id as string);
+
+   const isAdmin = isSiteAdmin(currentUser?.id, site?.admins as any[]);
+
+   const isStaff = isSiteStaff(currentUser?.roles);
+
    switch (member.role) {
       case "Owner":
          return null;
       case "Admin":
          return (
-            <Dropdown>
-               <DropdownButton plain aria-label="More options">
-                  <Icon name="more-horizontal" size={16} className="text-1" />
-               </DropdownButton>
-               <DropdownMenu anchor="bottom end">
-                  <DropdownItem
-                     onClick={() =>
-                        fetcher.submit(
-                           {
-                              userId: member.id,
-                              intent: "demoteToContributor",
-                           },
-                           {
-                              method: "POST",
-                           },
-                        )
-                     }
-                  >
-                     Demote to Contributor
-                  </DropdownItem>
-               </DropdownMenu>
-            </Dropdown>
+            (isStaff || isOwner) && (
+               <TableCell>
+                  <Dropdown>
+                     <DropdownButton plain aria-label="More options">
+                        <Icon
+                           name="more-horizontal"
+                           size={16}
+                           className="text-1"
+                        />
+                     </DropdownButton>
+                     <DropdownMenu anchor="bottom end">
+                        <DropdownItem
+                           onClick={() =>
+                              fetcher.submit(
+                                 {
+                                    siteId: site.id,
+                                    userId: member.id,
+                                    intent: "demoteToContributorFromAdmin",
+                                 },
+                                 {
+                                    method: "POST",
+                                 },
+                              )
+                           }
+                        >
+                           Demote to contributor
+                        </DropdownItem>
+                     </DropdownMenu>
+                  </Dropdown>
+               </TableCell>
+            )
          );
       case "Contributor":
          return (
-            <Dropdown>
-               <DropdownButton plain aria-label="More options">
-                  <Icon name="more-horizontal" size={16} className="text-1" />
-               </DropdownButton>
-               <DropdownMenu anchor="bottom end">
-                  <DropdownItem>Promote to Admin</DropdownItem>
-               </DropdownMenu>
-            </Dropdown>
+            (isStaff || isAdmin || isOwner) && (
+               <TableCell>
+                  <Dropdown>
+                     <DropdownButton plain aria-label="More options">
+                        <Icon
+                           name="more-horizontal"
+                           size={16}
+                           className="text-1"
+                        />
+                     </DropdownButton>
+                     <DropdownMenu anchor="bottom end">
+                        <DropdownItem
+                           onClick={() =>
+                              fetcher.submit(
+                                 {
+                                    siteId: site.id,
+                                    userId: member.id,
+                                    intent: "promoteToAdmin",
+                                 },
+                                 {
+                                    method: "POST",
+                                 },
+                              )
+                           }
+                        >
+                           Promote to admin
+                        </DropdownItem>
+                        <DropdownItem
+                           onClick={() =>
+                              fetcher.submit(
+                                 {
+                                    siteId: site.id,
+                                    userId: member.id,
+                                    intent: "removeContributor",
+                                 },
+                                 {
+                                    method: "POST",
+                                 },
+                              )
+                           }
+                        >
+                           Remove contributor
+                        </DropdownItem>
+                     </DropdownMenu>
+                  </Dropdown>
+               </TableCell>
+            )
          );
    }
 }

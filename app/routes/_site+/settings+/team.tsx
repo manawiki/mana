@@ -9,7 +9,7 @@ import type {
 import { Await, useLoaderData } from "@remix-run/react";
 import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
-import { jsonWithError } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -34,6 +34,7 @@ import { RoleActions } from "./components/RoleActions";
 import { RoleBadge } from "./components/RoleBadge";
 import { ApplicationReviewSchema } from "./utils/ApplicationReviewSchema";
 import { fetchApplicationData } from "./utils/fetchApplicationData";
+import { RoleActionSchema } from "./utils/RoleActionSchema";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
 
 export type TeamMember = {
@@ -60,6 +61,7 @@ export async function loader({
    });
 
    const graphql_query = jsonToGraphQLQuery(query, { pretty: true });
+
    const data = (await authGQLFetcher({
       variables: {
          siteSlug,
@@ -109,9 +111,7 @@ export default function Members() {
                         <TableCell className="text-zinc-500 text-right">
                            <RoleBadge role={member.role} />
                         </TableCell>
-                        <TableCell>
-                           <RoleActions currentUser={user} member={member} />
-                        </TableCell>
+                        <RoleActions currentUser={user} member={member} />
                      </TableRow>
                   ))}
                </TableBody>
@@ -221,7 +221,6 @@ export async function action({
    const { intent } = await zx.parseForm(request, {
       intent: z.string(),
    });
-
    if (!user) throw redirect("/login?redirectTo=/settings/team");
 
    switch (intent) {
@@ -229,36 +228,47 @@ export async function action({
          try {
             const { siteId, applicantUserId, reviewMessage } =
                await zx.parseForm(request, ApplicationReviewSchema);
+
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+            });
+
+            if (
+               site?.contributors &&
+               //@ts-ignore
+               site?.contributors?.includes(applicantUserId)
+            )
+               return jsonWithError(
+                  null,
+                  "User is already a contributor to this site",
+               );
+
+            const updatedContributors = site?.contributors
+               ? [...site?.contributors, applicantUserId]
+               : [applicantUserId];
+
             await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  //@ts-ignore
+                  contributors: updatedContributors,
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+
+            return await payload.update({
                collection: "siteApplications",
                id: `${siteId}-${applicantUserId}`,
                data: {
                   status: "approved",
                   reviewMessage: reviewMessage as any,
                },
-               depth: 0,
-               overrideAccess: false,
-               user,
-            });
-            const site = await payload.findByID({
-               collection: "sites",
-               id: siteId,
-               depth: 0,
-            });
-            //@ts-ignore
-            if (site && site?.contributors?.includes(applicantUserId))
-               return jsonWithError(
-                  null,
-                  "User is already a contributor to this site",
-               );
-            return await payload.update({
-               collection: "sites",
-               id: siteId,
-               data: {
-                  //@ts-ignore
-                  contributors: [...site?.contributors, applicantUserId],
-               },
-               depth: 0,
+               depth: 2,
                overrideAccess: false,
                user,
             });
@@ -281,6 +291,135 @@ export async function action({
                overrideAccess: false,
                user,
             });
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "demoteToContributorFromAdmin": {
+         try {
+            const { siteId, userId } = await zx.parseForm(
+               request,
+               RoleActionSchema,
+            );
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+
+            //Check to make sure user is not already a contributor
+            if (
+               site?.contributors &&
+               site?.contributors.includes(userId as any)
+            )
+               return jsonWithError(null, "User is already a contributor");
+
+            //Remove user from admins
+            const updatedAdmins = site?.admins
+               ? site?.admins?.filter((admin: any) => admin !== userId)
+               : null;
+
+            const updatedContributors = site?.contributors
+               ? [...site?.contributors, userId]
+               : [userId];
+
+            await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  admins: updatedAdmins as any[],
+                  contributors: updatedContributors as any[],
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            return jsonWithSuccess(null, "User demoted to contributor");
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "promoteToAdmin": {
+         try {
+            const { siteId, userId } = await zx.parseForm(
+               request,
+               RoleActionSchema,
+            );
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            //Check to make sure user is not already an admin
+            if (site?.admins && site?.admins.includes(userId as any))
+               return jsonWithError(null, "User is already an admin");
+
+            //Remove user from contributors
+            const updatedContributors = site?.contributors
+               ? site?.contributors?.filter(
+                    (contributor: any) => contributor !== userId,
+                 )
+               : null;
+
+            const updatedAdmins = site?.admins
+               ? [...site?.admins, userId]
+               : [userId];
+
+            await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  contributors: updatedContributors as any[],
+                  admins: updatedAdmins as any[],
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            return jsonWithSuccess(null, "User promoted to admin");
+         } catch (err: unknown) {
+            payload.logger.error(`${err}`);
+         }
+      }
+      case "removeContributor": {
+         try {
+            const { siteId, userId } = await zx.parseForm(
+               request,
+               RoleActionSchema,
+            );
+            const site = await payload.findByID({
+               collection: "sites",
+               id: siteId,
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            //Check to make sure user is not an admin
+            if (site?.admins && site?.admins.includes(userId as any))
+               return jsonWithError(null, "User is already an admin");
+
+            //Remove user from contributors
+            const updatedContributors = site?.contributors
+               ? site?.contributors?.filter(
+                    (contributor: any) => contributor !== userId,
+                 )
+               : null;
+
+            await payload.update({
+               collection: "sites",
+               id: siteId,
+               data: {
+                  contributors: updatedContributors as any[],
+               },
+               depth: 0,
+               overrideAccess: false,
+               user,
+            });
+            return jsonWithSuccess(null, "User removed from contributors");
          } catch (err: unknown) {
             payload.logger.error(`${err}`);
          }

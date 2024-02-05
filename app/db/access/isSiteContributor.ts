@@ -1,12 +1,6 @@
-import type { Site } from "payload/generated-types";
-
-export const isSiteContributor = (userId: string, site: Site) => {
-   const siteContributors = site.contributors;
-
-   if (siteContributors) {
-      //@ts-ignore
-      return siteContributors.includes(userId);
-   }
-
-   return false;
-};
+export function isSiteContributor(
+   userId: string | undefined,
+   contributors: string[] | undefined,
+) {
+   return contributors && userId ? contributors.includes(userId) : false;
+}
