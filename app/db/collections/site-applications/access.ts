@@ -1,38 +1,31 @@
 import type { Access, FieldAccess } from "payload/types";
 
-import type { RemixRequestContext } from "remix.env";
-
 import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
+import { isSiteStaff } from "../../access/isSiteStaff";
 
-export const canReadApplication: Access = async ({
-   req: { user, payload },
-   id,
-}) => {
-   if (user.roles.includes("staff")) return true;
+//@ts-ignore
+export const canReadApplication: Access = async ({ req: { user } }) => {
+   const isStaff = isSiteStaff(user?.roles);
+   if (isStaff) return true;
 
-   //Singleton
-   if (user && id) {
-      const site = await payload.findByID({
-         collection: "sites",
-         id,
-         depth: 0,
-      });
-      const hasAccess = isSiteOwnerOrAdmin(user.id, site);
-
-      if (!hasAccess)
-         return {
+   return {
+      or: [
+         {
             createdBy: {
                equals: user.id,
             },
-         };
-      return hasAccess;
-   }
-
-   //List
-   return {
-      createdBy: {
-         equals: user.id,
-      },
+         },
+         {
+            "site.admins": {
+               contains: user.id,
+            },
+         },
+         {
+            "site.owner": {
+               equals: user.id,
+            },
+         },
+      ],
    };
 };
 
@@ -61,54 +54,42 @@ export const canCreateApplication: Access = async ({
    return false;
 };
 
-export const canUpdateApplication: Access = async ({
-   req: { user, payload },
-   id,
-}) => {
-   if (user && id) {
-      const application = await payload.findByID({
-         collection: "siteApplications",
-         id,
-         depth: 1,
-      });
+//@ts-ignore
+export const canUpdateDeleteApplication: Access = async ({ req: { user } }) => {
+   const isStaff = isSiteStaff(user?.roles);
+   if (isStaff) return true;
 
-      const hasAccess = isSiteOwnerOrAdmin(user.id, application.site);
-
-      if (!hasAccess)
-         return {
-            createdBy: {
-               equals: user.id,
-            },
-         };
-      return hasAccess;
-   }
-   return {
-      createdBy: {
-         equals: user.id,
-      },
-   };
-};
-
-export const canDeleteApplication: Access = async ({
-   req: { user, payload },
-   id,
-}) => {
-   if (user.roles.includes("staff")) return true;
-
-   return {
-      createdBy: {
-         equals: user.id,
-      },
-   };
-};
-
-export const applicationFieldAsSiteAdmin: FieldAccess<
-   { id: string },
-   unknown,
-   RemixRequestContext["user"]
-> = async ({ req: { user, payload }, id }) => {
    if (user) {
-      if (user?.roles?.includes("staff")) return true;
+      return {
+         or: [
+            {
+               createdBy: {
+                  equals: user.id,
+               },
+            },
+            {
+               "site.admins": {
+                  contains: user.id,
+               },
+            },
+            {
+               "site.owner": {
+                  equals: user.id,
+               },
+            },
+         ],
+      };
+   }
+   return false;
+};
+
+export const updateApplicationFieldAsSiteAdmin: FieldAccess = async ({
+   req: { user, payload },
+   id,
+}) => {
+   if (user) {
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
       const userId = user?.id;
 
       if (id) {
@@ -121,7 +102,5 @@ export const applicationFieldAsSiteAdmin: FieldAccess<
             return isSiteOwnerOrAdmin(userId, application.site);
       }
    }
-
-   // Reject everyone else
    return false;
 };

@@ -1,10 +1,6 @@
-import type { Site } from "payload/generated-types";
-
 export const isSiteOwner = (
-   userId: string,
-   siteOwner: Site["owner"] | undefined,
+   userId: string | undefined,
+   siteOwner: string | undefined,
 ) => {
-   const isSiteOwner = userId == (siteOwner as any);
-   if (isSiteOwner) return true;
-   return false;
+   return userId === siteOwner;
 };
