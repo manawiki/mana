@@ -1241,6 +1241,11 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.3.1.tgz#d0fce5d07b0620caa282b5131c297bb60f9d87e6"
   integrity sha512-EsBwpc7hBUJWAsNPBmJy4hxWx12v6bshQsldrVmjxJoc3isbxhOrF2IcCpaXxfvq03NwkI7sbsOLXbYuqF/8Ww==
 
+"@epic-web/cachified@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@epic-web/cachified/-/cachified-4.0.0.tgz#e137f8ed818cc865bc27804c25ca08043ff91ab6"
+  integrity sha512-5XPdddRV1NrRev5HjfvM72tBh2jnfzBXdbcirtt0G0hveDHT4pOPrYCfyHNt+QcKSX0yifXimWMirOVXtg8ewQ==
+
 "@epic-web/client-hints@^1.2.2":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@epic-web/client-hints/-/client-hints-1.2.2.tgz#7fe66d4b5631a4e4de8cf3aef51f881e1ac98906"
@@ -8212,6 +8217,11 @@ lru-cache@^10.0.0, "lru-cache@^9.1.1 || ^10.0.0":
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.1.0.tgz#2098d41c2dc56500e6c88584aa656c84de7d0484"
   integrity sha512-/1clY/ui8CzjKFyjdvwPWJUYKiFVXG2I2cY0ssG7h4+hwk+XOIX7ZSG9Q7TW8TW3Kp3BUSqgFWBLgL4PJ+Blag==
+
+lru-cache@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.2.0.tgz#0bd445ca57363465900f4d1f9bd8db343a4d95c3"
+  integrity sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==
 
 lru-cache@^5.1.1:
   version "5.1.1"
