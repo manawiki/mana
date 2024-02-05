@@ -47,7 +47,7 @@ export async function fetchPost({
    if (!user) {
       //If anon and data exists, return post data now
       if (postData) {
-         return { post: postData, postContent: postData.content.content };
+         return { post: postData, postContent: postData?.content?.content };
       }
       //Otherwise post doesn't exist
       if (!postData) {
@@ -59,8 +59,10 @@ export async function fetchPost({
    invariant(user, "Not logged in");
 
    const hasAccess =
-      isSiteOwnerOrAdmin(user?.id, postData.site) ||
-      isSiteContributor(user?.id, postData.site);
+      //@ts-ignore
+      isSiteOwnerOrAdmin(user?.id, postData?.site) ||
+      //@ts-ignore
+      isSiteContributor(user?.id, postData?.site);
 
    //If user has access, pull versions
    if (hasAccess) {
@@ -70,6 +72,7 @@ export async function fetchPost({
          draft: true,
          overrideAccess: false,
          user,
+         depth: 0,
       });
       const versionData = await payload.findVersions({
          collection: "postContents",

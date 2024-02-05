@@ -72,6 +72,7 @@ export async function loader({
       user,
    });
 
+   // This won't initiate loading until `fetchPost` is done, this is intended behavior since we rely on post to be fetched first
    const comments = fetchPostComments({
       maxCommentDepth: post.maxCommentDepth,
       postId: post.id,
@@ -121,7 +122,9 @@ export default function Post() {
                   show
                >
                   <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+                     {/* @ts-ignore */}
                      <PostActionBar post={post} />
+                     {/* @ts-ignore */}
                      <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
                      {/* @ts-ignore */}
                      <PostTableOfContents data={postContent} />
@@ -205,7 +208,9 @@ export default function Post() {
             </>
          ) : (
             <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+               {/* @ts-ignore */}
                <PostActionBar post={post} />
+               {/* @ts-ignore */}
                <PostHeaderView post={post} />
                {/* @ts-ignore */}
                <PostTableOfContents data={postContent} />

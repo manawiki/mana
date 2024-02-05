@@ -16,13 +16,6 @@ import { zx } from "zodix";
 import { Avatar } from "~/components/Avatar";
 import { DotLoader } from "~/components/DotLoader";
 import {
-   Dropdown,
-   DropdownButton,
-   DropdownItem,
-   DropdownMenu,
-} from "~/components/Dropdown";
-import { Icon } from "~/components/Icon";
-import {
    Table,
    TableBody,
    TableCell,
@@ -37,6 +30,7 @@ import { authGQLFetcher } from "~/utils/fetchers.server";
 import { ApplicationStatus } from "./components/ApplicationStatus";
 import { ApplicationViewer } from "./components/ApplicationViewer";
 import { PermissionTable } from "./components/PermissionTable";
+import { RoleActions } from "./components/RoleActions";
 import { RoleBadge } from "./components/RoleBadge";
 import { ApplicationReviewSchema } from "./utils/ApplicationReviewSchema";
 import { fetchApplicationData } from "./utils/fetchApplicationData";
@@ -88,11 +82,12 @@ export async function loader({
    return defer({
       applications,
       team,
+      user,
    });
 }
 
 export default function Members() {
-   const { team, applications } = useLoaderData<typeof loader>();
+   const { team, applications, user } = useLoaderData<typeof loader>();
    return (
       <div className="space-y-3">
          <div className="tablet:px-3 pb-5">
@@ -115,21 +110,7 @@ export default function Members() {
                            <RoleBadge role={member.role} />
                         </TableCell>
                         <TableCell>
-                           <Dropdown>
-                              <DropdownButton plain aria-label="More options">
-                                 <Icon
-                                    name="more-horizontal"
-                                    size={16}
-                                    className="text-1"
-                                 />
-                              </DropdownButton>
-                              <DropdownMenu anchor="bottom end">
-                                 <DropdownItem>Promote to Admin</DropdownItem>
-                                 <DropdownItem>
-                                    Demote to Contributor
-                                 </DropdownItem>
-                              </DropdownMenu>
-                           </Dropdown>
+                           <RoleActions currentUser={user} member={member} />
                         </TableCell>
                      </TableRow>
                   ))}

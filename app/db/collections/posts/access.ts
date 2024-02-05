@@ -89,7 +89,7 @@ export const canUpdateOrDeletePost: Access = async ({
          });
          const hasAccess = isSiteOwnerOrAdmin(userId, post.site);
 
-         // If the user is the author, they can delete their own post
+         // If the user is the author, they can delete or update their own post
          if (!hasAccess)
             return {
                author: {

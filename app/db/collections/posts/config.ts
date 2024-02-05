@@ -50,6 +50,7 @@ export const Posts: CollectionConfig = {
          relationTo: "postContents",
          required: true,
          hasMany: false,
+         maxDepth: 1,
       },
       {
          name: "author",

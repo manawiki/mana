@@ -4,10 +4,11 @@ import { Popover } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { Link } from "@remix-run/react";
 
-import type { Post } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 
-export function PostActionBar({ post }: { post: Post }) {
+import type { PostData } from "../utils/fetchPostWithSlug.server";
+
+export function PostActionBar({ post }: { post: PostData }) {
    return (
       <div className="pb-3 mb-4 border-b border-color-secondary flex items-center justify-between">
          <Link
