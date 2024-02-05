@@ -43,6 +43,58 @@ export function PermissionTable() {
                   </TableCell>
                </TableRow>
                <TableRow>
+                  <TableCell>Promote contributor to admin</TableCell>
+                  <TableCell>
+                     <Icon
+                        name="minus"
+                        size={20}
+                        className="text-zinc-400 dark:text-zinc-500"
+                     />
+                  </TableCell>
+                  <TableCell>
+                     <Icon name="check" size={20} className="text-green-500" />
+                  </TableCell>
+                  <TableCell>
+                     <Icon name="check" size={20} className="text-green-500" />
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>Remove contributor from team</TableCell>
+                  <TableCell>
+                     <Icon
+                        name="minus"
+                        size={20}
+                        className="text-zinc-400 dark:text-zinc-500"
+                     />
+                  </TableCell>
+                  <TableCell>
+                     <Icon name="check" size={20} className="text-green-500" />
+                  </TableCell>
+                  <TableCell>
+                     <Icon name="check" size={20} className="text-green-500" />
+                  </TableCell>
+               </TableRow>
+               <TableRow>
+                  <TableCell>Demote admin to contributor</TableCell>
+                  <TableCell>
+                     <Icon
+                        name="minus"
+                        size={20}
+                        className="text-zinc-400 dark:text-zinc-500"
+                     />
+                  </TableCell>
+                  <TableCell>
+                     <Icon
+                        name="minus"
+                        size={20}
+                        className="text-zinc-400 dark:text-zinc-500"
+                     />
+                  </TableCell>
+                  <TableCell>
+                     <Icon name="check" size={20} className="text-green-500" />
+                  </TableCell>
+               </TableRow>
+               <TableRow>
                   <TableCell>
                      Setup a{" "}
                      <TextLink href="/settings/domain">custom domain</TextLink>

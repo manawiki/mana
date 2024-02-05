@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { canEditSite, canReadSite, canUpdateSiteRoles } from "./access";
+import { canEditSite, canReadSite, canUpdateSiteRolesField } from "./access";
 import { afterCreateSite } from "./hooks";
 import { isStaff, isStaffFieldLevel, isLoggedIn } from "../users/access";
 
@@ -100,7 +100,7 @@ export const Sites: CollectionConfig = {
          hasMany: true,
          maxDepth: 2,
          access: {
-            update: canUpdateSiteRoles,
+            update: canUpdateSiteRolesField,
          },
       },
       {
@@ -110,7 +110,7 @@ export const Sites: CollectionConfig = {
          hasMany: true,
          maxDepth: 2,
          access: {
-            update: canUpdateSiteRoles,
+            update: canUpdateSiteRolesField,
          },
       },
       {

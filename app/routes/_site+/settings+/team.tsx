@@ -268,7 +268,7 @@ export async function action({
                   status: "approved",
                   reviewMessage: reviewMessage as any,
                },
-               depth: 2,
+               depth: 0,
                overrideAccess: false,
                user,
             });

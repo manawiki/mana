@@ -1,95 +1,61 @@
 import type { Access, FieldAccess } from "payload/types";
 
-import type { User } from "payload/generated-types";
-
 import { isSiteAdmin } from "../../access/isSiteAdmin";
 import { isSiteOwner } from "../../access/isSiteOwner";
-import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
 import { isSiteStaff } from "../../access/isSiteStaff";
 
-export const siteFieldAsSiteAdmin: FieldAccess<
-   { id: string },
-   unknown,
-   User
-> = async ({ req: { user, payload }, id, data }) => {
+//@ts-ignore
+export const canEditSite: Access = async ({ req: { user } }) => {
    if (user) {
-      if (user?.roles?.includes("staff")) return true;
-      const userId = user?.id;
-
-      // Read and Update
-      if (id) {
-         const item = await payload.findByID({
-            collection: "sites",
-            id,
-            depth: 0,
-         });
-         if (item) return isSiteOwnerOrAdmin(userId, item);
-      }
-   }
-
-   // Reject everyone else
-   return false;
-};
-
-export const canEditSite: Access = async ({
-   req: { user, payload },
-   id: resultId,
-   data,
-}) => {
-   if (user) {
-      if (user.roles.includes("staff")) return true;
-      const userId = user.id;
-      // Update and Delete
-      if (resultId) {
-         const site = await payload.findByID({
-            collection: "sites",
-            id: resultId,
-            depth: 0,
-         });
-         if (site) return isSiteOwnerOrAdmin(userId, site);
-      }
-      // Create
-      if (data) {
-         const site = await payload.findByID({
-            collection: "sites",
-            id: data.site,
-            depth: 0,
-         });
-         return isSiteOwnerOrAdmin(userId, site);
-      }
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+      return {
+         or: [
+            {
+               owner: {
+                  equals: user.id,
+               },
+            },
+            {
+               admins: {
+                  contains: user.id,
+               },
+            },
+         ],
+      };
    }
    // Reject everyone else
    return false;
 };
 
-export const canReadSite: Access = async ({ req: { user, payload }, id }) => {
-   if (!user)
+//@ts-ignore
+export const canReadSite: Access = async ({ req: { user } }) => {
+   if (user) {
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
       return {
          isPublic: {
             equals: true,
          },
-      };
-
-   if (user && user.roles.includes("staff")) return true;
-
-   //Singleton
-   if (user && id) {
-      const site = await payload.findByID({
-         collection: "sites",
-         id,
-         depth: 0,
-      });
-      const hasAccess = isSiteOwnerOrAdmin(user.id, site);
-
-      if (!hasAccess)
-         return {
-            isPublic: {
-               equals: true,
+         or: [
+            {
+               owner: {
+                  equals: user.id,
+               },
             },
-         };
-      return hasAccess;
+            {
+               admins: {
+                  contains: user.id,
+               },
+            },
+            {
+               contributors: {
+                  contains: user.id,
+               },
+            },
+         ],
+      };
    }
-   //List
    return {
       isPublic: {
          equals: true,
@@ -97,7 +63,7 @@ export const canReadSite: Access = async ({ req: { user, payload }, id }) => {
    };
 };
 
-export const canUpdateSiteRoles: FieldAccess = async ({
+export const canUpdateSiteRolesField: FieldAccess = async ({
    req: { user },
    data,
    doc,
@@ -115,7 +81,7 @@ export const canUpdateSiteRoles: FieldAccess = async ({
 
       const adminChange = newAdminData.length !== existingAdminData.length;
 
-      //promote to admin from contributor
+      //Only site owners can promote to admin from contributor
       if (newAdminData.length > existingAdminData.length && adminChange) {
          return isOwner;
       }
