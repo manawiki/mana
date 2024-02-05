@@ -50,6 +50,7 @@ export const Posts: CollectionConfig = {
          relationTo: "postContents",
          required: true,
          hasMany: false,
+         maxDepth: 1,
       },
       {
          name: "author",
@@ -98,6 +99,7 @@ export const Posts: CollectionConfig = {
          type: "number",
          defaultValue: 1,
          min: 1,
+         required: true,
       },
    ],
 };

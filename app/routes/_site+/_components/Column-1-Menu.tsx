@@ -96,7 +96,11 @@ export function ColumnOneMenu({ site }: { site?: Site }) {
                      <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
                         <Link
                            prefetch="intent"
-                           to="/user/account"
+                           to={
+                              process.env.NODE_ENV === "development"
+                                 ? "/user/account"
+                                 : "https://mana.wiki/user/account"
+                           }
                            className="border-2 border-zinc-300 dark:border-zinc-700 transition duration-300 
                               active:translate-y-0.5 dark:hover:border-zinc-600 rounded-2xl flex items-center 
                               justify-center laptop:size-11 bg-3 shadow shadow-1 hover:border-zinc-400"

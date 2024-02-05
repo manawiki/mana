@@ -19,7 +19,6 @@ import {
    useLoaderData,
    useMatches,
    useOutletContext,
-   useRouteLoaderData,
 } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";

@@ -64,18 +64,18 @@ export async function loader({
       p: z.string(),
    });
 
-   const comments = fetchPostComments({
-      p,
-      payload,
-      siteSlug,
-      user,
-   });
-
    const { post, postContent, isChanged, versions } = await fetchPost({
       p,
       page,
       siteSlug,
       payload,
+      user,
+   });
+
+   // This won't initiate loading until `fetchPost` is done, this is intended behavior since we rely on post to be fetched first
+   const comments = fetchPostComments({
+      maxCommentDepth: post.maxCommentDepth,
+      postId: post.id,
       user,
    });
 
@@ -122,7 +122,9 @@ export default function Post() {
                   show
                >
                   <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+                     {/* @ts-ignore */}
                      <PostActionBar post={post} />
+                     {/* @ts-ignore */}
                      <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
                      {/* @ts-ignore */}
                      <PostTableOfContents data={postContent} />
@@ -206,7 +208,9 @@ export default function Post() {
             </>
          ) : (
             <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+               {/* @ts-ignore */}
                <PostActionBar post={post} />
+               {/* @ts-ignore */}
                <PostHeaderView post={post} />
                {/* @ts-ignore */}
                <PostTableOfContents data={postContent} />
@@ -489,8 +493,6 @@ export async function action({
                collection: "posts",
                id: postId,
                data: {
-                  _status: "published",
-                  //@ts-ignore
                   publishedAt: new Date().toISOString(),
                },
                overrideAccess: false,
@@ -521,52 +523,39 @@ export async function action({
          );
       }
       case "createTopLevelComment": {
-         const { comment } = await zx.parseForm(request, {
+         const { comment, siteId, postId } = await zx.parseForm(request, {
             comment: z.string(),
-         });
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+            siteId: z.string(),
+            postId: z.string(),
          });
 
          return await payload.create({
             collection: "comments",
             data: {
-               site: postData?.site.id as any,
+               site: siteId as any,
                comment: JSON.parse(comment),
-               postParent: postData?.id as any,
+               postParent: postId as any,
                author: user.id as any,
                isTopLevel: true,
             },
          });
       }
       case "createCommentReply": {
-         const { comment, commentParentId, commentDepth } = await zx.parseForm(
-            request,
-            {
+         const { comment, commentParentId, commentDepth, postId, siteId } =
+            await zx.parseForm(request, {
                comment: z.string(),
                commentParentId: z.string(),
                commentDepth: z.coerce.number(),
-            },
-         );
-
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
-         });
-
-         invariant(postData, "Post doesn't exist");
+               postId: z.string(),
+               siteId: z.string(),
+            });
 
          const commentReply = await payload.create({
             collection: "comments",
             data: {
-               site: postData?.site.id as any,
+               site: siteId as any,
                comment: JSON.parse(comment),
-               postParent: postData.id as any,
+               postParent: postId as any,
                author: user.id as any,
             },
          });
@@ -581,7 +570,7 @@ export async function action({
 
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
                maxCommentDepth: commentDepth,
             },

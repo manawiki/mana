@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import { Link, useFetcher, useLocation } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
@@ -18,11 +18,14 @@ import { Leaf } from "~/routes/_editor+/core/components/Leaf";
 import { Toolbar } from "~/routes/_editor+/core/components/Toolbar";
 import { useEditor } from "~/routes/_editor+/core/plugins";
 import { initialValue } from "~/routes/_editor+/core/utils";
+import type { loader as postLoaderType } from "~/routes/_site+/p+/$p";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 export function Comments({ comments }: { comments: Comment[] | null }) {
    const { user } = useRootLoaderData();
+
+   const { post } = useLoaderData<typeof postLoaderType>();
 
    let location = useLocation();
 
@@ -31,7 +34,7 @@ export function Comments({ comments }: { comments: Comment[] | null }) {
          <div className="mx-auto max-w-[728px] max-tablet:px-3 laptop:w-[728px] py-6 laptop:pb-40">
             <LoggedIn>
                <div className="pb-5">
-                  <CommentsEditor />
+                  <CommentsEditor postId={post.id} siteId={post.site.id} />
                </div>
             </LoggedIn>
             {comments && comments.length > 0 ? (
@@ -42,6 +45,8 @@ export function Comments({ comments }: { comments: Comment[] | null }) {
                      comment={comment}
                      comments={comments}
                      topLevelIndex={index}
+                     postId={post.id}
+                     siteId={post.site.id}
                   />
                ))
             ) : (
@@ -56,7 +61,7 @@ export function Comments({ comments }: { comments: Comment[] | null }) {
                         </Link>
                         <span className="text-1">to leave a comment...</span>
                      </div>
-                     <CommentsEditor />
+                     <CommentsEditor postId={post.id} siteId={post.site.id} />
                   </div>
                </LoggedOut>
             )}
@@ -115,12 +120,16 @@ function CommentRow({
    userId,
    isNested,
    topLevelIndex,
+   postId,
+   siteId,
 }: {
    comment: Comment;
    comments: Comment[];
-   userId: string;
+   userId: string | undefined;
    isNested?: Boolean;
    topLevelIndex?: number;
+   postId: string;
+   siteId: string;
 }) {
    const [isReplyOpen, setReplyOpen] = useState(false);
    const [isCommentExpanded, setCommentExpanded] = useState(true);
@@ -213,6 +222,7 @@ function CommentRow({
                      <button
                         onClick={() =>
                            fetcher.submit(
+                              //@ts-ignore
                               {
                                  commentId: comment?.id,
                                  userId,
@@ -343,6 +353,8 @@ function CommentRow({
                      commentParentId={comment.id}
                      //@ts-ignore
                      commentDepth={comment.depth}
+                     postId={postId}
+                     siteId={siteId}
                   />
                </div>
             </Transition>
@@ -364,6 +376,8 @@ function CommentRow({
                            comment={comment}
                            comments={comments}
                            topLevelIndex={topLevelIndex}
+                           postId={postId}
+                           siteId={siteId}
                            isNested
                         />
                      ))}
@@ -382,10 +396,14 @@ function CommentsEditor({
    commentParentId,
    commentDepth,
    isReply,
+   postId,
+   siteId,
 }: {
    commentParentId?: string;
    commentDepth?: number;
    isReply?: boolean;
+   postId: string;
+   siteId: string;
 }) {
    const inlineEditor = useEditor();
    const fetcher = useFetcher({ key: "comments" });
@@ -398,6 +416,8 @@ function CommentsEditor({
          {
             comment: JSON.stringify(inlineEditor.children),
             intent: "createTopLevelComment",
+            postId: postId,
+            siteId: siteId,
          },
          { method: "post" },
       );
@@ -408,6 +428,8 @@ function CommentsEditor({
          {
             comment: JSON.stringify(inlineEditor.children),
             commentParentId,
+            siteId: siteId,
+            postId: postId,
             commentDepth: commentDepth ? commentDepth + 1 : 1,
             intent: "createCommentReply",
          },

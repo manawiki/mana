@@ -1,10 +1,11 @@
 import type { Site } from "payload/generated-types";
+import type { PostData } from "~/routes/_site+/p+/utils/fetchPostWithSlug.server";
 
 //Check if user is a site owner or admin?
 
 export const isSiteOwnerOrAdmin = (
    userId: string,
-   site: Site | undefined | null,
+   site: Site | undefined | null | PostData["site"],
 ) => {
    const siteAdmins = site?.admins;
    const siteOwner = site?.owner;

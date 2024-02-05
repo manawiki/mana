@@ -1,37 +1,20 @@
 import { request as gqlRequest } from "graphql-request";
 import { jsonToGraphQLQuery, VariableType } from "json-to-graphql-query";
-import type { Payload } from "payload";
 
 import type { Comment } from "payload/generated-types";
 import type { RemixRequestContext } from "remix.env";
 import { gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
 
-import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
-
 export async function fetchPostComments({
-   p,
-   payload,
-   siteSlug,
    user,
+   postId,
+   maxCommentDepth,
 }: {
-   p: string;
-   payload: Payload;
-   siteSlug: string;
    user?: RemixRequestContext["user"];
+   postId: string;
+   maxCommentDepth: number;
 }) {
-   const { postData } = await fetchPostWithSlug({
-      p,
-      payload,
-      siteSlug,
-      user,
-   });
-   if (!postData) return null;
-
-   const postDataId = postData?.id;
-
-   const commentDepth = postData?.maxCommentDepth ?? 1;
-
    function depthAndDeletionDecorator(array: any, depth = 1) {
       return array.map((child: any) =>
          Object.assign(child, {
@@ -69,7 +52,7 @@ export async function fetchPostComments({
       }
    }
 
-   const nestedJsonObject = generateNestedJsonObject(commentDepth);
+   const nestedJsonObject = generateNestedJsonObject(maxCommentDepth);
 
    //Construct the query in JSON to then parse to graphql format
    const query = {
@@ -110,10 +93,10 @@ export async function fetchPostComments({
    //Cache comments if non
    const fetchComments = !user
       ? await gqlRequestWithCache(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
+           postParentId: postId,
         })
       : await gqlRequest(gqlEndpoint({}), graphql_query, {
-           postParentId: postDataId,
+           postParentId: postId,
         });
 
    const comments = depthAndDeletionDecorator(
