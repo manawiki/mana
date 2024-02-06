@@ -151,12 +151,14 @@ export function ColumnFour() {
                                              url={row.data?.icon?.url}
                                              options="aspect_ratio=1:1&height=54&width=54"
                                              alt={row.data.name}
+                                             loading="lazy"
                                           />
                                        ) : (
                                           <Icon
                                              name="component"
                                              className="dark:text-zinc-500 text-zinc-400 mx-auto"
                                              size={16}
+                                             loading="lazy"
                                           />
                                        )}
                                     </div>

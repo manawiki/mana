@@ -943,7 +943,8 @@ const CharacterInfo = ({
                style={{ top: `${imageTop}px` }}
             >
                <Image
-                  options="height=1200"
+                  width={1200}
+                  height={1200}
                   url={charbase?.image_draw?.url}
                   alt={charbase?.name}
                   className="object-cover max-desktop:hidden"
@@ -965,7 +966,8 @@ const CharacterInfo = ({
                   {/* ================================= */}
                   <div className="relative max-desktop:mx-3 desktop:w-[420px]">
                      <Image
-                        options="height=400&quality=100"
+                        width={1200}
+                        height={1200}
                         url={charbase?.image_draw?.url}
                         alt={charbase?.name}
                         className="hsr-showcase-character mx-auto -mt-8 desktop:hidden"
