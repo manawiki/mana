@@ -29,7 +29,8 @@ export function RoleActions({
 
    const isOwner = isSiteOwner(currentUser?.id, site?.owner?.id as string);
 
-   const isAdmin = isSiteAdmin(currentUser?.id, site?.admins as any[]);
+   const admins = site?.admins?.map((admin) => admin.id);
+   const isAdmin = isSiteAdmin(currentUser?.id, admins as string[]);
 
    const isStaff = isSiteStaff(currentUser?.roles);
 
@@ -83,22 +84,24 @@ export function RoleActions({
                         />
                      </DropdownButton>
                      <DropdownMenu anchor="bottom end">
-                        <DropdownItem
-                           onClick={() =>
-                              fetcher.submit(
-                                 {
-                                    siteId: site.id,
-                                    userId: member.id,
-                                    intent: "promoteToAdmin",
-                                 },
-                                 {
-                                    method: "POST",
-                                 },
-                              )
-                           }
-                        >
-                           Promote to admin
-                        </DropdownItem>
+                        {(isStaff || isOwner) && (
+                           <DropdownItem
+                              onClick={() =>
+                                 fetcher.submit(
+                                    {
+                                       siteId: site.id,
+                                       userId: member.id,
+                                       intent: "promoteToAdmin",
+                                    },
+                                    {
+                                       method: "POST",
+                                    },
+                                 )
+                              }
+                           >
+                              Promote to admin
+                           </DropdownItem>
+                        )}
                         <DropdownItem
                            onClick={() =>
                               fetcher.submit(

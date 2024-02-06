@@ -43,7 +43,7 @@ export function PermissionTable() {
                   </TableCell>
                </TableRow>
                <TableRow>
-                  <TableCell>Promote contributor to admin</TableCell>
+                  <TableCell>Remove contributor from team</TableCell>
                   <TableCell>
                      <Icon
                         name="minus"
@@ -59,7 +59,7 @@ export function PermissionTable() {
                   </TableCell>
                </TableRow>
                <TableRow>
-                  <TableCell>Remove contributor from team</TableCell>
+                  <TableCell>Promote contributor to admin</TableCell>
                   <TableCell>
                      <Icon
                         name="minus"
@@ -68,7 +68,11 @@ export function PermissionTable() {
                      />
                   </TableCell>
                   <TableCell>
-                     <Icon name="check" size={20} className="text-green-500" />
+                     <Icon
+                        name="minus"
+                        size={20}
+                        className="text-zinc-400 dark:text-zinc-500"
+                     />{" "}
                   </TableCell>
                   <TableCell>
                      <Icon name="check" size={20} className="text-green-500" />
