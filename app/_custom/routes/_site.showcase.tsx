@@ -75,10 +75,14 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
    const charids = [
       ...new Set([
-         ...showcaseSample?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id.toString()),
-         ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id.toString()),
-      ])
-   ];
+         ...showcaseSample?.detail_info?.assist_avatars?.map((a: any) =>
+            a.avatar_id.toString(),
+         ),
+         ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
+            a.avatar_id.toString(),
+         ),
+      ]),
+   ] as string[];
 
    const lcids = [
       ...showcaseSample?.detail_info?.assist_avatars?.map(
@@ -87,21 +91,18 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       ...showcaseSample?.detail_info?.avatar_detail_list?.map(
          (a: any) => a.equipment?.tid.toString(),
       ),
-   ];
+   ] as string[];
 
-   const rids = [];
-   showcaseSample?.detail_info?.assist_avatars?.map((a: any) => {
-      a.relic_list?.map((b: any) => {
-         rids.push(b.tid.toString());
-      });
-   });
-   showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => {
-      a.relic_list?.map((b: any) => {
-         rids.push(b.tid.toString());
-      });
-   });
+   const rids = [
+      ...showcaseSample?.detail_info?.assist_avatars?.map(
+         (a: any) => a.relic_list?.map((b: any) => b.tid.toString()),
+      ),
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
+         (a: any) => a.relic_list?.map((b: any) => b.tid.toString()),
+      ),
+   ].flatMap((a) => a) as string[];
 
-   const piid = showcaseSample?.detail_info?.head_icon.toString();
+   const piid = showcaseSample?.detail_info?.head_icon.toString() as string;
 
    const [
       { relics },
@@ -415,10 +416,10 @@ const CharacterSelector = ({
 }: any) => {
    // Get full list of character IDs, including the assist avatar and all characters in avatar_detail_list
    const charids = [
-         ...new Set([
-            ...data?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id),
-            ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
-      ])
+      ...new Set([
+         ...data?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id),
+         ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
+      ]),
    ];
 
    return (
@@ -515,7 +516,7 @@ const CharacterInfo = ({
    const allChars = [
       ...data?.detail_info?.assist_avatars,
       ...data?.detail_info?.avatar_detail_list,
-   ]
+   ];
 
    const chardata = allChars[displayChar];
    const charid = chardata?.avatar_id;
