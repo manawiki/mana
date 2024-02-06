@@ -64,7 +64,6 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
-   console.log(showcaseData);
    if (showcaseData.detail)
       return json({
          errorMessage: showcaseData.detail,
@@ -75,29 +74,34 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
    const refreshCooldown = showcaseData.cooldown;
 
    const charids = [
-      showcaseSample?.detail_info?.assist_avatar?.avatar_id.toString(),
-      ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
-         a.avatar_id.toString(),
-      ),
+      ...new Set([
+         ...showcaseSample?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id.toString()),
+         ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id.toString()),
+      ])
    ];
+
    const lcids = [
-      showcaseSample?.detail_info?.assist_avatar?.equipment?.tid.toString(),
+      ...showcaseSample?.detail_info?.assist_avatars?.map(
+         (a: any) => a.equipment?.tid.toString(),
+      ),
       ...showcaseSample?.detail_info?.avatar_detail_list?.map(
          (a: any) => a.equipment?.tid.toString(),
       ),
    ];
-   const rids = [
-      ...showcaseSample?.detail_info?.assist_avatar?.relic_list?.map((a: any) =>
-         a.tid.toString(),
-      ),
-   ];
-   const piid = showcaseSample?.detail_info?.head_icon.toString();
 
+   const rids = [];
+   showcaseSample?.detail_info?.assist_avatars?.map((a: any) => {
+      a.relic_list?.map((b: any) => {
+         rids.push(b.tid.toString());
+      });
+   });
    showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => {
       a.relic_list?.map((b: any) => {
          rids.push(b.tid.toString());
       });
    });
+
+   const piid = showcaseSample?.detail_info?.head_icon.toString();
 
    const [
       { relics },
@@ -220,7 +224,7 @@ const DisplayPlayerInfo = ({
    uid,
    refreshCooldown,
 }: any) => {
-   const [displayChar, setDisplayChar] = useState(-1);
+   const [displayChar, setDisplayChar] = useState(0);
    const revalidator = useRevalidator();
 
    return (
@@ -410,9 +414,11 @@ const CharacterSelector = ({
    setDisplayChar,
 }: any) => {
    // Get full list of character IDs, including the assist avatar and all characters in avatar_detail_list
-   var charids = [
-      data?.detail_info?.assist_avatar?.avatar_id,
-      ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
+   const charids = [
+         ...new Set([
+            ...data?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id),
+            ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
+      ])
    ];
 
    return (
@@ -421,12 +427,11 @@ const CharacterSelector = ({
             {charids.map((c: any, i: any) => {
                const cdata = characters.find((a: any) => a.character_id == c);
 
-               // Make sure to only show the selector if that character is different from the assist_avatar
-               return i == 0 || (charids[0] != c && i > 0) ? (
+               return (
                   <div
                      className="cursor-pointer"
                      onClick={() => {
-                        setDisplayChar(i - 1);
+                        setDisplayChar(i);
                      }}
                      key={c + "-" + i}
                   >
@@ -434,13 +439,13 @@ const CharacterSelector = ({
                      <ItemFrameRound
                         mat={cdata}
                         className={`${
-                           displayChar == i - 1
+                           displayChar == i
                               ? "border-zinc-300 shadow dark:border-zinc-400"
                               : ""
                         }`}
                      />
                   </div>
-               ) : null;
+               );
             })}
          </div>
       </>
@@ -507,11 +512,12 @@ const CharacterInfo = ({
    }, [navigation.state, refreshCooldown]);
 
    // Character Data Loading
-   // If the displayChar variable is set to -1, show the assist_avatar; otherwise for 0, 1, 2, show the avatar_detail_list for the corresponding index.
-   const chardata =
-      displayChar == -1
-         ? data?.detail_info?.assist_avatar
-         : data?.detail_info?.avatar_detail_list[displayChar];
+   const allChars = [
+      ...data?.detail_info?.assist_avatars,
+      ...data?.detail_info?.avatar_detail_list,
+   ]
+
+   const chardata = allChars[displayChar];
    const charid = chardata?.avatar_id;
 
    const charbase = characters.find((a: any) => a.character_id == charid);
@@ -2034,7 +2040,7 @@ query ($lightconeIdList: [String]) {
 
 const SkillTreeQuery = `
 query ($skillTreeIdList: [JSON]) {
-   skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 100) {
+   skillTrees: SkillTrees(where: { character: { in: $skillTreeIdList } }, limit: 1000) {
      docs {
        character {
          id
