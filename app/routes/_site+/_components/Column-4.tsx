@@ -73,6 +73,7 @@ export function ColumnFour() {
                                     url={site?.banner?.url}
                                     options="aspect_ratio=1.6:1&height=400"
                                     alt="Site Banner"
+                                    loading="lazy"
                                  />
                                  <span className="bg-gradient-to-t dark:from-zinc-900/90 from-white/90 to-transparent  w-full h-full absolute top-0 left-0 z-10" />
                               </>

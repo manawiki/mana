@@ -17,10 +17,10 @@ export async function loader({
 }: LoaderFunctionArgs) {
    if (!user) throw redirect("/");
    const { siteSlug } = await getSiteSlug(request, payload, user);
-
+   console.log(siteSlug);
    //Account should only be access on root domain
-   if (siteSlug && process.env.NODE_ENV !== "development")
-      throw redirect(`https://${apiDBPath}/user/account`);
+   // if (siteSlug && process.env.NODE_ENV !== "development")
+   //    throw redirect(`https://${apiDBPath}/user/account`);
    return null;
 }
 
