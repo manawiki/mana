@@ -159,7 +159,6 @@ export function ColumnFour() {
                                              name="component"
                                              className="dark:text-zinc-500 text-zinc-400 mx-auto"
                                              size={16}
-                                             loading="lazy"
                                           />
                                        )}
                                     </div>
