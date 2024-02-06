@@ -19,7 +19,7 @@ import { zx } from "zodix";
 import type { Post } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
+import { useIsStaffSiteAdminOwnerContributor } from "~/routes/_auth+/components/AdminOrStaffOrOwnerOrContributor";
 import {
    EditorCommandBar,
    command_button,
@@ -64,18 +64,18 @@ export async function loader({
       p: z.string(),
    });
 
-   const comments = fetchPostComments({
-      p,
-      payload,
-      siteSlug,
-      user,
-   });
-
    const { post, postContent, isChanged, versions } = await fetchPost({
       p,
       page,
       siteSlug,
       payload,
+      user,
+   });
+
+   // This won't initiate loading until `fetchPost` is done, this is intended behavior since we rely on post to be fetched first
+   const comments = fetchPostComments({
+      maxCommentDepth: post.maxCommentDepth,
+      postId: post.id,
       user,
    });
 
@@ -94,14 +94,14 @@ export default function Post() {
    const { post, postContent, isChanged, comments } =
       useLoaderData<typeof loader>();
    const fetcher = useFetcher();
-   const hasAccess = useIsStaffOrSiteAdminOrStaffOrOwner();
+   const hasAccess = useIsStaffSiteAdminOwnerContributor();
    const [isUnpublishOpen, setUnpublishOpen] = useState(false);
    const [isShowBanner, setIsBannerShowing] = useState(false);
    const [isDeleteOpen, setDeleteOpen] = useState(false);
    const enableAds = post.site.enableAds;
 
    return (
-      <Suspense fallback={<Loading />}>
+      <>
          {hasAccess ? (
             <>
                <Float
@@ -122,7 +122,9 @@ export default function Post() {
                   show
                >
                   <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+                     {/* @ts-ignore */}
                      <PostActionBar post={post} />
+                     {/* @ts-ignore */}
                      <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
                      {/* @ts-ignore */}
                      <PostTableOfContents data={postContent} />
@@ -137,7 +139,7 @@ export default function Post() {
                   <div>
                      <EditorCommandBar
                         collectionSlug="postContents"
-                        pageId={post.id}
+                        postId={post.id}
                         fetcher={fetcher}
                         isChanged={isChanged}
                      >
@@ -192,10 +194,12 @@ export default function Post() {
                         </EditorCommandBar.SecondaryOptions>
                      </EditorCommandBar>
                      <PostDeleteModal
+                        postId={post.id}
                         isDeleteOpen={isDeleteOpen}
                         setDeleteOpen={setDeleteOpen}
                      />
                      <PostUnpublishModal
+                        postId={post.id}
                         isUnpublishOpen={isUnpublishOpen}
                         setUnpublishOpen={setUnpublishOpen}
                      />
@@ -204,7 +208,9 @@ export default function Post() {
             </>
          ) : (
             <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
+               {/* @ts-ignore */}
                <PostActionBar post={post} />
+               {/* @ts-ignore */}
                <PostHeaderView post={post} />
                {/* @ts-ignore */}
                <PostTableOfContents data={postContent} />
@@ -227,7 +233,7 @@ export default function Post() {
                </Await>
             </Suspense>
          </div>
-      </Suspense>
+      </>
    );
 }
 
@@ -277,23 +283,17 @@ export async function action({
    switch (intent) {
       case "updateTitle": {
          assertIsPatch(request);
-         const { name } = await zx.parseForm(request, {
+         const { name, postId } = await zx.parseForm(request, {
             name: z
                .string()
                .min(3, "Title is too short.")
                .max(200, "Title is too long."),
-         });
-
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+            postId: z.string(),
          });
 
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
                name,
             },
@@ -304,18 +304,14 @@ export async function action({
       }
       case "updateSubtitle": {
          assertIsPatch(request);
-         const { subtitle } = await zx.parseForm(request, {
+         const { subtitle, postId } = await zx.parseForm(request, {
             subtitle: z.string(),
+            postId: z.string(),
          });
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
-         });
+
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
                //@ts-ignore
                subtitle,
@@ -351,22 +347,15 @@ export async function action({
             schema: bannerSchema,
          });
          if (result.success) {
-            const { postBanner } = result.data;
+            const { postBanner, postId } = result.data;
             const upload = await uploadImage({
                payload,
                image: postBanner,
                user,
             });
-            const { postData } = await fetchPostWithSlug({
-               p,
-               payload,
-               siteSlug,
-               user,
-            });
-
             await payload.update({
                collection: "posts",
-               id: postData.id,
+               id: postId,
                data: {
                   //@ts-expect-error
                   banner: upload.id,
@@ -380,26 +369,21 @@ export async function action({
       case "deleteBanner": {
          assertIsDelete(request);
 
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+         const { bannerId, postId } = await zx.parseForm(request, {
+            bannerId: z.string(),
+            postId: z.string(),
          });
-         const bannerId = postData?.banner?.id;
          await payload.delete({
             collection: "images",
-            //@ts-expect-error
             id: bannerId,
             overrideAccess: false,
             user,
          });
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
-               //@ts-expect-error
-               banner: "",
+               banner: null,
             },
             overrideAccess: false,
             user,
@@ -408,15 +392,12 @@ export async function action({
       }
       case "unpublish": {
          assertIsPost(request);
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+         const { postId } = await zx.parseForm(request, {
+            postId: z.string(),
          });
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
                publishedAt: null,
             },
@@ -427,6 +408,10 @@ export async function action({
       }
       case "publish": {
          assertIsPost(request);
+
+         const { postId } = await zx.parseForm(request, {
+            postId: z.string(),
+         });
          //Pull post name again to generate a slug
          const { postData } = await fetchPostWithSlug({
             p,
@@ -494,7 +479,7 @@ export async function action({
          //Otherwise this is a regular publish, just update the postContents collection to published
          await payload.update({
             collection: "postContents",
-            id: postData.id,
+            id: postId,
             data: {
                _status: "published",
             },
@@ -503,13 +488,11 @@ export async function action({
          });
          // if the slug is already generated, and publishedAt is null, we need to update the publishedAt field too
          //@ts-ignore
-         if (postData?.slug != postData.id && postData.publishedAt == null) {
+         if (postData?.slug != postId && postData.publishedAt == null) {
             await payload.update({
                collection: "posts",
-               id: postData.id,
+               id: postId,
                data: {
-                  _status: "published",
-                  //@ts-ignore
                   publishedAt: new Date().toISOString(),
                },
                overrideAccess: false,
@@ -520,16 +503,14 @@ export async function action({
       }
       case "deletePost": {
          assertIsDelete(request);
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+
+         const { postId } = await zx.parseForm(request, {
+            postId: z.string(),
          });
 
          const post = await payload.delete({
             collection: "posts",
-            id: postData?.id,
+            id: postId,
             overrideAccess: false,
             user,
          });
@@ -542,52 +523,39 @@ export async function action({
          );
       }
       case "createTopLevelComment": {
-         const { comment } = await zx.parseForm(request, {
+         const { comment, siteId, postId } = await zx.parseForm(request, {
             comment: z.string(),
-         });
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
+            siteId: z.string(),
+            postId: z.string(),
          });
 
          return await payload.create({
             collection: "comments",
             data: {
-               site: postData?.site.id as any,
+               site: siteId as any,
                comment: JSON.parse(comment),
-               postParent: postData.id as any,
+               postParent: postId as any,
                author: user.id as any,
                isTopLevel: true,
             },
          });
       }
       case "createCommentReply": {
-         const { comment, commentParentId, commentDepth } = await zx.parseForm(
-            request,
-            {
+         const { comment, commentParentId, commentDepth, postId, siteId } =
+            await zx.parseForm(request, {
                comment: z.string(),
                commentParentId: z.string(),
                commentDepth: z.coerce.number(),
-            },
-         );
-
-         const { postData } = await fetchPostWithSlug({
-            p,
-            payload,
-            siteSlug,
-            user,
-         });
-
-         invariant(postData, "Post doesn't exist");
+               postId: z.string(),
+               siteId: z.string(),
+            });
 
          const commentReply = await payload.create({
             collection: "comments",
             data: {
-               site: postData?.site.id as any,
+               site: siteId as any,
                comment: JSON.parse(comment),
-               postParent: postData.id as any,
+               postParent: postId as any,
                author: user.id as any,
             },
          });
@@ -602,7 +570,7 @@ export async function action({
 
          await payload.update({
             collection: "posts",
-            id: postData.id,
+            id: postId,
             data: {
                maxCommentDepth: commentDepth,
             },

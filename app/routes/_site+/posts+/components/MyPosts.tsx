@@ -6,19 +6,19 @@ import dt from "date-and-time";
 
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { AdminOrStaffOrOwnerOrContributor } from "~/routes/_auth+/components/AdminOrStaffOrOwnerOrContributor";
 
 import { PostListPagination } from "./PostListPagination";
 import type { loader } from "../_posts";
 
 export function MyPosts() {
-   const { myPosts, siteId } = useLoaderData<typeof loader>();
+   const { myPosts } = useLoaderData<typeof loader>();
    const [selectedStatus, setSelectedStatus] = useState("All");
 
    const [, setSearchParams] = useSearchParams({});
 
    return (
-      <AdminOrStaffOrOwner>
+      <AdminOrStaffOrOwnerOrContributor>
          <section className="pt-3 pb-6">
             <div className="flex items-center justify-between pb-2">
                <div className="text-1 text-sm font-bold">Last Edited</div>
@@ -189,6 +189,6 @@ export function MyPosts() {
                setSearchParams={setSearchParams}
             />
          </section>
-      </AdminOrStaffOrOwner>
+      </AdminOrStaffOrOwnerOrContributor>
    );
 }

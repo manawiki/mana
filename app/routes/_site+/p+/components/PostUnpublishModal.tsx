@@ -14,9 +14,11 @@ import { Icon } from "~/components/Icon";
 import { isAdding, isProcessing } from "~/utils/form";
 
 export const PostUnpublishModal = ({
+   postId,
    isUnpublishOpen,
    setUnpublishOpen,
 }: {
+   postId: string;
    isUnpublishOpen: boolean;
    setUnpublishOpen: (open: boolean) => void;
 }) => {
@@ -51,7 +53,10 @@ export const PostUnpublishModal = ({
                disabled={disabled}
                className="text-sm cursor-pointer"
                onClick={() => {
-                  fetcher.submit({ intent: "unpublish" }, { method: "post" });
+                  fetcher.submit(
+                     { intent: "unpublish", postId },
+                     { method: "post" },
+                  );
                }}
             >
                {unpublishing ? (

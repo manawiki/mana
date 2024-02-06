@@ -12,9 +12,11 @@ import { Icon } from "~/components/Icon";
 import { isAdding, isProcessing } from "~/utils/form";
 
 export const PostDeleteModal = ({
+   postId,
    isDeleteOpen,
    setDeleteOpen,
 }: {
+   postId: string;
    isDeleteOpen: boolean;
    setDeleteOpen: (open: boolean) => void;
 }) => {
@@ -43,7 +45,10 @@ export const PostDeleteModal = ({
                className="text-sm cursor-pointer"
                color="red"
                onClick={() =>
-                  fetcher.submit({ intent: "deletePost" }, { method: "delete" })
+                  fetcher.submit(
+                     { intent: "deletePost", postId },
+                     { method: "delete" },
+                  )
                }
             >
                {deleting ? (

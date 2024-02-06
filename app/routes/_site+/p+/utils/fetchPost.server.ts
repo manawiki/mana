@@ -3,8 +3,9 @@ import type { Payload } from "payload";
 import { select } from "payload-query";
 import invariant from "tiny-invariant";
 
-import type { User } from "payload/generated-types";
-import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
+import type { RemixRequestContext } from "remix.env";
+import { isSiteContributor } from "~/db/access/isSiteContributor";
+import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 
 import { fetchPostWithSlug } from "./fetchPostWithSlug.server";
 
@@ -17,7 +18,7 @@ export async function fetchPost({
 }: {
    p: string;
    payload: Payload;
-   user?: User;
+   user?: RemixRequestContext["user"];
    siteSlug: string;
    page: number | undefined;
 }) {
@@ -33,6 +34,8 @@ export async function fetchPost({
       const postById = await payload.findByID({
          collection: "posts",
          id: p,
+         overrideAccess: false,
+         user,
       });
 
       if (!postById) throw redirect("/404", 404);
@@ -44,7 +47,7 @@ export async function fetchPost({
    if (!user) {
       //If anon and data exists, return post data now
       if (postData) {
-         return { post: postData, postContent: postData.content.content };
+         return { post: postData, postContent: postData?.content?.content };
       }
       //Otherwise post doesn't exist
       if (!postData) {
@@ -55,7 +58,9 @@ export async function fetchPost({
    //Now we handle authenticated querying
    invariant(user, "Not logged in");
 
-   const hasAccess = isSiteOwnerOrAdmin(user?.id, postData.site);
+   const hasAccess =
+      isSiteOwnerOrAdmin(user?.id, postData?.site as any) ||
+      isSiteContributor(user?.id, postData?.site.contributors as any[]);
 
    //If user has access, pull versions
    if (hasAccess) {
@@ -63,6 +68,9 @@ export async function fetchPost({
          collection: "postContents",
          id: postData.id,
          draft: true,
+         overrideAccess: false,
+         user,
+         depth: 0,
       });
       const versionData = await payload.findVersions({
          collection: "postContents",
@@ -73,7 +81,6 @@ export async function fetchPost({
             },
          },
          limit: 20,
-         user,
          page,
       });
       const versions = versionData.docs
@@ -83,7 +90,7 @@ export async function fetchPost({
             const version = select(
                {
                   id: false,
-                  versionAuthor: true,
+                  author: true,
                   content: true,
                   _status: true,
                },
