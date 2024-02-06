@@ -14,7 +14,7 @@ export function ColumnOne() {
       >
          <div
             className="top-0 hidden max-laptop:py-2 laptop:fixed laptop:left-0 laptop:block 
-            laptop:h-full laptop:w-[75px] laptop:overflow-y-auto laptop:pt-3"
+            laptop:h-full laptop:w-[70px] laptop:overflow-y-auto laptop:pt-3 no-scrollbar"
          >
             <ColumnOneMenu site={site} />
          </div>

@@ -1,18 +1,17 @@
-import { Link, NavLink, useRouteLoaderData } from "@remix-run/react";
+import { Link, NavLink } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import type { Site, User } from "~/db/payload-types";
+import type { Site } from "~/db/payload-types";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { pinnedLinkUrlGenerator } from "~/utils/pinnedLinkUrlGenerator";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SidebarItem } from "./SidebarItem";
 
 export const FollowingListMobile = ({ setMenuOpen }: { setMenuOpen?: any }) => {
-   const { following } = useRouteLoaderData("root") as {
-      following: User["sites"];
-   };
+   const { following } = useRootLoaderData();
 
    return (
       <>
@@ -129,7 +128,7 @@ export const PinnedList = ({
                      <Link prefetch="intent" to={pinnedLinkUrlGenerator(item)}>
                         <div
                            onClick={() => onOpenChange(false)}
-                           className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3
+                           className="shadow-1 bg-3 border-color relative flex items-center gap-3
                           rounded-xl border p-3 text-sm font-bold shadow-sm"
                         >
                            <div className="h-5 w-5">
@@ -174,7 +173,8 @@ export const PrimaryMenuLinks = ({
          <NavLink className="block mb-2" prefetch="intent" to="posts">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon
@@ -194,7 +194,8 @@ export const PrimaryMenuLinks = ({
          <NavLink className="block" prefetch="intent" to="/collections">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-3-sub border-color-sub relative flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
+                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={() => onOpenChange(false)}
                >
                   <Icon

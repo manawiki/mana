@@ -1,6 +1,10 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff, isStaffFieldLevel, isStaffOrSelf } from "../../access/user";
+import {
+   isStaff,
+   isStaffFieldLevel,
+   isStaffOrSelf,
+} from "../collections/users/access";
 export const Users: CollectionConfig = {
    slug: "users",
    auth: true,

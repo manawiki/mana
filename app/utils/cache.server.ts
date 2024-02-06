@@ -1,5 +1,9 @@
-import { cachified, lruCacheAdapter } from "cachified";
-import type { CreateReporter, CacheEntry } from "cachified";
+import {
+   cachified,
+   lruCacheAdapter,
+   type CreateReporter,
+   type CacheEntry,
+} from "@epic-web/cachified";
 import { request as gqlRequest } from "graphql-request";
 import { LRUCache } from "lru-cache";
 
@@ -47,7 +51,7 @@ export async function fetchWithCache(
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
-      // fallbackToCache: true,
+      fallbackToCache: true,
       // staleRefreshTimeout
       reporter: verboseReporter(),
    });
@@ -75,7 +79,7 @@ export async function gqlRequestWithCache(
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
-      // fallbackToCache: true,
+      fallbackToCache: true,
       // staleRefreshTimeout
       reporter: verboseReporter(),
    });
@@ -101,7 +105,7 @@ export async function cacheThis<T>(
            : params.toString()
       : func.toString();
 
-   return await cachified<T>({
+   return cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -111,7 +115,7 @@ export async function cacheThis<T>(
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
-      // fallbackToCache: true,
+      fallbackToCache: true,
       // staleRefreshTimeout
       reporter: verboseReporter(),
    });
@@ -142,7 +146,7 @@ export async function cacheWithSelect<T>(
       key += JSON.stringify(selectOptions);
    }
 
-   return await cachified<T>({
+   return cachified<T>({
       cache,
       key,
       async getFreshValue() {
@@ -152,7 +156,7 @@ export async function cacheWithSelect<T>(
       ttl: ttl ?? 300_000, // how long to live in ms
       swr: 365 * 24 * 60 * 60 * 1000, // allow stale items to be returned until they are removed
       //checkValue  // implement a type check
-      // fallbackToCache: true,
+      fallbackToCache: true,
       // staleRefreshTimeout
       reporter: verboseReporter(),
    });

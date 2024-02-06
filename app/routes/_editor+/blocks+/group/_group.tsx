@@ -27,7 +27,6 @@ import {
 } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useRouteLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { request as gqlRequest, gql } from "graphql-request";
 import { nanoid } from "nanoid";
@@ -296,9 +295,7 @@ export function BlockGroup({
    const editor = useSlate();
    const isGroupEmpty = element?.children[0]?.path ? false : true;
 
-   const { siteSlug } = useRouteLoaderData("root") as {
-      siteSlug: string;
-   };
+   const { siteSlug } = useRootLoaderData();
 
    const [groupSelectQuery, setGroupSelectQuery] = useState("");
 

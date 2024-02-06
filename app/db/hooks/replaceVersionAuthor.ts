@@ -1,17 +1,17 @@
 import payload from "payload";
-import type {CollectionBeforeChangeHook} from "payload/types";
+import type { CollectionBeforeChangeHook } from "payload/types";
 
-// Automatically replaces the versionAuthor field before a change is submitted
+// Automatically replaces the author field before a change is submitted
 // in order to allow us to determine which user made a specific document version
 export const replaceVersionAuthor: CollectionBeforeChangeHook = async ({
    data,
    req,
    operation,
-   originalDoc
+   originalDoc,
 }) => {
    try {
-      if(operation == "update") {
-         data.versionAuthor = req.user.id;
+      if (operation == "update") {
+         data.author = req.user.id;
       }
       return data;
    } catch (err: unknown) {

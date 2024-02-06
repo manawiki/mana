@@ -2,12 +2,8 @@ import { Fragment, useEffect, useState } from "react";
 
 import { Popover, Switch } from "@headlessui/react";
 import { json } from "@remix-run/node";
-import type {
-   SerializeFrom,
-   ActionFunction,
-   MetaFunction,
-} from "@remix-run/node";
-import { Link, Outlet, useFetcher, useRouteLoaderData } from "@remix-run/react";
+import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { Link, Outlet, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
@@ -19,9 +15,9 @@ import { zx } from "zodix";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { isProcessing, isAdding } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 const CollectionSchema = z.object({
    name: z.string().min(1).max(40),
@@ -66,9 +62,7 @@ function SlugField({ zo }: { zo: Zorm<typeof CollectionSchema> }) {
 }
 
 export default function CollectionIndex() {
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    //Show/hide the collection creation form
    const [collectionToggle, setCollectionToggle] = useState(false);

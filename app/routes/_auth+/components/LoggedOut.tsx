@@ -1,8 +1,6 @@
-import { useRouteLoaderData } from "@remix-run/react";
-
-import type { User } from "payload/generated-types";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 export const LoggedOut = ({ children }: { children: React.ReactNode }) => {
-   const { user } = useRouteLoaderData("root") as { user: User };
+   const { user } = useRootLoaderData();
    return user ? null : <>{children}</>;
 };

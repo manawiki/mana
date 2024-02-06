@@ -1,17 +1,11 @@
 import { useEffect } from "react";
 
 import { json } from "@remix-run/node";
-import type {
-   LoaderFunctionArgs,
-   MetaFunction,
-   SerializeFrom,
-} from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData, useLocation } from "@remix-run/react";
-import type { ExternalScriptsHandle } from "remix-utils/external-scripts";
 
 import { useSearchToggleState } from "~/root";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import * as gtag from "~/utils/gtags.client";
 
 import { ColumnOne } from "./_components/Column-1";
 import { ColumnTwo } from "./_components/Column-2";
@@ -44,19 +38,21 @@ export default function SiteLayout() {
    const [, setSearchToggle] = useSearchToggleState();
 
    useEffect(() => {
-      if (process.env.NODE_ENV === "production" && gaTag) {
-         gtag.pageview(location.pathname, gaTag);
-      }
+      //Google Analytics automatically tracks pageviews when the browser history state changes. This means that client-side navigations between Next.js routes will send pageview data without any configuration.
+      // if (process.env.NODE_ENV === "production" && gaTag) {
+      //    gtag.pageview(location.pathname, gaTag);
+      // }
+
       //Hide the search on path change
       setSearchToggle(false);
-   }, [location, gaTag]);
+   }, [setSearchToggle, location]);
 
    return (
       <>
          <MobileHeader />
          <main
-            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[76px_60px_1fr_334px] 
-                     laptop:grid-flow-col desktop:auto-cols-[76px_230px_1fr_334px]"
+            className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
+           laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px]"
          >
             <ColumnOne />
             <ColumnTwo />
@@ -75,37 +71,4 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
          title: data?.site.name,
       },
    ];
-};
-
-export let handle: ExternalScriptsHandle<SerializeFrom<typeof loader>> = {
-   scripts({ data }) {
-      const enableAds = data?.site?.enableAds;
-      const gaTag = data?.site?.gaTagId;
-
-      //disable scripts in development
-      if (process.env.NODE_ENV === "development") return [];
-
-      if (enableAds || gaTag) {
-         const gAnalytics = {
-            src: `https://www.googletagmanager.com/gtag/js?id=${gaTag}`,
-            async: true,
-         };
-         //Load GTag with ads if enabled
-         if (enableAds) {
-            const rampConfig = {
-               src: "//cdn.intergient.com/1025133/74686/ramp_config.js",
-               async: true,
-            };
-            const rampCore = {
-               src: "//cdn.intergient.com/ramp_core.js",
-               async: true,
-            };
-            return [gAnalytics, rampConfig, rampCore];
-         }
-         //Otherwise just load analytics
-         return [gAnalytics];
-      }
-
-      return [];
-   },
 };

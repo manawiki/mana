@@ -2,18 +2,13 @@ import { useEffect } from "react";
 
 import { arrayMove } from "@dnd-kit/sortable";
 import { json, redirect } from "@remix-run/node";
-import type {
-   SerializeFrom,
-   ActionFunction,
-   LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
    Link,
    useLoaderData,
    useSearchParams,
    useFetcher,
    useParams,
-   useRouteLoaderData,
 } from "@remix-run/react";
 import { nanoid } from "nanoid";
 import { useZorm } from "react-zorm";
@@ -25,7 +20,6 @@ import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import type { loader as siteLoaderType } from "~/routes/_site+/_layout";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
 import { assertIsPatch, assertIsPost } from "~/utils/http.server";
@@ -33,6 +27,7 @@ import {
    getMultipleFormData,
    uploadImage,
 } from "~/utils/upload-handler.server";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { fetchListCore } from "./utils/fetchListCore.server";
 import { listMeta } from "./utils/listMeta";
@@ -94,9 +89,7 @@ export default function CollectionList() {
    const addingUpdate = isAdding(fetcher, "addEntry");
    const zoEntry = useZorm("newEntry", EntrySchema);
 
-   const { site } = useRouteLoaderData("routes/_site+/_layout") as {
-      site: SerializeFrom<typeof siteLoaderType>["site"];
-   };
+   const { site } = useSiteLoaderData();
 
    const { collectionId } = useParams();
 

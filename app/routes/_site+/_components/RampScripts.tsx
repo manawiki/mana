@@ -1,17 +1,15 @@
-import { useIsBot } from "~/utils/isBotProvider";
+import { Script } from "~/utils/third-parties/Script";
 
 export function RampScripts({
    enableAds,
 }: {
-   enableAds: boolean | undefined | null;
+   enableAds: boolean | null | undefined;
 }) {
-   let isBot = useIsBot();
-
-   if (enableAds && !isBot)
+   if (process.env.NODE_ENV === "production" && enableAds)
       return (
          <>
-            <script
-               defer
+            <Script
+               id="_ramp-config_2"
                data-cfasync="false"
                dangerouslySetInnerHTML={{
                   __html: `
@@ -21,8 +19,8 @@ export function RampScripts({
                `,
                }}
             />
-            <script
-               defer
+            <Script
+               id="_ramp-core_2"
                data-cfasync="false"
                dangerouslySetInnerHTML={{
                   __html: `
@@ -44,6 +42,11 @@ export function RampScripts({
                `,
                }}
             />
+            <Script
+               id="_ramp-config"
+               src="/proxy/1025133/74686/ramp_config.js"
+            />
+            <Script id="_ramp-core" src="/proxy/ramp_core.js" />
          </>
       );
 }

@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useState } from "react";
 
+import { Partytown } from "@builder.io/partytown/react";
 import { withMetronome } from "@metronome-sh/react";
 import type {
    MetaFunction,
@@ -23,7 +24,6 @@ import { useTranslation } from "react-i18next";
 import reactCropUrl from "react-image-crop/dist/ReactCrop.css";
 import rdtStylesheet from "remix-development-tools/index.css";
 import { getToast } from "remix-toast";
-import { ExternalScripts } from "remix-utils/external-scripts";
 import { Toaster, toast as notify } from "sonner";
 
 import customStylesheetUrl from "~/_custom/styles.css";
@@ -162,7 +162,7 @@ function App() {
          className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
-            {isBot ? null : <ClientHintCheck />}
+            {!isBot && <ClientHintCheck />}
             <meta charSet="utf-8" />
             <meta
                name="viewport"
@@ -198,6 +198,27 @@ function App() {
                type="image/x-icon"
                href={`${favicon}?width=192&height=192`}
             />
+            {process.env.NODE_ENV === "production" && !isBot && (
+               <Partytown
+                  debug={false}
+                  forward={["dataLayer.push"]}
+                  resolveUrl={(url, location, type) => {
+                     //proxy gtag requests to avoid cors issues
+                     if (
+                        type === "script" &&
+                        url.host === "www.googletagmanager.com"
+                     ) {
+                        return new URL(
+                           location.origin +
+                              "/proxy" +
+                              url.pathname +
+                              url.search,
+                        );
+                     }
+                     return url;
+                  }}
+               />
+            )}
             <Meta />
             <Links />
          </head>
@@ -207,8 +228,7 @@ function App() {
             />
             <Toaster theme={theme ?? "system"} />
             <ScrollRestoration />
-            {isBot ? null : <Scripts />}
-            <ExternalScripts />
+            {!isBot && <Scripts />}
             <LiveReload />
          </body>
       </html>
