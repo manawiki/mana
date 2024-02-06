@@ -11,14 +11,14 @@ import {
    Link,
    useLoaderData,
    useNavigation,
-   useRevalidator,
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
-import type { Material } from "payload/generated-custom-types";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import type { Material, Relic } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -60,12 +60,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       uid: z.string().optional(),
    });
 
-   if (!uid) return null;
+   invariant(uid, "UID is required");
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
    if (showcaseData.detail)
       return json({
+         uid: uid,
          errorMessage: showcaseData.detail,
       });
 
@@ -75,10 +76,14 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 
    const charids = [
       ...new Set([
-         ...showcaseSample?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id.toString()),
-         ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id.toString()),
-      ])
-   ];
+         ...showcaseSample?.detail_info?.assist_avatars?.map((a: any) =>
+            a.avatar_id.toString(),
+         ),
+         ...showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) =>
+            a.avatar_id.toString(),
+         ),
+      ]),
+   ] as string[];
 
    const lcids = [
       ...showcaseSample?.detail_info?.assist_avatars?.map(
@@ -87,21 +92,18 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       ...showcaseSample?.detail_info?.avatar_detail_list?.map(
          (a: any) => a.equipment?.tid.toString(),
       ),
-   ];
+   ] as string[];
 
-   const rids = [];
-   showcaseSample?.detail_info?.assist_avatars?.map((a: any) => {
-      a.relic_list?.map((b: any) => {
-         rids.push(b.tid.toString());
-      });
-   });
-   showcaseSample?.detail_info?.avatar_detail_list?.map((a: any) => {
-      a.relic_list?.map((b: any) => {
-         rids.push(b.tid.toString());
-      });
-   });
+   const rids = [
+      ...showcaseSample?.detail_info?.assist_avatars?.map(
+         (a: any) => a.relic_list?.map((b: any) => b.tid.toString()),
+      ),
+      ...showcaseSample?.detail_info?.avatar_detail_list?.map(
+         (a: any) => a.relic_list?.map((b: any) => b.tid.toString()),
+      ),
+   ].flatMap((a) => a) as string[];
 
-   const piid = showcaseSample?.detail_info?.head_icon.toString();
+   const piid = showcaseSample?.detail_info?.head_icon.toString() as string;
 
    const [
       { relics },
@@ -130,6 +132,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
          playerIcon: playerIcon,
          showcaseData: showcaseData,
          refreshCooldown: refreshCooldown,
+         errorMessage: null,
       },
       { headers: { "Cache-Control": "public, s-maxage=60" } },
    );
@@ -225,7 +228,6 @@ const DisplayPlayerInfo = ({
    refreshCooldown,
 }: any) => {
    const [displayChar, setDisplayChar] = useState(0);
-   const revalidator = useRevalidator();
 
    return (
       <main className="desktop:pb-16">
@@ -415,10 +417,10 @@ const CharacterSelector = ({
 }: any) => {
    // Get full list of character IDs, including the assist avatar and all characters in avatar_detail_list
    const charids = [
-         ...new Set([
-            ...data?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id),
-            ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
-      ])
+      ...new Set([
+         ...data?.detail_info?.assist_avatars?.map((a: any) => a.avatar_id),
+         ...data?.detail_info?.avatar_detail_list?.map((a: any) => a.avatar_id),
+      ]),
    ];
 
    return (
@@ -475,7 +477,7 @@ const ItemFrameRound = ({
                className={`h-16 w-16 object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
                } rounded-full`}
-               alt={mat?.name}
+               alt={mat?.name ?? undefined}
             />
          </div>
       </div>
@@ -515,7 +517,7 @@ const CharacterInfo = ({
    const allChars = [
       ...data?.detail_info?.assist_avatars,
       ...data?.detail_info?.avatar_detail_list,
-   ]
+   ];
 
    const chardata = allChars[displayChar];
    const charid = chardata?.avatar_id;
@@ -523,7 +525,7 @@ const CharacterInfo = ({
    const charbase = characters.find((a: any) => a.character_id == charid);
 
    // Character Showcase Canvas!
-   const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
+   // const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
 
    // Light Cone data loading
    const lcid = chardata?.equipment?.tid;
@@ -533,7 +535,7 @@ const CharacterInfo = ({
    // Light Cone Stat Calculation
    const wlv = chardata?.equipment?.level;
    const wrank = chardata?.equipment?.promotion;
-   var wsuffix = "";
+   let wsuffix = "";
    // Ascension Check, add "A" if ascended:
    if (
       (wlv == 20 && wrank == 1) ||
@@ -547,7 +549,7 @@ const CharacterInfo = ({
    }
 
    const wi = lcbase?.stats[0].data?.findIndex((a: any) => a == wlv + wsuffix);
-   var wstats = [
+   const wstats = [
       { name: "HP", base: lcbase?.stats[1].data[wi] },
       { name: "ATK", base: lcbase?.stats[2].data[wi] },
       { name: "DEF", base: lcbase?.stats[3].data[wi] },
@@ -555,22 +557,17 @@ const CharacterInfo = ({
 
    // Total all light cone-sourced bonuses, same format as relic bonuses:
    // ============================
-   var lightconebonuses: any = [];
-
-   lcbase?.skill_data[chardata?.equipment?.rank - 1]?.stat_added?.map(
-      (a: any) => {
-         const tempbonus = {
-            id: a?.stat_type?.id,
-            icon: {
-               url: a?.stat_type?.icon?.url,
-            },
-            name: a?.stat_type?.name,
-            property_classify: a?.stat_type?.property_classify,
-            value: a.value,
-         };
-         lightconebonuses.push(tempbonus);
+   const lightconebonuses = lcbase?.skill_data[
+      chardata?.equipment?.rank - 1
+   ]?.stat_added?.map((a: any) => ({
+      id: a?.stat_type?.id,
+      icon: {
+         url: a?.stat_type?.icon?.url,
       },
-   );
+      name: a?.stat_type?.name,
+      property_classify: a?.stat_type?.property_classify,
+      value: a.value,
+   }));
 
    // Relic data loading
    const rid = chardata?.relic_list?.map((a: any) => a.tid);
@@ -609,10 +606,10 @@ const CharacterInfo = ({
          const sstep = s.step ?? 0;
          const sstepval = ss.level_add;
 
-         var stepdist: any = []; // Has an array of [1, 2, 1, 1, 2, 1 ...] equal in size to scnt, where total sum of elements = sstep.
+         let stepdist: any = []; // Has an array of [1, 2, 1, 1, 2, 1 ...] equal in size to scnt, where total sum of elements = sstep.
 
          // number of '2' rolls is equal to step - cnt;
-         for (var d = 0; d < scnt; d++) {
+         for (let d = 0; d < scnt; d++) {
             if (d < sstep - scnt) {
                stepdist[d] = 2;
             } else if (!sstep) {
@@ -657,19 +654,19 @@ const CharacterInfo = ({
          const currset = setlist.find((s: any) => s.id == r);
          const numInSet = rsetids.filter((a: any) => a == r)?.length;
 
-         var show = false;
+         let show = false;
 
          // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
-         var bonuses: any = [];
-         var effect_desc: any = [];
-         for (var ei = 0; ei < currset?.set_effect?.length; ei++) {
+         const bonuses: any = [];
+         const effect_desc: any = [];
+         for (let ei = 0; ei < currset?.set_effect?.length; ei++) {
             const eff = currset?.set_effect[ei];
 
             // If number equipped is at least the required number, return the stat bonuses in property_list
             if (numInSet >= eff?.req_no) {
                show = true;
 
-               eff?.property_list.map((p: any) => {
+               eff?.property_list.forEach((p: any) => {
                   bonuses.push(p);
                });
                effect_desc.push(eff?.description);
@@ -690,21 +687,21 @@ const CharacterInfo = ({
    // Total all relic-sourced bonuses:
    // ============================
    // [ "HPDelta" // FLAT, "HPAddedRatio" // PERCENT]
-   var relicbonuses: any = [];
+   const relicbonuses: any = [];
 
-   for (var rb = 0; rb < rchar.length; rb++) {
+   for (let rb = 0; rb < rchar.length; rb++) {
       const curr = rchar[rb];
       relicbonuses.push(curr.mainobj);
 
-      curr.subobj?.map((a: any) => {
+      curr.subobj?.forEach((a: any) => {
          relicbonuses.push(a);
       });
    }
 
-   for (var sb = 0; sb < rset.length; sb++) {
+   for (let sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
-      curr.bonuses?.map((a: any) => {
+      curr.bonuses?.forEach((a: any) => {
          const tempbonus = {
             id: a?.stattype?.id,
             icon: {
@@ -720,15 +717,15 @@ const CharacterInfo = ({
 
    // Total all skill tree-sourced bonuses, same format as relic bonuses:
    // ============================
-   var skilltreebonuses: any = [];
+   const skilltreebonuses: any = [];
 
-   for (var sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
+   for (let sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
       const currpoint = chardata?.skilltree_list[sk];
-      var treepoint = skillTrees.find(
+      const treepoint = skillTrees.find(
          (a: any) => a.point_id == currpoint.point_id,
       );
 
-      treepoint?.stat_added?.map((a: any) => {
+      treepoint?.stat_added?.forEach((a: any) => {
          const tempbonus = {
             id: a?.stat_type?.id,
             icon: {
@@ -749,7 +746,7 @@ const CharacterInfo = ({
    // Character Base Stat Calculation
    const lv = chardata.level;
    const rank = chardata.promotion;
-   var suffix = "";
+   let suffix = "";
    // Ascension Check, add "A" if ascended:
    if (
       (lv == 20 && rank == 1) ||
@@ -773,7 +770,7 @@ const CharacterInfo = ({
       "CRIT DMG",
       //   "Aggro",
    ];
-   var statVal = defaultStats.map((stat: any, i: any) => {
+   let statVal = defaultStats.map((stat: any, i: any) => {
       // Final Modifier is calculated as follows:
       // ============================
       // Stat = BASE + MODIFIER
@@ -865,7 +862,7 @@ const CharacterInfo = ({
       "Imaginary RES Boost",
    ];
 
-   additionalStats.map((stat) => {
+   additionalStats.forEach((stat) => {
       // Percent Bonuses =
       // - relicperc // Contains both relic and set bonuses
       // - treeperc // Contains all Skill Tree bonuses.
@@ -910,7 +907,7 @@ const CharacterInfo = ({
 
    const ref = useRef<HTMLDivElement>(null);
 
-   const uid = useLoaderData<typeof loader>();
+   const { uid } = useLoaderData<typeof loader>();
 
    const onDownloadImage = useCallback(() => {
       if (ref.current === null) {
@@ -923,14 +920,14 @@ const CharacterInfo = ({
       })
          .then((dataUrl) => {
             const link = document.createElement("a");
-            link.download = `${uid?.uid}-showcase`;
+            link.download = `${uid}-showcase`;
             link.href = dataUrl;
             link.click();
          })
          .catch((err) => {
             console.log(err);
          });
-   }, [ref]);
+   }, [ref, uid]);
 
    // I am sorry for this -// 9/8/2023 lmao dw this is fine -NorseFTX
    const imageTop = statVal.length > 6 ? (statVal.length - 6) * 20 : 0;
@@ -946,7 +943,8 @@ const CharacterInfo = ({
                style={{ top: `${imageTop}px` }}
             >
                <Image
-                  options="height=1200"
+                  width={1200}
+                  height={1200}
                   url={charbase?.image_draw?.url}
                   alt={charbase?.name}
                   className="object-cover max-desktop:hidden"
@@ -968,7 +966,8 @@ const CharacterInfo = ({
                   {/* ================================= */}
                   <div className="relative max-desktop:mx-3 desktop:w-[420px]">
                      <Image
-                        options="height=400&quality=100"
+                        width={1200}
+                        height={1200}
                         url={charbase?.image_draw?.url}
                         alt={charbase?.name}
                         className="hsr-showcase-character mx-auto -mt-8 desktop:hidden"
@@ -1364,7 +1363,7 @@ const CharacterInfo = ({
                               {/* Relic Image */}
                               <ItemFrameSquare
                                  mat={r}
-                                 style=""
+                                 // style=""
                                  lv={"+" + rlv}
                               />
 
@@ -1505,9 +1504,9 @@ const CharacterInfo = ({
                      {/* Relic Set Bonuses */}
                      <div className="!mt-3 space-y-2">
                         {rset?.map((set: any, key: number) => {
-                           var setdesc = "";
+                           let setdesc = "";
 
-                           set.effect_desc.map((e: any, i: any) => {
+                           set.effect_desc.forEach((e: any, i: any) => {
                               setdesc +=
                                  e +
                                  (i < set.effect_desc.length - 1
@@ -1620,9 +1619,9 @@ const ItemFrameSquare = ({
    style,
    lv,
 }: {
-   mat: Material;
+   mat: Relic;
    style?: string;
-   lv: number;
+   lv: number | string;
 }) => {
    // ========================
    // Generic Item / Character Circle Frame - Light Cone
@@ -1640,7 +1639,7 @@ const ItemFrameSquare = ({
             className={`h-[62px] w-[62px] object-contain color-rarity-${
                mat?.rarity?.display_number ?? "1"
             } rounded-md`}
-            alt={mat?.name}
+            alt={mat?.name ?? undefined}
          />
          <div
             className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900
@@ -1657,7 +1656,7 @@ function formatStat(type: any, stat: any) {
    // Performs Rounding for Stats as Integers or as Percentages as necessary
    // =====================================
    // These are stats that should be formatted as an Integer.
-   var intlist = ["HP", "ATK", "DEF", "SPD", "Aggro"];
+   const intlist = ["HP", "ATK", "DEF", "SPD", "Aggro"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
@@ -1676,8 +1675,8 @@ const SkillTreeDisplay = ({
    hoverStat,
    setHoverStat,
 }: any) => {
-   var pathkey = path;
-   var treelist = skillTrees.filter(
+   const pathkey = path;
+   let treelist = skillTrees.filter(
       (a: any) => a.character.id == data?.avatar_id,
    ); // pageData?.attributes?.tree; //skillTreeData;
 
@@ -1721,13 +1720,11 @@ const SkillTreeDisplay = ({
                )?.level;
 
                // Populate node description tooltip text
-               var detail_desc = "";
-               if (nodelv) {
-                  detail_desc =
-                     node.affected_skill?.[0]?.description_per_level?.[
-                        nodelv - 1
-                     ]?.description ?? "";
-               }
+               const detail_desc = nodelv
+                  ? (node.affected_skill?.[0]?.description_per_level?.[
+                       nodelv - 1
+                    ]?.description as string) ?? ""
+                  : "";
 
                const node_desc = node?.description + detail_desc;
 
@@ -1801,7 +1798,7 @@ const SkillTreeDisplay = ({
 
 const InputUIDNote = ({ uid }: { uid: any }) => {
    const [inputUID, setInputUID] = useState(uid);
-   const [searchParams, setSearchParams] = useSearchParams({});
+   const [, setSearchParams] = useSearchParams({});
    const transition = useNavigation();
    const isSearching = isLoading(transition);
    return (
@@ -1868,38 +1865,38 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    );
 };
 
-const NameToolTip = ({ text, tooltip, style = "", styleTooltip = "" }: any) => {
-   const [ttip, setTtip] = useState(false);
-   return (
-      <>
-         <div
-            className={`z-30 h-full w-full ${style}`}
-            onMouseOver={() => setTtip(true)}
-            onMouseOut={() => setTtip(false)}
-            onClick={() => setTtip(!ttip)}
-         >
-            {/* {text} */}
+// const NameToolTip = ({ text, tooltip, style = "", styleTooltip = "" }: any) => {
+//    const [ttip, setTtip] = useState(false);
+//    return (
+//       <>
+//          <div
+//             className={`z-30 h-full w-full ${style}`}
+//             onMouseOver={() => setTtip(true)}
+//             onMouseOut={() => setTtip(false)}
+//             onClick={() => setTtip(!ttip)}
+//          >
+//             {/* {text} */}
 
-            <div
-               className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${styleTooltip} ${
-                  ttip ? "block" : "hidden"
-               }`}
-            >
-               <div className="text-sm font-bold text-blue-400 dark:text-blue-600">
-                  {text}
-               </div>
-               <div
-                  className="italic"
-                  dangerouslySetInnerHTML={{ __html: tooltip }}
-               ></div>
-            </div>
-         </div>
-      </>
-   );
-};
+//             <div
+//                className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${styleTooltip} ${
+//                   ttip ? "block" : "hidden"
+//                }`}
+//             >
+//                <div className="text-sm font-bold text-blue-400 dark:text-blue-600">
+//                   {text}
+//                </div>
+//                <div
+//                   className="italic"
+//                   dangerouslySetInnerHTML={{ __html: tooltip }}
+//                ></div>
+//             </div>
+//          </div>
+//       </>
+//    );
+// };
 
 function intersect(a: any, b: any) {
-   var result = a?.filter(function (n: any) {
+   const result = a?.filter(function (n: any) {
       return b?.indexOf(n) > -1;
    });
 
