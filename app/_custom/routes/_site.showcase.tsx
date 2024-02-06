@@ -11,7 +11,6 @@ import {
    Link,
    useLoaderData,
    useNavigation,
-   useRevalidator,
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
@@ -19,7 +18,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Material } from "payload/generated-custom-types";
+import type { Material, Relic } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -229,7 +228,6 @@ const DisplayPlayerInfo = ({
    refreshCooldown,
 }: any) => {
    const [displayChar, setDisplayChar] = useState(0);
-   const revalidator = useRevalidator();
 
    return (
       <main className="desktop:pb-16">
@@ -479,7 +477,7 @@ const ItemFrameRound = ({
                className={`h-16 w-16 object-contain color-rarity-${
                   mat?.rarity?.display_number ?? "1"
                } rounded-full`}
-               alt={mat?.name}
+               alt={mat?.name ?? undefined}
             />
          </div>
       </div>
@@ -527,7 +525,7 @@ const CharacterInfo = ({
    const charbase = characters.find((a: any) => a.character_id == charid);
 
    // Character Showcase Canvas!
-   const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
+   // const bg_url = "https://static.mana.wiki/starrail/UI_Star_Bg.png";
 
    // Light Cone data loading
    const lcid = chardata?.equipment?.tid;
@@ -559,22 +557,17 @@ const CharacterInfo = ({
 
    // Total all light cone-sourced bonuses, same format as relic bonuses:
    // ============================
-   var lightconebonuses: any = [];
-
-   lcbase?.skill_data[chardata?.equipment?.rank - 1]?.stat_added?.map(
-      (a: any) => {
-         const tempbonus = {
-            id: a?.stat_type?.id,
-            icon: {
-               url: a?.stat_type?.icon?.url,
-            },
-            name: a?.stat_type?.name,
-            property_classify: a?.stat_type?.property_classify,
-            value: a.value,
-         };
-         lightconebonuses.push(tempbonus);
+   const lightconebonuses = lcbase?.skill_data[
+      chardata?.equipment?.rank - 1
+   ]?.stat_added?.map((a: any) => ({
+      id: a?.stat_type?.id,
+      icon: {
+         url: a?.stat_type?.icon?.url,
       },
-   );
+      name: a?.stat_type?.name,
+      property_classify: a?.stat_type?.property_classify,
+      value: a.value,
+   }));
 
    // Relic data loading
    const rid = chardata?.relic_list?.map((a: any) => a.tid);
@@ -661,19 +654,19 @@ const CharacterInfo = ({
          const currset = setlist.find((s: any) => s.id == r);
          const numInSet = rsetids.filter((a: any) => a == r)?.length;
 
-         var show = false;
+         let show = false;
 
          // For each bonus effect in the set, check if the number of artifacts in set is at least equal to the required number:
-         var bonuses: any = [];
-         var effect_desc: any = [];
-         for (var ei = 0; ei < currset?.set_effect?.length; ei++) {
+         const bonuses: any = [];
+         const effect_desc: any = [];
+         for (let ei = 0; ei < currset?.set_effect?.length; ei++) {
             const eff = currset?.set_effect[ei];
 
             // If number equipped is at least the required number, return the stat bonuses in property_list
             if (numInSet >= eff?.req_no) {
                show = true;
 
-               eff?.property_list.map((p: any) => {
+               eff?.property_list.forEach((p: any) => {
                   bonuses.push(p);
                });
                effect_desc.push(eff?.description);
@@ -694,13 +687,13 @@ const CharacterInfo = ({
    // Total all relic-sourced bonuses:
    // ============================
    // [ "HPDelta" // FLAT, "HPAddedRatio" // PERCENT]
-   var relicbonuses: any = [];
+   const relicbonuses: any = [];
 
    for (var rb = 0; rb < rchar.length; rb++) {
       const curr = rchar[rb];
       relicbonuses.push(curr.mainobj);
 
-      curr.subobj?.map((a: any) => {
+      curr.subobj?.forEach((a: any) => {
          relicbonuses.push(a);
       });
    }
@@ -708,7 +701,7 @@ const CharacterInfo = ({
    for (var sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
-      curr.bonuses?.map((a: any) => {
+      curr.bonuses?.forEach((a: any) => {
          const tempbonus = {
             id: a?.stattype?.id,
             icon: {
@@ -728,11 +721,11 @@ const CharacterInfo = ({
 
    for (var sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
       const currpoint = chardata?.skilltree_list[sk];
-      var treepoint = skillTrees.find(
+      const treepoint = skillTrees.find(
          (a: any) => a.point_id == currpoint.point_id,
       );
 
-      treepoint?.stat_added?.map((a: any) => {
+      treepoint?.stat_added?.forEach((a: any) => {
          const tempbonus = {
             id: a?.stat_type?.id,
             icon: {
@@ -869,7 +862,7 @@ const CharacterInfo = ({
       "Imaginary RES Boost",
    ];
 
-   additionalStats.map((stat) => {
+   additionalStats.forEach((stat) => {
       // Percent Bonuses =
       // - relicperc // Contains both relic and set bonuses
       // - treeperc // Contains all Skill Tree bonuses.
@@ -914,7 +907,7 @@ const CharacterInfo = ({
 
    const ref = useRef<HTMLDivElement>(null);
 
-   const uid = useLoaderData<typeof loader>();
+   const { uid } = useLoaderData<typeof loader>();
 
    const onDownloadImage = useCallback(() => {
       if (ref.current === null) {
@@ -927,14 +920,14 @@ const CharacterInfo = ({
       })
          .then((dataUrl) => {
             const link = document.createElement("a");
-            link.download = `${uid?.uid}-showcase`;
+            link.download = `${uid}-showcase`;
             link.href = dataUrl;
             link.click();
          })
          .catch((err) => {
             console.log(err);
          });
-   }, [ref]);
+   }, [ref, uid]);
 
    // I am sorry for this -// 9/8/2023 lmao dw this is fine -NorseFTX
    const imageTop = statVal.length > 6 ? (statVal.length - 6) * 20 : 0;
@@ -1368,7 +1361,7 @@ const CharacterInfo = ({
                               {/* Relic Image */}
                               <ItemFrameSquare
                                  mat={r}
-                                 style=""
+                                 // style=""
                                  lv={"+" + rlv}
                               />
 
@@ -1511,7 +1504,7 @@ const CharacterInfo = ({
                         {rset?.map((set: any, key: number) => {
                            var setdesc = "";
 
-                           set.effect_desc.map((e: any, i: any) => {
+                           set.effect_desc.forEach((e: any, i: any) => {
                               setdesc +=
                                  e +
                                  (i < set.effect_desc.length - 1
@@ -1624,9 +1617,9 @@ const ItemFrameSquare = ({
    style,
    lv,
 }: {
-   mat: Material;
+   mat: Relic;
    style?: string;
-   lv: number;
+   lv: number | string;
 }) => {
    // ========================
    // Generic Item / Character Circle Frame - Light Cone
@@ -1644,7 +1637,7 @@ const ItemFrameSquare = ({
             className={`h-[62px] w-[62px] object-contain color-rarity-${
                mat?.rarity?.display_number ?? "1"
             } rounded-md`}
-            alt={mat?.name}
+            alt={mat?.name ?? undefined}
          />
          <div
             className="absolute bottom-0.5 right-0.5 rounded bg-zinc-900
@@ -1805,7 +1798,7 @@ const SkillTreeDisplay = ({
 
 const InputUIDNote = ({ uid }: { uid: any }) => {
    const [inputUID, setInputUID] = useState(uid);
-   const [searchParams, setSearchParams] = useSearchParams({});
+   const [, setSearchParams] = useSearchParams({});
    const transition = useNavigation();
    const isSearching = isLoading(transition);
    return (
@@ -1872,35 +1865,35 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
    );
 };
 
-const NameToolTip = ({ text, tooltip, style = "", styleTooltip = "" }: any) => {
-   const [ttip, setTtip] = useState(false);
-   return (
-      <>
-         <div
-            className={`z-30 h-full w-full ${style}`}
-            onMouseOver={() => setTtip(true)}
-            onMouseOut={() => setTtip(false)}
-            onClick={() => setTtip(!ttip)}
-         >
-            {/* {text} */}
+// const NameToolTip = ({ text, tooltip, style = "", styleTooltip = "" }: any) => {
+//    const [ttip, setTtip] = useState(false);
+//    return (
+//       <>
+//          <div
+//             className={`z-30 h-full w-full ${style}`}
+//             onMouseOver={() => setTtip(true)}
+//             onMouseOut={() => setTtip(false)}
+//             onClick={() => setTtip(!ttip)}
+//          >
+//             {/* {text} */}
 
-            <div
-               className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${styleTooltip} ${
-                  ttip ? "block" : "hidden"
-               }`}
-            >
-               <div className="text-sm font-bold text-blue-400 dark:text-blue-600">
-                  {text}
-               </div>
-               <div
-                  className="italic"
-                  dangerouslySetInnerHTML={{ __html: tooltip }}
-               ></div>
-            </div>
-         </div>
-      </>
-   );
-};
+//             <div
+//                className={`absolute left-6 top-6 z-40 w-64 rounded-md border border-gray-700 bg-gray-900 bg-opacity-90 px-2 py-1 text-xs text-gray-50 ${styleTooltip} ${
+//                   ttip ? "block" : "hidden"
+//                }`}
+//             >
+//                <div className="text-sm font-bold text-blue-400 dark:text-blue-600">
+//                   {text}
+//                </div>
+//                <div
+//                   className="italic"
+//                   dangerouslySetInnerHTML={{ __html: tooltip }}
+//                ></div>
+//             </div>
+//          </div>
+//       </>
+//    );
+// };
 
 function intersect(a: any, b: any) {
    var result = a?.filter(function (n: any) {
