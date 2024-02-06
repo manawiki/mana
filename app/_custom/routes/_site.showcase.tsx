@@ -14,7 +14,6 @@ import {
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
-import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -60,7 +59,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       uid: z.string().optional(),
    });
 
-   invariant(uid, "UID is required");
+   if (!uid)
+      return json({
+         uid: null,
+         errorMessage: "",
+      });
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
