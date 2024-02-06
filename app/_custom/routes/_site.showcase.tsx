@@ -728,7 +728,7 @@ const CharacterInfo = ({
          (a: any) => a.point_id == currpoint.point_id,
       );
 
-      treepoint.stat_added?.map((a: any) => {
+      treepoint?.stat_added?.map((a: any) => {
          const tempbonus = {
             id: a?.stat_type?.id,
             icon: {
