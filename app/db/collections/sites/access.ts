@@ -34,10 +34,12 @@ export const canReadSite: Access = async ({ req: { user } }) => {
       const isStaff = isSiteStaff(user?.roles);
       if (isStaff) return true;
       return {
-         isPublic: {
-            equals: true,
-         },
          or: [
+            {
+               isPublic: {
+                  equals: true,
+               },
+            },
             {
                owner: {
                   equals: user.id,
