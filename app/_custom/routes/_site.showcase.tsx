@@ -535,7 +535,7 @@ const CharacterInfo = ({
    // Light Cone Stat Calculation
    const wlv = chardata?.equipment?.level;
    const wrank = chardata?.equipment?.promotion;
-   var wsuffix = "";
+   let wsuffix = "";
    // Ascension Check, add "A" if ascended:
    if (
       (wlv == 20 && wrank == 1) ||
@@ -549,7 +549,7 @@ const CharacterInfo = ({
    }
 
    const wi = lcbase?.stats[0].data?.findIndex((a: any) => a == wlv + wsuffix);
-   var wstats = [
+   const wstats = [
       { name: "HP", base: lcbase?.stats[1].data[wi] },
       { name: "ATK", base: lcbase?.stats[2].data[wi] },
       { name: "DEF", base: lcbase?.stats[3].data[wi] },
@@ -606,10 +606,10 @@ const CharacterInfo = ({
          const sstep = s.step ?? 0;
          const sstepval = ss.level_add;
 
-         var stepdist: any = []; // Has an array of [1, 2, 1, 1, 2, 1 ...] equal in size to scnt, where total sum of elements = sstep.
+         let stepdist: any = []; // Has an array of [1, 2, 1, 1, 2, 1 ...] equal in size to scnt, where total sum of elements = sstep.
 
          // number of '2' rolls is equal to step - cnt;
-         for (var d = 0; d < scnt; d++) {
+         for (let d = 0; d < scnt; d++) {
             if (d < sstep - scnt) {
                stepdist[d] = 2;
             } else if (!sstep) {
@@ -689,7 +689,7 @@ const CharacterInfo = ({
    // [ "HPDelta" // FLAT, "HPAddedRatio" // PERCENT]
    const relicbonuses: any = [];
 
-   for (var rb = 0; rb < rchar.length; rb++) {
+   for (let rb = 0; rb < rchar.length; rb++) {
       const curr = rchar[rb];
       relicbonuses.push(curr.mainobj);
 
@@ -698,7 +698,7 @@ const CharacterInfo = ({
       });
    }
 
-   for (var sb = 0; sb < rset.length; sb++) {
+   for (let sb = 0; sb < rset.length; sb++) {
       const curr = rset[sb];
 
       curr.bonuses?.forEach((a: any) => {
@@ -717,9 +717,9 @@ const CharacterInfo = ({
 
    // Total all skill tree-sourced bonuses, same format as relic bonuses:
    // ============================
-   var skilltreebonuses: any = [];
+   const skilltreebonuses: any = [];
 
-   for (var sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
+   for (let sk = 0; sk < chardata?.skilltree_list?.length; sk++) {
       const currpoint = chardata?.skilltree_list[sk];
       const treepoint = skillTrees.find(
          (a: any) => a.point_id == currpoint.point_id,
@@ -746,7 +746,7 @@ const CharacterInfo = ({
    // Character Base Stat Calculation
    const lv = chardata.level;
    const rank = chardata.promotion;
-   var suffix = "";
+   let suffix = "";
    // Ascension Check, add "A" if ascended:
    if (
       (lv == 20 && rank == 1) ||
@@ -770,7 +770,7 @@ const CharacterInfo = ({
       "CRIT DMG",
       //   "Aggro",
    ];
-   var statVal = defaultStats.map((stat: any, i: any) => {
+   let statVal = defaultStats.map((stat: any, i: any) => {
       // Final Modifier is calculated as follows:
       // ============================
       // Stat = BASE + MODIFIER
@@ -1502,7 +1502,7 @@ const CharacterInfo = ({
                      {/* Relic Set Bonuses */}
                      <div className="!mt-3 space-y-2">
                         {rset?.map((set: any, key: number) => {
-                           var setdesc = "";
+                           let setdesc = "";
 
                            set.effect_desc.forEach((e: any, i: any) => {
                               setdesc +=
@@ -1654,7 +1654,7 @@ function formatStat(type: any, stat: any) {
    // Performs Rounding for Stats as Integers or as Percentages as necessary
    // =====================================
    // These are stats that should be formatted as an Integer.
-   var intlist = ["HP", "ATK", "DEF", "SPD", "Aggro"];
+   const intlist = ["HP", "ATK", "DEF", "SPD", "Aggro"];
 
    // Apply correct number formatting: Intlist should be rounded, otherwise *100 and display as Percentage of #.0% format
    if (intlist.indexOf(type) > -1) {
@@ -1673,8 +1673,8 @@ const SkillTreeDisplay = ({
    hoverStat,
    setHoverStat,
 }: any) => {
-   var pathkey = path;
-   var treelist = skillTrees.filter(
+   const pathkey = path;
+   let treelist = skillTrees.filter(
       (a: any) => a.character.id == data?.avatar_id,
    ); // pageData?.attributes?.tree; //skillTreeData;
 
@@ -1718,13 +1718,11 @@ const SkillTreeDisplay = ({
                )?.level;
 
                // Populate node description tooltip text
-               var detail_desc = "";
-               if (nodelv) {
-                  detail_desc =
-                     node.affected_skill?.[0]?.description_per_level?.[
-                        nodelv - 1
-                     ]?.description ?? "";
-               }
+               const detail_desc = nodelv
+                  ? (node.affected_skill?.[0]?.description_per_level?.[
+                       nodelv - 1
+                    ]?.description as string) ?? ""
+                  : "";
 
                const node_desc = node?.description + detail_desc;
 
@@ -1896,7 +1894,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
 // };
 
 function intersect(a: any, b: any) {
-   var result = a?.filter(function (n: any) {
+   const result = a?.filter(function (n: any) {
       return b?.indexOf(n) > -1;
    });
 
