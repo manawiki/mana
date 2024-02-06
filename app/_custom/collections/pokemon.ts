@@ -1,6 +1,6 @@
 import type { CollectionConfig, FieldHook } from "payload/types";
 
-import { isStaff } from "../../access/user";
+import { isStaff } from "../../db/collections/users/access";
 
 interface CPMType {
    cpm: number;
