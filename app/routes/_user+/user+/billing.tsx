@@ -28,6 +28,8 @@ export async function loader({
 }: LoaderFunctionArgs) {
    invariant(user);
 
+   if (process.env.NODE_ENV == "development") return null;
+
    //Fetch existing payment methods
    const existingStripeUser = await payload.findByID({
       collection: "users",
