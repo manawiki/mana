@@ -15,10 +15,11 @@ import {
    useSearchParams,
 } from "@remix-run/react";
 import { toPng } from "html-to-image";
-import type { Material } from "payload/generated-custom-types";
+import invariant from "tiny-invariant";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import type { Material } from "payload/generated-custom-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -60,12 +61,13 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
       uid: z.string().optional(),
    });
 
-   if (!uid) return null;
+   invariant(uid, "UID is required");
 
    const showcaseDataUrl = `https://starrail-showcase.mana.wiki/api/showcase/${uid}`;
    const showcaseData = await fetchWithCache(showcaseDataUrl);
    if (showcaseData.detail)
       return json({
+         uid: uid,
          errorMessage: showcaseData.detail,
       });
 
@@ -131,6 +133,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
          playerIcon: playerIcon,
          showcaseData: showcaseData,
          refreshCooldown: refreshCooldown,
+         errorMessage: null,
       },
       { headers: { "Cache-Control": "public, s-maxage=60" } },
    );
