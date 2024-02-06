@@ -556,9 +556,13 @@ export default function Settings() {
                            />
                            <Record value={ipv4} />
                         </div>
-                        {!isSubDomain && flyAppId != "mana" && (
+                        {flyAppId != "mana" && (
                            <div className="flex items-center justify-between gap-4">
-                              <Record name value="@" type="AAAA" />
+                              <Record
+                                 name
+                                 value={isSubDomain ? subDomain : "@"}
+                                 type="AAAA"
+                              />
                               <Icon
                                  name="arrow-right"
                                  size={16}
