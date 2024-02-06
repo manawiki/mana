@@ -2,7 +2,12 @@ import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canCreatePost, canReadPost, canUpdateOrDeletePost } from "./access";
+import {
+   canCreatePost,
+   canReadPost,
+   canDeletePost,
+   canUpdatePost,
+} from "./access";
 import { afterDeleteHook } from "./hooks";
 import { isStaffFieldLevel } from "../users/access";
 
@@ -14,8 +19,8 @@ export const Posts: CollectionConfig = {
    access: {
       create: canCreatePost,
       read: canReadPost,
-      update: canUpdateOrDeletePost,
-      delete: canUpdateOrDeletePost,
+      update: canUpdatePost,
+      delete: canDeletePost,
    },
    hooks: {
       afterDelete: [afterDeleteHook],

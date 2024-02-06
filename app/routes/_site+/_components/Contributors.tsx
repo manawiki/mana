@@ -18,6 +18,18 @@ export function Contributors({
             </div>
             <div className="flex items-center gap-2">
                <div className="flex items-center -space-x-1">
+                  <Tooltip>
+                     <TooltipTrigger>
+                        <Avatar
+                           src={site?.owner?.avatar?.url}
+                           //@ts-ignore
+                           initials={site?.owner?.username?.charAt(0)}
+                           className="size-8 ring-2 ring-zinc-50 dark:ring-bg3Dark dark:bg-bg3Dark laptop:dark:ring-bg2Dark"
+                           options="aspect_ratio=1:1&height=60&width=60"
+                        />
+                     </TooltipTrigger>
+                     <TooltipContent>{site?.owner?.username}</TooltipContent>
+                  </Tooltip>
                   {site.admins?.length != 0 &&
                      site.admins?.map((user: any) => (
                         <Tooltip key={user.id}>
@@ -25,25 +37,27 @@ export function Contributors({
                               <Avatar
                                  src={user?.avatar?.url}
                                  initials={user?.username.charAt(0)}
-                                 className="size-8 ring-2 ring-zinc-50 dark:ring-bg2Dark dark:bg-bg2Dark"
+                                 className="size-8 ring-2 ring-zinc-50 dark:ring-bg3Dark dark:bg-bg3Dark laptop:dark:ring-bg2Dark"
                                  options="aspect_ratio=1:1&height=60&width=60"
                               />
                            </TooltipTrigger>
                            <TooltipContent>{user.username}</TooltipContent>
                         </Tooltip>
                      ))}
-                  <Tooltip>
-                     <TooltipTrigger>
-                        <Avatar
-                           src={site?.owner?.avatar?.url}
-                           //@ts-ignore
-                           initials={site?.owner?.username?.charAt(0)}
-                           className="size-8 ring-2 ring-zinc-50 dark:ring-bg2Dark dark:bg-bg2Dark"
-                           options="aspect_ratio=1:1&height=60&width=60"
-                        />
-                     </TooltipTrigger>
-                     <TooltipContent>{site?.owner?.username}</TooltipContent>
-                  </Tooltip>
+                  {site.contributors?.length != 0 &&
+                     site.contributors?.map((user: any) => (
+                        <Tooltip key={user.id}>
+                           <TooltipTrigger>
+                              <Avatar
+                                 src={user?.avatar?.url}
+                                 initials={user?.username.charAt(0)}
+                                 className="size-8 ring-2 ring-zinc-50 dark:ring-bg3Dark dark:bg-bg3Dark laptop:dark:ring-bg2Dark"
+                                 options="aspect_ratio=1:1&height=60&width=60"
+                              />
+                           </TooltipTrigger>
+                           <TooltipContent>{user.username}</TooltipContent>
+                        </Tooltip>
+                     ))}
                </div>
                <Link
                   to="/apply"

@@ -1,33 +1,15 @@
 import type { Access } from "payload/types";
 
+import { isSiteAdmin } from "../../access/isSiteAdmin";
 import { isSiteContributor } from "../../access/isSiteContributor";
-import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
+import { isSiteOwner } from "../../access/isSiteOwner";
+import { isSiteStaff } from "../../access/isSiteStaff";
 
 //@ts-ignore
-//Don't understand why this is throwing an error
-export const canReadPost: Access = async ({ req: { user, payload }, id }) => {
+export const canReadPost: Access = async ({ req: { user } }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
-      const userId = user.id;
-
-      //Singleton
-      if (id) {
-         const post = await payload.findByID({
-            collection: "posts",
-            id,
-            depth: 1,
-         });
-         const hasAccess = isSiteOwnerOrAdmin(userId, post.site);
-         //Contributors can only access their own posts
-         if (!hasAccess)
-            return {
-               publishedAt: {
-                  exists: true,
-               },
-            };
-         return hasAccess;
-      }
-      //Auth List
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
       return {
          or: [
             {
@@ -36,12 +18,26 @@ export const canReadPost: Access = async ({ req: { user, payload }, id }) => {
                },
             },
             {
-               author: { equals: userId },
+               author: { equals: user.id },
+            },
+            {
+               "site.owner": {
+                  equals: user.id,
+               },
+            },
+            {
+               "site.admins": {
+                  contains: user.id,
+               },
+            },
+            {
+               "site.contributors": {
+                  contains: user.id,
+               },
             },
          ],
       };
    }
-   //Anonymous users can only access published posts
    return {
       publishedAt: {
          exists: true,
@@ -54,8 +50,8 @@ export const canCreatePost: Access = async ({
    data,
 }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
-      const userId = user.id;
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
 
       if (data) {
          const site = await payload.findByID({
@@ -63,43 +59,74 @@ export const canCreatePost: Access = async ({
             id: data.site,
             depth: 0,
          });
-         const hasAccess =
-            isSiteOwnerOrAdmin(userId, site) ||
-            //@ts-ignore
-            isSiteContributor(userId, site?.contributors);
-         return hasAccess;
+         const isOwner = isSiteOwner(user?.id, site?.owner as any);
+         const isAdmin = isSiteAdmin(user?.id, site?.admins as any[]);
+         const isContributor = isSiteContributor(
+            user?.id,
+            site?.contributors as any[],
+         );
+
+         return isOwner || isAdmin || isContributor;
       }
    }
    // Reject everyone else
    return false;
 };
 
-export const canUpdateOrDeletePost: Access = async ({
-   req: { user, payload },
-   id,
-}) => {
+//@ts-ignore
+export const canDeletePost: Access = async ({ req: { user } }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
-
-      const userId = user.id;
-
-      if (id) {
-         const post = await payload.findByID({
-            collection: "posts",
-            id: id,
-            depth: 1,
-         });
-         const hasAccess = isSiteOwnerOrAdmin(userId, post.site);
-
-         // If the user is the author, they can delete or update their own post
-         if (!hasAccess)
-            return {
-               author: {
-                  equals: userId,
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+      return {
+         or: [
+            {
+               author: { equals: user.id },
+            },
+            {
+               "site.owner": {
+                  equals: user.id,
                },
-            };
-         return hasAccess;
-      }
+            },
+            {
+               "site.admins": {
+                  contains: user.id,
+               },
+            },
+         ],
+      };
+   }
+   // Reject everyone else
+   return false;
+};
+
+//@ts-ignore
+export const canUpdatePost: Access = async ({ req: { user } }) => {
+   if (user) {
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+      return {
+         or: [
+            {
+               author: { equals: user.id },
+            },
+            {
+               "site.owner": {
+                  equals: user.id,
+               },
+            },
+            {
+               "site.admins": {
+                  contains: user.id,
+               },
+            },
+            {
+               "site.contributors": {
+                  contains: user.id,
+               },
+            },
+         ],
+      };
    }
    // Reject everyone else
    return false;

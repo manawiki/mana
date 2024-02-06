@@ -700,7 +700,10 @@ export async function action({
             await stripe.invoiceItems.create({
                invoice: invoice.id,
                customer: stripeUser.stripeCustomerId,
-               price: "price_1OVK2IHY2vBdJM8emeVNeZ7q",
+               price:
+                  process.env.NODE_ENV == "development"
+                     ? "price_1OVK2IHY2vBdJM8emeVNeZ7q"
+                     : "price_1Ogt2LHY2vBdJM8erjW1EklB",
             });
 
             const payInvoice = await stripe.invoices.pay(invoice.id);
