@@ -39,12 +39,12 @@ const WATCH_PATH = path.resolve("./build/version.txt");
 let build = require(BUILD_PATH);
 
 const transport = nodemailer.createTransport({
-   host: process.env.PAYLOAD_NODEMAILER_HOST ?? "live.smtp.mailtrap.io",
-   port: parseInt(process.env.PAYLOAD_NODEMAILER_PORT ?? "587"),
+   host: process.env.NODEMAILER_HOST ?? "live.smtp.mailtrap.io",
+   port: parseInt(process.env.NODEMAILER_PORT ?? "587"),
    secure: false,
    auth: {
-      user: process.env.PAYLOAD_NODEMAILER_USER ?? "api",
-      pass: process.env.PAYLOAD_NODEMAILER_PASSWORD,
+      user: process.env.NODEMAILER_USER ?? "api",
+      pass: process.env.NODEMAILER_PASSWORD,
    },
 });
 
@@ -61,7 +61,7 @@ async function startCore() {
       onInit: () => {
          payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
       },
-      ...(process.env.PAYLOAD_NODEMAILER_PASSWORD
+      ...(process.env.NODEMAILER_PASSWORD
          ? {
               email: {
                  transport,
