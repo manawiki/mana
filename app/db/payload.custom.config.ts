@@ -71,9 +71,9 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/${process.env.SITE_SLUG}/${filename}`;
+                  return `https://static.mana.wiki/${process.env.FILE_PREFIX}/${filename}`;
                },
-               prefix: process.env.SITE_SLUG,
+               prefix: process.env.FILE_PREFIX,
             },
          },
       }),
