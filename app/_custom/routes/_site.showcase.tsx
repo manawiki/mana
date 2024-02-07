@@ -560,17 +560,18 @@ const CharacterInfo = ({
 
    // Total all light cone-sourced bonuses, same format as relic bonuses:
    // ============================
-   const lightconebonuses = lcbase?.skill_data[
-      chardata?.equipment?.rank - 1
-   ]?.stat_added?.map((a: any) => ({
-      id: a?.stat_type?.id,
-      icon: {
-         url: a?.stat_type?.icon?.url,
-      },
-      name: a?.stat_type?.name,
-      property_classify: a?.stat_type?.property_classify,
-      value: a.value,
-   }));
+   const lightconebonuses =
+      lcbase?.skill_data[chardata?.equipment?.rank - 1]?.stat_added?.map(
+         (a: any) => ({
+            id: a?.stat_type?.id,
+            icon: {
+               url: a?.stat_type?.icon?.url,
+            },
+            name: a?.stat_type?.name,
+            property_classify: a?.stat_type?.property_classify,
+            value: a.value,
+         }),
+      ) ?? [];
 
    // Relic data loading
    const rid = chardata?.relic_list?.map((a: any) => a.tid);
