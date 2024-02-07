@@ -3,9 +3,9 @@
    font-style: normal;
    font-weight: 400;
    font-display: swap;
-   src: url("/fonts/Nunito_Sans/nunitosans-regular-webfont.woff2")
-         format("woff2"),
-      url("/fonts/Nunito_Sans/nunitosans-regular-webfont.woff") format("woff"),
+   src:
+      url("/fonts/Nunito_Sans/NunitoSans-Regular.woff2") format("woff2"),
+      url("/fonts/Nunito_Sans/NunitoSans-Regular.woff") format("woff"),
       url("/fonts/Nunito_Sans/NunitoSans-Regular.ttf");
 }
 @font-face {
@@ -13,9 +13,9 @@
    font-style: italic;
    font-weight: 400;
    font-display: swap;
-   src: url("/fonts/Nunito_Sans/nunitosans-italic-webfont.woff2")
-         format("woff2"),
-      url("/fonts/Nunito_Sans/nunitosans-italic-webfont.woff") format("woff"),
+   src:
+      url("/fonts/Nunito_Sans/NunitoSans-Italic.woff2") format("woff2"),
+      url("/fonts/Nunito_Sans/NunitoSans-Italic.woff") format("woff"),
       url("/fonts/Nunito_Sans/NunitoSans-Italic.ttf");
 }
 @font-face {
@@ -23,9 +23,9 @@
    font-style: normal;
    font-weight: 600;
    font-display: swap;
-   src: url("/fonts/Nunito_Sans/nunitosans-semibold-webfont.woff2")
-         format("woff2"),
-      url("/fonts/Nunito_Sans/nunitosans-semibold-webfont.woff") format("woff"),
+   src:
+      url("/fonts/Nunito_Sans/NunitoSans-SemiBold.woff2") format("woff2"),
+      url("/fonts/Nunito_Sans/NunitoSans-SemiBold.woff") format("woff"),
       url("/fonts/Nunito_Sans/NunitoSans-SemiBold.ttf");
 }
 @font-face {
@@ -33,8 +33,9 @@
    font-style: normal;
    font-weight: 700;
    font-display: swap;
-   src: url("/fonts/Nunito_Sans/nunitosans-bold-webfont.woff2") format("woff2"),
-      url("/fonts/Nunito_Sans/nunitosans-bold-webfont.woff") format("woff"),
+   src:
+      url("/fonts/Nunito_Sans/NunitoSans-Bold.woff2") format("woff2"),
+      url("/fonts/Nunito_Sans/NunitoSans-Bold.woff") format("woff"),
       url("/fonts/Nunito_Sans/NunitoSans-Bold.ttf");
 }
 @font-face {
@@ -83,7 +84,8 @@
 }
 @font-face {
    font-family: source-sans-pro;
-   src: url("/fonts/Source_Sans_Pro/sourcesanspro-bold-webfont.woff2")
+   src:
+      url("/fonts/Source_Sans_Pro/sourcesanspro-bold-webfont.woff2")
          format("woff2"),
       url("/fonts/Source_Sans_Pro/sourcesanspro-bold-webfont.woff")
          format("woff");
