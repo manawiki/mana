@@ -1,9 +1,14 @@
 import type { Payload } from "payload";
 import { select } from "payload-query";
 
-import type { User, Collection } from "~/db/payload-types";
+import type { RemixRequestContext } from "remix.env";
+import type { Collection } from "~/db/payload-types";
 import { cacheThis, gql, gqlRequestWithCache } from "~/utils/cache.server";
-import { gqlFormat, gqlEndpoint } from "~/utils/fetchers.server";
+import {
+   gqlFormat,
+   gqlEndpoint,
+   authGQLFetcher,
+} from "~/utils/fetchers.server";
 
 import type { CollectionsAllSchema } from "../_list";
 
@@ -16,8 +21,8 @@ export async function fetchListCore({
 }: typeof CollectionsAllSchema._type & {
    payload: Payload;
    collectionId: Collection["slug"];
-   siteSlug: string;
-   user?: User;
+   siteSlug: string | undefined;
+   user?: RemixRequestContext["user"];
 }) {
    const collectionData = user
       ? await payload.find({
@@ -30,7 +35,7 @@ export async function fetchListCore({
                  equals: collectionId,
               },
            },
-           depth: 0,
+           depth: 1,
            overrideAccess: false,
            user,
         })
@@ -46,7 +51,7 @@ export async function fetchListCore({
                        equals: collectionId,
                     },
                  },
-                 depth: 0,
+                 depth: 1,
                  overrideAccess: false,
                  user,
               }),
@@ -60,32 +65,40 @@ export async function fetchListCore({
       const label = gqlFormat(collectionId, "list");
 
       const document = gql`
-         query($page: Int!) {
+         query ($page: Int!) {
             entries: ${label}(page: $page, limit: 20) {
-            totalDocs
-            totalPages
-            limit
-            pagingCounter
-            hasPrevPage
-            prevPage
-            nextPage
-            hasNextPage
-            docs {
-               id
-               name
-               icon {
-                  url
+               totalDocs
+               totalPages
+               limit
+               pagingCounter
+               hasPrevPage
+               prevPage
+               nextPage
+               hasNextPage
+               docs {
+                  id
+                  name
+                  icon {
+                     url
+                  }
                }
-            }
             }
          }
       `;
 
       const endpoint = gqlEndpoint({ siteSlug: collectionEntry?.site.slug });
+      const { entries } = user
+         ? await authGQLFetcher({
+              siteSlug: siteSlug,
+              variables: {
+                 page,
+              },
+              document: document,
+           })
+         : await gqlRequestWithCache(endpoint, document, {
+              page,
+           });
 
-      const { entries }: any = await gqlRequestWithCache(endpoint, document, {
-         page,
-      });
       return { entries };
    }
 
