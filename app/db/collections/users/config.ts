@@ -16,7 +16,7 @@ export const Users: CollectionConfig = {
                serverEnv == "development"
                   ? `http://localhost:3000/verify?token=${token}`
                   : `https://${
-                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                       process.env.HOST_DOMAIN ?? "mana.wiki"
                     }/verify?token=${token}`;
 
             return `
@@ -48,7 +48,7 @@ export const Users: CollectionConfig = {
                serverEnv == "development"
                   ? `http://localhost:3000/reset-password?token=${token}`
                   : `https://${
-                       process.env.PAYLOAD_PUBLIC_HOST_DOMAIN ?? "mana.wiki"
+                       process.env.HOST_DOMAIN ?? "mana.wiki"
                     }/reset-password?token=${token}`;
 
             return `

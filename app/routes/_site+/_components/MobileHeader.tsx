@@ -104,11 +104,7 @@ export function MobileHeader() {
                   </div>
                   <Link
                      prefetch="intent"
-                     to={
-                        process.env.NODE_ENV === "development"
-                           ? "/user/account"
-                           : "https://mana.wiki/user/account"
-                     }
+                     to="/user/account"
                      className="border border-zinc-300 dark:border-zinc-600 transition duration-300 
                   active:translate-y-0.5 dark:hover:border-zinc-500 size-9
                   rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-800 hover:border-zinc-400"
