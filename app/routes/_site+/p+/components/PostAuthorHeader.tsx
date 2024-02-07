@@ -1,12 +1,13 @@
 import dt from "date-and-time";
 
-import type { Post } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { timeAgo } from "~/utils/time-ago";
 
-export function PostAuthorHeader({ post }: { post: Post }) {
+import type { PostData } from "../utils/fetchPostWithSlug.server";
+
+export function PostAuthorHeader({ post }: { post: PostData }) {
    return (
       <section>
          <div className="mb-3 flex items-center gap-3 border-y border-color-secondary py-3">
@@ -34,8 +35,10 @@ export function PostAuthorHeader({ post }: { post: Post }) {
                         />
                         <time
                            className="text-1 flex items-center gap-1.5 text-xs"
+                           // @ts-ignore
                            dateTime={post?.updatedAt}
                         >
+                           {/* @ts-ignore */}
                            {timeAgo(new Date(post?.updatedAt))}
                         </time>
                      </TooltipTrigger>
@@ -51,6 +54,7 @@ export function PostAuthorHeader({ post }: { post: Post }) {
                            >
                               <time
                                  className="text-1 flex items-center gap-1.5 text-xs"
+                                 // @ts-ignore
                                  dateTime={post?.publishedAt}
                               >
                                  {dt.format(

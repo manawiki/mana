@@ -91,7 +91,7 @@ export function SiteIconUploader({
                   base64Image.replace(/^data:image\/\w+;base64,/, ""),
                   "base64",
                );
-               const file = new File([buffer], "filename", {
+               const file = new File([buffer], "filename.png", {
                   type: fileType,
                });
                setIsOpen(false);

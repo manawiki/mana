@@ -1,29 +1,21 @@
 import { useState } from "react";
 
-import {
-   Link,
-   useFetcher,
-   useLocation,
-   useRouteLoaderData,
-} from "@remix-run/react";
-import type { SerializeFrom } from "@remix-run/server-runtime";
+import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
-import type { loader as rootLoaderType } from "~/root";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
 import { NotFollowingSite } from "~/routes/_auth+/components/NotFollowingSite";
 import { isAdding } from "~/utils/form";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { FollowingListMobile } from "./Menu";
 import { MobileTray } from "./MobileTray";
 
 export function MobileHeader() {
-   const { user } = useRouteLoaderData("root") as SerializeFrom<
-      typeof rootLoaderType
-   >;
+   const { user } = useRootLoaderData();
 
    const { t } = useTranslation(["site", "auth"]);
    const fetcher = useFetcher({ key: "site" });
@@ -44,11 +36,15 @@ export function MobileHeader() {
                <div className="flex w-full flex-none items-center justify-between gap-3 laptop:hidden">
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
-                     <a
-                        className="border-2 border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                     <Link
+                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow hover:border-zinc-400 mx-auto"
-                        href="https://mana.wiki"
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-400 mx-auto"
+                        to={
+                           process.env.NODE_ENV === "development"
+                              ? "/"
+                              : "https://mana.wiki"
+                        }
                      >
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +58,7 @@ export function MobileHeader() {
                               clipRule="evenodd"
                            />
                         </svg>
-                     </a>
+                     </Link>
                      {!isUserPath && (
                         <NotFollowingSite>
                            <div className="flex items-center">
@@ -108,30 +104,26 @@ export function MobileHeader() {
                   </div>
                   <Link
                      prefetch="intent"
-                     to="/user/account"
-                     className="border-2 border-zinc-300 dark:border-zinc-600 transition duration-300 
+                     to={
+                        process.env.NODE_ENV === "development"
+                           ? "/user/account"
+                           : "https://mana.wiki/user/account"
+                     }
+                     className="border border-zinc-300 dark:border-zinc-600 transition duration-300 
                   active:translate-y-0.5 dark:hover:border-zinc-500 size-9
-                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-900 hover:border-zinc-400"
+                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-800 hover:border-zinc-400"
                   >
-                     {user?.avatar?.url ? (
-                        <Image
-                           width={24}
-                           height={24}
-                           className="overflow-hidden rounded-full"
-                           url={user?.avatar?.url}
-                           options="aspect_ratio=1:1&height=60&width=60"
-                           alt="User Avatar"
-                        />
-                     ) : (
-                        <Icon name="user" size={18} />
-                     )}
+                     <Avatar
+                        src={user?.avatar?.url}
+                        initials={user?.username.charAt(0)}
+                        className="size-6"
+                        options="aspect_ratio=1:1&height=60&width=60"
+                     />
                   </Link>
                </div>
             </LoggedIn>
             <LoggedOut>
                <Link
-                  prefetch="intent"
-                  reloadDocument={true}
                   to={`/login?redirectTo=${location.pathname}`}
                   className="dark:shadow-zinc-950/40 z-20 flex h-8 items-center justify-center rounded-full bg-zinc-700 px-3.5 text-sm
                               font-bold text-white shadow-sm dark:bg-white dark:text-black laptop:hidden"

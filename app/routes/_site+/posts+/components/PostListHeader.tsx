@@ -1,14 +1,14 @@
 import { Form } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { AdminOrStaffOrOwnerOrContributor } from "~/routes/_auth+/components/AdminOrStaffOrOwnerOrContributor";
 
 export function PostListHeader() {
    return (
       <div className="relative flex items-center pb-5">
          <h1 className="font-header text-3xl font-bold pr-3">Posts</h1>
          <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
-         <AdminOrStaffOrOwner>
+         <AdminOrStaffOrOwnerOrContributor>
             <Form method="post">
                <button
                   className="flex py-2.5 items-center text-xs font-bold gap-2 dark:border-zinc-600 dark:hover:border-zinc-500
@@ -21,7 +21,7 @@ export function PostListHeader() {
                   New Post
                </button>
             </Form>
-         </AdminOrStaffOrOwner>
+         </AdminOrStaffOrOwnerOrContributor>
       </div>
    );
 }
