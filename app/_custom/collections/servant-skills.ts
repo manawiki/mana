@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 import { Update_TermRelationsOneDeep } from "./hooks/Update_TermRelationsOneDeep";
 import { Delete_TermRelationsOneDeep } from "./hooks/Delete_TermRelationsOneDeep";
 
-import { isStaff } from "../../access/user";
+import { isStaff } from "../../db/collections/users/access";
 
 export const ServantSkills: CollectionConfig = {
    slug: "servant-skills",

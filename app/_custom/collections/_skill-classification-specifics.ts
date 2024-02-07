@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
+import { isStaff } from "../../db/collections/users/access";
 
 export const _SkillClassificationSpecifics: CollectionConfig = {
    slug: "_skill-classification-specifics",
