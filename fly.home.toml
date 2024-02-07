@@ -7,7 +7,7 @@ kill_timeout = "5s"
   dockerfile = "core.Dockerfile"
 
 [build.args]
-  PAYLOAD_PUBLIC_IS_HOME = "true"
+  IS_HOME = "true"
 
 [env]
   PORT = "8080"

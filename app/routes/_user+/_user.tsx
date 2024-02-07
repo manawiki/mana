@@ -4,23 +4,17 @@ import { redirect } from "@remix-run/server-runtime";
 
 import { Icon } from "~/components/Icon";
 import { handleLogout } from "~/routes/_auth+/utils/handleLogout.client";
-import { apiDBPath } from "~/utils/api-path.server";
 
 import { UserMenuItems } from "./components/UserMenuItems";
 import { ColumnOneMenu } from "../_site+/_components/Column-1-Menu";
 import { MobileHeader } from "../_site+/_components/MobileHeader";
-import { getSiteSlug } from "../_site+/_utils/getSiteSlug.server";
 
 export async function loader({
    context: { payload, user },
    request,
 }: LoaderFunctionArgs) {
-   if (!user) throw redirect("/");
-   const { siteSlug } = await getSiteSlug(request, payload, user);
-   console.log(siteSlug);
-   //Account should only be access on root domain
-   // if (siteSlug && process.env.NODE_ENV !== "development")
-   //    throw redirect(`https://${apiDBPath}/user/account`);
+   if (!user) throw redirect("/login");
+
    return null;
 }
 
