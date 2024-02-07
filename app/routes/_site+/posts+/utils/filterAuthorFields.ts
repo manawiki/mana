@@ -2,7 +2,6 @@ import type { PaginatedDocs } from "payload/database";
 import { select, type Select } from "payload-query";
 
 import type { Post, User } from "payload/generated-types";
-
 import type { Image } from "~/db/payload-custom-types";
 
 export function filterAuthorFields(

@@ -72,7 +72,7 @@ export function DropdownMenu({
                "overflow-y-auto",
 
                // Popover background
-               "bg-white/75 backdrop-blur-xl dark:bg-zinc-800/75",
+               "bg-white/75 backdrop-blur-xl dark:bg-dark400",
 
                // Shadows
                "shadow-lg ring-1 ring-zinc-950/10 dark:ring-inset dark:ring-white/10",
@@ -100,10 +100,10 @@ export function DropdownItem(
             "group cursor-default rounded-lg px-3.5 py-2.5 focus:outline-none tablet:px-3 tablet:py-1.5",
 
             // Text styles
-            "text-left text-base/6 text-zinc-950 tablet:text-sm/6 dark:text-white forced-colors:text-[CanvasText]",
+            "text-left text-base/6 tablet:text-sm/6 forced-colors:text-[CanvasText]",
 
             // Focus
-            "data-[focus]:bg-blue-500 data-[focus]:text-white",
+            "data-[focus]:bg-zinc-200/70 dark:data-[focus]:bg-dark500",
 
             // Disabled state
             "data-[disabled]:opacity-50",

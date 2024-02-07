@@ -37,7 +37,7 @@ const adapter = s3Adapter({
 export default buildConfig({
    editor: slateEditor({}),
    db: mongooseAdapter({
-      url: `${process.env.MONGODB_URI}/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}-prod-db`,
+      url: `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}`,
       transactionOptions: false, //disable mongo transactions
    }),
    cors: "*",
@@ -71,9 +71,9 @@ export default buildConfig({
                adapter,
                generateFileURL: (file) => {
                   const { filename } = file;
-                  return `https://static.mana.wiki/${process.env.PAYLOAD_PUBLIC_SITE_SLUG}/${filename}`;
+                  return `https://static.mana.wiki/${process.env.FILE_PREFIX}/${filename}`;
                },
-               prefix: process.env.PAYLOAD_PUBLIC_SITE_SLUG,
+               prefix: process.env.FILE_PREFIX,
             },
          },
       }),

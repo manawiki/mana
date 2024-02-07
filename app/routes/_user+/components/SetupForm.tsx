@@ -55,7 +55,7 @@ export function SetupForm() {
                className="pb-5 overflow-hidden"
             />
             {errorMessage && (
-               <div className="text-sm text-red-500">{errorMessage}</div>
+               <div className="text-sm text-red-500 pb-5">{errorMessage}</div>
             )}
 
             <div className="flex items-center justify-end">

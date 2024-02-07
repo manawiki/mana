@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/node";
 import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 
-import { isSiteOwnerOrAdmin } from "~/db/collections/site/access";
+import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 
 import { SettingsMenuLink } from "./components/SettingsMenuLink";
 import { getSiteSlug } from "../_utils/getSiteSlug.server";
@@ -40,7 +40,7 @@ export default function Settings() {
                   to="/settings/site"
                   icon="component"
                />
-               <SettingsMenuLink text="Team" to="/settings/team" icon="user" />
+               <SettingsMenuLink text="Team" to="/settings/team" icon="users" />
                <SettingsMenuLink
                   text="Domain"
                   to="/settings/domain"
@@ -53,7 +53,7 @@ export default function Settings() {
                />
             </div>
          </div>
-         <main className="max-w-[728px] laptop:w-[728px] py-6 max-tablet:px-3 mx-auto">
+         <main className="max-w-[728px] laptop:w-[728px] py-6 laptop:pb-20 max-tablet:px-3 mx-auto">
             <Outlet />
          </main>
       </div>

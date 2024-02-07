@@ -39,7 +39,11 @@ export function PostHeaderEdit({
    useEffect(() => {
       if (!isMount) {
          fetcher.submit(
-            { name: debouncedTitle, intent: "updateTitle" },
+            {
+               name: debouncedTitle,
+               intent: "updateTitle",
+               postId: post.id,
+            },
             { method: "patch" },
          );
       }
@@ -48,7 +52,11 @@ export function PostHeaderEdit({
    useEffect(() => {
       if (!isMount) {
          fetcher.submit(
-            { subtitle: debouncedSubtitle, intent: "updateSubtitle" },
+            {
+               subtitle: debouncedSubtitle,
+               intent: "updateSubtitle",
+               postId: post.id,
+            },
             { method: "patch" },
          );
       }
@@ -63,6 +71,7 @@ export function PostHeaderEdit({
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
          const formData = new FormData();
          formData.append("intent", "updateBanner");
+         formData.append("postId", post.id);
          formData.append("postBanner", e.dataTransfer.files[0]);
          fetcher.submit(formData, {
             encType: "multipart/form-data",
@@ -116,7 +125,11 @@ export function PostHeaderEdit({
                    justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
                   onClick={() =>
                      fetcher.submit(
-                        { intent: "deleteBanner" },
+                        {
+                           intent: "deleteBanner",
+                           postId: post.id,
+                           bannerId: post?.banner?.id,
+                        },
                         { method: "delete" },
                      )
                   }
@@ -188,6 +201,7 @@ export function PostHeaderEdit({
                         }}
                      />
                   )}
+                  <input type="hidden" name="postId" value={post.id} />
                   <input type="hidden" name="intent" value="updateBanner" />
                </fetcher.Form>
             </div>

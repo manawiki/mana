@@ -149,6 +149,7 @@ export const action = async ({
                   site: site?.id,
                   content: initialValue(),
                },
+               depth: 0,
                user,
                draft: true,
                overrideAccess: false,
@@ -167,6 +168,7 @@ export const action = async ({
                   //@ts-ignore
                   content: postId,
                },
+               depth: 0,
                user,
                overrideAccess: false,
             });

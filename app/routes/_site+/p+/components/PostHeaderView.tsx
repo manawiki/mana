@@ -1,9 +1,9 @@
-import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
 
 import { PostAuthorHeader } from "./PostAuthorHeader";
+import type { PostData } from "../utils/fetchPostWithSlug.server";
 
-export function PostHeaderView({ post }: { post: Post }) {
+export function PostHeaderView({ post }: { post: PostData }) {
    return (
       <section>
          <h1 className="font-header text-3xl !leading-[3rem] laptop:text-4xl pb-2.5">

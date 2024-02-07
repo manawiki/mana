@@ -8,7 +8,15 @@ import type { User } from "payload/generated-types";
 
 export interface RemixRequestContext {
    payload: Payload;
-   user?: User;
+   user?: {
+      id: string;
+      roles: ["staff" | "user"];
+      username: string;
+      avatar?: {
+         id: string;
+         url: string;
+      };
+   };
    token?: string;
    exp?: number;
    res: Response;
@@ -26,12 +34,12 @@ interface PayloadRequest extends Request {
 
 type GetLoadContextFunction = (
    req: PayloadRequest,
-   res: Response
+   res: Response,
 ) => Promise<AppLoadContext> | AppLoadContext;
 type RequestHandler = (
    req: Request,
    res: Response,
-   next: NextFunction
+   next: NextFunction,
 ) => Promise<void>;
 
 declare module "@remix-run/express" {
