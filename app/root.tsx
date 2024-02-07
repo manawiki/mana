@@ -105,6 +105,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => [
 
 export const links: LinksFunction = () => [
    //preload css makes it nonblocking to html renders
+   {
+      rel: "preload",
+      href: "/fonts/Nunito_Sans/NunitoSans-Regular.woff2",
+      as: "font",
+      type: "font/woff2",
+      crossOrigin: "anonymous",
+   },
    { rel: "preload", href: fonts, as: "style" },
    { rel: "preload", href: tailwindStylesheetUrl, as: "style" },
    { rel: "preload", href: customStylesheetUrl, as: "style" },
