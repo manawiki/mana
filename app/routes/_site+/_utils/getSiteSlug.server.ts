@@ -15,7 +15,7 @@ export async function getSiteSlug(
    payload: Payload,
    user: RemixRequestContext["user"],
 ) {
-   let siteSlug = process.env.PAYLOAD_PUBLIC_SITE_SLUG;
+   let siteSlug = process.env.SITE_SLUG;
 
    if (process.env.NODE_ENV == "development") return { siteSlug };
 
