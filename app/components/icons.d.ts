@@ -1,4 +1,6 @@
 export type IconName =
+  | "arrow-up-right-from-square"
+  | "minus"
   | "credit-card"
    | "wallet-2"
    | "external-link"

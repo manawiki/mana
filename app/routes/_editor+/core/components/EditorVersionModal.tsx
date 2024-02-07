@@ -131,8 +131,8 @@ export function EditorVersionModal({
                                           <Avatar
                                              className="size-6 flex-none"
                                              src={
-                                                selectedVersion?.version
-                                                   ?.versionAuthor?.avatar?.url
+                                                selectedVersion?.version?.author
+                                                   ?.avatar?.url
                                              }
                                           />
                                        </Label>

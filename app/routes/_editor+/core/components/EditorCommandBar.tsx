@@ -27,6 +27,7 @@ export const EditorCommandBar = ({
    collectionId,
    entryId,
    pageId,
+   postId,
    homeContentId,
    primaryOptions,
    secondaryOptions,
@@ -37,6 +38,7 @@ export const EditorCommandBar = ({
    collectionSlug: keyof Config["collections"];
    collectionId?: string;
    entryId?: string;
+   postId?: string;
    pageId?: string;
    homeContentId?: string;
    primaryOptions?: ReactNode;
@@ -73,6 +75,7 @@ export const EditorCommandBar = ({
    const submitData = {
       collectionSlug,
       intent: "publish",
+      ...(postId && { postId }),
       ...(pageId && { pageId }),
       ...(homeContentId && { homeContentId }),
       ...(collectionId && { collectionId }),
