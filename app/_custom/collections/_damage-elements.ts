@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
-
+import { isStaff } from "../../db/collections/users/access";
 export const _DamageElements: CollectionConfig = {
   slug: "_damage-elements",
   labels: { singular: "_damage-element", plural: "_damage-elements" },

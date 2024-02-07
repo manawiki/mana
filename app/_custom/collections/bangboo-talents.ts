@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
-
+import { isStaff } from "../../db/collections/users/access";
 export const BangbooTalents: CollectionConfig = {
   slug: "bangboo-talents",
   labels: { singular: "bangboo-talent", plural: "bangboo-talents" },

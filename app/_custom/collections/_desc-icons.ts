@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
-
+import { isStaff } from "../../db/collections/users/access";
 export const _DescIcons: CollectionConfig = {
   slug: "_desc-icons",
   labels: { singular: "_desc-icon", plural: "_desc-icons" },

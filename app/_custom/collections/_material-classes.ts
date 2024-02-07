@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
-
+import { isStaff } from "../../db/collections/users/access";
 export const _MaterialClasses: CollectionConfig = {
   slug: "_material-classes",
   labels: { singular: "_material-class", plural: "_material-classes" },

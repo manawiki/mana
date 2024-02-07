@@ -1,7 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { isStaff } from "../../access/user";
-
+import { isStaff } from "../../db/collections/users/access";
 export const _Stats: CollectionConfig = {
   slug: "_stats",
   labels: { singular: "_stat", plural: "_stats" },
