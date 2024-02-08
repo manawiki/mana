@@ -1,5 +1,4 @@
 import type { Payload } from "payload";
-import { select } from "payload-query";
 
 import type { RemixRequestContext } from "remix.env";
 import type { Collection } from "~/db/payload-types";
@@ -24,7 +23,7 @@ export async function fetchListCore({
    siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
 }) {
-   const collectionData = user
+   const { docs: collectionData } = user
       ? await payload.find({
            collection: "collections",
            where: {
@@ -58,7 +57,7 @@ export async function fetchListCore({
            `list-collection-${siteSlug}-${collectionId}`,
         );
 
-   const collectionEntry = collectionData?.docs[0];
+   const collectionEntry = collectionData[0];
 
    // Get custom collection list data
    if (collectionEntry?.customDatabase) {
@@ -86,7 +85,6 @@ export async function fetchListCore({
          }
       `;
 
-      const endpoint = gqlEndpoint({ siteSlug: collectionEntry?.site.slug });
       const { entries } = user
          ? await authGQLFetcher({
               siteSlug: siteSlug,
@@ -95,20 +93,24 @@ export async function fetchListCore({
               },
               document: document,
            })
-         : await gqlRequestWithCache(endpoint, document, {
-              page,
-           });
+         : await gqlRequestWithCache(
+              gqlEndpoint({ siteSlug: collectionEntry?.site.slug }),
+              document,
+              {
+                 page,
+              },
+           );
 
       return { entries };
    }
 
    //Otherwise pull data from core
-   const data = user
+   const { docs: coreEntries, ...pagination } = user
       ? await payload.find({
            collection: "entries",
            where: {
               site: {
-                 equals: collectionEntry?.site,
+                 equals: collectionEntry?.site.id,
               },
               "collectionEntity.slug": {
                  equals: collectionId,
@@ -124,7 +126,7 @@ export async function fetchListCore({
                  collection: "entries",
                  where: {
                     site: {
-                       equals: collectionEntry?.site,
+                       equals: collectionEntry?.site.id,
                     },
                     "collectionEntity.slug": {
                        equals: collectionId,
@@ -137,25 +139,17 @@ export async function fetchListCore({
            `list-entries-${siteSlug}-${collectionId}`,
         );
 
-   const filtered = data.docs.map((doc) => {
-      return {
-         ...select(
-            {
-               id: true,
-               name: true,
-               slug: true,
-            },
-            doc,
-         ),
-         icon: doc.icon && select({ id: false, url: true }, doc.icon),
-      };
-   });
-
-   //Extract pagination fields
-   const { docs, ...pagination } = data;
+   const filtered = coreEntries.map((entry) => ({
+      id: entry.id,
+      name: entry.name,
+      slug: entry.slug,
+      icon: {
+         url: entry.icon?.url,
+      },
+   }));
 
    //Combine filtered docs with pagination info
-   const result = { docs: filtered, ...pagination };
+   const entries = { docs: filtered, ...pagination };
 
-   return { entries: result };
+   return { entries };
 }

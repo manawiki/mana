@@ -5,7 +5,8 @@ import type { PaginatedDocs } from "payload/dist/database/types";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Entry, User } from "payload/generated-types";
+import type { Entry } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlRequestWithCache, gql, cacheThis } from "~/utils/cache.server";
 import {
@@ -23,7 +24,7 @@ export async function getEntryFields({
    payload: Payload;
    params: Params;
    request: Request;
-   user: User | undefined;
+   user: RemixRequestContext["user"];
 }) {
    const { entryId } = zx.parseParams(params, {
       entryId: z.string(),
@@ -46,7 +47,7 @@ export async function getEntryFields({
                  equals: collectionId,
               },
            },
-           draft: true,
+           depth: 1,
            user,
            overrideAccess: false,
         })
@@ -62,7 +63,7 @@ export async function getEntryFields({
                        equals: collectionId,
                     },
                  },
-                 draft: true,
+                 depth: 1,
                  user,
                  overrideAccess: false,
               }),
