@@ -2,15 +2,16 @@ import type { Access } from "payload/types";
 
 import { isSiteContributor } from "../../access/isSiteContributor";
 import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
+import { isSiteStaff } from "../../access/isSiteStaff";
 
 //@ts-ignore
-//Don't understand why this is throwing an error
 export const canReadPostContent: Access = async ({
    req: { user, payload },
    id,
 }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
       const userId = user.id;
 
       //Singleton
@@ -65,7 +66,9 @@ export const canCreatePostContent: Access = async ({
    data,
 }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+
       const userId = user.id;
 
       if (data) {
@@ -90,7 +93,8 @@ export const canUpdateOrDeletePostContent: Access = async ({
    id,
 }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
 
       const userId = user.id;
 
