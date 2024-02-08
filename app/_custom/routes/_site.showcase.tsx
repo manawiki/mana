@@ -949,6 +949,7 @@ const CharacterInfo = ({
                <Image
                   width={1200}
                   height={1200}
+                  options="height=1200&width=1200"
                   url={charbase?.image_draw?.url}
                   alt={charbase?.name}
                   className="object-cover max-desktop:hidden"
@@ -972,6 +973,7 @@ const CharacterInfo = ({
                      <Image
                         width={1200}
                         height={1200}
+                        options="height=1200&width=1200"
                         url={charbase?.image_draw?.url}
                         alt={charbase?.name}
                         className="hsr-showcase-character mx-auto -mt-8 desktop:hidden"
