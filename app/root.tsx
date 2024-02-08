@@ -166,7 +166,7 @@ function App() {
       <html
          lang={locale}
          dir={i18n.dir()}
-         className={`font-body ${theme ?? ""}`}
+         className={`font-body scroll-smooth ${theme ?? ""}`}
       >
          <head>
             {!isBot && <ClientHintCheck />}

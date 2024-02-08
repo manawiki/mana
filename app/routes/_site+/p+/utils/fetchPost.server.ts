@@ -19,7 +19,7 @@ export async function fetchPost({
    p: string;
    payload: Payload;
    user?: RemixRequestContext["user"];
-   siteSlug: string;
+   siteSlug: string | undefined;
    page: number | undefined;
 }) {
    const { postData } = await fetchPostWithSlug({

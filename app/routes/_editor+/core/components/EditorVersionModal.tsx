@@ -98,7 +98,7 @@ export function EditorVersionModal({
                      </Button>
                   </div>
                   <RadioGroup
-                     className="overflow-auto border border-color rounded-lg divide-y divide-color"
+                     className="overflow-auto border border-color-sub rounded-lg divide-y divide-color-sub"
                      value={selectedVersion}
                      onChange={setSelectedVersion}
                      by="id"
@@ -112,7 +112,7 @@ export function EditorVersionModal({
                                        <Label
                                           className={clsx(
                                              checked
-                                                ? "bg-zinc-100 font-semibold dark:bg-zinc-700/80"
+                                                ? "bg-zinc-100 font-semibold dark:bg-dark400"
                                                 : "text-1",
                                              "group truncate relative justify-between flex w-full cursor-pointer items-center gap-2 px-3 py-2",
                                           )}
@@ -130,6 +130,9 @@ export function EditorVersionModal({
                                           </time>
                                           <Avatar
                                              className="size-6 flex-none"
+                                             initials={selectedVersion?.version?.author?.username.charAt(
+                                                0,
+                                             )}
                                              src={
                                                 selectedVersion?.version?.author
                                                    ?.avatar?.url
