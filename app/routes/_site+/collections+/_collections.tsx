@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 
-import { Popover, Switch } from "@headlessui/react";
+import { Popover } from "@headlessui/react";
 import { json } from "@remix-run/node";
 import type { ActionFunction, MetaFunction } from "@remix-run/node";
 import { Link, Outlet, useFetcher } from "@remix-run/react";
@@ -8,12 +8,15 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
+import { jsonWithError } from "remix-toast";
 import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { Switch, SwitchField } from "~/components/Switch";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { isProcessing, isAdding } from "~/utils/form";
 import { assertIsPost } from "~/utils/http.server";
@@ -171,30 +174,57 @@ export default function CollectionIndex() {
                                              "absolute right-0 mt-2 max-w-sm min-w-[200px] w-full",
                                           )}
                                        >
-                                          <div className="overflow-hidden pr-2.5 pl-3 py-2 rounded-lg bg-zinc-50 dark:border-zinc-700 dark:bg-dark400 border border-zinc-200/80 shadow-1 shadow">
-                                             <ToggleAdvanced
-                                                label="Hide Collection"
-                                                name="hiddenCollection"
-                                             />
+                                          <div
+                                             className="overflow-hidden p-4 rounded-lg bg-zinc-50 dark:border-zinc-700
+                                              dark:bg-dark400 border border-zinc-200/80 shadow-1 shadow"
+                                          >
+                                             <SwitchField>
+                                                <Label className="text-1">
+                                                   Hide Collection
+                                                </Label>
+                                                <Switch
+                                                   value="true"
+                                                   color="dark/white"
+                                                   name={zoCollection.fields.hiddenCollection()}
+                                                />
+                                             </SwitchField>
                                              <div className="flex items-center pb-1.5 pt-3 gap-2">
-                                                <div className="text-xs font-bold">
+                                                <div className="text-sm font-bold">
                                                    Custom
                                                 </div>
                                                 <span className="flex-grow h-[1px] dark:bg-dark450 bg-zinc-200 rounded-full" />
                                              </div>
-                                             <div className="space-y-2">
-                                                <ToggleAdvanced
-                                                   label="List Template"
-                                                   name="customListTemplate"
-                                                />
-                                                <ToggleAdvanced
-                                                   label="Entry Template"
-                                                   name="customEntryTemplate"
-                                                />
-                                                <ToggleAdvanced
-                                                   label="Data Schema"
-                                                   name="customDatabase"
-                                                />
+                                             <div className="space-y-3">
+                                                <SwitchField>
+                                                   <Label className="text-1">
+                                                      List Template
+                                                   </Label>
+                                                   <Switch
+                                                      value="true"
+                                                      color="dark/white"
+                                                      name={zoCollection.fields.customListTemplate()}
+                                                   />
+                                                </SwitchField>
+                                                <SwitchField>
+                                                   <Label className="text-1">
+                                                      Entry Template
+                                                   </Label>
+                                                   <Switch
+                                                      value="true"
+                                                      color="dark/white"
+                                                      name={zoCollection.fields.customEntryTemplate()}
+                                                   />
+                                                </SwitchField>
+                                                <SwitchField>
+                                                   <Label className="text-1">
+                                                      Data Schema
+                                                   </Label>
+                                                   <Switch
+                                                      value="true"
+                                                      color="dark/white"
+                                                      name={zoCollection.fields.customDatabase()}
+                                                   />
+                                                </SwitchField>
                                              </div>
                                           </div>
                                        </Popover.Panel>
@@ -334,15 +364,16 @@ export const action: ActionFunction = async ({
                user,
             });
             if (existingSlug.totalDocs > 0) {
-               //TODO when toast behavior is improved, work on this
-               return;
+               return jsonWithError(
+                  null,
+                  "Collection with this slug already exists",
+               );
             }
-
             const sectionId = "main";
-            return await payload.create({
+            const collection = await payload.create({
                collection: "collections",
                data: {
-                  id: `${siteId}${slug}`,
+                  id: `${siteId}-${slug}`,
                   name,
                   slug,
                   site: siteId as any,
@@ -350,17 +381,23 @@ export const action: ActionFunction = async ({
                   customListTemplate,
                   customEntryTemplate,
                   customDatabase,
+               },
+               depth: 0,
+               user,
+               overrideAccess: false,
+            });
+            //Weird bug doesn't allow us to use a custom id, so we update with the custom id after creation
+            await payload.update({
+               collection: "collections",
+               id: collection.id,
+               data: {
                   sections: [
                      {
-                        //@ts-ignore
                         id: sectionId,
-                        //@ts-ignore
                         name: "Main",
                         subSections: [
                            {
-                              //@ts-ignore
                               id: sectionId,
-                              //@ts-ignore
                               name: "Main",
                               type: "editor",
                            },
@@ -383,46 +420,3 @@ export const action: ActionFunction = async ({
       }
    }
 };
-
-function ToggleAdvanced({
-   label,
-   name,
-   defaultVisibility = false,
-}: {
-   label: string;
-   name: string;
-   defaultVisibility?: boolean;
-}) {
-   return (
-      <Switch.Group>
-         <div className="flex items-center group">
-            <Switch.Label
-               className="flex-grow cursor-pointer dark:text-zinc-400 text-zinc-500  group-hover:underline 
-               decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2 text-xs"
-            >
-               {label}
-            </Switch.Label>
-            <Switch
-               defaultChecked={defaultVisibility}
-               as={Fragment}
-               name={name}
-               value="true"
-            >
-               {({ checked }) => (
-                  <div className="dark:border-zinc-600/60 bg-white dark:bg-dark350 relative flex-none flex h-5 w-[36px] items-center rounded-full border">
-                     <span className="sr-only">{label}</span>
-                     <div
-                        className={clsx(
-                           checked
-                              ? "translate-x-[18px] dark:bg-zinc-300 bg-zinc-400"
-                              : "translate-x-1 bg-zinc-300 dark:bg-zinc-500",
-                           "inline-flex h-3 w-3 transform items-center justify-center rounded-full transition",
-                        )}
-                     />
-                  </div>
-               )}
-            </Switch>
-         </div>
-      </Switch.Group>
-   );
-}

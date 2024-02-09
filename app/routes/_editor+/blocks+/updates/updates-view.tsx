@@ -36,7 +36,7 @@ export function BlockUpdatesView({ element }: Props) {
                   {updateResults?.map((row) => (
                      <section
                         key={row.id}
-                        className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
+                        className="flex  gap-2 odd:bg-zinc-50  dark:odd:bg-dark350 mobile:max-[450px]:min-h-24 items-center "
                      >
                         <time
                            className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"

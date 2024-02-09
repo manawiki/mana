@@ -184,7 +184,7 @@ export default function SiteSettings() {
                </section>
             </div>
             <section className="pt-6 space-y-4">
-               <SwitchField>
+               <SwitchField fullWidth>
                   <Label>Public Access</Label>
                   <Description>
                      Make your site public to allow anyone to view it
@@ -198,7 +198,7 @@ export default function SiteSettings() {
                      name={zo.fields.isPublic()}
                   />
                </SwitchField>
-               <SwitchField>
+               <SwitchField fullWidth>
                   <Label>Enable Ads</Label>
                   <Description>
                      Earn revenue by displaying ads on your site
