@@ -148,7 +148,7 @@ export function Sections() {
                   className="shadow-sm shadow-1 gap-4 border border-color dark:border-zinc-600/50 rounded-lg bg-zinc-50 dark:bg-dark400 p-4 mb-4"
                   method="post"
                >
-                  <div className="max-laptop:space-y-3 laptop:flex items-center pb-4 justify-between gap-5">
+                  <div className="max-laptop:space-y-3 laptop:flex items-center pb-5 justify-between gap-5">
                      <Field className="w-full">
                         <Label className="flex items-center justify-between gap-4">
                            <span>Section Name</span>
@@ -179,45 +179,49 @@ export function Sections() {
                         type="hidden"
                      />
                   </div>
-                  <div className="flex items-center justify-end gap-6">
-                     <SwitchField>
-                        <Label className="!text-xs text-1">Show Ad</Label>
-                        <Switch
-                           value="true"
-                           color="dark/white"
-                           name={zoSections.fields.showAd()}
-                        />
-                     </SwitchField>
-                     <SwitchField>
-                        <Label className="!text-xs text-1">Show Title</Label>
-                        <Switch
-                           defaultChecked
-                           value="true"
-                           color="dark/white"
-                           name={zoSections.fields.showTitle()}
-                        />
-                     </SwitchField>
-                     <Button
-                        className="text-sm cursor-pointer"
-                        name="intent"
-                        value="addSection"
-                        type="submit"
-                     >
-                        Add
-                        {addingSection ? (
-                           <Icon
-                              name="loader-2"
-                              size={14}
-                              className="animate-spin text-white"
+                  <div className="max-laptop:space-y-6 laptop:flex items-center justify-end gap-6">
+                     <div className="flex items-center justify-end gap-8">
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Ad</Label>
+                           <Switch
+                              value="true"
+                              color="dark/white"
+                              name={zoSections.fields.showAd()}
                            />
-                        ) : (
-                           <Icon
-                              name="plus-circle"
-                              className="text-white"
-                              size={14}
+                        </SwitchField>
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Title</Label>
+                           <Switch
+                              defaultChecked
+                              value="true"
+                              color="dark/white"
+                              name={zoSections.fields.showTitle()}
                            />
-                        )}
-                     </Button>
+                        </SwitchField>
+                     </div>
+                     <div className="max-laptop:flex items-center justify-end">
+                        <Button
+                           className="text-sm cursor-pointer mr-0 ml-auto block"
+                           name="intent"
+                           value="addSection"
+                           type="submit"
+                        >
+                           {addingSection ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                           ) : (
+                              <Icon
+                                 name="plus"
+                                 className="text-white"
+                                 size={14}
+                              />
+                           )}
+                           Add Section
+                        </Button>
+                     </div>
                   </div>
                </fetcher.Form>
                <DndContext
