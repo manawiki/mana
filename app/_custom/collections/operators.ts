@@ -38,8 +38,8 @@ export const Operators: CollectionConfig = {
          relationTo: "images",
       },
       {
-        name: "display_no",
-        type: "text",
+         name: "display_no",
+         type: "text",
       },
       {
          name: "rarity",
@@ -47,55 +47,55 @@ export const Operators: CollectionConfig = {
          relationTo: "rarities",
       },
       {
-        name: "position",
-        type: "relationship",
-        relationTo: "positions",
+         name: "position",
+         type: "relationship",
+         relationTo: "positions",
       },
       {
-        name: "profession",
-        type: "relationship",
-        relationTo: "professions",
+         name: "profession",
+         type: "relationship",
+         relationTo: "professions",
       },
       {
-        name: "sub_profession",
-        type: "relationship",
-        relationTo: "professions",
+         name: "sub_profession",
+         type: "relationship",
+         relationTo: "professions",
       },
       {
-        name: "nation",
-        type: "relationship",
-        relationTo: "factions",
+         name: "nation",
+         type: "relationship",
+         relationTo: "factions",
       },
       {
-        name: "group",
-        type: "relationship",
-        relationTo: "factions",
+         name: "group",
+         type: "relationship",
+         relationTo: "factions",
       },
       {
-        name: "team",
-        type: "relationship",
-        relationTo: "factions",
+         name: "team",
+         type: "relationship",
+         relationTo: "factions",
       },
       {
          name: "obtainable",
          type: "checkbox",
-       },
-       {
-          name: "obtain",
-          type: "text",
-       },
-       {
+      },
+      {
+         name: "obtain",
+         type: "text",
+      },
+      {
          name: "potential_item",
          type: "relationship",
          relationTo: "materials",
-       },
-       {
+      },
+      {
          name: "tags",
          type: "relationship",
          relationTo: "operatorTags",
          hasMany: true,
-       },
-       {
+      },
+      {
          name: "availability",
          type: "select",
          hasMany: true,
@@ -103,6 +103,12 @@ export const Operators: CollectionConfig = {
             { label: "CN", value: "cn" },
             { label: "NA", value: "na" },
          ],
+      },
+      {
+         name: "skins",
+         type: "relationship",
+         relationTo: "skins",
+         hasMany: true,
       },
       {
          name: "checksum",
