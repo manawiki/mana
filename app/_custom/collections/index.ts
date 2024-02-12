@@ -8,6 +8,7 @@ import { Operators } from "./operators";
 import { OperatorTags } from "./operatorTags";
 import { Positions } from "./positions";
 import { Professions } from "./professions";
+import { RangesData } from "./rangesData";
 import { Rarities } from "./rarities";
 import { SkinBrands } from "./skinBrands";
 import { SkinQuotes } from "./skinQuotes";
@@ -24,6 +25,7 @@ export const CustomCollections = [
    OperatorTags,
    Positions,
    Professions,
+   RangesData,
    Rarities,
    SkinBrands,
    SkinQuotes,

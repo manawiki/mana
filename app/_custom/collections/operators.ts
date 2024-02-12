@@ -105,6 +105,69 @@ export const Operators: CollectionConfig = {
          ],
       },
       {
+         name: "phases",
+         type: "array",
+         fields: [
+            {
+               name: "phase",
+               type: "number",
+            },
+            {
+               name: "max_lv",
+               type: "number",
+            }
+            {
+               name: "range",
+               type: "relationship",
+               relationTo: "rangesData",
+            },
+            {
+               name: "hp",
+               type: "number",
+            },
+            {
+               name: "max_hp",
+               type: "number",
+            },
+            {
+               name: "atk",
+               type: "number",
+            },
+            {
+               name: "max_atk",
+               type: "number",
+            },
+            {
+               name: "def",
+               type: "number",
+            },
+            {
+               name: "max_def",
+               type: "number",
+            },
+            {
+               name: "mag_res",
+               type: "number",
+            },
+            {
+               name: "respawn_time",
+               type: "number",
+            },
+            {
+               name: "cost",
+               type: "number",
+            },
+            {
+               name: "block_cnt",
+               type: "number",
+            },
+            {
+               name: "atk_time",
+               type: "number",
+            }
+         ],
+      }
+      {
          name: "skins",
          type: "relationship",
          relationTo: "skins",
