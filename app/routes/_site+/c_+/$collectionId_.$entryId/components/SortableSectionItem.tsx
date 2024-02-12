@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
@@ -16,20 +16,26 @@ import { z } from "zod";
 
 import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
-import { Field, FieldGroup, Label } from "~/components/Fieldset";
+import { ErrorMessage, Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { Switch, SwitchField } from "~/components/Switch";
 import type { Collection } from "~/db/payload-types";
-import { isProcessing } from "~/utils/form";
+import { isAdding, isProcessing } from "~/utils/form";
 
 import type { Section } from "./Sections";
 import { SortableSubSectionItem } from "./SortableSubSectionItem";
 
 export const SectionUpdateSchema = z.object({
    sectionName: z.string(),
-   sectionId: z.string(),
+   sectionId: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Section Id contains invalid characters",
+      ),
+   existingSectionId: z.string(),
    showTitle: z.coerce.boolean(),
    showAd: z.coerce.boolean(),
    collectionId: z.string(),
@@ -37,7 +43,12 @@ export const SectionUpdateSchema = z.object({
 
 export const SubSectionAddSchema = z.object({
    subSectionName: z.string(),
-   sectionId: z.string(),
+   sectionId: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Section Id contains invalid characters",
+      ),
    subSectionId: z.string(),
    collectionId: z.string(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
@@ -67,8 +78,6 @@ export function SortableSectionItem({
 
    const updateSection = useZorm("sectionUpdate", SectionUpdateSchema);
    const addSubSection = useZorm("addSubSection", SubSectionAddSchema);
-
-   console.log(updateSection.validation);
 
    const disabled =
       isProcessing(fetcher.state) ||
@@ -107,6 +116,16 @@ export function SortableSectionItem({
       setActiveId(null);
    }
 
+   const [isSectionUpdateFormChanged, setSectionUpdateFormChanged] =
+      useState(false);
+   const savingUpdateSection = isAdding(fetcher, "updateSection");
+
+   useEffect(() => {
+      if (!savingUpdateSection) {
+         setSectionUpdateFormChanged(false);
+      }
+   }, [savingUpdateSection]);
+
    return (
       <div
          ref={setNodeRef}
@@ -127,7 +146,11 @@ export function SortableSectionItem({
             onClose={setIsOpen}
             open={isOpen}
          >
-            <fetcher.Form method="post" ref={updateSection.ref}>
+            <fetcher.Form
+               onChange={() => setSectionUpdateFormChanged(true)}
+               method="post"
+               ref={updateSection.ref}
+            >
                <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
                   <Icon
                      name="layout-panel-top"
@@ -152,12 +175,21 @@ export function SortableSectionItem({
                         defaultValue={section.id}
                         type="text"
                      />
+                     {updateSection.errors.sectionId((err) => (
+                        <ErrorMessage>{err.message}</ErrorMessage>
+                     ))}
                   </Field>
-                  <div className="max-laptop:space-y-6 laptop:flex items-center justify-end gap-6">
+                  <input
+                     type="hidden"
+                     name={updateSection.fields.existingSectionId()}
+                     value={section.id}
+                  />
+                  <div className="max-laptop:space-y-6 laptop:flex items-center justify-between gap-6">
                      <div className="flex items-center justify-end gap-8">
                         <SwitchField>
                            <Label className="!text-xs text-1">Show Ad</Label>
                            <Switch
+                              onChange={() => setSectionUpdateFormChanged(true)}
                               defaultChecked={Boolean(section.showAd)}
                               value="true"
                               color="dark/white"
@@ -167,6 +199,7 @@ export function SortableSectionItem({
                         <SwitchField>
                            <Label className="!text-xs text-1">Show Title</Label>
                            <Switch
+                              onChange={() => setSectionUpdateFormChanged(true)}
                               defaultChecked={Boolean(section.showTitle)}
                               value="true"
                               color="dark/white"
@@ -174,19 +207,50 @@ export function SortableSectionItem({
                            />
                         </SwitchField>
                      </div>
-                     <div className="max-laptop:flex items-center justify-end">
+                     <div className="flex items-center justify-end gap-2">
                         <input
                            type="hidden"
-                           name="collectionId"
+                           name={updateSection.fields.collectionId()}
                            value={collectionId}
                         />
+                        {isSectionUpdateFormChanged && (
+                           <Button
+                              plain
+                              type="button"
+                              onClick={() => {
+                                 //@ts-ignore
+                                 updateSection.refObject.current.reset();
+                                 setSectionUpdateFormChanged(false);
+                              }}
+                           >
+                              <Icon
+                                 title="Reset"
+                                 size={14}
+                                 name="refresh-ccw"
+                                 className="text-1"
+                              />
+                           </Button>
+                        )}
                         <Button
                            name="intent"
                            value="updateSection"
                            type="submit"
-                           disabled={disabled}
+                           disabled={
+                              disabled || isSectionUpdateFormChanged === false
+                           }
                         >
-                           Save
+                           {savingUpdateSection ? (
+                              <>
+                                 <Icon
+                                    name="loader-2"
+                                    size={14}
+                                    className="animate-spin text-white"
+                                 />
+                                 Saving
+                              </>
+                           ) : (
+                              "Update Section"
+                           )}
                         </Button>
                      </div>
                   </div>
@@ -245,6 +309,9 @@ export function SortableSectionItem({
                            name={addSubSection.fields.subSectionId()}
                            type="text"
                         />
+                        {addSubSection.errors.subSectionId((err) => (
+                           <ErrorMessage>{err.message}</ErrorMessage>
+                        ))}
                      </Field>
                      <Field className="tablet:min-w-40">
                         <Label>Type</Label>
@@ -258,6 +325,16 @@ export function SortableSectionItem({
                         </Select>
                      </Field>
                   </FieldGroup>
+                  <input
+                     type="hidden"
+                     name={addSubSection.fields.collectionId()}
+                     value={collectionId}
+                  />
+                  <input
+                     type="hidden"
+                     name={addSubSection.fields.sectionId()}
+                     value={section.id}
+                  />
                   <div className="max-tablet:pb-6 flex items-center justify-end">
                      <Button
                         name="intent"
