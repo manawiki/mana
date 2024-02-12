@@ -25,6 +25,7 @@ import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
 import type { Section } from "./Sections";
+// eslint-disable-next-line import/no-cycle
 import { SortableSubSectionItem } from "./SortableSubSectionItem";
 
 export const SectionUpdateSchema = z.object({
@@ -41,7 +42,7 @@ export const SectionUpdateSchema = z.object({
    collectionId: z.string(),
 });
 
-export const SubSectionAddSchema = z.object({
+export const SubSectionSchema = z.object({
    subSectionName: z.string(),
    sectionId: z
       .string()
@@ -49,6 +50,7 @@ export const SubSectionAddSchema = z.object({
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
          "Section Id contains invalid characters",
       ),
+   existingSubSectionId: z.string().optional(),
    subSectionId: z.string(),
    collectionId: z.string(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
@@ -77,7 +79,7 @@ export function SortableSectionItem({
    const [isOpen, setIsOpen] = useState(false);
 
    const updateSection = useZorm("sectionUpdate", SectionUpdateSchema);
-   const addSubSection = useZorm("addSubSection", SubSectionAddSchema);
+   const addSubSection = useZorm("addSubSection", SubSectionSchema);
 
    const disabled =
       isProcessing(fetcher.state) ||
@@ -118,6 +120,7 @@ export function SortableSectionItem({
 
    const [isSectionUpdateFormChanged, setSectionUpdateFormChanged] =
       useState(false);
+
    const savingUpdateSection = isAdding(fetcher, "updateSection");
 
    useEffect(() => {
@@ -160,7 +163,7 @@ export function SortableSectionItem({
                   <span className="pt-0.5">Section</span>
                </div>
                <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
-                  <Field className="w-full">
+                  <Field disabled={disabled} className="w-full">
                      <Label>Section Name</Label>
                      <Input
                         name={updateSection.fields.sectionName()}
@@ -168,7 +171,7 @@ export function SortableSectionItem({
                         type="text"
                      />
                   </Field>
-                  <Field className="w-full">
+                  <Field disabled={disabled} className="w-full">
                      <Label>Section Id</Label>
                      <Input
                         name={updateSection.fields.sectionId()}
@@ -179,14 +182,9 @@ export function SortableSectionItem({
                         <ErrorMessage>{err.message}</ErrorMessage>
                      ))}
                   </Field>
-                  <input
-                     type="hidden"
-                     name={updateSection.fields.existingSectionId()}
-                     value={section.id}
-                  />
                   <div className="max-laptop:space-y-6 laptop:flex items-center justify-between gap-6">
                      <div className="flex items-center justify-end gap-8">
-                        <SwitchField>
+                        <SwitchField disabled={disabled}>
                            <Label className="!text-xs text-1">Show Ad</Label>
                            <Switch
                               onChange={() => setSectionUpdateFormChanged(true)}
@@ -196,7 +194,7 @@ export function SortableSectionItem({
                               name={updateSection.fields.showAd()}
                            />
                         </SwitchField>
-                        <SwitchField>
+                        <SwitchField disabled={disabled}>
                            <Label className="!text-xs text-1">Show Title</Label>
                            <Switch
                               onChange={() => setSectionUpdateFormChanged(true)}
@@ -207,12 +205,17 @@ export function SortableSectionItem({
                            />
                         </SwitchField>
                      </div>
+                     <input
+                        type="hidden"
+                        name={updateSection.fields.existingSectionId()}
+                        value={section.id}
+                     />
+                     <input
+                        type="hidden"
+                        name={updateSection.fields.collectionId()}
+                        value={collectionId}
+                     />
                      <div className="flex items-center justify-end gap-2">
-                        <input
-                           type="hidden"
-                           name={updateSection.fields.collectionId()}
-                           value={collectionId}
-                        />
                         {isSectionUpdateFormChanged && (
                            <Button
                               plain
@@ -281,7 +284,9 @@ export function SortableSectionItem({
                               <SortableSubSectionItem
                                  key={row.id}
                                  subSection={row}
+                                 sectionId={section.id}
                                  fetcher={fetcher}
+                                 collectionId={collectionId}
                               />
                            ))}
                         </div>
@@ -291,6 +296,8 @@ export function SortableSectionItem({
                            <SortableSubSectionItem
                               fetcher={fetcher}
                               subSection={activeSubSection}
+                              sectionId={section.id}
+                              collectionId={collectionId}
                            />
                         )}
                      </DragOverlay>

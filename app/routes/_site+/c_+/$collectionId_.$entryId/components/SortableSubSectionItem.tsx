@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { type FetcherWithComponents } from "@remix-run/react";
 import clsx from "clsx";
 import { useZorm } from "react-zorm";
-import { z } from "zod";
 
 import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
@@ -13,20 +12,19 @@ import { Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
-import { isProcessing } from "~/utils/form";
+import { isAdding, isProcessing } from "~/utils/form";
 
-export const SubSectionUpdateSchema = z.object({
-   collectionId: z.string(),
-   name: z.string(),
-   sectionId: z.string(),
-   subSectionId: z.string(),
-   type: z.enum(["editor", "customTemplate", "qna", "comments"]),
-});
+// eslint-disable-next-line import/no-cycle
+import { SubSectionSchema } from "./SortableSectionItem";
 
 export function SortableSubSectionItem({
+   collectionId,
    subSection,
+   sectionId,
    fetcher,
 }: {
+   collectionId: string | undefined;
+   sectionId: string;
    subSection: { id: string; name: string; type: string };
    fetcher: FetcherWithComponents<unknown>;
 }) {
@@ -43,11 +41,22 @@ export function SortableSubSectionItem({
 
    const [isOpen, setIsOpen] = useState(false);
 
-   const zo = useZorm("subSectionUpdate", SubSectionUpdateSchema);
+   const updateSubSection = useZorm("subSectionUpdate", SubSectionSchema);
 
    const disabled =
-      isProcessing(fetcher.state) || zo.validation?.success === false;
+      isProcessing(fetcher.state) ||
+      updateSubSection.validation?.success === false;
 
+   const [isSubSectionUpdateFormChanged, setSubSectionUpdateFormChanged] =
+      useState(false);
+
+   const savingUpdateSubSection = isAdding(fetcher, "updateSubSection");
+
+   useEffect(() => {
+      if (!savingUpdateSubSection) {
+         setSubSectionUpdateFormChanged(false);
+      }
+   }, [savingUpdateSubSection]);
    return (
       <div
          ref={setNodeRef}
@@ -68,12 +77,16 @@ export function SortableSubSectionItem({
             onClose={setIsOpen}
             open={isOpen}
          >
-            <fetcher.Form method="post" ref={zo.ref}>
+            <fetcher.Form
+               onChange={() => setSubSectionUpdateFormChanged(true)}
+               method="post"
+               ref={updateSubSection.ref}
+            >
                <FieldGroup>
                   <Field className="w-full">
                      <Label>Name</Label>
                      <Input
-                        name={zo.fields.name()}
+                        name={updateSubSection.fields.subSectionName()}
                         defaultValue={subSection.name}
                         type="text"
                      />
@@ -81,7 +94,7 @@ export function SortableSubSectionItem({
                   <Field className="w-full">
                      <Label>Id</Label>
                      <Input
-                        name={zo.fields.subSectionId()}
+                        name={updateSubSection.fields.subSectionId()}
                         defaultValue={subSection.id}
                         type="text"
                      />
@@ -90,7 +103,7 @@ export function SortableSubSectionItem({
                      <Label>Type</Label>
                      <Select
                         defaultValue={subSection.type}
-                        name={zo.fields.type()}
+                        name={updateSubSection.fields.type()}
                      >
                         <option value="editor">Editor</option>
                         <option value="customTemplate">Custom Template</option>
@@ -98,14 +111,60 @@ export function SortableSubSectionItem({
                         <option value="comments">Comments</option>
                      </Select>
                   </Field>
-                  <div className="flex items-center justify-end gap-8">
+                  <input
+                     type="hidden"
+                     name={updateSubSection.fields.collectionId()}
+                     value={collectionId}
+                  />
+                  <input
+                     type="hidden"
+                     name={updateSubSection.fields.sectionId()}
+                     value={sectionId}
+                  />
+                  <input
+                     type="hidden"
+                     name={updateSubSection.fields.existingSubSectionId()}
+                     value={subSection.id}
+                  />
+                  <div className="flex items-center justify-end gap-4">
+                     {isSubSectionUpdateFormChanged && (
+                        <Button
+                           plain
+                           type="button"
+                           onClick={() => {
+                              //@ts-ignore
+                              updateSubSection.refObject.current.reset();
+                              setSubSectionUpdateFormChanged(false);
+                           }}
+                        >
+                           <Icon
+                              title="Reset"
+                              size={14}
+                              name="refresh-ccw"
+                              className="text-1"
+                           />
+                        </Button>
+                     )}
                      <Button
                         name="intent"
-                        value="updateSection"
+                        value="updateSubSection"
                         type="submit"
-                        disabled={disabled}
+                        disabled={
+                           disabled || isSubSectionUpdateFormChanged === false
+                        }
                      >
-                        Save
+                        {savingUpdateSubSection ? (
+                           <>
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                              Saving
+                           </>
+                        ) : (
+                           "Update Subsection"
+                        )}
                      </Button>
                   </div>
                </FieldGroup>

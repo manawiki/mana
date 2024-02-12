@@ -34,7 +34,7 @@ import { listMeta } from "./utils/listMeta";
 import { SectionSchema } from "../$collectionId_.$entryId/components/Sections";
 import {
    SectionUpdateSchema,
-   SubSectionAddSchema,
+   SubSectionSchema,
 } from "../$collectionId_.$entryId/components/SortableSectionItem";
 import { List } from "../_components/List";
 
@@ -279,6 +279,7 @@ export const action: ActionFunction = async ({
          "collectionUpdateIcon",
          "collectionDeleteIcon",
          "updateSection",
+         "updateSubSection",
          "updateSectionOrder",
          "updateCollectionName",
          "updateSubSectionOrder",
@@ -359,7 +360,7 @@ export const action: ActionFunction = async ({
       }
       case "addSubSection": {
          try {
-            const results = await zx.parseForm(request, SubSectionAddSchema);
+            const results = await zx.parseForm(request, SubSectionSchema);
 
             const existingSections = await payload.findByID({
                collection: "collections",
@@ -437,12 +438,12 @@ export const action: ActionFunction = async ({
                (section) => section.id === results.existingSectionId,
             );
 
-            const hasDuplicateId =
+            const hasDuplicateSectionId =
                existingCollection?.sections?.some(
                   (section) => section.id === results.sectionId,
                ) && results.existingSectionId !== results.sectionId;
 
-            if (hasDuplicateId) {
+            if (hasDuplicateSectionId) {
                return jsonWithError(null, "Duplicate section ID found.");
             }
 
@@ -475,6 +476,80 @@ export const action: ActionFunction = async ({
             return jsonWithError(
                null,
                "Something went wrong...unable to update section",
+            );
+         }
+      }
+      case "updateSubSection": {
+         try {
+            const results = await zx.parseForm(request, SubSectionSchema);
+
+            const existingCollection = await payload.findByID({
+               collection: "collections",
+               id: results.collectionId,
+               overrideAccess: false,
+               user,
+               depth: 0,
+            });
+            const hasDuplicateSubSectionId =
+               existingCollection?.sections
+                  ?.map(
+                     (section) =>
+                        section.subSections?.some(
+                           (subSection) =>
+                              subSection.id === results.subSectionId,
+                        ),
+                  )
+                  .some((x) => x) &&
+               results.existingSubSectionId !== results.subSectionId;
+
+            if (hasDuplicateSubSectionId) {
+               return jsonWithError(null, "Duplicate Subsection ID found.");
+            }
+
+            const sectionToUpdate = existingCollection?.sections?.find(
+               (section) => section.id === results.existingSubSectionId,
+            );
+
+            const subSectionToUpdate = sectionToUpdate?.subSections?.find(
+               (subSection) => subSection.id === results.existingSubSectionId,
+            );
+
+            const updatedSubSection = {
+               ...subSectionToUpdate,
+               ...(results.subSectionId && { id: results.subSectionId }),
+               ...(results.subSectionName && { name: results.subSectionName }),
+               ...(results.type && { type: results.type }),
+            };
+
+            const updatedSubSections = existingCollection.sections?.map(
+               (section) => {
+                  return {
+                     ...section,
+                     subSections: section.subSections?.map((subSection) =>
+                        subSection.id === results.existingSubSectionId
+                           ? updatedSubSection
+                           : subSection,
+                     ),
+                  };
+               },
+            );
+
+            await payload.update({
+               collection: "collections",
+               id: results.collectionId,
+               data: {
+                  sections: updatedSubSections,
+               },
+               user,
+               overrideAccess: false,
+               depth: 0,
+            });
+
+            return jsonWithSuccess(null, "Subsection updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update Subsection",
             );
          }
       }
