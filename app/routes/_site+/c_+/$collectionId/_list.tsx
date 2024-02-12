@@ -32,6 +32,10 @@ import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 import { fetchListCore } from "./utils/fetchListCore.server";
 import { listMeta } from "./utils/listMeta";
 import { SectionSchema } from "../$collectionId_.$entryId/components/Sections";
+import {
+   SectionUpdateSchema,
+   SubSectionAddSchema,
+} from "../$collectionId_.$entryId/components/SortableSectionItem";
 import { List } from "../_components/List";
 
 const EntrySchema = z.object({
@@ -271,6 +275,7 @@ export const action: ActionFunction = async ({
       intent: z.enum([
          "addEntry",
          "addSection",
+         "addSubSection",
          "collectionUpdateIcon",
          "collectionDeleteIcon",
          "updateSection",
@@ -327,6 +332,8 @@ export const action: ActionFunction = async ({
                id: collectionData.id,
                data: {
                   sections: [
+                     //@ts-ignore
+                     ...collectionData?.sections,
                      {
                         id: sectionId,
                         name,
@@ -340,8 +347,6 @@ export const action: ActionFunction = async ({
                            },
                         ],
                      },
-                     //@ts-ignore
-                     ...collectionData?.sections,
                   ],
                },
                user,
@@ -353,41 +358,69 @@ export const action: ActionFunction = async ({
             });
          }
       }
-      case "updateSection": {
-         assertIsPatch(request);
-         const { collectionId, sectionId, showTitle, name } =
-            await zx.parseForm(request, {
-               collectionId: z.string(),
-               sectionId: z.string(),
-               name: z.string().optional(),
-               showTitle: z.string().optional(),
-            });
+      case "addSubSection": {
          try {
-            const collectionData = await payload.findByID({
+            assertIsPost(request);
+
+            const results = await zx.parseForm(request, SubSectionAddSchema);
+
+            const existingSections = await payload.findByID({
                collection: "collections",
-               id: collectionId,
+               id: results.collectionId,
                overrideAccess: false,
                user,
             });
 
-            const section = collectionData?.sections?.find(
-               (section) => section.id === sectionId,
+            const newSection = {
+               name: results.subSectionName,
+               id: results.subSectionId,
+               type: results.type,
+            };
+
+            const updatedSections =
+               existingSections.sections?.map((item) =>
+                  item.id === results.sectionId
+                     ? { ...item, subSections: [item.subSections, newSection] }
+                     : item,
+               ) ?? [];
+            console.log(updatedSections);
+         } catch (error) {
+            return json({
+               error: "Something went wrong...unable to update section order.",
+            });
+         }
+      }
+      case "updateSection": {
+         try {
+            const results = await zx.parseForm(request, SectionUpdateSchema);
+
+            const existingCollection = await payload.findByID({
+               collection: "collections",
+               id: results.collectionId,
+               overrideAccess: false,
+               user,
+            });
+
+            const section = existingCollection?.sections?.find(
+               (section) => section.id === results.sectionId,
             );
 
             const updatedSection = {
                ...section,
-               ...(name && { name }),
-               ...(showTitle && { showTitle }),
+               ...(results.sectionName && { name: results.sectionName }),
+               ...(results.showTitle && { showTitle: results.showTitle }),
+               ...(results.showAd && { showAd: results.showAd }),
+               ...(results.sectionId && { id: results.sectionId }),
             };
 
             const updatedSections =
-               collectionData.sections?.map((item) =>
-                  item.id === sectionId ? updatedSection : item,
+               existingCollection.sections?.map((item) =>
+                  item.id === results.sectionId ? updatedSection : item,
                ) ?? [];
 
-            return await payload.update({
+            await payload.update({
                collection: "collections",
-               id: collectionData.id,
+               id: results.collectionId,
                data: {
                   //@ts-ignore
                   sections: updatedSections,
@@ -395,10 +428,13 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
+
+            return jsonWithSuccess(null, "Section updated");
          } catch (error) {
-            return json({
-               error: "Something went wrong...unable to update section order.",
-            });
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update section",
+            );
          }
       }
       case "updateSectionOrder": {

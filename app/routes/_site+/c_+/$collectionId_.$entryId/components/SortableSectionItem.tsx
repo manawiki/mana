@@ -1,17 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { useSortable } from "@dnd-kit/sortable";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+import {
+   SortableContext,
+   useSortable,
+   verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { type FetcherWithComponents } from "@remix-run/react";
 import clsx from "clsx";
+import { useZorm } from "react-zorm";
+import { z } from "zod";
 
-import { Label } from "~/components/Fieldset";
+import { Button } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import { Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { Input } from "~/components/Input";
+import { Select } from "~/components/Select";
 import { Switch, SwitchField } from "~/components/Switch";
 import type { Collection } from "~/db/payload-types";
-import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
+import { isProcessing } from "~/utils/form";
 
 import type { Section } from "./Sections";
+import { SortableSubSectionItem } from "./SortableSubSectionItem";
+
+export const SectionUpdateSchema = z.object({
+   sectionName: z.string(),
+   sectionId: z.string(),
+   showTitle: z.coerce.boolean(),
+   showAd: z.coerce.boolean(),
+   collectionId: z.string(),
+});
+
+export const SubSectionAddSchema = z.object({
+   subSectionName: z.string(),
+   sectionId: z.string(),
+   subSectionId: z.string(),
+   collectionId: z.string(),
+   type: z.enum(["editor", "customTemplate", "qna", "comments"]),
+});
 
 export function SortableSectionItem({
    section,
@@ -22,11 +52,6 @@ export function SortableSectionItem({
    fetcher: FetcherWithComponents<unknown>;
    collectionId: Collection["id"] | undefined;
 }) {
-   const sectionFields = {
-      collectionId: collectionId ?? "",
-      sectionId: section?.id,
-   };
-
    const {
       attributes,
       listeners,
@@ -38,38 +63,49 @@ export function SortableSectionItem({
       setActivatorNodeRef,
    } = useSortable({ id: section.id });
 
-   const isMount = useIsMount();
+   const [isOpen, setIsOpen] = useState(false);
 
-   const [sectionName, setSectionName] = useState(section?.name);
+   const updateSection = useZorm("sectionUpdate", SectionUpdateSchema);
+   const addSubSection = useZorm("addSubSection", SubSectionAddSchema);
 
-   const debouncedSectionName = useDebouncedValue(sectionName, 500);
+   console.log(updateSection.validation);
 
-   // useEffect(() => {
-   //    if (!isMount) {
-   //       fetcher.submit(
-   //          {
-   //             ...sectionFields,
-   //             showTitle: titleVisibility ?? null,
-   //             intent: "updateSection",
-   //          },
-   //          {
-   //             method: "patch",
-   //          },
-   //       );
-   //    }
-   // }, [titleVisibility]);
-   useEffect(() => {
-      if (!isMount) {
+   const disabled =
+      isProcessing(fetcher.state) ||
+      updateSection.validation?.success === false;
+
+   //DND
+   const subSections = section?.subSections?.map((item) => item.id) ?? [];
+
+   const [activeId, setActiveId] = useState<string | null>(null);
+
+   const activeSubSection = section?.subSections?.find(
+      (x) => "id" in x && x.id === activeId,
+   );
+
+   function handleDragStart(event: DragStartEvent) {
+      if (event.active) {
+         setActiveId(event.active.id as string);
+      }
+   }
+
+   function handleDragEnd(event: DragEndEvent) {
+      const { active, over } = event;
+      if (active.id !== over?.id) {
          fetcher.submit(
             {
-               ...sectionFields,
-               name: debouncedSectionName ?? "",
-               intent: "updateSection",
+               sectionId: section?.id ?? "",
+               activeId: active?.id,
+               overId: over?.id ?? "",
+               intent: "updateSubSectionOrder",
             },
-            { method: "patch" },
+            {
+               method: "patch",
+            },
          );
       }
-   }, [debouncedSectionName]);
+      setActiveId(null);
+   }
 
    return (
       <div
@@ -85,38 +121,178 @@ export function SortableSectionItem({
          {...attributes}
          className="flex items-center gap-3 p-2 justify-between"
       >
+         <Dialog
+            className="relative"
+            size="xl"
+            onClose={setIsOpen}
+            open={isOpen}
+         >
+            <fetcher.Form method="post" ref={updateSection.ref}>
+               <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
+                  <Icon
+                     name="layout-panel-top"
+                     className="text-zinc-400 dark:text-zinc-500"
+                     size={16}
+                  />
+                  <span className="pt-0.5">Section</span>
+               </div>
+               <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
+                  <Field className="w-full">
+                     <Label>Section Name</Label>
+                     <Input
+                        name={updateSection.fields.sectionName()}
+                        defaultValue={section.name}
+                        type="text"
+                     />
+                  </Field>
+                  <Field className="w-full">
+                     <Label>Section Id</Label>
+                     <Input
+                        name={updateSection.fields.sectionId()}
+                        defaultValue={section.id}
+                        type="text"
+                     />
+                  </Field>
+                  <div className="max-laptop:space-y-6 laptop:flex items-center justify-end gap-6">
+                     <div className="flex items-center justify-end gap-8">
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Ad</Label>
+                           <Switch
+                              defaultChecked={Boolean(section.showAd)}
+                              value="true"
+                              color="dark/white"
+                              name={updateSection.fields.showAd()}
+                           />
+                        </SwitchField>
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Title</Label>
+                           <Switch
+                              defaultChecked={Boolean(section.showTitle)}
+                              value="true"
+                              color="dark/white"
+                              name={updateSection.fields.showTitle()}
+                           />
+                        </SwitchField>
+                     </div>
+                     <div className="max-laptop:flex items-center justify-end">
+                        <input
+                           type="hidden"
+                           name="collectionId"
+                           value={collectionId}
+                        />
+                        <Button
+                           name="intent"
+                           value="updateSection"
+                           type="submit"
+                           disabled={disabled}
+                        >
+                           Save
+                        </Button>
+                     </div>
+                  </div>
+               </FieldGroup>
+            </fetcher.Form>
+            <fetcher.Form method="post" ref={addSubSection.ref}>
+               <>
+                  <div className="text-xs pb-3 font-semibold flex items-center gap-2">
+                     <Icon
+                        name="columns-2"
+                        className="text-zinc-400 dark:text-zinc-500"
+                        size={16}
+                     />
+                     <span className="pt-0.5">Subsections</span>
+                  </div>
+                  <DndContext
+                     onDragStart={handleDragStart}
+                     onDragEnd={handleDragEnd}
+                     modifiers={[restrictToVerticalAxis]}
+                     collisionDetection={closestCenter}
+                  >
+                     <SortableContext
+                        items={subSections}
+                        strategy={verticalListSortingStrategy}
+                     >
+                        <div className="divide-y bg-2-sub divide-color-sub mb-4 -mx-5 border-y border-color-sub">
+                           {section.subSections?.map((row) => (
+                              <SortableSubSectionItem
+                                 key={row.id}
+                                 subSection={row}
+                                 fetcher={fetcher}
+                              />
+                           ))}
+                        </div>
+                     </SortableContext>
+                     <DragOverlay adjustScale={false}>
+                        {activeSubSection && (
+                           <SortableSubSectionItem
+                              fetcher={fetcher}
+                              subSection={activeSubSection}
+                           />
+                        )}
+                     </DragOverlay>
+                  </DndContext>
+                  <FieldGroup className="tablet:space-y-0 tablet:flex items-center gap-4 pb-5">
+                     <Field className="w-full">
+                        <Label>Name</Label>
+                        <Input
+                           name={addSubSection.fields.subSectionName()}
+                           type="text"
+                        />
+                     </Field>
+                     <Field className="w-full">
+                        <Label>Id</Label>
+                        <Input
+                           name={addSubSection.fields.subSectionId()}
+                           type="text"
+                        />
+                     </Field>
+                     <Field className="tablet:min-w-40">
+                        <Label>Type</Label>
+                        <Select name={addSubSection.fields.type()}>
+                           <option value="editor">Editor</option>
+                           <option value="customTemplate">
+                              Custom Template
+                           </option>
+                           <option value="qna">Q&A</option>
+                           <option value="comments">Comments</option>
+                        </Select>
+                     </Field>
+                  </FieldGroup>
+                  <div className="max-tablet:pb-6 flex items-center justify-end">
+                     <Button
+                        name="intent"
+                        value="addSubSection"
+                        type="submit"
+                        className="flex-none"
+                        disabled={disabled}
+                     >
+                        <Icon name="plus" size={16} />
+                        Add Subsection
+                     </Button>
+                  </div>
+               </>
+            </fetcher.Form>
+         </Dialog>
          <div className="flex items-center gap-2.5 flex-grow">
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark400 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
+                  "dark:hover:bg-dark450 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}
                {...listeners}
             >
-               <Icon name="grip-vertical" size={14} className="text-1" />
+               <Icon name="grip-vertical" size={16} className="text-1" />
             </div>
-            <input
-               required
-               value={sectionName}
-               onChange={(event) => setSectionName(event.target.value)}
-               type="text"
-               className="w-full bg-transparent font-semibold text-xs h-6 p-0 focus:border-0 focus:ring-0 border-0"
-            />
+            <span className="text-sm">{section?.name}</span>
          </div>
-         <div className="text-xs text-zinc-400 dark:text-zinc-500 border-r border-color-sub pr-3">
+         <div className="text-xs text-zinc-400 dark:text-zinc-500">
             {section.id}
          </div>
-         <SwitchField>
-            <Label className="!text-xs text-1">Title</Label>
-            <Switch
-               defaultChecked={section?.showTitle}
-               value="true"
-               color="dark/white"
-               // name={zo.fields.showTitle()}
-            />
-         </SwitchField>
+         <Button plain onClick={() => setIsOpen(true)}>
+            <Icon className="text-1" name="more-horizontal" size={16} />
+         </Button>
       </div>
    );
 }

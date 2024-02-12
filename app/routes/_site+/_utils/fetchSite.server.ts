@@ -119,6 +119,12 @@ const QUERY = gql`
                id
                name
                showTitle
+               showAd
+               subSections {
+                  id
+                  name
+                  type
+               }
             }
             customDatabase
             icon {

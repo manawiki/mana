@@ -7,12 +7,7 @@ import {
    SortableContext,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import {
-   useFetcher,
-   useMatches,
-   useLocation,
-   useParams,
-} from "@remix-run/react";
+import { useFetcher, useLocation, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
@@ -25,8 +20,8 @@ import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { Switch, SwitchField } from "~/components/Switch";
-import type { Site } from "~/db/payload-types";
 import { isAdding } from "~/utils/form";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SortableSectionItem } from "./SortableSectionItem";
 
@@ -34,6 +29,8 @@ export type Section = {
    id: string;
    name?: string;
    showTitle?: boolean;
+   showAd?: boolean;
+   subSections?: [{ id: string; name: string; type: string }];
 };
 
 export const SectionSchema = z.object({
@@ -46,10 +43,7 @@ export const SectionSchema = z.object({
 });
 
 export function Sections() {
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
+   const { site } = useSiteLoaderData();
 
    //Get path for custom site
    const { pathname } = useLocation();
@@ -272,14 +266,14 @@ export function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
    return (
       <>
          {value && (
-            <div className="flex items-center gap-1.5 max-laptop:hidden">
-               <div className="text-[10px] font-bold text-1">ID</div>
+            <div className="flex items-center justify-end gap-1.5">
+               <div className="text-1 text-xs">ID</div>
                <input
                   readOnly
                   name={zo.fields.sectionId()}
                   type="text"
-                  className="bg-transparent focus:bg-3 text-left focus:border-0 focus:ring-0 
-                  p-0 text-zinc-400 dark:text-zinc-500 text-xs"
+                  className="bg-transparent focus:bg-3 focus:border-0 focus:ring-0 
+                  p-0 text-zinc-400 dark:text-zinc-500 text-sm outline-none"
                   value={urlSlug(value)}
                />
             </div>
