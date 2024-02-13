@@ -316,7 +316,7 @@ export const action: ActionFunction = async ({
       }
       case "addSection": {
          try {
-            const { collectionId, sectionId, name, showTitle, type, showAd } =
+            const { collectionId, sectionSlug, name, showTitle, type, showAd } =
                await zx.parseForm(request, SectionSchema);
 
             const collectionData = await payload.findByID({
@@ -334,13 +334,15 @@ export const action: ActionFunction = async ({
                      //@ts-ignore
                      ...collectionData?.sections,
                      {
-                        id: sectionId,
+                        id: nanoid(),
+                        slug: sectionSlug,
                         name,
                         showTitle,
                         showAd,
                         subSections: [
                            {
-                              id: sectionId,
+                              id: nanoid(),
+                              slug: sectionSlug,
                               name,
                               type,
                            },
@@ -354,7 +356,7 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return jsonWithError(
                null,
-               "Something went wrong...unable to update section order.",
+               "Something went wrong...unable to add section",
             );
          }
       }
@@ -370,7 +372,8 @@ export const action: ActionFunction = async ({
             });
 
             const newSection = {
-               id: results.subSectionId,
+               id: nanoid(),
+               slug: results.subSectionSlug,
                name: results.subSectionName,
                type: results.type,
             };
@@ -380,9 +383,9 @@ export const action: ActionFunction = async ({
                   section.id === results.sectionId
                      ? section.subSections?.some(
                           (subSection) =>
-                             subSection.id === results.subSectionId,
+                             subSection.slug === results.subSectionSlug,
                        )
-                        ? { isDuplicateId: true }
+                        ? { isDuplicateSlug: true }
                         : {
                              ...section,
                              //@ts-ignore
@@ -391,13 +394,13 @@ export const action: ActionFunction = async ({
                      : section,
                ) ?? [];
 
-            const hasDuplicateId = updatedSections.some(
+            const hasDuplicateSlug = updatedSections.some(
                //@ts-ignore
-               (section) => section.isDuplicateId,
+               (section) => section.isDuplicateSlug,
             );
 
-            if (hasDuplicateId) {
-               return jsonWithError(null, "Duplicate sub-section ID found.");
+            if (hasDuplicateSlug) {
+               return jsonWithError(null, "Duplicate sub-section slug found.");
             }
 
             await payload.update({
@@ -435,29 +438,29 @@ export const action: ActionFunction = async ({
             });
 
             const sectionToUpdate = existingCollection?.sections?.find(
-               (section) => section.id === results.existingSectionId,
+               (section) => section.id === results.sectionId,
             );
 
-            const hasDuplicateSectionId =
+            const hasDuplicateSectionSlug =
                existingCollection?.sections?.some(
-                  (section) => section.id === results.sectionId,
-               ) && results.existingSectionId !== results.sectionId;
+                  (section) => section.slug === results.sectionSlug,
+               ) && results.existingSectionSlug !== results.sectionSlug;
 
-            if (hasDuplicateSectionId) {
-               return jsonWithError(null, "Duplicate section ID found.");
+            if (hasDuplicateSectionSlug) {
+               return jsonWithError(null, "Duplicate section Slug found.");
             }
 
             const updatedSection = {
                ...sectionToUpdate,
                ...(results.sectionName && { name: results.sectionName }),
-               ...(results.sectionId && { id: results.sectionId }),
+               ...(results.sectionSlug && { slug: results.sectionSlug }),
                showTitle: results.showTitle,
                showAd: results.showAd,
             };
 
             const updatedSections =
                existingCollection.sections?.map((item) =>
-                  item.id === results.existingSectionId ? updatedSection : item,
+                  item.id === results.sectionId ? updatedSection : item,
                ) ?? [];
 
             await payload.update({
@@ -490,33 +493,33 @@ export const action: ActionFunction = async ({
                user,
                depth: 0,
             });
-            const hasDuplicateSubSectionId =
+            const hasDuplicateSubSectionSlug =
                existingCollection?.sections
                   ?.map(
                      (section) =>
                         section.subSections?.some(
                            (subSection) =>
-                              subSection.id === results.subSectionId,
+                              subSection.slug === results.subSectionSlug,
                         ),
                   )
                   .some((x) => x) &&
-               results.existingSubSectionId !== results.subSectionId;
+               results.existingSubSectionSlug !== results.subSectionSlug;
 
-            if (hasDuplicateSubSectionId) {
-               return jsonWithError(null, "Duplicate Subsection ID found.");
+            if (hasDuplicateSubSectionSlug) {
+               return jsonWithError(null, "Duplicate subsection slug found.");
             }
 
             const sectionToUpdate = existingCollection?.sections?.find(
-               (section) => section.id === results.existingSubSectionId,
+               (section) => section.id === results.sectionId,
             );
 
             const subSectionToUpdate = sectionToUpdate?.subSections?.find(
-               (subSection) => subSection.id === results.existingSubSectionId,
+               (subSection) => subSection.id === results.subSectionId,
             );
 
             const updatedSubSection = {
                ...subSectionToUpdate,
-               ...(results.subSectionId && { id: results.subSectionId }),
+               ...(results.subSectionSlug && { slug: results.subSectionSlug }),
                ...(results.subSectionName && { name: results.subSectionName }),
                ...(results.type && { type: results.type }),
             };
@@ -526,7 +529,7 @@ export const action: ActionFunction = async ({
                   return {
                      ...section,
                      subSections: section.subSections?.map((subSection) =>
-                        subSection.id === results.existingSubSectionId
+                        subSection.id === results.subSectionId
                            ? updatedSubSection
                            : subSection,
                      ),
@@ -549,7 +552,7 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return jsonWithError(
                null,
-               "Something went wrong...unable to update Subsection",
+               "Something went wrong...unable to update subsection",
             );
          }
       }
@@ -602,14 +605,13 @@ export const action: ActionFunction = async ({
       }
       case "updateSubSectionOrder": {
          try {
-            const { overId, activeId, collectionId } = await zx.parseForm(
-               request,
-               {
+            const { overId, activeId, collectionId, sectionId } =
+               await zx.parseForm(request, {
                   collectionId: z.string(),
                   activeId: z.string(),
                   overId: z.string(),
-               },
-            );
+                  sectionId: z.string(),
+               });
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
@@ -617,25 +619,36 @@ export const action: ActionFunction = async ({
                user,
             });
 
-            const oldIndex = collectionData?.sections?.findIndex(
+            const sectionToUpdate = collectionData?.sections?.find(
+               (section) => section.id === sectionId,
+            );
+
+            const oldIndex = sectionToUpdate?.subSections?.findIndex(
                (x) => x.id == activeId,
             );
 
-            const newIndex = collectionData?.sections?.findIndex(
+            const newIndex = sectionToUpdate?.subSections?.findIndex(
                (x) => x.id == overId,
             );
 
             const sortedArray = arrayMove(
                //@ts-ignore
-               collectionData?.sections,
+               sectionToUpdate?.subSections,
                oldIndex,
                newIndex,
             );
+            const updatedSections =
+               collectionData.sections?.map((item) =>
+                  item.id === sectionId
+                     ? { ...item, subSections: sortedArray }
+                     : item,
+               ) ?? [];
+
             return await payload.update({
                collection: "collections",
                id: collectionData.id,
                data: {
-                  sections: sortedArray,
+                  sections: updatedSections,
                },
                user,
                overrideAccess: false,
@@ -643,7 +656,7 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return jsonWithError(
                null,
-               "Something went wrong...unable to update section order.",
+               "Something went wrong...unable to update subsection order.",
             );
          }
       }

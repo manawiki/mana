@@ -27,16 +27,22 @@ import { SortableSectionItem } from "./SortableSectionItem";
 
 export type Section = {
    id: string;
+   slug: string;
    name?: string;
    showTitle?: boolean;
    showAd?: boolean;
-   subSections?: [{ id: string; name: string; type: string }];
+   subSections?: [{ id: string; slug: string; name: string; type: string }];
 };
 
 export const SectionSchema = z.object({
    collectionId: z.string(),
    name: z.string(),
-   sectionId: z.string(),
+   sectionSlug: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Section Id contains invalid characters",
+      ),
    showTitle: z.coerce.boolean(),
    showAd: z.coerce.boolean(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
@@ -267,13 +273,13 @@ export function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
       <>
          {value && (
             <div className="flex items-center justify-end gap-1.5">
-               <div className="text-1 text-xs">ID</div>
+               <div className="text-1 text-xs">Slug</div>
                <input
                   readOnly
-                  name={zo.fields.sectionId()}
+                  name={zo.fields.sectionSlug()}
                   type="text"
                   className="bg-transparent focus:bg-3 focus:border-0 focus:ring-0 
-                  p-0 text-zinc-400 dark:text-zinc-500 text-sm outline-none"
+                  p-0 text-zinc-400 dark:text-zinc-500 font-normal text-xs outline-none"
                   value={urlSlug(value)}
                />
             </div>

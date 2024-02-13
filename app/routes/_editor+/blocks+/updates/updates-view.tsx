@@ -12,13 +12,6 @@ type Props = {
    element: UpdatesElement;
 };
 
-const dateFormat = (dateString: string) =>
-   new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      timeZone: "America/Los_Angeles",
-   }).format(new Date(dateString));
-
 export function BlockUpdatesView({ element }: Props) {
    //layout presume to have site data, might be brittle in the future
    //@ts-expect-error
@@ -39,10 +32,18 @@ export function BlockUpdatesView({ element }: Props) {
                         className="flex  gap-2 odd:bg-zinc-50  dark:odd:bg-dark350 mobile:max-[450px]:min-h-24 items-center "
                      >
                         <time
+                           suppressHydrationWarning
                            className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
                            dateTime={row?.createdAt}
                         >
-                           {dateFormat(row?.createdAt)}
+                           {new Date(row?.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                 month: "short",
+                                 day: "numeric",
+                                 timeZone: "America/Los_Angeles",
+                              },
+                           )}
                         </time>
                         <span className="divide-color flex-grow divide-y text-sm">
                            {row.entry?.length === 0 ? null : (

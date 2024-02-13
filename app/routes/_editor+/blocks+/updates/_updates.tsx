@@ -39,13 +39,6 @@ const updatesInlineInitialValue = [
    },
 ];
 
-const dateFormat = (dateString: string) =>
-   new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      timeZone: "America/Los_Angeles",
-   }).format(new Date(dateString));
-
 export function BlockUpdates({ element }: Props) {
    //index presume to have results data, might be brittle in the future
    const { updateResults, siteId } = useMatches()?.[2]?.data as {
@@ -149,10 +142,15 @@ export function BlockUpdates({ element }: Props) {
                      className="flex items-start gap-2 odd:bg-zinc-50  dark:odd:bg-dark350"
                   >
                      <time
+                        suppressHydrationWarning
                         className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase"
                         dateTime={row?.createdAt}
                      >
-                        {dateFormat(row?.createdAt)}
+                        {new Date(row?.createdAt).toLocaleDateString("en-US", {
+                           month: "short",
+                           day: "numeric",
+                           timeZone: "America/Los_Angeles",
+                        })}
                      </time>
                      <span className="divide-color flex-grow divide-y text-sm">
                         {row.entry?.length === 0 ? (
@@ -166,7 +164,7 @@ export function BlockUpdates({ element }: Props) {
                                  >
                                     <UpdatesEditor
                                        rowId={row.id}
-                                       entryId={item.id}
+                                       entryId={item.id!}
                                        siteId={siteId}
                                        blocks={item.content as CustomElement[]}
                                     />

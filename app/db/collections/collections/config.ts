@@ -103,6 +103,11 @@ export const Collections: CollectionConfig = {
                required: true,
             },
             {
+               name: "slug",
+               type: "text",
+               required: true,
+            },
+            {
                name: "name",
                type: "text",
             },
@@ -125,6 +130,11 @@ export const Collections: CollectionConfig = {
                fields: [
                   {
                      name: "id",
+                     type: "text",
+                     required: true,
+                  },
+                  {
+                     name: "slug",
                      type: "text",
                      required: true,
                   },
