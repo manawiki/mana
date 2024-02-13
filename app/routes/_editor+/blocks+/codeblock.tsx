@@ -6,7 +6,7 @@ import { themes } from "prism-react-renderer";
 import { CodeBlock } from "react-code-block";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { useTheme } from "~/utils/client-hints";
@@ -18,10 +18,10 @@ export function BlockCodeBlock({
    children,
    element,
    readOnly,
-}: {
+   attributes,
+}: RenderElementProps & {
    element: CodeBlockElement;
-   children: string;
-   readOnly: boolean;
+   readOnly: Boolean;
 }) {
    const editor = useSlate();
    const theme = useTheme();
@@ -63,6 +63,7 @@ export function BlockCodeBlock({
       <div
          className="bg-2 border mb-3 border-color-sub group px-3 py-4 rounded-lg shadow-sm shadow-1 text-sm relative"
          contentEditable={false}
+         {...attributes}
       >
          {readOnly || !editMode ? (
             <CodeBlock

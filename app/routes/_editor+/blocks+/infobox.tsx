@@ -1,11 +1,11 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment } from "react";
 
 import { offset, FloatingDelayGroup } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { nanoid } from "nanoid";
 import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
@@ -22,16 +22,19 @@ export function BlockInfoBox({
    children,
    element,
    readOnly,
-}: {
+   attributes,
+}: RenderElementProps & {
    element: InfoBoxElement;
-   children: ReactNode;
    readOnly: boolean;
 }) {
    const editor = useSlate();
 
    if (readOnly) {
       return (
-         <div className="shadow-1 bg-2-sub divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border shadow-sm mb-3">
+         <div
+            className="shadow-1 bg-2-sub divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border shadow-sm mb-3"
+            {...attributes}
+         >
             {children}
          </div>
       );
@@ -77,7 +80,7 @@ export function BlockInfoBox({
    }
 
    return (
-      <section className="group/infobox pb-3 relative">
+      <section className="group/infobox pb-3 relative" {...attributes}>
          <div className="shadow-1 bg-2-sub divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border shadow-sm">
             {children}
          </div>
@@ -101,7 +104,9 @@ export function BlockInfoBox({
 export function BlockInfoBoxItem({
    element,
    readOnly,
-}: {
+   attributes,
+   children,
+}: RenderElementProps & {
    element: InfoBoxItemElement;
    readOnly: boolean;
 }) {
@@ -109,7 +114,7 @@ export function BlockInfoBoxItem({
    const path = ReactEditor.findPath(editor, element);
 
    return (
-      <div className="relative group">
+      <div className="relative group" {...attributes}>
          <div
             className="flex items-center justify-between gap-4 p-3 pb-0"
             contentEditable={false}
@@ -213,6 +218,7 @@ export function BlockInfoBoxItem({
                )}
             </Menu>
          )}
+         {children}
       </div>
    );
 }

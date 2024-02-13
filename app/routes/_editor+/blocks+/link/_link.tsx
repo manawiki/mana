@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
@@ -6,6 +6,7 @@ import { request as gqlRequest, gql } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
+import type { RenderElementProps } from "slate-react";
 import { ReactEditor, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -165,11 +166,6 @@ export async function loader({
    }
 }
 
-type Props = {
-   element: LinkElement;
-   children: ReactNode;
-};
-
 type Fields = {
    name: string;
    icon: {
@@ -177,7 +173,11 @@ type Fields = {
    };
 };
 
-export function BlockLink({ element, children }: Props) {
+export function BlockLink({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: LinkElement }) {
    let { hostname, pathname } = new URL(element.url as string);
 
    // todo: we should avoid hardcoding this, maybe check hostname again current host?
@@ -240,6 +240,7 @@ export function BlockLink({ element, children }: Props) {
          <span
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 dark:text-blue-500"
+            {...attributes}
          >
             <button
                className="shadow-1 absolute right-0 top-1 z-20 flex h-4 w-4 items-center justify-center rounded-full
@@ -275,6 +276,7 @@ export function BlockLink({ element, children }: Props) {
          <Link
             className="text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
             to={pathname}
+            {...attributes}
          >
             {children}
          </Link>
@@ -286,6 +288,7 @@ export function BlockLink({ element, children }: Props) {
          rel="nofollow"
          className="inline-flex text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
          href={element.url}
+         {...attributes}
       >
          {children}
       </a>

@@ -8,7 +8,12 @@ import { nanoid } from "nanoid";
 import type { Descendant } from "slate";
 import { Editor, createEditor, Transforms } from "slate";
 import { withHistory } from "slate-history";
-import { Editable, Slate, withReact } from "slate-react";
+import {
+   Editable,
+   type RenderElementProps,
+   Slate,
+   withReact,
+} from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -25,11 +30,7 @@ import { isAdding, isProcessing } from "~/utils/form";
 import { useDebouncedValue, useIsMount } from "~/utils/use-debounce";
 
 import { Toolbar } from "../../core/components/Toolbar";
-import type { UpdatesElement, CustomElement } from "../../core/types";
-
-type Props = {
-   element: UpdatesElement;
-};
+import type { CustomElement } from "../../core/types";
 
 const updatesInlineInitialValue = [
    {
@@ -39,7 +40,7 @@ const updatesInlineInitialValue = [
    },
 ];
 
-export function BlockUpdates({ element }: Props) {
+export function BlockUpdates({ children, attributes }: RenderElementProps) {
    //index presume to have results data, might be brittle in the future
    const { updateResults, siteId } = useMatches()?.[2]?.data as {
       updateResults: Update[];
@@ -68,7 +69,7 @@ export function BlockUpdates({ element }: Props) {
    }, [fetcher.data, editor]);
 
    return (
-      <section>
+      <section {...attributes}>
          <>
             <H2 text="Updates" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
@@ -210,6 +211,7 @@ export function BlockUpdates({ element }: Props) {
                ))}
             </div>
          </>
+         {children}
       </section>
    );
 }

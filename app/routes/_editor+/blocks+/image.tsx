@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { type ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
 import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -18,11 +18,12 @@ import {
 } from "~/utils/upload-handler.server";
 
 import type { CustomElement, ImageElement } from "../core/types";
-type Props = {
-   element: ImageElement;
-};
 
-export function BlockImage({ element }: Props) {
+export function BlockImage({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: ImageElement }) {
    const editor = useSlate();
    const fetcher = useFetcher();
    const isImageAdding = isAdding(fetcher, "addBlockImage");
@@ -73,7 +74,7 @@ export function BlockImage({ element }: Props) {
    };
 
    return (
-      <div className="relative">
+      <div className="relative" {...attributes}>
          {element.url ? (
             <div className="relative mb-3 flex h-auto min-h-[50px] w-full justify-center">
                <Image
@@ -145,6 +146,7 @@ export function BlockImage({ element }: Props) {
                </div>
             </>
          )}
+         {children}
       </div>
    );
 }

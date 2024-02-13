@@ -1,27 +1,24 @@
-import { type ReactNode } from "react";
-
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
-import { useSlate } from "slate-react";
+import { type RenderElementProps, useSlate } from "slate-react";
 
-// eslint-disable-next-line import/no-cycle
 import { Icon } from "~/components/Icon";
 
+// eslint-disable-next-line import/no-cycle
 import { NestedEditor } from "../core/dnd";
 import type { ToggleBlockElement } from "../core/types";
 
-type Props = {
-   element: ToggleBlockElement;
-   children: ReactNode;
-   readOnly: boolean;
-};
-
-export function BlockToggleBlock({ element, children, readOnly }: Props) {
+export function BlockToggleBlock({
+   element,
+   children,
+   readOnly,
+   attributes,
+}: RenderElementProps & { element: ToggleBlockElement; readOnly: Boolean }) {
    //Otherwise render as regular a tag for external links
    const editor = useSlate();
 
    return (
-      <Disclosure>
+      <Disclosure {...attributes}>
          {({ open }) => (
             <>
                {readOnly ? (

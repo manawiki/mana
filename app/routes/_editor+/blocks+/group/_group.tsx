@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 
 import {
@@ -35,7 +34,7 @@ import { select } from "payload-query";
 import qs from "qs";
 import { Transforms, Node, Editor } from "slate";
 import type { BaseEditor } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 import useSWR from "swr";
 import { z } from "zod";
 import { zx } from "zodix";
@@ -55,6 +54,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
 import { useIsMount } from "~/utils/use-debounce";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -288,9 +288,9 @@ export async function loader({
 export function BlockGroup({
    element,
    children,
-}: {
+   attributes,
+}: RenderElementProps & {
    element: GroupElement;
-   children: ReactNode;
 }) {
    const editor = useSlate();
    const isGroupEmpty = element?.children[0]?.path ? false : true;
@@ -466,7 +466,11 @@ export function BlockGroup({
    const [isElementEditorOpen, setElementEditor] = useState(isGroupEmpty);
 
    return (
-      <div contentEditable={false} className="mb-3 group/group relative">
+      <div
+         contentEditable={false}
+         className="mb-3 group/group relative"
+         {...attributes}
+      >
          <section
             className={clsx(
                itemsViewMode == "list"
@@ -500,7 +504,11 @@ export function BlockGroup({
                </SortableContext>
                <DragOverlay modifiers={[restrictToParentElement]}>
                   {activeElement && (
-                     <BlockGroupItemView element={activeElement} />
+                     <BlockGroupItemView
+                        element={activeElement}
+                        children={children}
+                        attributes={attributes}
+                     />
                   )}
                </DragOverlay>
             </DndContext>
@@ -871,9 +879,8 @@ export function BlockGroup({
 export function BlockGroupItem({
    element,
    children,
-}: {
+}: RenderElementProps & {
    element: GroupItemElement;
-   children: ReactNode;
 }) {
    const editor = useSlate();
 
@@ -949,7 +956,6 @@ export function BlockGroupItem({
       <>
          {itemsViewMode == "list" && (
             <div
-               {...attributes}
                ref={setNodeRef}
                style={
                   {
@@ -960,6 +966,7 @@ export function BlockGroupItem({
                   } as React.CSSProperties /* cast because of css variable */
                }
                className="bg-2-sub relative"
+               {...attributes}
             >
                <div className="hidden">{children}</div>
                <div className="flex items-center justify-between gap-2 p-2.5">
@@ -1156,6 +1163,7 @@ export function BlockGroupItem({
                   } as React.CSSProperties /* cast because of css variable */
                }
                className="bg-2-sub focus:outline-none flex items-center justify-center border-color-sub shadow-1 group relative rounded-lg border p-3 shadow-sm"
+               {...attributes}
             >
                {element.groupContent && !editMode && (
                   <button

@@ -1,11 +1,11 @@
-import { Fragment, useState, type ReactNode } from "react";
+import { Fragment, useState } from "react";
 
 import { Tab } from "@headlessui/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import type { BaseEditor } from "slate";
 import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 
@@ -21,10 +21,10 @@ import {
 export function BlockTabs({
    element,
    children,
+   attributes,
    readOnly,
-}: {
+}: RenderElementProps & {
    element: TabsElement;
-   children: ReactNode;
    readOnly: boolean;
 }) {
    const editor = useSlate();
@@ -65,6 +65,7 @@ export function BlockTabs({
             contentEditable={false}
             as="div"
             className="border border-color-sub rounded-t-lg rounded-b-xl shadow-sm shadow-1 mb-3"
+            {...attributes}
          >
             <div className="relative group">
                <Tab.List
@@ -103,12 +104,17 @@ export function BlockTabs({
       </>
    );
 }
-export function BlockTabsItem({ element }: { element: TabsItemElement }) {
+export function BlockTabsItem({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: TabsItemElement }) {
    const editor = useSlate();
 
    return (
-      <Tab.Panel>
+      <Tab.Panel {...attributes}>
          <NestedEditor field="tabContent" element={element} editor={editor} />
+         {children}
       </Tab.Panel>
    );
 }

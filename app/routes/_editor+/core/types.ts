@@ -1,4 +1,9 @@
-import type { BaseEditor, BaseOperation, Descendant } from "slate";
+import type {
+   BaseEditor,
+   BaseOperation,
+   Descendant,
+   ExtendedType,
+} from "slate";
 import type { ReactEditor } from "slate-react";
 
 import type { Site, Collection } from "payload/generated-types";
@@ -12,6 +17,8 @@ declare module "slate" {
       Operation: BaseOperation & { isRemote?: boolean };
    }
 }
+
+export declare type Element = ExtendedType<"Element", CustomElement>;
 
 export enum BlockType {
    H2 = "h2",

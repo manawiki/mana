@@ -3,7 +3,11 @@ import { useState } from "react";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
 import { Node } from "slate";
-import { ReactEditor, useSlateStatic } from "slate-react";
+import {
+   ReactEditor,
+   type RenderElementProps,
+   useSlateStatic,
+} from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -13,7 +17,11 @@ import { Modal } from "~/components/Modal";
 import { NestedEditor } from "../../core/dnd";
 import type { GroupElement, GroupItemElement } from "../../core/types";
 
-export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
+export function BlockGroupItemView({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: GroupItemElement }) {
    const editor = useSlateStatic();
    const path = ReactEditor.findPath(editor, element);
    const parent = Node.parent(editor, path) as GroupElement;
@@ -23,7 +31,10 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
    return (
       <>
          {viewMode == "list" && (
-            <div className="bg-2-sub group relative flex items-center gap-2 p-2.5">
+            <div
+               className="bg-2-sub group relative flex items-center gap-2 p-2.5"
+               {...attributes}
+            >
                <Link
                   reloadDocument={element?.isCustomSite ?? false}
                   key={element?.id}
@@ -81,7 +92,10 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
             </div>
          )}
          {viewMode == "grid" && (
-            <div className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-2-sub shadow-sm">
+            <div
+               className="border-color-sub shadow-1 group relative flex items-center justify-center rounded-lg border bg-2-sub shadow-sm"
+               {...attributes}
+            >
                {element.groupContent && (
                   <button
                      className="flex h-7 w-7 absolute group/doc right-1.5 top-1.5 z-20 items-center justify-center"
@@ -197,6 +211,7 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                </div>
             </Modal>
          )}
+         {children}
       </>
    );
 }
@@ -204,9 +219,9 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
 export function BlockGroupView({
    element,
    children,
-}: {
+   attributes,
+}: RenderElementProps & {
    element: GroupElement;
-   children: any;
 }) {
    return (
       <section
@@ -219,6 +234,7 @@ export function BlockGroupView({
                ? "grid grid-cols-2 gap-3 mb-3 tablet:grid-cols-3 laptop:grid-cols-2 desktop:grid-cols-4"
                : "",
          )}
+         {...attributes}
       >
          {children}
       </section>

@@ -1,5 +1,6 @@
 import { useMatches } from "@remix-run/react";
 import type { Descendant } from "slate";
+import type { RenderElementProps } from "slate-react";
 
 import type { Update } from "payload/generated-types";
 import { H2 } from "~/components/Headers";
@@ -8,17 +9,17 @@ import type { UpdatesElement } from "~/routes/_editor+/core/types";
 // eslint-disable-next-line import/no-cycle
 import { EditorView } from "../../core/components/EditorView";
 
-type Props = {
-   element: UpdatesElement;
-};
-
-export function BlockUpdatesView({ element }: Props) {
+export function BlockUpdatesView({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: UpdatesElement }) {
    //layout presume to have site data, might be brittle in the future
    //@ts-expect-error
    const updateResults = useMatches()?.[2]?.data?.updateResults as Update[];
 
    return (
-      <section className="my-6">
+      <section className="my-6" {...attributes}>
          {updateResults && updateResults?.length === 0 ? null : (
             <>
                <H2 text="Updates" />
@@ -63,6 +64,7 @@ export function BlockUpdatesView({ element }: Props) {
                </div>
             </>
          )}
+         {children}
       </section>
    );
 }

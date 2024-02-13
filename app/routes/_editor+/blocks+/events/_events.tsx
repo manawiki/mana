@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { Fragment, useEffect, useState } from "react";
 
 import { FloatingDelayGroup, offset } from "@floating-ui/react";
@@ -7,7 +6,7 @@ import { Float } from "@headlessui-float/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import { Transforms, Node, Editor } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -33,10 +32,8 @@ import type {
 export function BlockEvents({
    element,
    children,
-}: {
-   element: EventsElement;
-   children: ReactNode;
-}) {
+   attributes,
+}: RenderElementProps & { element: EventsElement }) {
    const editor = useSlate();
 
    function handleAddEvent() {
@@ -57,7 +54,7 @@ export function BlockEvents({
    }
 
    return (
-      <section className="group/events pb-3 relative">
+      <section className="group/events pb-3 relative" {...attributes}>
          <div
             className="shadow-1 bg-3 divide-color-sub border-color-sub relative z-10 divide-y rounded-lg border
             shadow-sm [&>*:nth-last-child(2)]:rounded-b-md [&>*:nth-of-type(4n+1)]:bg-zinc-50
@@ -84,7 +81,11 @@ export function BlockEvents({
    );
 }
 
-export function BlockEventItem({ element }: { element: EventItemElement }) {
+export function BlockEventItem({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: EventItemElement }) {
    const today = new Date();
    const currentTime = getCurrentTime();
 
@@ -192,12 +193,12 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
          const resultArray = [...activeEvents, ...upcomingEvents];
          return resultArray.forEach((row: any) => {
             Transforms.moveNodes<CustomElement>(editor, {
-               at: [path[0]],
+               at: [path[0]!],
                match: (node: Node) =>
                   //@ts-ignore
                   Editor.isBlock(editor, node) && node.id === row?.id,
                to: [
-                  path[0],
+                  path[0]!,
                   resultArray.findIndex((item: any) => item.id == row.id),
                ],
             });
@@ -206,7 +207,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
    }, [startDate, startTime, endDate, endTime]);
 
    return (
-      <Disclosure key={element.id}>
+      <Disclosure key={element.id} {...attributes}>
          {({ open, close }) => (
             <>
                <div
@@ -435,6 +436,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                </Disclosure.Panel>
             </>
          )}
+         {children}
       </Disclosure>
    );
 }

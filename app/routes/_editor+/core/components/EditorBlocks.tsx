@@ -55,16 +55,36 @@ export function EditorBlocks({
    switch (element.type) {
       case BlockType.Link: {
          if (readOnly)
-            return <BlockLinkView element={element} children={children} />;
-         return <BlockLink element={element} children={children} />;
+            return (
+               <BlockLinkView
+                  element={element}
+                  children={children}
+                  attributes={attributes}
+               />
+            );
+         return (
+            <BlockLink
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
+         );
       }
       case BlockType.Updates: {
-         if (readOnly) return <BlockUpdatesView element={element} />;
+         if (readOnly)
+            return (
+               <BlockUpdatesView
+                  element={element}
+                  children={children}
+                  attributes={attributes}
+               />
+            );
          return (
-            <div {...attributes} contentEditable={false}>
-               <BlockUpdates element={element} />
-               <div style={{ display: "none" }}>{children}</div>
-            </div>
+            <BlockUpdates
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
          );
       }
       case BlockType.ToggleBlock: {
@@ -73,6 +93,7 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
+               attributes={attributes}
             />
          );
       }
@@ -82,12 +103,19 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
+               attributes={attributes}
             />
          );
       }
       case BlockType.TabsItem: {
          //@ts-ignore
-         return <BlockTabsItem element={element} children={children} />;
+         return (
+            <BlockTabsItem
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
+         );
       }
       case BlockType.TwoColumn: {
          return (
@@ -95,6 +123,7 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
+               attributes={attributes}
             />
          );
       }
@@ -112,7 +141,7 @@ export function EditorBlocks({
                   readOnly={readOnly}
                   element={element}
                   children={children}
-                  {...attributes}
+                  attributes={attributes}
                />
             </Suspense>
          );
@@ -123,7 +152,7 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
-               {...attributes}
+               attributes={attributes}
             />
          );
       }
@@ -133,7 +162,7 @@ export function EditorBlocks({
                readOnly={readOnly}
                element={element}
                children={children}
-               {...attributes}
+               attributes={attributes}
             />
          );
       }
@@ -142,7 +171,8 @@ export function EditorBlocks({
             <BlockInfoBoxItem
                readOnly={readOnly}
                element={element}
-               {...attributes}
+               children={children}
+               attributes={attributes}
             />
          );
       }
@@ -209,14 +239,14 @@ export function EditorBlocks({
                <BlockEventsView
                   element={element}
                   children={children}
-                  {...attributes}
+                  attributes={attributes}
                />
             );
          return (
             <BlockEvents
                element={element}
                children={children}
-               {...attributes}
+               attributes={attributes}
             />
          );
       }
@@ -226,10 +256,16 @@ export function EditorBlocks({
                <BlockEventItemView
                   element={element}
                   children={children}
-                  {...attributes}
+                  attributes={attributes}
                />
             );
-         return <BlockEventItem element={element} {...attributes} />;
+         return (
+            <BlockEventItem
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
+         );
       }
       case BlockType.Group: {
          if (readOnly)
@@ -237,29 +273,41 @@ export function EditorBlocks({
                <BlockGroupView
                   element={element}
                   children={children}
-                  {...attributes}
+                  attributes={attributes}
                />
             );
          return (
-            <BlockGroup element={element} children={children} {...attributes} />
+            <BlockGroup
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
          );
       }
       case BlockType.GroupItem: {
-         if (readOnly) return <BlockGroupItemView element={element} />;
+         if (readOnly)
+            return (
+               <BlockGroupItemView
+                  element={element}
+                  children={children}
+                  attributes={attributes}
+               />
+            );
          return (
             <BlockGroupItem
                element={element}
                children={children}
-               {...attributes}
+               attributes={attributes}
             />
          );
       }
       case BlockType.Image: {
          return (
-            <div {...attributes} contentEditable={false}>
-               <BlockImage element={element} />
-               <div className="hidden">{children}</div>
-            </div>
+            <BlockImage
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
          );
       }
       case BlockType.InlineAd: {

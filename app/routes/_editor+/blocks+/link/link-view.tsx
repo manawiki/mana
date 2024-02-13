@@ -1,17 +1,15 @@
-import type { ReactNode } from "react";
-
 import { Link } from "@remix-run/react";
+import type { RenderElementProps } from "slate-react";
 
 import { Image } from "~/components/Image";
 
 import type { LinkElement } from "../../core/types";
 
-type Props = {
-   element: LinkElement;
-   children: ReactNode;
-};
-
-export function BlockLinkView({ element, children }: Props) {
+export function BlockLinkView({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: LinkElement }) {
    const { hostname, pathname } = new URL(element.url as string);
 
    // todo: we should avoid hardcoding this, maybe check hostname again current host?
@@ -24,6 +22,7 @@ export function BlockLinkView({ element, children }: Props) {
             to={pathname}
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
           text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
+            {...attributes}
          >
             <span
                className="border-color shadow-1 flex h-6 w-6 items-center justify-center
@@ -49,6 +48,7 @@ export function BlockLinkView({ element, children }: Props) {
             prefetch="intent"
             className="text-blue-600 visited:text-purple-600 hover:underline"
             to={pathname}
+            {...attributes}
          >
             {children}
          </Link>
@@ -61,6 +61,7 @@ export function BlockLinkView({ element, children }: Props) {
          rel="nofollow"
          className="text-blue-600 visited:text-purple-600 hover:underline"
          href={element.url}
+         {...attributes}
       >
          {children}
       </a>

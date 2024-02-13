@@ -1,7 +1,6 @@
-import type { ReactNode } from "react";
-
 import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
+import type { RenderElementProps } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 import type {
@@ -11,31 +10,30 @@ import type {
 
 import { CountdownTimer } from "./CountdownTimer";
 
-type EventProps = {
-   element: EventsElement;
-   children: ReactNode;
-};
-
-type EventItemProps = {
-   element: EventItemElement;
-   children: ReactNode;
-};
-
-export function BlockEventsView({ children }: EventProps) {
+export function BlockEventsView({
+   attributes,
+   children,
+   element,
+}: RenderElementProps & { element: EventsElement }) {
    return (
       <div
          className="shadow-1 bg-3 divide-color-sub border-color-sub relative z-10 mb-3 divide-y overflow-hidden
       rounded-lg border shadow-sm [&>*:nth-last-child(2)]:rounded-b-lg [&>*:nth-of-type(4n+1)]:bg-zinc-50
    [&>*:nth-of-type(4n+1)]:dark:bg-dark350 [&>*:nth-of-type(4n+3)]:bg-white [&>*:nth-of-type(4n+3)]:dark:bg-bg3Dark"
+         {...attributes}
       >
          {children}
       </div>
    );
 }
 
-export function BlockEventItemView({ element, children }: EventItemProps) {
+export function BlockEventItemView({
+   element,
+   children,
+   attributes,
+}: RenderElementProps & { element: EventItemElement }) {
    return (
-      <Disclosure>
+      <Disclosure {...attributes}>
          {({ open }) => (
             <>
                <div className="flex justify-between gap-3 p-2.5 pl-4">

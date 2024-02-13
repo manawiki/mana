@@ -4,7 +4,7 @@ import { Switch } from "@headlessui/react";
 import clsx from "clsx";
 import TextareaAutosize from "react-textarea-autosize";
 import { Transforms } from "slate";
-import { ReactEditor, useSlate } from "slate-react";
+import { ReactEditor, type RenderElementProps, useSlate } from "slate-react";
 
 import type { CustomElement, HTMLBlockElement } from "../core/types";
 
@@ -32,9 +32,9 @@ export function BlockHTMLBlock({
    children,
    element,
    readOnly,
-}: {
+   attributes,
+}: RenderElementProps & {
    element: HTMLBlockElement;
-   children: string;
    readOnly: boolean;
 }) {
    const editor = useSlate();
@@ -56,7 +56,11 @@ export function BlockHTMLBlock({
       return setHTMLBlockValue(event);
    }
    return (
-      <div contentEditable={false} className="relative group mb-3 min-h-[40px]">
+      <div
+         contentEditable={false}
+         className="relative group mb-3 min-h-[40px]"
+         {...attributes}
+      >
          {readOnly || !editMode ? (
             <DangerouslySetHtmlContent html={HTMLBlockValue} />
          ) : (
@@ -85,6 +89,7 @@ export function BlockHTMLBlock({
                />
             </Switch>
          )}
+         {children}
       </div>
    );
 }
