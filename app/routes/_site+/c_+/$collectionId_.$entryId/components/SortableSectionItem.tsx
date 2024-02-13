@@ -30,13 +30,14 @@ import { SortableSubSectionItem } from "./SortableSubSectionItem";
 
 export const SectionUpdateSchema = z.object({
    sectionName: z.string(),
-   sectionId: z
+   sectionSlug: z
       .string()
       .regex(
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
          "Section Id contains invalid characters",
       ),
-   existingSectionId: z.string(),
+   sectionId: z.string(),
+   existingSectionSlug: z.string(),
    showTitle: z.coerce.boolean(),
    showAd: z.coerce.boolean(),
    collectionId: z.string(),
@@ -44,14 +45,15 @@ export const SectionUpdateSchema = z.object({
 
 export const SubSectionSchema = z.object({
    subSectionName: z.string(),
-   sectionId: z
+   subSectionSlug: z
       .string()
       .regex(
          new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
          "Section Id contains invalid characters",
       ),
-   existingSubSectionId: z.string().optional(),
-   subSectionId: z.string(),
+   existingSubSectionSlug: z.string().optional(),
+   subSectionId: z.string().optional(),
+   sectionId: z.string(),
    collectionId: z.string(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
 });
@@ -172,13 +174,13 @@ export function SortableSectionItem({
                      />
                   </Field>
                   <Field disabled={disabled} className="w-full">
-                     <Label>Section Id</Label>
+                     <Label>Section Slug</Label>
                      <Input
-                        name={updateSection.fields.sectionId()}
-                        defaultValue={section.id}
+                        name={updateSection.fields.sectionSlug()}
+                        defaultValue={section.slug}
                         type="text"
                      />
-                     {updateSection.errors.sectionId((err) => (
+                     {updateSection.errors.sectionSlug((err) => (
                         <ErrorMessage>{err.message}</ErrorMessage>
                      ))}
                   </Field>
@@ -207,7 +209,12 @@ export function SortableSectionItem({
                      </div>
                      <input
                         type="hidden"
-                        name={updateSection.fields.existingSectionId()}
+                        name={updateSection.fields.existingSectionSlug()}
+                        value={section.slug}
+                     />
+                     <input
+                        type="hidden"
+                        name={updateSection.fields.sectionId()}
                         value={section.id}
                      />
                      <input
@@ -311,12 +318,12 @@ export function SortableSectionItem({
                         />
                      </Field>
                      <Field className="w-full">
-                        <Label>Id</Label>
+                        <Label>Slug</Label>
                         <Input
-                           name={addSubSection.fields.subSectionId()}
+                           name={addSubSection.fields.subSectionSlug()}
                            type="text"
                         />
-                        {addSubSection.errors.subSectionId((err) => (
+                        {addSubSection.errors.subSectionSlug((err) => (
                            <ErrorMessage>{err.message}</ErrorMessage>
                         ))}
                      </Field>
@@ -372,7 +379,7 @@ export function SortableSectionItem({
             <span className="text-sm">{section?.name}</span>
          </div>
          <div className="text-xs text-zinc-400 dark:text-zinc-500">
-            {section.id}
+            {section.slug}
          </div>
          <Button plain onClick={() => setIsOpen(true)}>
             <Icon className="text-1" name="more-horizontal" size={16} />

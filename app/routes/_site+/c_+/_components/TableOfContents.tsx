@@ -42,7 +42,6 @@ export function TableOfContents({
    });
 
    const sectionsList = entry ? sectionsWithContent : sections;
-   console.log(sectionsList);
    const [seeAllOpen, setSeeAllOpen] = useState<boolean>(false);
 
    const showAll =
@@ -97,7 +96,7 @@ export function TableOfContents({
                                  />
                                  <div className="w-3 h-[1px] dark:bg-zinc-700 bg-zinc-200" />
                                  <Link
-                                    to={`#${section?.id}`}
+                                    to={`#${section?.slug}`}
                                     className="font-bold pl-2 flex items-center w-full gap-3"
                                  >
                                     <span>{section.name}</span>
@@ -117,7 +116,7 @@ export function TableOfContents({
                                  bg-zinc-200 dark:bg-dark450 rounded-r-sm dark:group-hover:bg-dark500"
                                          />
                                          <Link
-                                            to={`?section=${subSection?.id}#${section?.id}`}
+                                            to={`?section=${subSection?.slug}#${section?.slug}`}
                                             className="font-semibold text-sm rounded-lg pl-2.5 mx-3 dark:hover:bg-dark400 hover:bg-zinc-100 text-1 w-full py-1 block"
                                          >
                                             {subSection.name}

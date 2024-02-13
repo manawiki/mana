@@ -139,14 +139,14 @@ function SectionParent({
       const isEmbedEmpty =
          !entry?.embeddedContent || entry?.embeddedContent.length == 0;
 
-      const isActiveSection = activeSection === section?.id;
+      const isActiveSection = activeSection === section?.slug;
 
       const activeSectionName = sections?.find(
-         (element) => isActiveSection && element.id === activeSection,
+         (element) => isActiveSection && element.slug === activeSection,
       )?.name;
 
       const activeSectionIndex = sections?.findIndex(
-         (element) => isActiveSection && element.id === activeSection,
+         (element) => isActiveSection && element.slug === activeSection,
       );
 
       const prevToCItem =
@@ -267,7 +267,7 @@ function SectionParent({
             {isSingle || (isEmbedEmpty && !hasAccess) ? (
                <div
                   data-section
-                  id={section?.id ?? ""}
+                  id={section?.slug ?? ""}
                   className="scroll-mt-32 laptop:scroll-mt-[126px]"
                >
                   <SectionTitle section={section} />
@@ -347,7 +347,7 @@ function SubSectionTabs({
          {hasSingle ? (
             <div
                data-section
-               id={section?.id ?? ""}
+               id={section?.slug ?? ""}
                className="scroll-mt-32 laptop:scroll-mt-[126px]"
             >
                <SectionTitle section={section} />
@@ -545,7 +545,7 @@ function SectionTitle({
 }) {
    if (section?.showTitle && section.name)
       return (
-         <Link to={`#${section?.id}`}>
+         <Link to={`#${section?.slug}`}>
             <h2
                className="border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
                border-2 font-header text-xl font-bold shadow-sm dark:bg-dark350 dark:shadow-black/30"

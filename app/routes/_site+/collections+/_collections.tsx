@@ -5,6 +5,7 @@ import { json } from "@remix-run/node";
 import type { ActionFunction, MetaFunction } from "@remix-run/node";
 import { Link, Outlet, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
+import { nanoid } from "nanoid";
 import { useTranslation } from "react-i18next";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
@@ -369,7 +370,6 @@ export const action: ActionFunction = async ({
                   "Collection with this slug already exists",
                );
             }
-            const sectionId = "main";
             const collection = await payload.create({
                collection: "collections",
                data: {
@@ -393,11 +393,13 @@ export const action: ActionFunction = async ({
                data: {
                   sections: [
                      {
-                        id: sectionId,
+                        id: nanoid(),
+                        slug: "main",
                         name: "Main",
                         subSections: [
                            {
-                              id: sectionId,
+                              id: nanoid(),
+                              slug: "main",
                               name: "Main",
                               type: "editor",
                            },

@@ -25,7 +25,7 @@ export function SortableSubSectionItem({
 }: {
    collectionId: string | undefined;
    sectionId: string;
-   subSection: { id: string; name: string; type: string };
+   subSection: { id: string; slug: string; name: string; type: string };
    fetcher: FetcherWithComponents<unknown>;
 }) {
    const {
@@ -92,10 +92,10 @@ export function SortableSubSectionItem({
                      />
                   </Field>
                   <Field className="w-full">
-                     <Label>Id</Label>
+                     <Label>Slug</Label>
                      <Input
-                        name={updateSubSection.fields.subSectionId()}
-                        defaultValue={subSection.id}
+                        name={updateSubSection.fields.subSectionSlug()}
+                        defaultValue={subSection.slug}
                         type="text"
                      />
                   </Field>
@@ -123,8 +123,13 @@ export function SortableSubSectionItem({
                   />
                   <input
                      type="hidden"
-                     name={updateSubSection.fields.existingSubSectionId()}
+                     name={updateSubSection.fields.subSectionId()}
                      value={subSection.id}
+                  />
+                  <input
+                     type="hidden"
+                     name={updateSubSection.fields.existingSubSectionSlug()}
+                     value={subSection.slug}
                   />
                   <div className="flex items-center justify-end gap-4">
                      {isSubSectionUpdateFormChanged && (
@@ -193,7 +198,7 @@ export function SortableSubSectionItem({
             <span className="text-1 capitalize">{subSection.type}</span>
             <span className="size-1 rounded-full bg-zinc-300" />
             <span className="text-xs text-zinc-400 dark:text-zinc-500">
-               {subSection.id}
+               {subSection.slug}
             </span>
          </div>
          <Button plain onClick={() => setIsOpen(true)}>
