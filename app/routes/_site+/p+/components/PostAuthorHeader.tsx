@@ -1,5 +1,3 @@
-import dt from "date-and-time";
-
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -57,10 +55,11 @@ export function PostAuthorHeader({ post }: { post: PostData }) {
                                  // @ts-ignore
                                  dateTime={post?.publishedAt}
                               >
-                                 {dt.format(
-                                    new Date(post?.publishedAt),
-                                    "MMM D, YYYY",
-                                 )}
+                                 {new Date(
+                                    post?.publishedAt,
+                                 ).toLocaleDateString("en-US", {
+                                    timeZone: "America/Los_Angeles",
+                                 })}
                               </time>
                            </TooltipTrigger>
                            <TooltipContent>Published</TooltipContent>
