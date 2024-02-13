@@ -22,7 +22,7 @@ import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
-import { assertIsPatch, assertIsPost } from "~/utils/http.server";
+import { assertIsPost } from "~/utils/http.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -32,6 +32,10 @@ import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 import { fetchListCore } from "./utils/fetchListCore.server";
 import { listMeta } from "./utils/listMeta";
 import { SectionSchema } from "../$collectionId_.$entryId/components/Sections";
+import {
+   SectionUpdateSchema,
+   SubSectionSchema,
+} from "../$collectionId_.$entryId/components/SortableSectionItem";
 import { List } from "../_components/List";
 
 const EntrySchema = z.object({
@@ -271,24 +275,25 @@ export const action: ActionFunction = async ({
       intent: z.enum([
          "addEntry",
          "addSection",
+         "addSubSection",
          "collectionUpdateIcon",
          "collectionDeleteIcon",
          "updateSection",
+         "updateSubSection",
          "updateSectionOrder",
          "updateCollectionName",
+         "updateSubSectionOrder",
       ]),
    });
 
    switch (intent) {
       case "addEntry": {
-         assertIsPost(request);
-         const { name, collectionId, siteId } = await zx.parseForm(
-            request,
-            EntrySchema,
-         );
          try {
+            const { name, collectionId, siteId } = await zx.parseForm(
+               request,
+               EntrySchema,
+            );
             const entryId = nanoid(12);
-
             return await payload.create({
                collection: "entries",
                data: {
@@ -303,15 +308,14 @@ export const action: ActionFunction = async ({
                overrideAccess: false,
             });
          } catch (error) {
-            return json({
-               error: "Something went wrong...unable to add entry.",
-            });
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to add entry.",
+            );
          }
       }
       case "addSection": {
          try {
-            assertIsPost(request);
-
             const { collectionId, sectionId, name, showTitle, type, showAd } =
                await zx.parseForm(request, SectionSchema);
 
@@ -327,6 +331,8 @@ export const action: ActionFunction = async ({
                id: collectionData.id,
                data: {
                   sections: [
+                     //@ts-ignore
+                     ...collectionData?.sections,
                      {
                         id: sectionId,
                         name,
@@ -340,54 +346,63 @@ export const action: ActionFunction = async ({
                            },
                         ],
                      },
-                     //@ts-ignore
-                     ...collectionData?.sections,
                   ],
                },
                user,
                overrideAccess: false,
             });
          } catch (error) {
-            return json({
-               error: "Something went wrong...unable to update section order.",
-            });
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update section order.",
+            );
          }
       }
-      case "updateSection": {
-         assertIsPatch(request);
-         const { collectionId, sectionId, showTitle, name } =
-            await zx.parseForm(request, {
-               collectionId: z.string(),
-               sectionId: z.string(),
-               name: z.string().optional(),
-               showTitle: z.string().optional(),
-            });
+      case "addSubSection": {
          try {
-            const collectionData = await payload.findByID({
+            const results = await zx.parseForm(request, SubSectionSchema);
+
+            const existingSections = await payload.findByID({
                collection: "collections",
-               id: collectionId,
+               id: results.collectionId,
                overrideAccess: false,
                user,
             });
 
-            const section = collectionData?.sections?.find(
-               (section) => section.id === sectionId,
-            );
-
-            const updatedSection = {
-               ...section,
-               ...(name && { name }),
-               ...(showTitle && { showTitle }),
+            const newSection = {
+               id: results.subSectionId,
+               name: results.subSectionName,
+               type: results.type,
             };
 
             const updatedSections =
-               collectionData.sections?.map((item) =>
-                  item.id === sectionId ? updatedSection : item,
+               existingSections.sections?.map((section) =>
+                  section.id === results.sectionId
+                     ? section.subSections?.some(
+                          (subSection) =>
+                             subSection.id === results.subSectionId,
+                       )
+                        ? { isDuplicateId: true }
+                        : {
+                             ...section,
+                             //@ts-ignore
+                             subSections: [...section.subSections, newSection],
+                          }
+                     : section,
                ) ?? [];
 
-            return await payload.update({
+            const hasDuplicateId = updatedSections.some(
+               //@ts-ignore
+               (section) => section.isDuplicateId,
+            );
+
+            if (hasDuplicateId) {
+               return jsonWithError(null, "Duplicate sub-section ID found.");
+            }
+
+            await payload.update({
                collection: "collections",
-               id: collectionData.id,
+               id: results.collectionId,
                data: {
                   //@ts-ignore
                   sections: updatedSections,
@@ -395,23 +410,159 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
+
+            return jsonWithSuccess(
+               null,
+               `Sub-section ${results.subSectionName} added successfully.`,
+            );
          } catch (error) {
-            return json({
-               error: "Something went wrong...unable to update section order.",
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to add Sub-section order.",
+            );
+         }
+      }
+      case "updateSection": {
+         try {
+            const results = await zx.parseForm(request, SectionUpdateSchema);
+
+            const existingCollection = await payload.findByID({
+               collection: "collections",
+               id: results.collectionId,
+               overrideAccess: false,
+               user,
+               depth: 0,
             });
+
+            const sectionToUpdate = existingCollection?.sections?.find(
+               (section) => section.id === results.existingSectionId,
+            );
+
+            const hasDuplicateSectionId =
+               existingCollection?.sections?.some(
+                  (section) => section.id === results.sectionId,
+               ) && results.existingSectionId !== results.sectionId;
+
+            if (hasDuplicateSectionId) {
+               return jsonWithError(null, "Duplicate section ID found.");
+            }
+
+            const updatedSection = {
+               ...sectionToUpdate,
+               ...(results.sectionName && { name: results.sectionName }),
+               ...(results.sectionId && { id: results.sectionId }),
+               showTitle: results.showTitle,
+               showAd: results.showAd,
+            };
+
+            const updatedSections =
+               existingCollection.sections?.map((item) =>
+                  item.id === results.existingSectionId ? updatedSection : item,
+               ) ?? [];
+
+            await payload.update({
+               collection: "collections",
+               id: results.collectionId,
+               data: {
+                  sections: updatedSections,
+               },
+               user,
+               overrideAccess: false,
+               depth: 0,
+            });
+
+            return jsonWithSuccess(null, "Section updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update section",
+            );
+         }
+      }
+      case "updateSubSection": {
+         try {
+            const results = await zx.parseForm(request, SubSectionSchema);
+
+            const existingCollection = await payload.findByID({
+               collection: "collections",
+               id: results.collectionId,
+               overrideAccess: false,
+               user,
+               depth: 0,
+            });
+            const hasDuplicateSubSectionId =
+               existingCollection?.sections
+                  ?.map(
+                     (section) =>
+                        section.subSections?.some(
+                           (subSection) =>
+                              subSection.id === results.subSectionId,
+                        ),
+                  )
+                  .some((x) => x) &&
+               results.existingSubSectionId !== results.subSectionId;
+
+            if (hasDuplicateSubSectionId) {
+               return jsonWithError(null, "Duplicate Subsection ID found.");
+            }
+
+            const sectionToUpdate = existingCollection?.sections?.find(
+               (section) => section.id === results.existingSubSectionId,
+            );
+
+            const subSectionToUpdate = sectionToUpdate?.subSections?.find(
+               (subSection) => subSection.id === results.existingSubSectionId,
+            );
+
+            const updatedSubSection = {
+               ...subSectionToUpdate,
+               ...(results.subSectionId && { id: results.subSectionId }),
+               ...(results.subSectionName && { name: results.subSectionName }),
+               ...(results.type && { type: results.type }),
+            };
+
+            const updatedSubSections = existingCollection.sections?.map(
+               (section) => {
+                  return {
+                     ...section,
+                     subSections: section.subSections?.map((subSection) =>
+                        subSection.id === results.existingSubSectionId
+                           ? updatedSubSection
+                           : subSection,
+                     ),
+                  };
+               },
+            );
+
+            await payload.update({
+               collection: "collections",
+               id: results.collectionId,
+               data: {
+                  sections: updatedSubSections,
+               },
+               user,
+               overrideAccess: false,
+               depth: 0,
+            });
+
+            return jsonWithSuccess(null, "Subsection updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update Subsection",
+            );
          }
       }
       case "updateSectionOrder": {
-         assertIsPatch(request);
-         const { overId, activeId, collectionId } = await zx.parseForm(
-            request,
-            {
-               collectionId: z.string(),
-               activeId: z.string(),
-               overId: z.string(),
-            },
-         );
          try {
+            const { overId, activeId, collectionId } = await zx.parseForm(
+               request,
+               {
+                  collectionId: z.string(),
+                  activeId: z.string(),
+                  overId: z.string(),
+               },
+            );
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
@@ -443,9 +594,57 @@ export const action: ActionFunction = async ({
                overrideAccess: false,
             });
          } catch (error) {
-            return json({
-               error: "Something went wrong...unable to update section order.",
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update section order.",
+            );
+         }
+      }
+      case "updateSubSectionOrder": {
+         try {
+            const { overId, activeId, collectionId } = await zx.parseForm(
+               request,
+               {
+                  collectionId: z.string(),
+                  activeId: z.string(),
+                  overId: z.string(),
+               },
+            );
+            const collectionData = await payload.findByID({
+               collection: "collections",
+               id: collectionId,
+               overrideAccess: false,
+               user,
             });
+
+            const oldIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == activeId,
+            );
+
+            const newIndex = collectionData?.sections?.findIndex(
+               (x) => x.id == overId,
+            );
+
+            const sortedArray = arrayMove(
+               //@ts-ignore
+               collectionData?.sections,
+               oldIndex,
+               newIndex,
+            );
+            return await payload.update({
+               collection: "collections",
+               id: collectionData.id,
+               data: {
+                  sections: sortedArray,
+               },
+               user,
+               overrideAccess: false,
+            });
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update section order.",
+            );
          }
       }
       case "collectionUpdateIcon": {

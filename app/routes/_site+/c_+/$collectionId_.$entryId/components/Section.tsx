@@ -87,7 +87,7 @@ export function Section({
       <>
          <TableOfContents entry={entry} sections={entry.sections} />
          {entry.sections?.map((section) => (
-            <>
+            <div key={section.id}>
                {section.showAd && (
                   <AdPlaceholder>
                      <AdUnit
@@ -108,7 +108,7 @@ export function Section({
                   customComponents={customComponents}
                   hasAccess={hasAccess}
                />
-            </>
+            </div>
          ))}
          <ScrollToHashElement />
       </>
