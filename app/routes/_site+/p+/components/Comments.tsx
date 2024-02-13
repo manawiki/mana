@@ -4,7 +4,6 @@ import { Popover, Transition } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { Link, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
 import clsx from "clsx";
-import dt from "date-and-time";
 import { Editable, Slate } from "slate-react";
 
 import { Icon } from "~/components/Icon";
@@ -189,7 +188,13 @@ function CommentRow({
                </div>
                <span className="w-1 h-1 bg-zinc-500 rounded-full" />
                <div className="text-xs text-1">
-                  {dt.format(new Date(comment.createdAt), "MMM D, hh:mm A")}
+                  {new Date(comment.createdAt).toLocaleTimeString("en-US", {
+                     month: "short",
+                     day: "numeric",
+                     hour: "numeric",
+                     minute: "numeric",
+                     timeZone: "America/Los_Angeles",
+                  })}
                </div>
             </div>
             <div

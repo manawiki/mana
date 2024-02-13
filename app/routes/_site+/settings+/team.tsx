@@ -7,7 +7,6 @@ import type {
    ActionFunctionArgs,
 } from "@remix-run/node";
 import { Await, useLoaderData } from "@remix-run/react";
-import dt from "date-and-time";
 import { VariableType, jsonToGraphQLQuery } from "json-to-graphql-query";
 import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
@@ -163,12 +162,13 @@ export default function Members() {
                                           </div>
                                        </TableCell>
                                        <TableCell>
-                                          {dt.format(
-                                             new Date(
-                                                application.createdAt as string,
-                                             ),
-                                             "MMM D",
-                                          )}
+                                          {new Date(
+                                             application.createdAt as string,
+                                          ).toLocaleTimeString("en-US", {
+                                             month: "short",
+                                             day: "numeric",
+                                             timeZone: "America/Los_Angeles",
+                                          })}
                                        </TableCell>
                                        <TableCell>
                                           <ApplicationStatus

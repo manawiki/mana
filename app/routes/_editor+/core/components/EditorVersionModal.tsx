@@ -4,7 +4,6 @@ import { Fragment, useState } from "react";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import dt from "date-and-time";
 
 import type { Config } from "payload/generated-types";
 import { Avatar } from "~/components/Avatar";
@@ -118,15 +117,19 @@ export function EditorVersionModal({
                                           )}
                                        >
                                           <time
+                                             suppressHydrationWarning
                                              className="flex items-center gap-1.5 text-xs group-hover:underline"
                                              dateTime={row?.updatedAt}
                                           >
-                                             {dt.format(
-                                                new Date(
-                                                   row?.updatedAt as string,
-                                                ),
-                                                "MMMM D, hh:mm A",
-                                             )}
+                                             {new Date(
+                                                row?.updatedAt as string,
+                                             ).toLocaleTimeString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                                timeZone: "America/Los_Angeles",
+                                             })}
                                           </time>
                                           <Avatar
                                              className="size-6 flex-none"
