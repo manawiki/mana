@@ -18,6 +18,7 @@ import { zx } from "zodix";
 
 import type { Post } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
+import { Loading } from "~/components/Loading";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { useIsStaffSiteAdminOwnerContributor } from "~/routes/_auth+/components/AdminOrStaffOrOwnerOrContributor";
 import {
@@ -236,16 +237,6 @@ export default function Post() {
       </>
    );
 }
-
-const Loading = () => (
-   <div className="flex items-center justify-center py-10">
-      <Icon
-         name="loader-2"
-         size={20}
-         className="animate-spin dark:text-zinc-500 text-zinc-400"
-      />
-   </div>
-);
 
 export async function action({
    context: { payload, user },

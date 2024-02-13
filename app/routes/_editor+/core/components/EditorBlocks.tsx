@@ -1,12 +1,15 @@
 /* eslint-disable import/no-cycle */
+import { Suspense } from "react";
+
 import { lazily } from "react-lazily";
 import { type RenderElementProps, useReadOnly } from "slate-react";
 import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
-
 // import { BlockCodeBlock } from "../../blocks+/codeblock";
 // import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
+import { Loading } from "~/components/Loading";
+
 import {
    BlockEventItemView,
    BlockEventsView,
@@ -104,12 +107,14 @@ export function EditorBlocks({
       }
       case BlockType.CodeBlock: {
          return (
-            <BlockCodeBlock
-               readOnly={readOnly}
-               element={element}
-               children={children}
-               {...attributes}
-            />
+            <Suspense fallback={<Loading />}>
+               <BlockCodeBlock
+                  readOnly={readOnly}
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            </Suspense>
          );
       }
       case BlockType.HTMLBlock: {
