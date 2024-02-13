@@ -262,30 +262,29 @@ function SectionParent({
                   </div>
                </div>
             )}
-            <div
-               data-section
-               id={section?.id ?? ""}
-               className="scroll-mt-32 laptop:scroll-mt-[126px]"
-            >
-               {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
-               {isSingle || (isEmbedEmpty && !hasAccess) ? (
-                  <>
-                     <SectionTitle section={section} />
-                     <SubSection
-                        subSection={section?.subSections[0]}
-                        customData={customData}
-                        customComponents={customComponents}
-                     />
-                  </>
-               ) : (
-                  <SubSectionTabs
-                     section={section}
-                     entry={entry}
+
+            {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
+            {isSingle || (isEmbedEmpty && !hasAccess) ? (
+               <div
+                  data-section
+                  id={section?.id ?? ""}
+                  className="scroll-mt-32 laptop:scroll-mt-[126px]"
+               >
+                  <SectionTitle section={section} />
+                  <SubSection
+                     subSection={section?.subSections[0]}
                      customData={customData}
                      customComponents={customComponents}
                   />
-               )}
-            </div>
+               </div>
+            ) : (
+               <SubSectionTabs
+                  section={section}
+                  entry={entry}
+                  customData={customData}
+                  customComponents={customComponents}
+               />
+            )}
          </>
       );
    }
@@ -345,78 +344,88 @@ function SubSectionTabs({
 
    return (
       <>
-         {hasSingle ? <SectionTitle section={section} /> : null}
-         {hasMany ? (
-            <Tab.Group
-               selectedIndex={selectedIndex}
-               onChange={setSelectedIndex}
+         {hasSingle ? (
+            <div
+               data-section
+               id={section?.id ?? ""}
+               className="scroll-mt-32 laptop:scroll-mt-[126px]"
             >
-               <Tab.List>
-                  <div
-                     className={clsx(
-                        tabLength == 2 ? "grid grid-cols-2" : "",
-                        tabLength == 3 ? "grid grid-cols-3" : "",
-                        `border border-color-sub overflow-hidden rounded-t-lg text-sm laptop:text-[15px] divide-x divide-color-sub 
-                  bg-zinc-50 dark:bg-dark350 r z-20 relative flex items-center`,
-                     )}
+               <SectionTitle section={section} />
+               {hasMany ? (
+                  <Tab.Group
+                     selectedIndex={selectedIndex}
+                     onChange={setSelectedIndex}
                   >
-                     {tabs?.map((subSection) => {
-                        return (
-                           <Tab key={subSection.id} as={Fragment}>
-                              {({ selected }) => (
-                                 <button
-                                    className={clsx(
-                                       selected && tabLength && tabLength > 1
-                                          ? "bg-zinc-50 dark:bg-dark400"
-                                          : "bg-white dark:bg-dark350",
-                                       "p-2 flex items-center justify-center gap-2 relative focus-within:outline-none",
+                     <Tab.List>
+                        <div
+                           className={clsx(
+                              tabLength == 2 ? "grid grid-cols-2" : "",
+                              tabLength == 3 ? "grid grid-cols-3" : "",
+                              `border border-color-sub overflow-hidden rounded-t-lg text-sm laptop:text-[15px] divide-x divide-color-sub 
+                  bg-zinc-50 dark:bg-dark350 r z-20 relative flex items-center`,
+                           )}
+                        >
+                           {tabs?.map((subSection) => {
+                              return (
+                                 <Tab key={subSection.id} as={Fragment}>
+                                    {({ selected }) => (
+                                       <button
+                                          className={clsx(
+                                             selected &&
+                                                tabLength &&
+                                                tabLength > 1
+                                                ? "bg-zinc-50 dark:bg-dark400"
+                                                : "bg-white dark:bg-dark350",
+                                             "p-2 flex items-center justify-center gap-2 relative focus-within:outline-none",
+                                          )}
+                                       >
+                                          <div
+                                             className={clsx(
+                                                selected ? "bg-blue-500" : "",
+                                                "h-3 w-6 absolute -bottom-[8px] transform -translate-x-1/2 left-1/2 rounded",
+                                             )}
+                                          />
+                                          <div
+                                             className={clsx(
+                                                selected ? "" : "text-1",
+                                                "py-1 px-2 rounded-md font-bold font-header relative",
+                                             )}
+                                          >
+                                             {subSection.name}
+                                             {!selected && (
+                                                <span className="absolute -right-2 top-1 flex h-2 w-2">
+                                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-300 dark:bg-zinc-400 opacity-75"></span>
+                                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-300 dark:bg-zinc-500"></span>
+                                                </span>
+                                             )}
+                                          </div>
+                                       </button>
                                     )}
-                                 >
-                                    <div
-                                       className={clsx(
-                                          selected ? "bg-blue-500" : "",
-                                          "h-3 w-6 absolute -bottom-[8px] transform -translate-x-1/2 left-1/2 rounded",
-                                       )}
-                                    />
-                                    <div
-                                       className={clsx(
-                                          selected ? "" : "text-1",
-                                          "py-1 px-2 rounded-md font-bold font-header relative",
-                                       )}
-                                    >
-                                       {subSection.name}
-                                       {!selected && (
-                                          <span className="absolute -right-2 top-1 flex h-2 w-2">
-                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-300 dark:bg-zinc-400 opacity-75"></span>
-                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-300 dark:bg-zinc-500"></span>
-                                          </span>
-                                       )}
-                                    </div>
-                                 </button>
-                              )}
-                           </Tab>
-                        );
-                     })}
-                  </div>
-               </Tab.List>
-               <Tab.Panels className="p-3 bg-3 rounded-b-lg border border-color-sub border-t-0">
-                  {section?.subSections?.map((subSection) => (
-                     <Tab.Panel key={subSection.id} unmount={false}>
-                        <SubSection
-                           customData={customData}
-                           subSection={subSection}
-                           customComponents={customComponents}
-                        />
-                     </Tab.Panel>
-                  ))}
-               </Tab.Panels>
-            </Tab.Group>
-         ) : hasSingle ? (
-            <SubSection
-               customData={customData}
-               subSection={section?.subSections[0]}
-               customComponents={customComponents}
-            />
+                                 </Tab>
+                              );
+                           })}
+                        </div>
+                     </Tab.List>
+                     <Tab.Panels className="p-3 bg-3 rounded-b-lg border border-color-sub border-t-0">
+                        {section?.subSections?.map((subSection) => (
+                           <Tab.Panel key={subSection.id} unmount={false}>
+                              <SubSection
+                                 customData={customData}
+                                 subSection={subSection}
+                                 customComponents={customComponents}
+                              />
+                           </Tab.Panel>
+                        ))}
+                     </Tab.Panels>
+                  </Tab.Group>
+               ) : hasSingle ? (
+                  <SubSection
+                     customData={customData}
+                     subSection={section?.subSections[0]}
+                     customComponents={customComponents}
+                  />
+               ) : null}
+            </div>
          ) : null}
       </>
    );
