@@ -605,14 +605,13 @@ export const action: ActionFunction = async ({
       }
       case "updateSubSectionOrder": {
          try {
-            const { overId, activeId, collectionId } = await zx.parseForm(
-               request,
-               {
+            const { overId, activeId, collectionId, sectionId } =
+               await zx.parseForm(request, {
                   collectionId: z.string(),
                   activeId: z.string(),
                   overId: z.string(),
-               },
-            );
+                  sectionId: z.string(),
+               });
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
@@ -620,25 +619,36 @@ export const action: ActionFunction = async ({
                user,
             });
 
-            const oldIndex = collectionData?.sections?.findIndex(
+            const sectionToUpdate = collectionData?.sections?.find(
+               (section) => section.id === sectionId,
+            );
+
+            const oldIndex = sectionToUpdate?.subSections?.findIndex(
                (x) => x.id == activeId,
             );
 
-            const newIndex = collectionData?.sections?.findIndex(
+            const newIndex = sectionToUpdate?.subSections?.findIndex(
                (x) => x.id == overId,
             );
 
             const sortedArray = arrayMove(
                //@ts-ignore
-               collectionData?.sections,
+               sectionToUpdate?.subSections,
                oldIndex,
                newIndex,
             );
+            const updatedSections =
+               collectionData.sections?.map((item) =>
+                  item.id === sectionId
+                     ? { ...item, subSections: sortedArray }
+                     : item,
+               ) ?? [];
+
             return await payload.update({
                collection: "collections",
                id: collectionData.id,
                data: {
-                  sections: sortedArray,
+                  sections: updatedSections,
                },
                user,
                overrideAccess: false,
@@ -646,7 +656,7 @@ export const action: ActionFunction = async ({
          } catch (error) {
             return jsonWithError(
                null,
-               "Something went wrong...unable to update section order.",
+               "Something went wrong...unable to update subsection order.",
             );
          }
       }

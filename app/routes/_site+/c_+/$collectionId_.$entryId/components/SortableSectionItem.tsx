@@ -108,6 +108,7 @@ export function SortableSectionItem({
          fetcher.submit(
             {
                sectionId: section?.id ?? "",
+               collectionId: collectionId ?? "",
                activeId: active?.id,
                overId: over?.id ?? "",
                intent: "updateSubSectionOrder",
@@ -223,7 +224,7 @@ export function SortableSectionItem({
                         value={collectionId}
                      />
                      <div className="flex items-center justify-end gap-2">
-                        {isSectionUpdateFormChanged && (
+                        {isSectionUpdateFormChanged && !disabled && (
                            <Button
                               plain
                               type="button"
