@@ -1,12 +1,17 @@
-import type { ReactNode } from "react";
+import type { RenderElementProps } from "slate-react";
 
-import type { ListElement } from "~/routes/_editor+/core/types";
-
-type Props = {
-   element: ListElement;
-   children: ReactNode;
-};
-
-export const ExampleBlock = ({ element, children }: Props) => {
-   return <div className="">{children}</div>;
+export const ExampleBlock = ({
+   element,
+   children,
+   attributes,
+}: RenderElementProps) => {
+   return (
+      <div
+         className=""
+         // You must mix the attributes into your component's top-most element.
+         {...attributes}
+      >
+         {children}
+      </div>
+   );
 };

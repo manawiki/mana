@@ -1,26 +1,32 @@
 import { nanoid } from "nanoid";
+import type { RenderElementProps } from "slate-react";
 import { DefaultElement, useReadOnly } from "slate-react";
 
 import { Icon } from "~/components/Icon";
 
 import { ExampleBlock } from "./Example";
+
 enum BlockType {
    CustomComponent = "customComponent",
 }
 
-type CustomComponent = {
-   id: string;
-   type: BlockType.CustomComponent;
-   stringField: string | null;
-   children: [{ text: "" }];
-};
-
-export const CustomBlocks = ({ element, children, attributes }: any) => {
+export const CustomBlocks = ({
+   element,
+   children,
+   attributes,
+}: RenderElementProps) => {
    const readOnly = useReadOnly();
 
    switch (element.type) {
+      // @ts-expect-error make sure to update BlockType at app\routes\_editor+\core\types.ts
       case BlockType.CustomComponent: {
-         return <ExampleBlock element={element} children={children} />;
+         return (
+            <ExampleBlock
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
+         );
       }
       default:
          //Render default element if no custom blocks match
