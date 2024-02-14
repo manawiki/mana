@@ -115,7 +115,7 @@ export const Operators: CollectionConfig = {
             {
                name: "max_lv",
                type: "number",
-            }
+            },
             {
                name: "range",
                type: "relationship",
