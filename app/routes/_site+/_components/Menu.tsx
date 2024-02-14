@@ -107,7 +107,7 @@ export const PinnedList = ({
    onOpenChange,
 }: {
    site: Site;
-   onOpenChange?: any;
+   onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
    return (
       site?.pinned &&
@@ -127,7 +127,11 @@ export const PinnedList = ({
                   <li key={item.id}>
                      <Link prefetch="intent" to={pinnedLinkUrlGenerator(item)}>
                         <div
-                           onClick={() => onOpenChange(false)}
+                           onClick={
+                              onOpenChange
+                                 ? () => onOpenChange(false)
+                                 : undefined
+                           }
                            className="shadow-1 bg-3 border-color relative flex items-center gap-3
                           rounded-xl border p-3 text-sm font-bold shadow-sm"
                         >
@@ -166,7 +170,7 @@ export const PrimaryMenuLinks = ({
    onOpenChange,
 }: {
    site: Site;
-   onOpenChange?: any;
+   onOpenChange?: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
    return (
       <>
@@ -175,7 +179,7 @@ export const PrimaryMenuLinks = ({
                <div
                   className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
                   flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
-                  onClick={() => onOpenChange(false)}
+                  onClick={onOpenChange ? () => onOpenChange(false) : undefined}
                >
                   <Icon
                      name="pen-square"
@@ -196,7 +200,7 @@ export const PrimaryMenuLinks = ({
                <div
                   className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
                   flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
-                  onClick={() => onOpenChange(false)}
+                  onClick={onOpenChange ? () => onOpenChange(false) : undefined}
                >
                   <Icon
                      name="database"

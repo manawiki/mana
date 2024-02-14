@@ -28,6 +28,7 @@ import {
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
 import { ManaEditor } from "~/routes/_editor+/editor";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { cache } from "~/utils/cache.server";
 import {
    assertIsDelete,
    assertIsPatch,
@@ -477,6 +478,11 @@ export async function action({
             overrideAccess: false,
             user,
          });
+
+         // delete post, cache at fetchPostWithSlug.tsx
+         cache.delete(`post-${postData?.slug}`);
+         console.log(`deleted cache: post-${postData?.slug}`);
+
          // if the slug is already generated, and publishedAt is null, we need to update the publishedAt field too
          //@ts-ignore
          if (postData?.slug != postId && postData.publishedAt == null) {
