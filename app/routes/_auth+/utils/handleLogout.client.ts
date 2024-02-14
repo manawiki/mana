@@ -13,7 +13,7 @@ export async function handleLogout() {
          method: "POST",
       });
 
-      location.reload();
+      location.replace("/");
    } catch (error) {
       console.error("Logout failed:", error);
    }
