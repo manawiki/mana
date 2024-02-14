@@ -166,7 +166,31 @@ export const Operators: CollectionConfig = {
                type: "number",
             }
          ],
-      }
+      },
+      {
+         name: "potentials",
+         type: "array",
+         fields: [
+            {
+               name: "desc",
+               type: "text",
+            },
+            {
+               name: "modifiers",
+               type: "array",
+               fields: [
+                  {
+                     name: "type",
+                     type: "text" // TODO(dim): Maybe select for enumeration?
+                  },
+                  {
+                     name: "val",
+                     type: "number"
+                  }
+               ]
+            }
+         ]
+      },
       {
          name: "skins",
          type: "relationship",
