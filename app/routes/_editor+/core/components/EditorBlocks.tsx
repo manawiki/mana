@@ -112,7 +112,7 @@ export function EditorBlocks({
                   readOnly={readOnly}
                   element={element}
                   children={children}
-                  {...attributes}
+                  attributes={attributes}
                />
             </Suspense>
          );
