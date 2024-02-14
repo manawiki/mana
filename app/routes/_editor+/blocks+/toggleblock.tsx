@@ -4,9 +4,9 @@ import { Disclosure } from "@headlessui/react";
 import clsx from "clsx";
 import { useSlate } from "slate-react";
 
-// eslint-disable-next-line import/no-cycle
 import { Icon } from "~/components/Icon";
 
+// eslint-disable-next-line import/no-cycle
 import { NestedEditor } from "../core/dnd";
 import type { ToggleBlockElement } from "../core/types";
 
