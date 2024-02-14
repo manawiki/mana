@@ -1,6 +1,6 @@
 export async function handleLogout() {
    try {
-      await fetch("api/users/logout", {
+      await fetch("/api/users/logout", {
          method: "POST",
          credentials: "include",
          headers: {
