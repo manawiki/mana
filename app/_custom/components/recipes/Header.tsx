@@ -47,7 +47,7 @@ export const Header = ({ pageData }: { pageData: Recipe }) => {
                      {/* Main Image */}
                      {imgurl ? (
                         <Image
-                           options="height=240"
+                           options="height=256&width=256"
                            alt="Materials Icon"
                            url={imgurl}
                            className="absolute h-56 w-full object-contain"

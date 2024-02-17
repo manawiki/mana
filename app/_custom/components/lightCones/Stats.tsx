@@ -76,7 +76,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                {imgurl ? (
                   <Image
                      className="max-tablet:w-full laptop:w-72"
-                     options="height=500"
+                     options="height=500&width=359"
                      alt="Character Primary Image"
                      url={imgurl}
                   />

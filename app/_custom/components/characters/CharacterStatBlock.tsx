@@ -116,7 +116,7 @@ export const CharacterStatBlock = ({
                         <div className="absolute left-0 top-0 flex h-96 w-full items-center">
                            <div className="h-84">
                               <Image
-                                 options="height=800"
+                                 options="height=800&width=800"
                                  alt="Background Image - Main"
                                  url={mainurl}
                               />

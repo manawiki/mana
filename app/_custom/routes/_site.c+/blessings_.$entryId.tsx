@@ -102,7 +102,7 @@ export const Header = ({ pageData }: { pageData: Blessing }) => {
                   <div className="flex h-96 w-full items-end justify-center">
                      <div className="inline-flex h-auto w-auto">
                         <Image
-                           options="height=384"
+                           options="height=384&width=384"
                            alt="Background"
                            className="object-contain"
                            url={roguebgurl}
