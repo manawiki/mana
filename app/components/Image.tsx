@@ -55,7 +55,7 @@ export function Image({
 
    // set srcSet responsive images, do not go over maxWidth
    const srcSet =
-      maxWidth && maxWidth >= breakpoints[0]
+      maxWidth && maxWidth > breakpoints[0]
          ? breakpoints
               .map((bp) => (bp < maxWidth ? `${url}?width=${bp} ${bp}w` : null))
               .filter(Boolean)
