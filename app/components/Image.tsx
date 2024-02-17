@@ -49,25 +49,17 @@ export function Image({
       searchParams.set("height", height.toString());
 
    // For large images, we'll set breakpoints to provide responsive image sets
-   const breakpoints = [430, 640, 728, 1000];
+   const breakpoints = [430, 640, 728, 1000] as const;
 
-   const minWidth = typeof width === "string" ? parseInt(width) : width;
+   const maxWidth = typeof width === "string" ? parseInt(width) : width;
 
-   // insert minWidth into breakpoints if it's not already there and sort it
-   if (minWidth && !breakpoints.includes(minWidth)) {
-      breakpoints.push(minWidth);
-      breakpoints.sort((a, b) => a - b);
-   }
-
+   // set srcSet responsive images, do not go over maxWidth
    const srcSet =
-      minWidth && minWidth >= 320
+      maxWidth && maxWidth > breakpoints[0]
          ? breakpoints
-              .map((bp) =>
-                 bp === minWidth
-                    ? `${url}?${searchParams.toString()} ${bp}w`
-                    : `${url}?width=${bp} ${bp}w`,
-              )
-              .join(", ")
+              .map((bp) => (bp < maxWidth ? `${url}?width=${bp} ${bp}w` : null))
+              .filter(Boolean)
+              .join(", ") + `, ${url}?${searchParams.toString()} ${maxWidth}w`
          : undefined;
 
    return (
@@ -79,7 +71,7 @@ export function Image({
          alt={alt}
          sizes={
             srcSet
-               ? `(max-width: 728px) 100vw, (max-width: 1200px) 728px, ${minWidth}px`
+               ? `(max-width: 728px) 100vw, (max-width: 1200px) 728px, ${maxWidth}px`
                : undefined
          }
          srcSet={srcSet}
