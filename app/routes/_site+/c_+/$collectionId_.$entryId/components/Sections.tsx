@@ -7,12 +7,7 @@ import {
    SortableContext,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import {
-   useFetcher,
-   useMatches,
-   useLocation,
-   useParams,
-} from "@remix-run/react";
+import { useFetcher, useLocation, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import type { Zorm } from "react-zorm";
 import { useValue, useZorm } from "react-zorm";
@@ -25,31 +20,36 @@ import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { Switch, SwitchField } from "~/components/Switch";
-import type { Site } from "~/db/payload-types";
 import { isAdding } from "~/utils/form";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { SortableSectionItem } from "./SortableSectionItem";
 
 export type Section = {
    id: string;
+   slug: string;
    name?: string;
    showTitle?: boolean;
+   showAd?: boolean;
+   subSections?: [{ id: string; slug: string; name: string; type: string }];
 };
 
 export const SectionSchema = z.object({
    collectionId: z.string(),
    name: z.string(),
-   sectionId: z.string(),
+   sectionSlug: z
+      .string()
+      .regex(
+         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
+         "Section Id contains invalid characters",
+      ),
    showTitle: z.coerce.boolean(),
    showAd: z.coerce.boolean(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
 });
 
 export function Sections() {
-   //site data should live in layout, this may be potentially brittle if we shift site architecture around
-   const { site } = (useMatches()?.[1]?.data as { site: Site | null }) ?? {
-      site: null,
-   };
+   const { site } = useSiteLoaderData();
 
    //Get path for custom site
    const { pathname } = useLocation();
@@ -148,7 +148,7 @@ export function Sections() {
                   className="shadow-sm shadow-1 gap-4 border border-color dark:border-zinc-600/50 rounded-lg bg-zinc-50 dark:bg-dark400 p-4 mb-4"
                   method="post"
                >
-                  <div className="max-laptop:space-y-3 laptop:flex items-center pb-4 justify-between gap-5">
+                  <div className="max-laptop:space-y-3 laptop:flex items-center pb-5 justify-between gap-5">
                      <Field className="w-full">
                         <Label className="flex items-center justify-between gap-4">
                            <span>Section Name</span>
@@ -179,45 +179,49 @@ export function Sections() {
                         type="hidden"
                      />
                   </div>
-                  <div className="flex items-center justify-end gap-6">
-                     <SwitchField>
-                        <Label className="!text-xs text-1">Show Ad</Label>
-                        <Switch
-                           value="true"
-                           color="dark/white"
-                           name={zoSections.fields.showAd()}
-                        />
-                     </SwitchField>
-                     <SwitchField>
-                        <Label className="!text-xs text-1">Show Title</Label>
-                        <Switch
-                           defaultChecked
-                           value="true"
-                           color="dark/white"
-                           name={zoSections.fields.showTitle()}
-                        />
-                     </SwitchField>
-                     <Button
-                        className="text-sm cursor-pointer"
-                        name="intent"
-                        value="addSection"
-                        type="submit"
-                     >
-                        Add
-                        {addingSection ? (
-                           <Icon
-                              name="loader-2"
-                              size={14}
-                              className="animate-spin text-white"
+                  <div className="max-laptop:space-y-6 laptop:flex items-center justify-end gap-6">
+                     <div className="flex items-center justify-end gap-8">
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Ad</Label>
+                           <Switch
+                              value="true"
+                              color="dark/white"
+                              name={zoSections.fields.showAd()}
                            />
-                        ) : (
-                           <Icon
-                              name="plus-circle"
-                              className="text-white"
-                              size={14}
+                        </SwitchField>
+                        <SwitchField>
+                           <Label className="!text-xs text-1">Show Title</Label>
+                           <Switch
+                              defaultChecked
+                              value="true"
+                              color="dark/white"
+                              name={zoSections.fields.showTitle()}
                            />
-                        )}
-                     </Button>
+                        </SwitchField>
+                     </div>
+                     <div className="max-laptop:flex items-center justify-end">
+                        <Button
+                           className="text-sm cursor-pointer mr-0 ml-auto block"
+                           name="intent"
+                           value="addSection"
+                           type="submit"
+                        >
+                           {addingSection ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                           ) : (
+                              <Icon
+                                 name="plus"
+                                 className="text-white"
+                                 size={14}
+                              />
+                           )}
+                           Add Section
+                        </Button>
+                     </div>
                   </div>
                </fetcher.Form>
                <DndContext
@@ -268,14 +272,14 @@ export function SectionIdField({ zo }: { zo: Zorm<typeof SectionSchema> }) {
    return (
       <>
          {value && (
-            <div className="flex items-center gap-1.5 max-laptop:hidden">
-               <div className="text-[10px] font-bold text-1">ID</div>
+            <div className="flex items-center justify-end gap-1.5">
+               <div className="text-1 text-xs">Slug</div>
                <input
                   readOnly
-                  name={zo.fields.sectionId()}
+                  name={zo.fields.sectionSlug()}
                   type="text"
-                  className="bg-transparent focus:bg-3 text-left focus:border-0 focus:ring-0 
-                  p-0 text-zinc-400 dark:text-zinc-500 text-xs"
+                  className="bg-transparent focus:bg-3 focus:border-0 focus:ring-0 
+                  p-0 text-zinc-400 dark:text-zinc-500 font-normal text-xs outline-none"
                   value={urlSlug(value)}
                />
             </div>

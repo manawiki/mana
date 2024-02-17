@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import dt from "date-and-time";
 import { useTimer } from "react-timer-hook";
 import { useReadOnly } from "slate-react";
 
@@ -98,10 +97,20 @@ export function CountdownTimer({ element }: { element: EventItemElement }) {
                      </div>
                      <div className="flex items-center justify-end">
                         <time
+                           suppressHydrationWarning
                            className="text-1 flex items-center gap-2 text-xs font-semibold"
                            dateTime={`${displayEndDate}`}
                         >
-                           {dt.format(displayEndDate, "MMM D, hh:mm A")}
+                           {new Date(displayEndDate).toLocaleTimeString(
+                              "en-US",
+                              {
+                                 month: "short",
+                                 day: "numeric",
+                                 hour: "numeric",
+                                 minute: "numeric",
+                                 timeZone: "America/Los_Angeles",
+                              },
+                           )}
                         </time>
                      </div>
                   </section>

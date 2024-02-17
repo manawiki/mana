@@ -11,7 +11,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
-import { Icon } from "~/components/Icon";
+import { Loading } from "~/components/Loading";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
@@ -112,16 +112,6 @@ export default function SiteIndexMain() {
       )
    );
 }
-
-const Loading = () => (
-   <div className="flex items-center justify-center py-10">
-      <Icon
-         name="loader-2"
-         size={20}
-         className="animate-spin dark:text-zinc-500 text-zinc-400"
-      />
-   </div>
-);
 
 export async function action({
    context: { payload, user },

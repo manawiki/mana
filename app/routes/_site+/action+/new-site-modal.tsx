@@ -200,7 +200,6 @@ export const action: ActionFunction = async ({
             //@ts-expect-error
             owner: userId,
             id: siteId,
-            //@ts-expect-error
             slug: siteId,
             type: "core",
          },

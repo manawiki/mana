@@ -17,21 +17,16 @@ import {
    CustomDefaultPriorities,
 } from "../_custom/collections";
 
-const bucketName = process.env.PAYLOAD_PUBLIC_BUCKET
-   ? process.env.PAYLOAD_PUBLIC_BUCKET
-   : "mana-prod";
-
 const adapter = s3Adapter({
    config: {
       endpoint: "https://s3.us-west-004.backblazeb2.com",
       credentials: {
-         accessKeyId: process.env.PAYLOAD_PUBLIC_BACKBLAZE_KEYID || "",
-         secretAccessKey:
-            process.env.PAYLOAD_PUBLIC_BACKBLAZE_APPLICATION_KEY || "",
+         accessKeyId: process.env.BACKBLAZE_KEYID || "",
+         secretAccessKey: process.env.BACKBLAZE_APPLICATION_KEY || "",
       },
       region: "us-west-004",
    },
-   bucket: bucketName,
+   bucket: process.env.BACKBLAZE_BUCKET ?? "mana-prod",
 });
 
 export default buildConfig({

@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import { Listbox, Transition } from "@headlessui/react";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
-import dt from "date-and-time";
 
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -143,10 +142,18 @@ export function MyPosts() {
                         {post.updatedAt && (
                            <div className="flex flex-none items-center gap-4">
                               <time
+                                 suppressHydrationWarning
                                  className="text-1 flex items-center gap-1.5 text-xs"
                                  dateTime={post?.updatedAt}
                               >
-                                 {dt.format(new Date(post?.updatedAt), "MMM D")}
+                                 {new Date(post?.updatedAt).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                       month: "short",
+                                       day: "numeric",
+                                       timeZone: "America/Los_Angeles",
+                                    },
+                                 )}
                               </time>
                               {post.publishedAt &&
                                  post.content?._status == "draft" && (

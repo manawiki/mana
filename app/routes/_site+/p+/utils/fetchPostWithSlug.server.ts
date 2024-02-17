@@ -48,7 +48,7 @@ export async function fetchPostWithSlug({
 }: {
    p: string;
    payload: Payload;
-   siteSlug: string;
+   siteSlug: string | undefined;
    user?: RemixRequestContext["user"];
 }) {
    const { docs: postsAll } = !user
