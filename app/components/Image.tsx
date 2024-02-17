@@ -19,6 +19,16 @@ export function Image({
    if (!height && searchParams.get("height"))
       height = parseInt(searchParams.get("height")!);
 
+   // If crop is used, then we'll use that as width and height
+   if (searchParams.get("crop")) {
+      const [cropWidth, cropHeight] = searchParams
+         .get("crop")!
+         .split("x")
+         .map(Number);
+      if (!width) width = cropWidth;
+      if (!height) height = cropHeight;
+   }
+
    if (searchParams.get("aspect_ratio")) {
       // retrieve aspect ratio from options as calculate it as a decimal
       // aspect ratio should be in the shape of "width:height"
@@ -38,6 +48,28 @@ export function Image({
    if (!searchParams.get("height") && height)
       searchParams.set("height", height.toString());
 
+   // For large images, we'll set breakpoints to provide responsive image sets
+   const breakpoints = [430, 640, 728, 1000];
+
+   const minWidth = typeof width === "string" ? parseInt(width) : width;
+
+   // insert minWidth into breakpoints if it's not already there and sort it
+   if (minWidth && !breakpoints.includes(minWidth)) {
+      breakpoints.push(minWidth);
+      breakpoints.sort((a, b) => a - b);
+   }
+
+   const srcSet =
+      minWidth && minWidth >= 320
+         ? breakpoints
+              .map((bp) =>
+                 bp === minWidth
+                    ? `${url}?${searchParams.toString()} ${bp}w`
+                    : `${url}?width=${bp} ${bp}w`,
+              )
+              .join(", ")
+         : undefined;
+
    return (
       <img
          {...props}
@@ -45,6 +77,12 @@ export function Image({
          width={width ?? searchParams.get("width") ?? undefined}
          height={height ?? searchParams.get("height") ?? undefined}
          alt={alt}
+         sizes={
+            srcSet
+               ? `(max-width: 728px) 100vw, (max-width: 1200px) 728px, ${minWidth}px`
+               : undefined
+         }
+         srcSet={srcSet}
          src={`${url}?${searchParams.toString()}` ?? "/favicon.ico"}
       />
    );
