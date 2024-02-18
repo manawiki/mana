@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
 
-export const skinBrands: CollectionConfig = {
+export const SkinBrands: CollectionConfig = {
    slug: "skinBrands",
    labels: { singular: "skinBrand", plural: "skinBrands" },
    admin: {
