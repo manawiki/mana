@@ -117,7 +117,7 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site.id,
+                     site: originalDoc?.site.id ?? originalDoc?.site,
                      icon: originalDoc?.icon.id,
                      slug: originalDoc?.slug,
                   };
@@ -126,7 +126,7 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site.id,
+                     site: originalDoc?.site.id ?? originalDoc?.site,
                      icon: originalDoc?.icon?.id,
                      slug: originalDoc?.slug,
                   };
@@ -135,7 +135,7 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site.id,
+                     site: originalDoc?.site.id ?? originalDoc?.site,
                      icon: originalDoc?.icon?.id,
                      collectionEntity: originalDoc?.collectionEntity.id,
                   };
@@ -144,7 +144,7 @@ export default buildConfig({
                   return {
                      ...searchDoc,
                      name: originalDoc?.name,
-                     site: originalDoc?.site.id,
+                     site: originalDoc?.site.id ?? originalDoc?.site,
                      slug: originalDoc?.slug,
                      postId: originalDoc?.id,
                   };
@@ -152,7 +152,7 @@ export default buildConfig({
                default:
                   return {
                      ...searchDoc,
-                     site: originalDoc?.site.id,
+                     site: originalDoc?.site.id ?? originalDoc?.site,
                      name: originalDoc?.name,
                   };
             }

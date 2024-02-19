@@ -150,7 +150,7 @@ export function ColumnFour() {
                                              width={40}
                                              height={40}
                                              url={row.data?.icon?.url}
-                                             options="aspect_ratio=1:1&height=54&width=54"
+                                             options="aspect_ratio=1:1&height=40&width=40"
                                              alt={row.data.name}
                                              loading="lazy"
                                           />

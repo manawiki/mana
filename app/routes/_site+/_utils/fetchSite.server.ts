@@ -117,8 +117,16 @@ const QUERY = gql`
             slug
             sections {
                id
+               slug
                name
                showTitle
+               showAd
+               subSections {
+                  id
+                  slug
+                  name
+                  type
+               }
             }
             customDatabase
             icon {

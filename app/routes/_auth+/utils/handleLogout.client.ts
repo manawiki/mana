@@ -1,6 +1,6 @@
 export async function handleLogout() {
    try {
-      await fetch("api/users/logout", {
+      await fetch("/api/users/logout", {
          method: "POST",
          credentials: "include",
          headers: {
@@ -13,7 +13,7 @@ export async function handleLogout() {
          method: "POST",
       });
 
-      location.reload();
+      location.replace("/");
    } catch (error) {
       console.error("Logout failed:", error);
    }
