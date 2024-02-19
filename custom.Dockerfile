@@ -9,10 +9,6 @@ LABEL fly_launch_runtime="Payload"
 # Remix app lives here
 WORKDIR /app
 
-# Set production environment
-ARG PAYLOAD_PUBLIC_IS_HOME
-ENV PAYLOAD_PUBLIC_IS_HOME $PAYLOAD_PUBLIC_IS_HOME
-
 ENV NODE_ENV="production"
 ARG YARN_VERSION=1.22.21
 RUN npm install -g yarn@$YARN_VERSION --force

@@ -1,7 +1,7 @@
 import type { Params } from "@remix-run/react";
 import type { Payload } from "payload";
 
-import type { User } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 
 export type EntryType = {
    siteId: string;
@@ -35,7 +35,7 @@ interface EntryFetchType {
    payload: Payload;
    params: Params;
    request: Request;
-   user: User | undefined;
+   user: RemixRequestContext["user"];
    rest?: {
       depth?: number;
    };

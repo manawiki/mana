@@ -26,7 +26,7 @@ module.exports = {
 async function manaRoutes(defineRoutes) {
    let routes = flatRoutes(["routes", "_custom/routes"], defineRoutes);
 
-   if (process.env.PAYLOAD_PUBLIC_IS_HOME) {
+   if (process.env.IS_HOME) {
       routes = {
          ...routes,
          "routes/_site+/_layout": {
