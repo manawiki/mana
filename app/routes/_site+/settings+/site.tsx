@@ -406,6 +406,7 @@ export async function action({
                   id: siteBannerId,
                   overrideAccess: false,
                   user,
+                  depth: 1,
                });
                const upload = await uploadImage({
                   payload,
