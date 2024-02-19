@@ -10,7 +10,7 @@ export const MobileTray = ({
    open,
 }: {
    children: any;
-   onOpenChange: any;
+   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
    open: boolean;
 }) => {
    return (
@@ -33,7 +33,7 @@ export const MenuTrayContent = ({
    onOpenChange,
 }: {
    site: Site;
-   onOpenChange: any;
+   onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
    return (
       <menu className="flex flex-col h-full">

@@ -1,4 +1,6 @@
 export type IconName =
+  | "layout-panel-top"
+  | "columns-2"
   | "arrow-up-right-from-square"
   | "minus"
   | "credit-card"

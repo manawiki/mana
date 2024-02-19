@@ -34,6 +34,7 @@ export function BlockLinkView({ element, children }: Props) {
                   height={30}
                   url={element.icon.url}
                   options="aspect_ratio=1:1&height=40&width=40"
+                  loading="lazy"
                />
             </span>
             {children}

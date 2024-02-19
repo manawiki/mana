@@ -1,5 +1,3 @@
-import dt from "date-and-time";
-
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
@@ -34,6 +32,7 @@ export function PostAuthorHeader({ post }: { post: PostData }) {
                            className="dark:text-zinc-500 text-zinc-300"
                         />
                         <time
+                           suppressHydrationWarning
                            className="text-1 flex items-center gap-1.5 text-xs"
                            // @ts-ignore
                            dateTime={post?.updatedAt}
@@ -53,14 +52,19 @@ export function PostAuthorHeader({ post }: { post: PostData }) {
                               className="flex items-center gap-1"
                            >
                               <time
+                                 suppressHydrationWarning
                                  className="text-1 flex items-center gap-1.5 text-xs"
                                  // @ts-ignore
                                  dateTime={post?.publishedAt}
                               >
-                                 {dt.format(
-                                    new Date(post?.publishedAt),
-                                    "MMM D, YYYY",
-                                 )}
+                                 {new Date(
+                                    post?.publishedAt,
+                                 ).toLocaleDateString("en-US", {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                    timeZone: "America/Los_Angeles",
+                                 })}
                               </time>
                            </TooltipTrigger>
                            <TooltipContent>Published</TooltipContent>
