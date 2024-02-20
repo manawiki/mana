@@ -3,7 +3,8 @@ import type { Select } from "payload-query";
 import { select } from "payload-query";
 import qs from "qs";
 
-import type { Update, User } from "payload/generated-types";
+import type { Update } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { fetchWithCache } from "~/utils/cache.server";
 
 export async function fetchHomeUpdates({
@@ -13,8 +14,8 @@ export async function fetchHomeUpdates({
    request,
 }: {
    payload: Payload;
-   siteSlug: string;
-   user?: User;
+   siteSlug: string | undefined;
+   user?: RemixRequestContext["user"];
    request: Request;
 }): Promise<Update[]> {
    if (user) {
