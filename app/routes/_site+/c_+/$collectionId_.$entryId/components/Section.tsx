@@ -1,8 +1,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
-import { offset } from "@floating-ui/react";
 import { Popover, Tab, Transition } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
 import {
    Link,
    useFetcher,
@@ -272,6 +270,7 @@ function SectionParent({
                >
                   <SectionTitle section={section} />
                   <SubSection
+                     //@ts-ignore
                      subSection={section?.subSections[0]}
                      customData={customData}
                      customComponents={customComponents}
@@ -411,6 +410,7 @@ function SubSectionTabs({
                            <Tab.Panel key={subSection.id} unmount={false}>
                               <SubSection
                                  customData={customData}
+                                 //@ts-ignore
                                  subSection={subSection}
                                  customComponents={customComponents}
                               />
@@ -421,6 +421,7 @@ function SubSectionTabs({
                ) : hasSingle ? (
                   <SubSection
                      customData={customData}
+                     //@ts-ignore
                      subSection={section?.subSections[0]}
                      customComponents={customComponents}
                   />
@@ -496,45 +497,39 @@ function EditorSection({ subSection }: { subSection?: SubSectionType }) {
       (item) => item?.subSectionId === subSection?.id,
    );
 
-   return hasAccess ? (
-      <Float
-         middleware={[
-            offset({
-               mainAxis: 50,
-               crossAxis: 0,
-            }),
-         ]}
-         autoUpdate
-         zIndex={20}
-         placement="right-start"
-         show
-      >
-         <main className="mx-auto max-w-[728px] group relative">
-            <ManaEditor
-               key={data?.id}
-               siteId={entry?.siteId}
-               fetcher={fetcher}
-               collectionSlug="contentEmbeds"
-               subSectionId={subSection?.id}
-               entryId={entry?.id}
-               pageId={data?.id}
-               collectionEntity={entry.collectionEntity}
-               defaultValue={(data?.content as unknown[]) ?? initialValue()}
-            />
-         </main>
-         <div>
-            <EditorCommandBar
-               collectionSlug="contentEmbeds"
-               collectionId={entry.collectionSlug}
-               entryId={entry?.id}
-               pageId={data?.id}
-               fetcher={fetcher}
-               isChanged={data?.isChanged}
-            />
-         </div>
-      </Float>
-   ) : (
-      <EditorView data={data?.content ?? initialValue()} />
+   return (
+      <>
+         {hasAccess ? (
+            <main className="mx-auto max-w-[728px] group relative">
+               <ManaEditor
+                  key={data?.id}
+                  siteId={entry?.siteId}
+                  fetcher={fetcher}
+                  collectionSlug="contentEmbeds"
+                  subSectionId={subSection?.id}
+                  entryId={entry?.id}
+                  pageId={data?.id}
+                  collectionEntity={entry.collectionEntity}
+                  defaultValue={(data?.content as unknown[]) ?? initialValue()}
+               />
+               <div className="absolute right-0 top-0 tablet_editor:-right-16 h-full laptop:z-40">
+                  <div className="tablet_editor:top-[136px] sticky laptop:top-[76px] max-tablet_editor:top-[194px] w-full left-0">
+                     <EditorCommandBar
+                        isSection
+                        collectionSlug="contentEmbeds"
+                        collectionId={entry.collectionSlug}
+                        entryId={entry?.id}
+                        pageId={data?.id}
+                        fetcher={fetcher}
+                        isChanged={data?.isChanged}
+                     />
+                  </div>
+               </div>
+            </main>
+         ) : (
+            <EditorView data={data?.content ?? initialValue()} />
+         )}
+      </>
    );
 }
 
