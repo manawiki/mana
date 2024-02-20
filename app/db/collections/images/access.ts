@@ -1,27 +1,29 @@
 import type { Access } from "payload/types";
 
-import { isSiteOwnerOrAdmin } from "../../access/isSiteOwnerOrAdmin";
+import { isSiteStaff } from "../../access/isSiteStaff";
 
-export const canDeleteImages: Access = async ({
-   req: { user, payload },
-   id: resultId,
-}) => {
+//@ts-ignore
+export const canDeleteImages: Access = async ({ req: { user } }) => {
    if (user) {
-      if (user.roles.includes("staff")) return true;
-      const userId = user.id;
-      if (resultId) {
-         const image = await payload.findByID({
-            collection: "images",
-            id: resultId,
-            depth: 1,
-         });
-         //If image belongs to site, check if user is owner or admin of site
-         if (image && image.site) return isSiteOwnerOrAdmin(userId, image.site);
-         //Otherwise, check if user is owner of image
-         if (image) {
-            return user.id === image.createdBy.id;
-         }
-      }
+      const isStaff = isSiteStaff(user?.roles);
+      if (isStaff) return true;
+      return {
+         or: [
+            {
+               createdBy: { equals: user.id },
+            },
+            {
+               "site.owner": {
+                  equals: user.id,
+               },
+            },
+            {
+               "site.admins": {
+                  contains: user.id,
+               },
+            },
+         ],
+      };
    }
    // Reject everyone else
    return false;

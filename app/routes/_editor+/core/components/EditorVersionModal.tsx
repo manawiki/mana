@@ -56,7 +56,7 @@ export function EditorVersionModal({
                         ),
                   )}
                </Tab.Panels>
-               <Tab.List className="w-full flex-col overflow-auto max-laptop:border-t-2 max-laptop:border-color max-laptop:pt-5 max-laptop:mt-5">
+               <Tab.List className="flex-col min-w-[240px] overflow-auto max-laptop:border-t-2 max-laptop:border-color max-laptop:pt-5 max-laptop:mt-5">
                   <div className="border-color grid flex-none grid-cols-2 gap-4 mb-3.5">
                      <Button
                         outline

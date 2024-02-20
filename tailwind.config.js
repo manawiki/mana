@@ -54,6 +54,7 @@ module.exports = {
       screens: {
          mobile: "320px",
          tablet: "768px",
+         tablet_editor: "870px",
          laptop: "1240px",
          desktop: "1400px",
       },
