@@ -189,6 +189,7 @@ export async function action({
                } catch (error) {
                   return await payload.create({
                      collection: collectionSlug,
+                     //@ts-ignore
                      data: {
                         //@ts-ignore
                         relationId: entryId,
