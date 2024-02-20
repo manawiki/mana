@@ -105,7 +105,7 @@ export const RelicsInSet = ({
                      <Image
                         options="aspect_ratio=1:1&height=120"
                         alt="Active Relic"
-                        className="mx-auto h-16"
+                        className="mx-auto h-16 object-contain"
                         url={rimg}
                      />
                      <div
