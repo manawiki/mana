@@ -4,7 +4,6 @@ import { Fragment, useState } from "react";
 import { RadioGroup, Tab } from "@headlessui/react";
 import { useFetcher, useMatches } from "@remix-run/react";
 import clsx from "clsx";
-import dt from "date-and-time";
 
 import type { Config } from "payload/generated-types";
 import { Avatar } from "~/components/Avatar";
@@ -57,7 +56,7 @@ export function EditorVersionModal({
                         ),
                   )}
                </Tab.Panels>
-               <Tab.List className="w-full flex-col overflow-auto max-laptop:border-t-2 max-laptop:border-color max-laptop:pt-5 max-laptop:mt-5">
+               <Tab.List className="flex-col min-w-[240px] overflow-auto max-laptop:border-t-2 max-laptop:border-color max-laptop:pt-5 max-laptop:mt-5">
                   <div className="border-color grid flex-none grid-cols-2 gap-4 mb-3.5">
                      <Button
                         outline
@@ -118,15 +117,19 @@ export function EditorVersionModal({
                                           )}
                                        >
                                           <time
+                                             suppressHydrationWarning
                                              className="flex items-center gap-1.5 text-xs group-hover:underline"
                                              dateTime={row?.updatedAt}
                                           >
-                                             {dt.format(
-                                                new Date(
-                                                   row?.updatedAt as string,
-                                                ),
-                                                "MMMM D, hh:mm A",
-                                             )}
+                                             {new Date(
+                                                row?.updatedAt as string,
+                                             ).toLocaleTimeString("en-US", {
+                                                month: "short",
+                                                day: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                                timeZone: "America/Los_Angeles",
+                                             })}
                                           </time>
                                           <Avatar
                                              className="size-6 flex-none"

@@ -20,7 +20,7 @@ import { DotLoader } from "~/components/DotLoader";
 import { Description, ErrorMessage, Field, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
-import { Code, Text, TextLink } from "~/components/Text";
+import { Text, TextLink } from "~/components/Text";
 import { isSiteOwner } from "~/db/access/isSiteOwner";
 import { isAdding } from "~/utils/form";
 import { stripe } from "~/utils/stripe.server";
@@ -572,71 +572,6 @@ export default function Settings() {
                            </div>
                         )}
                      </div>
-                  </section>
-                  <section>
-                     <div className="pb-1.5 flex items-center gap-2">
-                        <span className="font-semibold">
-                           Domain ownership verification
-                        </span>
-                        {!certificate?.acmeDnsConfigured ? (
-                           <Icon
-                              name="loader-2"
-                              size={18}
-                              className="animate-spin text-1"
-                           />
-                        ) : (
-                           <div
-                              className="border border-green-300 dark:border-green-900 bg-green-50 dark:bg-green-950 
-                           h-5 w-5 flex items-center justify-center rounded-full"
-                           >
-                              <Icon
-                                 name="check"
-                                 size={12}
-                                 className="text-green-600 dark:text-green-400"
-                              />
-                           </div>
-                        )}
-                     </div>
-                     <Text className="pb-4">
-                        Verify your domain ownership to issue a certificate.
-                     </Text>
-                     <div className="flex items-center justify-between gap-4">
-                        <Record
-                           name
-                           value={
-                              isSubDomain
-                                 ? `_acme-challenge.${subDomain}`
-                                 : "_acme-challenge"
-                           }
-                           type="CNAME"
-                        />
-                        <Icon
-                           name="arrow-right"
-                           size={16}
-                           className="flex-none text-1 mt-5"
-                        />
-                        <Record value={certificate.dnsValidationTarget} />
-                     </div>
-                     <Text className="pt-5">
-                        If you’re using Cloudflare, you might be using their
-                        Universal SSL feature which inserts a TXT record of{" "}
-                        <Code>
-                           _acme_challenge
-                           {isSubDomain ? `.${subDomain}` : ""}
-                        </Code>{" "}
-                        for your domain.
-                        <Text className="pt-4">
-                           This can interfere with our certificate
-                           validation/challenge and you should{" "}
-                           <TextLink
-                              target="_blank"
-                              href="https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/disable-universal-ssl/#disable-universal-ssl-certificate"
-                           >
-                              disable
-                           </TextLink>{" "}
-                           this feature.
-                        </Text>
-                     </Text>
                   </section>
                </div>
             </div>

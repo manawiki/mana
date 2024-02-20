@@ -1,5 +1,4 @@
 import { Link } from "@remix-run/react";
-import dt from "date-and-time";
 
 import type { Post } from "payload/generated-types";
 import { Image } from "~/components/Image";
@@ -33,10 +32,16 @@ export function PublishedPostRow({ post }: { post: Post }) {
                </div>
                {post?.publishedAt && (
                   <time
+                     suppressHydrationWarning
                      className="text-1 flex items-center gap-1.5 text-xs"
                      dateTime={post?.publishedAt}
                   >
-                     {dt.format(new Date(post?.publishedAt), "MMM D, YYYY")}
+                     {new Date(post?.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "America/Los_Angeles",
+                     })}
                   </time>
                )}
             </div>

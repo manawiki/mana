@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import { useFetcher } from "@remix-run/react";
-import dt from "date-and-time";
 import { useZorm } from "react-zorm";
 
 import { Avatar } from "~/components/Avatar";
@@ -26,10 +25,14 @@ export function ApplicationViewer({
 }) {
    const [isOpen, setIsOpen] = useState(false);
 
-   const submitted = dt.format(
-      new Date(application.createdAt as string),
-      "MMMM DD, YYYY",
-   );
+   const submitted = new Date(
+      application.createdAt as string,
+   ).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "America/Los_Angeles",
+   });
 
    const { site } = useSiteLoaderData();
 
