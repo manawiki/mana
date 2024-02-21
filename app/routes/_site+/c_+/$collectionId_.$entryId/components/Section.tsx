@@ -86,12 +86,13 @@ export function Section({
             <div key={section.id}>
                {section.showAd && (
                   <AdPlaceholder>
-                     <AdUnit
-                        enableAds={section.showAd}
-                        adType="desktopLeaderBTF"
-                        selectorId={`sectionDesktopLeaderBTF-${section.id}`}
-                        className="flex items-center justify-center mx-auto [&>div]:my-5"
-                     />
+                     <div className="flex items-center justify-center mx-auto min-h-[90px]">
+                        <AdUnit
+                           enableAds={section.showAd}
+                           adType="desktopLeaderBTF"
+                           selectorId={`sectionDesktopLeaderBTF-${section.id}`}
+                        />
+                     </div>
                   </AdPlaceholder>
                )}
                <SectionParent
