@@ -94,17 +94,18 @@ export function PostHeaderEdit({
          <div className="relative mb-2 flex items-center gap-3">
             <TextareaAutosize
                className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
-                   font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl"
+                   font-header text-3xl font-semibold !leading-[3rem] focus:ring-transparent laptop:text-4xl focus:outline-none"
                defaultValue={titleValue}
                onChange={(event) => setTitleValue(event.target.value)}
                placeholder="Add a title..."
             />
          </div>
+         {/* @ts-ignore */}
          <PostAuthorHeader post={post} />
          <div className="border-color-secondary relative mb-6 flex items-center gap-3 border-b pb-3">
             <TextareaAutosize
                className="text-1 mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent 
-                  p-0 text-sm font-semibold focus:ring-transparent"
+                  p-0 text-sm font-semibold focus:ring-transparent focus:outline-none"
                defaultValue={subtitleValue}
                onChange={(event) => setSubtitleValue(event.target.value)}
                placeholder="Add a subtitle..."
@@ -125,6 +126,7 @@ export function PostHeaderEdit({
                    justify-center rounded-md bg-white/60 dark:bg-zinc-800/50"
                   onClick={() =>
                      fetcher.submit(
+                        //@ts-ignore
                         {
                            intent: "deleteBanner",
                            postId: post.id,

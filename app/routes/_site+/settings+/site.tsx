@@ -205,7 +205,6 @@ export default function SiteSettings() {
                   </Description>
                   <Switch
                      onChange={() => setIsChanged(true)}
-                     //@ts-ignore
                      defaultChecked={site.enableAds ?? false}
                      color="dark/white"
                      value="true"
