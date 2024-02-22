@@ -15,7 +15,7 @@ export function Entry({
    return (
       <>
          <CollectionHeader />
-         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-3 laptop:py-5 laptop:pb-14">
+         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44">
             {children ? (
                children
             ) : (

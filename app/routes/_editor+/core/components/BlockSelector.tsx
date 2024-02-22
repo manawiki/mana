@@ -39,7 +39,7 @@ export function BlockSelector({
    const primary = [
       {
          label: "Text",
-         icon: <Icon name="type" size={18} />,
+         icon: <Icon name="text" className="text-1" size={14} />,
          description: "Paragraph",
          onSelect: () => {
             onInsertBelow({
@@ -51,7 +51,7 @@ export function BlockSelector({
       },
       {
          label: "Heading 2",
-         icon: <Icon name="heading-2" size={18} />,
+         icon: <Icon name="heading-2" className="text-1" size={14} />,
          description: "Large size heading",
          onSelect: () => {
             onInsertBelow({
@@ -62,8 +62,22 @@ export function BlockSelector({
          },
       },
       {
+         label: "Image",
+         icon: <Icon name="image-plus" className="text-1" size={14} />,
+         description: "Embed an Image",
+         onSelect: () => {
+            onInsertBelow({
+               id: nanoid(),
+               type: BlockType.Image,
+               refId: null,
+               url: null,
+               children: [{ text: "" }],
+            });
+         },
+      },
+      {
          label: "Heading 3",
-         icon: <Icon name="heading-3" size={18} />,
+         icon: <Icon name="heading-3" className="text-1" size={14} />,
          description: "Medium size heading",
          onSelect: () => {
             onInsertBelow({
@@ -75,7 +89,7 @@ export function BlockSelector({
       },
       {
          label: "Bulleted list",
-         icon: <Icon name="list" size={18} />,
+         icon: <Icon name="list" className="text-1" size={14} />,
          description: "A basic bulleted list",
          onSelect: () => {
             onInsertBelow({
@@ -93,7 +107,7 @@ export function BlockSelector({
       },
       {
          label: "Ordered list",
-         icon: <Icon name="list-ordered" size={18} />,
+         icon: <Icon name="list-ordered" className="text-1" size={14} />,
          description: "A basic ordered list",
          onSelect: () => {
             onInsertBelow({
@@ -111,7 +125,7 @@ export function BlockSelector({
       },
       {
          label: "Code Block",
-         icon: <Icon name="code" size={18} />,
+         icon: <Icon name="code" className="text-1" size={14} />,
          description: "A code block",
          onSelect: () => {
             onInsertBelow({
@@ -123,26 +137,12 @@ export function BlockSelector({
       },
       {
          label: "HTML Block",
-         icon: <Icon name="file-code-2" size={18} />,
+         icon: <Icon name="file-code-2" className="text-1" size={14} />,
          description: "Embed a block of HTML code",
          onSelect: () => {
             onInsertBelow({
                id: nanoid(),
                type: BlockType.HTMLBlock,
-               children: [{ text: "" }],
-            });
-         },
-      },
-      {
-         label: "Image",
-         icon: <Icon name="image-plus" size={18} />,
-         description: "Embed an Image",
-         onSelect: () => {
-            onInsertBelow({
-               id: nanoid(),
-               type: BlockType.Image,
-               refId: null,
-               url: null,
                children: [{ text: "" }],
             });
          },
@@ -349,13 +349,14 @@ export function BlockSelector({
       <Float
          middleware={[
             offset({
-               mainAxis: 9,
-               crossAxis: -1,
+               mainAxis: 8,
+               crossAxis: -30,
             }),
          ]}
          dialog
-         placement="right-start"
+         placement="top-start"
          portal
+         flip
       >
          <Float.Reference>
             <button
@@ -389,25 +390,30 @@ export function BlockSelector({
                      >
                         <Dialog.Panel>
                            <div
-                              className="dark:border-zinc-600/40 relative transform overflow-hidden rounded-b-2xl rounded-t-lg border
+                              className="dark:border-zinc-500/40 relative transform overflow-hidden rounded-b-xl rounded-t-xl border
                    border-zinc-200 bg-white drop-shadow-lg  dark:bg-dark350 laptop:w-[728px] laptop:max-w-[728px]"
                            >
-                              <div className="bg-2-sub relative z-10 inline-flex w-full gap-3 p-3">
+                              <div className="bg-2-sub relative z-10 grid-cols-3 grid laptop:grid-cols-4 gap-3 p-3">
                                  <FloatingDelayGroup
                                     delay={{ open: 1000, close: 200 }}
                                  >
                                     {primary?.map((row) => (
                                        <Tooltip key={row.label}>
-                                          <TooltipTrigger>
+                                          <TooltipTrigger asChild>
                                              <button
-                                                className="shadow-1 flex h-10 w-10 items-center justify-center rounded-lg border
+                                                className="shadow-1 flex h-10 w-full items-center  rounded-lg border text-xs gap-1 pl-2 pr-3
                                                 bg-white text-center shadow-sm dark:border-dark500/50 dark:bg-dark450 dark:hover:bg-dark500"
                                                 onClick={() => {
                                                    row.onSelect();
                                                    setEditorTray(false);
                                                 }}
                                              >
-                                                {row.icon}
+                                                <div className="size-5 flex items-center justify-center">
+                                                   {row.icon}
+                                                </div>
+                                                <div className="flex-none truncate font-semibold">
+                                                   {row.label}
+                                                </div>
                                              </button>
                                           </TooltipTrigger>
                                           <TooltipContent>
@@ -423,20 +429,21 @@ export function BlockSelector({
                                     placeholder="Search..."
                                  />
                               </div> */}
-                              <div className="border-color-sub bg-3-sub space-y-4 border-t px-3 py-4">
+                              <div className="space-y-4 px-3 pt-2 pb-4">
                                  {groups.map((group, indexGroup) => {
                                     return (
                                        <div key={indexGroup} className="">
                                           <div className="pb-2 pl-2 text-left text-xs font-bold">
                                              {group?.label}
                                           </div>
-                                          <div className="grid gap-3 laptop:grid-cols-3">
+                                          <div className="grid gap-3 grid-cols-3">
                                              {groups[indexGroup]?.items?.map(
                                                 (item, indexItem) => {
                                                    return (
                                                       <button
-                                                         className="border-color hover:shadow-1 shadow-1 flex cursor-pointer items-center justify-start gap-2 rounded-xl border bg-zinc-50 p-3
-                                                   text-left text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark350 dark:hover:bg-dark400"
+                                                         className="border-color hover:shadow-1 shadow-1 flex cursor-pointer items-center
+                                                          laptop:justify-start gap-2 max-laptop:justify-center rounded-xl border bg-zinc-50 p-3
+                                                   laptop:text-left text-xs shadow-sm outline-none dark:border-zinc-600/40 dark:bg-dark400 dark:hover:bg-dark450"
                                                          key={indexItem}
                                                          onClick={() => {
                                                             item.onSelect();
@@ -446,20 +453,20 @@ export function BlockSelector({
                                                          }}
                                                       >
                                                          <div className="space-y-0.5">
-                                                            <div className="flex items-center gap-2 pb-1">
+                                                            <div className="laptop:flex items-center gap-2 pb-1">
                                                                {item.icon && (
                                                                   <div
                                                                      className="flex h-5 w-5 border border-zinc-200 dark:border-transparent 
-                                                                     bg-white items-center justify-center dark:bg-dark450 rounded"
+                                                                     bg-white items-center justify-center dark:bg-dark450 rounded max-laptop:mx-auto"
                                                                   >
                                                                      {item.icon}
                                                                   </div>
                                                                )}
-                                                               <div className="font-bold">
+                                                               <div className="font-bold max-laptop:pt-2">
                                                                   {item.label}
                                                                </div>
                                                             </div>
-                                                            <div className="text-1 text-xs">
+                                                            <div className="max-laptop:hidden text-1 text-xs">
                                                                {
                                                                   item.description
                                                                }
