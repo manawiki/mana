@@ -1,17 +1,18 @@
-import { json } from "@remix-run/node";
+import { useState } from "react";
+
 import type { ActionFunction, MetaFunction } from "@remix-run/node";
-import { Link, Outlet } from "@remix-run/react";
+import { Outlet } from "@remix-run/react";
 import { nanoid } from "nanoid";
-import { jsonWithError } from "remix-toast";
+import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import { assertIsPost } from "~/utils/http.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { AddCollection } from "./components/AddCollection";
+import { CollectionCommandBar } from "./components/CollectionCommandBar";
+import { CollectionList } from "./components/CollectionList";
 import { CollectionSchema } from "../c_+/$collectionId_.$entryId/utils/CollectionSchema";
 
 export const meta: MetaFunction = ({ matches }: { matches: any }) => {
@@ -28,6 +29,11 @@ export const meta: MetaFunction = ({ matches }: { matches: any }) => {
 
 export default function CollectionIndex() {
    const { site } = useSiteLoaderData();
+   const [isChanged, setIsChanged] = useState(false);
+
+   const collectionIds = site.collections?.map((item) => item.id) ?? [];
+
+   const [dndCollections, setDnDCollections] = useState(collectionIds);
 
    return (
       <>
@@ -39,49 +45,20 @@ export default function CollectionIndex() {
                <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
             </div>
             <AddCollection siteId={site.id} />
-            {site?.collections?.length === 0 ? null : (
-               <>
-                  <div className="space-y-2.5 pb-5">
-                     {site?.collections?.map((row, int) => (
-                        <Link
-                           key={row.slug}
-                           prefetch="intent"
-                           to={`/c/${row.slug}`}
-                           className="relative flex items-center justify-between shadow-zinc-100 gap-2 dark:bg-dark350 dark:hover:border-zinc-600/70
-                           p-2 border-color-sub shadow-sm dark:shadow-black/20 overflow-hidden rounded-2xl border hover:border-zinc-200 bg-zinc-50"
-                        >
-                           <div className="flex items-center gap-3">
-                              <div className="border-color-sub border bg-3-sub justify-center shadow-sm shadow-1 flex h-8 w-8 flex-none items-center overflow-hidden rounded-full">
-                                 {row.icon?.url ? (
-                                    <Image
-                                       width={50}
-                                       height={50}
-                                       alt={row.name ?? "List Icon"}
-                                       options="aspect_ratio=1:1&height=80&width=80"
-                                       url={row?.icon?.url}
-                                    />
-                                 ) : (
-                                    <Icon
-                                       name="database"
-                                       className="text-1 mx-auto"
-                                       size={14}
-                                    />
-                                 )}
-                              </div>
-                              <span className="truncate text-sm font-bold">
-                                 {row.name}
-                              </span>
-                           </div>
-                           <Icon
-                              name="chevron-right"
-                              size={20}
-                              className="flex-none text-1"
-                           />
-                        </Link>
-                     ))}
-                  </div>
-               </>
-            )}
+            <CollectionList
+               setDnDCollections={setDnDCollections}
+               dndCollections={dndCollections}
+               site={site}
+               isChanged={isChanged}
+               setIsChanged={setIsChanged}
+            />
+            <CollectionCommandBar
+               setIsChanged={setIsChanged}
+               dndCollections={dndCollections}
+               setDnDCollections={setDnDCollections}
+               isChanged={isChanged}
+               site={site}
+            />
          </main>
          <Outlet />
       </>
@@ -101,6 +78,26 @@ export const action: ActionFunction = async ({
 
    switch (intent) {
       case "deleteCollection": {
+      }
+      case "updateCollection": {
+         const { collections, siteId } = await zx.parseForm(request, {
+            siteId: z.string(),
+            collections: z.string(),
+         });
+         const collectionArrayToSave = collections.split(",");
+
+         await payload.update({
+            collection: "sites",
+            id: siteId,
+            data: {
+               //@ts-ignore
+               collections: collectionArrayToSave,
+            },
+            depth: 0,
+            user,
+            overrideAccess: false,
+         });
+         return jsonWithSuccess(null, "Collection order updated successfully");
       }
       case "addCollection": {
          assertIsPost(request);
@@ -178,11 +175,6 @@ export const action: ActionFunction = async ({
          } catch (error) {
             payload.logger.error(`${error}`);
          }
-
-         // Last resort error message
-         return json({
-            error: "Something went wrong...unable to add collection.",
-         });
       }
    }
 };

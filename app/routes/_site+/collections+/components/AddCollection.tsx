@@ -90,9 +90,9 @@ export function AddCollection({ siteId }: { siteId: string }) {
                disabled={disabled}
             >
                {adding ? (
-                  <Icon name="loader-2" size={14} className="animate-spin " />
+                  <Icon name="loader-2" size={15} className="animate-spin " />
                ) : (
-                  <Icon name="plus" size={14} />
+                  <Icon name="plus" size={15} />
                )}
                Add
             </Button>

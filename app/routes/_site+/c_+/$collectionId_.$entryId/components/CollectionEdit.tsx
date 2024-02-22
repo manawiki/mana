@@ -75,6 +75,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
    const disabled =
       isProcessing(fetcher.state) ||
       zoCollectionUpdate.validation?.success === false;
+
    const saving = isAdding(fetcher, "updateCollection");
 
    useEffect(() => {
@@ -146,7 +147,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                                  return;
                               }}
                            />
-                           <Label>Custom data structure</Label>
+                           <Label>Custom Data Structure</Label>
                            <Description>
                               Utilize structured data for this collection.
                            </Description>
