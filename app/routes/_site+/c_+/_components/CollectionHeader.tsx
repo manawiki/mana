@@ -1,40 +1,20 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 import { Menu } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
-import {
-   useLocation,
-   useMatches,
-   NavLink,
-   Link,
-   useFetcher,
-} from "@remix-run/react";
+import { useLocation, useMatches, NavLink, Link } from "@remix-run/react";
 import clsx from "clsx";
-import { useZorm } from "react-zorm";
-import { z } from "zod";
 
-import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import { NotAdminOrStaffOrOwner } from "~/routes/_auth+/components/NotAdminOrStaffOrOwner";
-import { isAdding, isProcessing } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionImageUploader } from "./CollectionImageUploader";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
-const CollectionSchema = z.object({
-   name: z.string().min(3),
-   collectionId: z.string(),
-   intent: z.enum(["updateCollectionName"]),
-});
-
 export function CollectionHeader() {
    const { site } = useSiteLoaderData();
 
-   //entry data should live in $collectionId_$entryId, this may be potentially brittle if we shift site architecture around
    const { entry } = (useMatches()?.[2]?.data as {
       entry: EntryType | null;
    }) ?? {
@@ -64,96 +44,13 @@ export function CollectionHeader() {
       ? `/c/${collection?.slug}/${entry?.id}`
       : `/c/${collection?.slug}`;
 
-   const [isChanged, setIsChanged] = useState(false);
-
-   const fetcher = useFetcher();
-
-   const zo = useZorm("collectionSettings", CollectionSchema);
-
-   const disabled =
-      isProcessing(fetcher.state) || zo.validation?.success === false;
-   const saving = isAdding(fetcher, "updateCollectionName");
-
-   useEffect(() => {
-      if (!saving) {
-         setIsChanged(false);
-      }
-   }, [saving]);
-
    return (
       <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">
          <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 z-20 relative">
             <div className="flex items-center justify-between gap-4">
-               <NotAdminOrStaffOrOwner>
-                  <h1 className="font-bold font-header text-2xl laptop:text-3xl">
-                     {entryName ?? collection?.name}
-                  </h1>
-               </NotAdminOrStaffOrOwner>
-               <AdminOrStaffOrOwner>
-                  <fetcher.Form
-                     action={actionPath}
-                     className="flex items-center justify-between gap-3 w-full"
-                     method="post"
-                     onChange={() => setIsChanged(true)}
-                     ref={zo.ref}
-                  >
-                     <input
-                        name={zo.fields.name()}
-                        className="bg-transparent w-full font-bold font-header text-2xl laptop:text-3xl focus:outline-none"
-                        defaultValue={entryName ?? collection?.name}
-                     />
-                     <input
-                        name={zo.fields.intent()}
-                        value="updateCollectionName"
-                        type="hidden"
-                     />
-                     <input
-                        name={zo.fields.collectionId()}
-                        value={collection?.id}
-                        type="hidden"
-                     />
-                     {isChanged && (
-                        <>
-                           <Tooltip placement="top">
-                              <TooltipTrigger
-                                 type="reset"
-                                 onClick={() => {
-                                    //@ts-ignore
-                                    zo.refObject.current.reset();
-                                    setIsChanged(false);
-                                 }}
-                                 className="text-xs cursor-pointer hover:dark:bg-dark400 
-                                 flex items-center justify-center size-7 rounded-full"
-                              >
-                                 <Icon
-                                    title="Reset"
-                                    size={16}
-                                    name="refresh-ccw"
-                                    className="dark:text-zinc-500"
-                                 />
-                              </TooltipTrigger>
-                              <TooltipContent>Reset</TooltipContent>
-                           </Tooltip>
-                           <Button
-                              type="submit"
-                              color="green"
-                              className="cursor-pointer text-xs !rounded-md w-12 h-7"
-                              disabled={!isChanged || disabled}
-                           >
-                              {saving ? (
-                                 <Icon
-                                    size={16}
-                                    name="loader-2"
-                                    className="mx-auto animate-spin"
-                                 />
-                              ) : (
-                                 "Save"
-                              )}
-                           </Button>
-                        </>
-                     )}
-                  </fetcher.Form>
-               </AdminOrStaffOrOwner>
+               <h1 className="font-bold font-header text-2xl laptop:text-3xl">
+                  {entryName ?? collection?.name}
+               </h1>
                <div className="flex-none group relative tablet:-mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
                   <CollectionImageUploader
                      image={icon}
@@ -213,7 +110,6 @@ export function CollectionHeader() {
                               </svg>
                            </span>
                         </Menu.Button>
-
                         <Menu.Items className="absolute left-0 mt-0.5 min-w-[160px] max-w-[240px] z-20 w-full">
                            <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
                               {site?.collections?.map((row) => (

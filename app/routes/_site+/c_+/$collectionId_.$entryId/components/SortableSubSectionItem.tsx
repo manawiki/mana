@@ -194,13 +194,7 @@ export function SortableSubSectionItem({
             </div>
             <span className="text-sm pt-0.5">{subSection?.name}</span>
          </div>
-         <div className="text-xs flex items-center gap-2">
-            <span className="text-1 capitalize">{subSection.type}</span>
-            <span className="size-1 rounded-full bg-zinc-300" />
-            <span className="text-xs text-zinc-400 dark:text-zinc-500">
-               {subSection.slug}
-            </span>
-         </div>
+         <span className="text-1 text-xs capitalize">{subSection.type}</span>
          <Button plain onClick={() => setIsOpen(true)}>
             <Icon className="text-1" name="more-horizontal" size={16} />
          </Button>

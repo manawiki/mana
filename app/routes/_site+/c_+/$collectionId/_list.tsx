@@ -17,6 +17,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Entry } from "payload/generated-types";
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
@@ -36,6 +37,7 @@ import {
    SectionUpdateSchema,
    SubSectionSchema,
 } from "../$collectionId_.$entryId/components/SortableSectionItem";
+import { CollectionUpdateSchema } from "../$collectionId_.$entryId/utils/CollectionSchema";
 import { List } from "../_components/List";
 
 const EntrySchema = z.object({
@@ -117,8 +119,9 @@ export default function CollectionList() {
                   <div className="pt-1">
                      <fetcher.Form
                         ref={zoEntry.ref}
-                        className="dark:bg-dark350 border focus-within:border-zinc-200 dark:focus-within:border-zinc-600 border-color-sub rounded-lg 
-                     shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
+                        className="dark:bg-dark350 border  focus-within:border-zinc-200 
+                        dark:focus-within:border-zinc-500/70 border-color-sub rounded-xl 
+                        shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
                         method="post"
                      >
                         <input
@@ -126,7 +129,7 @@ export default function CollectionList() {
                            placeholder="Type an entry name..."
                            name={zoEntry.fields.name()}
                            type="text"
-                           className="w-full bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                           className="w-full focus:outline-none bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
                         />
                         <input
                            value={collection?.id}
@@ -138,28 +141,24 @@ export default function CollectionList() {
                            name={zoEntry.fields.siteId()}
                            type="hidden"
                         />
-                        <button
-                           className="shadow-1 inline-flex h-[30px] items-center justify-center gap-1.5 w-[78px] bg-white dark:bg-dark450
-                     rounded-full border border-zinc-200 dark:hover:border-zinc-500 hover:border-zinc-300 dark:border-zinc-600 text-xs font-bold shadow-sm"
+                        <Button
+                           className="text-xs !py-1.5 !pl-2 !font-bold"
                            name="intent"
                            value="addEntry"
                            type="submit"
+                           color="dark/white"
                         >
                            {addingUpdate ? (
                               <Icon
                                  name="loader-2"
                                  size={14}
-                                 className="animate-spin text-zinc-400 dark:text-zinc-300"
+                                 className="animate-spin "
                               />
                            ) : (
-                              <Icon
-                                 name="plus"
-                                 className="text-zinc-400 dark:text-zinc-300"
-                                 size={14}
-                              />
+                              <Icon name="plus" size={14} />
                            )}
-                           <span className="text-1 pr-0.5">Add</span>
-                        </button>
+                           Add
+                        </Button>
                      </fetcher.Form>
                   </div>
                )}
@@ -281,8 +280,8 @@ export const action: ActionFunction = async ({
          "updateSection",
          "updateSubSection",
          "updateSectionOrder",
-         "updateCollectionName",
          "updateSubSectionOrder",
+         "updateCollection",
       ]),
    });
 
@@ -724,26 +723,23 @@ export const action: ActionFunction = async ({
             });
          }
       }
-      case "updateCollectionName": {
-         const { name, collectionId } = await zx.parseForm(request, {
-            name: z.string().min(3),
-            collectionId: z.string(),
-         });
+      case "updateCollection": {
+         const results = await zx.parseForm(request, CollectionUpdateSchema);
          try {
             await payload.update({
                collection: "collections",
-               id: collectionId,
+               id: results.collectionId,
                data: {
-                  name,
+                  ...results,
                },
                user,
                overrideAccess: false,
             });
-            return jsonWithSuccess(null, "Collection name updated");
+            return jsonWithSuccess(null, "Collection updated");
          } catch (error) {
             return jsonWithError(
                null,
-               "Something went wrong...unable to update collection name",
+               "Something went wrong...unable to update collection",
             );
          }
       }

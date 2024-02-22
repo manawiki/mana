@@ -129,6 +129,9 @@ const QUERY = gql`
                }
             }
             customDatabase
+            customEntryTemplate
+            customListTemplate
+            hiddenCollection
             icon {
                id
                url
