@@ -15,7 +15,6 @@ import {
    Meta,
    Outlet,
    Scripts,
-   ScrollRestoration,
    useLoaderData,
    useMatches,
    useOutletContext,
@@ -34,6 +33,7 @@ import { i18nextServer } from "~/utils/i18n/i18next.server";
 import { useIsBot } from "~/utils/isBotProvider";
 import { getTheme } from "~/utils/theme.server";
 
+import { ScrollRestoration } from "./components/ScrollRestoration";
 import { settings } from "./config";
 import { getSiteSlug } from "./routes/_site+/_utils/getSiteSlug.server";
 import tailwindStylesheetUrl from "./styles/global.css";
