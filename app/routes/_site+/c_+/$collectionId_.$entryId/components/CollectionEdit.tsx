@@ -104,6 +104,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                onChange={() => setIsChanged(true)}
                ref={zoCollectionUpdate.ref}
                method="post"
+               action="/collections"
             >
                <FieldGroup>
                   <Field disabled={disabled} className="w-full">

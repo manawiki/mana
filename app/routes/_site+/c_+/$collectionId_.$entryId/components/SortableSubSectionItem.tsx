@@ -80,6 +80,7 @@ export function SortableSubSectionItem({
             <fetcher.Form
                onChange={() => setSubSectionUpdateFormChanged(true)}
                method="post"
+               action="/collections/sections"
                ref={updateSubSection.ref}
             >
                <FieldGroup>

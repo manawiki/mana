@@ -17,20 +17,16 @@ export function CollectionList({
    site,
    setDnDCollections,
    dndCollections,
-   isChanged,
    setIsChanged,
 }: {
    site: Site;
    setDnDCollections: (collections: any) => void;
    dndCollections: string[];
-   isChanged: boolean;
    setIsChanged: (value: boolean) => void;
 }) {
-   const collections = site?.collections ?? [];
-
    const [activeId, setActiveId] = useState<string | null>(null);
 
-   const [allCollections, setAllCollections] = useState(collections);
+   const [allCollections, setAllCollections] = useState(site?.collections);
 
    function handleDragStart(event: DragStartEvent) {
       if (event.active) {
@@ -48,13 +44,14 @@ export function CollectionList({
             return arrayMove(items, oldIndex, newIndex);
          });
          setAllCollections((items) => {
+            //@ts-ignore
             return arrayMove(items, oldIndex, newIndex);
          });
          setIsChanged(true);
       }
    }
 
-   const activeCollection = collections.find(
+   const activeCollection = site?.collections?.find(
       (x) => "id" in x && x.id === activeId,
    );
 

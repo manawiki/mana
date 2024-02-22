@@ -42,7 +42,7 @@ export function CollectionHeader() {
 
    const actionPath = isEntry
       ? `/c/${collection?.slug}/${entry?.id}`
-      : `/c/${collection?.slug}`;
+      : "/collections";
 
    return (
       <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">

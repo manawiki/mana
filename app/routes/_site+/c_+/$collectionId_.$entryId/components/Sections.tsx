@@ -89,7 +89,8 @@ export function Sections() {
                intent: "updateSectionOrder",
             },
             {
-               method: "patch",
+               method: "POST",
+               action: "/collections/sections",
             },
          );
       }
@@ -144,6 +145,7 @@ export function Sections() {
                   ref={zoSections.ref}
                   className="shadow-sm shadow-1 gap-4 border border-color dark:border-zinc-600/50 rounded-lg bg-zinc-50 dark:bg-dark400 p-4 mb-4"
                   method="post"
+                  action="/collections/sections"
                >
                   <div className="max-laptop:space-y-3 laptop:flex items-center pb-5 justify-between gap-5">
                      <Field className="w-full">

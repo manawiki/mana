@@ -25,7 +25,7 @@ export function CollectionCommandBar({
    const fetcher = useFetcher();
 
    const disabled = isProcessing(fetcher.state);
-   const saving = isAdding(fetcher, "updateCollection");
+   const saving = isAdding(fetcher, "updateCollectionOrder");
 
    useEffect(() => {
       if (!saving) {
@@ -76,10 +76,11 @@ export function CollectionCommandBar({
                      {
                         siteId: site.id,
                         collections: dndCollections,
-                        intent: "updateCollection",
+                        intent: "updateCollectionOrder",
                      },
                      {
                         method: "POST",
+                        action: "/collections",
                      },
                   )
                }
