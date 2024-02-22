@@ -175,6 +175,7 @@ export default function Showcase() {
                      className="shadow-1 bg-3 inline-flex items-center justify-center gap-2 rounded-full
                   border border-blue-200 bg-zinc-50 px-3 py-1.5 pl-4 text-sm font-semibold shadow-sm dark:border-zinc-700"
                      to="/showcase?uid=700043897"
+                     prefetch="viewport"
                   >
                      <span>Show me an example...</span>
                      <Icon
@@ -1846,16 +1847,11 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
             )}
          </div>
          <div className="flex items-center justify-center gap-2 pt-5">
-            <button
-               type="submit"
+            <Link
+               to={`/showcase?uid=${inputUID}`}
                className="flex h-11 w-24 items-center justify-center rounded-full bg-blue-500
                   px-3 text-sm font-bold text-white shadow shadow-blue-300 dark:shadow-blue-800"
-               onClick={() => {
-                  setSearchParams((searchParams) => {
-                     searchParams.set("uid", inputUID);
-                     return searchParams;
-                  });
-               }}
+               prefetch="intent"
             >
                {isSearching ? (
                   <Icon
@@ -1865,7 +1861,7 @@ const InputUIDNote = ({ uid }: { uid: any }) => {
                ) : (
                   "Submit"
                )}
-            </button>
+            </Link>
          </div>
       </form>
    );
