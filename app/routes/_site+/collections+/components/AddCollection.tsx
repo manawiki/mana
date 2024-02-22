@@ -47,7 +47,8 @@ export function AddCollection({ siteId }: { siteId: string }) {
             className="dark:bg-dark400 border  focus-within:border-zinc-300 border-zinc-200
                  dark:focus-within:border-zinc-500/70 dark:border-zinc-600 rounded-xl gap-4
                  shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
-            method="post"
+            method="POST"
+            action="/collections"
          >
             <input
                disabled={disabled}

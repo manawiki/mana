@@ -116,6 +116,7 @@ export function SortableSectionItem({
             },
             {
                method: "patch",
+               action: "/collections/sections",
             },
          );
       }
@@ -156,6 +157,7 @@ export function SortableSectionItem({
             <fetcher.Form
                onChange={() => setSectionUpdateFormChanged(true)}
                method="post"
+               action="/collections/sections"
                ref={updateSection.ref}
             >
                <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
@@ -268,7 +270,11 @@ export function SortableSectionItem({
                   </div>
                </FieldGroup>
             </fetcher.Form>
-            <fetcher.Form method="post" ref={addSubSection.ref}>
+            <fetcher.Form
+               method="post"
+               action="/collections/sections"
+               ref={addSubSection.ref}
+            >
                <>
                   <div className="text-xs pb-3 font-semibold flex items-center gap-2">
                      <Icon

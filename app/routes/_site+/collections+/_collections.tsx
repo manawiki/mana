@@ -8,31 +8,25 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import { assertIsPost } from "~/utils/http.server";
+import {
+   getMultipleFormData,
+   uploadImage,
+} from "~/utils/upload-handler.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { AddCollection } from "./components/AddCollection";
 import { CollectionCommandBar } from "./components/CollectionCommandBar";
 import { CollectionList } from "./components/CollectionList";
-import { CollectionSchema } from "../c_+/$collectionId_.$entryId/utils/CollectionSchema";
-
-export const meta: MetaFunction = ({ matches }: { matches: any }) => {
-   const site = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/_layout",
-   );
-   const siteName = site?.data?.site.name;
-   return [
-      {
-         title: `Collections - ${siteName}`,
-      },
-   ];
-};
+import {
+   CollectionSchema,
+   CollectionUpdateSchema,
+} from "../c_+/$collectionId_.$entryId/utils/CollectionSchema";
 
 export default function CollectionIndex() {
    const { site } = useSiteLoaderData();
    const [isChanged, setIsChanged] = useState(false);
 
    const collectionIds = site.collections?.map((item) => item.id) ?? [];
-
    const [dndCollections, setDnDCollections] = useState(collectionIds);
 
    return (
@@ -46,10 +40,10 @@ export default function CollectionIndex() {
             </div>
             <AddCollection siteId={site.id} />
             <CollectionList
+               key={collectionIds as any}
+               site={site}
                setDnDCollections={setDnDCollections}
                dndCollections={dndCollections}
-               site={site}
-               isChanged={isChanged}
                setIsChanged={setIsChanged}
             />
             <CollectionCommandBar
@@ -71,7 +65,14 @@ export const action: ActionFunction = async ({
    params,
 }) => {
    const { intent } = await zx.parseForm(request, {
-      intent: z.enum(["deleteCollection", "updateCollection", "addCollection"]),
+      intent: z.enum([
+         "deleteCollection",
+         "updateCollection",
+         "updateCollectionOrder",
+         "addCollection",
+         "collectionUpdateIcon",
+         "collectionDeleteIcon",
+      ]),
    });
 
    // Add Collection
@@ -79,7 +80,7 @@ export const action: ActionFunction = async ({
    switch (intent) {
       case "deleteCollection": {
       }
-      case "updateCollection": {
+      case "updateCollectionOrder": {
          const { collections, siteId } = await zx.parseForm(request, {
             siteId: z.string(),
             collections: z.string(),
@@ -99,18 +100,38 @@ export const action: ActionFunction = async ({
          });
          return jsonWithSuccess(null, "Collection order updated successfully");
       }
-      case "addCollection": {
-         assertIsPost(request);
-         const {
-            name,
-            slug,
-            hiddenCollection,
-            customListTemplate,
-            customEntryTemplate,
-            customDatabase,
-            siteId,
-         } = await zx.parseForm(request, CollectionSchema);
+      case "updateCollection": {
+         const results = await zx.parseForm(request, CollectionUpdateSchema);
          try {
+            await payload.update({
+               collection: "collections",
+               id: results.collectionId,
+               data: {
+                  ...results,
+               },
+               user,
+               overrideAccess: false,
+            });
+            return jsonWithSuccess(null, "Collection updated");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to update collection",
+            );
+         }
+      }
+      case "addCollection": {
+         try {
+            const {
+               name,
+               slug,
+               hiddenCollection,
+               customListTemplate,
+               customEntryTemplate,
+               customDatabase,
+               siteId,
+            } = await zx.parseForm(request, CollectionSchema);
+
             //See if duplicate exists on the same site
             const existingSlug = await payload.find({
                collection: "collections",
@@ -172,9 +193,84 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
+            return jsonWithSuccess(null, "Collection Added Successfully");
          } catch (error) {
             payload.logger.error(`${error}`);
          }
       }
+      case "collectionUpdateIcon": {
+         assertIsPost(request);
+
+         const result = await getMultipleFormData({
+            request,
+            prefix: "collectionIcon",
+            schema: z.any(),
+         });
+         if (result.success) {
+            const { image, entityId, siteId } = result.data;
+            try {
+               const upload = await uploadImage({
+                  payload,
+                  image: image,
+                  user,
+                  siteId,
+               });
+               return await payload.update({
+                  collection: "collections",
+                  id: entityId,
+                  data: {
+                     icon: upload.id as any,
+                  },
+                  overrideAccess: false,
+                  user,
+               });
+            } catch (error) {
+               return jsonWithError(
+                  null,
+                  "Something went wrong...unable to add image.",
+               );
+            }
+         }
+      }
+      case "collectionDeleteIcon": {
+         try {
+            const { imageId, entityId } = await zx.parseForm(request, {
+               imageId: z.string(),
+               entityId: z.string(),
+            });
+            await payload.delete({
+               collection: "images",
+               id: imageId,
+               overrideAccess: false,
+               user,
+            });
+            return await payload.update({
+               collection: "collections",
+               id: entityId,
+               data: {
+                  icon: "" as any,
+               },
+               overrideAccess: false,
+               user,
+            });
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to delete image.",
+            );
+         }
+      }
    }
+};
+
+export const meta: MetaFunction = ({ matches }: { matches: any }) => {
+   const site = matches.find(
+      ({ id }: { id: string }) => id === "routes/_site+/_layout",
+   );
+   const siteName = site?.data?.site.name;
+   return [
+      {
+         title: `Collections - ${siteName}`,
+      },
+   ];
 };
