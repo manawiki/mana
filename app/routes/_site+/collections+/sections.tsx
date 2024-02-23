@@ -1,4 +1,3 @@
-import { arrayMove } from "@dnd-kit/sortable";
 import type { ActionFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { nanoid } from "nanoid";
@@ -6,11 +5,9 @@ import { jsonWithError, jsonWithSuccess } from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { SectionSchema } from "../c_+/$collectionId_.$entryId/components/Sections";
-import {
-   SubSectionSchema,
-   SectionUpdateSchema,
-} from "../c_+/$collectionId_.$entryId/components/SortableSectionItem";
+import { SubSectionSchema } from "../c_+/$collectionId_.$entryId/components/AddSubSection";
+import { SectionUpdateSchema } from "../c_+/$collectionId_.$entryId/components/UpdateSection";
+import { SectionSchema } from "../c_+/$collectionId_.$entryId/utils/SectionSchema";
 
 export const EntrySchema = z.object({
    name: z.string(),
@@ -136,10 +133,7 @@ export const action: ActionFunction = async ({
                overrideAccess: false,
             });
 
-            return jsonWithSuccess(
-               null,
-               `Sub-section ${results.subSectionName} added successfully.`,
-            );
+            return jsonWithSuccess(null, `Sub-section added`);
          } catch (error) {
             return jsonWithError(
                null,
@@ -169,7 +163,7 @@ export const action: ActionFunction = async ({
                ) && results.existingSectionSlug !== results.sectionSlug;
 
             if (hasDuplicateSectionSlug) {
-               return jsonWithError(null, "Duplicate section Slug found.");
+               return jsonWithError(null, "Duplicate section slug found.");
             }
 
             const updatedSection = {
@@ -280,45 +274,20 @@ export const action: ActionFunction = async ({
       }
       case "updateSectionOrder": {
          try {
-            const { overId, activeId, collectionId } = await zx.parseForm(
-               request,
-               {
-                  collectionId: z.string(),
-                  activeId: z.string(),
-                  overId: z.string(),
-               },
-            );
-            const collectionData = await payload.findByID({
-               collection: "collections",
-               id: collectionId,
-               overrideAccess: false,
-               user,
+            const { sections, collectionId } = await zx.parseForm(request, {
+               collectionId: z.string(),
+               sections: z.string(),
             });
-
-            const oldIndex = collectionData?.sections?.findIndex(
-               (x) => x.id == activeId,
-            );
-
-            const newIndex = collectionData?.sections?.findIndex(
-               (x) => x.id == overId,
-            );
-
-            const sortedArray = arrayMove(
-               //@ts-ignore
-               collectionData?.sections,
-               oldIndex,
-               newIndex,
-            );
             await payload.update({
                collection: "collections",
-               id: collectionData.id,
+               id: collectionId,
                data: {
-                  sections: sortedArray,
+                  sections: JSON.parse(sections),
                },
                user,
                overrideAccess: false,
             });
-            return jsonWithSuccess(null, "Section order updated successfully.");
+            return jsonWithSuccess(null, "Section order updated");
          } catch (error) {
             return jsonWithError(
                null,
@@ -328,46 +297,28 @@ export const action: ActionFunction = async ({
       }
       case "updateSubSectionOrder": {
          try {
-            const { overId, activeId, collectionId, sectionId } =
-               await zx.parseForm(request, {
+            const { subSections, collectionId, sectionId } = await zx.parseForm(
+               request,
+               {
+                  subSections: z.string(),
                   collectionId: z.string(),
-                  activeId: z.string(),
-                  overId: z.string(),
                   sectionId: z.string(),
-               });
+               },
+            );
             const collectionData = await payload.findByID({
                collection: "collections",
                id: collectionId,
                overrideAccess: false,
                user,
             });
-
-            const sectionToUpdate = collectionData?.sections?.find(
-               (section) => section.id === sectionId,
-            );
-
-            const oldIndex = sectionToUpdate?.subSections?.findIndex(
-               (x) => x.id == activeId,
-            );
-
-            const newIndex = sectionToUpdate?.subSections?.findIndex(
-               (x) => x.id == overId,
-            );
-
-            const sortedArray = arrayMove(
-               //@ts-ignore
-               sectionToUpdate?.subSections,
-               oldIndex,
-               newIndex,
-            );
             const updatedSections =
                collectionData.sections?.map((item) =>
                   item.id === sectionId
-                     ? { ...item, subSections: sortedArray }
+                     ? { ...item, subSections: JSON.parse(subSections) }
                      : item,
                ) ?? [];
 
-            return await payload.update({
+            await payload.update({
                collection: "collections",
                id: collectionData.id,
                data: {
@@ -376,6 +327,7 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
+            return jsonWithSuccess(null, "Sub-section order updated");
          } catch (error) {
             return jsonWithError(
                null,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
@@ -8,21 +8,22 @@ import {
    arrayMove,
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useFetcher } from "@remix-run/react";
 
 import type { Collection } from "~/db/payload-types";
-import { isAdding } from "~/utils/form";
 
 import { SortableSectionItem } from "./SortableSectionItem";
 
 export function SectionList({
+   setIsChanged,
    collection,
+   allSections,
+   setAllSections,
 }: {
+   setIsChanged: (value: boolean) => void;
    collection: Collection | undefined;
+   allSections: Collection["sections"];
+   setAllSections: (sections: any) => void;
 }) {
-   const fetcher = useFetcher({ key: "section" });
-
-   const [allSections, setAllSections] = useState(collection?.sections);
    const [activeId, setActiveId] = useState<string | null>(null);
 
    function handleDragStart(event: DragStartEvent) {
@@ -36,22 +37,12 @@ export function SectionList({
       if (active.id !== over?.id) {
          const oldIndex = allSections?.findIndex((x) => x.id == active.id);
          const newIndex = allSections?.findIndex((x) => x.id == over?.id);
+         //@ts-ignore
          setAllSections((items) => {
             // @ts-ignore
             return arrayMove(items, oldIndex, newIndex);
          });
-         fetcher.submit(
-            {
-               collectionId: collection?.id ?? "",
-               activeId: active?.id,
-               overId: over?.id ?? "",
-               intent: "updateSectionOrder",
-            },
-            {
-               method: "POST",
-               action: "/collections/sections",
-            },
-         );
+         setIsChanged(true);
       }
       setActiveId(null);
    }
@@ -59,14 +50,6 @@ export function SectionList({
    const activeSection = collection?.sections?.find(
       (x) => "id" in x && x.id === activeId,
    );
-
-   const saving = isAdding(fetcher, "addSection");
-
-   useEffect(() => {
-      if (!saving) {
-         setAllSections(collection?.sections);
-      }
-   }, [saving, collection?.sections]);
 
    return (
       <DndContext
@@ -86,8 +69,8 @@ export function SectionList({
                      key={row.id}
                      //@ts-ignore
                      section={row}
-                     fetcher={fetcher}
-                     collectionId={collection?.id}
+                     setAllSections={setAllSections}
+                     collection={collection}
                   />
                ))}
             </div>
@@ -95,10 +78,10 @@ export function SectionList({
          <DragOverlay adjustScale={false}>
             {activeSection && (
                <SortableSectionItem
-                  fetcher={fetcher}
                   //@ts-ignore
                   section={activeSection}
-                  collectionId={collection?.id}
+                  setAllSections={setAllSections}
+                  collection={collection}
                />
             )}
          </DragOverlay>
