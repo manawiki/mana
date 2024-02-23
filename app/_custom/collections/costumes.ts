@@ -27,13 +27,57 @@ export const Costumes: CollectionConfig = {
          type: "text",
       },
       {
+         name: "servant",
+         type: "relationship",
+         relationTo: "servants",
+         hasMany: false,
+      },
+      {
          name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
+         name: "image",
          type: "upload",
          relationTo: "images",
       },
       {
          name: "description",
          type: "text",
+      },
+      {
+         label: "Materials",
+         type: "collapsible",
+         admin: { initCollapsed: true },
+         fields: [
+            {
+               name: "costume_materials",
+               type: "array",
+               fields: [
+                  {
+                     name: "qp_cost",
+                     type: "number",
+                  },
+                  {
+                     name: "materials",
+                     type: "array",
+                     fields: [
+                        {
+                           name: "material",
+                           type: "relationship",
+                           relationTo: "materials",
+                           hasMany: false,
+                        },
+                        {
+                           name: "qty",
+                           type: "number",
+                        },
+                     ],
+                  },
+               ],
+            },
+         ],
       },
       {
          name: "slug",

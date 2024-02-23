@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
 
-export const _Illustrators: CollectionConfig = {
-   slug: "_illustrators",
-   labels: { singular: "_Illustrator", plural: "_Illustrators" },
+export const _EnemyTypes: CollectionConfig = {
+   slug: "_enemy-types",
+   labels: { singular: "_Enemy-Type", plural: "_Enemy-Types" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -21,30 +21,12 @@ export const _Illustrators: CollectionConfig = {
          type: "text",
       },
       {
-         name: "data_key",
+         name: "drupal_tid",
          type: "text",
       },
       {
          name: "name",
          type: "text",
-      },
-      {
-         name: "ce_With_Illustrator",
-         type: "relationship",
-         relationTo: "craft-essences",
-         hasMany: true,
-         admin: {
-            readOnly: true,
-         },
-      },
-      {
-         name: "cc_With_Illustrator",
-         type: "relationship",
-         relationTo: "command-codes",
-         hasMany: true,
-         admin: {
-            readOnly: true,
-         },
       },
       {
          name: "slug",
