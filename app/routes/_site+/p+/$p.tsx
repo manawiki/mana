@@ -115,7 +115,11 @@ export default function Post() {
             {/* @ts-ignore */}
             <PostTableOfContents data={postContent} />
             <AdPlaceholder>
-               <div className="flex items-center justify-center min-h-[90px]">
+               <div
+                  className={`flex items-center justify-center ${
+                     enableAds ? "min-h-[90px]" : ""
+                  }`}
+               >
                   <AdUnit
                      enableAds={enableAds}
                      adType="desktopLeaderATF"

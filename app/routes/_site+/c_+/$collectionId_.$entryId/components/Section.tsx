@@ -86,7 +86,11 @@ export function Section({
             <div key={section.id}>
                {section.showAd && (
                   <AdPlaceholder>
-                     <div className="flex items-center justify-center mx-auto min-h-[90px]">
+                     <div
+                        className={`flex items-center justify-center mx-auto ${
+                           section.showAd ? "min-h-[90px]" : ""
+                        }`}
+                     >
                         <AdUnit
                            enableAds={section.showAd}
                            adType="desktopLeaderBTF"
