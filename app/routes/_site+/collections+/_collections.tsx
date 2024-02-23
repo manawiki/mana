@@ -26,8 +26,7 @@ export default function CollectionIndex() {
    const { site } = useSiteLoaderData();
    const [isChanged, setIsChanged] = useState(false);
 
-   const collectionIds = site.collections?.map((item) => item.id) ?? [];
-   const [dndCollections, setDnDCollections] = useState(collectionIds);
+   const [dndCollections, setDnDCollections] = useState(site.collections);
 
    return (
       <>
@@ -38,10 +37,8 @@ export default function CollectionIndex() {
                </h1>
                <span className="dark:bg-zinc-700 bg-zinc-100 rounded-l-full flex-grow h-0.5" />
             </div>
-            <AddCollection siteId={site.id} />
+            <AddCollection site={site} setDnDCollections={setDnDCollections} />
             <CollectionList
-               key={collectionIds as any}
-               site={site}
                setDnDCollections={setDnDCollections}
                dndCollections={dndCollections}
                setIsChanged={setIsChanged}
