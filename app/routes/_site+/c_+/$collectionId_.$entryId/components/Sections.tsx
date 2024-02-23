@@ -1,12 +1,5 @@
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
-import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-   SortableContext,
-   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { useFetcher, useLocation, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import type { Zorm } from "react-zorm";
@@ -23,7 +16,8 @@ import { Switch, SwitchField } from "~/components/Switch";
 import { isAdding } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
-import { SortableSectionItem } from "./SortableSectionItem";
+import { CollectionEdit } from "./CollectionEdit";
+import { SectionList } from "./SectionList";
 
 export type Section = {
    id: string;
@@ -50,7 +44,7 @@ export const SectionSchema = z.object({
 
 export function Sections() {
    const { site } = useSiteLoaderData();
-
+   const fetcher = useFetcher({ key: "section" });
    //Get path for custom site
    const { pathname } = useLocation();
    const collectionSlug = pathname.split("/")[2];
@@ -60,44 +54,13 @@ export function Sections() {
       (collection) => collection.slug === collectionId,
    );
 
-   const fetcher = useFetcher();
-
    //Sections
    const zoSections = useZorm("sections", SectionSchema);
    const addingSection = isAdding(fetcher, "addSection");
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
-   const [activeId, setActiveId] = useState<string | null>(null);
 
    const sections = collection?.sections?.map((item) => item.id) ?? [];
-
-   function handleDragStart(event: DragStartEvent) {
-      if (event.active) {
-         setActiveId(event.active.id as string);
-      }
-   }
-
-   function handleDragEnd(event: DragEndEvent) {
-      const { active, over } = event;
-      if (active.id !== over?.id) {
-         fetcher.submit(
-            {
-               collectionId: collection?.id ?? "",
-               activeId: active?.id,
-               overId: over?.id ?? "",
-               intent: "updateSectionOrder",
-            },
-            {
-               method: "patch",
-            },
-         );
-      }
-      setActiveId(null);
-   }
-
-   const activeSection = collection?.sections?.find(
-      (x) => "id" in x && x.id === activeId,
-   );
 
    useEffect(() => {
       if (!addingSection) {
@@ -110,8 +73,8 @@ export function Sections() {
          <div className="flex items-center gap-3 absolute -top-8 right-0 z-10">
             <button
                onClick={() => setSectionsOpen(!isSectionsOpen)}
-               className="flex items-center dark:hover:border-zinc-500/70 gap-2 justify-center shadow-1 shadow-sm h-7 
-             bg-3-sub rounded-lg border border-zinc-200 dark:border-zinc-600/80 hover:border-zinc-300/80 overflow-hidden"
+               className="flex items-center dark:hover:border-zinc-400/50 gap-2 justify-center shadow-1 shadow-sm h-7 
+             dark:bg-dark450 bg-white rounded-lg border border-zinc-200 dark:border-zinc-500/60 hover:border-zinc-300/80 overflow-hidden"
             >
                <div className="flex items-center gap-1.5 h-full">
                   <div className="text-[10px] font-bold text-1 pl-2.5">
@@ -127,18 +90,14 @@ export function Sections() {
                   />
                   <div
                      className="text-[10px] font-bold border-l border-zinc-200 dark:border-zinc-600 
-                     h-full text-1 bg-zinc-50 flex items-center justify-center dark:bg-dark350 px-2"
+                     h-full text-1 bg-zinc-50 flex items-center justify-center dark:bg-dark400 px-2"
                   >
                      {sections?.length}
                   </div>
                </div>
             </button>
-            <button
-               className="flex items-center dark:hover:border-zinc-500/70 gap-2 justify-center shadow-1 shadow-sm size-7
-             bg-3-sub rounded-lg border border-zinc-200 dark:border-zinc-600/80 hover:border-zinc-300/80 overflow-hidden"
-            >
-               <Icon name="settings" size={14} />
-            </button>
+            {/* @ts-ignore */}
+            <CollectionEdit collection={collection} />
          </div>
          {/* Sections */}
          {isSectionsOpen && (
@@ -147,11 +106,12 @@ export function Sections() {
                   ref={zoSections.ref}
                   className="shadow-sm shadow-1 gap-4 border border-color dark:border-zinc-600/50 rounded-lg bg-zinc-50 dark:bg-dark400 p-4 mb-4"
                   method="post"
+                  action="/collections/sections"
                >
                   <div className="max-laptop:space-y-3 laptop:flex items-center pb-5 justify-between gap-5">
                      <Field className="w-full">
                         <Label className="flex items-center justify-between gap-4">
-                           <span>Section Name</span>
+                           <span>Name</span>
                            <SectionIdField zo={zoSections} />
                         </Label>
                         <Input
@@ -224,40 +184,7 @@ export function Sections() {
                      </div>
                   </div>
                </fetcher.Form>
-               <DndContext
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                  modifiers={[restrictToVerticalAxis]}
-                  collisionDetection={closestCenter}
-               >
-                  <SortableContext
-                     //@ts-ignore
-                     items={sections}
-                     strategy={verticalListSortingStrategy}
-                  >
-                     <div className="divide-y bg-2-sub divide-color-sub border rounded-lg border-color-sub mb-4 shadow-sm shadow-1">
-                        {collection?.sections?.map((row) => (
-                           <SortableSectionItem
-                              key={row.id}
-                              //@ts-ignore
-                              section={row}
-                              fetcher={fetcher}
-                              collectionId={collection?.id}
-                           />
-                        ))}
-                     </div>
-                  </SortableContext>
-                  <DragOverlay adjustScale={false}>
-                     {activeSection && (
-                        <SortableSectionItem
-                           fetcher={fetcher}
-                           //@ts-ignore
-                           section={activeSection}
-                           collectionId={collection?.id}
-                        />
-                     )}
-                  </DragOverlay>
-               </DndContext>
+               <SectionList collection={collection} />
             </div>
          )}
       </div>

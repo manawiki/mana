@@ -115,12 +115,17 @@ export default function Post() {
             {/* @ts-ignore */}
             <PostTableOfContents data={postContent} />
             <AdPlaceholder>
-               <AdUnit
-                  enableAds={enableAds}
-                  adType="desktopLeaderATF"
-                  selectorId="postDesktopLeaderATF"
-                  className="flex items-center justify-center [&>div]:py-5"
-               />
+               <div
+                  className={`flex items-center justify-center ${
+                     enableAds ? "min-h-[90px]" : ""
+                  }`}
+               >
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                  />
+               </div>
             </AdPlaceholder>
             {hasAccess ? (
                <>

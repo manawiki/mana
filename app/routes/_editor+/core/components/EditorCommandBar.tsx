@@ -140,8 +140,15 @@ export const EditorCommandBar = ({
                               {isAutoSaving && !isChanged ? (
                                  <Icon
                                     name="loader-2"
+                                    title="Saving"
                                     size={18}
                                     className="animate-spin"
+                                 />
+                              ) : open ? (
+                                 <Icon
+                                    title="Back"
+                                    name="arrow-left"
+                                    size={16}
                                  />
                               ) : (
                                  <Icon
