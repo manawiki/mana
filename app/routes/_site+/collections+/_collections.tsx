@@ -82,14 +82,12 @@ export const action: ActionFunction = async ({
             siteId: z.string(),
             collections: z.string(),
          });
-         const collectionArrayToSave = collections.split(",");
 
          await payload.update({
             collection: "sites",
             id: siteId,
             data: {
-               //@ts-ignore
-               collections: collectionArrayToSave,
+               collections: JSON.parse(collections),
             },
             depth: 0,
             user,
