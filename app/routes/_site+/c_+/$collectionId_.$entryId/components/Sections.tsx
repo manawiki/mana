@@ -1,12 +1,5 @@
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
-import { DndContext, DragOverlay, closestCenter } from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-   SortableContext,
-   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { useFetcher, useLocation, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import type { Zorm } from "react-zorm";
@@ -24,7 +17,7 @@ import { isAdding } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionEdit } from "./CollectionEdit";
-import { SortableSectionItem } from "./SortableSectionItem";
+import { SectionList } from "./SectionList";
 
 export type Section = {
    id: string;
@@ -51,7 +44,7 @@ export const SectionSchema = z.object({
 
 export function Sections() {
    const { site } = useSiteLoaderData();
-
+   const fetcher = useFetcher({ key: "section" });
    //Get path for custom site
    const { pathname } = useLocation();
    const collectionSlug = pathname.split("/")[2];
@@ -61,45 +54,13 @@ export function Sections() {
       (collection) => collection.slug === collectionId,
    );
 
-   const fetcher = useFetcher();
-
    //Sections
    const zoSections = useZorm("sections", SectionSchema);
    const addingSection = isAdding(fetcher, "addSection");
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
-   const [activeId, setActiveId] = useState<string | null>(null);
 
    const sections = collection?.sections?.map((item) => item.id) ?? [];
-
-   function handleDragStart(event: DragStartEvent) {
-      if (event.active) {
-         setActiveId(event.active.id as string);
-      }
-   }
-
-   function handleDragEnd(event: DragEndEvent) {
-      const { active, over } = event;
-      if (active.id !== over?.id) {
-         fetcher.submit(
-            {
-               collectionId: collection?.id ?? "",
-               activeId: active?.id,
-               overId: over?.id ?? "",
-               intent: "updateSectionOrder",
-            },
-            {
-               method: "POST",
-               action: "/collections/sections",
-            },
-         );
-      }
-      setActiveId(null);
-   }
-
-   const activeSection = collection?.sections?.find(
-      (x) => "id" in x && x.id === activeId,
-   );
 
    useEffect(() => {
       if (!addingSection) {
@@ -223,40 +184,7 @@ export function Sections() {
                      </div>
                   </div>
                </fetcher.Form>
-               <DndContext
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                  modifiers={[restrictToVerticalAxis]}
-                  collisionDetection={closestCenter}
-               >
-                  <SortableContext
-                     //@ts-ignore
-                     items={sections}
-                     strategy={verticalListSortingStrategy}
-                  >
-                     <div className="divide-y bg-2-sub divide-color-sub border rounded-lg border-color-sub mb-4 shadow-sm shadow-1">
-                        {collection?.sections?.map((row) => (
-                           <SortableSectionItem
-                              key={row.id}
-                              //@ts-ignore
-                              section={row}
-                              fetcher={fetcher}
-                              collectionId={collection?.id}
-                           />
-                        ))}
-                     </div>
-                  </SortableContext>
-                  <DragOverlay adjustScale={false}>
-                     {activeSection && (
-                        <SortableSectionItem
-                           fetcher={fetcher}
-                           //@ts-ignore
-                           section={activeSection}
-                           collectionId={collection?.id}
-                        />
-                     )}
-                  </DragOverlay>
-               </DndContext>
+               <SectionList collection={collection} />
             </div>
          )}
       </div>

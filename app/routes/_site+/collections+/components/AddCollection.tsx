@@ -7,12 +7,19 @@ import urlSlug from "url-slug";
 
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
+import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { isAdding, isProcessing } from "~/utils/form";
 
 import { CollectionSchema } from "../../c_+/$collectionId_.$entryId/utils/CollectionSchema";
 
-export function AddCollection({ siteId }: { siteId: string }) {
+export function AddCollection({
+   site,
+   setDnDCollections,
+}: {
+   site: Site;
+   setDnDCollections: (collections: any) => void;
+}) {
    const fetcher = useFetcher();
    const adding = isAdding(fetcher, "addCollection");
 
@@ -26,8 +33,9 @@ export function AddCollection({ siteId }: { siteId: string }) {
       if (!adding) {
          setCollectionName("");
          setCollectionSlug("");
+         setDnDCollections(site.collections);
       }
-   }, [adding]);
+   }, [adding, site.collections]);
 
    const [collectionName, setCollectionName] = useState("");
    const [collectionSlug, setCollectionSlug] = useState("");
@@ -78,7 +86,7 @@ export function AddCollection({ siteId }: { siteId: string }) {
                />
             </div>
             <input
-               value={siteId}
+               value={site.id}
                name={zoCollection.fields.siteId()}
                type="hidden"
             />

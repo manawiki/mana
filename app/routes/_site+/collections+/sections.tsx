@@ -309,7 +309,7 @@ export const action: ActionFunction = async ({
                oldIndex,
                newIndex,
             );
-            return await payload.update({
+            await payload.update({
                collection: "collections",
                id: collectionData.id,
                data: {
@@ -318,6 +318,7 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
+            return jsonWithSuccess(null, "Section order updated successfully.");
          } catch (error) {
             return jsonWithError(
                null,
