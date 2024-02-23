@@ -9,24 +9,20 @@ import {
    verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import type { Site } from "~/db/payload-types";
+import type { Collection } from "~/db/payload-types";
 
 import { SortableCollectionItem } from "./SortableCollectionItem";
 
 export function CollectionList({
-   site,
    setDnDCollections,
    dndCollections,
    setIsChanged,
 }: {
-   site: Site;
    setDnDCollections: (collections: any) => void;
-   dndCollections: string[];
+   dndCollections: Collection[] | undefined | null;
    setIsChanged: (value: boolean) => void;
 }) {
    const [activeId, setActiveId] = useState<string | null>(null);
-
-   const [allCollections, setAllCollections] = useState(site?.collections);
 
    function handleDragStart(event: DragStartEvent) {
       if (event.active) {
@@ -38,20 +34,18 @@ export function CollectionList({
       const { active, over } = event;
 
       if (active.id !== over?.id) {
-         const oldIndex = dndCollections.indexOf(active?.id as string);
-         const newIndex = dndCollections.indexOf(over?.id as string);
+         const oldIndex = dndCollections?.findIndex((x) => x.id == active.id);
+         const newIndex = dndCollections?.findIndex((x) => x.id == over?.id);
          setDnDCollections((items: any) => {
-            return arrayMove(items, oldIndex, newIndex);
-         });
-         setAllCollections((items) => {
             //@ts-ignore
             return arrayMove(items, oldIndex, newIndex);
          });
+
          setIsChanged(true);
       }
    }
 
-   const activeCollection = site?.collections?.find(
+   const activeCollection = dndCollections?.find(
       (x) => "id" in x && x.id === activeId,
    );
 
@@ -64,11 +58,12 @@ export function CollectionList({
             collisionDetection={closestCorners}
          >
             <SortableContext
+               //@ts-ignore
                items={dndCollections}
                strategy={verticalListSortingStrategy}
             >
                <div className="space-y-2.5 pb-5">
-                  {allCollections?.map((collection) => (
+                  {dndCollections?.map((collection) => (
                      <SortableCollectionItem
                         key={collection.id}
                         collection={collection}

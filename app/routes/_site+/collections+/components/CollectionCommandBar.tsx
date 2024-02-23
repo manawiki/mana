@@ -6,7 +6,7 @@ import { useFetcher } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
-import type { Site } from "~/db/payload-types";
+import type { Collection, Site } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
 export function CollectionCommandBar({
@@ -18,7 +18,7 @@ export function CollectionCommandBar({
 }: {
    site: Site;
    isChanged: boolean;
-   dndCollections: string[];
+   dndCollections: Collection[] | undefined | null;
    setIsChanged: (value: boolean) => void;
    setDnDCollections: (collections: any) => void;
 }) {
@@ -52,7 +52,7 @@ export function CollectionCommandBar({
                type="button"
                onClick={() => {
                   setIsChanged(false);
-                  setDnDCollections(site.collections?.map((item) => item.id));
+                  setDnDCollections(site.collections);
                }}
                className="text-sm h-8 font-semibold cursor-pointer rounded-lg
       dark:hover:bg-dark500 gap-2 flex items-center justify-center pl-2 pr-3.5"
@@ -75,7 +75,8 @@ export function CollectionCommandBar({
                   fetcher.submit(
                      {
                         siteId: site.id,
-                        collections: dndCollections,
+                        collections:
+                           dndCollections?.map((item) => item.id) ?? [],
                         intent: "updateCollectionOrder",
                      },
                      {
