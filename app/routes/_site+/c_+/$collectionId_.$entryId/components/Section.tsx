@@ -11,6 +11,7 @@ import {
 import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import type { Collection } from "~/db/payload-types";
@@ -24,9 +25,6 @@ import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionI
 import type { Section } from "./Sections";
 import { AdPlaceholder, AdUnit } from "../../../_components/Ramp";
 import { TableOfContents } from "../../_components/TableOfContents";
-
-// we'll lazy load the editor and viewer to make sure they get tree-shaken when not used
-//@ts-ignore
 
 type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
@@ -88,12 +86,17 @@ export function Section({
             <div key={section.id}>
                {section.showAd && (
                   <AdPlaceholder>
-                     <AdUnit
-                        enableAds={section.showAd}
-                        adType="desktopLeaderBTF"
-                        selectorId={`sectionDesktopLeaderBTF-${section.id}`}
-                        className="flex items-center justify-center mx-auto [&>div]:my-5"
-                     />
+                     <div
+                        className={`flex items-center justify-center mx-auto ${
+                           section.showAd ? "min-h-[90px]" : ""
+                        }`}
+                     >
+                        <AdUnit
+                           enableAds={section.showAd}
+                           adType="desktopLeaderBTF"
+                           selectorId={`sectionDesktopLeaderBTF-${section.id}`}
+                        />
+                     </div>
                   </AdPlaceholder>
                )}
                <SectionParent
@@ -322,7 +325,7 @@ function SubSectionTabs({
    //On initial load, this will set the section active tab if url param exists
    const [searchParams] = useSearchParams();
    const subSectionId = searchParams.get("section");
-   const activeTabIndex = tabs?.findIndex(({ id }) => id == subSectionId);
+   const activeTabIndex = tabs?.findIndex(({ slug }) => slug == subSectionId);
    const [selectedIndex, setSelectedIndex] = useState(activeTabIndex);
 
    useEffect(() => {
@@ -338,74 +341,51 @@ function SubSectionTabs({
 
    const tabLength = tabs && tabs.length;
 
-   const hasSingle = tabLength && tabLength > 0;
-   const hasMany = tabLength && tabLength > 1;
+   const hasMany = tabLength && tabLength > 1 ? true : false;
 
    return (
       <>
-         {hasSingle ? (
-            <div
-               data-section
-               id={section?.slug ?? ""}
-               className="scroll-mt-32 laptop:scroll-mt-[126px]"
-            >
-               <SectionTitle section={section} />
-               {hasMany ? (
+         <div
+            data-section
+            id={section?.slug ?? ""}
+            className="scroll-mt-32 laptop:scroll-mt-[126px]"
+         >
+            <SectionTitle section={section} />
+            {hasMany ? (
+               <div className="shadow-sm shadow-1 bg-clip-padding border border-color-sub rounded-lg">
                   <Tab.Group
                      selectedIndex={selectedIndex}
                      onChange={setSelectedIndex}
                   >
-                     <Tab.List>
-                        <div
-                           className={clsx(
-                              tabLength == 2 ? "grid grid-cols-2" : "",
-                              tabLength == 3 ? "grid grid-cols-3" : "",
-                              `border border-color-sub overflow-hidden rounded-t-lg text-sm laptop:text-[15px] divide-x divide-color-sub 
-                  bg-zinc-50 dark:bg-dark350 r z-20 relative flex items-center`,
-                           )}
-                        >
-                           {tabs?.map((subSection) => {
-                              return (
-                                 <Tab key={subSection.id} as={Fragment}>
-                                    {({ selected }) => (
-                                       <button
-                                          className={clsx(
-                                             selected &&
-                                                tabLength &&
-                                                tabLength > 1
-                                                ? "bg-zinc-50 dark:bg-dark400"
-                                                : "bg-white dark:bg-dark350",
-                                             "p-2 flex items-center justify-center gap-2 relative focus-within:outline-none",
-                                          )}
-                                       >
-                                          <div
-                                             className={clsx(
-                                                selected ? "bg-blue-500" : "",
-                                                "h-3 w-6 absolute -bottom-[8px] transform -translate-x-1/2 left-1/2 rounded",
-                                             )}
-                                          />
-                                          <div
-                                             className={clsx(
-                                                selected ? "" : "text-1",
-                                                "py-1 px-2 rounded-md font-bold font-header relative",
-                                             )}
-                                          >
-                                             {subSection.name}
-                                             {!selected && (
-                                                <span className="absolute -right-2 top-1 flex h-2 w-2">
-                                                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-300 dark:bg-zinc-400 opacity-75"></span>
-                                                   <span className="relative inline-flex rounded-full h-2 w-2 bg-zinc-300 dark:bg-zinc-500"></span>
-                                                </span>
-                                             )}
-                                          </div>
-                                       </button>
-                                    )}
-                                 </Tab>
-                              );
-                           })}
-                        </div>
+                     <Tab.List
+                        className={clsx(
+                           "relative flex bg-zinc-50 dark:bg-dark350 border-b border-color-sub p-3 items-center gap-3 rounded-t-lg",
+                        )}
+                     >
+                        {tabs?.map((subSection) => {
+                           return (
+                              <Tab key={subSection.id} as={Fragment}>
+                                 {({ selected }) => (
+                                    //@ts-ignore
+                                    <Button
+                                       color={
+                                          selected ? "dark/white" : undefined
+                                       }
+                                       plain={selected ? undefined : true}
+                                       className={clsx(
+                                          !selected &&
+                                             "bg-zinc-200/50 dark:shadow-none dark:bg-dark450",
+                                          "!py-1.5 !px-3",
+                                       )}
+                                    >
+                                       {subSection.name}
+                                    </Button>
+                                 )}
+                              </Tab>
+                           );
+                        })}
                      </Tab.List>
-                     <Tab.Panels className="p-3 bg-3 rounded-b-lg border border-color-sub border-t-0">
+                     <Tab.Panels className="p-3">
                         {section?.subSections?.map((subSection) => (
                            <Tab.Panel key={subSection.id} unmount={false}>
                               <SubSection
@@ -418,16 +398,16 @@ function SubSectionTabs({
                         ))}
                      </Tab.Panels>
                   </Tab.Group>
-               ) : hasSingle ? (
-                  <SubSection
-                     customData={customData}
-                     //@ts-ignore
-                     subSection={section?.subSections[0]}
-                     customComponents={customComponents}
-                  />
-               ) : null}
-            </div>
-         ) : null}
+               </div>
+            ) : (
+               <SubSection
+                  customData={customData}
+                  //@ts-ignore
+                  subSection={section?.subSections[0]}
+                  customComponents={customComponents}
+               />
+            )}
+         </div>
       </>
    );
 }
@@ -538,12 +518,16 @@ function SectionTitle({
 }: {
    section: Flatten<Collection["sections"]>;
 }) {
-   if (section?.showTitle && section.name)
+   const hasTitle = section?.showTitle && section.name;
+
+   if (hasTitle)
       return (
          <Link to={`#${section?.slug}`}>
             <h2
-               className="border-color relative mb-2.5 mt-8 overflow-hidden rounded-lg
-               border-2 font-header text-xl font-bold shadow-sm dark:bg-dark350 dark:shadow-black/30"
+               className={clsx(
+                  `border-color relative  mt-8 overflow-hidden  rounded-lg shadow-sm dark:shadow-black/20 mb-2.5 border-2
+                    font-header text-xl font-bold  dark:bg-dark350 `,
+               )}
             >
                <div
                   className="pattern-dots absolute left-0 top-0 -z-0 h-full

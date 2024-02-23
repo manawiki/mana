@@ -50,7 +50,7 @@ export function PostActionBar({ post }: { post: PostData }) {
                   />
                </>
             ) : null}
-            <div className="flex items-center gap-1.5 font-bold text-xs px-3">
+            {/* <div className="flex items-center gap-1.5 font-bold text-xs px-3">
                <Icon
                   name="folder"
                   className="text-zinc-400 dark:text-zinc-500"
@@ -101,7 +101,7 @@ export function PostActionBar({ post }: { post: PostData }) {
                               justify-center dark:bg-dark450 bg-yellow-50/70 w-6 h-6"
             >
                <Icon className="text-yellow-400" name="bookmark" size={14} />
-            </button>
+            </button> */}
          </div>
       </div>
    );

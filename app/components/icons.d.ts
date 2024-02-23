@@ -1,4 +1,5 @@
 export type IconName =
+  | "text"
   | "layout-panel-top"
   | "columns-2"
   | "arrow-up-right-from-square"
