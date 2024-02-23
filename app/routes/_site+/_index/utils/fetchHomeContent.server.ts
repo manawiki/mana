@@ -3,7 +3,8 @@ import { select } from "payload-query";
 import qs from "qs";
 import invariant from "tiny-invariant";
 
-import type { HomeContent, User } from "payload/generated-types";
+import type { HomeContent } from "payload/generated-types";
+import type { RemixRequestContext } from "remix.env";
 import { isSiteOwnerOrAdmin } from "~/db/access/isSiteOwnerOrAdmin";
 import { fetchWithCache } from "~/utils/cache.server";
 
@@ -15,8 +16,8 @@ export async function fetchHomeContent({
    page = 1,
 }: {
    payload: Payload;
-   siteSlug: string;
-   user?: User;
+   siteSlug: string | undefined;
+   user?: RemixRequestContext["user"];
    request: Request;
    page: number | undefined;
 }) {

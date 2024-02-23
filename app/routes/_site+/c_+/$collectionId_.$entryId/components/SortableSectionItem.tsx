@@ -25,6 +25,7 @@ import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
 import type { Section } from "./Sections";
+import { SectionType } from "./SectionType";
 // eslint-disable-next-line import/no-cycle
 import { SortableSubSectionItem } from "./SortableSubSectionItem";
 
@@ -115,6 +116,7 @@ export function SortableSectionItem({
             },
             {
                method: "patch",
+               action: "/collections/sections",
             },
          );
       }
@@ -155,6 +157,7 @@ export function SortableSectionItem({
             <fetcher.Form
                onChange={() => setSectionUpdateFormChanged(true)}
                method="post"
+               action="/collections/sections"
                ref={updateSection.ref}
             >
                <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
@@ -167,7 +170,7 @@ export function SortableSectionItem({
                </div>
                <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
                   <Field disabled={disabled} className="w-full">
-                     <Label>Section Name</Label>
+                     <Label>Name</Label>
                      <Input
                         name={updateSection.fields.sectionName()}
                         defaultValue={section.name}
@@ -175,7 +178,7 @@ export function SortableSectionItem({
                      />
                   </Field>
                   <Field disabled={disabled} className="w-full">
-                     <Label>Section Slug</Label>
+                     <Label>Slug</Label>
                      <Input
                         name={updateSection.fields.sectionSlug()}
                         defaultValue={section.slug}
@@ -267,7 +270,11 @@ export function SortableSectionItem({
                   </div>
                </FieldGroup>
             </fetcher.Form>
-            <fetcher.Form method="post" ref={addSubSection.ref}>
+            <fetcher.Form
+               method="post"
+               action="/collections/sections"
+               ref={addSubSection.ref}
+            >
                <>
                   <div className="text-xs pb-3 font-semibold flex items-center gap-2">
                      <Icon
@@ -379,8 +386,10 @@ export function SortableSectionItem({
             </div>
             <span className="text-sm">{section?.name}</span>
          </div>
-         <div className="text-xs text-zinc-400 dark:text-zinc-500">
-            {section.slug}
+         <div className="flex items-center -space-x-1">
+            {section?.subSections?.map((subSection) => (
+               <SectionType key={subSection.name} type={subSection.type} />
+            ))}
          </div>
          <Button plain onClick={() => setIsOpen(true)}>
             <Icon className="text-1" name="more-horizontal" size={16} />
