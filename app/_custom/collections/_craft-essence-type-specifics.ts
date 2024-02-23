@@ -4,7 +4,10 @@ import { isStaff } from "../../db/collections/users/access";
 
 export const _CraftEssenceTypeSpecifics: CollectionConfig = {
    slug: "_craft-essence-type-specifics",
-   labels: { singular: "_Craft-Essence-Type-Specific", plural: "_Craft-Essence-Type-Specifics" },
+   labels: {
+      singular: "_Craft-Essence-Type-Specific",
+      plural: "_Craft-Essence-Type-Specifics",
+   },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -39,8 +42,17 @@ export const _CraftEssenceTypeSpecifics: CollectionConfig = {
          relationTo: "craft-essences",
          hasMany: true,
          admin: {
-            readOnly: true
-         }
+            readOnly: true,
+         },
+      },
+      {
+         name: "cc_With_Effect",
+         type: "relationship",
+         relationTo: "command-codes",
+         hasMany: true,
+         admin: {
+            readOnly: true,
+         },
       },
       {
          name: "checksum",
