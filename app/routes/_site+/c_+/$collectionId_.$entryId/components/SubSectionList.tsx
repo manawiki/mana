@@ -97,6 +97,7 @@ export function SubSectionList({
                <Button
                   disabled={disabled}
                   type="button"
+                  color="blue"
                   className="!text-xs !h-7"
                   onClick={() => {
                      fetcher.submit(

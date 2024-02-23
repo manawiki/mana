@@ -3,9 +3,22 @@ import { useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 
+import {
+   Alert,
+   AlertTitle,
+   AlertDescription,
+   AlertActions,
+} from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Checkbox, CheckboxField, CheckboxGroup } from "~/components/Checkbox";
 import { Dialog } from "~/components/Dialog";
+import {
+   Dropdown,
+   DropdownButton,
+   DropdownItem,
+   DropdownLabel,
+   DropdownMenu,
+} from "~/components/Dropdown";
 import {
    Description,
    Field,
@@ -83,6 +96,10 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
          setIsChanged(false);
       }
    }, [saving]);
+
+   const [isDeleteOpen, setDeleteOpen] = useState(false);
+
+   const deleting = isAdding(fetcher, "deleteCollection");
 
    return (
       <>
@@ -236,7 +253,28 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                   name={zoCollectionUpdate.fields.siteId()}
                   value={site.id}
                />
-               <div className="flex items-center justify-end gap-2 pt-6">
+               <div className="flex items-center justify-between gap-2 pt-6 relative">
+                  <Dropdown>
+                     <DropdownButton outline aria-label="More options">
+                        <Icon
+                           name="more-horizontal"
+                           size={16}
+                           className="text-1"
+                        />
+                     </DropdownButton>
+                     <DropdownMenu className="z-50" anchor="bottom start">
+                        <DropdownItem onClick={() => setDeleteOpen(true)}>
+                           <Icon
+                              className="mr-2 text-red-400"
+                              name="trash"
+                              size={14}
+                           />
+                           <DropdownLabel className="font-semibold">
+                              Delete
+                           </DropdownLabel>
+                        </DropdownItem>
+                     </DropdownMenu>
+                  </Dropdown>
                   {isChanged && !disabled && (
                      <Button
                         plain
@@ -277,6 +315,45 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                </div>
             </fetcher.Form>
          </Dialog>
+         <Alert open={isDeleteOpen} onClose={setDeleteOpen}>
+            <AlertTitle>
+               Are you sure you want to delete this collection permanently?
+            </AlertTitle>
+            <AlertDescription>You cannot undo this action.</AlertDescription>
+            <AlertActions>
+               <Button
+                  plain
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  onClick={() => setDeleteOpen(false)}
+               >
+                  Cancel
+               </Button>
+               <Button
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  color="red"
+                  onClick={() =>
+                     fetcher.submit(
+                        {
+                           intent: "deleteCollection",
+                           collectionId: collection.id,
+                        },
+                        { method: "delete", action: "/collections" },
+                     )
+                  }
+               >
+                  {deleting && (
+                     <Icon
+                        name="loader-2"
+                        size={16}
+                        className="mx-auto animate-spin"
+                     />
+                  )}
+                  Delete
+               </Button>
+            </AlertActions>
+         </Alert>
       </>
    );
 }
