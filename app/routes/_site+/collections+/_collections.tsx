@@ -3,7 +3,11 @@ import { useState } from "react";
 import type { ActionFunction, MetaFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 import { nanoid } from "nanoid";
-import { jsonWithError, jsonWithSuccess } from "remix-toast";
+import {
+   jsonWithError,
+   jsonWithSuccess,
+   redirectWithSuccess,
+} from "remix-toast";
 import { z } from "zod";
 import { zx } from "zodix";
 
@@ -76,6 +80,40 @@ export const action: ActionFunction = async ({
 
    switch (intent) {
       case "deleteCollection": {
+         try {
+            const { collectionId } = await zx.parseForm(request, {
+               collectionId: z.string(),
+            });
+
+            const entriesExist = await payload.find({
+               collection: "entries",
+               where: {
+                  collectionEntity: {
+                     equals: collectionId,
+                  },
+               },
+               overrideAccess: false,
+               user,
+            });
+            if (entriesExist.totalDocs != 0) {
+               return jsonWithError(
+                  null,
+                  `${entriesExist.totalDocs} entries must be deleted before deleting this collection`,
+               );
+            }
+            await payload.delete({
+               collection: "collections",
+               id: collectionId,
+               user,
+               overrideAccess: false,
+            });
+            return redirectWithSuccess("/collections", "Collection deleted");
+         } catch (error) {
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to delete collection",
+            );
+         }
       }
       case "updateCollectionOrder": {
          const { collections, siteId } = await zx.parseForm(request, {
@@ -93,7 +131,7 @@ export const action: ActionFunction = async ({
             user,
             overrideAccess: false,
          });
-         return jsonWithSuccess(null, "Collection order updated successfully");
+         return jsonWithSuccess(null, "Collection order updated");
       }
       case "updateCollection": {
          const results = await zx.parseForm(request, CollectionUpdateSchema);
@@ -188,7 +226,7 @@ export const action: ActionFunction = async ({
                user,
                overrideAccess: false,
             });
-            return jsonWithSuccess(null, "Collection Added Successfully");
+            return jsonWithSuccess(null, "Collection added");
          } catch (error) {
             payload.logger.error(`${error}`);
          }
