@@ -4,16 +4,29 @@ import type {
 } from "payload/types";
 
 export const afterDeleteHook: CollectionAfterDeleteHook = async ({
-   req: { payload },
+   req: { payload, user },
    id, // id of document to delete
    doc, // deleted document
 }) => {
    try {
-      const siteId = doc.site.id;
+      //If depth is greater that 0, need to check the nested site
+      const siteId = doc.site.id ?? doc.site;
+
       const currentCollections = await payload.findByID({
          collection: "sites",
          id: siteId,
       });
+
+      const iconId = doc.icon.id;
+
+      if (iconId) {
+         await payload.delete({
+            collection: "images",
+            id: iconId,
+            overrideAccess: false,
+            user,
+         });
+      }
 
       if (currentCollections?.collections) {
          let collections = [] as string[];

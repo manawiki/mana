@@ -1,32 +1,183 @@
 import { useState } from "react";
 
-import { Dialog } from "~/components/Dialog";
-import { Icon } from "~/components/Icon";
-import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
+import { useFetcher } from "@remix-run/react";
+import { useZorm } from "react-zorm";
 
-export function EntryEdit() {
+import {
+   Alert,
+   AlertTitle,
+   AlertDescription,
+   AlertActions,
+} from "~/components/Alert";
+import { Button } from "~/components/Button";
+import { Dialog } from "~/components/Dialog";
+import {
+   Dropdown,
+   DropdownButton,
+   DropdownItem,
+   DropdownLabel,
+   DropdownMenu,
+} from "~/components/Dropdown";
+import { Field, FieldGroup, Label } from "~/components/Fieldset";
+import { Icon } from "~/components/Icon";
+import { Input } from "~/components/Input";
+import { isAdding, isProcessing } from "~/utils/form";
+
+import { EntrySchemaUpdateSchema } from "../utils/EntrySchema";
+
+export function EntryEdit({ entry }: { entry: any }) {
    let [isSettingsOpen, setSettingsOpen] = useState(false);
+   const fetcher = useFetcher();
+
+   const [isDeleteOpen, setDeleteOpen] = useState(false);
+   let [isChanged, setIsChanged] = useState(false);
+
+   const deleting = isAdding(fetcher, "deleteEntry");
+
+   const saving = isAdding(fetcher, "updateEntry");
+
+   const disabled = isProcessing(fetcher.state);
+
+   const zoEntryUpdate = useZorm("entryUpdate", EntrySchemaUpdateSchema);
 
    return (
       <>
-         <AdminOrStaffOrOwner>
-            <button
-               className="size-7 !p-0 bg-white shadow shadow-1 hover:bg-zinc-100 dark:hover:border-zinc-400/50 absolute -top-9 right-0
-            border border-zinc-200 rounded-lg flex items-center justify-center dark:bg-dark450 dark:border-zinc-500/60 z-10"
-               onClick={() => setSettingsOpen(true)}
+         <Button color="zinc" onClick={() => setSettingsOpen(true)}>
+            <Icon name="settings" size={14} />
+            Edit
+         </Button>
+         <Dialog
+            size="md"
+            onClose={() => {
+               setSettingsOpen(false);
+            }}
+            open={isSettingsOpen}
+         >
+            <fetcher.Form
+               onChange={() => setIsChanged(true)}
+               ref={zoEntryUpdate.ref}
+               method="POST"
+               action="/collections/entry"
             >
-               <Icon name="settings" size={14} />
-            </button>
-            <Dialog
-               size="2xl"
-               onClose={() => {
-                  setSettingsOpen(false);
-               }}
-               open={isSettingsOpen}
-            >
-               <div></div>
-            </Dialog>
-         </AdminOrStaffOrOwner>
+               <input
+                  type="hidden"
+                  name={zoEntryUpdate.fields.entryId()}
+                  value={entry.id}
+               />
+               <FieldGroup>
+                  <Field disabled={disabled} className="w-full">
+                     <Label>Entry Name</Label>
+                     <Input
+                        required
+                        name={zoEntryUpdate.fields.name()}
+                        type="text"
+                        defaultValue={entry?.name}
+                     />
+                  </Field>
+               </FieldGroup>
+               <div className="flex items-center justify-between gap-2 pt-6 relative">
+                  <Dropdown>
+                     <DropdownButton outline aria-label="More options">
+                        <Icon
+                           name="more-horizontal"
+                           size={16}
+                           className="text-1"
+                        />
+                     </DropdownButton>
+                     <DropdownMenu className="z-50" anchor="bottom start">
+                        <DropdownItem onClick={() => setDeleteOpen(true)}>
+                           <Icon
+                              className="mr-2 text-red-400"
+                              name="trash"
+                              size={14}
+                           />
+                           <DropdownLabel className="font-semibold">
+                              Delete
+                           </DropdownLabel>
+                        </DropdownItem>
+                     </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex items-center gap-3">
+                     {isChanged && !disabled && (
+                        <Button
+                           plain
+                           type="button"
+                           onClick={() => {
+                              //@ts-ignore
+                              zoEntryUpdate.refObject.current.reset();
+                              setIsChanged(false);
+                           }}
+                        >
+                           <Icon
+                              title="Reset"
+                              size={14}
+                              name="refresh-ccw"
+                              className="text-1"
+                           />
+                        </Button>
+                     )}
+                     <Button
+                        name="intent"
+                        value="updateEntry"
+                        type="submit"
+                        disabled={disabled || isChanged === false}
+                     >
+                        {saving ? (
+                           <>
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                              Saving
+                           </>
+                        ) : (
+                           "Update Entry"
+                        )}
+                     </Button>
+                  </div>
+               </div>
+            </fetcher.Form>
+         </Dialog>
+         <Alert open={isDeleteOpen} onClose={setDeleteOpen}>
+            <AlertTitle>
+               Are you sure you want to delete this entry permanently?
+            </AlertTitle>
+            <AlertDescription>You cannot undo this action.</AlertDescription>
+            <AlertActions>
+               <Button
+                  plain
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  onClick={() => setDeleteOpen(false)}
+               >
+                  Cancel
+               </Button>
+               <Button
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  color="red"
+                  onClick={() =>
+                     fetcher.submit(
+                        {
+                           intent: "deleteEntry",
+                           entryId: entry.id,
+                        },
+                        { method: "DELETE", action: "/collections/entry" },
+                     )
+                  }
+               >
+                  {deleting && (
+                     <Icon
+                        name="loader-2"
+                        size={16}
+                        className="mx-auto animate-spin"
+                     />
+                  )}
+                  Delete
+               </Button>
+            </AlertActions>
+         </Alert>
       </>
    );
 }

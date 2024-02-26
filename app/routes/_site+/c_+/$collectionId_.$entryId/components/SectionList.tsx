@@ -12,6 +12,7 @@ import {
 import type { Collection } from "~/db/payload-types";
 
 import { SortableSectionItem } from "./SortableSectionItem";
+import type { Section } from "../../_components/List";
 
 export function SectionList({
    setIsChanged,
@@ -21,7 +22,7 @@ export function SectionList({
 }: {
    setIsChanged: (value: boolean) => void;
    collection: Collection | undefined;
-   allSections: Collection["sections"];
+   allSections: Section[] | undefined | null;
    setAllSections: (sections: any) => void;
 }) {
    const [activeId, setActiveId] = useState<string | null>(null);

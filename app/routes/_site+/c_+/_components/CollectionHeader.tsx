@@ -1,18 +1,37 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 
 import { Menu } from "@headlessui/react";
 import { Float } from "@headlessui-float/react";
 import { useLocation, useMatches, NavLink, Link } from "@remix-run/react";
 import clsx from "clsx";
 
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import type { Collection } from "~/db/payload-types";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionImageUploader } from "./CollectionImageUploader";
+import type { Section } from "./List";
+import { AddSection } from "../$collectionId_.$entryId/components/AddSection";
+import { CollectionEdit } from "../$collectionId_.$entryId/components/CollectionEdit";
+import { EntryEdit } from "../$collectionId_.$entryId/components/EntryEdit";
+import { SectionCommandBar } from "../$collectionId_.$entryId/components/SectionCommandBar";
+import { SectionList } from "../$collectionId_.$entryId/components/SectionList";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
-export function CollectionHeader() {
+export function CollectionHeader({
+   setIsChanged,
+   isChanged,
+   setAllSections,
+   allSections,
+}: {
+   setAllSections: (sections: any) => void;
+   isChanged: boolean;
+   setIsChanged: (value: boolean) => void;
+   allSections: Section[] | undefined | null;
+}) {
    const { site } = useSiteLoaderData();
 
    const { entry } = (useMatches()?.[2]?.data as {
@@ -26,7 +45,7 @@ export function CollectionHeader() {
 
    const collection = site?.collections?.find(
       (collection) => collection.slug === collectionSlug,
-   );
+   ) as Collection;
 
    const entryName = entry?.name;
 
@@ -43,11 +62,62 @@ export function CollectionHeader() {
    const actionPath = isEntry
       ? `/c/${collection?.slug}/${entry?.id}`
       : "/collections";
+   const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
    return (
       <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">
-         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 z-20 relative">
-            <div className="flex items-center justify-between gap-4">
+         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-3 z-20 relative">
+            <AdminOrStaffOrOwner>
+               <div className="flex items-center justify-between gap-3 pb-3">
+                  <Button
+                     color="zinc"
+                     onClick={() => setSectionsOpen(!isSectionsOpen)}
+                     className="flex items-center gap-2"
+                  >
+                     <div className="flex items-center gap-1.5">
+                        <div className="text-xs !text-white rounded-full size-5 bg-zinc-500 flex items-center justify-center">
+                           {collection?.sections?.length}
+                        </div>
+                        <div className="text-sm">Sections</div>
+                        <Icon
+                           name="chevron-down"
+                           className={clsx(
+                              isSectionsOpen ? "rotate-180" : "",
+                              "transform transition duration-300 ease-in-out ml-1",
+                           )}
+                           size={16}
+                        />
+                     </div>
+                  </Button>
+                  {entry ? (
+                     <EntryEdit entry={entry} />
+                  ) : (
+                     <CollectionEdit collection={collection} />
+                  )}
+               </div>
+               {isSectionsOpen && (
+                  <>
+                     <AddSection
+                        collection={collection}
+                        setAllSections={setAllSections}
+                     />
+                     <SectionList
+                        setIsChanged={setIsChanged}
+                        setAllSections={setAllSections}
+                        allSections={allSections}
+                        collection={collection}
+                     />
+                  </>
+               )}
+               <SectionCommandBar
+                  collection={collection}
+                  allSections={allSections}
+                  setAllSections={setAllSections}
+                  isChanged={isChanged}
+                  setIsChanged={setIsChanged}
+               />
+            </AdminOrStaffOrOwner>
+            <div className="flex items-center justify-between gap-4 pt-2">
                <h1 className="font-bold font-header text-2xl laptop:text-3xl">
                   {entryName ?? collection?.name}
                </h1>

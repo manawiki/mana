@@ -11,6 +11,7 @@ import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionI
 
 import type { Flatten } from "./Section";
 import { SectionTitle } from "./SectionTitle";
+// eslint-disable-next-line import/no-cycle
 import { SubSection } from "./SubSection";
 import { SubSectionTabs } from "./SubSectionTabs";
 import { TableOfContents } from "../../_components/TableOfContents";

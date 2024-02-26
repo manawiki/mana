@@ -9,6 +9,8 @@ import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
+import type { Section } from "../../_components/List";
+
 export function SectionCommandBar({
    collection,
    isChanged,
@@ -19,7 +21,7 @@ export function SectionCommandBar({
    collection: Collection | undefined;
    isChanged: boolean;
    setIsChanged: (value: boolean) => void;
-   allSections: Collection["sections"];
+   allSections: Section[] | undefined | null;
    setAllSections: (sections: any) => void;
 }) {
    const fetcher = useFetcher();

@@ -19,7 +19,7 @@ export function ColumnTwo() {
                   className={({ isActive }) =>
                      clsx(
                         isActive
-                           ? "bg-zinc-100/80 dark:bg-bg3Dark/35"
+                           ? "bg-zinc-100/80 text-zinc-600 dark:bg-bg3Dark/35 dark:text-zinc-300"
                            : "hover:dark:bg-bg3Dark/35 hover:bg-zinc-100/80",
                         "flex items-center gap-3 text-1 p-2 max-desktop:justify-center desktop:pl-4 desktop:p-2 relative border-b border-zinc-200/50 dark:border-zinc-700/40",
                      )
