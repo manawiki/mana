@@ -19,7 +19,7 @@ export function Contributors({
             <div className="flex items-center gap-2">
                <div className="flex items-center -space-x-1">
                   <Tooltip>
-                     <TooltipTrigger>
+                     <TooltipTrigger title={site?.owner?.username ?? undefined}>
                         <Avatar
                            src={site?.owner?.avatar?.url}
                            //@ts-ignore
@@ -33,7 +33,9 @@ export function Contributors({
                   {site.admins?.length != 0 &&
                      site.admins?.map((user: any) => (
                         <Tooltip key={user.id}>
-                           <TooltipTrigger>
+                           <TooltipTrigger
+                              title={site?.owner?.username ?? undefined}
+                           >
                               <Avatar
                                  src={user?.avatar?.url}
                                  initials={user?.username.charAt(0)}
@@ -47,7 +49,9 @@ export function Contributors({
                   {site.contributors?.length != 0 &&
                      site.contributors?.map((user: any) => (
                         <Tooltip key={user.id}>
-                           <TooltipTrigger>
+                           <TooltipTrigger
+                              title={site?.owner?.username ?? undefined}
+                           >
                               <Avatar
                                  src={user?.avatar?.url}
                                  initials={user?.username.charAt(0)}

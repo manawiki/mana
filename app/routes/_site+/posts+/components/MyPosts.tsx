@@ -158,7 +158,7 @@ export function MyPosts() {
                               {post.publishedAt &&
                                  post.content?._status == "draft" && (
                                     <Tooltip>
-                                       <TooltipTrigger>
+                                       <TooltipTrigger title="Unpublished changes">
                                           <Icon
                                              name="pencil"
                                              size={12}
@@ -172,14 +172,14 @@ export function MyPosts() {
                                  )}
                               {post.publishedAt ? (
                                  <Tooltip>
-                                    <TooltipTrigger>
+                                    <TooltipTrigger title="Published">
                                        <div className="h-2 w-2 rounded-full bg-green-300 dark:bg-green-400" />
                                     </TooltipTrigger>
                                     <TooltipContent>Published</TooltipContent>
                                  </Tooltip>
                               ) : (
                                  <Tooltip>
-                                    <TooltipTrigger>
+                                    <TooltipTrigger title="Draft">
                                        <div className="h-2 w-2 rounded-full bg-zinc-300 dark:bg-zinc-500" />
                                     </TooltipTrigger>
                                     <TooltipContent>Draft</TooltipContent>

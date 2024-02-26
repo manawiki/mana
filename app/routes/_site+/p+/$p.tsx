@@ -155,6 +155,7 @@ export default function Post() {
                                  <>
                                     <Tooltip placement="right">
                                        <TooltipTrigger
+                                          title="Banner"
                                           onClick={() =>
                                              setIsBannerShowing((v) => !v)
                                           }

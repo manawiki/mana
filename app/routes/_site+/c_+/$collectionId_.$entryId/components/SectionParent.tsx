@@ -116,7 +116,7 @@ export function SectionParent({
                      {isActiveSection && (
                         <div className="flex items-center gap-1">
                            <Tooltip setDelay={1000} placement="top">
-                              <TooltipTrigger asChild>
+                              <TooltipTrigger title="Next Section" asChild>
                                  <Link
                                     to={`#${prevToCItem?.id}`}
                                     className="p-1.5 block rounded-md hover:bg-zinc-100 dark:hover:bg-dark450"
@@ -137,7 +137,7 @@ export function SectionParent({
                               </TooltipContent>
                            </Tooltip>
                            <Tooltip setDelay={1000} placement="top">
-                              <TooltipTrigger asChild>
+                              <TooltipTrigger title="Previous Section" asChild>
                                  <Link
                                     to={`#${nextToCItem?.id}`}
                                     className="p-1.5 block rounded-md hover:bg-zinc-100 dark:hover:bg-dark450"

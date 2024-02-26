@@ -23,6 +23,7 @@ export function PostAuthorHeader({ post }: { post: PostData }) {
                <div className="flex items-center gap-3">
                   <Tooltip placement="top" setDelay={800}>
                      <TooltipTrigger
+                        title="Last Updated"
                         contentEditable={false}
                         className="flex items-center gap-1"
                      >
@@ -48,6 +49,7 @@ export function PostAuthorHeader({ post }: { post: PostData }) {
                         <span className="h-1 w-1 rounded-full bg-zinc-300"></span>
                         <Tooltip placement="top" setDelay={800}>
                            <TooltipTrigger
+                              title="Published Date"
                               contentEditable={false}
                               className="flex items-center gap-1"
                            >
