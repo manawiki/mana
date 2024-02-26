@@ -9,8 +9,7 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
    doc, // deleted document
 }) => {
    try {
-      //If depth is greater that 0, need to check the nested site
-      const siteId = doc.site.id ?? doc.site;
+      const siteId = doc?.site?.id;
 
       const currentCollections = await payload.findByID({
          collection: "sites",

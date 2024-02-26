@@ -103,8 +103,8 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
 
    return (
       <>
-         <Button color="zinc" onClick={() => setSettingsOpen(true)}>
-            <Icon name="settings" size={14} />
+         <Button color="dark/zinc" onClick={() => setSettingsOpen(true)}>
+            <Icon name="pencil" size={12} />
             Edit
          </Button>
          <Dialog

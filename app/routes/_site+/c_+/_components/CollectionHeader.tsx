@@ -70,24 +70,18 @@ export function CollectionHeader({
             <AdminOrStaffOrOwner>
                <div className="flex items-center justify-between gap-3 pb-3">
                   <Button
-                     color="zinc"
+                     color="dark/zinc"
                      onClick={() => setSectionsOpen(!isSectionsOpen)}
-                     className="flex items-center gap-2"
                   >
-                     <div className="flex items-center gap-1.5">
-                        <div className="text-xs !text-white rounded-full size-5 bg-zinc-500 flex items-center justify-center">
-                           {collection?.sections?.length}
-                        </div>
-                        <div className="text-sm">Sections</div>
-                        <Icon
-                           name="chevron-down"
-                           className={clsx(
-                              isSectionsOpen ? "rotate-180" : "",
-                              "transform transition duration-300 ease-in-out ml-1",
-                           )}
-                           size={16}
-                        />
-                     </div>
+                     Sections
+                     <Icon
+                        name="chevron-down"
+                        className={clsx(
+                           isSectionsOpen ? "rotate-180" : "",
+                           "transform transition duration-300 ease-in-out",
+                        )}
+                        size={16}
+                     />
                   </Button>
                   {entry ? (
                      <EntryEdit entry={entry} />
@@ -164,7 +158,7 @@ export function CollectionHeader({
                         placement="bottom-start"
                         portal
                      >
-                        <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-1 pl-2 pr-1.5 py-2 rounded-lg">
+                        <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-100 hover:dark:bg-dark450 mx-1 pl-2 pr-1.5 py-2 rounded-lg">
                            <span className="font-bold text-1 text-xs">
                               {collection?.name}
                            </span>
@@ -211,7 +205,7 @@ export function CollectionHeader({
                                              />
                                           )}
                                        </span>
-                                       <span className="text-xs font-semibold text-1 flex-none">
+                                       <span className="text-xs font-semibold text-1 truncate">
                                           {row.name}
                                        </span>
                                     </NavLink>
@@ -229,10 +223,9 @@ export function CollectionHeader({
                />
                <Link
                   to={`/c/${collection?.slug}`}
-                  className={clsx(
-                     !entryName ? "underline" : "",
-                     "pl-4 pr-3 font-bold text-1 text-xs flex items-center gap-2 hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2",
-                  )}
+                  className="font-bold ml-3 text-1  text-xs flex items-center gap-2 bg-zinc-200/90
+                  dark:bg-dark450 rounded-md dark:text-dark100 dark:decoration-dark300
+                 px-2 py-0.5 hover:bg-zinc-100 dark:hover:bg-dark500"
                >
                   List
                </Link>
@@ -241,10 +234,14 @@ export function CollectionHeader({
                      <Icon
                         name="chevron-right"
                         title="Entry"
-                        className="text-1"
+                        className="text-1 ml-2 "
                         size={12}
                      />
-                     <span className="font-bold pl-3 text-1 underline text-xs flex items-center gap-2 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2">
+                     <span
+                        className="font-bold  text-xs flex items-center gap-2 ml-2 bg-zinc-200
+                     dark:bg-dark500 rounded-full dark:text-dark100 dark:decoration-dark300
+                    px-2.5 py-0.5"
+                     >
                         Entry
                      </span>
                   </>
