@@ -103,15 +103,12 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
 
    return (
       <>
-         <button
-            className="size-7 !p-0 bg-white shadow shadow-1 hover:bg-zinc-100 dark:hover:border-zinc-400/50
-            border border-zinc-200 rounded-lg flex items-center justify-center dark:bg-dark450 dark:border-zinc-500/60"
-            onClick={() => setSettingsOpen(true)}
-         >
+         <Button color="zinc" onClick={() => setSettingsOpen(true)}>
             <Icon name="settings" size={14} />
-         </button>
+            Edit
+         </Button>
          <Dialog
-            size="2xl"
+            size="xl"
             onClose={() => {
                setSettingsOpen(false);
             }}
@@ -275,43 +272,45 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                         </DropdownItem>
                      </DropdownMenu>
                   </Dropdown>
-                  {isChanged && !disabled && (
-                     <Button
-                        plain
-                        type="button"
-                        onClick={() => {
-                           //@ts-ignore
-                           zoCollectionUpdate.refObject.current.reset();
-                           setIsChanged(false);
-                        }}
-                     >
-                        <Icon
-                           title="Reset"
-                           size={14}
-                           name="refresh-ccw"
-                           className="text-1"
-                        />
-                     </Button>
-                  )}
-                  <Button
-                     name="intent"
-                     value="updateCollection"
-                     type="submit"
-                     disabled={disabled || isChanged === false}
-                  >
-                     {saving ? (
-                        <>
+                  <div className="flex items-center gap-3">
+                     {isChanged && !disabled && (
+                        <Button
+                           plain
+                           type="button"
+                           onClick={() => {
+                              //@ts-ignore
+                              zoCollectionUpdate.refObject.current.reset();
+                              setIsChanged(false);
+                           }}
+                        >
                            <Icon
-                              name="loader-2"
+                              title="Reset"
                               size={14}
-                              className="animate-spin text-white"
+                              name="refresh-ccw"
+                              className="text-1"
                            />
-                           Saving
-                        </>
-                     ) : (
-                        "Update Collection"
+                        </Button>
                      )}
-                  </Button>
+                     <Button
+                        name="intent"
+                        value="updateCollection"
+                        type="submit"
+                        disabled={disabled || isChanged === false}
+                     >
+                        {saving ? (
+                           <>
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                              Saving
+                           </>
+                        ) : (
+                           "Update Collection"
+                        )}
+                     </Button>
+                  </div>
                </div>
             </fetcher.Form>
          </Dialog>

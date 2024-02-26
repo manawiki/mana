@@ -6,10 +6,8 @@ import type { SerializeFrom } from "@remix-run/server-runtime";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionId_.$entryId/_entry";
 
-import { EntryEdit } from "./EntryEdit";
 import { ScrollToHashElement } from "./ScrollToHashElement";
 import { SectionParent } from "./SectionParent";
-import type { Section } from "./Sections";
 import { AdPlaceholder, AdUnit } from "../../../_components/Ramp";
 import { TableOfContents } from "../../_components/TableOfContents";
 
@@ -68,7 +66,6 @@ export function Section({
 
    return (
       <div className="relative">
-         <EntryEdit />
          <TableOfContents entry={entry} sections={entry.sections} />
          {entry.sections?.map((section) => (
             <div key={section.id}>
