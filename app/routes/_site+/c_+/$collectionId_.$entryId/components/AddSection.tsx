@@ -110,7 +110,7 @@ export function AddSection({
                   <Label className="!text-xs text-1">Show Ad</Label>
                   <Switch
                      value="true"
-                     color="dark/white"
+                     color="emerald"
                      name={zoSections.fields.showAd()}
                   />
                </SwitchField>
@@ -119,7 +119,7 @@ export function AddSection({
                   <Switch
                      defaultChecked
                      value="true"
-                     color="dark/white"
+                     color="emerald"
                      name={zoSections.fields.showTitle()}
                   />
                </SwitchField>
@@ -127,6 +127,7 @@ export function AddSection({
             <div className="max-laptop:flex items-center justify-end">
                <Button
                   disabled={disabled}
+                  color="blue"
                   className="text-sm cursor-pointer mr-0 ml-auto block"
                   name="intent"
                   value="addSection"
