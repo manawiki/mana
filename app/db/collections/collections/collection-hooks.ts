@@ -9,14 +9,9 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
    doc, // deleted document
 }) => {
    try {
-      const siteId = doc?.site?.id;
+      const siteId = doc?.site?.id ?? doc?.site;
 
-      const currentCollections = await payload.findByID({
-         collection: "sites",
-         id: siteId,
-      });
-
-      const iconId = doc.icon.id;
+      const iconId = doc?.icon?.id ?? doc?.icon;
 
       if (iconId) {
          await payload.delete({
@@ -26,16 +21,13 @@ export const afterDeleteHook: CollectionAfterDeleteHook = async ({
             user,
          });
       }
-
-      if (currentCollections?.collections) {
+      if (doc?.site?.collections) {
          let collections = [] as string[];
 
-         if (doc.site?.collections.length > 1) {
-            //Delete existing collection from site
-            collections = currentCollections.collections
-               .map(({ id }: { id: string }) => id)
-               .filter((item) => item !== id)
-               .filter((e) => e);
+         if (doc.site?.collections?.length > 1) {
+            collections = doc?.site?.collections.filter(
+               (item: string) => item !== id,
+            );
          }
 
          payload.update({
