@@ -1,5 +1,9 @@
 import { json, redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+   ActionFunctionArgs,
+   LoaderFunctionArgs,
+   MetaFunction,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { jsonWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
@@ -131,3 +135,19 @@ export async function action({
       }
    }
 }
+
+export const meta: MetaFunction = ({ matches }: any) => {
+   const site = matches?.[1].data?.site;
+
+   const title = site?.name;
+   const collections = site?.collections?.map(
+      (collection: any) => collection?.name,
+   );
+
+   const description = `Explore ${collections?.join(
+      ", ",
+   )} on ${site?.name}, Database, Guides, News, and more!`;
+   const image = site?.banner?.url;
+
+   return getMeta({ title, description, image, siteName: site?.name });
+};
