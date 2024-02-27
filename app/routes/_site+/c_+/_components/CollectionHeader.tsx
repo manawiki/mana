@@ -66,7 +66,7 @@ export function CollectionHeader({
 
    return (
       <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">
-         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-3 z-20 relative">
+         <div className="mx-auto max-w-[728px] tablet:pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-3 z-20 relative">
             <AdminOrStaffOrOwner>
                <div className="flex items-center justify-between gap-3 pb-3">
                   <Button
@@ -112,10 +112,14 @@ export function CollectionHeader({
                />
             </AdminOrStaffOrOwner>
             <div className="flex items-center justify-between gap-4 pt-2">
-               <h1 className="font-bold font-header text-2xl laptop:text-3xl">
+               <h1 className="font-bold font-header text-3xl">
                   {entryName ?? collection?.name}
                </h1>
-               <div className="flex-none group relative tablet:-mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
+               <div
+                  className="flex-none group relative tablet:-mr-1 border border-color-sub
+                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-1 tablet:-mb-5 flex 
+                  size-16 rounded-full overflow-hidden items-center"
+               >
                   <CollectionImageUploader
                      image={icon}
                      actionPath={actionPath}
@@ -129,7 +133,10 @@ export function CollectionHeader({
             className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
             shadow-zinc-200/40 dark:shadow-zinc-800/80 shadow-sm relative z-10"
          >
-            <div className="mx-auto max-w-[728px] flex items-center border-t py-1.5 border-zinc-100 dark:border-zinc-700/40">
+            <div
+               className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
+             py-1.5 border-zinc-100 dark:border-zinc-700/40 overflow-auto"
+            >
                <Link
                   to="/collections"
                   className="flex items-center gap-2 group pr-3"

@@ -180,7 +180,7 @@ export function SortableSubSectionItem({
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md",
+                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md touch-none",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}

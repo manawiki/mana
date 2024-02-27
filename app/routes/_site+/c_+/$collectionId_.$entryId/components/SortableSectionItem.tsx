@@ -10,10 +10,10 @@ import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 
 import { AddSubSection } from "./AddSubSection";
-import type { Section } from "./Sections";
 import { SectionType } from "./SectionType";
 import { SubSectionList } from "./SubSectionList";
 import { UpdateSection } from "./UpdateSection";
+import type { Section } from "../../_components/List";
 
 export function SortableSectionItem({
    section,
@@ -69,7 +69,7 @@ export function SortableSectionItem({
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark450 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md",
+                  "dark:hover:bg-dark450 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md touch-none",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}
@@ -80,7 +80,7 @@ export function SortableSectionItem({
             <span className="text-sm">{section?.name}</span>
          </div>
          <div className="flex items-center -space-x-1">
-            {section?.subSections?.map((subSection) => (
+            {section?.subSections?.map((subSection: any) => (
                <SectionType key={subSection.name} type={subSection.type} />
             ))}
          </div>

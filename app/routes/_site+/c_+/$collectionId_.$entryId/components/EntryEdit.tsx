@@ -65,7 +65,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                   value={entry.id}
                />
                <FieldGroup>
-                  <Field disabled={disabled} className="w-full">
+                  <Field disabled={disabled}>
                      <Label>Entry Name</Label>
                      <Input
                         required
@@ -74,6 +74,33 @@ export function EntryEdit({ entry }: { entry: any }) {
                         defaultValue={entry?.name}
                      />
                   </Field>
+                  <Field disabled={disabled}>
+                     <Label>Entry Slug</Label>
+                     <Input
+                        required
+                        name={zoEntryUpdate.fields.slug()}
+                        type="text"
+                        defaultValue={entry?.slug}
+                     />
+                  </Field>
+                  <input
+                     readOnly
+                     type="hidden"
+                     name={zoEntryUpdate.fields.existingSlug()}
+                     value={entry?.slug}
+                  />
+                  <input
+                     readOnly
+                     type="hidden"
+                     name={zoEntryUpdate.fields.siteId()}
+                     value={entry.siteId}
+                  />
+                  <input
+                     readOnly
+                     type="hidden"
+                     name={zoEntryUpdate.fields.collectionId()}
+                     value={entry.collectionEntity}
+                  />
                </FieldGroup>
                <div className="flex items-center justify-between gap-2 pt-6 relative">
                   <Dropdown>
@@ -148,6 +175,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                <Button
                   plain
                   disabled={disabled}
+                  type="button"
                   className="text-sm cursor-pointer"
                   onClick={() => setDeleteOpen(false)}
                >
@@ -157,6 +185,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                   disabled={disabled}
                   className="text-sm cursor-pointer"
                   color="red"
+                  type="button"
                   onClick={() =>
                      fetcher.submit(
                         {
