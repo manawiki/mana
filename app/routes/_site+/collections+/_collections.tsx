@@ -94,6 +94,7 @@ export const action: ActionFunction = async ({
                },
                overrideAccess: false,
                user,
+               depth: 0,
             });
             if (entriesExist.totalDocs != 0) {
                return jsonWithError(
@@ -106,6 +107,7 @@ export const action: ActionFunction = async ({
                id: collectionId,
                user,
                overrideAccess: false,
+               depth: 1,
             });
             return redirectWithSuccess("/collections", "Collection deleted");
          } catch (error) {

@@ -1,4 +1,4 @@
-import { Collections } from "./collections/config";
+import { Collections } from "./collections/collection-config";
 import { Comments } from "./comments/config";
 import { ContentEmbeds } from "./content-embeds/config";
 import { CustomPages } from "./custom-pages/config";
