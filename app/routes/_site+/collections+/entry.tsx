@@ -67,8 +67,57 @@ export const action: ActionFunction = async ({
          }
       }
       case "updateEntry": {
-         const results = await zx.parseForm(request, EntrySchemaUpdateSchema);
          try {
+            const results = await zx.parseForm(
+               request,
+               EntrySchemaUpdateSchema,
+            );
+
+            //Slug has changed
+            if (results.slug !== results.existingSlug) {
+               //Check if slug already exists
+               const entry = await payload.find({
+                  collection: "entries",
+                  where: {
+                     slug: {
+                        equals: results.slug,
+                     },
+                     site: {
+                        equals: results.siteId,
+                     },
+                     collectionEntity: {
+                        equals: results.collectionId,
+                     },
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               if (entry.totalDocs == 0) {
+                  const updatedEntry = await payload.update({
+                     collection: "entries",
+                     id: results.entryId,
+                     data: {
+                        ...results,
+                     },
+                     user,
+                     overrideAccess: false,
+                  });
+                  //TODO Add support to update custom site if custom database option is enabled
+                  //Redirect to new slug if changed
+                  if (updatedEntry.slug !== results.existingSlug) {
+                     return redirectWithSuccess(
+                        `/c/${updatedEntry.collectionEntity?.slug}/${results.slug}`,
+                        "Entry updated",
+                     );
+                  }
+                  return jsonWithSuccess(null, "Entry updated");
+               }
+               return jsonWithError(
+                  null,
+                  `Entry with "/${results.slug}" path already exists.`,
+               );
+            }
+            //Slug has not changed
             await payload.update({
                collection: "entries",
                id: results.entryId,
@@ -104,6 +153,10 @@ export const action: ActionFunction = async ({
                   "Entry deleted",
                );
             }
+            return jsonWithError(
+               null,
+               "Something went wrong...unable to delete collection",
+            );
          } catch (error) {
             payload.logger.error(`${error}`);
             return jsonWithError(
