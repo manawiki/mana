@@ -22,7 +22,7 @@ export const listMeta: MetaFunction = ({ matches }: { matches: any }) => {
    const description =
       `Browse ${collection?.name} ` +
       sections.join(", ") +
-      `on ${site?.name}. `;
+      ` on ${site?.name}. `;
 
    return getMeta({ title, description, icon, siteName: site?.name });
 };
