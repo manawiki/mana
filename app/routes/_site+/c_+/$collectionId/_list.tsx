@@ -17,6 +17,7 @@ import type { Entry } from "payload/generated-types";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
@@ -96,52 +97,48 @@ export default function CollectionList() {
          <section className="relative">
             <AdminOrStaffOrOwner>
                {!collection?.customDatabase && (
-                  <div className="pt-1">
-                     <fetcher.Form
-                        ref={zoEntry.ref}
-                        className="dark:bg-dark350 border  focus-within:border-zinc-200 
-                        dark:focus-within:border-zinc-500/70 border-color-sub rounded-xl 
-                        shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
-                        method="post"
-                        action="/collections/entry"
+                  <fetcher.Form
+                     ref={zoEntry.ref}
+                     className="mb-3 flex items-center justify-between gap-3"
+                     method="post"
+                     action="/collections/entry"
+                  >
+                     <Input
+                        required
+                        placeholder="Type an entry name..."
+                        name={zoEntry.fields.name()}
+                        type="text"
+                        className="w-full focus:outline-none !bg-transparent text-sm focus:border-0 focus:ring-0 border-0"
+                     />
+                     <input
+                        value={collection?.id}
+                        name={zoEntry.fields.collectionId()}
+                        type="hidden"
+                     />
+                     <input
+                        value={site?.id}
+                        name={zoEntry.fields.siteId()}
+                        type="hidden"
+                     />
+                     <Button
+                        className="h-11 tablet:h-9 w-24"
+                        name="intent"
+                        value="addEntry"
+                        type="submit"
+                        color="blue"
                      >
-                        <input
-                           required
-                           placeholder="Type an entry name..."
-                           name={zoEntry.fields.name()}
-                           type="text"
-                           className="w-full focus:outline-none bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
-                        />
-                        <input
-                           value={collection?.id}
-                           name={zoEntry.fields.collectionId()}
-                           type="hidden"
-                        />
-                        <input
-                           value={site?.id}
-                           name={zoEntry.fields.siteId()}
-                           type="hidden"
-                        />
-                        <Button
-                           className="text-xs !py-1.5 !pl-2 !font-bold"
-                           name="intent"
-                           value="addEntry"
-                           type="submit"
-                           color="dark/white"
-                        >
-                           {addingUpdate ? (
-                              <Icon
-                                 name="loader-2"
-                                 size={14}
-                                 className="animate-spin "
-                              />
-                           ) : (
-                              <Icon name="plus" size={14} />
-                           )}
-                           Add
-                        </Button>
-                     </fetcher.Form>
-                  </div>
+                        {addingUpdate ? (
+                           <Icon
+                              name="loader-2"
+                              size={14}
+                              className="animate-spin "
+                           />
+                        ) : (
+                           <Icon name="plus" size={14} />
+                        )}
+                        Add
+                     </Button>
+                  </fetcher.Form>
                )}
             </AdminOrStaffOrOwner>
 

@@ -7,8 +7,8 @@ import { toast } from "sonner";
 import urlSlug from "url-slug";
 
 import { Button } from "~/components/Button";
+import { DotLoader } from "~/components/DotLoader";
 import { Field, Label } from "~/components/Fieldset";
-import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import type { Site } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
@@ -56,69 +56,66 @@ export function AddCollection({
             ref={zoCollection.ref}
             className={clsx(
                collectionName
-                  ? "shadow-sm shadow-1 mb-3 bg-zinc-50 dark:bg-dark400 border focus-within:border-zinc-300 border-zinc-200 p-3 dark:focus-within:border-zinc-500/70 dark:border-zinc-600 rounded-xl"
+                  ? "shadow-sm shadow-1 mb-3 bg-zinc-50 dark:bg-dark400 border dark:border-zinc-600/40 p-4 rounded-xl"
                   : "",
-               "mb-6 tablet:mb-4 max-tablet:space-y-3 tablet:flex items-center gap-4",
+               "mb-6 tablet:mb-4 max-tablet:space-y-4 tablet:flex items-center gap-4",
             )}
             method="POST"
             action="/collections"
          >
-            <Field
-               disabled={disabled}
-               className="tablet:flex items-center gap-4 flex-none flex-grow"
-            >
-               <Label className={clsx(collectionName ? "" : "hidden")}>
-                  Name
-               </Label>
-               <Input
+            <div className="tablet:flex items-center gap-6 max-tablet:space-y-6 flex-grow">
+               <Field
                   disabled={disabled}
-                  placeholder="Type a collection name..."
-                  name={zoCollection.fields.name()}
-                  type="text"
-                  value={collectionName}
-                  className="tablet:!mt-0"
-                  onChange={(e) => {
-                     setCollectionName(e.target.value);
-                     setCollectionSlug(urlSlug(e.target.value));
-                  }}
-               />
-            </Field>
-            {collectionName && (
-               <div className="flex-none">
-                  <Field className="tablet:flex gap-2 items-baseline justify-center">
-                     <Label>Slug</Label>
-                     <Input
-                        disabled={disabled}
-                        className="flex-none !w-auto !text-xs !focus:outline-none tablet:!mt-0"
-                        name={zoCollection.fields.slug()}
-                        value={collectionSlug}
-                        onChange={(e) => {
-                           setCollectionSlug(e.target.value);
-                        }}
-                        type="text"
-                     />
-                  </Field>
-                  <input
-                     value={site.id}
-                     name={zoCollection.fields.siteId()}
-                     type="hidden"
+                  className="tablet:flex items-center gap-4 flex-none flex-grow"
+               >
+                  <Label className={clsx(collectionName ? "" : "hidden")}>
+                     Name
+                  </Label>
+                  <Input
+                     disabled={disabled}
+                     placeholder="Type a collection name..."
+                     name={zoCollection.fields.name()}
+                     type="text"
+                     value={collectionName}
+                     className="tablet:!mt-0"
+                     onChange={(e) => {
+                        setCollectionName(e.target.value);
+                        setCollectionSlug(urlSlug(e.target.value));
+                     }}
                   />
-               </div>
-            )}
+               </Field>
+               {collectionName && (
+                  <div className="flex-none">
+                     <Field className="tablet:flex gap-2 items-baseline justify-center">
+                        <Label>Slug</Label>
+                        <Input
+                           disabled={disabled}
+                           className="flex-none !w-auto !text-xs !focus:outline-none tablet:!mt-0"
+                           name={zoCollection.fields.slug()}
+                           value={collectionSlug}
+                           onChange={(e) => {
+                              setCollectionSlug(e.target.value);
+                           }}
+                           type="text"
+                        />
+                     </Field>
+                     <input
+                        value={site.id}
+                        name={zoCollection.fields.siteId()}
+                        type="hidden"
+                     />
+                  </div>
+               )}
+            </div>
             <Button
-               className="max-tablet:w-full !flex flex-none"
+               className="max-tablet:w-full w-32 h-11 tablet:h-9"
                name="intent"
                value="addCollection"
                type="submit"
-               color="dark/white"
+               color="blue"
                disabled={disabled}
             >
-               {adding ? (
-                  <Icon name="loader-2" size={15} className="animate-spin " />
-               ) : (
-                  <Icon name="plus" size={15} />
-               )}
-               Add Collection
+               {adding ? <DotLoader /> : "Add Collection"}
             </Button>
          </fetcher.Form>
       </AdminOrStaffOrOwner>

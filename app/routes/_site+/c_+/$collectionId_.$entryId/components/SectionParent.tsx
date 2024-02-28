@@ -65,12 +65,12 @@ export function SectionParent({
          <>
             {isActiveSection && (
                <div
-                  className="fixed top-[117px] max-tablet:left-0 max-tablet:px-3 laptop:top-[50px] 
-                  flex items-center h-[76px] bg-3 w-full tablet:w-[736px] laptop:-mx-1 z-30"
+                  className="fixed top-[117px] max-tablet:left-0 max-tablet:px-3 laptop:top-[61px]
+                  flex items-center max-tablet:bg-3 w-full tablet:w-[736px] laptop:-mx-1 z-30 max-laptop:py-3"
                >
                   <div
-                     className="flex items-center w-full justify-between bg-3-sub shadow shadow-1 
-                     px-2.5 py-2 border rounded-xl dark:border-zinc-600/50 laptop:mt-3"
+                     className="flex items-center w-full justify-between bg-3-sub laptop:shadow-sm shadow-1
+                     px-2.5 py-2 laptop:pb-2.5 border laptop:border-t-0 max-laptop:rounded-xl rounded-b-xl dark:border-zinc-600/50"
                   >
                      <div className="flex items-center gap-2.5">
                         <Popover>

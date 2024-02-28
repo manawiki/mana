@@ -71,7 +71,6 @@ export function AddSection({
                <Label className={clsx(sectionName ? "" : "hidden")}>Name</Label>
                <Input
                   required
-                  autoFocus
                   placeholder="Type a section name..."
                   name={zoSections.fields.name()}
                   onChange={(e) => {
@@ -85,7 +84,6 @@ export function AddSection({
             </Field>
             {!sectionName && (
                <Button color="blue" type="button" className="max-tablet:w-full">
-                  <Icon name="plus" className="text-white" size={14} />
                   Add Section
                </Button>
             )}
