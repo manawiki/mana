@@ -12,7 +12,7 @@ import { Switch, SwitchField } from "~/components/Switch";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
-import type { Section } from "./Sections";
+import type { Section } from "../../_components/List";
 
 export const SectionUpdateSchema = z.object({
    sectionName: z.string(),
@@ -152,6 +152,7 @@ export function UpdateSection({
                      name="intent"
                      value="updateSection"
                      type="submit"
+                     color="zinc"
                      disabled={disabled || isSectionUpdateFormChanged === false}
                   >
                      {savingUpdateSection ? (

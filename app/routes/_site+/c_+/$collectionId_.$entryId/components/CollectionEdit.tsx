@@ -104,12 +104,11 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
    return (
       <>
          <Button
-            color="dark/white"
-            className="max-tablet:!py-1.5"
+            color="blue"
+            className="size-8 !p-0"
             onClick={() => setSettingsOpen(true)}
          >
-            <Icon name="pencil" size={12} />
-            Edit
+            <Icon name="settings" size={16} />
          </Button>
          <Dialog
             size="xl"
@@ -299,6 +298,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                         name="intent"
                         value="updateCollection"
                         type="submit"
+                        color="blue"
                         disabled={disabled || isChanged === false}
                      >
                         {saving ? (

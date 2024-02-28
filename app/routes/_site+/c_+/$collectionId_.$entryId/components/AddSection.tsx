@@ -50,7 +50,7 @@ export function AddSection({
             sectionName
                ? "border p-4 rounded-xl bg-zinc-50 dark:bg-dark400 dark:border-zinc-600/40 tablet:shadow-sm shadow-1 pb-4"
                : "",
-            "gap-4 mb-3 max-tablet:mx-3 max-tablet:my-4",
+            "gap-4 max-tablet:mx-3 my-3",
          )}
          method="post"
          action="/collections/sections"
@@ -83,7 +83,7 @@ export function AddSection({
                />
             </Field>
             {!sectionName && (
-               <Button color="blue" type="button" className="max-tablet:w-full">
+               <Button color="zinc" type="button" className="max-tablet:w-full">
                   Add Section
                </Button>
             )}
@@ -149,7 +149,7 @@ export function AddSection({
                <div className="max-laptop:flex items-center justify-end">
                   <Button
                      disabled={disabled}
-                     color="blue"
+                     color="zinc"
                      className="text-sm cursor-pointer mr-0 ml-auto block"
                      name="intent"
                      value="addSection"

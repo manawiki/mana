@@ -96,54 +96,87 @@ export default function CollectionList() {
       <List>
          <section className="relative">
             <AdminOrStaffOrOwner>
-               {!collection?.customDatabase && (
-                  <fetcher.Form
-                     ref={zoEntry.ref}
-                     className="mb-3 flex items-center justify-between gap-3"
-                     method="post"
-                     action="/collections/entry"
-                  >
-                     <Input
-                        required
-                        placeholder="Type an entry name..."
-                        name={zoEntry.fields.name()}
-                        type="text"
-                        className="w-full focus:outline-none !bg-transparent text-sm focus:border-0 focus:ring-0 border-0"
-                     />
-                     <input
-                        value={collection?.id}
-                        name={zoEntry.fields.collectionId()}
-                        type="hidden"
-                     />
-                     <input
-                        value={site?.id}
-                        name={zoEntry.fields.siteId()}
-                        type="hidden"
-                     />
-                     <Button
-                        className="h-11 tablet:h-9 w-24"
-                        name="intent"
-                        value="addEntry"
-                        type="submit"
-                        color="blue"
+               <div className="mb-3 flex items-center gap-4 w-full">
+                  {collection?.customDatabase ? (
+                     <div className="flex items-center justify-end w-full">
+                        <Button
+                           type="button"
+                           color="blue"
+                           target="_blank"
+                           className="text-sm"
+                           href={`https://${site.slug}-db.${
+                              site?.domain ? site.domain : "mana.wiki"
+                           }/admin/collections/${collection?.slug}/create`}
+                        >
+                           {addingUpdate ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin "
+                              />
+                           ) : (
+                              <Icon
+                                 className="text-blue-200"
+                                 name="plus"
+                                 size={15}
+                              />
+                           )}
+                           Add {collection?.name}
+                        </Button>
+                     </div>
+                  ) : (
+                     <fetcher.Form
+                        ref={zoEntry.ref}
+                        method="post"
+                        action="/collections/entry"
+                        className="flex items-center justify-between gap-4 flex-grow"
                      >
-                        {addingUpdate ? (
-                           <Icon
-                              name="loader-2"
-                              size={14}
-                              className="animate-spin "
-                           />
-                        ) : (
-                           <Icon name="plus" size={14} />
-                        )}
-                        Add
-                     </Button>
-                  </fetcher.Form>
-               )}
+                        <Input
+                           required
+                           placeholder="Type an entry name..."
+                           name={zoEntry.fields.name()}
+                           type="text"
+                           className="w-full focus:outline-none !bg-transparent text-sm focus:border-0 focus:ring-0 border-0"
+                        />
+                        <input
+                           value={collection?.id}
+                           name={zoEntry.fields.collectionId()}
+                           type="hidden"
+                        />
+                        <input
+                           value={site?.id}
+                           name={zoEntry.fields.siteId()}
+                           type="hidden"
+                        />
+                        <Button
+                           className="h-11 tablet:h-9 w-24"
+                           name="intent"
+                           value="addEntry"
+                           type="submit"
+                           color="blue"
+                        >
+                           {addingUpdate ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin "
+                              />
+                           ) : (
+                              <Icon
+                                 className="text-blue-200"
+                                 name="plus"
+                                 size={14}
+                              />
+                           )}
+                           Add
+                        </Button>
+                     </fetcher.Form>
+                  )}
+               </div>
             </AdminOrStaffOrOwner>
 
             {entries.docs?.length > 0 ? (
-               <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+               <div className="border-color-sub divide-color-sub divide-y overflow-hidden shadow shadow-zinc-100 dark:shadow-zinc-800/80 rounded-xl border">
                   {entries.docs?.map((entry: Entry, int: number) => (
                      <Link
                         key={entry.id}
@@ -176,7 +209,11 @@ export default function CollectionList() {
                      </Link>
                   ))}
                </div>
-            ) : null}
+            ) : (
+               <div className="text-sm text-1 border-t text-center border-color py-3 mt-4">
+                  No entries exist...
+               </div>
+            )}
          </section>
          {/* Pagination Section */}
          {totalPages > 1 && (
