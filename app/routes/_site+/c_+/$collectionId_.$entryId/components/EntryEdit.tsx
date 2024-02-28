@@ -42,7 +42,11 @@ export function EntryEdit({ entry }: { entry: any }) {
 
    return (
       <>
-         <Button color="dark/zinc" onClick={() => setSettingsOpen(true)}>
+         <Button
+            color="dark/white"
+            className="max-tablet:!py-1.5"
+            onClick={() => setSettingsOpen(true)}
+         >
             <Icon name="pencil" size={12} />
             Edit
          </Button>

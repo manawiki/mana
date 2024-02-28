@@ -3,8 +3,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import type { Collection } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 
@@ -54,10 +54,7 @@ export function SortableCollectionItem({
                      <Icon name="grip-vertical" size={16} className="text-1" />
                   </div>
                </AdminOrStaffOrOwner>
-               <div
-                  className="mr-2 border-color-sub border bg-3-sub justify-center shadow-sm shadow-1 relative
-                   flex h-8 w-8 flex-none items-center  rounded-full"
-               >
+               <div className="mr-2 justify-center relative flex size-8 flex-none items-center">
                   <AdminOrStaffOrOwner>
                      <div
                         className={clsx(
@@ -68,21 +65,13 @@ export function SortableCollectionItem({
                         )}
                      />
                   </AdminOrStaffOrOwner>
-                  {collection.icon?.url ? (
-                     <Image
-                        width={50}
-                        height={50}
-                        alt={collection.name ?? "List Icon"}
-                        options="aspect_ratio=1:1&height=80&width=80"
-                        url={collection?.icon?.url}
-                     />
-                  ) : (
-                     <Icon
-                        name="database"
-                        className="text-1 mx-auto"
-                        size={14}
-                     />
-                  )}
+                  <Avatar
+                     src={collection?.icon?.url}
+                     className="size-7"
+                     initials={collection?.name.charAt(0)}
+                     alt={collection.name ?? "List Icon"}
+                     options="aspect_ratio=1:1&height=80&width=80"
+                  />
                </div>
                <span className="truncate text-sm font-bold group-hover:underline dark:decoration-zinc-400">
                   {collection.name}

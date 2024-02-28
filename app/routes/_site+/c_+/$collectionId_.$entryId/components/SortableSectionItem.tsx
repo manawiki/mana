@@ -69,7 +69,7 @@ export function SortableSectionItem({
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark450 hover:bg-zinc-100 px-0.5 py-1.5 rounded-md touch-none",
+                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-1 py-1.5 rounded-md touch-none",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}
@@ -77,7 +77,7 @@ export function SortableSectionItem({
             >
                <Icon name="grip-vertical" size={16} className="text-1" />
             </div>
-            <span className="text-sm">{section?.name}</span>
+            <span className="text-sm font-semibold">{section?.name}</span>
          </div>
          <div className="flex items-center -space-x-1">
             {section?.subSections?.map((subSection: any) => (
