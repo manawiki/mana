@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useFetcher, useLocation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-import { Avatar } from "~/components/Avatar";
+import { AvatarButton } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
 import { LoggedIn } from "~/routes/_auth+/components/LoggedIn";
 import { LoggedOut } from "~/routes/_auth+/components/LoggedOut";
@@ -102,20 +102,15 @@ export function MobileHeader() {
                         </div>
                      </button>
                   </div>
-                  <Link
+                  <AvatarButton
+                     square
                      prefetch="intent"
-                     to="/user/account"
-                     className="border border-zinc-300 dark:border-zinc-600 transition duration-300 
-                  active:translate-y-0.5 dark:hover:border-zinc-500 size-9
-                  rounded-xl flex items-center justify-center bg-3-sub shadow shadow-zinc-200 dark:shadow-zinc-800 hover:border-zinc-400"
-                  >
-                     <Avatar
-                        src={user?.avatar?.url}
-                        initials={user?.username.charAt(0)}
-                        className="size-6"
-                        options="aspect_ratio=1:1&height=60&width=60"
-                     />
-                  </Link>
+                     href="/user/account"
+                     src={user?.avatar?.url}
+                     initials={user?.username.charAt(0)}
+                     className="size-8"
+                     options="aspect_ratio=1:1&height=60&width=60"
+                  />
                </div>
             </LoggedIn>
             <LoggedOut>

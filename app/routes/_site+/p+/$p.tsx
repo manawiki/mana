@@ -115,12 +115,17 @@ export default function Post() {
             {/* @ts-ignore */}
             <PostTableOfContents data={postContent} />
             <AdPlaceholder>
-               <AdUnit
-                  enableAds={enableAds}
-                  adType="desktopLeaderATF"
-                  selectorId="postDesktopLeaderATF"
-                  className="flex items-center justify-center [&>div]:py-5"
-               />
+               <div
+                  className={`flex items-center justify-center ${
+                     enableAds ? "min-h-[90px]" : ""
+                  }`}
+               >
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                  />
+               </div>
             </AdPlaceholder>
             {hasAccess ? (
                <>
@@ -132,7 +137,7 @@ export default function Post() {
                   />
                   <div className="fixed tablet_editor:absolute tablet_editor:top-20 laptop:top-6 -right-16 h-full z-40">
                      <div
-                        className="max-tablet_editor:fixed max-tablet_editor:bottom-20 
+                        className="max-tablet_editor:fixed max-tablet_editor:bottom-8 
                      tablet_editor:sticky tablet_editor:top-[134px] laptop:top-20 w-full left-0"
                      >
                         <div
@@ -150,6 +155,7 @@ export default function Post() {
                                  <>
                                     <Tooltip placement="right">
                                        <TooltipTrigger
+                                          title="Banner"
                                           onClick={() =>
                                              setIsBannerShowing((v) => !v)
                                           }

@@ -1,5 +1,7 @@
 import type { MetaFunction } from "@remix-run/react";
 
+import { getMeta } from "~/components/getMeta";
+
 export const entryMeta: MetaFunction = ({
    matches,
    data,
@@ -7,12 +9,26 @@ export const entryMeta: MetaFunction = ({
    matches: any;
    data: any;
 }) => {
-   const siteName = matches.find(
-      ({ id }: { id: string }) => id === "routes/_site+/_layout",
-   )?.data?.site?.name;
-   return [
-      {
-         title: `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`,
-      },
-   ];
+   const siteName = matches?.[1]?.data?.site?.name;
+
+   const title = `${data?.entry.name} | ${data?.entry?.collectionName} - ${siteName}`;
+   // const icon = data?.entry?.icon?.url;
+   const entryData = data?.entry?.data?.[
+      Object.keys(data?.entry?.data)[0]!
+   ] as Object;
+
+   // description is section names
+   const sections = Object.values(data?.entry?.sections)
+      ?.slice(1)
+      ?.map((section: any) => section?.name);
+   const description = sections
+      ? `${data?.entry?.name} ${sections?.join(", ")}.`
+      : data?.entry?.name + "  Wiki, Database, Guides, News, and more!";
+
+   // find the first image object in entryData with the shape { "url": string }
+   const image = Object.values(entryData).find(
+      (value) => value?.url && typeof value.url === "string",
+   )?.url;
+
+   return getMeta({ title, description, image, siteName });
 };

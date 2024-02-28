@@ -31,13 +31,14 @@ function Header() {
          <div className="flex items-center justify-between">
             <LoggedIn>
                <div className="mx-auto max-w-[680px] w-full flex items-center justify-between px-4 tablet:px-0 border-b-2 py-4 border-color">
-                  <Link className="block" to="/">
+                  <Link className="block" to="/" aria-label="Mana Wiki">
                      <LogoFull />
                   </Link>
                   <div className="w-7 h-7 rounded-full overflow-hidden flex items-center justify-center">
                      <section className="z-50 flex h-14 items-center justify-end gap-2.5 max-laptop:hidden">
                         <Link
                            prefetch="intent"
+                           title="User Settings"
                            to="/user/account"
                            className="border-4 border-zinc-300 dark:border-zinc-700 transition duration-300 
                   active:translate-y-0.5 dark:hover:border-zinc-600  
@@ -51,7 +52,11 @@ function Header() {
             </LoggedIn>
             <LoggedOut>
                <div className="mx-auto max-w-[924px] p-4 flex items-center justify-between w-full">
-                  <Link className="block text-white" to="/">
+                  <Link
+                     className="block text-white"
+                     to="/"
+                     aria-label="Mana Wiki"
+                  >
                      <LogoFull />
                   </Link>
                   <nav className="flex items-center gap-4">
@@ -96,6 +101,7 @@ function Footer() {
          <div className="relative z-10 mx-auto flex max-w-6xl items-center justify-center gap-4">
             <a
                href="https://discord.com/invite/nRNM35ytD7"
+               aria-label="Mana Wiki Discord"
                rel="noreferrer"
                target="_blank"
                className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
@@ -112,6 +118,7 @@ function Footer() {
             </a>
             <a
                href="https://github.com/manawiki"
+               aria-label="Mana Wiki Github"
                rel="noreferrer"
                target="_blank"
                className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"
@@ -126,6 +133,7 @@ function Footer() {
             </a>
             <a
                href="https://twitter.com/mana_wiki"
+               aria-label="Mana Wiki Twitter"
                rel="noreferrer"
                target="_blank"
                className="border-1 bg-2-sub border-color dark:shadow-zinc-950/40 shadow-1 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm"

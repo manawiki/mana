@@ -1,4 +1,5 @@
 export type IconName =
+  | "chevrons-right"
   | "text"
   | "layout-panel-top"
   | "columns-2"

@@ -41,6 +41,7 @@ export function Record({
             </span>
             <Tooltip>
                <TooltipTrigger
+                  title="Copy"
                   type="button"
                   onClick={() => copyToClipBoard(recordValue, setCopySuccess)}
                   className="group w-10 h-10 flex items-center justify-center"
