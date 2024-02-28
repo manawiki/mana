@@ -71,7 +71,7 @@ export function CollectionHeader({
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
          <div className="pt-[61px] laptop:pt-0 z-20 relative">
-            <div className="flex items-center w-full py-2.5 mb-4 border-b border-color dark:border-zinc-700/40 bg-zinc-50 dark:bg-dark350">
+            <div className="flex items-center w-full py-2.5 mb-3.5 border-b border-color dark:border-zinc-700/70 bg-white dark:bg-bg3Dark">
                <div className="max-tablet:px-3 tablet:mx-auto w-full tablet:max-w-[728px] tablet:w-[728px] flex items-center justify-between">
                   <Link
                      to="/collections"
@@ -79,12 +79,12 @@ export function CollectionHeader({
                   underline-offset-2  group gap-2.5 group"
                   >
                      <div
-                        className="bg-white group-hover:bg-zinc-50 dark:bg-dark450 group-hover:dark:bg-dark500 dark:shadow-zinc-800/50
+                        className="bg-zinc-50 group-hover:bg-zinc-100 dark:bg-dark450 group-hover:dark:bg-dark500 dark:shadow-zinc-800/50
                w-6 h-6 rounded-full flex items-center justify-center shadow-sm shadow-1 border border-color dark:border-transparent"
                      >
                         <Icon name="arrow-left" size={13} />
                      </div>
-                     <div className="font-bold font-header">Collections</div>
+                     <div className="font-bold text-sm text-1">Collections</div>
                   </Link>
                   <AdminOrStaffOrOwner>
                      <div className="flex items-center justify-between gap-3">
@@ -199,21 +199,15 @@ export function CollectionHeader({
                      ))}
                   </DropdownMenu>
                </Dropdown>
-               <Icon
-                  name="arrow-right"
-                  title="Entry"
-                  className="text-1 mx-3.5"
-                  size={14}
-               />
+               <Icon name="arrow-right" className="text-1 mx-3.5" size={14} />
                <Link
                   to={`/c/${collection?.slug}`}
                   className={clsx(
                      isEntry
                         ? "text-1 hover:text-light dark:hover:text-dark"
                         : "",
-                     `text-xs flex items-center gap-2 bg-zinc-200/50
-                  dark:bg-dark450 rounded-md dark:text-dark100 font-header
-                 px-2.5 py-1 hover:bg-zinc-200 dark:hover:bg-dark500`,
+                     `text-xs flex items-center bg-zinc-200/50
+                     dark:bg-dark450 rounded-full w-14 justify-center h-7 font-bold`,
                   )}
                >
                   List
@@ -221,14 +215,13 @@ export function CollectionHeader({
                {isEntry ? (
                   <>
                      <Icon
-                        name="chevron-right"
-                        title="Entry"
+                        name="arrow-right"
                         className="text-1 mx-3.5"
-                        size={16}
+                        size={14}
                      />
                      <div
-                        className="text-xs flex items-center gap-2 bg-zinc-200/50
-                     dark:bg-dark450 rounded-full px-3 py-1 font-header"
+                        className="text-xs flex items-center justify-center bg-zinc-200/50
+                     dark:bg-dark450 rounded-full w-16 h-7 font-bold"
                      >
                         Entry
                      </div>
