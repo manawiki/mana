@@ -14,7 +14,7 @@ import { Select } from "~/components/Select";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
-import type { Section } from "./Sections";
+import type { Section } from "../../_components/List";
 
 export const SubSectionSchema = z.object({
    subSectionName: z.string(),
@@ -124,6 +124,7 @@ export function AddSubSection({
                value="addSubSection"
                type="submit"
                className="flex-none"
+               color="zinc"
                disabled={disabled}
             >
                {addingSubSection ? (

@@ -43,12 +43,11 @@ export function EntryEdit({ entry }: { entry: any }) {
    return (
       <>
          <Button
-            color="dark/white"
-            className="max-tablet:!py-1.5"
+            className="size-8 !p-0"
+            color="indigo"
             onClick={() => setSettingsOpen(true)}
          >
-            <Icon name="pencil" size={12} />
-            Edit
+            <Icon name="settings" size={16} />
          </Button>
          <Dialog
             size="md"
@@ -151,6 +150,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                         name="intent"
                         value="updateEntry"
                         type="submit"
+                        color="indigo"
                         disabled={disabled || isChanged === false}
                      >
                         {saving ? (

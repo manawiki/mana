@@ -4,6 +4,7 @@ import { useLocation, useMatches, Link } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
+import { Badge, BadgeButton } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import {
    Dropdown,
@@ -71,7 +72,7 @@ export function CollectionHeader({
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
          <div className="pt-[61px] laptop:pt-0 z-20 relative">
-            <div className="flex items-center w-full py-2.5 mb-3.5 border-b border-color dark:border-zinc-700/70 bg-white dark:bg-bg3Dark">
+            <div className="flex items-center w-full py-2.5 border-b border-color dark:border-zinc-700/70 bg-white dark:bg-bg3Dark">
                <div className="max-tablet:px-3 tablet:mx-auto w-full tablet:max-w-[728px] tablet:w-[728px] flex items-center justify-between">
                   <Link
                      to="/collections"
@@ -90,7 +91,7 @@ export function CollectionHeader({
                      <div className="flex items-center justify-between gap-3">
                         <Button
                            color="zinc"
-                           className="max-tablet:!py-1.5"
+                           className="h-8"
                            onClick={() => setSectionsOpen(!isSectionsOpen)}
                         >
                            Sections
@@ -104,7 +105,34 @@ export function CollectionHeader({
                            />
                         </Button>
                         {entry ? (
-                           <EntryEdit entry={entry} />
+                           <>
+                              {collection.customDatabase ? (
+                                 <>
+                                    <EntryEdit entry={entry} />
+                                    <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
+                                    <Button
+                                       className="size-8 !p-0"
+                                       color="violet"
+                                       target="_blank"
+                                       href={`https://${site.slug}-db.${
+                                          site?.domain
+                                             ? site.domain
+                                             : "mana.wiki"
+                                       }/admin/collections/${collection.slug}/${
+                                          entry.id
+                                       }`}
+                                    >
+                                       <Icon
+                                          title="Edit"
+                                          name="database"
+                                          size={16}
+                                       />
+                                    </Button>
+                                 </>
+                              ) : (
+                                 <EntryEdit entry={entry} />
+                              )}
+                           </>
                         ) : (
                            <CollectionEdit collection={collection} />
                         )}
@@ -137,13 +165,13 @@ export function CollectionHeader({
                   />
                </div>
             </AdminOrStaffOrOwner>
-            <div className="flex items-center max-tablet:px-3  justify-between gap-4 tablet:pt-2 tablet:pb-1 mx-auto max-w-[728px] laptop:w-[728px]">
-               <h1 className="font-bold font-header text-3xl">
+            <div className="flex items-center max-tablet:px-3  justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px]">
+               <h1 className="font-bold font-header text-3xl pb-3">
                   {entryName ?? collection?.name}
                </h1>
                <div
                   className="flex-none group relative tablet:-mr-1 border border-color-sub
-                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-3 tablet:-mb-5 flex 
+                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-10 flex 
                   size-16 rounded-full overflow-hidden items-center"
                >
                   <CollectionImageUploader
@@ -155,18 +183,15 @@ export function CollectionHeader({
                </div>
             </div>
          </div>
-         <section
-            className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
-            shadow-zinc-200/40 dark:shadow-zinc-800/80 shadow-sm relative z-10"
-         >
+         <section className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
             <div
                className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
-             py-3 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"
+             py-2.5 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"
             >
                <Dropdown>
                   <DropdownButton
                      plain
-                     className="dark:bg-dark450 bg-zinc-200/50 !p-0.5 !pr-2 !rounded-full"
+                     className="dark:bg-dark450 bg-zinc-200/50 !p-0 !pr-2 !rounded-full"
                   >
                      <Avatar
                         src={collection?.icon?.url}
@@ -199,32 +224,18 @@ export function CollectionHeader({
                      ))}
                   </DropdownMenu>
                </Dropdown>
-               <Icon name="arrow-right" className="text-1 mx-3.5" size={14} />
-               <Link
-                  to={`/c/${collection?.slug}`}
-                  className={clsx(
-                     isEntry
-                        ? "text-1 hover:text-light dark:hover:text-dark"
-                        : "",
-                     `text-xs flex items-center bg-zinc-200/50
-                     dark:bg-dark450 rounded-full w-14 justify-center h-7 font-bold`,
-                  )}
-               >
+               <Icon name="chevron-right" className="text-1 mx-3" size={14} />
+               <BadgeButton href={`/c/${collection?.slug}`} color="blue">
                   List
-               </Link>
+               </BadgeButton>
                {isEntry ? (
                   <>
                      <Icon
-                        name="arrow-right"
-                        className="text-1 mx-3.5"
+                        name="chevron-right"
+                        className="text-1 mx-3"
                         size={14}
                      />
-                     <div
-                        className="text-xs flex items-center justify-center bg-zinc-200/50
-                     dark:bg-dark450 rounded-full w-16 h-7 font-bold"
-                     >
-                        Entry
-                     </div>
+                     <Badge color="indigo">Entry</Badge>
                   </>
                ) : (
                   <></>

@@ -155,6 +155,7 @@ export function SortableSubSectionItem({
                         name="intent"
                         value="updateSubSection"
                         type="submit"
+                        color="zinc"
                         disabled={
                            disabled || isSubSectionUpdateFormChanged === false
                         }

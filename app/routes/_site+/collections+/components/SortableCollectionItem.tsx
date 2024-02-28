@@ -61,7 +61,7 @@ export function SortableCollectionItem({
                            collection.hiddenCollection
                               ? "dark:bg-dark500 dark:group-hover:bg-zinc-500 bg-zinc-300 group-hover:bg-zinc-400/70"
                               : "bg-green-400 group-hover:bg-green-500 group-hover:dark:bg-green-700 dark:bg-green-800/80",
-                           "absolute top-0 left-0 rounded-full  size-2 flex items-center justify-center",
+                           "absolute top-0.5 left-0.5 rounded-full  size-2 flex items-center justify-center",
                         )}
                      />
                   </AdminOrStaffOrOwner>

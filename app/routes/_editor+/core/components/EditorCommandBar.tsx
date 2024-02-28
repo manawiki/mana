@@ -104,7 +104,7 @@ export const EditorCommandBar = ({
                      }}
                   >
                      <Button
-                        color={isChanged ? "blue" : "zinc"}
+                        color={isChanged ? "green" : "zinc"}
                         className="size-9 !p-0"
                      >
                         {isAutoSaving || isPublishing ? (

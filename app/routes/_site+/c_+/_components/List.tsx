@@ -40,7 +40,7 @@ export function List({ children }: { children: ReactNode }) {
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
-         <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-3 laptop:pb-14">
+         <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
             {children}
          </div>
       </>
