@@ -6,26 +6,28 @@ import { useFetcher } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
-import type { Collection, Site } from "~/db/payload-types";
+import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
-export function CollectionCommandBar({
-   site,
+import type { Section } from "../../_components/List";
+
+export function SectionCommandBar({
+   collection,
    isChanged,
-   dndCollections,
    setIsChanged,
-   setDnDCollections,
+   allSections,
+   setAllSections,
 }: {
-   site: Site;
+   collection: Collection | undefined;
    isChanged: boolean;
-   dndCollections: Collection[] | undefined | null;
    setIsChanged: (value: boolean) => void;
-   setDnDCollections: (collections: any) => void;
+   allSections: Section[] | undefined | null;
+   setAllSections: (sections: any) => void;
 }) {
    const fetcher = useFetcher();
 
    const disabled = isProcessing(fetcher.state);
-   const saving = isAdding(fetcher, "updateCollectionOrder");
+   const saving = isAdding(fetcher, "updateSectionOrder");
 
    useEffect(() => {
       if (!saving) {
@@ -52,7 +54,7 @@ export function CollectionCommandBar({
                type="button"
                onClick={() => {
                   setIsChanged(false);
-                  setDnDCollections(site.collections);
+                  setAllSections(collection?.sections);
                }}
                className="text-sm h-8 font-semibold cursor-pointer rounded-lg
       dark:hover:bg-dark500 gap-2 flex items-center justify-center pl-2 pr-3.5"
@@ -74,15 +76,13 @@ export function CollectionCommandBar({
                onClick={() =>
                   fetcher.submit(
                      {
-                        siteId: site.id,
-                        collections: JSON.stringify(
-                           dndCollections?.map((item) => item.id) ?? [],
-                        ),
-                        intent: "updateCollectionOrder",
+                        collectionId: collection?.id ?? "",
+                        sections: JSON.stringify(allSections),
+                        intent: "updateSectionOrder",
                      },
                      {
                         method: "POST",
-                        action: "/collections",
+                        action: "/collections/sections",
                      },
                   )
                }

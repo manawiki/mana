@@ -210,7 +210,7 @@ function BlockInlineActions({
                                     sortable.isDragging
                                        ? "cursor-grabbing"
                                        : "cursor-move",
-                                    "flex items-center group bg-3-sub w-7 h-full justify-center",
+                                    "flex items-center group bg-3-sub w-7 h-full justify-center touch-none",
                                  )}
                                  aria-label="Drag to reorder"
                                  ref={setActivatorNodeRef}

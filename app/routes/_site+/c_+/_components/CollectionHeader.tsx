@@ -1,18 +1,42 @@
-import { Fragment } from "react";
+import { useState } from "react";
 
-import { Menu } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
-import { useLocation, useMatches, NavLink, Link } from "@remix-run/react";
+import { useLocation, useMatches, Link } from "@remix-run/react";
 import clsx from "clsx";
 
+import { Avatar } from "~/components/Avatar";
+import { Badge, BadgeButton } from "~/components/Badge";
+import { Button } from "~/components/Button";
+import {
+   Dropdown,
+   DropdownButton,
+   DropdownItem,
+   DropdownMenu,
+} from "~/components/Dropdown";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
+import type { Collection } from "~/db/payload-types";
+import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionImageUploader } from "./CollectionImageUploader";
+import type { Section } from "./List";
+import { AddSection } from "../$collectionId_.$entryId/components/AddSection";
+import { CollectionEdit } from "../$collectionId_.$entryId/components/CollectionEdit";
+import { EntryEdit } from "../$collectionId_.$entryId/components/EntryEdit";
+import { SectionCommandBar } from "../$collectionId_.$entryId/components/SectionCommandBar";
+import { SectionList } from "../$collectionId_.$entryId/components/SectionList";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
-export function CollectionHeader() {
+export function CollectionHeader({
+   setIsChanged,
+   isChanged,
+   setAllSections,
+   allSections,
+}: {
+   setAllSections: (sections: any) => void;
+   isChanged: boolean;
+   setIsChanged: (value: boolean) => void;
+   allSections: Section[] | undefined | null;
+}) {
    const { site } = useSiteLoaderData();
 
    const { entry } = (useMatches()?.[2]?.data as {
@@ -26,7 +50,7 @@ export function CollectionHeader() {
 
    const collection = site?.collections?.find(
       (collection) => collection.slug === collectionSlug,
-   );
+   ) as Collection;
 
    const entryName = entry?.name;
 
@@ -43,15 +67,113 @@ export function CollectionHeader() {
    const actionPath = isEntry
       ? `/c/${collection?.slug}/${entry?.id}`
       : "/collections";
+   const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
    return (
-      <div className="bg-gradient-to-t from-zinc-50 to-white dark:from-dark350 dark:to-bg3Dark relative">
-         <div className="mx-auto max-w-[728px] pb-2 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 z-20 relative">
-            <div className="flex items-center justify-between gap-4">
-               <h1 className="font-bold font-header text-2xl laptop:text-3xl">
+      <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
+         <div className="pt-[61px] laptop:pt-0 z-20 relative">
+            <div className="flex items-center w-full py-2.5 border-b border-color dark:border-zinc-700/70 bg-white dark:bg-bg3Dark">
+               <div className="max-tablet:px-3 tablet:mx-auto w-full tablet:max-w-[728px] tablet:w-[728px] flex items-center justify-between">
+                  <Link
+                     to="/collections"
+                     className="flex items-center hover:underline decoration-zinc-300 dark:decoration-zinc-600 
+                  underline-offset-2  group gap-2.5 group"
+                  >
+                     <div
+                        className="bg-zinc-50 group-hover:bg-zinc-100 dark:bg-dark450 group-hover:dark:bg-dark500 dark:shadow-zinc-800/50
+               w-6 h-6 rounded-full flex items-center justify-center shadow-sm shadow-1 border border-color dark:border-transparent"
+                     >
+                        <Icon name="arrow-left" size={13} />
+                     </div>
+                     <div className="font-bold text-sm text-1">Collections</div>
+                  </Link>
+                  <AdminOrStaffOrOwner>
+                     <div className="flex items-center justify-between gap-3">
+                        <Button
+                           color="zinc"
+                           className="h-8"
+                           onClick={() => setSectionsOpen(!isSectionsOpen)}
+                        >
+                           Sections
+                           <Icon
+                              name="chevron-down"
+                              className={clsx(
+                                 isSectionsOpen ? "rotate-180" : "",
+                                 "transform transition duration-300 ease-in-out",
+                              )}
+                              size={16}
+                           />
+                        </Button>
+                        {entry ? (
+                           <>
+                              {collection.customDatabase ? (
+                                 <>
+                                    <EntryEdit entry={entry} />
+                                    <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
+                                    <Button
+                                       className="size-8 !p-0"
+                                       color="violet"
+                                       target="_blank"
+                                       href={`https://${site.slug}-db.${
+                                          site?.domain
+                                             ? site.domain
+                                             : "mana.wiki"
+                                       }/admin/collections/${collection.slug}/${
+                                          entry.id
+                                       }`}
+                                    >
+                                       <Icon
+                                          title="Edit"
+                                          name="database"
+                                          size={16}
+                                       />
+                                    </Button>
+                                 </>
+                              ) : (
+                                 <EntryEdit entry={entry} />
+                              )}
+                           </>
+                        ) : (
+                           <CollectionEdit collection={collection} />
+                        )}
+                     </div>
+                  </AdminOrStaffOrOwner>
+               </div>
+            </div>
+            <AdminOrStaffOrOwner>
+               <div className="mx-auto tablet:w-[728px]">
+                  {isSectionsOpen && (
+                     <>
+                        <AddSection
+                           collection={collection}
+                           setAllSections={setAllSections}
+                        />
+                        <SectionList
+                           setIsChanged={setIsChanged}
+                           setAllSections={setAllSections}
+                           allSections={allSections}
+                           collection={collection}
+                        />
+                     </>
+                  )}
+                  <SectionCommandBar
+                     collection={collection}
+                     allSections={allSections}
+                     setAllSections={setAllSections}
+                     isChanged={isChanged}
+                     setIsChanged={setIsChanged}
+                  />
+               </div>
+            </AdminOrStaffOrOwner>
+            <div className="flex items-center max-tablet:px-3  justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px]">
+               <h1 className="font-bold font-header text-3xl pb-3">
                   {entryName ?? collection?.name}
                </h1>
-               <div className="flex-none group relative tablet:-mr-1 border border-color-sub shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-6 flex h-16 w-16 rounded-full overflow-hidden items-center">
+               <div
+                  className="flex-none group relative tablet:-mr-1 border border-color-sub
+                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-10 flex 
+                  size-16 rounded-full overflow-hidden items-center"
+               >
                   <CollectionImageUploader
                      image={icon}
                      actionPath={actionPath}
@@ -61,122 +183,59 @@ export function CollectionHeader() {
                </div>
             </div>
          </div>
-         <section
-            className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 [clip-path:inset(0px_-10px_-10px_-10px)] 
-            shadow-zinc-200/40 dark:shadow-zinc-800/80 shadow-sm relative z-10"
-         >
-            <div className="mx-auto max-w-[728px] flex items-center border-t py-1.5 border-zinc-100 dark:border-zinc-700/40">
-               <Link
-                  to="/collections"
-                  className="flex items-center gap-2 group pr-3"
-               >
-                  <Icon
-                     name="database"
-                     className="hover:text-zinc-500 dark:hover:text-zinc-400 text-zinc-400 dark:text-zinc-500"
-                     size={16}
-                  />
-               </Link>
-               <Icon
-                  name="slash"
-                  size={16}
-                  className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
-               />
-               <Menu as="div" className="relative">
-                  {({ open }) => (
-                     <Float
-                        as={Fragment}
-                        enter="transition ease-out duration-200"
-                        enterFrom="opacity-0 translate-y-1"
-                        enterTo="opacity-100 translate-y-0"
-                        leave="transition ease-in duration-150"
-                        leaveFrom="opacity-100 translate-y-0"
-                        leaveTo="opacity-0 translate-y-1"
-                        placement="bottom-start"
-                        portal
-                     >
-                        <Menu.Button className="flex items-center gap-2 group focus:outline-none hover:bg-zinc-50 hover:dark:bg-dark350 mx-1 pl-2 pr-1.5 py-2 rounded-lg">
-                           <span className="font-bold text-1 text-xs">
-                              {collection?.name}
-                           </span>
-                           <span className="w-4 h-4 flex items-center justify-center">
-                              <svg
-                                 className={`${
-                                    open ? "rotate-180" : ""
-                                 } transform transition duration-300 fill-zinc-400 dark:fill-zinc-500 ease-in-out w-3.5 h-3.5`}
-                                 viewBox="0 0 320 512"
-                                 xmlns="http://www.w3.org/2000/svg"
-                              >
-                                 <path d="M310.6 246.6l-127.1 128C176.4 380.9 168.2 384 160 384s-16.38-3.125-22.63-9.375l-127.1-128C.2244 237.5-2.516 223.7 2.438 211.8S19.07 192 32 192h255.1c12.94 0 24.62 7.781 29.58 19.75S319.8 237.5 310.6 246.6z" />
-                              </svg>
-                           </span>
-                        </Menu.Button>
-                        <Menu.Items className="absolute left-0 mt-0.5 min-w-[160px] max-w-[240px] z-20 w-full">
-                           <div className="overflow-hidden p-1.5 space-y-0.5 rounded-lg bg-white dark:bg-dark350 border border-color-sub shadow-1 shadow">
-                              {site?.collections?.map((row) => (
-                                 <Menu.Item key={row.slug}>
-                                    <NavLink
-                                       end
-                                       className={({ isActive }) =>
-                                          clsx(
-                                             isActive
-                                                ? "bg-zinc-100 dark:bg-dark450"
-                                                : "hover:bg-zinc-50 dark:hover:bg-dark400",
-                                             "flex items-center p-1 rounded-md gap-1.5",
-                                          )
-                                       }
-                                       to={`/c/${row.slug}`}
-                                    >
-                                       <span className="flex-none flex h-5 w-5 items-center">
-                                          {row.icon?.url ? (
-                                             <Image
-                                                url={row.icon?.url}
-                                                options="aspect_ratio=1:1&height=80&width=80"
-                                                alt="Collection Icon"
-                                             />
-                                          ) : (
-                                             <Icon
-                                                name="component"
-                                                className="text-1 mx-auto"
-                                                size={18}
-                                             />
-                                          )}
-                                       </span>
-                                       <span className="text-xs font-semibold text-1 flex-none">
-                                          {row.name}
-                                       </span>
-                                    </NavLink>
-                                 </Menu.Item>
-                              ))}
-                           </div>
-                        </Menu.Items>
-                     </Float>
-                  )}
-               </Menu>
-               <Icon
-                  name="slash"
-                  size={16}
-                  className="text-zinc-200 text-lg -rotate-[20deg] dark:text-zinc-700"
-               />
-               <Link
-                  to={`/c/${collection?.slug}`}
-                  className={clsx(
-                     !entryName ? "underline" : "",
-                     "pl-4 pr-3 font-bold text-1 text-xs flex items-center gap-2 hover:underline decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2",
-                  )}
-               >
+         <section className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
+            <div
+               className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
+             py-2.5 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"
+            >
+               <Dropdown>
+                  <DropdownButton
+                     plain
+                     className="dark:bg-dark450 bg-zinc-200/50 !p-0 !pr-2 !rounded-full"
+                  >
+                     <Avatar
+                        src={collection?.icon?.url}
+                        className="size-6 !bg-white dark:!bg-zinc-800/30"
+                        initials={collection?.name.charAt(0)}
+                        options="aspect_ratio=1:1&height=80&width=80"
+                     />
+                     <Icon
+                        name="chevron-down"
+                        title="Options"
+                        className="text-1"
+                        size={14}
+                     />
+                  </DropdownButton>
+                  <DropdownMenu className="z-30" anchor="bottom start">
+                     {site?.collections?.map((row) => (
+                        <DropdownItem
+                           className="gap-2 !px-1.5"
+                           key={row.slug}
+                           href={`/c/${row.slug}`}
+                        >
+                           <Avatar
+                              src={row?.icon?.url}
+                              className="size-6"
+                              initials={row?.name.charAt(0)}
+                              options="aspect_ratio=1:1&height=80&width=80"
+                           />
+                           {row.name}
+                        </DropdownItem>
+                     ))}
+                  </DropdownMenu>
+               </Dropdown>
+               <Icon name="chevron-right" className="text-1 mx-3" size={14} />
+               <BadgeButton href={`/c/${collection?.slug}`} color="blue">
                   List
-               </Link>
+               </BadgeButton>
                {isEntry ? (
                   <>
                      <Icon
                         name="chevron-right"
-                        title="Entry"
-                        className="text-1"
-                        size={12}
+                        className="text-1 mx-3"
+                        size={14}
                      />
-                     <span className="font-bold pl-3 text-1 underline text-xs flex items-center gap-2 decoration-zinc-300 dark:decoration-zinc-600 underline-offset-2">
-                        Entry
-                     </span>
+                     <Badge color="indigo">Entry</Badge>
                   </>
                ) : (
                   <></>
@@ -185,12 +244,12 @@ export function CollectionHeader() {
          </section>
          <span
             className="pattern-dots absolute left-0 top-0 -z-0 h-full
-                  w-full pattern-bg-white pattern-zinc-700 pattern-opacity-10 
+                  w-full pattern-bg-white pattern-zinc-800 pattern-opacity-10 
                   pattern-size-1 dark:pattern-zinc-400 dark:pattern-bg-bg3Dark"
          />
          <span
-            className="bg-gradient-to-b dark:from-bg3Dark/90 dark:to-bg3Dark/60 
-            from-white/90 to-white/60
+            className="bg-gradient-to-b dark:from-dark350 dark:to-bg3Dark/60 
+            from-white/80 to-white/60
              w-full h-full absolute top-0 left-0 z-0"
          />
       </div>

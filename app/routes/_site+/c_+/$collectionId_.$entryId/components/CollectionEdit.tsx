@@ -3,9 +3,22 @@ import { useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 
+import {
+   Alert,
+   AlertTitle,
+   AlertDescription,
+   AlertActions,
+} from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Checkbox, CheckboxField, CheckboxGroup } from "~/components/Checkbox";
 import { Dialog } from "~/components/Dialog";
+import {
+   Dropdown,
+   DropdownButton,
+   DropdownItem,
+   DropdownLabel,
+   DropdownMenu,
+} from "~/components/Dropdown";
 import {
    Description,
    Field,
@@ -84,17 +97,21 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
       }
    }, [saving]);
 
+   const [isDeleteOpen, setDeleteOpen] = useState(false);
+
+   const deleting = isAdding(fetcher, "deleteCollection");
+
    return (
       <>
-         <button
-            className="size-7 !p-0 bg-white shadow shadow-1 hover:bg-zinc-100 dark:hover:border-zinc-400/50
-            border border-zinc-200 rounded-lg flex items-center justify-center dark:bg-dark450 dark:border-zinc-500/60"
+         <Button
+            color="blue"
+            className="size-8 !p-0"
             onClick={() => setSettingsOpen(true)}
          >
-            <Icon name="settings" size={14} />
-         </button>
+            <Icon name="settings" size={16} />
+         </Button>
          <Dialog
-            size="2xl"
+            size="xl"
             onClose={() => {
                setSettingsOpen(false);
             }}
@@ -236,47 +253,110 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                   name={zoCollectionUpdate.fields.siteId()}
                   value={site.id}
                />
-               <div className="flex items-center justify-end gap-2 pt-6">
-                  {isChanged && !disabled && (
-                     <Button
-                        plain
-                        type="button"
-                        onClick={() => {
-                           //@ts-ignore
-                           zoCollectionUpdate.refObject.current.reset();
-                           setIsChanged(false);
-                        }}
-                     >
+               <div className="flex items-center justify-between gap-2 pt-6 relative">
+                  <Dropdown>
+                     <DropdownButton outline aria-label="More options">
                         <Icon
-                           title="Reset"
-                           size={14}
-                           name="refresh-ccw"
+                           name="more-horizontal"
+                           size={16}
                            className="text-1"
                         />
-                     </Button>
-                  )}
-                  <Button
-                     name="intent"
-                     value="updateCollection"
-                     type="submit"
-                     disabled={disabled || isChanged === false}
-                  >
-                     {saving ? (
-                        <>
+                     </DropdownButton>
+                     <DropdownMenu className="z-50" anchor="bottom start">
+                        <DropdownItem onClick={() => setDeleteOpen(true)}>
                            <Icon
-                              name="loader-2"
+                              className="mr-2 text-red-400"
+                              name="trash"
                               size={14}
-                              className="animate-spin text-white"
                            />
-                           Saving
-                        </>
-                     ) : (
-                        "Update Collection"
+                           <DropdownLabel className="font-semibold">
+                              Delete
+                           </DropdownLabel>
+                        </DropdownItem>
+                     </DropdownMenu>
+                  </Dropdown>
+                  <div className="flex items-center gap-3">
+                     {isChanged && !disabled && (
+                        <Button
+                           plain
+                           type="button"
+                           onClick={() => {
+                              //@ts-ignore
+                              zoCollectionUpdate.refObject.current.reset();
+                              setIsChanged(false);
+                           }}
+                        >
+                           <Icon
+                              title="Reset"
+                              size={14}
+                              name="refresh-ccw"
+                              className="text-1"
+                           />
+                        </Button>
                      )}
-                  </Button>
+                     <Button
+                        name="intent"
+                        value="updateCollection"
+                        type="submit"
+                        color="blue"
+                        disabled={disabled || isChanged === false}
+                     >
+                        {saving ? (
+                           <>
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                              Saving
+                           </>
+                        ) : (
+                           "Update Collection"
+                        )}
+                     </Button>
+                  </div>
                </div>
             </fetcher.Form>
          </Dialog>
+         <Alert open={isDeleteOpen} onClose={setDeleteOpen}>
+            <AlertTitle>
+               Are you sure you want to delete this collection permanently?
+            </AlertTitle>
+            <AlertDescription>You cannot undo this action.</AlertDescription>
+            <AlertActions>
+               <Button
+                  plain
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  onClick={() => setDeleteOpen(false)}
+               >
+                  Cancel
+               </Button>
+               <Button
+                  disabled={disabled}
+                  className="text-sm cursor-pointer"
+                  color="red"
+                  onClick={() =>
+                     fetcher.submit(
+                        {
+                           intent: "deleteCollection",
+                           collectionId: collection.id,
+                        },
+                        { method: "delete", action: "/collections" },
+                     )
+                  }
+               >
+                  {deleting && (
+                     <Icon
+                        name="loader-2"
+                        size={16}
+                        className="mx-auto animate-spin"
+                     />
+                  )}
+                  Delete
+               </Button>
+            </AlertActions>
+         </Alert>
       </>
    );
 }
