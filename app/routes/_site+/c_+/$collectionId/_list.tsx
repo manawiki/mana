@@ -92,6 +92,12 @@ export default function CollectionList() {
       }
    }, [addingUpdate, zoEntry.refObject]);
 
+   //Get root domain from full domain url
+
+   const customDomainHostname = site.domain
+      ? new URL(site.domain).hostname
+      : undefined;
+
    return (
       <List>
          <section className="relative">
@@ -105,7 +111,9 @@ export default function CollectionList() {
                            target="_blank"
                            className="text-sm"
                            href={`https://${site.slug}-db.${
-                              site?.domain ? site.domain : "mana.wiki"
+                              customDomainHostname
+                                 ? customDomainHostname
+                                 : "mana.wiki"
                            }/admin/collections/${collection?.slug}/create`}
                         >
                            {addingUpdate ? (
