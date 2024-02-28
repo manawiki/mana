@@ -1,7 +1,3 @@
-import { Fragment } from "react";
-
-import { Popover } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
 import { Link } from "@remix-run/react";
 
 import { Icon } from "~/components/Icon";

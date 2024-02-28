@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useFetcher } from "@remix-run/react";
+import clsx from "clsx";
 import { useZorm } from "react-zorm";
 import { toast } from "sonner";
 import urlSlug from "url-slug";
@@ -27,8 +28,7 @@ export function AddCollection({
 
    const zoCollection = useZorm("newCollection", CollectionSchema);
 
-   const disabled =
-      isProcessing(fetcher.state) || zoCollection.validation?.success === false;
+   const disabled = isProcessing(fetcher.state);
 
    // Reset the form after submission
    useEffect(() => {
@@ -54,25 +54,35 @@ export function AddCollection({
                }
             }}
             ref={zoCollection.ref}
-            className="dark:bg-dark400 border  focus-within:border-zinc-300 border-zinc-200 p-3
-                 dark:focus-within:border-zinc-500/70 dark:border-zinc-600 rounded-xl  max-tablet:space-y-3
-                 shadow-sm shadow-1 mb-3 bg-zinc-50 tablet:flex items-center gap-4"
+            className={clsx(
+               collectionName
+                  ? "shadow-sm shadow-1 mb-3 bg-zinc-50 dark:bg-dark400 border focus-within:border-zinc-300 border-zinc-200 p-3 dark:focus-within:border-zinc-500/70 dark:border-zinc-600 rounded-xl"
+                  : "",
+               "mb-6 tablet:mb-4 max-tablet:space-y-3 tablet:flex items-center gap-4",
+            )}
             method="POST"
             action="/collections"
          >
-            <div className="tablet:flex-grow">
+            <Field
+               disabled={disabled}
+               className="tablet:flex items-center gap-4 flex-none flex-grow"
+            >
+               <Label className={clsx(collectionName ? "" : "hidden")}>
+                  Name
+               </Label>
                <Input
                   disabled={disabled}
                   placeholder="Type a collection name..."
                   name={zoCollection.fields.name()}
                   type="text"
                   value={collectionName}
+                  className="tablet:!mt-0"
                   onChange={(e) => {
                      setCollectionName(e.target.value);
                      setCollectionSlug(urlSlug(e.target.value));
                   }}
                />
-            </div>
+            </Field>
             {collectionName && (
                <div className="flex-none">
                   <Field className="tablet:flex gap-2 items-baseline justify-center">
@@ -96,7 +106,7 @@ export function AddCollection({
                </div>
             )}
             <Button
-               className="max-tablet:w-full !flex flex-none w-20"
+               className="max-tablet:w-full !flex flex-none"
                name="intent"
                value="addCollection"
                type="submit"
@@ -108,7 +118,7 @@ export function AddCollection({
                ) : (
                   <Icon name="plus" size={15} />
                )}
-               Add
+               Add Collection
             </Button>
          </fetcher.Form>
       </AdminOrStaffOrOwner>
