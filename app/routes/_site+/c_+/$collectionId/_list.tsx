@@ -93,10 +93,7 @@ export default function CollectionList() {
    }, [addingUpdate, zoEntry.refObject]);
 
    //Get root domain from full domain url
-
-   const customDomainHostname = site?.domain
-      ? new URL(site?.domain)?.hostname
-      : undefined;
+   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
 
    return (
       <List>
