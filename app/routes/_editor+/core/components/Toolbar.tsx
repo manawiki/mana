@@ -259,6 +259,7 @@ export function Toolbar() {
                         {!isLinkActive(editor) && (
                            <Tooltip>
                               <TooltipTrigger
+                                 title="Add Link"
                                  onPointerDown={(e) => e.preventDefault()}
                                  onClick={(e) => {
                                     e.preventDefault();
@@ -281,6 +282,7 @@ export function Toolbar() {
                         )}
                         <Tooltip>
                            <TooltipTrigger
+                              title="Toggle Bold"
                               onPointerDown={(e) => e.preventDefault()}
                               onClick={() => toggleMark(editor, "bold")}
                               className={`${
@@ -310,6 +312,7 @@ export function Toolbar() {
                                     <Popover.Button as="div">
                                        <Tooltip placement="top">
                                           <TooltipTrigger
+                                             title="Change Color"
                                              className="hover:bg-zinc-200 dark:hover:bg-dark500 flex 
                                              h-6 w-6 items-center justify-center rounded-lg"
                                           >
@@ -377,6 +380,7 @@ export function Toolbar() {
                                     <Popover.Button as="div">
                                        <Tooltip placement="right">
                                           <TooltipTrigger
+                                             title="More Options"
                                              className="hover:bg-zinc-200 dark:hover:bg-dark500 flex h-6 w-6 
                                              items-center justify-center rounded-lg"
                                           >
@@ -404,6 +408,7 @@ export function Toolbar() {
                                     >
                                        <Tooltip>
                                           <TooltipTrigger
+                                             title="Toggle Small"
                                              onPointerDown={(e) =>
                                                 e.preventDefault()
                                              }
@@ -424,6 +429,7 @@ export function Toolbar() {
                                        </Tooltip>
                                        <Tooltip>
                                           <TooltipTrigger
+                                             title="Toggle Italic"
                                              onPointerDown={(e) =>
                                                 e.preventDefault()
                                              }
@@ -467,6 +473,7 @@ export function Toolbar() {
                                        </Tooltip>
                                        <Tooltip>
                                           <TooltipTrigger
+                                             title="Toggle Strikethrough"
                                              onPointerDown={(e) =>
                                                 e.preventDefault()
                                              }
@@ -507,6 +514,7 @@ export function Toolbar() {
                      </span>
                      <Tooltip>
                         <TooltipTrigger
+                           title="Remove Link"
                            className="flex items-center p-1"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {
@@ -525,6 +533,7 @@ export function Toolbar() {
                      </Tooltip>
                      <Tooltip>
                         <TooltipTrigger
+                           title="Update Link"
                            className="flex items-center p-1"
                            onPointerDown={(e) => e.preventDefault()}
                            onClick={(e) => {

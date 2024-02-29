@@ -93,6 +93,7 @@ export const EditorCommandBar = ({
             >
                <Tooltip placement="top">
                   <TooltipTrigger
+                     title="Publish Changes"
                      asChild
                      disabled={!isChanged || disabled || isAutoSaving}
                      onClick={() => {
@@ -103,7 +104,7 @@ export const EditorCommandBar = ({
                      }}
                   >
                      <Button
-                        color={isChanged ? "blue" : "zinc"}
+                        color={isChanged ? "green" : "zinc"}
                         className="size-9 !p-0"
                      >
                         {isAutoSaving || isPublishing ? (
@@ -136,7 +137,7 @@ export const EditorCommandBar = ({
                       dark:hover:border-zinc-500 dark:from-dark500 dark:to-dark450 focus:outline-none dark:border-zinc-500/70"
                      >
                         <Tooltip placement="top">
-                           <TooltipTrigger asChild>
+                           <TooltipTrigger title="Options" asChild>
                               {isAutoSaving && !isChanged ? (
                                  <Icon
                                     name="loader-2"
@@ -186,6 +187,7 @@ export const EditorCommandBar = ({
                               <span className="max-tablet_editor:hidden tablet_editor:h-2 h-0.5 tablet_editor:w-0.5 w-10 bg-zinc-200 dark:bg-dark450 mx-auto" />
                               <Tooltip placement="right">
                                  <TooltipTrigger
+                                    title="History"
                                     className={command_button}
                                     onClick={() => setVersionModal(true)}
                                  >
@@ -214,6 +216,7 @@ export const EditorCommandBar = ({
                                              <Popover.Button as="div">
                                                 <Tooltip placement="right">
                                                    <TooltipTrigger
+                                                      title="Settings"
                                                       className={command_button}
                                                    >
                                                       {open ? (

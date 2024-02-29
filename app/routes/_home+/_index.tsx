@@ -305,7 +305,8 @@ const Discover = () => {
                                  <Image
                                     height={44}
                                     width={44}
-                                    url={`${site.icon?.url}`}
+                                    url={site.icon?.url}
+                                    alt={site.name}
                                  />
                               </div>
                               <div className="space-y-1 truncate">

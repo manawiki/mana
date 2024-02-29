@@ -50,7 +50,7 @@ export function Dialog({
                />
             </HeadlessTransitionChild>
             <HeadlessTransitionChild
-               className="fixed z-50 inset-0 w-screen overflow-y-auto pt-6 tablet:pt-0"
+               className="fixed z-50 inset-0 w-screen overflow-y-auto pt-14 tablet:pt-0"
                enter="ease-out duration-100"
                enterFrom="opacity-0 translate-y-12 tablet:translate-y-0"
                enterTo="opacity-100 translate-y-0"

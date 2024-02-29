@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload/types";
 
-import { afterDeleteHook, afterChangeHook } from "./hooks";
+import { afterDeleteHook, afterChangeHook } from "./collection-hooks";
 import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
 import { isStaffFieldLevel } from "../users/access";
 

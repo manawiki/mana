@@ -55,6 +55,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
 import { useIsMount } from "~/utils/use-debounce";
+import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 // eslint-disable-next-line import/no-cycle
 import { BlockGroupItemView } from "./group-view";
@@ -793,7 +794,7 @@ export function BlockGroup({
                                        <RadioGroup.Option value="list">
                                           {({ checked }) => (
                                              <Tooltip>
-                                                <TooltipTrigger>
+                                                <TooltipTrigger title="List View">
                                                    <div
                                                       className={clsx(
                                                          checked
@@ -825,7 +826,7 @@ export function BlockGroup({
                                        <RadioGroup.Option value="grid">
                                           {({ checked }) => (
                                              <Tooltip>
-                                                <TooltipTrigger>
+                                                <TooltipTrigger title="Grid View">
                                                    <div
                                                       className={clsx(
                                                          checked
@@ -992,7 +993,7 @@ export function BlockGroupItem({
                   >
                      <FloatingDelayGroup delay={{ open: 1000 }}>
                         <Tooltip>
-                           <TooltipTrigger>
+                           <TooltipTrigger title="Edit Toggle">
                               <button
                                  className="flex h-6 w-5 items-center justify-center"
                                  onClick={() => setEditMode(!editMode)}
@@ -1009,7 +1010,7 @@ export function BlockGroupItem({
                            </TooltipContent>
                         </Tooltip>
                         <Tooltip>
-                           <TooltipTrigger>
+                           <TooltipTrigger title="Drag to reorder">
                               <button
                                  type="button"
                                  aria-label="Drag to reorder"
@@ -1181,6 +1182,7 @@ export function BlockGroupItem({
                         {!editMode && (
                            <Tooltip placement="left-start">
                               <TooltipTrigger
+                                 title="Drag to reorder"
                                  type="button"
                                  aria-label="Drag to reorder"
                                  ref={setActivatorNodeRef}
