@@ -69,6 +69,9 @@ export function CollectionHeader({
       : "/collections";
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
+   //Get root domain from full domain url
+   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
+
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
          <div className="pt-[61px] laptop:pt-0 z-20 relative">
@@ -115,8 +118,8 @@ export function CollectionHeader({
                                        color="violet"
                                        target="_blank"
                                        href={`https://${site.slug}-db.${
-                                          site?.domain
-                                             ? site.domain
+                                          customDomainHostname
+                                             ? customDomainHostname
                                              : "mana.wiki"
                                        }/admin/collections/${collection.slug}/${
                                           entry.id
