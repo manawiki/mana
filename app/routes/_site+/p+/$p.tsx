@@ -137,7 +137,7 @@ export default function Post() {
                   />
                   <div className="fixed tablet_editor:absolute tablet_editor:top-20 laptop:top-6 -right-16 h-full z-40">
                      <div
-                        className="max-tablet_editor:fixed max-tablet_editor:bottom-20 
+                        className="max-tablet_editor:fixed max-tablet_editor:bottom-8 
                      tablet_editor:sticky tablet_editor:top-[134px] laptop:top-20 w-full left-0"
                      >
                         <div
@@ -155,6 +155,7 @@ export default function Post() {
                                  <>
                                     <Tooltip placement="right">
                                        <TooltipTrigger
+                                          title="Banner"
                                           onClick={() =>
                                              setIsBannerShowing((v) => !v)
                                           }

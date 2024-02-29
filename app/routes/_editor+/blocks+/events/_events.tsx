@@ -67,6 +67,7 @@ export function BlockEvents({
          </div>
          <Tooltip placement="bottom" setDelay={800}>
             <TooltipTrigger
+               title="Add an event"
                contentEditable={false}
                className="transition group-hover/events:opacity-100 opacity-0 absolute right-2 bottom-[25px] select-none duration-100 ease-in laptop:translate-x-full laptop:translate-y-0"
             >
@@ -192,12 +193,12 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
          const resultArray = [...activeEvents, ...upcomingEvents];
          return resultArray.forEach((row: any) => {
             Transforms.moveNodes<CustomElement>(editor, {
-               at: [path[0]],
+               at: [path[0]!],
                match: (node: Node) =>
                   //@ts-ignore
                   Editor.isBlock(editor, node) && node.id === row?.id,
                to: [
-                  path[0],
+                  path[0]!,
                   resultArray.findIndex((item: any) => item.id == row.id),
                ],
             });
@@ -387,7 +388,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                               >
                                  <Menu.Item>
                                     <Tooltip placement="left">
-                                       <TooltipTrigger>
+                                       <TooltipTrigger title="Delete Event">
                                           <button
                                              className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450"
                                              onClick={() => {
@@ -408,7 +409,7 @@ export function BlockEventItem({ element }: { element: EventItemElement }) {
                                  </Menu.Item>
                                  <Menu.Item>
                                     <Tooltip placement="left">
-                                       <TooltipTrigger>
+                                       <TooltipTrigger title="Copy Event">
                                           <button className="m-1 flex h-8 w-8 items-center justify-center gap-2 rounded-md text-sm font-bold hover:bg-zinc-100 dark:hover:bg-dark450">
                                              <Icon name="copy" size={14} />
                                           </button>

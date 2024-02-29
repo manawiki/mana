@@ -17,6 +17,7 @@ import type { Entry } from "payload/generated-types";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
 import { isAdding } from "~/utils/form";
@@ -91,26 +92,56 @@ export default function CollectionList() {
       }
    }, [addingUpdate, zoEntry.refObject]);
 
+   //Get root domain from full domain url
+   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
+
    return (
       <List>
          <section className="relative">
             <AdminOrStaffOrOwner>
-               {!collection?.customDatabase && (
-                  <div className="pt-1">
+               <div className="mb-3 flex items-center gap-4 w-full">
+                  {collection?.customDatabase ? (
+                     <div className="flex items-center justify-end w-full">
+                        <Button
+                           type="button"
+                           color="blue"
+                           target="_blank"
+                           className="text-sm"
+                           href={`https://${site.slug}-db.${
+                              customDomainHostname
+                                 ? customDomainHostname
+                                 : "mana.wiki"
+                           }/admin/collections/${collection?.slug}/create`}
+                        >
+                           {addingUpdate ? (
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin "
+                              />
+                           ) : (
+                              <Icon
+                                 className="text-blue-200"
+                                 name="plus"
+                                 size={15}
+                              />
+                           )}
+                           Add {collection?.name}
+                        </Button>
+                     </div>
+                  ) : (
                      <fetcher.Form
                         ref={zoEntry.ref}
-                        className="dark:bg-dark350 border  focus-within:border-zinc-200 
-                        dark:focus-within:border-zinc-500/70 border-color-sub rounded-xl 
-                        shadow-sm shadow-1 mb-3 bg-zinc-50 flex items-center justify-between pr-2.5"
                         method="post"
                         action="/collections/entry"
+                        className="flex items-center justify-between gap-4 flex-grow"
                      >
-                        <input
+                        <Input
                            required
                            placeholder="Type an entry name..."
                            name={zoEntry.fields.name()}
                            type="text"
-                           className="w-full focus:outline-none bg-transparent pl-4 text-sm h-12 focus:border-0 focus:ring-0 border-0"
+                           className="w-full focus:outline-none !bg-transparent text-sm focus:border-0 focus:ring-0 border-0"
                         />
                         <input
                            value={collection?.id}
@@ -123,11 +154,11 @@ export default function CollectionList() {
                            type="hidden"
                         />
                         <Button
-                           className="text-xs !py-1.5 !pl-2 !font-bold"
+                           className="h-11 tablet:h-9 w-24"
                            name="intent"
                            value="addEntry"
                            type="submit"
-                           color="dark/white"
+                           color="blue"
                         >
                            {addingUpdate ? (
                               <Icon
@@ -136,17 +167,21 @@ export default function CollectionList() {
                                  className="animate-spin "
                               />
                            ) : (
-                              <Icon name="plus" size={14} />
+                              <Icon
+                                 className="text-blue-200"
+                                 name="plus"
+                                 size={14}
+                              />
                            )}
                            Add
                         </Button>
                      </fetcher.Form>
-                  </div>
-               )}
+                  )}
+               </div>
             </AdminOrStaffOrOwner>
 
             {entries.docs?.length > 0 ? (
-               <div className="border-color-sub divide-color-sub shadow-sm shadow-1 divide-y overflow-hidden rounded-lg border">
+               <div className="border-color-sub divide-color-sub divide-y overflow-hidden shadow shadow-zinc-100 dark:shadow-zinc-800/80 rounded-xl border">
                   {entries.docs?.map((entry: Entry, int: number) => (
                      <Link
                         key={entry.id}
@@ -179,7 +214,11 @@ export default function CollectionList() {
                      </Link>
                   ))}
                </div>
-            ) : null}
+            ) : (
+               <div className="text-sm text-1 border-t text-center border-color py-3 mt-4">
+                  No entries exist...
+               </div>
+            )}
          </section>
          {/* Pagination Section */}
          {totalPages > 1 && (

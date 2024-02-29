@@ -1,5 +1,9 @@
 import { json, redirect } from "@remix-run/node";
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import type {
+   ActionFunctionArgs,
+   LoaderFunctionArgs,
+   MetaFunction,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { jsonWithSuccess } from "remix-toast";
 import type { Descendant } from "slate";
@@ -7,6 +11,7 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Config } from "payload/generated-types";
+import { getMeta } from "~/components/getMeta";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import { EditorCommandBar } from "~/routes/_editor+/core/components/EditorCommandBar";
 import { EditorView } from "~/routes/_editor+/core/components/EditorView";
@@ -71,7 +76,7 @@ export default function SiteIndexMain() {
                   />
                   <div className="fixed tablet_editor:absolute tablet_editor:top-20 laptop:top-6 -right-16 h-full z-40">
                      <div
-                        className="max-tablet_editor:fixed max-tablet_editor:bottom-20 
+                        className="max-tablet_editor:fixed max-tablet_editor:bottom-8 
                      tablet_editor:sticky tablet_editor:top-[134px] laptop:top-20 w-full left-0"
                      >
                         <div
@@ -131,3 +136,19 @@ export async function action({
       }
    }
 }
+
+export const meta: MetaFunction = ({ matches }: any) => {
+   const site = matches?.[1].data?.site;
+
+   const title = site?.name;
+   const collections = site?.collections?.map(
+      (collection: any) => collection?.name,
+   );
+
+   const description = `Explore ${collections?.join(
+      ", ",
+   )} on ${site?.name}, Database, Guides, News, and more!`;
+   const image = site?.banner?.url;
+
+   return getMeta({ title, description, image, siteName: site?.name });
+};

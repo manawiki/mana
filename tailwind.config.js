@@ -59,5 +59,5 @@ module.exports = {
          desktop: "1400px",
       },
    },
-   plugins: [require("tailwindcss-bg-patterns")],
+   plugins: [require("tailwindcss-bg-patterns"), require("tailwind-scrollbar")],
 };

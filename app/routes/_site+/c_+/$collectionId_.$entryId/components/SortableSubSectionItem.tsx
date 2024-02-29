@@ -14,8 +14,7 @@ import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { isAdding, isProcessing } from "~/utils/form";
 
-// eslint-disable-next-line import/no-cycle
-import { SubSectionSchema } from "./SortableSectionItem";
+import { SubSectionSchema } from "./AddSubSection";
 
 export function SortableSubSectionItem({
    collectionId,
@@ -57,6 +56,7 @@ export function SortableSubSectionItem({
          setSubSectionUpdateFormChanged(false);
       }
    }, [savingUpdateSubSection]);
+
    return (
       <div
          ref={setNodeRef}
@@ -155,6 +155,7 @@ export function SortableSubSectionItem({
                         name="intent"
                         value="updateSubSection"
                         type="submit"
+                        color="zinc"
                         disabled={
                            disabled || isSubSectionUpdateFormChanged === false
                         }
@@ -180,7 +181,7 @@ export function SortableSubSectionItem({
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md",
+                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md touch-none",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}

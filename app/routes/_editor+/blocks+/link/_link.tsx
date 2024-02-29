@@ -260,6 +260,7 @@ export function BlockLink({ element, children }: Props) {
                      width={30}
                      height={30}
                      url={element.icon.url}
+                     alt={children ? "" : element.name}
                      options="aspect_ratio=1:1&height=40&width=40"
                   />
                ) : (
