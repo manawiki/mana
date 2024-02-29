@@ -94,8 +94,8 @@ export default function CollectionList() {
 
    //Get root domain from full domain url
 
-   const customDomainHostname = site.domain
-      ? new URL(site.domain).hostname
+   const customDomainHostname = site?.domain
+      ? new URL(site?.domain)?.hostname
       : undefined;
 
    return (
