@@ -195,6 +195,7 @@ export async function getEntryFields({
       entry: {
          id: entryData?.id,
          name: entryData?.name,
+         slug: entryData?.slug,
          icon: { id: entryData?.icon?.id, url: entryData?.icon?.url },
          collectionName: collection?.name,
          collectionSlug: collection?.slug,

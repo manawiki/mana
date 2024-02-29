@@ -64,7 +64,7 @@ export function Avatar({
                </text>
             </svg>
          )}
-         {src && <Image url={src} alt={alt} options={options} />}
+         {src && <Image url={src} alt={alt} options={options} loading="lazy" />}
          {/* Add an inset border that sits on top of the image */}
          <span
             className="ring-1 ring-inset ring-black/10 dark:ring-white/5 forced-colors:outline"

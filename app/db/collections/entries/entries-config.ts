@@ -1,29 +1,15 @@
-import type {
-   CollectionAfterDeleteHook,
-   CollectionConfig,
-} from "payload/types";
+import type { CollectionConfig } from "payload/types";
 
 import type { User } from "payload/generated-types";
 
-import { canMutateAsSiteAdmin } from "../../access/canMutateAsSiteAdmin";
+import {
+   canCreateEntry,
+   canUpdateEntry,
+   canDeleteEntry,
+} from "./entries-access";
+import { afterDeleteHook } from "./entries-hooks";
 
 export const entriesSlug = "entries";
-
-const afterDeleteHook: CollectionAfterDeleteHook = async ({
-   req: { payload },
-   doc,
-}) => {
-   try {
-      await payload.delete({
-         collection: "contentEmbeds",
-         where: {
-            relationId: { equals: doc.id },
-         },
-      });
-   } catch (err: unknown) {
-      payload.logger.error(`${err}`);
-   }
-};
 
 export const Entries: CollectionConfig = {
    slug: entriesSlug,
@@ -34,10 +20,10 @@ export const Entries: CollectionConfig = {
       afterDelete: [afterDeleteHook],
    },
    access: {
-      create: canMutateAsSiteAdmin("entries"),
+      create: canCreateEntry,
       read: (): boolean => true,
-      update: canMutateAsSiteAdmin("entries"),
-      delete: canMutateAsSiteAdmin("entries"),
+      update: canUpdateEntry,
+      delete: canDeleteEntry,
    },
    fields: [
       {

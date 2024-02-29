@@ -1,24 +1,19 @@
 import type { ReactNode } from "react";
 import { Children, Fragment, useState } from "react";
 
-import {
-   FloatingDelayGroup,
-   useFloating,
-   useHover,
-   useInteractions,
-} from "@floating-ui/react";
 import { Popover, Transition } from "@headlessui/react";
-import { Float } from "@headlessui-float/react";
 import type { FetcherWithComponents } from "@remix-run/react";
 import clsx from "clsx";
 
 import type { Config } from "payload/generated-types";
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/components/Tooltip";
 import { EditorVersionModal } from "~/routes/_editor+/core/components/EditorVersionModal";
 import { isProcessing } from "~/utils/form";
 
-export const command_button = `border border-color-sub shadow-sm shadow-1 hover:border-zinc-300 bg-3-sub flex h-9 w-9 items-center justify-center rounded-full dark:hover:border-zinc-600`;
+export const command_button = `border dark:border-zinc-600 shadow-sm shadow-1 hover:border-zinc-300 dark:bg-dark450 
+flex size-9 items-center justify-center rounded-full dark:hover:border-zinc-600 bg-zinc-50`;
 
 export const EditorCommandBar = ({
    isChanged,
@@ -32,6 +27,7 @@ export const EditorCommandBar = ({
    primaryOptions,
    secondaryOptions,
    children,
+   isSection,
 }: {
    isChanged: boolean | undefined;
    fetcher: FetcherWithComponents<unknown>;
@@ -44,6 +40,7 @@ export const EditorCommandBar = ({
    primaryOptions?: ReactNode;
    secondaryOptions?: ReactNode;
    children?: ReactNode;
+   isSection?: boolean;
 }) => {
    const isAutoSaving =
       fetcher.state === "submitting" &&
@@ -55,22 +52,6 @@ export const EditorCommandBar = ({
 
    const disabled = isProcessing(fetcher.state);
    const [isVersionModalOpen, setVersionModal] = useState(false);
-
-   const [isHoverActive, setHoverState] = useState(false);
-
-   const { refs, context } = useFloating({
-      open: isHoverActive,
-      onOpenChange: setHoverState,
-   });
-
-   const hover = useHover(context, {
-      delay: {
-         open: 0,
-         close: 400,
-      },
-   });
-
-   const { getReferenceProps } = useInteractions([hover]);
 
    const submitData = {
       collectionSlug,
@@ -101,154 +82,198 @@ export const EditorCommandBar = ({
    if (!_secondaryOptions) _secondaryOptions = secondaryOptions;
 
    return (
-      <div
-         ref={refs.setReference}
-         {...getReferenceProps()}
-         className="z-40 flex flex-col items-center justify-between max-laptop:hidden"
-      >
-         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
-            {isPublishing ? (
-               <div className="flex h-9 w-9 items-center justify-center rounded-full dark:bg-dark500 border-2 dark:border-zinc-500 bg-zinc-50 border-zinc-300">
-                  <Icon
-                     name="loader-2"
-                     size={16}
-                     className="mx-auto animate-spin text-zinc-700 dark:text-white"
-                  />
-               </div>
-            ) : (
-               <>
-                  {isChanged ? (
-                     <Tooltip placement="top">
-                        <TooltipTrigger
-                           className="transition duration-100 flex h-9 w-9 items-center justify-center shadow 
-                           shadow-gray-300 dark:shadow-zinc-800 bg-zinc-50 border-zinc-300 relative
-                           rounded-full dark:bg-dark500 border-2 dark:border-zinc-500 z-10
-                           hover:bg-zinc-100 dark:hover:bg-zinc-500 active:translate-y-0.5"
-                           disabled={disabled}
-                           onClick={() => {
-                              fetcher.submit(submitData, {
-                                 method: "POST",
-                                 action: actionPath,
-                              });
-                           }}
-                        >
-                           <Icon
-                              name="send"
-                              size={16}
-                              className={clsx(
-                                 isHoverActive ? "rotate-12" : "",
-                                 "text-zinc-500 pt-0.5 pr-[1px] dark:text-white transition ease-in-out transform",
-                              )}
-                           />
-                        </TooltipTrigger>
-                        <TooltipContent>Publish changes</TooltipContent>
-                     </Tooltip>
-                  ) : (
-                     <Tooltip placement="top">
-                        <TooltipTrigger
-                           className="flex cursor-default hover:border-zinc-300 dark:hover:border-dark500 shadow shadow-1 relative
-                           border-2 border-zinc-200 dark:border-zinc-500 bg-2-sub rounded-full h-9 w-9 items-center justify-center z-10"
-                        >
-                           {isAutoSaving ? (
-                              <Icon
-                                 name="loader-2"
-                                 size={18}
-                                 className="animate-spin"
-                              />
-                           ) : (
-                              <Icon name="check" size={18} />
-                           )}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                           No changes to publish...
-                        </TooltipContent>
-                     </Tooltip>
-                  )}
-               </>
-            )}
-            <Transition
-               show={isHoverActive}
-               enter="transition ease duration-500 transform"
-               enterFrom="opacity-0 -translate-y-12"
-               enterTo="opacity-100 translate-y-0"
-               leave="transition ease duration-300 transform"
-               leaveFrom="opacity-100 translate-y-0"
-               leaveTo="opacity-0 -translate-y-12"
-               className="flex flex-col"
+      <>
+         <div className="tablet_editor:flex-col max-tablet_editor:gap-3 flex w-full items-center justify-between">
+            <div
+               className={clsx(
+                  isSection && !isChanged ? "hidden" : "",
+                  isChanged ? "" : "tablet_editor:hidden",
+                  "order-last tablet_editor:order-first",
+               )}
             >
-               <span className="h-3 w-0.5 bg-zinc-200 dark:bg-dark450 mx-auto" />
-               <Tooltip placement="right">
+               <Tooltip placement="top">
                   <TooltipTrigger
-                     className={command_button}
-                     onClick={() => setVersionModal(true)}
+                     title="Publish Changes"
+                     asChild
+                     disabled={!isChanged || disabled || isAutoSaving}
+                     onClick={() => {
+                        fetcher.submit(submitData, {
+                           method: "POST",
+                           action: actionPath,
+                        });
+                     }}
                   >
-                     <Icon name="clock-9" size={16} />
-                  </TooltipTrigger>
-                  <TooltipContent>History</TooltipContent>
-               </Tooltip>
-               {_primaryOptions && (
-                  <>
-                     <span className="h-2 w-0.5 bg-zinc-200 dark:bg-dark450 mx-auto" />
-                     {_primaryOptions}
-                  </>
-               )}
-               {_secondaryOptions && (
-                  <>
-                     <span className="h-2 w-0.5 bg-zinc-200 dark:bg-dark450 mx-auto" />
-                     <Popover>
-                        {({ open }) => (
-                           <>
-                              <Float
-                                 as={Fragment}
-                                 enter="transition ease-out duration-200"
-                                 enterFrom="opacity-0 translate-y-1"
-                                 enterTo="opacity-100 translate-y-0"
-                                 leave="transition ease-in duration-150"
-                                 leaveFrom="opacity-100 translate-y-0"
-                                 leaveTo="opacity-0 translate-y-1"
-                                 placement="left-start"
-                                 offset={4}
-                              >
-                                 <Popover.Button as="div">
-                                    <Tooltip placement="right">
-                                       <TooltipTrigger
-                                          className={command_button}
-                                       >
-                                          {open ? (
-                                             <Icon
-                                                name="x"
-                                                className="text-1"
-                                                size={14}
-                                             />
-                                          ) : (
-                                             <Icon
-                                                name="more-vertical"
-                                                size={16}
-                                             />
-                                          )}
-                                       </TooltipTrigger>
-                                       <TooltipContent>Settings</TooltipContent>
-                                    </Tooltip>
-                                 </Popover.Button>
-                                 <Popover.Panel className="border-color-sub bg-3-sub w-32 shadow-1 p-1 transform rounded-lg border shadow">
-                                    {/* @ts-ignore */}
-                                    {_secondaryOptions}
-                                 </Popover.Panel>
-                              </Float>
-                           </>
+                     <Button
+                        color={isChanged ? "green" : "zinc"}
+                        className="size-9 !p-0"
+                     >
+                        {isAutoSaving || isPublishing ? (
+                           <Icon
+                              title="Saving"
+                              name="loader-2"
+                              size={18}
+                              className="animate-spin"
+                           />
+                        ) : (
+                           <Icon
+                              title="Save then publish"
+                              name="send"
+                              size={18}
+                              className="pt-0.5 text-white transition ease-in-out hover:rotate-12 transform"
+                           />
                         )}
-                     </Popover>
+                     </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Publish changes</TooltipContent>
+               </Tooltip>
+               <span className="max-tablet_editor:hidden h-3 w-0.5 bg-zinc-200 dark:bg-dark450 mx-auto block" />
+            </div>
+            <Popover className="relative">
+               {({ open }) => (
+                  <>
+                     <Popover.Button
+                        className="border bg-gradient-to-br from-zinc-50 to-white shadow-sm shadow-1 relative z-40 order-first
+                     hover:border-zinc-400/80 flex size-9 items-center justify-center border-zinc-300/80 rounded-full tablet_editor:order-last
+                      dark:hover:border-zinc-500 dark:from-dark500 dark:to-dark450 focus:outline-none dark:border-zinc-500/70"
+                     >
+                        <Tooltip placement="top">
+                           <TooltipTrigger title="Options" asChild>
+                              {isAutoSaving && !isChanged ? (
+                                 <Icon
+                                    name="loader-2"
+                                    title="Saving"
+                                    size={18}
+                                    className="animate-spin"
+                                 />
+                              ) : open ? (
+                                 <Icon
+                                    title="Back"
+                                    name="arrow-left"
+                                    size={16}
+                                 />
+                              ) : (
+                                 <Icon
+                                    title="More Options"
+                                    name="more-horizontal"
+                                    size={16}
+                                    className={clsx(
+                                       open ? "rotate-90" : "",
+                                       "text-zinc-500 dark:text-white transition ease-in-out transform",
+                                    )}
+                                 />
+                              )}
+                           </TooltipTrigger>
+                           <TooltipContent>More Options</TooltipContent>
+                        </Tooltip>
+                     </Popover.Button>
+                     <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-200"
+                        enterFrom="opacity-0 translate-y-1"
+                        enterTo="opacity-100 translate-y-0"
+                        leave="transition ease-in duration-150"
+                        leaveFrom="opacity-100 translate-y-0"
+                        leaveTo="opacity-0 translate-y-1"
+                     >
+                        <Popover.Panel
+                           className={clsx(
+                              isSection
+                                 ? "max-tablet_editor:right-10 max-tablet_editor:-top-[27px]"
+                                 : "max-tablet_editor:left-10 max-tablet_editor:top-0 max-tablet_editor:pl-2",
+                              "z-50 absolute",
+                           )}
+                        >
+                           <div className="flex tablet_editor:flex-col items-center">
+                              <span className="max-tablet_editor:hidden tablet_editor:h-2 h-0.5 tablet_editor:w-0.5 w-10 bg-zinc-200 dark:bg-dark450 mx-auto" />
+                              <Tooltip placement="right">
+                                 <TooltipTrigger
+                                    title="History"
+                                    className={command_button}
+                                    onClick={() => setVersionModal(true)}
+                                 >
+                                    <Icon
+                                       title="History"
+                                       name="clock-9"
+                                       size={16}
+                                    />
+                                 </TooltipTrigger>
+                                 <TooltipContent>History</TooltipContent>
+                              </Tooltip>
+                              {/* @ts-ignore */}
+                              {_primaryOptions && (
+                                 <>
+                                    <span className="tablet_editor:h-2 h-0.5 tablet_editor:w-0.5 w-3 bg-zinc-200 dark:bg-dark450 mx-auto" />
+                                    {_primaryOptions}
+                                 </>
+                              )}
+                              {/* @ts-ignore */}
+                              {_secondaryOptions && (
+                                 <>
+                                    <span className="tablet_editor:h-2 h-0.5 tablet_editor:w-0.5 w-3 bg-zinc-200 dark:bg-dark450 mx-auto" />
+                                    <Popover className="relative">
+                                       {({ open }) => (
+                                          <>
+                                             <Popover.Button as="div">
+                                                <Tooltip placement="right">
+                                                   <TooltipTrigger
+                                                      title="Settings"
+                                                      className={command_button}
+                                                   >
+                                                      {open ? (
+                                                         <Icon
+                                                            name="x"
+                                                            className="text-1"
+                                                            size={14}
+                                                         />
+                                                      ) : (
+                                                         <Icon
+                                                            title="Settings"
+                                                            name="more-horizontal"
+                                                            size={16}
+                                                         />
+                                                      )}
+                                                   </TooltipTrigger>
+                                                   <TooltipContent>
+                                                      Settings
+                                                   </TooltipContent>
+                                                </Tooltip>
+                                             </Popover.Button>
+                                             <Transition
+                                                as={Fragment}
+                                                enter="transition ease-out duration-200"
+                                                enterFrom="opacity-0 translate-y-1"
+                                                enterTo="opacity-100 translate-y-0"
+                                                leave="transition ease-in duration-150"
+                                                leaveFrom="opacity-100 translate-y-0"
+                                                leaveTo="opacity-0 translate-y-1"
+                                             >
+                                                <Popover.Panel
+                                                   className="border-color-sub max-tablet_editor:bottom-10 tablet_editor:top-0 tablet_editor:right-11 bg-3-sub w-32 shadow-1 p-1
+                                                    transform rounded-lg border shadow absolute"
+                                                >
+                                                   {/* @ts-ignore */}
+                                                   {_secondaryOptions}
+                                                </Popover.Panel>
+                                             </Transition>
+                                          </>
+                                       )}
+                                    </Popover>
+                                 </>
+                              )}
+                           </div>
+                        </Popover.Panel>
+                     </Transition>
                   </>
                )}
-            </Transition>
-         </FloatingDelayGroup>
-         <EditorVersionModal
-            pageId={pageId}
-            isVersionModalOpen={isVersionModalOpen}
-            setVersionModal={setVersionModal}
-            collectionSlug={collectionSlug}
-         />
-      </div>
+            </Popover>
+            <EditorVersionModal
+               pageId={pageId}
+               isVersionModalOpen={isVersionModalOpen}
+               setVersionModal={setVersionModal}
+               collectionSlug={collectionSlug}
+            />
+         </div>
+      </>
    );
 };
 

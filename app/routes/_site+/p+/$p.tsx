@@ -1,7 +1,5 @@
 import { Suspense, useState } from "react";
 
-import { offset, shift } from "@floating-ui/react";
-import { Float } from "@headlessui-float/react";
 import { defer, json, redirect } from "@remix-run/node";
 import type {
    ActionFunctionArgs,
@@ -104,129 +102,129 @@ export default function Post() {
 
    return (
       <>
-         {hasAccess ? (
-            <>
-               <Float
-                  middleware={[
-                     shift({
-                        padding: {
-                           top: 80,
-                        },
-                     }),
-                     offset({
-                        mainAxis: 50,
-                        crossAxis: 0,
-                     }),
-                  ]}
-                  zIndex={20}
-                  autoUpdate
-                  placement="right-start"
-                  show
-               >
-                  <div className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
-                     {/* @ts-ignore */}
-                     <PostActionBar post={post} />
-                     {/* @ts-ignore */}
-                     <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                     {/* @ts-ignore */}
-                     <PostTableOfContents data={postContent} />
-                     {enableAds && <AdPlaceholder />}
-                     <ManaEditor
-                        collectionSlug="postContents"
-                        fetcher={fetcher}
-                        pageId={post.id}
-                        defaultValue={postContent as Descendant[]}
-                     />
-                  </div>
-                  <div>
-                     <EditorCommandBar
-                        collectionSlug="postContents"
-                        postId={post.id}
-                        fetcher={fetcher}
-                        isChanged={isChanged}
-                     >
-                        <EditorCommandBar.PrimaryOptions>
-                           <>
-                              <Tooltip placement="right">
-                                 <TooltipTrigger
-                                    onClick={() =>
-                                       setIsBannerShowing((v) => !v)
-                                    }
-                                    className={command_button}
-                                 >
-                                    {isShowBanner ? (
-                                       <Icon name="image-minus" size={14} />
-                                    ) : (
-                                       <Icon name="image" size={14} />
-                                    )}
-                                 </TooltipTrigger>
-                                 <TooltipContent>Banner</TooltipContent>
-                              </Tooltip>
-                           </>
-                        </EditorCommandBar.PrimaryOptions>
-                        <EditorCommandBar.SecondaryOptions>
-                           <>
-                              {post.publishedAt && (
-                                 <button
-                                    className="text-1 flex w-full items-center gap-2 rounded-lg px-2
-                                    py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                    onClick={() => setUnpublishOpen(true)}
-                                 >
-                                    <Icon
-                                       name="eye-off"
-                                       className="text-zinc-400"
-                                       size={12}
-                                    />
-                                    <span className="text-xs">Unpublish</span>
-                                 </button>
-                              )}
-                              <button
-                                 className="text-1 flex w-full items-center gap-2 rounded-lg
-                                              px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
-                                 onClick={() => setDeleteOpen(true)}
-                              >
-                                 <Icon
-                                    name="trash-2"
-                                    className="text-red-400"
-                                    size={12}
-                                 />
-                                 <span className="text-xs">Delete</span>
-                              </button>
-                           </>
-                        </EditorCommandBar.SecondaryOptions>
-                     </EditorCommandBar>
-                     <PostDeleteModal
-                        postId={post.id}
-                        isDeleteOpen={isDeleteOpen}
-                        setDeleteOpen={setDeleteOpen}
-                     />
-                     <PostUnpublishModal
-                        postId={post.id}
-                        isUnpublishOpen={isUnpublishOpen}
-                        setUnpublishOpen={setUnpublishOpen}
-                     />
-                  </div>
-               </Float>
-            </>
-         ) : (
-            <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6">
-               {/* @ts-ignore */}
-               <PostActionBar post={post} />
-               {/* @ts-ignore */}
+         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 relative">
+            {/* @ts-ignore */}
+            <PostActionBar post={post} />
+            {hasAccess ? (
+               // @ts-ignore
+               <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+            ) : (
+               // @ts-ignore
                <PostHeaderView post={post} />
-               {/* @ts-ignore */}
-               <PostTableOfContents data={postContent} />
-               <AdPlaceholder>
+            )}
+            {/* @ts-ignore */}
+            <PostTableOfContents data={postContent} />
+            <AdPlaceholder>
+               <div
+                  className={`flex items-center justify-center ${
+                     enableAds ? "min-h-[90px]" : ""
+                  }`}
+               >
                   <AdUnit
                      enableAds={enableAds}
                      adType="desktopLeaderATF"
                      selectorId="postDesktopLeaderATF"
-                     className="flex items-center justify-center [&>div]:py-5"
                   />
-               </AdPlaceholder>
+               </div>
+            </AdPlaceholder>
+            {hasAccess ? (
+               <>
+                  <ManaEditor
+                     collectionSlug="postContents"
+                     fetcher={fetcher}
+                     pageId={post.id}
+                     defaultValue={postContent as Descendant[]}
+                  />
+                  <div className="fixed tablet_editor:absolute tablet_editor:top-20 laptop:top-6 -right-16 h-full z-40">
+                     <div
+                        className="max-tablet_editor:fixed max-tablet_editor:bottom-8 
+                     tablet_editor:sticky tablet_editor:top-[134px] laptop:top-20 w-full left-0"
+                     >
+                        <div
+                           className="rounded-xl max-tablet_editor:shadow max-tablet_editor:shadow-1 max-tablet_editor:p-2 max-tablet_editor:max-w-sm
+                     max-tablet_editor:backdrop-blur-lg max-tablet_editor:dark:bg-black/30 max-tablet_editor:bg-white/30 
+                     max-tablet_editor:border border-zinc-300/70 dark:border-zinc-600/50 max-tablet_editor:mx-auto"
+                        >
+                           <EditorCommandBar
+                              collectionSlug="postContents"
+                              postId={post.id}
+                              fetcher={fetcher}
+                              isChanged={isChanged}
+                           >
+                              <EditorCommandBar.PrimaryOptions>
+                                 <>
+                                    <Tooltip placement="right">
+                                       <TooltipTrigger
+                                          title="Banner"
+                                          onClick={() =>
+                                             setIsBannerShowing((v) => !v)
+                                          }
+                                          className={command_button}
+                                       >
+                                          {isShowBanner ? (
+                                             <Icon
+                                                name="image-minus"
+                                                size={14}
+                                             />
+                                          ) : (
+                                             <Icon name="image" size={14} />
+                                          )}
+                                       </TooltipTrigger>
+                                       <TooltipContent>Banner</TooltipContent>
+                                    </Tooltip>
+                                 </>
+                              </EditorCommandBar.PrimaryOptions>
+                              <EditorCommandBar.SecondaryOptions>
+                                 <>
+                                    {post.publishedAt && (
+                                       <button
+                                          className="text-1 flex w-full items-center gap-2 rounded-lg px-2
+                                 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                          onClick={() => setUnpublishOpen(true)}
+                                       >
+                                          <Icon
+                                             name="eye-off"
+                                             className="text-zinc-400"
+                                             size={12}
+                                          />
+                                          <span className="text-xs">
+                                             Unpublish
+                                          </span>
+                                       </button>
+                                    )}
+                                    <button
+                                       className="text-1 flex w-full items-center gap-2 rounded-lg
+                                           px-2 py-1.5 text-sm font-bold hover:bg-zinc-100 hover:dark:bg-zinc-700/50"
+                                       onClick={() => setDeleteOpen(true)}
+                                    >
+                                       <Icon
+                                          name="trash-2"
+                                          className="text-red-400"
+                                          size={12}
+                                       />
+                                       <span className="text-xs">Delete</span>
+                                    </button>
+                                 </>
+                              </EditorCommandBar.SecondaryOptions>
+                           </EditorCommandBar>
+                        </div>
+                        <PostDeleteModal
+                           postId={post.id}
+                           isDeleteOpen={isDeleteOpen}
+                           setDeleteOpen={setDeleteOpen}
+                        />
+                        <PostUnpublishModal
+                           postId={post.id}
+                           isUnpublishOpen={isUnpublishOpen}
+                           setUnpublishOpen={setUnpublishOpen}
+                        />
+                     </div>
+                  </div>
+               </>
+            ) : (
                <EditorView data={postContent} />
-            </main>
-         )}
+            )}
+         </main>
          <div className="pt-10">
             <CommentHeader totalComments={post.totalComments ?? undefined} />
             <Suspense fallback={<Loading />}>

@@ -134,7 +134,7 @@ export function ApplicationViewer({
                                     Decline
                                  </Button>
                                  <Tooltip>
-                                    <TooltipTrigger asChild>
+                                    <TooltipTrigger title="Approve" asChild>
                                        <Button
                                           disabled={disabled}
                                           type="submit"

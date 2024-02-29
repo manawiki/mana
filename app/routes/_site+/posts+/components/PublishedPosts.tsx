@@ -7,6 +7,8 @@ import {
    useNavigation,
 } from "@remix-run/react";
 
+import { Badge } from "~/components/Badge";
+import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { isLoading } from "~/utils/form";
 import { useDebouncedValue } from "~/utils/use-debounce";
@@ -45,27 +47,28 @@ export function PublishedPosts() {
             {searchToggle ? (
                <>
                   <div className="relative flex w-full items-center gap-2">
-                     <span className="absolute left-0">
+                     <div className="size-6 flex items-center justify-center">
                         {isSearching ? (
                            <Icon
                               name="loader-2"
-                              className="h-6 w-6 animate-spin text-zinc-500"
+                              className="size-4 animate-spin text-1"
                            />
                         ) : (
-                           <Icon name="search" className="text-zinc-500" />
+                           <Icon name="search" className="size-4 text-1" />
                         )}
-                     </span>
+                     </div>
                      <input
                         type="text"
                         autoFocus
                         placeholder="Search or create a post..."
-                        className="w-full !border-0 bg-transparent pl-10 focus:ring-0"
+                        className="w-full text-sm !border-0 bg-transparent focus:outline-none focus:ring-0"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                      />
                   </div>
                   <button
-                     className="absolute right-0 top-3.5"
+                     className="absolute -right-1 top-3.5 size-6 hover:bg-zinc-100 dark:hover:bg-dark400 flex items-center 
+                     justify-center rounded-full"
                      onClick={() => {
                         setSearchParams((searchParams) => {
                            searchParams.delete("q");
@@ -75,7 +78,12 @@ export function PublishedPosts() {
                         setSearchToggle(false);
                      }}
                   >
-                     <Icon name="x" size={22} className="text-red-500" />
+                     <Icon
+                        name="x"
+                        title="Close"
+                        size={18}
+                        className="text-1"
+                     />
                   </button>
                </>
             ) : (
@@ -85,8 +93,10 @@ export function PublishedPosts() {
                      onClick={() => {
                         setSearchToggle(true);
                      }}
+                     className="size-7 hover:bg-zinc-100 dark:hover:bg-dark400 flex items-center 
+                     justify-center rounded-full -mr-1"
                   >
-                     <Icon name="search" size={22} className="text-zinc-500" />
+                     <Icon name="search" size={20} className="text-zinc-500" />
                   </button>
                </>
             )}
@@ -97,43 +107,43 @@ export function PublishedPosts() {
                   <PublishedPostRow key={post.id} post={post} />
                ))
             ) : (
-               <div className="flex items-center justify-between py-3 text-sm">
-                  <div className="flex items-center gap-1">
-                     {searchParams.get("q") ? (
-                        <>
-                           <span className="text-1">
-                              No results... Create new post with title
-                           </span>
-                           <span className="font-bold">
-                              "{searchParams.get("q")}"
-                           </span>
-                           <Form method="post" className="flex items-center">
-                              <button
+               <div className="pt-4 pb-3 space-y-3">
+                  {searchParams.get("q") ? (
+                     <>
+                        <div className="text-1 italic font-bold">
+                           No results...
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                           <span className="text-1">Would you like to </span>
+                           <Form method="post">
+                              <Button
                                  name="intent"
-                                 className="group flex items-center gap-1"
                                  value="createWithTitle"
                                  type="submit"
+                                 color="blue"
+                                 className="!pr-4"
                               >
                                  <input
                                     type="hidden"
                                     value={searchParams.get("q") ?? ""}
                                     name="name"
                                  />
-                                 <span className="font-bold text-zinc-500 underline-offset-2 group-hover:underline">
-                                    New Post
-                                 </span>
                                  <Icon
-                                    name="chevron-right"
-                                    className="text-zinc-400"
+                                    name="plus"
+                                    className="text-white -ml-0.5"
                                     size={18}
                                  />
-                              </button>
+                                 Create a Post
+                              </Button>
                            </Form>
-                        </>
-                     ) : (
-                        <>No published posts...</>
-                     )}
-                  </div>
+                           <span className="text-1"> titled</span>
+                           <Badge color="blue">{searchParams.get("q")}</Badge>
+                        </div>
+                        <div></div>
+                     </>
+                  ) : (
+                     <>No published posts...</>
+                  )}
                </div>
             )}
          </section>

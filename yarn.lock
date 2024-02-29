@@ -1933,10 +1933,10 @@
     vite "^4.4.9"
     vite-plugin-virtual "^0.2.0"
 
-"@payloadcms/db-mongodb@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.4.1.tgz#0e74dd173801d95977d65581b87ff945a8f82636"
-  integrity sha512-rqN1zESukuPtecSXlyggVYtoq6yC21CH9r29d2I2CwQNGk8PQW/UrIciPSvpQWRYFB9C6flnQ+r+HBjx06YvQQ==
+"@payloadcms/db-mongodb@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@payloadcms/db-mongodb/-/db-mongodb-1.4.2.tgz#d5271baa4152123545bed99ceb25829193b5f34d"
+  integrity sha512-J7eubskZLq12rQ6bdudE6YBsB5fTKgv7Epf7vc6OTLkJBs+nMsXA+KDpjcpRLQN5MKAltFTB2eUFASk3KurD8g==
   dependencies:
     bson-objectid "2.0.4"
     deepmerge "4.3.1"
@@ -2443,10 +2443,10 @@
   resolved "https://registry.yarnpkg.com/@react-types/shared/-/shared-3.22.0.tgz#70f85aad46cd225f7fcb29f1c2b5213163605074"
   integrity sha512-yVOekZWbtSmmiThGEIARbBpnmUIuePFlLyctjvCbgJgGhz8JnEJOipLQ/a4anaWfzAgzSceQP8j/K+VOOePleA==
 
-"@remix-run/dev@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-2.6.0.tgz#b62ee6610f6aae49d560aada0f203162fd111aeb"
-  integrity sha512-wf5DoKxBwz3/84FNyFM6NKvQIOEv+Ukwj9DjXrDs6YLI6oSqw2XsJCxWN4lAbOxXuK37pBt1WAE8LzEMuyowsw==
+"@remix-run/dev@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-2.7.2.tgz#1e73cb25ed54c86f535bfa31599ace0a8e46c85a"
+  integrity sha512-ejxzcQY5DFl1CNG5+5+y0UeklOqkRBO43lAPnSC8ITLigjZY6UZsBENlex/Y+xJzjIUtaRBxc7mVaWa62FDQOg==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/generator" "^7.21.5"
@@ -2458,9 +2458,9 @@
     "@babel/types" "^7.22.5"
     "@mdx-js/mdx" "^2.3.0"
     "@npmcli/package-json" "^4.0.1"
-    "@remix-run/node" "2.6.0"
-    "@remix-run/router" "1.15.0"
-    "@remix-run/server-runtime" "2.6.0"
+    "@remix-run/node" "2.7.2"
+    "@remix-run/router" "1.15.1"
+    "@remix-run/server-runtime" "2.7.2"
     "@types/mdx" "^2.0.5"
     "@vanilla-extract/integration" "^6.2.0"
     arg "^5.0.1"
@@ -2502,10 +2502,10 @@
     tsconfig-paths "^4.0.0"
     ws "^7.4.5"
 
-"@remix-run/eslint-config@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-2.6.0.tgz#02b14d5029ec8c76c5ddcf584eeeb4b6bd636c78"
-  integrity sha512-WIYyCl8qHNDyZy05ggzl/x3wbnLtmHWOaeSqvtshYbvBsKpyLT0xVQNWyj0XEzk6hWWk+93b0yQ5ihumjM4Y1Q==
+"@remix-run/eslint-config@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/eslint-config/-/eslint-config-2.7.2.tgz#b08d666b0c468e5c3fb37ee683aa2cb67c6563ff"
+  integrity sha512-fAXNlRQQ4DJ0g6GCkUM3sWji18+4i/+FtMA1roSfB9s/+8NEpdZLYJbLo/NGlZUHDC7dXAmTZ3kUZcCCBdOAKw==
   dependencies:
     "@babel/core" "^7.21.8"
     "@babel/eslint-parser" "^7.21.8"
@@ -2524,19 +2524,19 @@
     eslint-plugin-react-hooks "^4.6.0"
     eslint-plugin-testing-library "^5.10.2"
 
-"@remix-run/express@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-2.6.0.tgz#95cecfd2ff13270b393f55ac04b8c0e013363bbe"
-  integrity sha512-sAb0eoMwqP4yhDCnT5H6Db0svfzBuRbuPuPSbQCtuLRWkEGmIhWN7vKA0IqaxsUA09qKwQQiKQdupra55KfCyA==
+"@remix-run/express@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/express/-/express-2.7.2.tgz#a8d5c3d6131fa7919be2a2f5abc98fadcb2813ad"
+  integrity sha512-wknBXniMr7sUvu0D+iOkxK1IenSM0nfZJai1RgNP0Qs12jrKQA5I1dZuiJdKFfLnhvJLbl/BJ6q40TJ4kqNTPg==
   dependencies:
-    "@remix-run/node" "2.6.0"
+    "@remix-run/node" "2.7.2"
 
-"@remix-run/node@2.6.0", "@remix-run/node@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-2.6.0.tgz#7272edc84b8f19053f0ffc96ccb2f9ef84850075"
-  integrity sha512-bWemy3g258Kdqi+4OxIEZ7QS64T96jNK6a7NdlPXGJZqeLpxM5NmlCl/slSdx52oTi9r5Xoz1Tm4uR37nD1/Xw==
+"@remix-run/node@2.7.2", "@remix-run/node@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/node/-/node-2.7.2.tgz#5efbc3c2015d0d36fea265afa9be413eb35e2c32"
+  integrity sha512-smIWI9kNGDnY361WlDOTwxPfUw/KHcS7PCLjHlM/omx3ETD1Y2dc4Rt82LSJt0qsPSPA72ZOww08NoX+YGBvyQ==
   dependencies:
-    "@remix-run/server-runtime" "2.6.0"
+    "@remix-run/server-runtime" "2.7.2"
     "@remix-run/web-fetch" "^4.4.2"
     "@remix-run/web-file" "^3.1.0"
     "@remix-run/web-stream" "^1.1.0"
@@ -2545,27 +2545,27 @@
     source-map-support "^0.5.21"
     stream-slice "^0.1.2"
 
-"@remix-run/react@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-2.6.0.tgz#baacc56e8272bd1ab729822d5c137160548f4465"
-  integrity sha512-m/Ph6bryny7wrmrQyXQMvIiW+cBLrU/MepcLGFPvTVVwvfeiGBgXRiYZJ6yPNsfrmHFaS83d+Ja/Mx4N4zUWcg==
+"@remix-run/react@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/react/-/react-2.7.2.tgz#b722a597d04b2e0493bb906f79636a2b66d5971b"
+  integrity sha512-Q/gsxJVEYYvkYM/immVFP4rBnGSzEFNJLRt6plO5knAy6NV1NNptsEnvh4GoTVQdTKdVw7wkJW26/YpnHzHiDA==
   dependencies:
-    "@remix-run/router" "1.15.0"
-    "@remix-run/server-runtime" "2.6.0"
-    react-router "6.22.0"
-    react-router-dom "6.22.0"
+    "@remix-run/router" "1.15.1"
+    "@remix-run/server-runtime" "2.7.2"
+    react-router "6.22.1"
+    react-router-dom "6.22.1"
 
-"@remix-run/router@1.15.0":
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.15.0.tgz#461a952c2872dd82c8b2e9b74c4dfaff569123e2"
-  integrity sha512-HOil5aFtme37dVQTB6M34G95kPM3MMuqSmIRVCC52eKV+Y/tGSqw9P3rWhlAx6A+mz+MoX+XxsGsNJbaI5qCgQ==
+"@remix-run/router@1.15.1":
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.15.1.tgz#221fd31a65186b9bc027b74573485fb3226dff7f"
+  integrity sha512-zcU0gM3z+3iqj8UX45AmWY810l3oUmXM7uH4dt5xtzvMhRtYVhKGOmgOd1877dOPPepfCjUv57w+syamWIYe7w==
 
-"@remix-run/server-runtime@2.6.0", "@remix-run/server-runtime@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-2.6.0.tgz#61595c102ebb14ff08d8d994cc639c3a3cd55c34"
-  integrity sha512-qFXDl4pK55njBLuvyRn5AkI/hu8fEU3t1XFKv0Syivx0nmUVpWMW25Uzi1pkX/chF1VIxCVrZ8KuQ1rcrKj+DQ==
+"@remix-run/server-runtime@2.7.2", "@remix-run/server-runtime@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@remix-run/server-runtime/-/server-runtime-2.7.2.tgz#74effc46b181e5110b27fd9ba5888eb78d11a4ba"
+  integrity sha512-PGD1SPJttlYI3Nwe8ABk53gHCueWfZ2NOsKx7utD/lKRPFW2BqADpokzQXSzy4WTpk4drAmlagobGVIVH66Tmg==
   dependencies:
-    "@remix-run/router" "1.15.0"
+    "@remix-run/router" "1.15.1"
     "@types/cookie" "^0.6.0"
     "@web3-storage/multipart-parser" "^1.0.0"
     cookie "^0.6.0"
@@ -8477,11 +8477,6 @@ methods@~1.1.2:
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==
 
-micro-memoize@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/micro-memoize/-/micro-memoize-4.1.2.tgz#ce719c1ba1e41592f1cd91c64c5f41dcbf135f36"
-  integrity sha512-+HzcV2H+rbSJzApgkj0NdTakkC+bnyeiUxgT6/m7mjcz1CmM22KYFKp+EVj1sWe4UYcnriJr5uqHQD/gMHLD+g==
-
 micromark-core-commonmark@^1.0.0, micromark-core-commonmark@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/micromark-core-commonmark/-/micromark-core-commonmark-1.1.0.tgz#1386628df59946b2d39fb2edfd10f3e8e0a75bb8"
@@ -9716,10 +9711,10 @@ payload-query@^1.0.2:
   dependencies:
     ts-powertools "0.0.3"
 
-payload@2.11.0:
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/payload/-/payload-2.11.0.tgz#833721625ec62051f53022dd5ede88c850499da3"
-  integrity sha512-FLFgwJlGGYMEeCjc23B31iAUh0Tq+uTR3TEzLMITdcE4Aw/j7qm5758XRK9FAzOcE7WOHFE7DopnPU+9/k6k3A==
+payload@2.11.1:
+  version "2.11.1"
+  resolved "https://registry.yarnpkg.com/payload/-/payload-2.11.1.tgz#69075b5797614755e38ff434021544106e07fa51"
+  integrity sha512-uaPSUbmTpYbRAhewjrr8psRKDwbE1KWYJvg21Qxf5iDBzLe3D401SIE1erAQwIv5zeHA6RgLB7YjN8p+qzVTPA==
   dependencies:
     "@date-io/date-fns" "2.16.0"
     "@dnd-kit/core" "6.0.8"
@@ -9770,7 +9765,6 @@ payload@2.11.0:
     jwt-decode "3.1.2"
     md5 "2.3.0"
     method-override "3.0.0"
-    micro-memoize "4.1.2"
     minimist "1.2.8"
     mkdirp "1.0.4"
     monaco-editor "0.38.0"
@@ -10509,13 +10503,13 @@ react-router-dom@5.3.4:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router-dom@6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.22.0.tgz#177c8bd27146decbb991eafb5df159f7a9f70035"
-  integrity sha512-z2w+M4tH5wlcLmH3BMMOMdrtrJ9T3oJJNsAlBJbwk+8Syxd5WFJ7J5dxMEW0/GEXD1BBis4uXRrNIz3mORr0ag==
+react-router-dom@6.22.1, react-router-dom@>=6.22.1:
+  version "6.22.1"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.22.1.tgz#cfa109d4b6b0a4d00bac179bc0ad2a6469455282"
+  integrity sha512-iwMyyyrbL7zkKY7MRjOVRy+TMnS/OPusaFVxM2P11x9dzSzGmLsebkCvYirGq0DWB9K9hOspHYYtDz33gE5Duw==
   dependencies:
-    "@remix-run/router" "1.15.0"
-    react-router "6.22.0"
+    "@remix-run/router" "1.15.1"
+    react-router "6.22.1"
 
 react-router-navigation-prompt@1.9.6:
   version "1.9.6"
@@ -10537,12 +10531,12 @@ react-router@5.3.4:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-router@6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.22.0.tgz#a22b44851a79dafc6b944cb418db3e80622b9be1"
-  integrity sha512-q2yemJeg6gw/YixRlRnVx6IRJWZD6fonnfZhN1JIOhV2iJCPeRNSH3V1ISwHf+JWcESzLC3BOLD1T07tmO5dmg==
+react-router@6.22.1:
+  version "6.22.1"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.22.1.tgz#a5ff849bfe709438f7e139421bb28138209662c7"
+  integrity sha512-0pdoRGwLtemnJqn1K0XHUbnKiX0S4X8CgvVVmHGOWmofESj31msHo/1YiqcJWK7Wxfq2a4uvvtS01KAQyWK/CQ==
   dependencies:
-    "@remix-run/router" "1.15.0"
+    "@remix-run/router" "1.15.1"
 
 react-select@5.7.4:
   version "5.7.4"
@@ -11778,6 +11772,11 @@ tailwind-merge@^1.14.0:
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.14.0.tgz#e677f55d864edc6794562c63f5001f45093cdb8b"
   integrity sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==
+
+tailwind-scrollbar@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/tailwind-scrollbar/-/tailwind-scrollbar-3.1.0.tgz#ff7596407b6da5209261d8ff03860ab9206a59e3"
+  integrity sha512-pmrtDIZeHyu2idTejfV59SbaJyvp1VRjYxAjZBH0jnyrPRo6HL1kD5Glz8VPagasqr6oAx6M05+Tuw429Z8jxg==
 
 tailwindcss-bg-patterns@^0.3.0:
   version "0.3.0"

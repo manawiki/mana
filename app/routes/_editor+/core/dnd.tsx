@@ -202,10 +202,7 @@ function BlockInlineActions({
                            <Icon name="more-vertical" size={14} />
                         )}
                      </Popover.Button>
-                     <Popover.Panel
-                        onMouseLeave={close}
-                        className="h-[30px] divide-x divide-color-sub -mt-[1px] z-20 border-color-sub bg-3-sub border-l-0 rounded-r-md overflow-hidden border flex items-center"
-                     >
+                     <Popover.Panel className="h-[30px] divide-x divide-color-sub -mt-[1px] z-20 border-color-sub bg-3-sub border-l-0 rounded-r-md overflow-hidden border flex items-center">
                         <FloatingDelayGroup delay={{ open: 1000, close: 200 }}>
                            <Tooltip>
                               <TooltipTrigger
@@ -213,13 +210,14 @@ function BlockInlineActions({
                                     sortable.isDragging
                                        ? "cursor-grabbing"
                                        : "cursor-move",
-                                    "flex items-center group bg-3-sub w-7 h-full justify-center",
+                                    "flex items-center group bg-3-sub w-7 h-full justify-center touch-none",
                                  )}
                                  aria-label="Drag to reorder"
                                  ref={setActivatorNodeRef}
                                  {...listeners}
                               >
                                  <Icon
+                                    title="More options"
                                     name="grip-vertical"
                                     className="group-hover:text-blue-400"
                                     size={14}
@@ -227,7 +225,7 @@ function BlockInlineActions({
                               </TooltipTrigger>
                               <TooltipContent>Move</TooltipContent>
                            </Tooltip>
-                           <Tooltip>
+                           {/* <Tooltip>
                               <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
                                  <Icon
                                     name="copy"
@@ -236,7 +234,7 @@ function BlockInlineActions({
                                  />
                               </TooltipTrigger>
                               <TooltipContent>Copy</TooltipContent>
-                           </Tooltip>
+                           </Tooltip> */}
                            {/* <Tooltip>
                               <TooltipTrigger className="group h-full w-8 flex items-center justify-center">
                                  <Lock

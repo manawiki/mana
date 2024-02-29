@@ -14,8 +14,7 @@ import { Input } from "~/components/Input";
 import { Select } from "~/components/Select";
 import { isAdding, isProcessing } from "~/utils/form";
 
-// eslint-disable-next-line import/no-cycle
-import { SubSectionSchema } from "./SortableSectionItem";
+import { SubSectionSchema } from "./AddSubSection";
 
 export function SortableSubSectionItem({
    collectionId,
@@ -57,6 +56,7 @@ export function SortableSubSectionItem({
          setSubSectionUpdateFormChanged(false);
       }
    }, [savingUpdateSubSection]);
+
    return (
       <div
          ref={setNodeRef}
@@ -80,6 +80,7 @@ export function SortableSubSectionItem({
             <fetcher.Form
                onChange={() => setSubSectionUpdateFormChanged(true)}
                method="post"
+               action="/collections/sections"
                ref={updateSubSection.ref}
             >
                <FieldGroup>
@@ -154,6 +155,7 @@ export function SortableSubSectionItem({
                         name="intent"
                         value="updateSubSection"
                         type="submit"
+                        color="zinc"
                         disabled={
                            disabled || isSubSectionUpdateFormChanged === false
                         }
@@ -179,7 +181,7 @@ export function SortableSubSectionItem({
             <div
                className={clsx(
                   isDragging ? "cursor-grabbing" : "cursor-move",
-                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md",
+                  "dark:hover:bg-dark450 hover:bg-white hover:shadow px-0.5 py-1.5 rounded-md touch-none",
                )}
                aria-label="Drag to reorder"
                ref={setActivatorNodeRef}
@@ -194,13 +196,7 @@ export function SortableSubSectionItem({
             </div>
             <span className="text-sm pt-0.5">{subSection?.name}</span>
          </div>
-         <div className="text-xs flex items-center gap-2">
-            <span className="text-1 capitalize">{subSection.type}</span>
-            <span className="size-1 rounded-full bg-zinc-300" />
-            <span className="text-xs text-zinc-400 dark:text-zinc-500">
-               {subSection.slug}
-            </span>
-         </div>
+         <span className="text-1 text-xs capitalize">{subSection.type}</span>
          <Button plain onClick={() => setIsOpen(true)}>
             <Icon className="text-1" name="more-horizontal" size={16} />
          </Button>

@@ -95,12 +95,13 @@ export function ColumnFour() {
                                  <div className="rounded-full h-3 w-full dark:bg-dark500 bg-teal-50 relative overflow-hidden">
                                     <span className="absolute top-0 left-0 bg-teal-500 w-40 h-full" />
                                  </div> */}
-                        <AdUnit
-                           adType="desktopSquareATF"
-                           selectorId="rightSidebarBottomUnit"
-                           enableAds={site.enableAds}
-                           className="flex [&>div]:my-4 items-center justify-center relative z-20"
-                        />
+                        <div className="flex items-center justify-center relative z-20">
+                           <AdUnit
+                              adType="desktopSquareATF"
+                              selectorId="rightSidebarBottomUnit"
+                              enableAds={site.enableAds}
+                           />
+                        </div>
                         {site?.trendingPages &&
                            //@ts-ignore
                            site?.trendingPages.length > 0 && (
@@ -151,7 +152,7 @@ export function ColumnFour() {
                                              height={40}
                                              url={row.data?.icon?.url}
                                              options="aspect_ratio=1:1&height=40&width=40"
-                                             alt={row.data.name}
+                                             alt=""
                                              loading="lazy"
                                           />
                                        ) : (

@@ -4,26 +4,30 @@ import type {
 } from "payload/types";
 
 export const afterDeleteHook: CollectionAfterDeleteHook = async ({
-   req: { payload },
+   req: { payload, user },
    id, // id of document to delete
    doc, // deleted document
 }) => {
    try {
-      const siteId = doc.site.id;
-      const currentCollections = await payload.findByID({
-         collection: "sites",
-         id: siteId,
-      });
+      const siteId = doc?.site?.id ?? doc?.site;
 
-      if (currentCollections?.collections) {
+      const iconId = doc?.icon?.id ?? doc?.icon;
+
+      if (iconId) {
+         await payload.delete({
+            collection: "images",
+            id: iconId,
+            overrideAccess: false,
+            user,
+         });
+      }
+      if (doc?.site?.collections) {
          let collections = [] as string[];
 
-         if (doc.site?.collections.length > 1) {
-            //Delete existing collection from site
-            collections = currentCollections.collections
-               .map(({ id }: { id: string }) => id)
-               .filter((item) => item !== id)
-               .filter((e) => e);
+         if (doc.site?.collections?.length > 1) {
+            collections = doc?.site?.collections.filter(
+               (item: string) => item !== id,
+            );
          }
 
          payload.update({

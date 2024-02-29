@@ -54,9 +54,10 @@ module.exports = {
       screens: {
          mobile: "320px",
          tablet: "768px",
+         tablet_editor: "870px",
          laptop: "1240px",
          desktop: "1400px",
       },
    },
-   plugins: [require("tailwindcss-bg-patterns")],
+   plugins: [require("tailwindcss-bg-patterns"), require("tailwind-scrollbar")],
 };
