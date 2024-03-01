@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { type FetcherWithComponents } from "@remix-run/react";
+import type { FetcherWithComponents } from "@remix-run/react";
 import clsx from "clsx";
 import { useZorm } from "react-zorm";
 

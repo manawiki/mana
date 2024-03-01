@@ -127,8 +127,8 @@ export async function loader({
                   site: {
                      equals: site?.id,
                   },
-                  _status: {
-                     equals: "published",
+                  publishedAt: {
+                     exists: true,
                   },
                   ...(groupSelectQuery
                      ? {

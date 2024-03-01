@@ -9,7 +9,7 @@ export const afterCreateSite: CollectionAfterChangeHook = async ({
    try {
       // On site creation, create a default homeContents entry
       if (operation === "create") {
-         const siteId = doc.slug;
+         const siteId = doc.id;
          await payload.create({
             collection: "homeContents",
             data: {

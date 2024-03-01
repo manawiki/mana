@@ -28,4 +28,6 @@ export const CollectionUpdateSchema = z.object({
    customListTemplate: z.coerce.boolean(),
    customEntryTemplate: z.coerce.boolean(),
    customDatabase: z.coerce.boolean(),
+   collectionIcon: z.any().optional(),
+   collectionIconId: z.string().optional(),
 });

@@ -1,4 +1,4 @@
-/* Partytown 0.9.1 - MIT builder.io */
+/* Partytown 0.9.2 - MIT builder.io */
 (self => {
     const WinIdKey = Symbol();
     const InstanceIdKey = Symbol();
@@ -13,8 +13,6 @@
     const webWorkerRefIdsByRef = new WeakMap;
     const postMessages = [];
     const webWorkerCtx = {};
-    const webWorkerlocalStorage = new Map;
-    const webWorkerSessionStorage = new Map;
     const environments = {};
     const cachedDimensions = new Map;
     const cachedStructure = new Map;
@@ -280,7 +278,7 @@
             return 2;
         }
     };
-    const warnCrossOrgin = (apiType, apiName, env) => console.warn(`Partytown unable to ${apiType} cross-origin ${apiName}: ` + env.$location$);
+    const warnCrossOrigin = (apiType, apiName, env) => console.warn(`Partytown unable to ${apiType} cross-origin ${apiName}: ` + env.$location$);
     const logWorker = (msg, winId) => {
         try {
             const config = webWorkerCtx.$config$;
@@ -560,40 +558,34 @@
         instance: instance,
         window: environments[instance[WinIdKey]].$window$
     });
-    const addStorageApi = (win, storageName, storages, isSameOrigin, env) => {
-        let getItems = items => {
-            items = storages.get(win.origin);
-            items || storages.set(win.origin, items = []);
-            return items;
-        };
-        let getIndexByKey = key => getItems().findIndex((i => i[STORAGE_KEY] === key));
-        let index;
-        let item;
+    const addStorageApi = (win, storageName, isSameOrigin, env) => {
         let storage = {
             getItem(key) {
-                index = getIndexByKey(key);
-                return index > -1 ? getItems()[index][STORAGE_VALUE] : null;
+                if (isSameOrigin) {
+                    return callMethod(win, [ storageName, "getItem" ], [ key ], 1);
+                }
+                warnCrossOrigin("get", storageName, env);
             },
             setItem(key, value) {
-                index = getIndexByKey(key);
-                index > -1 ? getItems()[index][STORAGE_VALUE] = value : getItems().push([ key, value ]);
-                isSameOrigin ? callMethod(win, [ storageName, "setItem" ], [ key, value ], 2) : warnCrossOrgin("set", storageName, env);
+                isSameOrigin ? callMethod(win, [ storageName, "setItem" ], [ key, value ], 1) : warnCrossOrigin("set", storageName, env);
             },
             removeItem(key) {
-                index = getIndexByKey(key);
-                index > -1 && getItems().splice(index, 1);
-                isSameOrigin ? callMethod(win, [ storageName, "removeItem" ], [ key ], 2) : warnCrossOrgin("remove", storageName, env);
+                isSameOrigin ? callMethod(win, [ storageName, "removeItem" ], [ key ], 1) : warnCrossOrigin("remove", storageName, env);
             },
             key(index) {
-                item = getItems()[index];
-                return item ? item[STORAGE_KEY] : null;
+                if (isSameOrigin) {
+                    return callMethod(win, [ storageName, "key" ], [ index ], 1);
+                }
+                warnCrossOrigin("key", storageName, env);
             },
             clear() {
-                getItems().length = 0;
-                isSameOrigin ? callMethod(win, [ storageName, "clear" ], EMPTY_ARRAY, 2) : warnCrossOrgin("clear", storageName, env);
+                isSameOrigin ? callMethod(win, [ storageName, "clear" ], EMPTY_ARRAY, 1) : warnCrossOrigin("clear", storageName, env);
             },
             get length() {
-                return getItems().length;
+                if (isSameOrigin) {
+                    return getter(win, [ storageName, "length" ]);
+                }
+                warnCrossOrigin("length", storageName, env);
             }
         };
         win[storageName] = new Proxy(storage, {
@@ -609,8 +601,6 @@
             }
         });
     };
-    const STORAGE_KEY = 0;
-    const STORAGE_VALUE = 1;
     const createCSSStyleDeclarationCstr = (win, WorkerBase, cstrName) => {
         win[cstrName] = defineConstructorName(class extends WorkerBase {
             constructor(winId, instanceId, applyPath, styles) {
@@ -756,7 +746,7 @@
         return resolvedUrl;
     };
     const resolveUrl = (env, url, type) => resolveToUrl(env, url, type) + "";
-    const getPartytownScript = () => `<script src="${partytownLibUrl("partytown.js?v=0.9.1")}"><\/script>`;
+    const getPartytownScript = () => `<script src="${partytownLibUrl("partytown.js?v=0.9.2")}"><\/script>`;
     const createImageConstructor = env => class HTMLImageElement {
         constructor() {
             this.s = "";
@@ -994,14 +984,14 @@
                     if (env.$isSameOrigin$) {
                         return getter(this, [ "cookie" ]);
                     }
-                    warnCrossOrgin("get", "cookie", env);
+                    warnCrossOrigin("get", "cookie", env);
                     return "";
                 },
                 set(value) {
                     if (env.$isSameOrigin$) {
                         setter(this, [ "cookie" ], value);
                     } else {
-                        warnCrossOrgin("set", "cookie", env);
+                        warnCrossOrigin("set", "cookie", env);
                     }
                 }
             },
@@ -1401,7 +1391,7 @@
                         (() => {
                             if (!webWorkerCtx.$initWindowMedia$) {
                                 self.$bridgeToMedia$ = [ getter, setter, callMethod, constructGlobal, definePrototypePropertyDescriptor, randomId, WinIdKey, InstanceIdKey, ApplyPathKey ];
-                                webWorkerCtx.$importScripts$(partytownLibUrl("partytown-media.js?v=0.9.1"));
+                                webWorkerCtx.$importScripts$(partytownLibUrl("partytown-media.js?v=0.9.2"));
                                 webWorkerCtx.$initWindowMedia$ = self.$bridgeFromMedia$;
                                 delete self.$bridgeFromMedia$;
                             }
@@ -1567,8 +1557,8 @@
                     })), 1);
                 };
                 win.cancelIdleCallback = id => clearTimeout(id);
-                addStorageApi(win, "localStorage", webWorkerlocalStorage, $isSameOrigin$, env);
-                addStorageApi(win, "sessionStorage", webWorkerSessionStorage, $isSameOrigin$, env);
+                addStorageApi(win, "localStorage", $isSameOrigin$, env);
+                addStorageApi(win, "sessionStorage", $isSameOrigin$, env);
                 $isSameOrigin$ || (win.indexeddb = void 0);
                 if (isIframeWindow) {
                     historyState = {};
@@ -1894,8 +1884,6 @@
                 webWorkerCtx.$origin$ = locOrigin;
                 webWorkerCtx.$postMessage$ = postMessage.bind(self);
                 webWorkerCtx.$sharedDataBuffer$ = initWebWorkerData.$sharedDataBuffer$;
-                webWorkerlocalStorage.set(locOrigin, initWebWorkerData.$localStorage$);
-                webWorkerSessionStorage.set(locOrigin, initWebWorkerData.$sessionStorage$);
                 self.importScripts = void 0;
                 delete self.postMessage;
                 delete self.WorkerGlobalScope;

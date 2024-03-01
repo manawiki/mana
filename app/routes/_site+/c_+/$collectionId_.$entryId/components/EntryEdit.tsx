@@ -20,6 +20,7 @@ import {
 } from "~/components/Dropdown";
 import { Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { ImageUploader } from "~/components/ImageUploader";
 import { Input } from "~/components/Input";
 import { isAdding, isProcessing } from "~/utils/form";
 
@@ -39,6 +40,26 @@ export function EntryEdit({ entry }: { entry: any }) {
    const disabled = isProcessing(fetcher.state);
 
    const zoEntryUpdate = useZorm("entryUpdate", EntrySchemaUpdateSchema);
+
+   const [preparedIconFile, setPreparedIconFile] = useState();
+   const [previewIconImage, setPreviewIconImage] = useState("");
+
+   // Append the images to the form data if they exist
+   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
+      const $form = event.currentTarget;
+
+      const formData = new FormData($form);
+
+      preparedIconFile && formData.set("entryIcon", preparedIconFile);
+
+      fetcher.submit(formData, {
+         method: "POST",
+         encType: "multipart/form-data",
+         action: "/collections/entry",
+      });
+   }
 
    return (
       <>
@@ -61,6 +82,7 @@ export function EntryEdit({ entry }: { entry: any }) {
                ref={zoEntryUpdate.ref}
                method="POST"
                action="/collections/entry"
+               onSubmit={preparedIconFile && handleSubmit}
             >
                <input
                   type="hidden"
@@ -68,6 +90,14 @@ export function EntryEdit({ entry }: { entry: any }) {
                   value={entry.id}
                />
                <FieldGroup>
+                  <ImageUploader
+                     label="Entry Icon"
+                     icon={entry?.icon?.url}
+                     previewImage={previewIconImage}
+                     setPreparedFile={setPreparedIconFile}
+                     setPreviewImage={setPreviewIconImage}
+                     type="circle"
+                  />
                   <Field disabled={disabled}>
                      <Label>Entry Name</Label>
                      <Input
@@ -103,6 +133,11 @@ export function EntryEdit({ entry }: { entry: any }) {
                      type="hidden"
                      name={zoEntryUpdate.fields.collectionId()}
                      value={entry.collectionEntity}
+                  />
+                  <input
+                     type="hidden"
+                     name={zoEntryUpdate.fields.entryIconId()}
+                     value={entry.icon?.id}
                   />
                </FieldGroup>
                <div className="flex items-center justify-between gap-2 pt-6 relative">
@@ -146,9 +181,13 @@ export function EntryEdit({ entry }: { entry: any }) {
                            />
                         </Button>
                      )}
-                     <Button
+                     <input
+                        readOnly
+                        type="hidden"
                         name="intent"
                         value="updateEntry"
+                     />
+                     <Button
                         type="submit"
                         color="indigo"
                         disabled={disabled || isChanged === false}
