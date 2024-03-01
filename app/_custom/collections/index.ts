@@ -1,4 +1,8 @@
-export const CustomCollections = [];
+import { Elements } from "./elements";
+
+export const CustomCollections = [
+    Elements
+];
 
 export const CustomSearchCollections = [];
 
