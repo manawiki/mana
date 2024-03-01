@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Transition } from "@headlessui/react";
-import { useFetcher, useSubmit } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 import type { ActionFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
@@ -14,6 +14,7 @@ import { zx } from "zodix";
 import { Button } from "~/components/Button";
 import { DotLoader } from "~/components/DotLoader";
 import { Icon } from "~/components/Icon";
+import { ImageUploader } from "~/components/ImageUploader";
 import { isAdding, isProcessing } from "~/utils/form";
 import { assertIsDelete } from "~/utils/http.server";
 import {
@@ -23,7 +24,6 @@ import {
 import { useRootLoaderData } from "~/utils/useSiteLoaderData";
 
 import { UserContainer } from "../components/UserContainer";
-import { CircleIconUploader } from "../components/UserIconUploader";
 
 const UserAccountSchema = z.object({
    userAvatar: z.any().optional(),
@@ -49,15 +49,16 @@ export default function UserAccount() {
    const saving = isAdding(fetcher, "saveAccountSettings");
 
    // Append the images to the form data if they exist
-   let submit = useSubmit();
    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
       const $form = event.currentTarget;
 
       const formData = new FormData($form);
 
       preparedAvatarFile && formData.set("userAvatar", preparedAvatarFile);
 
-      submit(formData, {
+      fetcher.submit(formData, {
          method: "POST",
          encType: "multipart/form-data",
       });
@@ -86,12 +87,13 @@ export default function UserAccount() {
                name={zo.fields.userAvatarId()}
                value={userAvatarId}
             />
-            <CircleIconUploader
+            <ImageUploader
                label="Avatar"
                icon={userAvatar}
                previewImage={previewAvatarImage}
                setPreparedFile={setPreparedAvatarFile}
                setPreviewImage={setPreviewAvatarImage}
+               type="circle"
             />
             <Transition
                show={isChanged}

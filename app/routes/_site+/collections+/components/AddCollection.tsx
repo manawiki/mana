@@ -57,8 +57,8 @@ export function AddCollection({
             className={clsx(
                collectionName
                   ? "shadow-sm shadow-1 mb-3 bg-zinc-50 dark:bg-dark400 border dark:border-zinc-600/40 p-4 rounded-xl"
-                  : "",
-               "mb-6 tablet:mb-4 max-tablet:space-y-4 tablet:flex items-center gap-4",
+                  : "tablet:flex",
+               "mb-6 tablet:mb-4 max-tablet:space-y-4  items-center gap-4",
             )}
             method="POST"
             action="/collections"
@@ -107,16 +107,23 @@ export function AddCollection({
                   </div>
                )}
             </div>
-            <Button
-               className="max-tablet:w-full w-32 h-11 tablet:h-9"
-               name="intent"
-               value="addCollection"
-               type="submit"
-               color="blue"
-               disabled={disabled}
+            <div
+               className={clsx(
+                  collectionName &&
+                     "flex items-center justify-end pt-3 tablet:pt-4",
+               )}
             >
-               {adding ? <DotLoader /> : "Add Collection"}
-            </Button>
+               <Button
+                  className="max-tablet:w-full w-32 h-11 tablet:h-9"
+                  name="intent"
+                  value="addCollection"
+                  type="submit"
+                  color="blue"
+                  disabled={disabled}
+               >
+                  {adding ? <DotLoader /> : "Add Collection"}
+               </Button>
+            </div>
          </fetcher.Form>
       </AdminOrStaffOrOwner>
    );

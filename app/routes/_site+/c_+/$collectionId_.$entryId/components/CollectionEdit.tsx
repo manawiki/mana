@@ -28,6 +28,7 @@ import {
    Legend,
 } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
+import { ImageUploader } from "~/components/ImageUploader";
 import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Code, Text, TextLink } from "~/components/Text";
@@ -101,6 +102,26 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
 
    const deleting = isAdding(fetcher, "deleteCollection");
 
+   const [preparedIconFile, setPreparedIconFile] = useState();
+   const [previewIconImage, setPreviewIconImage] = useState("");
+
+   // Append the images to the form data if they exist
+   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+      event.preventDefault();
+
+      const $form = event.currentTarget;
+
+      const formData = new FormData($form);
+
+      preparedIconFile && formData.set("collectionIcon", preparedIconFile);
+
+      fetcher.submit(formData, {
+         method: "POST",
+         encType: "multipart/form-data",
+         action: "/collections",
+      });
+   }
+
    return (
       <>
          <Button
@@ -120,10 +141,20 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
             <fetcher.Form
                onChange={() => setIsChanged(true)}
                ref={zoCollectionUpdate.ref}
-               method="post"
+               method="POST"
                action="/collections"
+               encType="multipart/form-data"
+               onSubmit={preparedIconFile && handleSubmit}
             >
                <FieldGroup>
+                  <ImageUploader
+                     label="Collection Icon"
+                     icon={collection?.icon?.url}
+                     previewImage={previewIconImage}
+                     setPreparedFile={setPreparedIconFile}
+                     setPreviewImage={setPreviewIconImage}
+                     type="circle"
+                  />
                   <Field disabled={disabled} className="w-full">
                      <Label>Collection Name</Label>
                      <Input
@@ -253,6 +284,11 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                   name={zoCollectionUpdate.fields.siteId()}
                   value={site.id}
                />
+               <input
+                  type="hidden"
+                  name={zoCollectionUpdate.fields.collectionIconId()}
+                  value={collection.icon?.id}
+               />
                <div className="flex items-center justify-between gap-2 pt-6 relative">
                   <Dropdown>
                      <DropdownButton outline aria-label="More options">
@@ -294,9 +330,12 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                            />
                         </Button>
                      )}
-                     <Button
+                     <input
+                        type="hidden"
                         name="intent"
                         value="updateCollection"
+                     />
+                     <Button
                         type="submit"
                         color="blue"
                         disabled={disabled || isChanged === false}

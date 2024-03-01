@@ -66,7 +66,7 @@ export function SectionList({
          >
             <div
                className="divide-y bg-zinc-50 dark:bg-dark400 divide-color-sub border-y tablet:border
-               tablet:rounded-lg dark:border-zinc-600/50 dark:divide-zinc-600/50 mb-4 tablet:shadow-sm shadow-1"
+               tablet:rounded-lg dark:border-zinc-600/50 dark:divide-zinc-600/50 mb-4 tablet:shadow-sm dark:shadow-zinc-800/70"
             >
                {allSections?.map((row) => (
                   <SortableSectionItem
