@@ -4,40 +4,25 @@ import { json, redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
 import { Form, Link, useNavigation } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
-import { Value, useZorm } from "react-zorm";
+import { useZorm } from "react-zorm";
+import urlSlug from "url-slug";
 import { z } from "zod";
 import { zx } from "zodix";
 
 import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { DotLoader } from "~/components/DotLoader";
-import {
-   Description,
-   ErrorMessage,
-   Field,
-   FieldGroup,
-   Label,
-} from "~/components/Fieldset";
+import { ErrorMessage, Field, FieldGroup, Label } from "~/components/Fieldset";
 import { Icon } from "~/components/Icon";
 import { Input } from "~/components/Input";
 import { isAdding, isProcessing } from "~/utils/form";
-import { assertIsPost } from "~/utils/http.server";
-import { useRootLoaderData } from "~/utils/useSiteLoaderData";
+import { siteNanoID } from "~/utils/nanoid";
 
 import { LoggedIn } from "../../_auth+/components/LoggedIn";
 import { LoggedOut } from "../../_auth+/components/LoggedOut";
 
 const SiteSchema = z.object({
    siteName: z.string().min(3, "Name is too short."),
-   siteSlug: z
-      .string()
-      .regex(
-         new RegExp(/^[a-z0-9_]+((\.-?|-\.?)[a-z0-9_]+)*$/),
-         "Slug contains invalid characters",
-      )
-      .min(3, "Slug must be at least 3 characters long")
-      .max(16, "Slug cannot be more than 16 characters long")
-      .toLowerCase(),
 });
 
 export const handle = {
@@ -53,8 +38,6 @@ export function NewSiteModal() {
 
    const adding = isAdding(transition, "addSite");
    const zo = useZorm("newSite", SiteSchema);
-
-   const { user } = useRootLoaderData();
 
    useEffect(() => {
       if (!adding) {
@@ -132,35 +115,6 @@ export function NewSiteModal() {
                            <ErrorMessage>{err.message}</ErrorMessage>
                         ))}
                      </Field>
-                     <Field>
-                        <Label>Slug</Label>
-                        <Input
-                           type="text"
-                           disabled={disabled}
-                           className="lowercase"
-                           name={zo.fields.siteSlug()}
-                        />
-                        {zo.errors.siteSlug((err) => (
-                           <ErrorMessage>{err.message}</ErrorMessage>
-                        ))}
-                        <Description className="flex items-center gap-1">
-                           <span>Your site will be available at</span>
-                           <div className="underline underline-offset-1 dark:decoration-zinc-500">
-                              <span className="dark:text-zinc-200">
-                                 {user?.username}
-                              </span>
-                              -
-                              <Value zorm={zo} name={zo.fields.siteSlug()}>
-                                 {(value) => (
-                                    <span className="dark:text-zinc-200">
-                                       {value}
-                                    </span>
-                                 )}
-                              </Value>
-                              <span>.mana.wiki</span>
-                           </div>
-                        </Description>
-                     </Field>
                   </FieldGroup>
                   <Button
                      name="intent"
@@ -182,25 +136,26 @@ export const action: ActionFunction = async ({
    context: { payload, user },
    request,
 }) => {
-   assertIsPost(request);
    if (!user) {
       return redirect("/login");
    }
 
-   const { siteName, siteSlug } = await zx.parseForm(request, SiteSchema);
    try {
-      const userId = user.id;
-      const userName = user.username;
-      const siteId = `${userName}-${siteSlug}`;
+      const { siteName } = await zx.parseForm(request, SiteSchema);
+
+      const slug = urlSlug(siteName.substring(0, 20));
+
+      const siteSlug = `${slug}-${siteNanoID(5)}`;
+
+      const siteId = `${user.username}-${siteNanoID(12)}`;
 
       await payload.create({
          collection: "sites",
          data: {
-            name: siteName,
-            //@ts-expect-error
-            owner: userId,
             id: siteId,
-            slug: siteId,
+            name: siteName,
+            owner: user.id as any,
+            slug: siteSlug,
             type: "core",
          },
          overrideAccess: false,
@@ -210,7 +165,7 @@ export const action: ActionFunction = async ({
       const userData = user
          ? await payload.findByID({
               collection: "users",
-              id: userId,
+              id: user.id,
               user,
            })
          : undefined;
@@ -225,7 +180,7 @@ export const action: ActionFunction = async ({
       //@ts-ignore
       await payload.update({
          collection: "users",
-         id: userId,
+         id: user.id,
          data: { sites: [...sites, siteId] },
          overrideAccess: false,
          user,
