@@ -189,7 +189,7 @@ export const action: ActionFunction = async ({
       return redirect(
          process.env.NODE_ENV == "development"
             ? `http://localhost:3000`
-            : `https://${siteId}.mana.wiki`,
+            : `https://${siteSlug}.mana.wiki`,
       );
    } catch (error) {
       return json({
