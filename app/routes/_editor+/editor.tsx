@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { type Descendant } from "slate";
+import type { Descendant } from "slate";
 import { Slate } from "slate-react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
