@@ -14,8 +14,8 @@ import clsx from "clsx";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Avatar } from "~/components/Avatar";
 import { Icon } from "~/components/Icon";
-import { Image } from "~/components/Image";
 import type { Site } from "~/db/payload-types";
 import { gql, gqlRequestWithCache } from "~/utils/cache.server";
 import { gqlEndpoint } from "~/utils/fetchers.server";
@@ -157,47 +157,42 @@ const Discover = () => {
                   </div>
                </div>
             </LoggedIn>
-            <div className="border-color border-t pb-20 px-4 tablet:px-0 relative">
+            <div className="border-zinc-300/80 dark:border-zinc-600/50 border-t-2 pb-20 px-4 tablet:px-0 relative">
                <div className="relative z-20 mx-auto max-w-[680px]">
                   <div className="flex items-center justify-center">
                      <div
-                        className="bg-3-sub dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-[28px]
-                         h-14 w-full rounded-2xl border shadow-sm shadow-zinc-200"
+                        className="bg-white dark:shadow-zinc-800/50 dark:border-zinc-600/50 relative -mt-7
+                         h-12 w-full rounded-xl border-2 border-zinc-300/80 drop-shadow-sm  focus-within:border-zinc-300"
                      >
                         <>
-                           <div className="relative flex h-full w-full items-center gap-2">
-                              <span className="absolute left-[16px] top-[17px]">
-                                 {/* <Search size={20} /> */}
-                                 <Icon name="search" className="h-5 w-5" />
-                              </span>
+                           <div className="relative flex h-full w-full items-center gap-4 px-3">
+                              <Icon name="search" size={18} />
                               <input
                                  type="text"
                                  placeholder="Search..."
                                  className="h-full w-full rounded-2xl border-0 bg-transparent 
-                                 pl-[50px] focus:outline-none focus:ring-0"
+                                 focus:outline-none focus:ring-0"
                                  value={query}
                                  onChange={(e) => setQuery(e.target.value)}
                               />
+                              {searchParams.size >= 1 && (
+                                 <button
+                                    onClick={() => {
+                                       setSearchParams((searchParams) => {
+                                          searchParams.delete("q");
+                                          searchParams.delete("c");
+                                          setCategory("all");
+                                          return searchParams;
+                                       });
+                                       setQuery("");
+                                    }}
+                                    className="size-7 flex items-center justify-center flex-none
+                                     rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
+                                 >
+                                    <Icon name="x" size={14} />
+                                 </button>
+                              )}
                            </div>
-                           {searchParams.size >= 1 && (
-                              <button
-                                 className="absolute right-4 top-4"
-                                 onClick={() => {
-                                    setSearchParams((searchParams) => {
-                                       searchParams.delete("q");
-                                       searchParams.delete("c");
-                                       setCategory("all");
-                                       return searchParams;
-                                    });
-                                    setQuery("");
-                                 }}
-                              >
-                                 <Icon
-                                    name="x"
-                                    className="text-red-500 w-[22px] h-[22px]"
-                                 />
-                              </button>
-                           )}
                         </>
                      </div>
                   </div>
@@ -275,12 +270,6 @@ const Discover = () => {
                            )}
                         </RadioGroup.Option>
                      </RadioGroup>
-                     <div className="pr-1 pt-2 text-sm">
-                        <span className="text-zinc-400">
-                           {sites?.totalDocs}
-                        </span>{" "}
-                        results
-                     </div>
                   </div>
                   <div className="relative z-20 flex-grow space-y-4">
                      {sites?.docs.length === 0 ? (
@@ -296,19 +285,15 @@ const Discover = () => {
                                     : `https://${site.slug}.mana.wiki`
                               }
                               key={site.id}
-                              className="border-color-sub bg-3-sub dark:shadow-zinc-900/50 flex items-center gap-3.5 rounded-2xl border p-3 shadow-sm"
+                              className="group bg-zinc-50 dark:shadow-zinc-900/50 flex border-zinc-200/80 hover:border-zinc-300/80
+                              items-center gap-3.5 rounded-2xl border p-3 shadow-sm dark:hover:border-zinc-600/70"
                            >
-                              <div
-                                 className="shadow-1 border-1 h-11 w-11 flex-none
-                                 overflow-hidden rounded-full border shadow"
-                              >
-                                 <Image
-                                    height={44}
-                                    width={44}
-                                    url={site.icon?.url}
-                                    alt={site.name}
-                                 />
-                              </div>
+                              <Avatar
+                                 src={site.icon?.url}
+                                 initials={site?.name?.charAt(0)}
+                                 className="size-11"
+                                 options="aspect_ratio=1:1&height=120&width=120"
+                              />
                               <div className="space-y-1 truncate">
                                  <div className="truncate font-mono font-bold">
                                     {site.name}
