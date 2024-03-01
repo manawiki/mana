@@ -24,6 +24,11 @@ kill_timeout = "5s"
   internal_port = 8080
   processes = ["app"]
 
+  [services.concurrency]
+    hard_limit = 250
+    soft_limit = 200
+    type = "requests"
+
   [[services.ports]]
     port = 80
     handlers = ["http"]
@@ -32,10 +37,6 @@ kill_timeout = "5s"
   [[services.ports]]
     port = 443
     handlers = ["tls", "http"]
-  [services.concurrency]
-    type = "requests"
-    hard_limit = 1000
-    soft_limit = 800
 
 [[vm]]
   cpu_kind = "shared"
