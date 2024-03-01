@@ -1,7 +1,7 @@
 import type { SVGProps } from "react";
 import React from "react";
 
-import { type IconName } from "./icons";
+import type { IconName } from "./icons";
 
 /**
  * Renders an SVG icon. The icon defaults to the size of the font. To make it

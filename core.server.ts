@@ -1,7 +1,7 @@
 import * as path from "node:path";
 
 import { createRequestHandler } from "@metronome-sh/express";
-import { type RequestHandler } from "@remix-run/express";
+import type { RequestHandler } from "@remix-run/express";
 import { broadcastDevReady, installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";

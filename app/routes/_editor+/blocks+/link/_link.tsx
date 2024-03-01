@@ -44,45 +44,52 @@ export async function loader({
 
          //List
          if (pathSection[2] && pathSection[3] == null) {
-            const collectionData = await payload.find({
-               collection: "collections",
-               where: {
-                  site: {
-                     equals: site?.id,
+            try {
+               const collectionData = await payload.find({
+                  collection: "collections",
+                  where: {
+                     site: {
+                        equals: site?.id,
+                     },
+                     slug: {
+                        equals: pathSection[2],
+                     },
                   },
-                  slug: {
-                     equals: pathSection[3],
+                  depth: 1,
+                  overrideAccess: false,
+                  user,
+               });
+
+               const collection = collectionData?.docs[0];
+
+               if (collection == undefined) return null;
+
+               return {
+                  name: collection?.name,
+                  icon: {
+                     url: collection?.icon?.url,
                   },
-               },
-               depth: 1,
-               overrideAccess: false,
-               user,
-            });
-
-            const collection = collectionData?.docs[0];
-
-            return {
-               name: collection?.name,
-               icon: {
-                  url: collection?.icon?.url,
-               },
-            };
+               };
+            } catch (err: unknown) {
+               payload.logger.error(`${err}`);
+            }
          }
 
          //Entry
          if (pathSection[3]) {
-            const entryId = pathSection[3];
-            const collectionId = pathSection[2];
+            try {
+               const entryId = pathSection[3];
+               const collectionId = pathSection[2];
 
-            //TODO Check specifically if collection is custom
-            if (site?.type == "custom") {
-               const label = gqlFormat(collectionId ?? "", "list");
-               const endpoint = gqlEndpoint({
-                  siteSlug: site.slug,
-               });
+               //TODO Check specifically if collection is custom
+               if (site?.type == "custom") {
+                  const label = gqlFormat(collectionId ?? "", "list");
+                  const endpoint = gqlEndpoint({
+                     siteSlug: site.slug,
+                  });
 
-               //Document request if slug does exist
-               const entryQuery = gql`
+                  //Document request if slug does exist
+                  const entryQuery = gql`
                         query ($entryId: String!) {
                            entryData: ${label}(
                                  where: { OR: [{ slug: { equals: $entryId } }, { id: { equals: $entryId } }] }
@@ -97,51 +104,54 @@ export async function loader({
                         }
                   `;
 
-               //Fetch to see if slug exists
-               const { entryData }: { entryData: PaginatedDocs<Entry> } =
-                  await gqlRequest(endpoint, entryQuery, {
-                     entryId,
-                  });
-               return json(entryData?.docs[0]);
+                  //Fetch to see if slug exists
+                  const { entryData }: { entryData: PaginatedDocs<Entry> } =
+                     await gqlRequest(endpoint, entryQuery, {
+                        entryId,
+                     });
+                  return json(entryData?.docs[0]);
+               }
+               //If not custom site, fetch local api entries collection
+               const coreEntryData = await payload.find({
+                  collection: "entries",
+                  where: {
+                     "site.slug": {
+                        equals: site?.slug,
+                     },
+                     "collectionEntity.slug": {
+                        equals: collectionId,
+                     },
+                     or: [
+                        {
+                           slug: {
+                              equals: entryId,
+                           },
+                        },
+                        {
+                           id: {
+                              equals: entryId,
+                           },
+                        },
+                     ],
+                  },
+                  depth: 1,
+                  user,
+                  overrideAccess: false,
+               });
+
+               const entryData = coreEntryData?.docs[0];
+
+               const entry = {
+                  name: entryData?.name,
+                  icon: {
+                     url: entryData?.icon?.url,
+                  },
+               };
+
+               return entry;
+            } catch (err: unknown) {
+               payload.logger.error(`${err}`);
             }
-            //If not custom site, fetch local api entries collection
-            const coreEntryData = await payload.find({
-               collection: "entries",
-               where: {
-                  "site.slug": {
-                     equals: site?.slug,
-                  },
-                  "collectionEntity.slug": {
-                     equals: collectionId,
-                  },
-                  or: [
-                     {
-                        slug: {
-                           equals: entryId,
-                        },
-                     },
-                     {
-                        id: {
-                           equals: entryId,
-                        },
-                     },
-                  ],
-               },
-               depth: 1,
-               user,
-               overrideAccess: false,
-            });
-
-            const entryData = coreEntryData?.docs[0];
-
-            const entry = {
-               name: entryData?.name,
-               icon: {
-                  url: entryData?.icon?.url,
-               },
-            };
-
-            return entry;
          }
       }
       // Posts version (future)
