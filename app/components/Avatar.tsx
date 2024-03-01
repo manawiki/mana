@@ -36,7 +36,7 @@ export function Avatar({
             className,
 
             // Basic layout
-            "inline-grid align-middle *:col-start-1 *:row-start-1 dark:bg-dark450 bg-zinc-100",
+            "grid align-middle *:col-start-1 *:row-start-1 dark:bg-dark450 bg-zinc-100",
 
             // Add the correct border radius
             square

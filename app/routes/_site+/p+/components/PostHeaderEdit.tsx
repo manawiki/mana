@@ -76,6 +76,7 @@ export function PostHeaderEdit({
          fetcher.submit(formData, {
             encType: "multipart/form-data",
             method: "patch",
+            navigate: false,
          });
       }
    };

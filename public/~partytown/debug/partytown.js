@@ -1,4 +1,4 @@
-/* Partytown 0.9.1 - MIT builder.io */
+/* Partytown 0.9.2 - MIT builder.io */
 const defaultPartytownForwardPropertySettings = {
     preserveBehavior: false
 };
@@ -68,7 +68,7 @@ const arrayMethods = Object.freeze((obj => {
             sandbox.style.visibility = "hidden";
             sandbox.setAttribute("aria-hidden", !0);
         }
-        sandbox.src = libPath + "partytown-" + (isAtomics ? "atomics.js?v=0.9.1" : "sandbox-sw.html?" + Date.now());
+        sandbox.src = libPath + "partytown-" + (isAtomics ? "atomics.js?v=0.9.2" : "sandbox-sw.html?" + Date.now());
         doc.querySelector(config.sandboxParent || "body").appendChild(sandbox);
     }
     function fallback(i, script) {

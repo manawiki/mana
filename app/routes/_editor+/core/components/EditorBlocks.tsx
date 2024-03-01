@@ -6,15 +6,14 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
-// import { BlockCodeBlock } from "../../blocks+/codeblock";
-// import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import { Loading } from "~/components/Loading";
 
+import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import {
    BlockEventItemView,
    BlockEventsView,
 } from "../../blocks+/events/events-view";
-// import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
+import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
 import {
    BlockGroupItemView,
    BlockGroupView,
@@ -23,24 +22,19 @@ import { BlockHTMLBlock } from "../../blocks+/htmlblock";
 import { BlockImage } from "../../blocks+/image";
 import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
 import { BlockInlineAd } from "../../blocks+/inline-ad";
-// import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
 import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../blocks+/toggleblock";
 import { BlockTwoColumn } from "../../blocks+/two-column";
-// import { BlockUpdates } from "../../blocks+/updates/_updates";
 import { BlockUpdatesView } from "../../blocks+/updates/updates-view";
 import { BlockType } from "../types";
 
+//@ts-ignore
 const { BlockLink } = lazily(() => import("../../blocks+/link/_link"));
-const { BlockGroup, BlockGroupItem } = lazily(
-   () => import("../../blocks+/group/_group"),
-);
+//@ts-ignore
 const { BlockCodeBlock } = lazily(() => import("../../blocks+/codeblock"));
+//@ts-ignore
 const { BlockUpdates } = lazily(() => import("../../blocks+/updates/_updates"));
-const { BlockEventItem, BlockEvents } = lazily(
-   () => import("../../blocks+/events/_events"),
-);
 
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements

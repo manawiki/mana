@@ -11,7 +11,6 @@ import {
 import { z } from "zod";
 import { zx } from "zodix";
 
-import { assertIsPost } from "~/utils/http.server";
 import {
    getMultipleFormData,
    uploadImage,
@@ -71,12 +70,8 @@ export const action: ActionFunction = async ({
          "updateCollection",
          "updateCollectionOrder",
          "addCollection",
-         "collectionUpdateIcon",
-         "collectionDeleteIcon",
       ]),
    });
-
-   // Add Collection
 
    switch (intent) {
       case "deleteCollection": {
@@ -136,18 +131,84 @@ export const action: ActionFunction = async ({
          return jsonWithSuccess(null, "Collection order updated");
       }
       case "updateCollection": {
-         const results = await zx.parseForm(request, CollectionUpdateSchema);
          try {
-            await payload.update({
-               collection: "collections",
-               id: results.collectionId,
-               data: {
-                  ...results,
-               },
-               user,
-               overrideAccess: false,
+            const result = await getMultipleFormData({
+               request,
+               prefix: "collection-icon",
+               schema: CollectionUpdateSchema,
             });
-            return jsonWithSuccess(null, "Collection updated");
+            if (result.success) {
+               const {
+                  collectionId,
+                  collectionIcon,
+                  collectionIconId,
+                  siteId,
+                  ...data
+               } = result.data;
+
+               //Upload new collection icon
+               if (collectionIcon && !collectionIconId) {
+                  const upload = await uploadImage({
+                     payload,
+                     image: collectionIcon,
+                     user,
+                     siteId,
+                  });
+
+                  await payload.update({
+                     collection: "collections",
+                     id: collectionId,
+                     data: {
+                        icon: upload?.id as any,
+                     },
+                     overrideAccess: false,
+                     user,
+                  });
+               }
+               //If existing icon, delete it and upload new one
+               if (collectionIcon && collectionIconId) {
+                  await payload.delete({
+                     collection: "images",
+                     id: collectionIconId,
+                     overrideAccess: false,
+                     user,
+                  });
+                  const upload = await uploadImage({
+                     payload,
+                     image: collectionIcon,
+                     user,
+                     siteId,
+                  });
+
+                  await payload.update({
+                     collection: "collections",
+                     id: collectionId,
+                     data: {
+                        icon: upload?.id as any,
+                     },
+                     overrideAccess: false,
+                     user,
+                  });
+               }
+               const updateCollection = await payload.update({
+                  collection: "collections",
+                  id: collectionId,
+                  data: {
+                     ...data,
+                  },
+                  user,
+                  overrideAccess: false,
+               });
+               if (updateCollection)
+                  return jsonWithSuccess(
+                     null,
+                     `${updateCollection?.name} settings updated`,
+                  );
+               return jsonWithError(
+                  null,
+                  "Something went wrong, unable to update collection...",
+               );
+            }
          } catch (error) {
             return jsonWithError(
                null,
@@ -231,68 +292,6 @@ export const action: ActionFunction = async ({
             return jsonWithSuccess(null, "Collection added");
          } catch (error) {
             payload.logger.error(`${error}`);
-         }
-      }
-      case "collectionUpdateIcon": {
-         assertIsPost(request);
-
-         const result = await getMultipleFormData({
-            request,
-            prefix: "collectionIcon",
-            schema: z.any(),
-         });
-         if (result.success) {
-            const { image, entityId, siteId } = result.data;
-            try {
-               const upload = await uploadImage({
-                  payload,
-                  image: image,
-                  user,
-                  siteId,
-               });
-               return await payload.update({
-                  collection: "collections",
-                  id: entityId,
-                  data: {
-                     icon: upload.id as any,
-                  },
-                  overrideAccess: false,
-                  user,
-               });
-            } catch (error) {
-               return jsonWithError(
-                  null,
-                  "Something went wrong...unable to add image.",
-               );
-            }
-         }
-      }
-      case "collectionDeleteIcon": {
-         try {
-            const { imageId, entityId } = await zx.parseForm(request, {
-               imageId: z.string(),
-               entityId: z.string(),
-            });
-            await payload.delete({
-               collection: "images",
-               id: imageId,
-               overrideAccess: false,
-               user,
-            });
-            return await payload.update({
-               collection: "collections",
-               id: entityId,
-               data: {
-                  icon: "" as any,
-               },
-               overrideAccess: false,
-               user,
-            });
-         } catch (error) {
-            return jsonWithError(
-               null,
-               "Something went wrong...unable to delete image.",
-            );
          }
       }
    }
