@@ -28,11 +28,11 @@ export const Thropies: CollectionConfig = {
          name: "desc",
          type: "text",
       },
-      {
-         name: "next",
-         type: "relationship",
-         relationTo: "achievements",
-      },
+      // {
+      //    name: "next",
+      //    type: "relationship",
+      //    relationTo: "achievements",
+      // },
       {
          name: "checksum",
          type: "text",
