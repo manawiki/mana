@@ -12,28 +12,14 @@ kill_timeout = "5s"
 [http_service]
   internal_port = 8080
   force_https = true
+  auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
   processes = ["app"]
-
-[[services]]
-  protocol = "tcp"
-  internal_port = 8080
-  processes = ["app"]
-
-  [services.concurrency]
-    hard_limit = 250
-    soft_limit = 200
+  [http_service.concurrency]
     type = "requests"
-
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
+    soft_limit = 200
+    hard_limit = 250
 
 [[vm]]
   cpu_kind = "shared"
