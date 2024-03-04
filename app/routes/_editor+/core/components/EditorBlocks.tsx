@@ -146,20 +146,14 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="mb-2.5 mt-8 dark:shadow-black/30 border-color relative overflow-hidden rounded-lg block
-               border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350
-               scroll-mt-44 laptop:scroll-mt-52"
+               className="flex items-center gap-3 py-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16"
                {...attributes}
             >
+               <div className="min-w-[10px] flex-none">{children}</div>
                <div
-                  className="pattern-dots absolute left-0
-                   top-0 -z-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+                  contentEditable={false}
+                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
                />
-               <div className="relative h-full w-full px-3.5 py-2.5">
-                  {children}
-               </div>
             </h2>
          );
       }
@@ -169,14 +163,11 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="flex items-center gap-3 py-2 font-header text-lg scroll-mt-32 laptop:scroll-mt-16"
+               className="font-header text-lg mt-6 mb-1.5
+               scroll-mt-44 laptop:scroll-mt-52"
                {...attributes}
             >
-               <div className="min-w-[10px] flex-none">{children}</div>
-               <div
-                  contentEditable={false}
-                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-               />
+               {children}
             </h3>
          );
       }
