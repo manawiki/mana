@@ -1,6 +1,7 @@
 {
    "private": true,
    "sideEffects": false,
+   "name": "mana",
    "scripts": {
       "build": "yarn run generate:types && run-p \"build:*\"",
       "build:remix": "remix build",
@@ -25,7 +26,8 @@
       "seed:core": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.config.ts ts-node -T app/_custom/seed/index.ts",
       "seed:custom": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T app/_custom/seed/index.ts",
       "resave": "cross-env PAYLOAD_CONFIG_PATH=./app/db/payload.custom.config.ts ts-node -T ./scripts/resaveCollection",
-      "postinstall": "patch-package"
+      "postinstall": "patch-package",
+      "knip": "knip"
    },
    "dependencies": {
       "@aws-sdk/client-s3": "^3.445.0",
@@ -137,6 +139,7 @@
       "autoprefixer": "^10.4.16",
       "chokidar": "^3.5.3",
       "eslint": "^8.27.0",
+      "knip": "^5.0.3",
       "npm-run-all": "^4.1.5",
       "postcss": "^8.4.31",
       "prettier": "^3.0.3",
