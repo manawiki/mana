@@ -210,6 +210,7 @@ export function SearchComboBox({ siteType }: { siteType: Site["type"] }) {
                   autoFocus
                   className="h-full w-full border-0 p-0 bg-transparent outline-none !ring-transparent"
                   displayValue={(item: Search) => item?.name ?? ""}
+                  name="search"
                   placeholder="Search..."
                   onChange={(e) => setQuery(e.target.value)}
                />
