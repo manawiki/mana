@@ -15,8 +15,16 @@ import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { isAdding, isProcessing } from "~/utils/form";
 
-import type { Section } from "./Sections";
 import { SortableSubSectionItem } from "./SortableSubSectionItem";
+
+export type Section = {
+   id: string;
+   slug: string;
+   name?: string;
+   showTitle?: boolean;
+   showAd?: boolean;
+   subSections?: [{ id: string; slug: string; name: string; type: string }];
+};
 
 export function SubSectionList({
    section,

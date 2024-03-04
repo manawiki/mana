@@ -97,7 +97,7 @@ export function CollectionHeader({
                         </Button>
                         {entry ? (
                            <>
-                              {collection.customDatabase ? (
+                              {collection?.customDatabase ? (
                                  <>
                                     <EntryEdit entry={entry} />
                                     <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
