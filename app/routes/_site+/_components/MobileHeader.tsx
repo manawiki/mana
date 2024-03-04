@@ -22,7 +22,9 @@ export function MobileHeader() {
    const adding = isAdding(fetcher, "followSite");
    const location = useLocation();
 
-   const isUserPath = location.pathname.startsWith("/user");
+   const isNotSite =
+      location.pathname.startsWith("/user") ||
+      location.pathname.startsWith("/home");
 
    const [isFollowerMenuOpen, setFollowerMenuOpen] = useState(false);
 
@@ -43,7 +45,9 @@ export function MobileHeader() {
                         to={
                            process.env.NODE_ENV === "development"
                               ? "/"
-                              : "https://mana.wiki"
+                              : user
+                                ? "https://mana.wiki/home"
+                                : "https://mana.wiki"
                         }
                      >
                         <svg
@@ -59,7 +63,7 @@ export function MobileHeader() {
                            />
                         </svg>
                      </Link>
-                     {!isUserPath && (
+                     {!isNotSite && (
                         <NotFollowingSite>
                            <div className="flex items-center">
                               <button
