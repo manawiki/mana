@@ -8,7 +8,7 @@ export default {
       "app/db/collections/index.ts",
       "app/_custom/collections/index.ts",
    ],
-   ignore: ["types/**/*.d.ts"],
+   ignore: ["types/**/*.d.ts", "public/**/*"],
    remix: { config: "remix.config.js" },
    rules: {
       binaries: "error",
