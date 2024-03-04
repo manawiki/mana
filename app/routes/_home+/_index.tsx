@@ -20,7 +20,7 @@ import { gqlEndpoint } from "~/utils/fetchers.server";
 
 import { Discover } from "./components/Discover";
 import { EditorDemo } from "./components/EditorDemo";
-import { Top } from "./components/top";
+import { Top } from "./components/Top";
 import indexStyles from "./styles.css";
 
 export const meta: MetaFunction = () => [
