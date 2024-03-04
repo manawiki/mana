@@ -24,11 +24,11 @@ export const ThropyGroups: CollectionConfig = {
          name: "name",
          type: "text",
       },
-      // {
-      //    name: "category",
-      //    type: "relationship",
-      //    relationTo: "achievementCategories",
-      // },
+      {
+         name: "category",
+         type: "relationship",
+         relationTo: "thropyCategories",
+      },
       {
          name: "checksum",
          type: "text",
