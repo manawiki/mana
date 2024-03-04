@@ -4,7 +4,7 @@ import { Image } from "~/components/Image";
 import { ManaCore } from "./manacore";
 import { Particles } from "./particles";
 
-export function Top() {
+export function TopHome() {
    return (
       <>
          <section className="relative z-10 bg-zinc-900">
