@@ -1,3 +1,5 @@
+import clsx from "clsx";
+
 export const H2 = ({ text }: { text: string | undefined }) => {
    return (
       <h2
@@ -15,14 +17,22 @@ export const H2 = ({ text }: { text: string | undefined }) => {
    );
 };
 
-export const H3 = ({ text }: { text: string | undefined }) => {
+export const H2Plain = ({
+   text,
+   className,
+}: {
+   text: string | undefined;
+   className?: string;
+}) => {
    return (
-      <h3 className="flex items-center gap-3 py-2 font-header text-lg">
-         <div className="min-w-[10px] flex-none">{text}</div>
-         <div
-            contentEditable={false}
-            className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-         ></div>
-      </h3>
+      <h2
+         className={clsx(
+            className,
+            "flex items-center gap-3 py-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16",
+         )}
+      >
+         <div className="flex-none">{text}</div>
+         <div className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400" />
+      </h2>
    );
 };

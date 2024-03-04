@@ -30,7 +30,7 @@ export function SidebarItem({
             className="size-10 transition duration-300 active:translate-y-0.5"
          />
          {(isActive || isLoggedOut) && (
-            <span className="absolute -left-1 top-2 h-7 w-2.5 rounded-lg bg-zinc-600 dark:bg-zinc-300 max-laptop:hidden" />
+            <span className="absolute -left-1 top-1.5 h-7 w-2.5 rounded-lg bg-zinc-600 dark:bg-zinc-300 max-laptop:hidden" />
          )}
       </>
    );
