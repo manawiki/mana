@@ -6,6 +6,7 @@ import payload from "payload";
 require("dotenv").config();
 
 const { PAYLOADCMS_SECRET } = process.env;
+const USER_ID = "644069d751c100f909f89e62"; // TODO(dim): Not hardcode this value.
 
 interface IDataEntry {
     table: string;
@@ -24,6 +25,7 @@ async function importEntry(entry: IDataEntry): Promise<void> {
         data: {
             ...entry.data,
             checksum: entry.checksum,
+            createdBy: USER_ID,
         },
         filePath: entry.path ? entry.path : undefined,
     });
