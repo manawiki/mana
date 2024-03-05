@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { type ActionFunctionArgs, redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { type Descendant } from "slate";
+import type { Descendant } from "slate";
 import { Slate } from "slate-react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
@@ -25,8 +25,9 @@ export function ManaEditor({
    entryId,
    collectionEntity,
    collectionSlug,
+   isDemo,
 }: {
-   fetcher: FetcherWithComponents<unknown>;
+   fetcher?: FetcherWithComponents<unknown>;
    defaultValue: unknown[];
    pageId?: string;
    siteId?: string;
@@ -34,6 +35,7 @@ export function ManaEditor({
    entryId?: string;
    collectionEntity?: string;
    collectionSlug?: keyof Config["collections"];
+   isDemo?: boolean;
 }) {
    const editor = useEditor();
 
@@ -44,8 +46,8 @@ export function ManaEditor({
    const debouncedValue = useDebouncedValue(value, 1000);
 
    useEffect(() => {
-      if (!isMount) {
-         fetcher.submit(
+      if (!isMount && !isDemo) {
+         fetcher?.submit(
             //@ts-ignore
             {
                content: JSON.stringify(debouncedValue),

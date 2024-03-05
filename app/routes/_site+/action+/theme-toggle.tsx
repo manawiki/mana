@@ -1,6 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
+import clsx from "clsx";
 
 import { Icon } from "~/components/Icon";
 import { useTheme } from "~/utils/client-hints";
@@ -40,7 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
    );
 };
 
-export const DarkModeToggle = () => {
+export const DarkModeToggle = ({ className }: { className?: string }) => {
    const theme = useTheme();
    const fetcher = useFetcher<typeof action>();
 
@@ -52,8 +53,10 @@ export const DarkModeToggle = () => {
             value={theme === "light" ? "dark" : "light"}
          />
          <button
-            className="flex h-8 w-8 items-center justify-center"
-            //   onClick={toggleTheme}
+            className={clsx(
+               "flex size-8 items-center justify-center",
+               className,
+            )}
             aria-label="Toggle dark mode"
          >
             {theme === "light" ? (

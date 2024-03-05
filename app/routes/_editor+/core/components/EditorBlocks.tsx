@@ -6,15 +6,14 @@ import { type RenderElementProps, useReadOnly } from "slate-react";
 import urlSlug from "url-slug";
 
 import { CustomBlocks } from "~/_custom/blocks";
-// import { BlockCodeBlock } from "../../blocks+/codeblock";
-// import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import { Loading } from "~/components/Loading";
 
+import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import {
    BlockEventItemView,
    BlockEventsView,
 } from "../../blocks+/events/events-view";
-// import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
+import { BlockGroup, BlockGroupItem } from "../../blocks+/group/_group";
 import {
    BlockGroupItemView,
    BlockGroupView,
@@ -23,24 +22,19 @@ import { BlockHTMLBlock } from "../../blocks+/htmlblock";
 import { BlockImage } from "../../blocks+/image";
 import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
 import { BlockInlineAd } from "../../blocks+/inline-ad";
-// import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
 import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../blocks+/toggleblock";
 import { BlockTwoColumn } from "../../blocks+/two-column";
-// import { BlockUpdates } from "../../blocks+/updates/_updates";
 import { BlockUpdatesView } from "../../blocks+/updates/updates-view";
 import { BlockType } from "../types";
 
+//@ts-ignore
 const { BlockLink } = lazily(() => import("../../blocks+/link/_link"));
-const { BlockGroup, BlockGroupItem } = lazily(
-   () => import("../../blocks+/group/_group"),
-);
+//@ts-ignore
 const { BlockCodeBlock } = lazily(() => import("../../blocks+/codeblock"));
+//@ts-ignore
 const { BlockUpdates } = lazily(() => import("../../blocks+/updates/_updates"));
-const { BlockEventItem, BlockEvents } = lazily(
-   () => import("../../blocks+/events/_events"),
-);
 
 // Note: {children} must be rendered in every element otherwise bugs occur
 // https://docs.slatejs.org/api/nodes/element#rendering-void-elements
@@ -152,20 +146,14 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="mb-2.5 mt-8 dark:shadow-black/30 border-color relative overflow-hidden rounded-lg block
-               border-2 font-header text-xl font-bold shadow-sm shadow-zinc-100 dark:bg-dark350
-               scroll-mt-44 laptop:scroll-mt-52"
+               className="flex items-center gap-3 py-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16"
                {...attributes}
             >
+               <div className="min-w-[10px] flex-none">{children}</div>
                <div
-                  className="pattern-dots absolute left-0
-                   top-0 -z-0 h-full
-                     w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
-                     pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
+                  contentEditable={false}
+                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
                />
-               <div className="relative h-full w-full px-3.5 py-2.5">
-                  {children}
-               </div>
             </h2>
          );
       }
@@ -175,14 +163,11 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="flex items-center gap-3 py-2 font-header text-lg scroll-mt-32 laptop:scroll-mt-16"
+               className="font-header text-lg mt-6 mb-1.5
+               scroll-mt-44 laptop:scroll-mt-52"
                {...attributes}
             >
-               <div className="min-w-[10px] flex-none">{children}</div>
-               <div
-                  contentEditable={false}
-                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-               />
+               {children}
             </h3>
          );
       }

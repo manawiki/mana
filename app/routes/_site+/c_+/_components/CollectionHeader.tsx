@@ -17,7 +17,6 @@ import type { Collection } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
-import { CollectionImageUploader } from "./CollectionImageUploader";
 import type { Section } from "./List";
 import { AddSection } from "../$collectionId_.$entryId/components/AddSection";
 import { CollectionEdit } from "../$collectionId_.$entryId/components/CollectionEdit";
@@ -54,19 +53,10 @@ export function CollectionHeader({
 
    const entryName = entry?.name;
 
+   const collectionName = collection?.name;
+
    const isEntry = entry?.name && entry?.id;
 
-   const icon = isEntry
-      ? entry?.icon && entry?.icon
-      : collection?.icon && collection?.icon;
-
-   const intent = isEntry ? "entry" : "collection";
-
-   const entityId = isEntry ? entry?.id : collection?.id;
-
-   const actionPath = isEntry
-      ? `/c/${collection?.slug}/${entry?.id}`
-      : "/collections";
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
    //Get root domain from full domain url
@@ -109,7 +99,7 @@ export function CollectionHeader({
                         </Button>
                         {entry ? (
                            <>
-                              {collection.customDatabase ? (
+                              {collection?.customDatabase ? (
                                  <>
                                     <EntryEdit entry={entry} />
                                     <span className="h-4 w-[1px] bg-zinc-300 dark:bg-zinc-600 rounded" />
@@ -168,20 +158,22 @@ export function CollectionHeader({
                   />
                </div>
             </AdminOrStaffOrOwner>
-            <div className="flex items-center max-tablet:px-3  justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px]">
+            <div className="flex items-center max-tablet:px-3 justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px] relative">
                <h1 className="font-bold font-header text-3xl pb-3">
-                  {entryName ?? collection?.name}
+                  {entryName ?? collectionName}
                </h1>
-               <div
-                  className="flex-none group relative tablet:-mr-1 border border-color-sub
-                  shadow-1 shadow-sm bg-white dark:bg-dark350 -mb-10 flex 
-                  size-16 rounded-full overflow-hidden items-center"
-               >
-                  <CollectionImageUploader
-                     image={icon}
-                     actionPath={actionPath}
-                     intent={intent}
-                     entityId={entityId}
+               <div className="absolute right-3 laptop:right-0 top-7">
+                  <Avatar
+                     src={isEntry ? entry?.icon?.url : collection?.icon?.url}
+                     className="size-16 bg-3"
+                     initials={
+                        entry?.icon?.url || collection?.icon?.url
+                           ? undefined
+                           : isEntry
+                             ? entryName?.charAt(0)
+                             : collectionName.charAt(0)
+                     }
+                     options="aspect_ratio=1:1&height=128&width=128"
                   />
                </div>
             </div>
@@ -198,8 +190,14 @@ export function CollectionHeader({
                   >
                      <Avatar
                         src={collection?.icon?.url}
-                        className="size-6 !bg-white dark:!bg-zinc-800/30"
-                        initials={collection?.name.charAt(0)}
+                        className="size-6 dark:!bg-zinc-800/30"
+                        initials={
+                           entry?.icon?.url || collection?.icon?.url
+                              ? undefined
+                              : isEntry
+                                ? entryName?.charAt(0)
+                                : collectionName.charAt(0)
+                        }
                         options="aspect_ratio=1:1&height=80&width=80"
                      />
                      <Icon
@@ -219,7 +217,13 @@ export function CollectionHeader({
                            <Avatar
                               src={row?.icon?.url}
                               className="size-6"
-                              initials={row?.name.charAt(0)}
+                              initials={
+                                 row?.icon?.url
+                                    ? undefined
+                                    : isEntry
+                                      ? entryName?.charAt(0)
+                                      : collectionName.charAt(0)
+                              }
                               options="aspect_ratio=1:1&height=80&width=80"
                            />
                            {row.name}
