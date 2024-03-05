@@ -47,9 +47,11 @@ export function Table({
                {...props}
                className={clsx(
                   className,
-                  "-mx-[--gutter] overflow-x-auto whitespace-nowrap",
+                  `-mx-[--gutter] overflow-x-auto whitespace-nowrap scrollbar 
+                  dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                  scrollbar-thumb-zinc-300 scrollbar-track-zinc-100`,
                   framed &&
-                     "border-y tablet:border tablet:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
+                     "border-y mobile:border mobile:rounded-lg border-color-sub dark:bg-dark350 shadow-sm shadow-1",
                )}
             >
                <div
@@ -139,8 +141,11 @@ export function TableRow({
 
 export function TableHeader({
    className,
+   center,
    ...props
-}: React.ComponentPropsWithoutRef<"th">) {
+}: {
+   center?: boolean;
+} & React.ComponentPropsWithoutRef<"th">) {
    let { bleed, grid, framed } = useContext(TableContext);
 
    return (
@@ -148,6 +153,7 @@ export function TableHeader({
          {...props}
          className={clsx(
             className,
+            center && "text-center",
             framed && "bg-zinc-50 dark:bg-dark400",
             "border-b border-color-sub font-semibold px-4 py-2.5 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
             grid && "border-l border-color-sub first:border-l-0",
@@ -160,8 +166,13 @@ export function TableHeader({
 export function TableCell({
    className,
    children,
+   center,
+   bold,
    ...props
-}: React.ComponentPropsWithoutRef<"td">) {
+}: {
+   center?: boolean;
+   bold?: boolean;
+} & React.ComponentPropsWithoutRef<"td">) {
    let { bleed, dense, grid, striped, framed } = useContext(TableContext);
    let { href, target, title } = useContext(TableRowContext);
    let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
@@ -172,6 +183,8 @@ export function TableCell({
          {...props}
          className={clsx(
             className,
+            center && "text-center",
+            bold && "font-bold",
             "relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
             !striped && !framed && "border-b border-color",
             grid && "border-l border-color-sub first:border-l-0",

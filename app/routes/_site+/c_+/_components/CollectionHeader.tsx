@@ -15,7 +15,6 @@ import {
 import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
-import { apiDBPath } from "~/utils/api-path.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { Section } from "./List";
@@ -105,7 +104,7 @@ export function CollectionHeader({
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
-                                       href={`https://${site.slug}-db.${apiDBPath}/admin/collections/${collection.slug}/${entry.id}`}
+                                       href={`https://${site.slug}-db.mana.wiki/admin/collections/${collection.slug}/${entry.id}`}
                                     >
                                        <Icon
                                           title="Edit"
