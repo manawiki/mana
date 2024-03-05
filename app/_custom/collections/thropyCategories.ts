@@ -4,7 +4,7 @@ import { isStaff } from "../../db/collections/users/access";
 
 export const ThropyCategories: CollectionConfig = {
    slug: "thropyCategories",
-   labels: { singular: "thropyCategories", plural: "thropyCategory" },
+   labels: { singular: "thropyCategory", plural: "thropyCategories" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
