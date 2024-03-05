@@ -59,9 +59,6 @@ export function CollectionHeader({
 
    const [isSectionsOpen, setSectionsOpen] = useState<boolean>(false);
 
-   //Get root domain from full domain url
-   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
-
    return (
       <div className="bg-gradient-to-t from-white to-zinc-100 dark:from-dark350 dark:to-bg3Dark relative">
          <div className="pt-[61px] laptop:pt-0 z-20 relative">
@@ -107,13 +104,7 @@ export function CollectionHeader({
                                        className="size-8 !p-0"
                                        color="violet"
                                        target="_blank"
-                                       href={`https://${site.slug}-db.${
-                                          customDomainHostname
-                                             ? customDomainHostname
-                                             : "mana.wiki"
-                                       }/admin/collections/${collection.slug}/${
-                                          entry.id
-                                       }`}
+                                       href={`https://${site.slug}-db.mana.wiki/admin/collections/${collection.slug}/${entry.id}`}
                                     >
                                        <Icon
                                           title="Edit"
@@ -192,11 +183,9 @@ export function CollectionHeader({
                         src={collection?.icon?.url}
                         className="size-6 dark:!bg-zinc-800/30"
                         initials={
-                           entry?.icon?.url || collection?.icon?.url
+                           collection?.icon?.url
                               ? undefined
-                              : isEntry
-                                ? entryName?.charAt(0)
-                                : collectionName.charAt(0)
+                              : collectionName.charAt(0)
                         }
                         options="aspect_ratio=1:1&height=80&width=80"
                      />
@@ -220,9 +209,7 @@ export function CollectionHeader({
                               initials={
                                  row?.icon?.url
                                     ? undefined
-                                    : isEntry
-                                      ? entryName?.charAt(0)
-                                      : collectionName.charAt(0)
+                                    : row.name?.charAt(0)
                               }
                               options="aspect_ratio=1:1&height=80&width=80"
                            />
