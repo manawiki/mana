@@ -20,6 +20,7 @@ import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
+import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
@@ -93,7 +94,6 @@ export default function CollectionList() {
    }, [addingUpdate, zoEntry.refObject]);
 
    //Get root domain from full domain url
-   let customDomainHostname = site?.domain?.split(".").slice(-2).join(".");
 
    return (
       <List>
@@ -107,11 +107,7 @@ export default function CollectionList() {
                            color="blue"
                            target="_blank"
                            className="text-sm"
-                           href={`https://${site.slug}-db.${
-                              customDomainHostname
-                                 ? customDomainHostname
-                                 : "mana.wiki"
-                           }/admin/collections/${collection?.slug}/create`}
+                           href={`https://${site.slug}-db.${apiDBPath}/admin/collections/${collection?.slug}/create`}
                         >
                            {addingUpdate ? (
                               <Icon
