@@ -7,7 +7,6 @@ import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { gql } from "graphql-request";
 
-import { H3 } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
@@ -398,7 +397,7 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
 function Moves({ data: pokemon }: { data: PokemonType }) {
    return (
       <>
-         <H3 text="Fast" />
+         <h3>Fast</h3>
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden mb-3">
             {pokemon.fastMoves?.map((row) => (
                <div className="flex items-center" key={row?.move?.id}>
@@ -448,7 +447,7 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                </div>
             ))}
          </div>
-         <H3 text="Charge" />
+         <h3>Charge</h3>
          <div className="border border-color-sub divide-y divide-color-sub bg-2-sub shadow-sm shadow-1 rounded-lg overflow-hidden">
             {pokemon.chargeMoves?.map((row) => (
                <div className="flex items-center" key={row?.move?.id}>
