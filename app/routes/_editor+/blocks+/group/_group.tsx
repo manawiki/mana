@@ -582,6 +582,7 @@ export function BlockGroup({
                                                    autoFocus
                                                    className="bg-3-sub h-10 w-full border-0 px-0 focus:outline-none focus:ring-0"
                                                    placeholder="Search..."
+                                                   name="search"
                                                    onChange={(event) =>
                                                       setGroupSelectQuery(
                                                          event.target.value,

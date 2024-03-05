@@ -5,7 +5,7 @@ import { getMeta } from "~/components/getMeta";
 export const listMeta: MetaFunction = ({ matches }: { matches: any }) => {
    const site = matches?.[1]?.data?.site;
 
-   const collectionId = matches?.[2]?.pathname.split("/")[2];
+   const collectionId = matches?.[2]?.pathname?.split("/")[2];
 
    const collection = site?.collections?.find(
       (collection: any) => collection.slug === collectionId,
@@ -21,7 +21,7 @@ export const listMeta: MetaFunction = ({ matches }: { matches: any }) => {
 
    const description =
       `Browse ${collection?.name} ` +
-      sections.join(", ") +
+      sections?.join(", ") +
       ` on ${site?.name}. `;
 
    return getMeta({ title, description, icon, siteName: site?.name });

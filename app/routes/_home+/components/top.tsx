@@ -33,17 +33,17 @@ export const Top = () => {
                   <div className="mx-auto mt-8 text-center">
                      <h1
                         className="bg-gradient-to-r from-slate-200/60 via-slate-200 to-slate-200/60 bg-clip-text 
-                    pb-4 font-header text-2xl font-bold text-transparent laptop:text-3xl"
+                    pb-4 font-header text-3xl font-bold text-transparent"
                         data-aos="fade-down"
                      >
-                        The community-powered, open-source wiki toolkit
+                        The all-in-one workspace for wiki creators
                      </h1>
                      <p
-                        className="mb-8 text-slate-400 laptop:text-lg"
+                        className="mb-8 text-slate-400 laptop:text-lg max-w-md mx-auto"
                         data-aos="fade-down"
                         data-aos-delay="200"
                      >
-                        A better way to build a wiki for your community
+                        Community-powered, open-source wiki toolkit
                      </p>
                      <div
                         data-aos="fade-down"
@@ -52,11 +52,13 @@ export const Top = () => {
                      >
                         <a
                            href="https://github.com/manawiki"
+                           target="_blank"
                            className="
                          relative inline-flex w-28 items-center justify-center gap-2 rounded-full border border-transparent
                          px-3 py-2.5 text-zinc-100 shadow-sm shadow-black/30 transition duration-150 ease-in-out
                          [background:linear-gradient(theme(colors.zinc.800),_theme(colors.zinc.800))_padding-box,_conic-gradient(theme(colors.zinc.400),_theme(colors.zinc.700)_25%,_theme(colors.zinc.700)_75%,_theme(colors.zinc.400)_100%)_border-box]
                          before:pointer-events-none before:absolute before:inset-0 before:rounded-full before:bg-zinc-800/30 hover:text-white"
+                           rel="noreferrer"
                         >
                            <Icon name="github" size={16} />
                            <span className="pt-0.5 text-sm font-bold">
