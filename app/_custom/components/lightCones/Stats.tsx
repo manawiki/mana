@@ -2,23 +2,24 @@ import { useState } from "react";
 
 import type { LightCone } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
 
 import { CSVStats } from "../CSVStats";
-import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph";
+import { LazyStatsGraph } from "../LazyStatsGraph";
 
-export const Stats = ({ pageData }: { pageData: LightCone }) => {
+export const Stats = ({ data }: { data: LightCone }) => {
    // Cast stats to the correct type
-   const stats = pageData.stats as StatsType;
+   const stats = data.stats;
 
    // Usestate Variable Settings
    const [levelSliderValue, setLevelSliderValue] = useState(80);
    const [levelAscensionCheck, setLevelAscensionCheck] = useState(true);
 
-   let imgurl = pageData.image_full?.url;
-   let pathurl = pageData.path?.icon?.url;
-   let pathsmall = pageData.path?.icon_small?.url;
-   let rarityurl = pageData.rarity?.icon?.url;
-   let pathname = pageData.path?.name;
+   let imgurl = data.image_full?.url;
+   let pathurl = data.path?.icon?.url;
+   let pathsmall = data.path?.icon_small?.url;
+   let rarityurl = data.rarity?.icon?.url;
+   let pathname = data.path?.name;
 
    let statsList = ["HP", "ATK", "DEF"];
    // =====================================
@@ -147,15 +148,14 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
          {/* ======================== */}
          <div className="relative w-full">
             <div className="bg-2-sub shadow-1 border-color-sub my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
-               <div className="flex w-full items-center justify-between text-center">
+               <div className="flex w-full items-center justify-between text-center gap-3">
                   {/* Level Label */}
                   <div className="inline-flex justify-between pr-0.5 align-middle">
                      Lv.
                   </div>
                   {/* Level Input Box */}
-                  <input
-                     className="scale-20 level-input-box border-color-sub bg-3-sub ml-1 mr-2 inline-flex
-                     w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
+                  <Input
+                     className="!w-16 flex-none"
                      type="number"
                      aria-label="Level"
                      value={levelSliderValue}
@@ -174,7 +174,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                            setLevelSliderValue(input);
                         }
                      }}
-                  ></input>
+                  />
                   {/* Asc Label */}
                   <div className="inline-flex justify-between pr-2 align-middle text-sm">
                      Asc
@@ -200,9 +200,8 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
                   ></input>
                   {/* Slider */}
                   <input
+                     className="w-full"
                      aria-label="Level Slider"
-                     className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
-                     rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                      type="range"
                      min="1"
                      max="80"
@@ -224,7 +223,7 @@ export const Stats = ({ pageData }: { pageData: LightCone }) => {
             {/* 2d) Collapsible? Tab for Full Stats - We do want to hide this because we wanna make it more work for people to find this? 
         UPDATE: Hidden for now due to slider. CSV version still available for full stat table. */}
             {/* <Stats charData={charData} /> */}
-            {pageData?.stats && <CSVStats statsCSV={pageData?.stats_csv} />}
+            {data?.stats && <CSVStats statsCSV={data?.stats_csv} />}
 
             {/* 2e) Collapsible Tab for link to Detailed BinOutput (JSON describing detailed parameters for character skills and attacks) */}
             {/* <BinOutputLink charData={charData} /> */}

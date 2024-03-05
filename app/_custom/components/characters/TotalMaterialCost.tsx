@@ -3,6 +3,14 @@ import type {
    Character,
    SkillTree,
 } from "payload/generated-custom-types";
+import {
+   Table,
+   TableBody,
+   TableCell,
+   TableHead,
+   TableHeader,
+   TableRow,
+} from "~/components/Table";
 
 export const TotalMaterialCost = ({
    data,
@@ -95,49 +103,49 @@ export const TotalMaterialCost = ({
 
    return (
       <>
-         <table className="talent-table w-full overflow-auto text-sm">
-            <thead>
-               <tr className="text-sm">
-                  <th>Total</th>
-                  <th>Materials</th>
-               </tr>
-            </thead>
-            <tbody>
+         <Table grid framed>
+            <TableHead>
+               <TableRow>
+                  <TableHeader center>Total</TableHeader>
+                  <TableHeader>Materials</TableHeader>
+               </TableRow>
+            </TableHead>
+            <TableBody>
                {/* Promotion */}
-               <tr>
-                  <th className="px-3 py-0 text-center text-xs font-bold">
-                     <div>Promotion</div>
-                  </th>
-                  <td className="px-1 py-1 pl-3">
+               <TableRow>
+                  <TableCell center bold>
+                     Promotion
+                  </TableCell>
+                  <TableCell>
                      {promotionTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
-                  </td>
-               </tr>
+                  </TableCell>
+               </TableRow>
                {/* Skill Tree */}
-               <tr>
-                  <th className="px-3 py-0 text-center text-xs font-bold">
-                     <div>Skill Tree</div>
-                  </th>
-                  <td className="px-1 py-1 pl-3">
+               <TableRow>
+                  <TableCell center bold>
+                     Skill Tree
+                  </TableCell>
+                  <TableCell>
                      {skillTreeTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
-                  </td>
-               </tr>
+                  </TableCell>
+               </TableRow>
                {/* All */}
-               <tr>
-                  <th className="px-3 py-0 text-center text-xs font-bold">
-                     <div>All</div>
-                  </th>
-                  <td className="px-1 py-1 pl-3">
+               <TableRow>
+                  <TableCell center bold>
+                     All
+                  </TableCell>
+                  <TableCell>
                      {allTotal?.map((mat, key) => (
                         <ItemQtyFrame mat={mat} key={key} />
                      ))}
-                  </td>
-               </tr>
-            </tbody>
-         </table>
+                  </TableCell>
+               </TableRow>
+            </TableBody>
+         </Table>
       </>
    );
 };

@@ -70,9 +70,8 @@ function Trace({
                   </div>
                   <input
                      aria-label="Level Slider"
-                     className="h-1 flex-grow appearance-none justify-end
-                           rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
                      type="range"
+                     className="flex-grow"
                      min="1"
                      max={trace?.description_per_level?.length}
                      value={skillLevel}

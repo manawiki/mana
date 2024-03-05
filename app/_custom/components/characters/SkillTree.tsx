@@ -102,8 +102,7 @@ export const SkillTree = ({
                            </div>
                            <input
                               aria-label="Level Slider"
-                              className="h-1 flex-grow appearance-none justify-end
-                              rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
+                              className="flex-grow"
                               type="range"
                               min="1"
                               max={

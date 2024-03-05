@@ -31,27 +31,18 @@ export async function loader({
    return json({ entry });
 }
 
+const SECTIONS = {
+   stats: Stats,
+   effect: Effect,
+   "promotion-cost": PromotionCost,
+   description: Description,
+   promotion: PromotionCost,
+   "additional-data": AdditionalData,
+   gallery: ImageGallery,
+};
+
 export default function LightConeEntry() {
    const { entry } = useLoaderData<typeof loader>();
 
-   return (
-      <Entry>
-         <Stats pageData={entry.data} />
-
-         {/* Effects for Light Cone */}
-         <Effect pageData={entry.data} />
-
-         {/* Promotion Cost for Weapon */}
-         <PromotionCost pageData={entry.data} />
-
-         {/* Description and Flavor Text */}
-         <Description pageData={entry.data} />
-
-         {/* Additional Data */}
-         <AdditionalData pageData={entry.data} />
-
-         {/* Image Gallery */}
-         <ImageGallery pageData={entry.data} />
-      </Entry>
-   );
+   return <Entry customComponents={SECTIONS} customData={entry.data} />;
 }

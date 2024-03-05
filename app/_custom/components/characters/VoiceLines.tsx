@@ -14,41 +14,25 @@ export const VoiceLines = ({
    const lines = character.voice_lines;
    return (
       <>
-         {lines && lines?.length > 0 ? (
-            <>
-               <table className="mb-3 w-full">
-                  <tbody>
-                     {/* One row per voice line */}
-                     {lines.map((voice, index) => (
-                        <tr key={index}>
-                           <th className="px-3 py-2 text-sm">
-                              <div className="font-bold">{voice.title}</div>
-                              {/* {voice.voice_unlock ? (
-                                          <div
-                                            className="italic text-xs bg-gray-100 border rounded 
-                                    dark:bg-dark_100 dark:border-dark_50 py-1 px-2  mt-2"
-                                            dangerouslySetInnerHTML={{
-                                              __html: voice.voice_unlock,
-                                            }}
-                                          ></div>
-                                        ) : null} */}
-                           </th>
-                           {/* Column 2: Voice Line Text + Playback */}
-                           <td className="talent-text px-3 py-4 text-sm">
-                              <div
-                                 dangerouslySetInnerHTML={{
-                                    __html: voice.text ?? "",
-                                 }}
-                              ></div>
-                              {/* Voice line player, if voices available, see AudioPlayer code */}
-                              <AudioPlayer voice={voice} />
-                           </td>
-                        </tr>
-                     ))}
-                  </tbody>
-               </table>
-            </>
-         ) : null}
+         {lines && lines?.length > 0
+            ? lines.map((voice, index) => (
+                 <div
+                    key={index}
+                    className="bg-2-sub border border-color-sub rounded-lg shadow-sm shadow-1 mb-3 p-3"
+                 >
+                    <div className="font-header pb-1">{voice.title}</div>
+                    <div
+                       className="text-1"
+                       dangerouslySetInnerHTML={{
+                          __html: voice.text ?? "",
+                       }}
+                    ></div>
+                    {/* Voice line player, if voices available, see AudioPlayer code */}
+                    {/* @ts-ignore */}
+                    <AudioPlayer voice={voice} />
+                 </div>
+              ))
+            : null}
       </>
    );
 };
@@ -80,9 +64,9 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                                  <div
                                     className={`${
                                        selected
-                                          ? "bg-zinc-50 dark:bg-zinc-500/10"
-                                          : "bg-white dark:bg-bg2Dark"
-                                    } shadow-1 border-color flex h-6 w-full items-center justify-center rounded-full border px-3 shadow-sm`}
+                                          ? "bg-zinc-200 border-zinc-300 dark:bg-dark500 dark:border-zinc-500"
+                                          : "bg-3-sub"
+                                    } shadow-1 border-color flex h-6 w-full text-sm items-center justify-center rounded-full border px-3 shadow-sm`}
                                  >
                                     {l.toUpperCase()}
                                  </div>
@@ -93,35 +77,31 @@ const AudioPlayer = ({ voice }: { voice: VoiceType }) => {
                      <Tab.Panels>
                         <Tab.Panel>
                            <audio
-                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_en?.url}
                               preload="none"
-                           ></audio>
+                           />
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_jp?.url}
                               preload="none"
-                           ></audio>
+                           />
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_cn?.url}
                               preload="none"
-                           ></audio>
+                           />
                         </Tab.Panel>
                         <Tab.Panel>
                            <audio
-                              className="mt-1 h-6 w-full"
                               controls
                               src={voice.voice_kr?.url}
                               preload="none"
-                           ></audio>
+                           />
                         </Tab.Panel>
                      </Tab.Panels>
                   </Tab.Group>

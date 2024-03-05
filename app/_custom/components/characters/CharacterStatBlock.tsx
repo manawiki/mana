@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { Character } from "payload/generated-custom-types";
 import { Image } from "~/components/Image";
+import { Input } from "~/components/Input";
 
 import { CSVStats } from "../CSVStats.tsx";
 import { LazyStatsGraph, type StatsType } from "../LazyStatsGraph.tsx";
@@ -203,15 +204,14 @@ export const CharacterStatBlock = ({
          {/* ======================== */}
          <div className="bg-2-sub shadow-1 border-color-sub my-3 rounded-lg border px-6 py-3 font-bold shadow-sm">
             <div className="flex w-full items-center justify-between text-center">
-               <div className="flex items-center gap-1">
+               <div className="flex items-center gap-3">
                   {/* Level Label */}
                   <div className="inline-flex justify-between pr-0.5 align-middle">
                      Lvl
                   </div>
                   {/* Level Input Box */}
-                  <input
-                     className="scale-20 level-input-box border-color-sub bg-3-sub ml-1 mr-2 inline-flex
-                     w-9 justify-center rounded-lg border px-0 py-1 text-center align-middle"
+                  <Input
+                     className="!w-16 flex-none"
                      type="number"
                      aria-label="Level"
                      value={levelSliderValue}
@@ -230,7 +230,7 @@ export const CharacterStatBlock = ({
                            setLevelSliderValue(input);
                         }
                      }}
-                  ></input>
+                  />
                   {/* Asc Label */}
                   <div className="inline-flex justify-between pr-2 align-middle text-sm">
                      Asc
@@ -258,8 +258,7 @@ export const CharacterStatBlock = ({
                {/* Slider */}
                <input
                   aria-label="Level Slider"
-                  className="slider-thumb h-1 w-full flex-grow appearance-none justify-end
-                   rounded bg-zinc-200 align-middle accent-zinc-500 outline-none dark:bg-zinc-700"
+                  className="flex-grow"
                   type="range"
                   min="1"
                   max="80"

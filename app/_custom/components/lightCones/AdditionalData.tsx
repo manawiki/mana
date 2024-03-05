@@ -1,16 +1,14 @@
 import type { LightCone } from "payload/generated-custom-types";
-import { H2 } from "~/components/Headers";
 
-export const AdditionalData = ({ pageData }: { pageData: LightCone }) => {
+export const AdditionalData = ({ data }: { data: LightCone }) => {
    const adata = [
-      { name: "Max Promotion", value: pageData.max_promotion },
-      { name: "EXP Provided", value: pageData.exp_provide },
-      { name: "Coin Cost", value: pageData.coin_cost },
+      { name: "Max Promotion", value: data.max_promotion },
+      { name: "EXP Provided", value: data.exp_provide },
+      { name: "Coin Cost", value: data.coin_cost },
    ];
 
    return (
       <>
-         <H2 text="Additional Data" />
          <div className="divide-color-sub shadow-1 border-color-sub divide-y overflow-hidden rounded-lg border shadow-sm">
             {adata.map((stat, index) => {
                return (
