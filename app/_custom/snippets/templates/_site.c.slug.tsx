@@ -4,10 +4,10 @@ import { useLoaderData } from "@remix-run/react";
 import { gql } from "graphql-request";
 
 import { fetchList } from "~/routes/_site+/c_+/$collectionId/utils/fetchList.server";
-import { customListMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
+import { listMeta } from "~/routes/_site+/c_+/$collectionId/utils/listMeta";
 import { List } from "~/routes/_site+/c_+/_components/List";
 
-export { customListMeta as meta };
+export { listMeta as meta };
 
 export async function loader({
    context: { payload, user },
