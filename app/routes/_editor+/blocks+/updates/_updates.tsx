@@ -13,7 +13,8 @@ import { z } from "zod";
 import { zx } from "zodix";
 
 import type { Update } from "payload/generated-types";
-import { H2 } from "~/components/Headers";
+import { Button } from "~/components/Button";
+import { H2Plain } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 // eslint-disable-next-line import/no-cycle
 import { EditorBlocks } from "~/routes/_editor+/core/components/EditorBlocks";
@@ -70,7 +71,7 @@ export function BlockUpdates({ element }: Props) {
    return (
       <section>
          <>
-            <H2 text="Updates" />
+            <H2Plain text="Updates" className="pb-3" />
             <div className="divide-color-sub border-color-sub bg-3 shadow-1 mb-5 divide-y overflow-hidden rounded-lg border shadow-sm">
                <div className="flex items-center justify-between gap-2 bg-zinc-50 py-1 pr-2.5 dark:bg-dark350">
                   <span className="text-1 w-20 flex-none px-3 py-3.5 text-xs font-semibold uppercase">
@@ -94,7 +95,7 @@ export function BlockUpdates({ element }: Props) {
                         />
                      </Slate>
                   </div>
-                  <button
+                  <Button
                      onClick={() => {
                         fetcher.submit(
                            {
@@ -110,31 +111,19 @@ export function BlockUpdates({ element }: Props) {
                      disabled={disabled}
                      type="submit"
                   >
-                     <div
-                        className="inline-flex h-[30px] w-[74px] items-center justify-center gap-1.5 
-                           rounded-full border border-zinc-200 bg-gradient-to-br from-white dark:border-darkBorder
-                           to-zinc-50  text-xs font-bold shadow-sm transition hover:border-zinc-300
-                           hover:bg-white hover:!shadow active:!shadow-none dark:from-bg3Dark
-                           dark:to-bg2Dark dark:text-zinc-200 dark:hover:border-zinc-700"
-                     >
-                        {addingUpdate ? (
-                           <Icon
-                              name="loader-2"
-                              size={16}
-                              className="animate-spin"
-                           />
-                        ) : (
-                           <>
-                              <Icon
-                                 name="send"
-                                 className="text-zinc-400 dark:text-zinc-300"
-                                 size={12}
-                              />
-                              <span className="text-1 pr-0.5">Post</span>
-                           </>
-                        )}
-                     </div>
-                  </button>
+                     {addingUpdate ? (
+                        <Icon
+                           name="loader-2"
+                           size={16}
+                           className="animate-spin"
+                        />
+                     ) : (
+                        <>
+                           <Icon name="send" size={12} />
+                           Post
+                        </>
+                     )}
+                  </Button>
                </div>
                {updateResults?.map((row) => (
                   <section

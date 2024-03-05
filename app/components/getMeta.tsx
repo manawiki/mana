@@ -49,17 +49,17 @@ export function getMeta({
    if (url) meta.push({ property: "og:url", content: url });
 
    //insert twitter metadata
-   meta.push({ name: "twitter:card", content: "summary_large_image" });
    meta.push({ name: "twitter:site", content: "@mana_wiki" });
    if (title) meta.push({ name: "twitter:title", content: title });
    if (description)
       meta.push({ name: "twitter:description", content: description });
-   if (image)
+   if (image) {
       meta.push({
          name: "twitter:image",
          content: image + "?aspect_ratio=1.91:1&height=440",
       });
-   else if (icon)
+      meta.push({ name: "twitter:card", content: "summary_large_image" });
+   } else if (icon)
       meta.push({
          name: "twitter:image",
          content: icon,
