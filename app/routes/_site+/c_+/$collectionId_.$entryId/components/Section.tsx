@@ -15,6 +15,7 @@ export type Flatten<Type> = Type extends Array<infer Item> ? Item : Type;
 
 export type SubSectionType = {
    id: string;
+   slug: string;
    name?: string;
    type: "editor" | "customTemplate" | "qna" | "comments";
 };
