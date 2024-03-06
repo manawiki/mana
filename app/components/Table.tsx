@@ -143,11 +143,11 @@ export function TableRow({
    );
 }
 
-interface TableGroupProps extends React.ComponentPropsWithoutRef<"tr"> {
+interface TableHeaderProps extends React.ComponentPropsWithoutRef<"th"> {
    center?: boolean;
 }
 
-export function TableHeader({ className, center, ...props }: TableGroupProps) {
+export function TableHeader({ className, center, ...props }: TableHeaderProps) {
    let { bleed, grid, framed } = useContext(TableContext);
 
    return (
