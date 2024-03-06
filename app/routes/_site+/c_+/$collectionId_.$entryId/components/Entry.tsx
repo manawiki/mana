@@ -36,6 +36,7 @@ export function Entry({
    return (
       <>
          <CollectionHeader
+            collection={collection}
             allSections={allSections}
             setAllSections={setAllSections}
             setIsChanged={setIsChanged}
