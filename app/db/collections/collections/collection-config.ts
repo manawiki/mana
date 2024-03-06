@@ -124,6 +124,22 @@ export const Collections: CollectionConfig = {
                defaultValue: false,
             },
             {
+               name: "viewType",
+               type: "select",
+               required: true,
+               defaultValue: "tabs",
+               options: [
+                  {
+                     label: "Tabs",
+                     value: "tabs",
+                  },
+                  {
+                     label: "Rows",
+                     value: "rows",
+                  },
+               ],
+            },
+            {
                name: "subSections",
                type: "array",
                label: "Sub-Sections",

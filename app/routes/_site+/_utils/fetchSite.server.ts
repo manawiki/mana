@@ -120,6 +120,7 @@ const QUERY = gql`
                slug
                name
                showTitle
+               viewType
                showAd
                subSections {
                   id

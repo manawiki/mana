@@ -75,29 +75,31 @@ export function AddSubSection({
          }}
       >
          <FieldGroup className="pb-5">
-            <Field disabled={disabled} className="w-full">
-               <Label>Name</Label>
-               <Input
-                  name={addSubSection.fields.subSectionName()}
-                  type="text"
-                  value={subSubSectionName}
-                  onChange={(e) => {
-                     setSubSectionName(e.target.value);
-                     setSubSectionSlug(urlSlug(e.target.value));
-                  }}
-               />
-            </Field>
-            <Field disabled={disabled} className="w-full">
-               <Label>Slug</Label>
-               <Input
-                  name={addSubSection.fields.subSectionSlug()}
-                  value={subSubSectionSlug}
-                  onChange={(e) => {
-                     setSubSectionSlug(e.target.value);
-                  }}
-                  type="text"
-               />
-            </Field>
+            <div className="grid grid-cols-2 gap-3">
+               <Field disabled={disabled} className="w-full">
+                  <Label>Name</Label>
+                  <Input
+                     name={addSubSection.fields.subSectionName()}
+                     type="text"
+                     value={subSubSectionName}
+                     onChange={(e) => {
+                        setSubSectionName(e.target.value);
+                        setSubSectionSlug(urlSlug(e.target.value));
+                     }}
+                  />
+               </Field>
+               <Field disabled={disabled} className="w-full">
+                  <Label>Slug</Label>
+                  <Input
+                     name={addSubSection.fields.subSectionSlug()}
+                     value={subSubSectionSlug}
+                     onChange={(e) => {
+                        setSubSectionSlug(e.target.value);
+                     }}
+                     type="text"
+                  />
+               </Field>
+            </div>
             <Field disabled={disabled} className="tablet:min-w-40">
                <Label>Type</Label>
                <Select name={addSubSection.fields.type()}>

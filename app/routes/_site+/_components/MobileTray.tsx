@@ -61,7 +61,7 @@ export const MobileTray = ({
                   {isDesktop && (
                      <Button
                         color="light/zinc"
-                        className="size-9 !p-0"
+                        className="size-9 !p-0 flex-none"
                         onClick={() => onOpenChange(false)}
                      >
                         <Icon name="arrow-left" size={16} />
@@ -125,7 +125,7 @@ export function NestedTray({
                   {isDesktop && (
                      <Button
                         color="light/zinc"
-                        className="size-9 !p-0"
+                        className="size-9 !p-0 flex-none"
                         onClick={() => onOpenChange(false)}
                      >
                         <Icon name="arrow-left" size={16} />

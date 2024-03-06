@@ -14,6 +14,7 @@ export type Section = {
    name?: string;
    showTitle?: boolean;
    showAd?: boolean;
+   viewType?: "tabs" | "rows";
    subSections?: [{ id: string; slug: string; name: string; type: string }];
 };
 
