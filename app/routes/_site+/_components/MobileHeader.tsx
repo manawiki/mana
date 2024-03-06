@@ -161,6 +161,7 @@ export function MobileHeader() {
          <MobileTray
             onOpenChange={setFollowerMenuOpen}
             open={isFollowerMenuOpen}
+            shouldScaleBackground
          >
             <menu className="flex h-full flex-col">
                <FollowingListMobile setMenuOpen={setFollowerMenuOpen} />

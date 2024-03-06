@@ -9,6 +9,7 @@ import { Button } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
+import { NestedTray } from "~/routes/_site+/_components/MobileTray";
 import { imgPreview } from "~/routes/_site+/settings+/utils/imgPreview";
 
 export function ImageUploader({
@@ -19,6 +20,7 @@ export function ImageUploader({
    setPreviewImage,
    type,
    aspect,
+   inDrawer,
 }: {
    label: string;
    icon: string | null | undefined;
@@ -29,6 +31,7 @@ export function ImageUploader({
    setPreviewImage: React.Dispatch<React.SetStateAction<string>>;
    type: "circle" | "rectangle";
    aspect?: number;
+   inDrawer?: boolean;
 }) {
    const [dragActive, setDragActive] = useState(false);
    const [imgSrc, setImgSrc] = useState("");
@@ -178,57 +181,112 @@ export function ImageUploader({
    return (
       <section>
          <div className="text-sm font-semibold pb-3">{label}</div>
-         <Dialog
-            size="tablet"
-            onClose={() => {
-               setIsOpen(false);
-            }}
-            open={isOpen}
-         >
-            {imgSrc && (
-               <>
-                  <ReactCrop
-                     crop={crop}
-                     onChange={(crop) => setCrop(crop)}
-                     onComplete={(c) => setCompletedCrop(c)}
-                     aspect={aspectRatio}
-                     circularCrop={type === "circle"}
-                     minWidth={120}
-                     minHeight={120}
-                     maxWidth={512}
-                     maxHeight={512}
-                  >
-                     <img
-                        ref={imgRef}
-                        alt="Crop me"
-                        src={imgSrc}
-                        style={{ transform: `scale(${scale})` }}
-                        onLoad={onImageLoad}
-                     />
-                  </ReactCrop>
-                  <div className="pt-4">
-                     <input
-                        disabled={!imgSrc}
-                        onChange={(e) => setScale(Number(e.target.value))}
-                        type="range"
-                        name="scale"
-                        min={1}
-                        max={2}
-                        step="0.1"
-                        value={scale}
-                        className="w-full mb-4"
-                     />
-                     <Button
-                        type="button"
-                        className="w-full"
-                        onClick={onSubmitCrop}
+         {inDrawer ? (
+            <NestedTray
+               open={isOpen}
+               onOpenChange={setIsOpen}
+               direction="right"
+               dismissible={false}
+            >
+               {imgSrc && (
+                  <>
+                     <ReactCrop
+                        crop={crop}
+                        onChange={(crop) => setCrop(crop)}
+                        onComplete={(c) => setCompletedCrop(c)}
+                        aspect={aspectRatio}
+                        circularCrop={type === "circle"}
+                        minWidth={120}
+                        minHeight={120}
+                        maxWidth={512}
+                        maxHeight={512}
                      >
-                        Submit
-                     </Button>
-                  </div>
-               </>
-            )}
-         </Dialog>
+                        <img
+                           ref={imgRef}
+                           alt="Crop me"
+                           src={imgSrc}
+                           style={{ transform: `scale(${scale})` }}
+                           onLoad={onImageLoad}
+                        />
+                     </ReactCrop>
+                     <div className="pt-4">
+                        <input
+                           disabled={!imgSrc}
+                           onChange={(e) => setScale(Number(e.target.value))}
+                           type="range"
+                           name="scale"
+                           min={1}
+                           max={2}
+                           step="0.1"
+                           value={scale}
+                           className="w-full mb-4"
+                        />
+                        <Button
+                           color="blue"
+                           type="button"
+                           className="w-full"
+                           onClick={onSubmitCrop}
+                        >
+                           Submit
+                        </Button>
+                     </div>
+                  </>
+               )}
+            </NestedTray>
+         ) : (
+            <Dialog
+               size="tablet"
+               onClose={() => {
+                  setIsOpen(false);
+               }}
+               open={isOpen}
+            >
+               {imgSrc && (
+                  <>
+                     <ReactCrop
+                        crop={crop}
+                        onChange={(crop) => setCrop(crop)}
+                        onComplete={(c) => setCompletedCrop(c)}
+                        aspect={aspectRatio}
+                        circularCrop={type === "circle"}
+                        minWidth={120}
+                        minHeight={120}
+                        maxWidth={512}
+                        maxHeight={512}
+                     >
+                        <img
+                           ref={imgRef}
+                           alt="Crop me"
+                           src={imgSrc}
+                           style={{ transform: `scale(${scale})` }}
+                           onLoad={onImageLoad}
+                        />
+                     </ReactCrop>
+                     <div className="pt-4">
+                        <input
+                           disabled={!imgSrc}
+                           onChange={(e) => setScale(Number(e.target.value))}
+                           type="range"
+                           name="scale"
+                           min={1}
+                           max={2}
+                           step="0.1"
+                           value={scale}
+                           className="w-full mb-4"
+                        />
+                        <Button
+                           color="blue"
+                           type="button"
+                           className="w-full"
+                           onClick={onSubmitCrop}
+                        >
+                           Submit
+                        </Button>
+                     </div>
+                  </>
+               )}
+            </Dialog>
+         )}
          <div className="flex items-center gap-5">
             <label
                onDragEnter={(e) => handleDrag(e)}

@@ -1,9 +1,8 @@
-import { useEffect, useMemo } from "react";
-
 import clsx from "clsx";
-import ReactDOM from "react-dom";
 import { Drawer } from "vaul";
 
+import { Button } from "~/components/Button";
+import { Icon } from "~/components/Icon";
 import type { Site } from "~/db/payload-types";
 import { useWindowDimensions } from "~/utils/useWindowDimensions";
 
@@ -15,14 +14,14 @@ export const MobileTray = ({
    open,
    direction,
    shouldScaleBackground,
-   modal,
+   dismissible,
 }: {
    children: any;
    onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
    open: boolean;
    direction?: "left" | "right";
    shouldScaleBackground?: boolean;
-   modal?: boolean;
+   dismissible?: boolean;
 }) => {
    const { width } = useWindowDimensions();
 
@@ -36,39 +35,39 @@ export const MobileTray = ({
          direction={getDirection}
          onOpenChange={onOpenChange}
          open={open}
-         modal={modal}
+         dismissible={dismissible}
       >
          <Drawer.Portal>
-            {open ? (
-               <PortalIntoBody>
-                  <div
-                     className="fixed z-20 inset-0 bg-black/40 pointer-events-auto"
-                     onClick={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                        if (event.currentTarget === event.target) {
-                           onOpenChange(false);
-                        }
-                     }}
-                  />
-               </PortalIntoBody>
-            ) : null}
+            <Drawer.Overlay className="fixed inset-0 z-20 min-h-[100vh] bg-black/40" />
             <Drawer.Content
                className={clsx(
                   getDirection == "bottom" &&
                      "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-[80%] max-w-[728px] flex-col rounded-t-xl pb-5",
                   getDirection == "right" &&
                      "flex flex-col h-full w-[400px] mt-24 fixed bottom-0 right-0",
-                  "bg-2 z-30 pointer-events-auto",
+                  "bg-3 z-30 tablet:border-l tablet:border-color",
                )}
             >
-               <div className="relative flex-1 rounded-t-xl overflow-auto flex flex-col">
+               <div
+                  className="relative flex-1 rounded-t-xl overflow-auto flex flex-col max-tablet:pt-0 p-4 scrollbar 
+                        dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                        scrollbar-thumb-zinc-300 scrollbar-track-zinc-100"
+               >
                   {!isDesktop && (
-                     <div className="w-full flex items-center justify-center sticky top-0 bg-2 z-50">
-                        <div className="h-1.5 w-12 my-3 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                     <div className="w-full flex items-center justify-center sticky top-0 bg-3 z-50 py-3">
+                        <div className="h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                      </div>
                   )}
-                  <div className="px-4">{children}</div>
+                  {isDesktop && (
+                     <Button
+                        color="light/zinc"
+                        className="size-9 !p-0"
+                        onClick={() => onOpenChange(false)}
+                     >
+                        <Icon name="arrow-left" size={16} />
+                     </Button>
+                  )}
+                  <div className="tablet:pt-4">{children}</div>
                </div>
             </Drawer.Content>
          </Drawer.Portal>
@@ -76,30 +75,18 @@ export const MobileTray = ({
    );
 };
 
-const PortalIntoBody = ({ children }: { children: React.ReactNode }) => {
-   const container = useMemo(() => document.createElement("div"), []);
-
-   useEffect(() => {
-      document.body.appendChild(container);
-
-      return () => {
-         document.body.removeChild(container);
-      };
-   });
-
-   return ReactDOM.createPortal(children, container);
-};
-
 export function NestedTray({
    children,
    open,
    onOpenChange,
    direction,
+   dismissible,
 }: {
    children: any;
    open: boolean;
    onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
    direction?: "left" | "right";
+   dismissible?: boolean;
 }) {
    const { width } = useWindowDimensions();
 
@@ -112,25 +99,39 @@ export function NestedTray({
          onOpenChange={onOpenChange}
          open={open}
          direction={getDirection}
+         dismissible={dismissible}
       >
          <Drawer.Portal>
-            <Drawer.Overlay className="fixed inset-0 z-30 min-h-[100vh] bg-black/40" />
+            <Drawer.Overlay className="fixed inset-0 z-40 min-h-[100vh] bg-black/40" />
             <Drawer.Content
                className={clsx(
                   getDirection == "bottom" &&
                      "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-full max-h-[70%] max-w-[728px] flex-col rounded-t-xl pb-5",
                   getDirection == "right" &&
                      "flex flex-col h-full w-[400px] mt-24 fixed bottom-0 right-0",
-                  "bg-2 z-40",
+                  "bg-3 z-40",
                )}
             >
-               <div className="relative flex-1 rounded-t-xl overflow-auto flex flex-col">
+               <div
+                  className="relative flex-1 rounded-t-xl overflow-auto flex flex-col max-tablet:pt-0 p-4 scrollbar 
+                          dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                          scrollbar-thumb-zinc-300 scrollbar-track-zinc-100"
+               >
                   {!isDesktop && (
-                     <div className="w-full flex items-center justify-center sticky top-0 bg-2 z-50">
-                        <div className="h-1.5 w-12 my-3 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                     <div className="w-full flex items-center justify-center sticky top-0 bg-3 z-50 py-3">
+                        <div className="h-1.5 w-12 flex-shrink-0 rounded-full bg-zinc-300 dark:bg-zinc-600" />
                      </div>
                   )}
-                  <div className="px-4">{children}</div>
+                  {isDesktop && (
+                     <Button
+                        color="light/zinc"
+                        className="size-9 !p-0"
+                        onClick={() => onOpenChange(false)}
+                     >
+                        <Icon name="arrow-left" size={16} />
+                     </Button>
+                  )}
+                  <div className="tablet:pt-4">{children}</div>
                </div>
             </Drawer.Content>
          </Drawer.Portal>
