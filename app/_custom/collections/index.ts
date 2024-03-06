@@ -17,19 +17,19 @@ export const CustomCollections = [
    Rarities,
    ThropyCategories,
    ThropyGroups,
-   Thropies,
+   //Thropies,
    Weapons,
    WeaponTypes,
 ];
 
 export const CustomSearchCollections = [
    "items",
-   "trophies",
+   //"trophies",
    "weapons",
 ];
 
 export const CustomDefaultPriorities = {
    weapons: 90,
    items: 80,
-   trophies: 70,
+   //trophies: 70,
 };
