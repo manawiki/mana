@@ -74,7 +74,7 @@ export function AddSubSection({
             }
          }}
       >
-         <FieldGroup className="tablet:space-y-0 tablet:flex items-center gap-4 pb-5">
+         <FieldGroup className="pb-5">
             <Field disabled={disabled} className="w-full">
                <Label>Name</Label>
                <Input

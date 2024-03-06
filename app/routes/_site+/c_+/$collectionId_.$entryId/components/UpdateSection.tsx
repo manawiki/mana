@@ -91,7 +91,7 @@ export function UpdateSection({
                   <ErrorMessage>{err.message}</ErrorMessage>
                ))}
             </Field>
-            <div className="max-laptop:space-y-6 laptop:flex items-center justify-between gap-6">
+            <div className="space-y-6">
                <div className="flex items-center justify-end gap-8">
                   <SwitchField disabled={disabled}>
                      <Label className="!text-xs text-1">Show Ad</Label>

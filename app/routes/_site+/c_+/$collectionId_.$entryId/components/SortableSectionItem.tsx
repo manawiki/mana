@@ -5,9 +5,9 @@ import { CSS } from "@dnd-kit/utilities";
 import clsx from "clsx";
 
 import { Button } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
 import { Icon } from "~/components/Icon";
 import type { Collection } from "~/db/payload-types";
+import { MobileTray } from "~/routes/_site+/_components/MobileTray";
 
 import { AddSubSection } from "./AddSubSection";
 import { SectionType } from "./SectionType";
@@ -51,20 +51,23 @@ export function SortableSectionItem({
          {...attributes}
          className="flex items-center gap-3 p-2 justify-between"
       >
-         <Dialog
-            className="relative"
-            size="xl"
-            onClose={setIsOpen}
+         <MobileTray
+            shouldScaleBackground
+            direction="right"
+            onOpenChange={setIsOpen}
             open={isOpen}
+            dismissible={false}
          >
-            <UpdateSection
-               setAllSections={setAllSections}
-               section={section}
-               collection={collection}
-            />
-            <SubSectionList section={section} collection={collection} />
-            <AddSubSection section={section} collection={collection} />
-         </Dialog>
+            <>
+               <UpdateSection
+                  setAllSections={setAllSections}
+                  section={section}
+                  collection={collection}
+               />
+               <SubSectionList section={section} collection={collection} />
+               <AddSubSection section={section} collection={collection} />
+            </>
+         </MobileTray>
          <div className="flex items-center gap-2.5 flex-grow">
             <div
                className={clsx(

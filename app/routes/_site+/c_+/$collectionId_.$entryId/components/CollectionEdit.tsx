@@ -3,12 +3,6 @@ import { useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
 import { useZorm } from "react-zorm";
 
-import {
-   Alert,
-   AlertTitle,
-   AlertDescription,
-   AlertActions,
-} from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Checkbox, CheckboxField, CheckboxGroup } from "~/components/Checkbox";
 import {
@@ -140,7 +134,10 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                encType="multipart/form-data"
                onSubmit={preparedIconFile && handleSubmit}
             >
-               <div className="flex bg-2 border-b border-color z-50 items-center justify-between gap-2 py-3 sticky top-6 tablet:top-0 mb-4">
+               <div
+                  className="flex bg-3-sub shadow-sm dark:shadow-zinc-800 rounded-xl z-50 items-center justify-between 
+                  gap-2 p-2.5 sticky top-[30px] tablet:top-4 mb-4"
+               >
                   <Button onClick={() => setSubSettingsOpen(true)}>
                      <Icon name="more-horizontal" size={16} />
                   </Button>
@@ -148,8 +145,70 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                      open={isSubSettingsOpen}
                      onOpenChange={setSubSettingsOpen}
                      direction="right"
+                     dismissible={false}
                   >
-                     <div>Sup</div>
+                     <Button
+                        className="w-full"
+                        color="red"
+                        onClick={() => setDeleteOpen(true)}
+                     >
+                        <Icon
+                           name="trash-2"
+                           className="pb-[1px] text-red-200"
+                           size={14}
+                        />
+                        Delete this Collection
+                     </Button>
+                     <NestedTray
+                        open={isDeleteOpen}
+                        onOpenChange={setDeleteOpen}
+                        direction="right"
+                        dismissible={false}
+                     >
+                        <div className="text-1 pb-2">
+                           Are you sure you want to delete this collection
+                           permanently?
+                        </div>
+                        <div>You cannot undo this action.</div>
+                        <div className="flex items-center gap-3 pt-5">
+                           <Button
+                              disabled={disabled}
+                              className="text-sm cursor-pointer"
+                              color="red"
+                              onClick={() =>
+                                 fetcher.submit(
+                                    {
+                                       intent: "deleteCollection",
+                                       collectionId: collection.id,
+                                    },
+                                    {
+                                       method: "delete",
+                                       action: "/collections",
+                                    },
+                                 )
+                              }
+                           >
+                              {deleting ? (
+                                 <Icon
+                                    name="loader-2"
+                                    size={16}
+                                    className="mx-auto animate-spin"
+                                 />
+                              ) : (
+                                 <Icon name="trash-2" size={16} />
+                              )}
+                              Delete
+                           </Button>
+                           <Button
+                              plain
+                              disabled={disabled}
+                              className="text-sm cursor-pointer"
+                              onClick={() => setDeleteOpen(false)}
+                           >
+                              Cancel
+                           </Button>
+                        </div>
+                     </NestedTray>
                   </NestedTray>
                   <div className="flex items-center gap-3">
                      {isChanged && !disabled && (
@@ -195,8 +254,9 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                      </Button>
                   </div>
                </div>
-               <FieldGroup>
+               <FieldGroup className="pt-5">
                   <ImageUploader
+                     inDrawer
                      label="Collection Icon"
                      icon={collection?.icon?.url}
                      previewImage={previewIconImage}
@@ -340,45 +400,6 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                />
             </fetcher.Form>
          </MobileTray>
-         <Alert open={isDeleteOpen} onClose={setDeleteOpen}>
-            <AlertTitle>
-               Are you sure you want to delete this collection permanently?
-            </AlertTitle>
-            <AlertDescription>You cannot undo this action.</AlertDescription>
-            <AlertActions>
-               <Button
-                  plain
-                  disabled={disabled}
-                  className="text-sm cursor-pointer"
-                  onClick={() => setDeleteOpen(false)}
-               >
-                  Cancel
-               </Button>
-               <Button
-                  disabled={disabled}
-                  className="text-sm cursor-pointer"
-                  color="red"
-                  onClick={() =>
-                     fetcher.submit(
-                        {
-                           intent: "deleteCollection",
-                           collectionId: collection.id,
-                        },
-                        { method: "delete", action: "/collections" },
-                     )
-                  }
-               >
-                  {deleting && (
-                     <Icon
-                        name="loader-2"
-                        size={16}
-                        className="mx-auto animate-spin"
-                     />
-                  )}
-                  Delete
-               </Button>
-            </AlertActions>
-         </Alert>
       </>
    );
 }
