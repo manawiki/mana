@@ -21,7 +21,7 @@ export const H2Plain = ({
    text,
    className,
 }: {
-   text: string | undefined;
+   text: string | undefined | null;
    className?: string;
 }) => {
    return (
