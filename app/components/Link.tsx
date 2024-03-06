@@ -4,7 +4,7 @@ import { DataInteractive as HeadlessDataInteractive } from "@headlessui/react";
 import { Link as RemixLink, type LinkProps } from "@remix-run/react";
 
 interface LinkPropsWithHref extends LinkProps {
-   href?: string;
+   href: LinkProps["to"];
 }
 
 export const Link = React.forwardRef(function Link(
@@ -13,7 +13,7 @@ export const Link = React.forwardRef(function Link(
 ) {
    return (
       <HeadlessDataInteractive>
-         <RemixLink {...props} to={props.href ?? props.to} ref={ref} />
+         <RemixLink {...props} to={props.href} ref={ref} />
       </HeadlessDataInteractive>
    );
 });
