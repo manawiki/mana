@@ -56,7 +56,6 @@ export function SortableSectionItem({
             direction="right"
             onOpenChange={setIsOpen}
             open={isOpen}
-            dismissible={false}
          >
             <>
                <UpdateSection

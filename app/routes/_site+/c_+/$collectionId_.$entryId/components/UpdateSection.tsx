@@ -63,15 +63,7 @@ export function UpdateSection({
          action="/collections/sections"
          ref={updateSection.ref}
       >
-         <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
-            <Icon
-               name="layout-panel-top"
-               className="text-zinc-400 dark:text-zinc-500"
-               size={16}
-            />
-            <span className="pt-0.5">Section</span>
-         </div>
-         <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
+         <FieldGroup className="mb-7">
             <Field disabled={disabled} className="w-full">
                <Label>Name</Label>
                <Input

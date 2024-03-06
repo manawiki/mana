@@ -69,7 +69,7 @@ export function SortableSubSectionItem({
             } as React.CSSProperties /* cast because of css variable */
          }
          {...attributes}
-         className="flex items-center gap-3 p-2 pl-[18px] pr-5 justify-between"
+         className="flex items-center gap-3 py-2 px-3 justify-between"
       >
          <NestedTray open={isOpen} onOpenChange={setIsOpen} direction="right">
             <fetcher.Form
