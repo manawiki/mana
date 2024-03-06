@@ -3,7 +3,7 @@ import React from "react";
 import { DataInteractive as HeadlessDataInteractive } from "@headlessui/react";
 import { Link as RemixLink, type LinkProps } from "@remix-run/react";
 
-interface LinkPropsWithHref extends LinkProps {
+interface LinkPropsWithHref extends Omit<LinkProps, "to"> {
    href: LinkProps["to"];
 }
 
