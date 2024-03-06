@@ -51,6 +51,7 @@ export default function SiteLayout() {
       <>
          <MobileHeader />
          <main
+            vaul-drawer-wrapper=""
             className="laptop:grid laptop:min-h-screen laptop:auto-cols-[70px_60px_1fr_334px] 
            laptop:grid-flow-col desktop:auto-cols-[70px_230px_1fr_334px]"
          >

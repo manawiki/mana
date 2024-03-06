@@ -11,14 +11,6 @@ import {
 } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Checkbox, CheckboxField, CheckboxGroup } from "~/components/Checkbox";
-import { Dialog } from "~/components/Dialog";
-import {
-   Dropdown,
-   DropdownButton,
-   DropdownItem,
-   DropdownLabel,
-   DropdownMenu,
-} from "~/components/Dropdown";
 import {
    Description,
    Field,
@@ -33,6 +25,7 @@ import { Input } from "~/components/Input";
 import { Switch, SwitchField } from "~/components/Switch";
 import { Code, Text, TextLink } from "~/components/Text";
 import type { Collection } from "~/db/payload-types";
+import { MobileTray, NestedTray } from "~/routes/_site+/_components/MobileTray";
 import { isAdding, isProcessing } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
@@ -57,6 +50,8 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
    const { site } = useSiteLoaderData();
 
    let [isSettingsOpen, setSettingsOpen] = useState(false);
+   let [isSubSettingsOpen, setSubSettingsOpen] = useState(false);
+
    let [isChanged, setIsChanged] = useState(false);
    let [customDatabaseChecked, setCustomDatabaseChecked] = useState(
       collection.customDatabase ?? false,
@@ -131,11 +126,10 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
          >
             <Icon name="settings" size={16} />
          </Button>
-         <Dialog
-            size="xl"
-            onClose={() => {
-               setSettingsOpen(false);
-            }}
+         <MobileTray
+            shouldScaleBackground
+            direction="right"
+            onOpenChange={setSettingsOpen}
             open={isSettingsOpen}
          >
             <fetcher.Form
@@ -146,6 +140,61 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                encType="multipart/form-data"
                onSubmit={preparedIconFile && handleSubmit}
             >
+               <div className="flex bg-2 border-b border-color z-50 items-center justify-between gap-2 py-3 sticky top-6 tablet:top-0 mb-4">
+                  <Button onClick={() => setSubSettingsOpen(true)}>
+                     <Icon name="more-horizontal" size={16} />
+                  </Button>
+                  <NestedTray
+                     open={isSubSettingsOpen}
+                     onOpenChange={setSubSettingsOpen}
+                     direction="right"
+                  >
+                     <div>Sup</div>
+                  </NestedTray>
+                  <div className="flex items-center gap-3">
+                     {isChanged && !disabled && (
+                        <Button
+                           plain
+                           type="button"
+                           onClick={() => {
+                              //@ts-ignore
+                              zoCollectionUpdate.refObject.current.reset();
+                              setIsChanged(false);
+                           }}
+                        >
+                           <Icon
+                              title="Reset"
+                              size={14}
+                              name="refresh-ccw"
+                              className="text-1"
+                           />
+                        </Button>
+                     )}
+                     <input
+                        type="hidden"
+                        name="intent"
+                        value="updateCollection"
+                     />
+                     <Button
+                        type="submit"
+                        color="blue"
+                        disabled={disabled || isChanged === false}
+                     >
+                        {saving ? (
+                           <>
+                              <Icon
+                                 name="loader-2"
+                                 size={14}
+                                 className="animate-spin text-white"
+                              />
+                              Saving
+                           </>
+                        ) : (
+                           "Update Collection"
+                        )}
+                     </Button>
+                  </div>
+               </div>
                <FieldGroup>
                   <ImageUploader
                      label="Collection Icon"
@@ -177,7 +226,7 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                         name={zoCollectionUpdate.fields.hiddenCollection()}
                      />
                   </SwitchField>
-                  <Fieldset className="border-y border-color-sub -mx-5 p-5">
+                  <Fieldset>
                      <Legend>Custom Options</Legend>
                      <Text>Implement a custom data structure with fields</Text>
                      <CheckboxGroup>
@@ -289,74 +338,8 @@ export function CollectionEdit({ collection }: { collection: Collection }) {
                   name={zoCollectionUpdate.fields.collectionIconId()}
                   value={collection.icon?.id}
                />
-               <div className="flex items-center justify-between gap-2 pt-6 relative">
-                  <Dropdown>
-                     <DropdownButton outline aria-label="More options">
-                        <Icon
-                           name="more-horizontal"
-                           size={16}
-                           className="text-1"
-                        />
-                     </DropdownButton>
-                     <DropdownMenu className="z-50" anchor="bottom start">
-                        <DropdownItem onClick={() => setDeleteOpen(true)}>
-                           <Icon
-                              className="mr-2 text-red-400"
-                              name="trash"
-                              size={14}
-                           />
-                           <DropdownLabel className="font-semibold">
-                              Delete
-                           </DropdownLabel>
-                        </DropdownItem>
-                     </DropdownMenu>
-                  </Dropdown>
-                  <div className="flex items-center gap-3">
-                     {isChanged && !disabled && (
-                        <Button
-                           plain
-                           type="button"
-                           onClick={() => {
-                              //@ts-ignore
-                              zoCollectionUpdate.refObject.current.reset();
-                              setIsChanged(false);
-                           }}
-                        >
-                           <Icon
-                              title="Reset"
-                              size={14}
-                              name="refresh-ccw"
-                              className="text-1"
-                           />
-                        </Button>
-                     )}
-                     <input
-                        type="hidden"
-                        name="intent"
-                        value="updateCollection"
-                     />
-                     <Button
-                        type="submit"
-                        color="blue"
-                        disabled={disabled || isChanged === false}
-                     >
-                        {saving ? (
-                           <>
-                              <Icon
-                                 name="loader-2"
-                                 size={14}
-                                 className="animate-spin text-white"
-                              />
-                              Saving
-                           </>
-                        ) : (
-                           "Update Collection"
-                        )}
-                     </Button>
-                  </div>
-               </div>
             </fetcher.Form>
-         </Dialog>
+         </MobileTray>
          <Alert open={isDeleteOpen} onClose={setDeleteOpen}>
             <AlertTitle>
                Are you sure you want to delete this collection permanently?

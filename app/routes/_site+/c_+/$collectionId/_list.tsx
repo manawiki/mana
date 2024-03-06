@@ -20,7 +20,6 @@ import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { AdminOrStaffOrOwner } from "~/routes/_auth+/components/AdminOrStaffOrOwner";
 import { getSiteSlug } from "~/routes/_site+/_utils/getSiteSlug.server";
-import { apiDBPath } from "~/utils/api-path.server";
 import { isAdding } from "~/utils/form";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
@@ -98,34 +97,9 @@ export default function CollectionList() {
    return (
       <List>
          <section className="relative">
-            <AdminOrStaffOrOwner>
-               <div className="mb-3 flex items-center gap-4 w-full">
-                  {collection?.customDatabase ? (
-                     <div className="flex items-center justify-end w-full">
-                        <Button
-                           type="button"
-                           color="blue"
-                           target="_blank"
-                           className="text-sm"
-                           href={`https://${site.slug}-db.${apiDBPath}/admin/collections/${collection?.slug}/create`}
-                        >
-                           {addingUpdate ? (
-                              <Icon
-                                 name="loader-2"
-                                 size={14}
-                                 className="animate-spin "
-                              />
-                           ) : (
-                              <Icon
-                                 className="text-blue-200"
-                                 name="plus"
-                                 size={15}
-                              />
-                           )}
-                           Add {collection?.name}
-                        </Button>
-                     </div>
-                  ) : (
+            {!collection?.customDatabase && (
+               <AdminOrStaffOrOwner>
+                  <div className="mb-3 flex items-center gap-4 w-full">
                      <fetcher.Form
                         ref={zoEntry.ref}
                         method="post"
@@ -172,10 +146,9 @@ export default function CollectionList() {
                            Add
                         </Button>
                      </fetcher.Form>
-                  )}
-               </div>
-            </AdminOrStaffOrOwner>
-
+                  </div>
+               </AdminOrStaffOrOwner>
+            )}
             {entries.docs?.length > 0 ? (
                <div className="border-color-sub divide-color-sub divide-y overflow-hidden shadow shadow-zinc-100 dark:shadow-zinc-800/80 rounded-xl border">
                   {entries.docs?.map((entry: Entry, int: number) => (
