@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
 
-export const Thropies: CollectionConfig = {
-   slug: "thropies",
-   labels: { singular: "thropy", plural: "thropies" },
+export const Trophies: CollectionConfig = {
+   slug: "trophies",
+   labels: { singular: "trophy", plural: "trophies" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -31,7 +31,7 @@ export const Thropies: CollectionConfig = {
       {
          name: "next",
          type: "relationship",
-         relationTo: "thropies",
+         relationTo: "trophies",
       },
       {
          name: "checksum",

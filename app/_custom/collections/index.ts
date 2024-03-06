@@ -5,7 +5,7 @@ import { Items } from "./items";
 import { Rarities } from "./rarities";
 import { ThropyCategories } from "./thropyCategories";
 import { ThropyGroups } from "./thropyGroups";
-import { Thropies } from "./trophies";
+import { Trophies } from "./trophies";
 import { Weapons } from "./weapons";
 import { WeaponTypes } from "./weaponTypes";
 
@@ -17,19 +17,19 @@ export const CustomCollections = [
    Rarities,
    ThropyCategories,
    ThropyGroups,
-   //Thropies,
+   Trophies,
    Weapons,
    WeaponTypes,
 ];
 
 export const CustomSearchCollections = [
    "items",
-   //"trophies",
+   "trophies",
    "weapons",
 ];
 
 export const CustomDefaultPriorities = {
    weapons: 90,
    items: 80,
-   //trophies: 70,
+   trophies: 70,
 };
