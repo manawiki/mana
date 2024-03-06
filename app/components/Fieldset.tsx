@@ -14,10 +14,11 @@ import {
 } from "@headlessui/react";
 import clsx from "clsx";
 
-export function Fieldset({
-   className,
-   ...props
-}: { disabled?: boolean } & HeadlessFieldsetProps) {
+interface FieldsetProps extends HeadlessFieldsetProps {
+   disabled?: boolean;
+}
+
+export function Fieldset({ className, ...props }: FieldsetProps) {
    return (
       <HeadlessFieldset
          {...props}
@@ -72,10 +73,11 @@ export function Field({ className, ...props }: HeadlessFieldProps) {
    );
 }
 
-export function Label({
-   className,
-   ...props
-}: { className?: string } & HeadlessLabelProps) {
+interface LabelProps extends HeadlessLabelProps {
+   className?: string;
+}
+
+export function Label({ className, ...props }: LabelProps) {
    return (
       <HeadlessLabel
          {...props}
@@ -88,11 +90,16 @@ export function Label({
    );
 }
 
+interface DescriptionProps extends HeadlessDescriptionProps {
+   className?: string;
+   disabled?: boolean;
+}
+
 export function Description({
    className,
    disabled,
    ...props
-}: { className?: string; disabled?: boolean } & HeadlessDescriptionProps) {
+}: DescriptionProps) {
    return (
       <HeadlessDescription
          {...props}
@@ -109,7 +116,7 @@ export function ErrorMessage({
    className,
    disabled,
    ...props
-}: { className?: string; disabled?: boolean } & HeadlessDescriptionProps) {
+}: DescriptionProps) {
    return (
       <HeadlessDescription
          {...props}
