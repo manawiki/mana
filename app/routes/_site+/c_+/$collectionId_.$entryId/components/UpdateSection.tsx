@@ -63,15 +63,7 @@ export function UpdateSection({
          action="/collections/sections"
          ref={updateSection.ref}
       >
-         <div className="text-xs font-semibold flex items-center gap-2 pb-3 pl-2">
-            <Icon
-               name="layout-panel-top"
-               className="text-zinc-400 dark:text-zinc-500"
-               size={16}
-            />
-            <span className="pt-0.5">Section</span>
-         </div>
-         <FieldGroup className="p-5 bg-2-sub border border-color-sub rounded-xl mb-7">
+         <FieldGroup className="mb-7">
             <Field disabled={disabled} className="w-full">
                <Label>Name</Label>
                <Input
@@ -91,7 +83,7 @@ export function UpdateSection({
                   <ErrorMessage>{err.message}</ErrorMessage>
                ))}
             </Field>
-            <div className="max-laptop:space-y-6 laptop:flex items-center justify-between gap-6">
+            <div className="space-y-6">
                <div className="flex items-center justify-end gap-8">
                   <SwitchField disabled={disabled}>
                      <Label className="!text-xs text-1">Show Ad</Label>

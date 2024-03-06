@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useLocation, useMatches, Link } from "@remix-run/react";
+import { useMatches, Link } from "@remix-run/react";
 import clsx from "clsx";
 
 import { Avatar } from "~/components/Avatar";
@@ -26,11 +26,13 @@ import { SectionList } from "../$collectionId_.$entryId/components/SectionList";
 import type { EntryType } from "../$collectionId_.$entryId/utils/_entryTypes";
 
 export function CollectionHeader({
+   collection,
    setIsChanged,
    isChanged,
    setAllSections,
    allSections,
 }: {
+   collection: Collection;
    setAllSections: (sections: any) => void;
    isChanged: boolean;
    setIsChanged: (value: boolean) => void;
@@ -43,13 +45,6 @@ export function CollectionHeader({
    }) ?? {
       entry: null,
    };
-
-   const { pathname } = useLocation();
-   const collectionSlug = pathname.split("/")[2];
-
-   const collection = site?.collections?.find(
-      (collection) => collection.slug === collectionSlug,
-   ) as Collection;
 
    const entryName = entry?.name;
 
@@ -162,7 +157,7 @@ export function CollectionHeader({
                            ? undefined
                            : isEntry
                              ? entryName?.charAt(0)
-                             : collectionName.charAt(0)
+                             : collectionName?.charAt(0)
                      }
                      options="aspect_ratio=1:1&height=128&width=128"
                   />

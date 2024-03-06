@@ -1,4 +1,6 @@
 export type IconName =
+  | "list-filter"
+  | "arrow-up-down"
   | "chevrons-right"
   | "text"
   | "layout-panel-top"

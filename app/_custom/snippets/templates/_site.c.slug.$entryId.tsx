@@ -33,14 +33,14 @@ export async function loader({
    });
 }
 
+const SECTIONS = {
+   main: "Main",
+};
+
 export default function EntryPage() {
    const { entry } = useLoaderData<typeof loader>();
 
-   return (
-      <Entry>
-         <div>{entry.name}</div>
-      </Entry>
-   );
+   return <Entry customComponents={SECTIONS} customData={entry} />;
 }
 
 //The $entryId variable is optional, but always passed in with the query.

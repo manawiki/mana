@@ -137,7 +137,7 @@ export function SubSectionList({
                items={allSubSections}
                strategy={verticalListSortingStrategy}
             >
-               <div className="divide-y bg-2-sub divide-color-sub mb-4 -mx-5 border-y border-color-sub">
+               <div className="divide-y bg-2-sub divide-color-sub mb-4 -mx-4 border-y border-color-sub">
                   {allSubSections?.map((row) => (
                      <SortableSubSectionItem
                         key={row.id}

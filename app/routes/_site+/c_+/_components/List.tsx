@@ -6,6 +6,7 @@ import type { Collection } from "~/db/payload-types";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import { CollectionHeader } from "./CollectionHeader";
+import { CustomDBFilters } from "./CustomDBFilters";
 
 export type Section = {
    id: string;
@@ -35,12 +36,16 @@ export function List({ children }: { children: ReactNode }) {
    return (
       <>
          <CollectionHeader
+            collection={collection}
             allSections={allSections}
             setAllSections={setAllSections}
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
          <div className="mx-auto max-w-[728px] space-y-1 max-tablet:px-3 py-4 laptop:pb-14">
+            {collection?.customDatabase && (
+               <CustomDBFilters collection={collection} site={site} />
+            )}
             {children}
          </div>
       </>
