@@ -222,6 +222,7 @@ export function ImageUploader({
                            className="w-full mb-4"
                         />
                         <Button
+                           color="blue"
                            type="button"
                            className="w-full"
                            onClick={onSubmitCrop}
@@ -274,6 +275,7 @@ export function ImageUploader({
                            className="w-full mb-4"
                         />
                         <Button
+                           color="blue"
                            type="button"
                            className="w-full"
                            onClick={onSubmitCrop}
