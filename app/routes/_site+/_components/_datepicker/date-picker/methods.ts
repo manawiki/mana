@@ -74,9 +74,9 @@ export const getDayFromNumber = (
    }
    switch (weekStartsFrom) {
       case "Monday":
-         return DAYS[(day + 1) % 7];
+         return DAYS[(day + 1) % 7]!;
       case "Sunday":
-         return DAYS[day];
+         return DAYS[day]!;
       default:
          throw new Error(`Invalid week start day: ${weekStartsFrom}`);
    }
