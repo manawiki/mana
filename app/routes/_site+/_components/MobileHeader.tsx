@@ -39,9 +39,9 @@ export function MobileHeader() {
                   {/* Following menu modal */}
                   <div className="flex items-center gap-3">
                      <Link
-                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200 dark:shadow-zinc-900
+                        className="border border-zinc-300/80 dark:border-zinc-600 transition duration-300 shadow-zinc-200/70 dark:shadow-zinc-800/80
                      active:translate-y-0.5 dark:hover:border-zinc-500 rounded-xl flex items-center from-white to-zinc-100
-                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-400 mx-auto"
+                     justify-center size-9 dark:from-dark450 dark:to-dark350 bg-gradient-to-br shadow-sm hover:border-zinc-300 mx-auto"
                         to={
                            process.env.NODE_ENV === "development"
                               ? "/"
@@ -92,7 +92,7 @@ export function MobileHeader() {
                         </NotFollowingSite>
                      )}
                      <button
-                        className="bg-3-sub border-zinc-200 shadow-zinc-200 dark:shadow-zinc-900/50 flex items-center justify-center
+                        className="bg-3-sub border-zinc-200 shadow-zinc-200/80 dark:shadow-zinc-800/80 flex items-center justify-center
                                        rounded-full border pr-1.5 pl-3 text-sm font-bold shadow h-9 dark:border-zinc-700"
                         onClick={() => setFollowerMenuOpen(true)}
                      >
