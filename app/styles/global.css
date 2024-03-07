@@ -32,6 +32,9 @@
    .border-color-sub {
       @apply border-[#ededed] dark:border-zinc-700;
    }
+   h3 {
+      @apply font-header text-lg mt-3 mb-1.5 scroll-mt-44 laptop:scroll-mt-52;
+   }
    /* table {
       @apply border-collapse;
    }

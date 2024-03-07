@@ -131,24 +131,21 @@ export function SubSectionTabs({
                      </div>
                   )}
                   {viewType == "rows" && (
-                     <>
+                     <div className="space-y-6">
                         {tabs?.map((section) => {
                            return (
-                              <>
-                                 <H2Plain
-                                    text={section?.name}
-                                    key={section.id}
-                                 />
+                              <div key={section.id}>
+                                 <H2Plain text={section?.name} />
                                  <SubSection
                                     customData={customData}
                                     //@ts-ignore
                                     subSection={section}
                                     customComponents={customComponents}
                                  />
-                              </>
+                              </div>
                            );
                         })}
-                     </>
+                     </div>
                   )}
                </>
             ) : (
