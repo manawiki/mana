@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import type { RenderLeafProps } from "slate-react";
 
+import { Badge } from "~/components/Badge";
+
 import { COLORS } from "./Toolbar";
 export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
    if (leaf.bold) {
@@ -24,58 +26,31 @@ export function Leaf({ leaf, children, attributes }: RenderLeafProps) {
    }
 
    if (leaf.redBG) {
-      const { twClass } = COLORS.find((element) => element.id == "redBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="red">{children}</Badge>;
    }
    if (leaf.grayBG) {
-      const { twClass } = COLORS.find((element) => element.id == "grayBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="zinc">{children}</Badge>;
    }
    if (leaf.orangeBG) {
-      const { twClass } = COLORS.find((element) => element.id == "orangeBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="orange">{children}</Badge>;
    }
    if (leaf.yellowBG) {
-      const { twClass } = COLORS.find((element) => element.id == "yellowBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="yellow">{children}</Badge>;
    }
    if (leaf.greenBG) {
-      const { twClass } = COLORS.find((element) => element.id == "greenBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="green">{children}</Badge>;
    }
    if (leaf.limeBG) {
-      const { twClass } = COLORS.find((element) => element.id == "limeBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="lime">{children}</Badge>;
    }
    if (leaf.blueBG) {
-      const { twClass } = COLORS.find((element) => element.id == "blueBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="blue">{children}</Badge>;
    }
    if (leaf.violetBG) {
-      const { twClass } = COLORS.find((element) => element.id == "violetBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="violet">{children}</Badge>;
    }
    if (leaf.pinkBG) {
-      const { twClass } = COLORS.find((element) => element.id == "pinkBG");
-      children = (
-         <span className={clsx(twClass, "px-0.5 rounded")}>{children}</span>
-      );
+      children = <Badge color="pink">{children}</Badge>;
    }
    if (leaf.redText) {
       const { twClass } = COLORS.find((element) => element.id == "redText");
