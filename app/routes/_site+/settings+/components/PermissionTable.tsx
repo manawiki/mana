@@ -12,9 +12,9 @@ import { TextLink } from "~/components/Text";
 
 export function PermissionTable() {
    return (
-      <div className="tablet:px-3">
-         <H2Plain text="Permissions" className="!text-base pl-0.5" />
-         <Table grid dense framed>
+      <>
+         <H2Plain text="Permissions" className="!text-lg pl-0.5 !mt-6" />
+         <Table grid framed>
             <TableHead>
                <TableRow>
                   <TableHeader>Permission</TableHeader>
@@ -315,6 +315,6 @@ export function PermissionTable() {
                </TableRow>
             </TableBody>
          </Table>
-      </div>
+      </>
    );
 }

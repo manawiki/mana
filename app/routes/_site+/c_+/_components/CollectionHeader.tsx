@@ -164,7 +164,7 @@ export function CollectionHeader({
                </div>
             </div>
          </div>
-         <section className="border-b border-zinc-200/50 dark:border-darkBorder max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
+         <section className="border-b border-zinc-200/50 dark:border-darkBorder shadow-sm max-tablet:px-3 pb-1 [clip-path:inset(0px_-10px_-10px_-10px)] relative z-10">
             <div
                className="mx-auto max-w-[728px] flex items-center border-t max-tablet:mr-5
              py-2.5 border-zinc-200/50 dark:border-zinc-700/40 overflow-auto"

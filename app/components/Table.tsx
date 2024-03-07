@@ -148,7 +148,7 @@ interface TableHeaderProps extends React.ComponentPropsWithoutRef<"th"> {
 }
 
 export function TableHeader({ className, center, ...props }: TableHeaderProps) {
-   let { bleed, grid, framed } = useContext(TableContext);
+   let { grid, framed } = useContext(TableContext);
 
    return (
       <th
@@ -157,9 +157,8 @@ export function TableHeader({ className, center, ...props }: TableHeaderProps) {
             className,
             center && "text-center",
             framed && "bg-zinc-50 dark:bg-dark400",
-            "border-b border-color-sub font-semibold px-4 py-2.5 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
+            "border-b border-color-sub font-semibold px-3 py-2.5",
             grid && "border-l border-color-sub first:border-l-0",
-            !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}
       />
    );
@@ -177,7 +176,7 @@ export function TableCell({
    bold,
    ...props
 }: TableCellProps) {
-   let { bleed, dense, grid, striped, framed } = useContext(TableContext);
+   let { dense, grid, striped, framed } = useContext(TableContext);
    let { href, target, title } = useContext(TableRowContext);
    let [cellRef, setCellRef] = useState<HTMLElement | null>(null);
 
@@ -189,11 +188,10 @@ export function TableCell({
             className,
             center && "text-center",
             bold && "font-bold",
-            "relative px-4 first:pl-[var(--gutter,theme(spacing.2))] last:pr-[var(--gutter,theme(spacing.2))]",
+            "relative px-3",
             !striped && !framed && "border-b border-color",
             grid && "border-l border-color-sub first:border-l-0",
             dense ? "py-2.5" : "py-4",
-            !bleed && "tablet:first:pl-2 tablet:last:pr-2",
          )}
       >
          {href && (
