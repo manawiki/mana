@@ -60,7 +60,7 @@ export function authGQLFetcher({
    useProd?: boolean;
    document?: any;
    variables?: any;
-   siteSlug?: string;
+   siteSlug?: string | undefined | null;
    request?: Request;
 }) {
    try {

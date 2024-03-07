@@ -22,6 +22,7 @@ import { BlockHTMLBlock } from "../../blocks+/htmlblock";
 import { BlockImage } from "../../blocks+/image";
 import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
 import { BlockInlineAd } from "../../blocks+/inline-ad";
+import { BlockLink } from "../../blocks+/link/_link";
 import { BlockLinkView } from "../../blocks+/link/link-view";
 import { BlockTabs, BlockTabsItem } from "../../blocks+/tabs/_tabs";
 import { BlockToggleBlock } from "../../blocks+/toggleblock";
@@ -29,8 +30,6 @@ import { BlockTwoColumn } from "../../blocks+/two-column";
 import { BlockUpdatesView } from "../../blocks+/updates/updates-view";
 import { BlockType } from "../types";
 
-//@ts-ignore
-const { BlockLink } = lazily(() => import("../../blocks+/link/_link"));
 //@ts-ignore
 const { BlockCodeBlock } = lazily(() => import("../../blocks+/codeblock"));
 //@ts-ignore
