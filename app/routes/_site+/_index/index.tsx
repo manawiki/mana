@@ -145,9 +145,11 @@ export const meta: MetaFunction = ({ matches }: any) => {
       (collection: any) => collection?.name,
    );
 
-   const description = `Explore ${collections?.join(
-      ", ",
-   )} on ${site?.name}, Database, Guides, News, and more!`;
+   const description =
+      site?.about ??
+      `Explore ${collections?.join(
+         ", ",
+      )} on ${site?.name}, Database, Guides, News, and more!`;
    const image = site?.banner?.url;
 
    return getMeta({ title, description, image, siteName: site?.name });
