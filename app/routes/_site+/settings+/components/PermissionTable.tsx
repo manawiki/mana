@@ -1,3 +1,4 @@
+import { H2Plain } from "~/components/Headers";
 import { Icon } from "~/components/Icon";
 import {
    Table,
@@ -12,8 +13,8 @@ import { TextLink } from "~/components/Text";
 export function PermissionTable() {
    return (
       <div className="tablet:px-3">
-         <h2 className="font-bold font-header pb-2">Permissions</h2>
-         <Table grid bleed dense framed className="[--gutter:theme(spacing.3)]">
+         <H2Plain text="Permissions" className="!text-base pl-0.5" />
+         <Table grid dense framed>
             <TableHead>
                <TableRow>
                   <TableHeader>Permission</TableHeader>
