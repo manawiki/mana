@@ -14,6 +14,7 @@ import type { Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
+import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { CustomElement, LinkElement } from "../../core/types";
 
@@ -189,15 +190,16 @@ type Fields = {
 
 export function BlockLink({ element, children }: Props) {
    let { hostname, pathname } = new URL(element.url as string);
+   const { site } = useSiteLoaderData();
 
-   // todo: we should avoid hardcoding this, maybe check hostname again current host?
-   const isSafeLink = hostname.endsWith("mana.wiki");
+   const isSelfLink = site?.domain
+      ? hostname === site?.domain
+      : hostname === "mana.wiki";
 
    let url = element.url && new URL(element.url).pathname;
    let pathSection = url && url.split("/");
 
    const canFetch =
-      isSafeLink &&
       element.icon == undefined &&
       pathSection &&
       pathSection[1] == "c" &&
@@ -245,7 +247,7 @@ export function BlockLink({ element, children }: Props) {
       // eslint-disable-next-line react-hooks/exhaustive-deps -- Slate elements aren't stable
    }, [canFetch, fetcher, linkDataQuery]);
 
-   if (isSafeLink && element.icon) {
+   if (element.icon) {
       return (
          <span
             className="group/link relative inline-flex items-baseline gap-1 whitespace-nowrap
@@ -281,7 +283,7 @@ export function BlockLink({ element, children }: Props) {
          </span>
       );
    }
-   if (isSafeLink) {
+   if (isSelfLink) {
       return (
          <Link
             className="text-blue-600 visited:text-purple-600 hover:underline dark:text-blue-500"
