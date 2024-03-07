@@ -145,13 +145,14 @@ export function EditorBlocks({
          return (
             <h2
                id={id}
-               className="flex items-center gap-3 py-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16"
+               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl 
+               scroll-mt-32 laptop:scroll-mt-16"
                {...attributes}
             >
                <div className="min-w-[10px] flex-none">{children}</div>
                <div
                   contentEditable={false}
-                  className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400"
+                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
                />
             </h2>
          );
@@ -160,12 +161,7 @@ export function EditorBlocks({
          //@ts-ignore
          const id = urlSlug(element?.children[0]?.text ?? undefined);
          return (
-            <h3
-               id={id}
-               className="font-header text-lg mt-3 mb-1.5
-               scroll-mt-44 laptop:scroll-mt-52"
-               {...attributes}
-            >
+            <h3 id={id} {...attributes}>
                {children}
             </h3>
          );

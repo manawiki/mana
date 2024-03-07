@@ -28,11 +28,11 @@ export const H2Plain = ({
       <h2
          className={clsx(
             className,
-            "flex items-center gap-3 py-2 font-header text-xl scroll-mt-32 laptop:scroll-mt-16",
+            "flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16",
          )}
       >
          <div className="flex-none">{text}</div>
-         <div className="h-0.5 w-full rounded-full bg-zinc-100 dark:bg-dark400" />
+         <div className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400" />
       </h2>
    );
 };
