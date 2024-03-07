@@ -9,7 +9,7 @@ import { BlockType, type CustomElement, type Format } from "./types";
 
 //Helpers
 export function topLevelPath(path: Path): Path {
-   return [path[0]];
+   return [path[0]!];
 }
 
 export function initialValue(): CustomElement[] {
@@ -66,7 +66,7 @@ export function onKeyDown(event: any, editor: Editor) {
       if (isHotkey(hotkey, event as any) && editor.selection) {
          event.preventDefault();
          const mark = HOTKEYS[hotkey];
-         toggleMark(editor, mark);
+         if (mark) toggleMark(editor, mark);
       }
    }
 }
