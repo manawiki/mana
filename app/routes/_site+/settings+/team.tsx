@@ -92,106 +92,102 @@ export default function Members() {
    const { team, applications, user } = useLoaderData<typeof loader>();
    return (
       <div className="space-y-3">
-         <div className="tablet:px-3 pb-5">
-            <H2Plain text="Team members" className="!text-base pl-0.5" />
-            <Table framed dense>
-               <TableBody>
-                  {team.map((member) => (
-                     <TableRow key={member.id}>
-                        <TableCell className="w-full">
-                           <div className="flex items-center gap-3">
-                              <Avatar
-                                 src={member?.avatar?.url}
-                                 initials={member?.username.charAt(0)}
-                                 className="size-6"
-                              />
-                              <div>{member.username}</div>
-                           </div>
-                        </TableCell>
-                        <TableCell className="text-zinc-500 text-right">
-                           <RoleBadge role={member.role} />
-                        </TableCell>
-                        <RoleActions currentUser={user} member={member} />
-                     </TableRow>
-                  ))}
-               </TableBody>
-            </Table>
-         </div>
-         <div className="tablet:px-3 pb-5">
-            <H2Plain text="Applications" className="!text-base pl-0.5" />
-            <Suspense fallback={<DotLoader />}>
-               <Await resolve={applications}>
-                  {(applications) => (
-                     <>
-                        {applications.length > 0 ? (
-                           <Table framed dense>
-                              <TableHead>
-                                 <TableRow>
-                                    <TableHeader>User</TableHeader>
-                                    <TableHeader>Submitted</TableHeader>
+         <H2Plain text="Team members" className="!text-lg pl-0.5 !mt-0" />
+         <Table framed dense>
+            <TableBody>
+               {team.map((member) => (
+                  <TableRow key={member.id}>
+                     <TableCell className="w-full">
+                        <div className="flex items-center gap-3">
+                           <Avatar
+                              src={member?.avatar?.url}
+                              initials={member?.username.charAt(0)}
+                              className="size-6"
+                           />
+                           <div>{member.username}</div>
+                        </div>
+                     </TableCell>
+                     <TableCell className="text-zinc-500 text-right">
+                        <RoleBadge role={member.role} />
+                     </TableCell>
+                     <RoleActions currentUser={user} member={member} />
+                  </TableRow>
+               ))}
+            </TableBody>
+         </Table>
+         <H2Plain text="Applications" className="!text-lg pl-0.5 !mt-6" />
+         <Suspense fallback={<DotLoader />}>
+            <Await resolve={applications}>
+               {(applications) => (
+                  <>
+                     {applications.length > 0 ? (
+                        <Table framed dense>
+                           <TableHead>
+                              <TableRow>
+                                 <TableHeader>User</TableHeader>
+                                 <TableHeader>Submitted</TableHeader>
 
-                                    <TableHeader>Status</TableHeader>
-                                    <TableHeader className="relative w-0">
-                                       <span className="sr-only">View</span>
-                                    </TableHeader>
-                                 </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                 {applications.map((application) => (
-                                    <TableRow key={application.id}>
-                                       <TableCell className="w-full">
-                                          <div className="flex items-center gap-3">
-                                             <Avatar
-                                                src={
-                                                   application.createdBy?.avatar
-                                                      ?.url
-                                                }
-                                                // @ts-ignore
-                                                initials={application?.createdBy?.username.charAt(
-                                                   0,
-                                                )}
-                                                className="size-6"
-                                             />
-                                             <div>
-                                                {application.createdBy.username}
-                                             </div>
-                                          </div>
-                                       </TableCell>
-                                       <TableCell>
-                                          {new Date(
-                                             application.createdAt as string,
-                                          ).toLocaleTimeString("en-US", {
-                                             month: "short",
-                                             day: "numeric",
-                                             timeZone: "America/Los_Angeles",
-                                          })}
-                                       </TableCell>
-                                       <TableCell>
-                                          <ApplicationStatus
-                                             status={application.status}
-                                          />
-                                       </TableCell>
-                                       <TableCell>
-                                          <ApplicationViewer
-                                             application={
-                                                application as SiteApplication
+                                 <TableHeader>Status</TableHeader>
+                                 <TableHeader className="relative w-0">
+                                    <span className="sr-only">View</span>
+                                 </TableHeader>
+                              </TableRow>
+                           </TableHead>
+                           <TableBody>
+                              {applications.map((application) => (
+                                 <TableRow key={application.id}>
+                                    <TableCell className="w-full">
+                                       <div className="flex items-center gap-3">
+                                          <Avatar
+                                             src={
+                                                application.createdBy?.avatar
+                                                   ?.url
                                              }
+                                             // @ts-ignore
+                                             initials={application?.createdBy?.username.charAt(
+                                                0,
+                                             )}
+                                             className="size-6"
                                           />
-                                       </TableCell>
-                                    </TableRow>
-                                 ))}
-                              </TableBody>
-                           </Table>
-                        ) : (
-                           <Text className="border-y tablet:border border-color-sub p-4 tablet:rounded-lg -mx-3 shadow-1 shadow-sm">
-                              No applications to review...
-                           </Text>
-                        )}
-                     </>
-                  )}
-               </Await>
-            </Suspense>
-         </div>
+                                          <div>
+                                             {application.createdBy.username}
+                                          </div>
+                                       </div>
+                                    </TableCell>
+                                    <TableCell>
+                                       {new Date(
+                                          application.createdAt as string,
+                                       ).toLocaleTimeString("en-US", {
+                                          month: "short",
+                                          day: "numeric",
+                                          timeZone: "America/Los_Angeles",
+                                       })}
+                                    </TableCell>
+                                    <TableCell>
+                                       <ApplicationStatus
+                                          status={application.status}
+                                       />
+                                    </TableCell>
+                                    <TableCell>
+                                       <ApplicationViewer
+                                          application={
+                                             application as SiteApplication
+                                          }
+                                       />
+                                    </TableCell>
+                                 </TableRow>
+                              ))}
+                           </TableBody>
+                        </Table>
+                     ) : (
+                        <Text className="border-y tablet:border border-color-sub p-4 tablet:rounded-lg -mx-3 shadow-1 shadow-sm">
+                           No applications to review...
+                        </Text>
+                     )}
+                  </>
+               )}
+            </Await>
+         </Suspense>
          <PermissionTable />
       </div>
    );
