@@ -23,7 +23,13 @@ import CustomSelect from "../components/select";
 /**
  * Props for TimePicker React Component
  */
-export type TimePickerProps = {
+export interface TimePickerProps
+   extends PropsWithRef<
+      Omit<
+         HTMLProps<HTMLInputElement>,
+         "onChange" | "selected" | "options" | "value" | "disabled"
+      >
+   > {
    /**
     * This function is called when the selected date is changed.
     */
@@ -44,12 +50,7 @@ export type TimePickerProps = {
     * The number of minutes between each minute select option - default is 30
     */
    minutesInterval?: number;
-} & PropsWithRef<
-   Omit<
-      HTMLProps<HTMLInputElement>,
-      "onChange" | "selected" | "options" | "value" | "disabled"
-   >
->;
+}
 
 const meridiemOptions: OptionType<Meridiem>[] = [
    { value: Meridiem.AM, label: Meridiem.AM, disabled: false },

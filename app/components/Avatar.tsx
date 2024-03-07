@@ -11,14 +11,14 @@ import { Image } from "~/components/Image";
 import { TouchTarget } from "./Button";
 import { Link } from "./Link";
 
-type AvatarProps = {
+interface AvatarProps extends React.ComponentPropsWithoutRef<"span"> {
    src?: string | null;
    square?: boolean;
    initials?: string;
    alt?: string;
    className?: string;
    options?: string;
-};
+}
 
 export function Avatar({
    src = null,
@@ -28,7 +28,7 @@ export function Avatar({
    className,
    options,
    ...props
-}: AvatarProps & React.ComponentPropsWithoutRef<"span">) {
+}: AvatarProps) {
    return (
       <span
          data-slot="avatar"
