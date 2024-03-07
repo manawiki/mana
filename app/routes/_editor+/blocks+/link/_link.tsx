@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from "react";
 
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useFetcher } from "@remix-run/react";
-import { request as gqlRequest, gql } from "graphql-request";
+import { gql } from "graphql-request";
 import type { PaginatedDocs } from "payload/dist/database/types";
 import qs from "qs";
 import { Transforms } from "slate";
@@ -10,10 +10,10 @@ import { ReactEditor, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
-import type { Entry } from "payload/generated-types";
+import type { Collection, Entry } from "payload/generated-types";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
-import { gqlEndpoint, gqlFormat } from "~/utils/fetchers.server";
+import { authGQLFetcher, gqlFormat } from "~/utils/fetchers.server";
 import { useSiteLoaderData } from "~/utils/useSiteLoaderData";
 
 import type { CustomElement, LinkElement } from "../../core/types";
@@ -29,18 +29,30 @@ export async function loader({
    let url = new URL(linkUrl);
    const pathSection = url.pathname.split("/");
    const subdomain = url.host.split(".")[0];
+   let domain = url.hostname.split(".").slice(-2).join(".");
 
    switch (pathSection[1]) {
       case "c": {
          const slug = await payload.find({
             collection: "sites",
             where: {
-               slug: {
-                  equals: subdomain,
-               },
+               ...(domain === "mana.wiki"
+                  ? {
+                       slug: {
+                          equals: subdomain,
+                       },
+                    }
+                  : {
+                       domain: {
+                          equals: `${subdomain}.${domain}`,
+                       },
+                    }),
             },
+            depth: 1,
+            overrideAccess: false,
             user,
          });
+
          const site = slug?.docs[0];
 
          //List
@@ -82,12 +94,12 @@ export async function loader({
                const entryId = pathSection[3];
                const collectionId = pathSection[2];
 
-               //TODO Check specifically if collection is custom
-               if (site?.type == "custom") {
+               const collection = site?.collections?.find(
+                  (collection) => collection.slug === collectionId,
+               ) as Collection;
+
+               if (collection?.customDatabase === true) {
                   const label = gqlFormat(collectionId ?? "", "list");
-                  const endpoint = gqlEndpoint({
-                     siteSlug: site.slug,
-                  });
 
                   //Document request if slug does exist
                   const entryQuery = gql`
@@ -106,10 +118,18 @@ export async function loader({
                   `;
 
                   //Fetch to see if slug exists
+                  //@ts-ignore
                   const { entryData }: { entryData: PaginatedDocs<Entry> } =
-                     await gqlRequest(endpoint, entryQuery, {
-                        entryId,
+                     await authGQLFetcher({
+                        request,
+                        siteSlug: site?.slug,
+                        useProd: true,
+                        variables: {
+                           entryId,
+                        },
+                        document: entryQuery,
                      });
+
                   return json(entryData?.docs[0]);
                }
                //If not custom site, fetch local api entries collection
