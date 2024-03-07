@@ -135,7 +135,10 @@ export function SubSectionTabs({
                         {tabs?.map((section) => {
                            return (
                               <div key={section.id}>
-                                 <H2Plain text={section?.name} />
+                                 <H2Plain
+                                    text={section?.name}
+                                    className="text-xl dark:text-zinc-300"
+                                 />
                                  <SubSection
                                     customData={customData}
                                     //@ts-ignore

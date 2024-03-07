@@ -8,7 +8,7 @@ export const H2 = ({ text }: { text: string | undefined }) => {
       >
          <div
             className="pattern-dots absolute left-0
-                   top-0 -z-0 h-full
+                   top-0 -z-0 h-full dark:text-zinc-100
                      w-full pattern-bg-white pattern-zinc-400 pattern-opacity-10 
                      pattern-size-4 dark:pattern-zinc-500 dark:pattern-bg-bg3Dark"
          />
