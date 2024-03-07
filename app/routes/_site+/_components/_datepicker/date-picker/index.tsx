@@ -12,7 +12,19 @@ import {
 } from "./methods";
 import type { WeekStartDay } from "./types";
 
-export type DatePickerProps = {
+export interface DatePickerProps
+   extends PropsWithRef<
+      Omit<
+         HTMLProps<HTMLInputElement>,
+         | "onChange"
+         | "selected"
+         | "options"
+         | "value"
+         | "type"
+         | "name"
+         | "disabled"
+      >
+   > {
    /**
     * This function is called when the selected date is changed.
     */
@@ -39,18 +51,7 @@ export type DatePickerProps = {
     * If the DatePicker is disabled
     */
    disabled?: boolean;
-} & PropsWithRef<
-   Omit<
-      HTMLProps<HTMLInputElement>,
-      | "onChange"
-      | "selected"
-      | "options"
-      | "value"
-      | "type"
-      | "name"
-      | "disabled"
-   >
->;
+}
 
 /**
  * DatePicker component to pick dates
@@ -67,15 +68,15 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
          disabled = false,
          ...props
       },
-      ref
+      ref,
    ) => {
       const minDateValue = useMemo(
          () => minDate?.valueOf() ?? new Date(1900, 0, 1).valueOf(),
-         [minDate]
+         [minDate],
       );
       const maxDateValue = useMemo(
          () => maxDate?.valueOf() ?? dt.addYears(new Date(), 100).valueOf(),
-         [maxDate]
+         [maxDate],
       );
 
       // current month and year the user is viewing
@@ -83,12 +84,12 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
 
       const nextMonth = useCallback(
          () => setOpenedDate((d) => dt.addMonths(d, 1)),
-         [setOpenedDate]
+         [setOpenedDate],
       );
 
       const prevMonth = useCallback(
          () => setOpenedDate((d) => dt.addMonths(d, -1)),
-         [setOpenedDate]
+         [setOpenedDate],
       );
 
       const onMonthChange = useCallback(
@@ -98,18 +99,18 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                   new Date(
                      d.getFullYear(),
                      getMonthNumberFromName(month),
-                     d.getDate()
-                  )
+                     d.getDate(),
+                  ),
             );
          },
-         [setOpenedDate]
+         [setOpenedDate],
       );
 
       const onYearChange = useCallback(
          (year: number) => {
             setOpenedDate((d) => new Date(year, d.getMonth(), d.getDate()));
          },
-         [setOpenedDate]
+         [setOpenedDate],
       );
 
       const handleClick = useCallback((d: Date) => onChange(d), [onChange]);
@@ -126,7 +127,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                   {v}
                </p>
             )),
-         [weekStartsFrom, disabled]
+         [weekStartsFrom, disabled],
       );
 
       const daysOfMonthList = useMemo(
@@ -135,9 +136,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
                openedDate,
                minDateValue,
                maxDateValue,
-               weekStartsFrom
+               weekStartsFrom,
             ),
-         [openedDate, minDateValue, maxDateValue, weekStartsFrom]
+         [openedDate, minDateValue, maxDateValue, weekStartsFrom],
       );
 
       return (
@@ -175,7 +176,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
             </div>
          </div>
       );
-   }
+   },
 );
 
 DatePicker.displayName = "DatePicker";

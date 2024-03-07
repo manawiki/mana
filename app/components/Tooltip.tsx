@@ -90,10 +90,11 @@ export const useTooltipState = () => {
    return context;
 };
 
-export function Tooltip({
-   children,
-   ...options
-}: { children: React.ReactNode } & TooltipOptions) {
+interface TooltipProps extends TooltipOptions {
+   children: React.ReactNode;
+}
+
+export function Tooltip({ children, ...options }: TooltipProps) {
    // This can accept any props as options, e.g. `placement`,
    // or other positioning options.
    const tooltip = useTooltip(options);
@@ -104,9 +105,13 @@ export function Tooltip({
    );
 }
 
+interface TooltipTriggerProps extends React.HTMLProps<HTMLElement> {
+   asChild?: boolean;
+}
+
 export const TooltipTrigger = React.forwardRef<
    HTMLElement,
-   React.HTMLProps<HTMLElement> & { asChild?: boolean }
+   TooltipTriggerProps
 >(function TooltipTrigger({ children, asChild = false, ...props }, propRef) {
    const state = useTooltipState();
 

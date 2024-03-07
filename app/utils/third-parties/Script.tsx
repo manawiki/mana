@@ -56,13 +56,13 @@ const insertStylesheets = (stylesheets: string[]) => {
    // Stylesheets might have already been loaded if initialized with Script component
    // Re-inject styles here to handle scripts loaded via handleClientScriptLoad
    // ReactDOM.preinit handles dedup and ensures the styles are loaded only once
-   if (ReactDOM.preinit) {
-      stylesheets.forEach((stylesheet: string) => {
-         ReactDOM.preinit(stylesheet, { as: "style" });
-      });
+   // if (ReactDOM.preinit) {
+   //    stylesheets.forEach((stylesheet: string) => {
+   //       ReactDOM.preinit(stylesheet, { as: "style" });
+   //    });
 
-      return;
-   }
+   //    return;
+   // }
 
    // Case 2: Styles for afterInteractive/lazyOnload with pages injected via handleClientScriptLoad
    //
@@ -324,11 +324,11 @@ export function Script(props: ScriptProps): JSX.Element | null {
       // Case 2: Styles for beforeInteractive/worker with pages dir - Not handled yet
       // Case 3: Styles for afterInteractive/lazyOnload with appDir - handled here
       // Case 4: Styles for afterInteractive/lazyOnload with pages dir - handled in insertStylesheets function
-      if (stylesheets) {
-         stylesheets.forEach((styleSrc) => {
-            ReactDOM.preinit(styleSrc, { as: "style" });
-         });
-      }
+      // if (stylesheets) {
+      //    stylesheets.forEach((styleSrc) => {
+      //       ReactDOM.preinit(styleSrc, { as: "style" });
+      //    });
+      // }
 
       // Before interactive scripts need to be loaded by Next.js' runtime instead
       // of native <script> tags, because they no longer have `defer`.
