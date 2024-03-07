@@ -113,6 +113,8 @@ export function BlockTabsItem({ element }: { element: TabsItemElement }) {
    );
 }
 
+interface Editors extends BaseEditor, ReactEditor {}
+
 function TabItem({
    element,
    editor,
@@ -121,7 +123,7 @@ function TabItem({
    readOnly,
 }: {
    element: TabsElement;
-   editor: BaseEditor & ReactEditor;
+   editor: Editors;
    fieldIndex: number;
    tab: string;
    readOnly: boolean;

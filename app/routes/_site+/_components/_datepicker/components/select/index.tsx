@@ -15,7 +15,11 @@ export type OptionType<T> = {
    disabled: boolean;
 };
 
-type CustomSelectProps<T> = {
+interface CustomSelectProps<T>
+   extends Omit<
+      PropsWithChildren<HTMLProps<HTMLDivElement>>,
+      "onChange" | "value" | "disabled"
+   > {
    /**
     * The value of the select.
     */
@@ -38,10 +42,7 @@ type CustomSelectProps<T> = {
     * How to format the display value
     */
    formatValue?: (value: T) => string;
-} & Omit<
-   PropsWithChildren<HTMLProps<HTMLDivElement>>,
-   "onChange" | "value" | "disabled"
->;
+}
 
 /**
  * A custom select component.
@@ -71,14 +72,14 @@ function CustomSelect<T>({
          onChange(v);
          closeOptionsDropdown();
       },
-      [onChange, closeOptionsDropdown]
+      [onChange, closeOptionsDropdown],
    );
 
    const showDropDown = useMemo(() => isOpen && !disabled, [isOpen, disabled]);
 
    const displayValue = useMemo(
       () => formatValue?.(value) ?? value,
-      [formatValue, value]
+      [formatValue, value],
    );
 
    useEffect(() => {

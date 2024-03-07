@@ -6,6 +6,7 @@ import type { SerializeFrom } from "@remix-run/server-runtime";
 import clsx from "clsx";
 
 import { Button } from "~/components/Button";
+import { H2Plain } from "~/components/Headers";
 import type { Collection } from "~/db/payload-types";
 import { useIsStaffOrSiteAdminOrStaffOrOwner } from "~/routes/_auth+/utils/useIsStaffSiteAdminOwner";
 import type { loader as entryLoaderType } from "~/routes/_site+/c_+/$collectionId_.$entryId/_entry";
@@ -65,6 +66,8 @@ export function SubSectionTabs({
 
    const hasMany = tabLength && tabLength > 1 ? true : false;
 
+   const viewType = section?.viewType;
+
    return (
       <>
          <div
@@ -74,54 +77,77 @@ export function SubSectionTabs({
          >
             <SectionTitle section={section} />
             {hasMany ? (
-               <div className="shadow-sm shadow-1 bg-clip-padding border border-color-sub rounded-lg">
-                  <Tab.Group
-                     selectedIndex={selectedIndex}
-                     onChange={setSelectedIndex}
-                  >
-                     <Tab.List
-                        className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
-                        dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
-                        scrollbar-thumb-zinc-300 scrollbar-track-zinc-100
-                        overflow-auto border-b border-color-sub p-3 items-center gap-3 rounded-t-lg"
-                     >
-                        {tabs?.map((subSection) => {
-                           return (
-                              <Tab key={subSection.id} as={Fragment}>
-                                 {({ selected }) => (
-                                    //@ts-ignore
-                                    <Button
-                                       color={
-                                          selected ? "dark/white" : undefined
-                                       }
-                                       plain={selected ? undefined : true}
-                                       className={clsx(
-                                          !selected &&
-                                             "bg-zinc-200/50 dark:shadow-none dark:bg-dark450",
-                                          "!py-1.5 !px-3 flex-none",
+               <>
+                  {viewType == "tabs" && (
+                     <div className="shadow-sm shadow-1 bg-clip-padding border border-color-sub rounded-lg">
+                        <Tab.Group
+                           selectedIndex={selectedIndex}
+                           onChange={setSelectedIndex}
+                        >
+                           <Tab.List
+                              className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
+                            dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
+                            scrollbar-thumb-zinc-300 scrollbar-track-zinc-100
+                              overflow-auto border-b border-color-sub p-3 items-center gap-3 rounded-t-lg"
+                           >
+                              {tabs?.map((subSection) => {
+                                 return (
+                                    <Tab key={subSection.id} as={Fragment}>
+                                       {({ selected }) => (
+                                          //@ts-ignore
+                                          <Button
+                                             color={
+                                                selected
+                                                   ? "dark/white"
+                                                   : undefined
+                                             }
+                                             plain={selected ? undefined : true}
+                                             className={clsx(
+                                                !selected &&
+                                                   "bg-zinc-200/50 dark:shadow-none dark:bg-dark450",
+                                                "!py-1.5 !px-3 flex-none",
+                                             )}
+                                          >
+                                             {subSection.name}
+                                          </Button>
                                        )}
-                                    >
-                                       {subSection.name}
-                                    </Button>
-                                 )}
-                              </Tab>
+                                    </Tab>
+                                 );
+                              })}
+                           </Tab.List>
+                           <Tab.Panels className="p-3">
+                              {section?.subSections?.map((subSection) => (
+                                 <Tab.Panel key={subSection.id} unmount={false}>
+                                    <SubSection
+                                       customData={customData}
+                                       //@ts-ignore
+                                       subSection={subSection}
+                                       customComponents={customComponents}
+                                    />
+                                 </Tab.Panel>
+                              ))}
+                           </Tab.Panels>
+                        </Tab.Group>
+                     </div>
+                  )}
+                  {viewType == "rows" && (
+                     <div className="space-y-6">
+                        {tabs?.map((section) => {
+                           return (
+                              <div key={section.id}>
+                                 <H2Plain text={section?.name} />
+                                 <SubSection
+                                    customData={customData}
+                                    //@ts-ignore
+                                    subSection={section}
+                                    customComponents={customComponents}
+                                 />
+                              </div>
                            );
                         })}
-                     </Tab.List>
-                     <Tab.Panels className="p-3">
-                        {section?.subSections?.map((subSection) => (
-                           <Tab.Panel key={subSection.id} unmount={false}>
-                              <SubSection
-                                 customData={customData}
-                                 //@ts-ignore
-                                 subSection={subSection}
-                                 customComponents={customComponents}
-                              />
-                           </Tab.Panel>
-                        ))}
-                     </Tab.Panels>
-                  </Tab.Group>
-               </div>
+                     </div>
+                  )}
+               </>
             ) : (
                <SubSection
                   customData={customData}

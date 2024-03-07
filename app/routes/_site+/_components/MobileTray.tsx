@@ -42,7 +42,7 @@ export const MobileTray = ({
             <Drawer.Content
                className={clsx(
                   getDirection == "bottom" &&
-                     "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-[80%] max-w-[728px] flex-col rounded-t-xl pb-5",
+                     "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-[95%] max-w-[728px] flex-col rounded-t-xl pb-5",
                   getDirection == "right" &&
                      "flex flex-col h-full w-[400px] mt-24 fixed bottom-0 right-0",
                   "bg-3 z-30 tablet:border-l tablet:border-color",
@@ -61,7 +61,7 @@ export const MobileTray = ({
                   {isDesktop && (
                      <Button
                         color="light/zinc"
-                        className="size-9 !p-0"
+                        className="size-9 !p-0 flex-none"
                         onClick={() => onOpenChange(false)}
                      >
                         <Icon name="arrow-left" size={16} />
@@ -106,9 +106,9 @@ export function NestedTray({
             <Drawer.Content
                className={clsx(
                   getDirection == "bottom" &&
-                     "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-full max-h-[70%] max-w-[728px] flex-col rounded-t-xl pb-5",
+                     "fixed bottom-0 left-0 right-0 mx-auto mt-24 flex h-full max-h-[90%] max-w-[728px] flex-col rounded-t-xl pb-5",
                   getDirection == "right" &&
-                     "flex flex-col h-full w-[400px] mt-24 fixed bottom-0 right-0",
+                     "flex flex-col h-full w-[380px] mt-24 fixed bottom-0 right-0",
                   "bg-3 z-40",
                )}
             >
@@ -125,7 +125,7 @@ export function NestedTray({
                   {isDesktop && (
                      <Button
                         color="light/zinc"
-                        className="size-9 !p-0"
+                        className="size-9 !p-0 flex-none"
                         onClick={() => onOpenChange(false)}
                      >
                         <Icon name="arrow-left" size={16} />

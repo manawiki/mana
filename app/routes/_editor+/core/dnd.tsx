@@ -296,6 +296,12 @@ function DragOverlayContent({
    );
 }
 
+interface HoverElementProps extends RenderElementProps {
+   editor: Editor;
+   activeId: string | null;
+   isTwoColumn?: boolean;
+}
+
 function HoverElement({
    attributes,
    element,
@@ -303,11 +309,7 @@ function HoverElement({
    editor,
    activeId,
    isTwoColumn,
-}: RenderElementProps & {
-   editor: Editor;
-   activeId: string | null;
-   isTwoColumn?: boolean;
-}) {
+}: HoverElementProps) {
    const [isEditorTrayOpen, setEditorTray] = useState(false);
    const animateLayoutChanges: AnimateLayoutChanges = (args) =>
       defaultAnimateLayoutChanges({ ...args, wasDragging: true });

@@ -177,7 +177,7 @@ export const PrimaryMenuLinks = ({
          <NavLink className="block mb-2" prefetch="intent" to="posts">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  className="dark:shadow-zinc-800 bg-white dark:bg-dark350 border-color-sub relative 
                   flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={onOpenChange ? () => onOpenChange(false) : undefined}
                >
@@ -191,14 +191,15 @@ export const PrimaryMenuLinks = ({
                         "desktop:mr-1",
                      )}
                   />
-                  <span>Posts</span>
+                  <span className="flex-grow">Posts</span>
+                  <Icon name="chevron-right" size={15} />
                </div>
             )}
          </NavLink>
          <NavLink className="block" prefetch="intent" to="/collections">
             {({ isActive }) => (
                <div
-                  className="shadow-1 bg-white dark:bg-bg3Dark border-color relative 
+                  className="dark:shadow-zinc-800 bg-white dark:bg-dark350 border-color-sub relative 
                   flex items-center gap-3.5 rounded-xl border p-3 text-sm font-bold shadow-sm"
                   onClick={onOpenChange ? () => onOpenChange(false) : undefined}
                >
@@ -213,7 +214,8 @@ export const PrimaryMenuLinks = ({
                         "desktop:mr-1",
                      )}
                   />
-                  <span>Collections</span>
+                  <span className="flex-grow">Collections</span>
+                  <Icon name="chevron-right" size={15} />
                </div>
             )}
          </NavLink>

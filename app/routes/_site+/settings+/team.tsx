@@ -14,6 +14,7 @@ import { zx } from "zodix";
 
 import { Avatar } from "~/components/Avatar";
 import { DotLoader } from "~/components/DotLoader";
+import { H2Plain } from "~/components/Headers";
 import {
    Table,
    TableBody,
@@ -92,8 +93,8 @@ export default function Members() {
    return (
       <div className="space-y-3">
          <div className="tablet:px-3 pb-5">
-            <h2 className="font-bold font-header pb-2">Team members</h2>
-            <Table framed bleed dense className="[--gutter:theme(spacing.3)]">
+            <H2Plain text="Team members" className="!text-base pl-0.5" />
+            <Table framed dense>
                <TableBody>
                   {team.map((member) => (
                      <TableRow key={member.id}>
@@ -117,18 +118,13 @@ export default function Members() {
             </Table>
          </div>
          <div className="tablet:px-3 pb-5">
-            <h2 className="font-bold font-header pb-2">Applications</h2>
+            <H2Plain text="Applications" className="!text-base pl-0.5" />
             <Suspense fallback={<DotLoader />}>
                <Await resolve={applications}>
                   {(applications) => (
                      <>
                         {applications.length > 0 ? (
-                           <Table
-                              framed
-                              bleed
-                              dense
-                              className="[--gutter:theme(spacing.3)]"
-                           >
+                           <Table framed dense>
                               <TableHead>
                                  <TableRow>
                                     <TableHeader>User</TableHeader>

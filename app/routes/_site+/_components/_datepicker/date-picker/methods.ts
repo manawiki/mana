@@ -31,7 +31,7 @@ export const getMonthNameFromNumber = (month: number): string => {
    if (month < 0 || month > 11) {
       throw new Error(`Invalid month number: ${month}`);
    }
-   return MONTHS[month];
+   return MONTHS[month]!;
 };
 
 export const getMonthNumberFromName = (month: string): number => {
@@ -67,16 +67,16 @@ export const getMonthNumberFromName = (month: string): number => {
 
 export const getDayFromNumber = (
    day: number,
-   weekStartsFrom: WeekStartDay
+   weekStartsFrom: WeekStartDay,
 ): string => {
    if (day < 0 || day > 6) {
       throw new Error(`Invalid month number: ${day}`);
    }
    switch (weekStartsFrom) {
       case "Monday":
-         return DAYS[(day + 1) % 7];
+         return DAYS[(day + 1) % 7]!;
       case "Sunday":
-         return DAYS[day];
+         return DAYS[day]!;
       default:
          throw new Error(`Invalid week start day: ${weekStartsFrom}`);
    }
@@ -99,7 +99,7 @@ export const getDatesOfMonth = (
    date: Date,
    minDateValue: number,
    maxDateValue: number,
-   weekStartsFrom: WeekStartDay
+   weekStartsFrom: WeekStartDay,
 ): DisplayDate[] => {
    const currentYear = date.getFullYear();
    const currentMonth = date.getMonth();
@@ -165,7 +165,7 @@ export const getDatesOfMonth = (
       for (let i = 1; i < firstWeekDayOfMonth; i++) {
          const d = dt.addDays(
             previousMonthLastDay,
-            i - firstWeekDayOfMonth + 1
+            i - firstWeekDayOfMonth + 1,
          );
          dates.push({
             date: d,

@@ -392,9 +392,11 @@ export function BlockGroup({
       return setGroupItems((items) => [...items, nodeId]);
    }
 
+   interface Editors extends BaseEditor, ReactEditor {}
+
    function handleUpdateItemsViewMode(
       event: any,
-      editor: BaseEditor & ReactEditor,
+      editor: Editors,
       element: GroupElement,
    ) {
       const path = ReactEditor.findPath(editor, element);

@@ -58,6 +58,7 @@ export const action: ActionFunction = async ({
                         name,
                         showTitle,
                         showAd,
+                        viewType: "tabs",
                         subSections: [
                            {
                               id: nanoid(),
@@ -172,6 +173,7 @@ export const action: ActionFunction = async ({
                ...(results.sectionSlug && { slug: results.sectionSlug }),
                showTitle: results.showTitle,
                showAd: results.showAd,
+               viewType: results?.viewType,
             };
 
             const updatedSections =

@@ -163,7 +163,7 @@ export function EditorBlocks({
          return (
             <h3
                id={id}
-               className="font-header text-lg mt-6 mb-1.5
+               className="font-header text-lg mt-3 mb-1.5
                scroll-mt-44 laptop:scroll-mt-52"
                {...attributes}
             >
