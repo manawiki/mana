@@ -19,7 +19,8 @@ import {
    BlockGroupView,
 } from "../../blocks+/group/group-view";
 import { BlockHTMLBlock } from "../../blocks+/htmlblock";
-import { BlockImage } from "../../blocks+/image";
+import { BlockImage } from "../../blocks+/image/_image";
+import { BlockImageView } from "../../blocks+/image/BlockImageView";
 import { BlockInfoBox, BlockInfoBoxItem } from "../../blocks+/infobox";
 import { BlockInlineAd } from "../../blocks+/inline-ad";
 import { BlockLink } from "../../blocks+/link/_link";
@@ -46,6 +47,56 @@ export function EditorBlocks({
    const readOnly = useReadOnly();
 
    switch (element.type) {
+      case BlockType.Paragraph: {
+         return (
+            <p className="mb-3" {...attributes}>
+               {children}
+            </p>
+         );
+      }
+      case BlockType.H2: {
+         //@ts-ignore
+         const id = urlSlug(element?.children[0]?.text ?? undefined);
+         return (
+            <h2
+               id={id}
+               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl scroll-mt-32 laptop:scroll-mt-16"
+               {...attributes}
+            >
+               <div className="min-w-[10px] flex-none">{children}</div>
+               <div
+                  contentEditable={false}
+                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
+               />
+            </h2>
+         );
+      }
+      case BlockType.H3: {
+         //@ts-ignore
+         const id = urlSlug(element?.children[0]?.text ?? undefined);
+         return (
+            <h3 id={id} {...attributes}>
+               {children}
+            </h3>
+         );
+      }
+      case BlockType.BulletedList: {
+         return (
+            <ul className="editor-ul" {...attributes}>
+               {children}
+            </ul>
+         );
+      }
+      case BlockType.NumberedList: {
+         return (
+            <ol className="editor-ol" {...attributes}>
+               {children}
+            </ol>
+         );
+      }
+      case BlockType.ListItem: {
+         return <li {...attributes}>{children}</li>;
+      }
       case BlockType.Link: {
          if (readOnly)
             return <BlockLinkView element={element} children={children} />;
@@ -91,13 +142,6 @@ export function EditorBlocks({
             />
          );
       }
-      case BlockType.Paragraph: {
-         return (
-            <p className="mb-3" {...attributes}>
-               {children}
-            </p>
-         );
-      }
       case BlockType.CodeBlock: {
          return (
             <Suspense fallback={<Loading />}>
@@ -138,50 +182,6 @@ export function EditorBlocks({
                {...attributes}
             />
          );
-      }
-      case BlockType.H2: {
-         //@ts-ignore
-         const id = urlSlug(element?.children[0]?.text ?? undefined);
-         return (
-            <h2
-               id={id}
-               className="flex items-center dark:text-zinc-100 gap-3 mt-6 mb-2 font-header text-2xl 
-               scroll-mt-32 laptop:scroll-mt-16"
-               {...attributes}
-            >
-               <div className="min-w-[10px] flex-none">{children}</div>
-               <div
-                  contentEditable={false}
-                  className="h-1 w-full rounded-full bg-zinc-100 dark:bg-dark400"
-               />
-            </h2>
-         );
-      }
-      case BlockType.H3: {
-         //@ts-ignore
-         const id = urlSlug(element?.children[0]?.text ?? undefined);
-         return (
-            <h3 id={id} {...attributes}>
-               {children}
-            </h3>
-         );
-      }
-      case BlockType.BulletedList: {
-         return (
-            <ul className="editor-ul" {...attributes}>
-               {children}
-            </ul>
-         );
-      }
-      case BlockType.NumberedList: {
-         return (
-            <ol className="editor-ol" {...attributes}>
-               {children}
-            </ol>
-         );
-      }
-      case BlockType.ListItem: {
-         return <li {...attributes}>{children}</li>;
       }
       case BlockType.Events: {
          if (readOnly)
@@ -235,11 +235,16 @@ export function EditorBlocks({
          );
       }
       case BlockType.Image: {
+         if (readOnly)
+            return (
+               <BlockImageView
+                  element={element}
+                  children={children}
+                  {...attributes}
+               />
+            );
          return (
-            <div {...attributes} contentEditable={false}>
-               <BlockImage element={element} />
-               <div className="hidden">{children}</div>
-            </div>
+            <BlockImage element={element} children={children} {...attributes} />
          );
       }
       case BlockType.InlineAd: {

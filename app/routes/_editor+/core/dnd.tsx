@@ -244,20 +244,24 @@ function BlockInlineActions({
                               </TooltipTrigger>
                               <TooltipContent>Lock</TooltipContent>
                            </Tooltip> */}
-                           <Tooltip>
-                              <TooltipTrigger
-                                 className="flex w-7 h-full items-center group justify-center"
-                                 onClick={(e) => onDelete(e, element)}
-                                 aria-label="Delete"
-                              >
-                                 <Icon
-                                    name="trash"
-                                    className="group-hover:text-red-400"
-                                    size={12}
-                                 />
-                              </TooltipTrigger>
-                              <TooltipContent>Delete</TooltipContent>
-                           </Tooltip>
+                           {(element.type == BlockType.Image &&
+                              !element?.refId) ||
+                           element.type !== BlockType.Image ? (
+                              <Tooltip>
+                                 <TooltipTrigger
+                                    className="flex w-7 h-full items-center group justify-center"
+                                    onClick={(e) => onDelete(e, element)}
+                                    aria-label="Delete"
+                                 >
+                                    <Icon
+                                       name="trash"
+                                       className="group-hover:text-red-400"
+                                       size={12}
+                                    />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Delete</TooltipContent>
+                              </Tooltip>
+                           ) : null}
                         </FloatingDelayGroup>
                      </Popover.Panel>
                   </Float>
@@ -332,7 +336,12 @@ function HoverElement({
 
    return (
       <section className="relative">
-         <div className="w-full group/editor">
+         <div
+            className={clsx(
+               element.type !== BlockType.Image && "mx-auto max-w-[728px]",
+               "w-full group/editor relative",
+            )}
+         >
             <div
                className={clsx(
                   insertPosition === Position.Before

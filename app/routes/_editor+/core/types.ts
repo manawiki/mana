@@ -169,6 +169,7 @@ export interface ImageElement extends BlockElement {
    type: BlockType.Image;
    refId: string | null;
    url: string | null;
+   caption: boolean | undefined;
    children: [{ text: "" }];
 }
 

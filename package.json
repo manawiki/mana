@@ -83,6 +83,7 @@
       "postinstall-postinstall": "^2.1.0",
       "prism-react-renderer": "^2.1.0",
       "qs": "^6.11.2",
+      "re-resizable": "^6.9.11",
       "react": "^18.2.0",
       "react-chartjs-2": "^5.2.0",
       "react-code-block": "^1.0.0",
