@@ -17,7 +17,7 @@ export function EditorView({ data }: { data: any }) {
       const isVariableWidth = props.element.type === BlockType.Image;
 
       return (
-         <div
+         <span
             style={{
                width:
                   //@ts-ignore
@@ -32,7 +32,7 @@ export function EditorView({ data }: { data: any }) {
             )}
          >
             <EditorBlocks {...props} />
-         </div>
+         </span>
       );
    }, []);
    return (
