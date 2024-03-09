@@ -49,10 +49,6 @@ export const Items: CollectionConfig = {
          type: "text",
       },
       {
-         name: "effect",
-         type: "text",
-      },
-      {
          name: "checksum",
          type: "text",
          required: true,
