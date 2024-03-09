@@ -9,6 +9,7 @@ module.exports = {
       "nanoid",
       "react-code-block",
       /^remix-utils.*/,
+      /^remix-i18next*/,
       /^@epic-web.*/,
    ],
    // ignore all files in routes folder to prevent
