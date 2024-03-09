@@ -25,6 +25,11 @@ export const ThropyGroups: CollectionConfig = {
          type: "text",
       },
       {
+         name: "icon",
+         type: "upload",
+         relationTo: "images",
+      },
+      {
          name: "category",
          type: "relationship",
          relationTo: "thropyCategories",
