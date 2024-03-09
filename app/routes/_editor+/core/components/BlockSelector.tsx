@@ -71,6 +71,7 @@ export function BlockSelector({
                type: BlockType.Image,
                refId: null,
                url: null,
+               caption: null,
                children: [{ text: "" }],
             });
          },

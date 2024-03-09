@@ -1,4 +1,7 @@
 export type IconName =
+  | "expand"
+  | "captions-off"
+  | "captions"
   | "list-filter"
   | "arrow-up-down"
   | "chevrons-right"

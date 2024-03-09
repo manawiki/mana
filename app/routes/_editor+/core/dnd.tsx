@@ -244,20 +244,24 @@ function BlockInlineActions({
                               </TooltipTrigger>
                               <TooltipContent>Lock</TooltipContent>
                            </Tooltip> */}
-                           <Tooltip>
-                              <TooltipTrigger
-                                 className="flex w-7 h-full items-center group justify-center"
-                                 onClick={(e) => onDelete(e, element)}
-                                 aria-label="Delete"
-                              >
-                                 <Icon
-                                    name="trash"
-                                    className="group-hover:text-red-400"
-                                    size={12}
-                                 />
-                              </TooltipTrigger>
-                              <TooltipContent>Delete</TooltipContent>
-                           </Tooltip>
+                           {(element.type == BlockType.Image &&
+                              !element?.refId) ||
+                           element.type !== BlockType.Image ? (
+                              <Tooltip>
+                                 <TooltipTrigger
+                                    className="flex w-7 h-full items-center group justify-center"
+                                    onClick={(e) => onDelete(e, element)}
+                                    aria-label="Delete"
+                                 >
+                                    <Icon
+                                       name="trash"
+                                       className="group-hover:text-red-400"
+                                       size={12}
+                                    />
+                                 </TooltipTrigger>
+                                 <TooltipContent>Delete</TooltipContent>
+                              </Tooltip>
+                           ) : null}
                         </FloatingDelayGroup>
                      </Popover.Panel>
                   </Float>
@@ -330,55 +334,63 @@ function HoverElement({
    const isParentTwoColumn =
       element.type == BlockType.TwoColumn && !isTwoColumn;
 
+   const isVariableWidth = element.type === BlockType.Image;
+
    return (
-      <section className="relative">
-         <div className="w-full group/editor">
-            <div
-               className={clsx(
-                  insertPosition === Position.Before
-                     ? "after:-top-4 after:left-0 after:right-0 after:h-1"
-                     : null,
-                  insertPosition === Position.After
-                     ? "after:-bottom-4 after:left-0 after:right-0 after:h-1"
-                     : null,
-                  "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-gray-700",
-               )}
-               {...sortable.attributes}
-               ref={sortable.setNodeRef}
-               style={
-                  {
-                     transition: sortable.transition,
-                     transform: CSS.Transform.toString(sortable.transform),
-                     pointerEvents: sortable.isSorting ? "none" : undefined,
-                     opacity: sortable.isDragging ? 0 : 1,
-                  } as React.CSSProperties /* cast because of css variable */
-               }
-            >
-               <EditorBlocks
-                  attributes={attributes}
-                  element={element}
-                  children={children}
-               />
-            </div>
-            <div
-               contentEditable={false}
-               //If editor tray is also open, we keep the menu open
-               className={clsx(
-                  isEditorTrayOpen ? "opacity-100" : "opacity-0",
-                  isParentTwoColumn ? "pr-16" : "pr-2",
-                  isTwoColumn ? "z-20" : "z-10",
-                  "group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0 laptop:-translate-x-full laptop:translate-y-0 left-0",
-               )}
-            >
-               <BlockInlineActions
-                  isParentTwoColumn={isParentTwoColumn}
-                  isEditorTrayOpen={isEditorTrayOpen}
-                  setEditorTray={setEditorTray}
-                  editor={editor}
-                  sortable={sortable}
-                  element={element}
-               />
-            </div>
+      <section
+         style={{
+            width:
+               isVariableWidth && element.containerWidth
+                  ? `${element.containerWidth}px`
+                  : "728px",
+         }}
+         className="group/editor relative mx-auto max-tablet:!w-full"
+      >
+         <div
+            className={clsx(
+               insertPosition === Position.Before
+                  ? "after:-top-4 after:left-0 after:right-0 after:h-1"
+                  : null,
+               insertPosition === Position.After
+                  ? "after:-bottom-4 after:left-0 after:right-0 after:h-1"
+                  : null,
+               "outline-none after:absolute after:rounded-full after:bg-blue-200 after:content-[''] dark:after:bg-gray-700",
+            )}
+            {...sortable.attributes}
+            ref={sortable.setNodeRef}
+            style={
+               {
+                  transition: sortable.transition,
+                  transform: CSS.Transform.toString(sortable.transform),
+                  pointerEvents: sortable.isSorting ? "none" : undefined,
+                  opacity: sortable.isDragging ? 0 : 1,
+               } as React.CSSProperties /* cast because of css variable */
+            }
+         >
+            <EditorBlocks
+               attributes={attributes}
+               element={element}
+               children={children}
+            />
+         </div>
+         <div
+            contentEditable={false}
+            //If editor tray is also open, we keep the menu open
+            className={clsx(
+               isEditorTrayOpen ? "opacity-100" : "opacity-0",
+               isParentTwoColumn ? "pr-16" : "pr-2",
+               isTwoColumn ? "z-20" : "z-10",
+               "laptop:-translate-x-full laptop:translate-y-0 left-0 group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0",
+            )}
+         >
+            <BlockInlineActions
+               isParentTwoColumn={isParentTwoColumn}
+               isEditorTrayOpen={isEditorTrayOpen}
+               setEditorTray={setEditorTray}
+               editor={editor}
+               sortable={sortable}
+               element={element}
+            />
          </div>
       </section>
    );

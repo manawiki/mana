@@ -65,7 +65,7 @@ export default function SiteIndexMain() {
 
    return (
       <>
-         <main className="mx-auto max-w-[728px] pb-3 max-tablet:px-3 laptop:w-[728px] pt-20 laptop:pt-6 relative">
+         <main className="pb-3 max-tablet:px-3 pt-20 laptop:pt-6 relative">
             {hasAccess ? (
                <>
                   <ManaEditor
@@ -74,25 +74,12 @@ export default function SiteIndexMain() {
                      fetcher={fetcher}
                      defaultValue={(home as Descendant[]) ?? initialValue()}
                   />
-                  <div className="fixed tablet_editor:absolute tablet_editor:top-20 laptop:top-6 -right-16 h-full z-40">
-                     <div
-                        className="max-tablet_editor:fixed max-tablet_editor:bottom-8 
-                     tablet_editor:sticky tablet_editor:top-[134px] laptop:top-20 w-full left-0"
-                     >
-                        <div
-                           className="rounded-xl max-tablet_editor:shadow max-tablet_editor:shadow-1 max-tablet_editor:p-2 max-tablet_editor:max-w-sm
-                     max-tablet_editor:backdrop-blur-lg max-tablet_editor:dark:bg-black/30 max-tablet_editor:bg-white/30 
-                     max-tablet_editor:border border-zinc-300/70 dark:border-zinc-600/50 max-tablet_editor:mx-auto"
-                        >
-                           <EditorCommandBar
-                              collectionSlug="homeContents"
-                              homeContentId={homeContentId}
-                              fetcher={fetcher}
-                              isChanged={isChanged}
-                           />
-                        </div>
-                     </div>
-                  </div>
+                  <EditorCommandBar
+                     collectionSlug="homeContents"
+                     homeContentId={homeContentId}
+                     fetcher={fetcher}
+                     isChanged={isChanged}
+                  />
                </>
             ) : (
                <EditorView data={home} />
