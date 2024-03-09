@@ -10,6 +10,7 @@ import { ReactEditor, useSlate } from "slate-react";
 import { z } from "zod";
 import { zx } from "zodix";
 
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -92,6 +93,8 @@ export function BlockImage({ element, children }: Props) {
 
    const isLargerImage = imageSize.width > 728;
 
+   const [isOpen, setIsOpen] = useState<boolean>(false);
+
    return (
       <Resizable
          defaultSize={{
@@ -127,7 +130,17 @@ export function BlockImage({ element, children }: Props) {
             {/* Uploaded Image */}
             {element.url ? (
                <>
-                  <div className="absolute top-3 left-3 flex items-center gap-3 z-20">
+                  <Alert
+                     size="5xl"
+                     onClose={() => {
+                        setIsOpen(false);
+                     }}
+                     className="!p-0 !overflow-hidden"
+                     open={isOpen}
+                  >
+                     <Image className="w-auto mx-auto" url={element.url} />
+                  </Alert>
+                  <div className="absolute top-3 px-3 left-0 flex items-center gap-3 z-20">
                      <Button
                         color="light/zinc"
                         className="!p-0 !size-9"
@@ -146,6 +159,34 @@ export function BlockImage({ element, children }: Props) {
                            name={element.caption ? "captions-off" : "captions"}
                            size={16}
                         />
+                     </Button>
+                     <Button
+                        color="red"
+                        type="button"
+                        className="!p-0 !size-9"
+                        disabled={disabled}
+                        onClick={() => {
+                           fetcher.submit(
+                              {
+                                 intent: "deleteBlockImage",
+                                 imageId: element.refId,
+                              },
+                              {
+                                 method: "DELETE",
+                                 action: actionPath,
+                              },
+                           );
+                        }}
+                     >
+                        {isImageDeleting ? (
+                           <Icon
+                              name="loader-2"
+                              size={16}
+                              className="animate-spin"
+                           />
+                        ) : (
+                           <Icon name="trash" size={16} />
+                        )}
                      </Button>
                   </div>
                   <div
@@ -179,32 +220,10 @@ export function BlockImage({ element, children }: Props) {
                         )}
                      </div>
                      <Button
-                        color="red"
-                        type="button"
+                        onClick={() => setIsOpen(true)}
                         className="!absolute top-3 !p-0 !size-9 right-3"
-                        disabled={disabled}
-                        onClick={() => {
-                           fetcher.submit(
-                              {
-                                 intent: "deleteBlockImage",
-                                 imageId: element.refId,
-                              },
-                              {
-                                 method: "DELETE",
-                                 action: actionPath,
-                              },
-                           );
-                        }}
                      >
-                        {isImageDeleting ? (
-                           <Icon
-                              name="loader-2"
-                              size={16}
-                              className="animate-spin"
-                           />
-                        ) : (
-                           <Icon name="trash" size={16} />
-                        )}
+                        <Icon title="Expand" name="expand" size={16} />
                      </Button>
                   </div>
                </>
