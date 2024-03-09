@@ -36,7 +36,7 @@ async function beginImport(data: IDataEntry[]): Promise<void> {
     for (const entry of assets) {
         try {
             await delay(500);
-            importEntry(entry);
+            await importEntry(entry);
         } catch (e) {
             payload.logger.error(`Failed to add asset: ${entry.path} (${entry.checksum})!`);
             payload.logger.error(e);
