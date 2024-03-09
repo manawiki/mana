@@ -200,7 +200,7 @@ export function ImageUploader({
    }, [isOpen]);
 
    return (
-      <section>
+      <section contentEditable={false}>
          {label && <div className="text-sm font-semibold pb-3">{label}</div>}
          {inDrawer ? (
             <NestedTray
@@ -322,7 +322,7 @@ export function ImageUploader({
                   !icon &&
                      !previewImage &&
                      "border-dashed border-color-sub border-2",
-                  `flex cursor-pointer items-center justify-center p-4  
+                  `flex cursor-pointer items-center justify-center 
                   z-0 relative flex-none group`,
                )}
             >
@@ -401,7 +401,7 @@ export function ImageUploader({
                               </div>
                            </>
                         ) : (
-                           <div>
+                           <div className="p-5">
                               <div className="flex items-center justify-center">
                                  <Icon
                                     title="Upload Image"

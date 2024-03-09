@@ -16,7 +16,7 @@ import { ZodType, z } from "zod";
 const uploadHandler = ({ prefix }: { prefix: string }) =>
    unstable_composeUploadHandlers(
       unstable_createFileUploadHandler({
-         maxPartSize: 10000000,
+         maxPartSize: 20000000,
          file: ({ filename }) =>
             `${prefix}-${nanoid()}${extname(filename ?? "")}`,
       }),

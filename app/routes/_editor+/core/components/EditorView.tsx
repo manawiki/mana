@@ -12,13 +12,23 @@ import { BlockType } from "../types";
 
 export function EditorView({ data }: { data: any }) {
    const editor = useMemo(() => withReact(createEditor()), []);
+
    const renderElement = useCallback((props: RenderElementProps) => {
+      const isVariableWidth = props.element.type === BlockType.Image;
+
       return (
          <div
+            style={{
+               width:
+                  //@ts-ignore
+                  isVariableWidth && props.element.containerWidth
+                     ? //@ts-ignore
+                       `${props.element.containerWidth}px`
+                     : "728px",
+            }}
             className={clsx(
-               props.element.type !== BlockType.Image &&
-                  "mx-auto max-w-[728px]",
-               "w-full group/editor relative",
+               !isVariableWidth && "mx-auto max-w-[728px]",
+               "w-full group/editor relative mx-auto max-tablet:!max-w-full max-tablet:!w-full",
             )}
          >
             <EditorBlocks {...props} />
