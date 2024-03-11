@@ -50,6 +50,66 @@ export const Weapons: CollectionConfig = {
          relationTo: "images",
       },
       {
+         name: "stats",
+         type: "array",
+         fields: [
+            {
+               name: "attribute",
+               type: "relationship",
+               relationTo: "attributes",
+            },
+            {
+               name: "value",
+               type: "number",
+            },
+            {
+               name: "percent",
+               type: "select",
+               options: [
+                  { label: "Yes", value: "yes" },
+                  { label: "No", value: "no" },
+               ],
+            }
+         ],
+      }
+      {
+         name: "skill_name",
+         type: "text",
+      },
+      {
+         name: "skill_desc",
+         type: "text",
+      },
+      {
+         name: "skill_params",
+         type: "json",
+      },
+      {
+         name: "ascension_costs",
+         type: "array",
+         fields: [
+            {
+               name: "items",
+               type: "array",
+               fields: [
+                  {
+                     name: "item",
+                     type: "relationship",
+                     relationTo: "items",
+                  },
+                  {
+                     name: "cnt",
+                     type: "number",
+                  },
+               ],
+            },
+            {
+               name: "gold",
+               type: "number",
+            }
+         ]
+      },
+      {
          name: "checksum",
          type: "text",
          required: true,

@@ -1,3 +1,4 @@
+import { Attributes } from "./attributes";
 import { Elements } from "./elements";
 import { ItemBagSlots } from "./itemBagSlots";
 import { ItemCategories } from "./itemCategories";
@@ -6,10 +7,12 @@ import { Rarities } from "./rarities";
 import { ThropyCategories } from "./thropyCategories";
 import { ThropyGroups } from "./thropyGroups";
 import { Trophies } from "./trophies";
+import { WeaponCurves } from "./weaponCurves";
 import { Weapons } from "./weapons";
 import { WeaponTypes } from "./weaponTypes";
 
 export const CustomCollections = [
+   Attributes,
    Elements,
    ItemBagSlots,
    ItemCategories,
@@ -18,6 +21,7 @@ export const CustomCollections = [
    ThropyCategories,
    ThropyGroups,
    Trophies,
+   WeaponCurves,
    Weapons,
    WeaponTypes,
 ];
