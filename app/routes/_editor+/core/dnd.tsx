@@ -334,15 +334,13 @@ function HoverElement({
    const isParentTwoColumn =
       element.type == BlockType.TwoColumn && !isTwoColumn;
 
-   const isVariableWidth = element.type === BlockType.Image;
+   const isVariableWidth =
+      element.type === BlockType.Image && element.containerWidth;
 
    return (
       <section
          style={{
-            width:
-               isVariableWidth && element.containerWidth
-                  ? `${element.containerWidth}px`
-                  : "728px",
+            width: isVariableWidth ? `${element.containerWidth}px` : "728px",
          }}
          className="group/editor relative mx-auto max-tablet:!w-full"
       >
