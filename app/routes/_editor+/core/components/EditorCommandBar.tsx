@@ -80,58 +80,22 @@ export const EditorCommandBar = ({
 
    if (!_primaryOptions) _primaryOptions = primaryOptions;
    if (!_secondaryOptions) _secondaryOptions = secondaryOptions;
-
    return (
       <>
-         <div className="fixed h-full z-40">
-            <div className="fixed bottom-8 w-full left-0">
+         <div className={clsx(isSection ? "" : "fixed h-full z-40")}>
+            <div
+               className={clsx(isSection ? "" : "fixed bottom-8 w-full left-0")}
+            >
                <div
-                  className="rounded-xl shadow shadow-1 p-2 max-w-sm
+                  className={clsx(
+                     isSection
+                        ? ""
+                        : `rounded-xl shadow shadow-1 p-2 max-w-sm
                            backdrop-blur-lg dark:bg-black/30 bg-white/30 
-                           border border-zinc-300/70 dark:border-zinc-600/50 mx-auto"
+                           border border-zinc-300/70 dark:border-zinc-600/50 mx-auto`,
+                  )}
                >
-                  <div className="flex w-full items-center justify-between">
-                     <div
-                        className={clsx(
-                           isSection && !isChanged ? "hidden" : "",
-                        )}
-                     >
-                        <Tooltip placement="top">
-                           <TooltipTrigger
-                              title="Publish Changes"
-                              asChild
-                              disabled={!isChanged || disabled || isAutoSaving}
-                              onClick={() => {
-                                 fetcher.submit(submitData, {
-                                    method: "POST",
-                                    action: actionPath,
-                                 });
-                              }}
-                           >
-                              <Button
-                                 color={isChanged ? "green" : "zinc"}
-                                 className="size-9 !p-0"
-                              >
-                                 {isAutoSaving || isPublishing ? (
-                                    <Icon
-                                       title="Saving"
-                                       name="loader-2"
-                                       size={18}
-                                       className="animate-spin"
-                                    />
-                                 ) : (
-                                    <Icon
-                                       title="Save then publish"
-                                       name="send"
-                                       size={18}
-                                       className="pt-0.5 text-white transition ease-in-out hover:rotate-12 transform"
-                                    />
-                                 )}
-                              </Button>
-                           </TooltipTrigger>
-                           <TooltipContent>Publish changes</TooltipContent>
-                        </Tooltip>
-                     </div>
+                  <div className="flex w-full items-center justify-between gap-3">
                      <div className="flex items-center gap-3">
                         <Tooltip placement="top">
                            <TooltipTrigger
@@ -199,6 +163,41 @@ export const EditorCommandBar = ({
                            </>
                         )}
                      </div>
+                     <Tooltip placement="top">
+                        <TooltipTrigger
+                           title="Publish Changes"
+                           asChild
+                           disabled={!isChanged || disabled || isAutoSaving}
+                           onClick={() => {
+                              fetcher.submit(submitData, {
+                                 method: "POST",
+                                 action: actionPath,
+                              });
+                           }}
+                        >
+                           <Button
+                              color={isChanged ? "green" : "zinc"}
+                              className="size-9 !p-0"
+                           >
+                              {isAutoSaving || isPublishing ? (
+                                 <Icon
+                                    title="Saving"
+                                    name="loader-2"
+                                    size={18}
+                                    className="animate-spin"
+                                 />
+                              ) : (
+                                 <Icon
+                                    title="Save then publish"
+                                    name="send"
+                                    size={18}
+                                    className="pt-0.5 text-white transition ease-in-out hover:rotate-12 transform"
+                                 />
+                              )}
+                           </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Publish changes</TooltipContent>
+                     </Tooltip>
                      <EditorVersionModal
                         pageId={pageId}
                         isVersionModalOpen={isVersionModalOpen}

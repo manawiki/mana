@@ -42,7 +42,7 @@ export function Entry({
             setIsChanged={setIsChanged}
             isChanged={isChanged}
          />
-         <div className="mx-auto max-w-[728px] max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44">
+         <div className="max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44">
             {children ? (
                children
             ) : (

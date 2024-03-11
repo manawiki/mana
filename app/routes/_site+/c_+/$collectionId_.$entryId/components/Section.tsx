@@ -41,8 +41,8 @@ export function Section({
       let newActiveSection = null;
 
       sections.current.forEach((section: any) => {
-         const sectionOffsetTop = section.offsetTop - 130;
-         const sectionHeight = section.offsetHeight + 130;
+         const sectionOffsetTop = section.offsetTop + 164;
+         const sectionHeight = section.offsetHeight;
 
          if (
             pageYOffset >= sectionOffsetTop &&
@@ -67,9 +67,13 @@ export function Section({
 
    return (
       <div className="relative">
-         <TableOfContents entry={entry} sections={entry.sections} />
+         <div className="max-tablet:-mx-3 desktop:flex items-center justify-center pb-4">
+            <div className="max-w-[728px] w-full mx-auto">
+               <TableOfContents entry={entry} sections={entry.sections} />
+            </div>
+         </div>
          {entry.sections?.map((section) => (
-            <div key={section.id}>
+            <>
                {section.showAd ? (
                   <AdPlaceholder>
                      <div
@@ -95,7 +99,7 @@ export function Section({
                   customComponents={customComponents}
                   hasAccess={hasAccess}
                />
-            </div>
+            </>
          ))}
          <ScrollToHashElement />
       </div>
