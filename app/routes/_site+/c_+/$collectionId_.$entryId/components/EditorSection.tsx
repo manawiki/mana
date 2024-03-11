@@ -27,7 +27,7 @@ export function EditorSection({ subSection }: { subSection?: SubSectionType }) {
    return (
       <>
          {hasAccess ? (
-            <main className="mx-auto max-w-[728px] group relative">
+            <main className="mx-auto max-w-[750px] group relative">
                <ManaEditor
                   key={data?.id}
                   siteId={entry?.siteId}
@@ -39,7 +39,7 @@ export function EditorSection({ subSection }: { subSection?: SubSectionType }) {
                   collectionEntity={entry.collectionEntity}
                   defaultValue={(data?.content as unknown[]) ?? initialValue()}
                />
-               <div className="absolute right-0 top-0 tablet_editor:-right-16 h-full laptop:z-40">
+               <div className="absolute right-0 top-0 tablet_editor:-right-28 h-full laptop:z-40">
                   <div className="tablet_editor:top-[136px] sticky laptop:top-[76px] max-tablet_editor:top-[194px] w-full left-0">
                      <EditorCommandBar
                         isSection

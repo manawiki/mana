@@ -47,9 +47,11 @@ import { initialValue, isNodeWithId, onKeyDown } from "./utils";
 export function EditorWithDnD({
    editor,
    isTwoColumn,
+   isNested,
 }: {
    editor: Editor;
    isTwoColumn?: boolean;
+   isNested?: boolean;
 }) {
    const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -95,6 +97,7 @@ export function EditorWithDnD({
          const isTopLevel = path.length === 1;
          return isTopLevel ? (
             <HoverElement
+               isNested={isNested}
                isTwoColumn={isTwoColumn}
                editor={editor}
                activeId={activeId}
@@ -304,6 +307,7 @@ interface HoverElementProps extends RenderElementProps {
    editor: Editor;
    activeId: string | null;
    isTwoColumn?: boolean;
+   isNested?: boolean;
 }
 
 function HoverElement({
@@ -313,6 +317,7 @@ function HoverElement({
    editor,
    activeId,
    isTwoColumn,
+   isNested,
 }: HoverElementProps) {
    const [isEditorTrayOpen, setEditorTray] = useState(false);
    const animateLayoutChanges: AnimateLayoutChanges = (args) =>
@@ -340,7 +345,11 @@ function HoverElement({
    return (
       <section
          style={{
-            width: isVariableWidth ? `${element.containerWidth}px` : "728px",
+            width: isNested
+               ? undefined
+               : isVariableWidth
+                 ? `${element.containerWidth}px`
+                 : "728px",
          }}
          className="group/editor relative mx-auto max-tablet:!w-full"
       >
@@ -448,7 +457,11 @@ export function NestedEditor({
             initialValue={element[field] ?? initialValue()}
          >
             <Toolbar />
-            <EditorWithDnD isTwoColumn={isTwoColumn} editor={inlineEditor} />
+            <EditorWithDnD
+               isNested
+               isTwoColumn={isTwoColumn}
+               editor={inlineEditor}
+            />
          </Slate>
       </div>
    );

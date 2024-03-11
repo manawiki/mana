@@ -79,7 +79,7 @@ export function SubSectionTabs({
             {hasMany ? (
                <>
                   {viewType == "tabs" && (
-                     <div className="shadow-sm shadow-1 bg-clip-padding border border-color-sub rounded-lg">
+                     <div className="shadow-sm dark:shadow-zinc-800/60 bg-clip-padding border-y tablet:border border-color-sub tablet:rounded-xl max-w-[754px] mx-auto max-tablet:-mx-3">
                         <Tab.Group
                            selectedIndex={selectedIndex}
                            onChange={setSelectedIndex}
@@ -88,7 +88,7 @@ export function SubSectionTabs({
                               className="relative flex bg-zinc-50 dark:bg-dark350 scrollbar 
                             dark:scrollbar-thumb-zinc-500 dark:scrollbar-track-dark450
                             scrollbar-thumb-zinc-300 scrollbar-track-zinc-100
-                              overflow-auto border-b border-color-sub p-3 items-center gap-3 rounded-t-lg"
+                              overflow-auto border-b border-color-sub p-3 items-center gap-3 tablet:rounded-t-xl"
                            >
                               {tabs?.map((subSection) => {
                                  return (
