@@ -71,7 +71,7 @@ export const Weapons: CollectionConfig = {
                ],
             }
          ],
-      }
+      },
       {
          name: "skill_name",
          type: "text",
