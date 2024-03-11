@@ -21,7 +21,7 @@ export const WeaponCurves: CollectionConfig = {
          type: "text",
       },
       {
-         name: "values":
+         name: "values",
          type: "array",
          fields: [
             {
