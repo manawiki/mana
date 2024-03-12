@@ -24,7 +24,6 @@ export function PostBanner({
 
    const postBanner = post.banner?.url;
 
-   console.log("postBanner", post);
    const [preparedPostBannerFile, setPreparedPostBannerFile] = useState();
    const [previewPostBannerImage, setPreviewPostBannerImage] = useState("");
    const isBannerDeleting = isAdding(fetcher, "deleteBanner");
@@ -46,15 +45,13 @@ export function PostBanner({
       });
    }
    return post.banner ? (
-      <div className="relative mb-5 rounded-lg overflow-hidden laptop:max-w-[800px] mx-auto">
-         <div className="bg-1 border-color flex aspect-[1.91/1] items-center tablet:rounded-lg justify-center overflow-hidden shadow-sm mb-5">
-            <Image
-               alt="Post Banner"
-               className="h-full w-full object-cover"
-               options="crop=1200,630&aspect_ratio=1.9:1"
-               url={post?.banner?.url}
-            />
-         </div>
+      <div className="relative tablet:rounded-lg overflow-hidden max-tablet:-mx-3 max-w-[800px] mx-auto my-6">
+         <Image
+            alt="Post Banner"
+            className="h-full w-full object-cover"
+            options="aspect_ratio=1.9:1"
+            url={post?.banner?.url}
+         />
          <div className="absolute right-3 top-3 !size-10 !p-0">
             <fetcher.Form method="POST">
                <Button

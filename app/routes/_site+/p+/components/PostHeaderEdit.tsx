@@ -50,7 +50,7 @@ export function PostHeaderEdit({ post }: { post: Post }) {
    }, [debouncedSubtitle]);
 
    return (
-      <>
+      <div className="max-w-[728px] w-full mx-auto">
          <div className="relative mb-2 flex items-center gap-3">
             <TextareaAutosize
                className="mt-0 min-h-[20px] w-full resize-none overflow-hidden rounded-sm border-0 bg-transparent p-0 
@@ -71,6 +71,6 @@ export function PostHeaderEdit({ post }: { post: Post }) {
                placeholder="Add a subtitle..."
             />
          </div>
-      </>
+      </div>
    );
 }

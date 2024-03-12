@@ -40,6 +40,7 @@ import {
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
 import { PostBanner } from "./components/PostBanner";
+import { PostBannerView } from "./components/PostBannerView";
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
@@ -104,36 +105,38 @@ export default function Post() {
    return (
       <>
          <main className="mx-auto pb-3 max-tablet:px-3 pt-20 laptop:pt-6 relative">
-            <div className="max-w-[728px] w-full mx-auto relative">
-               {/* @ts-ignore */}
-               <PostActionBar post={post} />
-               {hasAccess ? (
-                  <>
-                     {/* @ts-ignore */}
-                     <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
-                  </>
-               ) : (
-                  // @ts-ignore
-                  <PostHeaderView post={post} />
-               )}
-               {/* @ts-ignore */}
-               <PostTableOfContents data={postContent} />
-               <AdPlaceholder>
-                  <div
-                     className={`flex items-center justify-center ${
-                        enableAds ? "min-h-[90px]" : ""
-                     }`}
-                  >
-                     <AdUnit
-                        enableAds={enableAds}
-                        adType="desktopLeaderATF"
-                        selectorId="postDesktopLeaderATF"
-                     />
-                  </div>
-               </AdPlaceholder>
-            </div>
             {/* @ts-ignore */}
-            <PostBanner post={post} isShowBanner={isShowBanner} />
+            <PostActionBar post={post} />
+            {hasAccess ? (
+               <>
+                  {/* @ts-ignore */}
+                  <PostHeaderEdit post={post} isShowBanner={isShowBanner} />
+                  {/* @ts-ignore */}
+                  <PostBanner post={post} isShowBanner={isShowBanner} />
+               </>
+            ) : (
+               <>
+                  {/* @ts-ignore */}
+                  <PostHeaderView post={post} />
+                  {/* @ts-ignore */}
+                  <PostBannerView post={post} />
+               </>
+            )}
+            {/* @ts-ignore */}
+            <PostTableOfContents data={postContent} />
+            <AdPlaceholder>
+               <div
+                  className={`flex items-center justify-center ${
+                     enableAds ? "min-h-[90px]" : ""
+                  }`}
+               >
+                  <AdUnit
+                     enableAds={enableAds}
+                     adType="desktopLeaderATF"
+                     selectorId="postDesktopLeaderATF"
+                  />
+               </div>
+            </AdPlaceholder>
             {hasAccess ? (
                <>
                   <ManaEditor
