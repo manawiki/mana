@@ -33,7 +33,7 @@ export function PostTableOfContents({
    return (
       <>
          {rows && rows.length > 1 && (
-            <section className="relative">
+            <section className="relative max-w-[728px] w-full mx-auto">
                <div
                   className={clsx(
                      seeAllOpen ? "" : "max-h-[244px]",
