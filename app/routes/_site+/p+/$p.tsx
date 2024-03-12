@@ -39,6 +39,7 @@ import {
 
 import { CommentHeader, Comments } from "./components/Comments";
 import { PostActionBar } from "./components/PostActionBar";
+import { PostBanner } from "./components/PostBanner";
 import { PostDeleteModal } from "./components/PostDeleteModal";
 import { PostHeaderEdit } from "./components/PostHeaderEdit";
 import { PostHeaderView } from "./components/PostHeaderView";
@@ -131,6 +132,8 @@ export default function Post() {
                   </div>
                </AdPlaceholder>
             </div>
+            {/* @ts-ignore */}
+            <PostBanner post={post} isShowBanner={isShowBanner} />
             {hasAccess ? (
                <>
                   <ManaEditor
@@ -297,22 +300,10 @@ export async function action({
       }
 
       case "updateBanner": {
-         assertIsPatch(request);
          const bannerSchema = z.object({
-            postBanner: z
-               .any()
-               .refine((file) => file?.size <= 500000, `Max image size is 5MB.`)
-               .refine(
-                  (file) =>
-                     [
-                        "image/jpeg",
-                        "image/jpg",
-                        "image/png",
-                        "image/webp",
-                     ].includes(file?.type),
-                  "Only .jpg, .jpeg, .png and .webp formats are supported.",
-               )
-               .optional(),
+            postBanner: z.any().optional(),
+            siteId: z.string(),
+            postId: z.string(),
          });
 
          const result = await getMultipleFormData({
@@ -321,17 +312,18 @@ export async function action({
             schema: bannerSchema,
          });
          if (result.success) {
-            const { postBanner, postId } = result.data;
+            const { postBanner, postId, siteId } = result.data;
             const upload = await uploadImage({
                payload,
                image: postBanner,
                user,
+               siteId,
             });
             await payload.update({
                collection: "posts",
                id: postId,
                data: {
-                  //@ts-expect-error
+                  //@ts-ignore
                   banner: upload.id,
                },
                overrideAccess: false,
@@ -341,8 +333,6 @@ export async function action({
          }
       }
       case "deleteBanner": {
-         assertIsDelete(request);
-
          const { bannerId, postId } = await zx.parseForm(request, {
             bannerId: z.string(),
             postId: z.string(),

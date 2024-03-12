@@ -386,7 +386,7 @@ export function ImageUploader({
                                  src={previewImage}
                                  className={clsx(
                                     type === "circle" ? "rounded-full" : "",
-                                    "max-h-80",
+                                    "",
                                  )}
                               />
                               <div className="group-hover:block hidden absolute w-full h-full  overflow-hidden">

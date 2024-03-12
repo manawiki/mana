@@ -205,7 +205,7 @@ export function BlockImage({ element, children }: Props) {
                         )}
                      >
                         <Image
-                           className="max-h-80 w-auto mx-auto"
+                           className="w-auto mx-auto h-80"
                            alt="Inline"
                            url={element.url}
                         />
