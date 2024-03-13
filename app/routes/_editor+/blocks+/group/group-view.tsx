@@ -24,37 +24,71 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
       <>
          {viewMode == "list" && (
             <div className="bg-2-sub group relative flex items-center gap-2 p-2.5">
-               <Link
-                  reloadDocument={element?.isCustomSite ?? false}
-                  key={element?.id}
-                  to={element?.path ?? ""}
-                  prefetch="intent"
-                  className="flex items-center flex-grow gap-2"
-               >
-                  <div
-                     className="shadow-1 border-color flex h-8 w-8 items-center
-                  justify-between overflow-hidden rounded-full border-2 shadow-sm"
+               {element.isPost && element.iconUrl ? (
+                  <Link
+                     reloadDocument={element?.isCustomSite ?? false}
+                     key={element?.id}
+                     to={element?.path ?? ""}
+                     prefetch="intent"
+                     className="flex items-center  w-full gap-5"
                   >
-                     {element?.iconUrl ? (
-                        <Image
-                           height={80}
-                           width={80}
-                           url={element?.iconUrl}
-                           options="aspect_ratio=1:1&height=80&width=80"
-                           alt={element?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Icon
-                           name="component"
-                           className="text-1 mx-auto"
-                           size={18}
-                        />
+                     {element.iconUrl && (
+                        <div className="w-28 flex-none overflow-hidden rounded">
+                           <Image
+                              alt={element.name}
+                              className="w-full rounded object-cover"
+                              height={60}
+                              options="height=120"
+                              url={element?.iconUrl}
+                           />
+                        </div>
                      )}
-                  </div>
-                  <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
-                     {element?.name}
-                  </span>
-               </Link>
+                     <div className="relative flex-grow ">
+                        {element.name && (
+                           <div className="font-header font-bold group-hover:underline">
+                              {element.name}
+                           </div>
+                        )}
+                        {element.subtitle && (
+                           <div className="text-sm text-1">
+                              {element.subtitle}
+                           </div>
+                        )}
+                     </div>
+                  </Link>
+               ) : (
+                  <Link
+                     reloadDocument={element?.isCustomSite ?? false}
+                     key={element?.id}
+                     to={element?.path ?? ""}
+                     prefetch="intent"
+                     className="flex items-center flex-grow gap-2"
+                  >
+                     <div
+                        className="shadow-1 border-color flex h-8 w-8 items-center
+                  justify-between overflow-hidden rounded-full border-2 shadow-sm"
+                     >
+                        {element?.iconUrl ? (
+                           <Image
+                              height={80}
+                              width={80}
+                              url={element?.iconUrl}
+                              options="aspect_ratio=1:1&height=80&width=80"
+                              alt={element?.name ?? "Icon"}
+                           />
+                        ) : (
+                           <Icon
+                              name="component"
+                              className="text-1 mx-auto"
+                              size={18}
+                           />
+                        )}
+                     </div>
+                     <span className="text-1 flex-grow truncate text-sm font-bold group-hover:underline">
+                        {element?.name}
+                     </span>
+                  </Link>
+               )}
                {element.groupContent && (
                   <button
                      className="flex group/doc h-7 w-7 items-center justify-center"

@@ -112,7 +112,7 @@ export function MobileHeader() {
                      href="/user/account"
                      src={user?.avatar?.url}
                      initials={user?.username.charAt(0)}
-                     className="size-8"
+                     className="size-9"
                      options="aspect_ratio=1:1&height=60&width=60"
                   />
                </div>
