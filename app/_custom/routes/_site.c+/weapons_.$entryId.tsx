@@ -16,7 +16,7 @@ import type { Item as ItemType } from "~/db/payload-custom-types";
 import { Items } from "../../collections/items";
 
 // Custom Component Imports
-import { Main } from "~/_custom/components/items/Main";
+import { Main } from "~/_custom/components/weapons/Main";
 //import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
@@ -25,17 +25,34 @@ export async function loader({
   params,
   request,
 }: LoaderFunctionArgs) {
-  const { entry } = await fetchEntry({
+  const fetchWeaponData = fetchEntry({
     payload,
     params,
     request,
     user,
     gql: {
-      query: QUERY,
+      query: WeaponQuery,
     },
   });
+
+  const fetchCurveData = fetchEntry({
+    payload,
+    params,
+    request,
+    user,
+    gql: {
+      query: CurveQuery,
+    },
+  });
+
+  const [{ entry }, data] = await Promise.all([
+    fetchWeaponData,
+    fetchCurveData,
+  ]);
+
   return json({
     entry,
+    weaponCurveData: data?.entry?.data?.WeaponCurves?.docs,
   });
 }
 
@@ -45,9 +62,13 @@ const SECTIONS = {
 };
 
 export default function EntryPage() {
-  const { entry } = useLoaderData<typeof loader>();
-  const char = entry?.data?.Item as ItemType;
-  // console.log(char);
+  const { entry, weaponCurveData } = useLoaderData<typeof loader>();
+  var char = {
+    Weapon: entry.data.Weapon,
+    Curves: weaponCurveData,
+  };
+
+  console.log(char);
 
   return (
     <>
@@ -59,25 +80,70 @@ export default function EntryPage() {
   );
 }
 
-const QUERY = gql`
-  query Item($entryId: String!) {
-    Item(id: $entryId) {
+const WeaponQuery = gql`
+  query Weapon($entryId: String!) {
+    Weapon(id: $entryId) {
       id
       name
       desc
-      slug
+      slug: id
       rarity {
         id
         color
       }
-      bag_slot {
-        name
-      }
-      category {
-        name
-      }
       icon {
         url
+      }
+      type {
+        name
+      }
+      splash {
+        url
+      }
+      stats {
+        attribute {
+          name
+          icon {
+            url
+          }
+        }
+        percent
+        value
+      }
+      skill_name
+      skill_desc
+      skill_params
+      ascension_costs {
+        items {
+          item {
+            id
+            name
+            icon {
+              url
+            }
+            rarity {
+              id
+              color
+            }
+          }
+          cnt
+        }
+        gold
+      }
+    }
+  }
+`;
+
+const CurveQuery = gql`
+  query {
+    WeaponCurves {
+      docs {
+        id
+        values {
+          level
+          ascension_level
+          value
+        }
       }
     }
   }
