@@ -8,6 +8,7 @@ import urlSlug from "url-slug";
 import { CustomBlocks } from "~/_custom/blocks";
 import { Loading } from "~/components/Loading";
 
+import { BlockEmbed } from "../../blocks+/embed";
 import { BlockEventItem, BlockEvents } from "../../blocks+/events/_events";
 import {
    BlockEventItemView,
@@ -152,6 +153,16 @@ export function EditorBlocks({
                   attributes={attributes}
                />
             </Suspense>
+         );
+      }
+      case BlockType.Embed: {
+         return (
+            <BlockEmbed
+               readOnly={readOnly}
+               element={element}
+               children={children}
+               attributes={attributes}
+            />
          );
       }
       case BlockType.HTMLBlock: {

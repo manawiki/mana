@@ -1,4 +1,6 @@
 export type IconName =
+  | "coins"
+  | "brackets"
   | "expand"
   | "captions-off"
   | "captions"
