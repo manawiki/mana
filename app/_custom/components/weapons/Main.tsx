@@ -153,7 +153,7 @@ export function Main({ data: full }: { data: any }) {
 
           {/* ◇ ◆  Symbols */}
           <div className="flex text-md font-bold mr-2 items-center self-center rounded-full bg-zinc-500 h-3">
-            {[1, 2, 3, 4, 5].map((stg: any) => (
+            {[1, 2, 3, 4, 5, 6].map((stg: any) => (
               <div
                 className={`inline-block align-middle drop-shadow-[0_1px_1px_rgba(0,0,0,0.9)] ${
                   dispasc >= stg ? "text-white" : "text-black"
