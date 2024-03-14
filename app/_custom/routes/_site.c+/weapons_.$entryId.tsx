@@ -17,6 +17,9 @@ import { Items } from "../../collections/items";
 
 // Custom Component Imports
 import { Main } from "~/_custom/components/weapons/Main";
+import { Skill } from "~/_custom/components/weapons/Skill";
+import { Ascension } from "~/_custom/components/weapons/Ascension";
+import { Gallery } from "~/_custom/components/weapons/Gallery";
 //import { ImageGallery } from "~/_custom/components/materials/ImageGallery";
 
 // Loader definition - loads Entry data!
@@ -68,13 +71,14 @@ export default function EntryPage() {
     Curves: weaponCurveData,
   };
 
-  console.log(char);
-
   return (
     <>
       {/* <Entry customComponents={SECTIONS} customData={char} /> */}
       <Entry>
         <Main data={char} />
+        <Skill data={char} />
+        <Ascension data={char} />
+        <Gallery data={char} />
       </Entry>
     </>
   );

@@ -85,8 +85,6 @@ export function Main({ data: full }: { data: any }) {
                     ?.value) /
                 10000;
 
-              console.log(curves.find((c: any) => c.id == aindex + 1));
-
               const attr_perc = attr?.percent;
 
               return (
