@@ -67,7 +67,6 @@ export default function EntryPage() {
     Category: entry.data.TrophyCategory,
     Group: GroupData,
   };
-  console.log(char);
 
   return (
     <>
@@ -83,7 +82,7 @@ function Main({ data: char }: { data: any }) {
   const groups = char.Group;
   return (
     <>
-      <div className="mb-3 grid w-full grid-cols-3 gap-3">
+      <div className="mb-3 grid w-full laptop:grid-cols-3 gap-3">
         {groups.map((g, i) => {
           return (
             <>
@@ -93,18 +92,18 @@ function Main({ data: char }: { data: any }) {
                 to={`/c/trophy-groups/${g.id}`}
                 className="shadow-1 border-color-sub relative inline-block overflow-hidden rounded-lg border text-center shadow-sm"
               >
-                <div className="bg-slate-600 relative flex w-full items-center justify-center p-3">
-                  <div className="relative h-24 w-24 text-center">
+                <div className="bg-zinc-500 dark:bg-zinc-600 hover:bg-zinc-800 dark:hover:bg-zinc-700 relative flex w-full h-full items-center justify-left p-1">
+                  <div className="relative h-12 w-12 text-center">
                     <Image
                       options="aspect_ratio=1:1&height=120&width=120"
                       alt="Gallery Item"
                       url={g.icon?.url}
-                      className="h-24 w-24 object-contain"
+                      className="h-12 w-12 object-contain"
                     />
                   </div>
-                </div>
-                <div className="border-color-sub bg-3-sub relative block border-b py-2 text-center text-sm font-bold">
-                  {g.name}
+                  <div className="text-white relative px-2 text-center text-xs">
+                    {g.name}
+                  </div>
                 </div>
               </Link>
             </>

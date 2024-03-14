@@ -35,6 +35,10 @@ export const TrophyGroups: CollectionConfig = {
       relationTo: "trophy-categories",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "checksum",
       type: "text",
       required: true,
