@@ -94,7 +94,7 @@ function Main({ data: pokemon }: { data: PokemonType }) {
    return (
       <div className="laptop:grid laptop:grid-cols-2 laptop:gap-4">
          <section>
-            <div className="bg-2-sub shadow-sm shadow-1 border rounded-lg border-color-sub mb-3">
+            <div className="bg-2-sub shadow-sm shadow-1 border rounded-lg border-color-sub mb-3 relative z-20">
                <div className="border-b bg-3-sub border-color-sub p-2 gap-2 justify-between rounded-t-lg flex items-center">
                   {pokemon.number && (
                      <div className="dark:bg-dark500 font-bold bg-zinc-100 rounded-md px-2 py-1.5 text-xs space-x-0.5">
@@ -164,37 +164,40 @@ function Main({ data: pokemon }: { data: PokemonType }) {
                      leaveTo="transform scale-95 opacity-0"
                   >
                      <Listbox.Options
-                        className="border-color-sub bg-2-sub shadow-1 absolute left-0
+                        className="border-color-sub bg-2-sub shadow-1 absolute left-0 
                         mt-2 w-full rounded-lg border shadow-lg grid grid-cols-3 gap-2 p-2"
                      >
-                        {images.map((image) => (
-                           <Listbox.Option key={image.id} value={image}>
-                              {({ active, selected }) => (
-                                 <div
-                                    className={clsx(
-                                       "rounded-lg cursor-pointer border",
-                                       active
-                                          ? "dark:bg-dark450 bg-zinc-100 border-zinc-200 dark:!border-zinc-600"
-                                          : "dark:border-zinc-700 dark:bg-dark400 bg-zinc-100 border-zinc-100",
-                                       selected
-                                          ? "dark:bg-dark400 border-zinc-200/90 dark:!border-zinc-600"
-                                          : "dark:border-zinc-700 dark:bg-dark400 bg-zinc-100 border-zinc-100",
+                        {images.map(
+                           (image) =>
+                              image.imageUrl && (
+                                 <Listbox.Option key={image.id} value={image}>
+                                    {({ active, selected }) => (
+                                       <div
+                                          className={clsx(
+                                             "rounded-lg cursor-pointer border",
+                                             active
+                                                ? "dark:bg-dark450 bg-zinc-100 border-zinc-200 dark:!border-zinc-600"
+                                                : "dark:border-zinc-700 dark:bg-dark400 bg-zinc-100 border-zinc-100",
+                                             selected
+                                                ? "dark:bg-dark400 border-zinc-200/90 dark:!border-zinc-600"
+                                                : "dark:border-zinc-700 dark:bg-dark400 bg-zinc-100 border-zinc-100",
+                                          )}
+                                       >
+                                          <div className="mx-auto w-14 h-14 flex items-center justify-center ">
+                                             <Image
+                                                url={image?.imageUrl}
+                                                options="aspect_ratio=1:1&height=120&width=120"
+                                                alt={image?.name}
+                                             />
+                                          </div>
+                                          <div className="text-xs pt-1 pb-2 font-semibold text-1 text-center">
+                                             {image.name}
+                                          </div>
+                                       </div>
                                     )}
-                                 >
-                                    <div className="mx-auto w-14 h-14 flex items-center justify-center ">
-                                       <Image
-                                          url={image?.imageUrl}
-                                          options="aspect_ratio=1:1&height=120&width=120"
-                                          alt={image?.name}
-                                       />
-                                    </div>
-                                    <div className="text-xs pt-1 pb-2 font-semibold text-1 text-center">
-                                       {image.name}
-                                    </div>
-                                 </div>
-                              )}
-                           </Listbox.Option>
-                        ))}
+                                 </Listbox.Option>
+                              ),
+                        )}
                      </Listbox.Options>
                   </Transition>
                </Listbox>
@@ -403,7 +406,7 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                <div className="flex items-center" key={row?.move?.id}>
                   <Link
                      prefetch="intent"
-                     to={`/pokemongo/c/moves/${row?.move?.slug}`}
+                     to={`/c/moves/${row?.move?.slug}`}
                      className="flex items-center w-full gap-2.5 hover:underline flex-grow p-3"
                   >
                      <Image
@@ -453,7 +456,7 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                <div className="flex items-center" key={row?.move?.id}>
                   <Link
                      prefetch="intent"
-                     to={`/pokemongo/c/moves/${row?.move?.slug}`}
+                     to={`/c/moves/${row?.move?.slug}`}
                      className="flex items-center w-full gap-2.5 hover:underline flex-grow p-3"
                   >
                      <Image

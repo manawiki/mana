@@ -1,11 +1,12 @@
 import path from "path";
 
 import Payload from "payload";
-import urlSlug from "url-slug";
+
+import { manaSlug } from "../../utils/url-slug";
 
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET } = process.env;
 
 let payload = null as any;
 
@@ -13,7 +14,9 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: CUSTOM_MONGO_URL as any,
+      //@ts-ignore
+      mongoURL:
+         `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}` as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -23,173 +26,226 @@ const start = async () =>
    });
 start();
 
-const data = require("./pokemon.json");
+// const data = require("./pokemon.json");
 
 async function mapper() {
+   const requests = Array.from({ length: 15 }, (_, i) =>
+      fetch(
+         `https://gamepress.gg/pokemongo/pokemongo-export-full?page=${i}&_format=json`,
+      ).then((response) => response.json()),
+   );
+
+   const getPokemon = await Promise.all(requests);
+
+   const flattenedPokemon = getPokemon.flat();
+
+   console.log(flattenedPokemon.length, "flattenedPokemon");
+
+   const uniquePokemon = flattenedPokemon.reduce((acc, curr) => {
+      const existingPokemon = acc.find(
+         (pokemon: any) => pokemon.title === curr.title,
+      );
+      if (!existingPokemon) {
+         acc.push(curr);
+      }
+      return acc;
+   }, []);
+
+   console.log(uniquePokemon.length, "uniquePokemon");
+
    try {
       await Promise.all(
-         data.map(async (row: any) => {
+         uniquePokemon.map(async (row: any) => {
             try {
-               const mainImage = await fetch(
-                  `https://gamepress.gg/${row.field_pokemon_image}`,
-               )
-                  .then((response) => response.blob())
-                  .then(async (blob) => {
-                     const arrayBuffer = await blob.arrayBuffer();
-                     const buffer = Buffer.from(arrayBuffer);
+               const existingPokemon = await payload.find({
+                  collection: "pokemon",
+                  where: { name: { equals: row?.title } },
+               });
 
-                     const ext = path.extname(row.field_pokemon_image).slice(1);
+               if (existingPokemon.docs.length > 0) {
+                  payload.logger.info(
+                     `Document already exists for ${row?.title}`,
+                  );
+                  return;
+               }
 
-                     const imageFile = {
-                        data: buffer,
-                        mimetype: blob.type,
-                        name: `${urlSlug(row?.title)}-main.${ext}`,
-                        size: blob.size,
-                     };
+               const mainImage =
+                  row.field_pokemon_image &&
+                  (await fetch(
+                     `https://gamepress.gg/${row.field_pokemon_image}`,
+                  )
+                     .then((response) => response.blob())
+                     .then(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const buffer = Buffer.from(arrayBuffer);
 
-                     return await payload.create({
-                        collection: "images",
-                        data: {
-                           id: `${urlSlug(row?.title)}-main`,
-                           createdBy: "643fc4b599231b1364d3ae87",
-                        },
-                        file: imageFile,
-                     });
-                  })
-                  .catch((error) => {
-                     payload.logger.error(`Image failed to upload`);
-                     payload.logger.error(error);
-                  });
+                        const ext = path
+                           .extname(row.field_pokemon_image)
+                           .slice(1);
 
-               const florkImage = await fetch(
-                  `https://gamepress.gg/${row.field_flork_image}`,
-               )
-                  .then((response) => response.blob())
-                  .then(async (blob) => {
-                     const arrayBuffer = await blob.arrayBuffer();
-                     const buffer = Buffer.from(arrayBuffer);
+                        const imageFile = {
+                           data: buffer,
+                           mimetype: blob.type,
+                           name: `${manaSlug(row?.title)}-main.${ext}`,
+                           size: blob.size,
+                        };
 
-                     const ext = path.extname(row.field_flork_image).slice(1);
+                        return await payload.create({
+                           collection: "images",
+                           data: {
+                              id: `${manaSlug(row?.title)}-main`,
+                              createdBy: "643fc4b599231b1364d3ae87",
+                           },
+                           file: imageFile,
+                        });
+                     })
+                     .catch((error) => {
+                        payload.logger.error(`Main Image failed to upload`);
+                        console.log(row.title);
+                        payload.logger.error(error);
+                     }));
 
-                     const imageFile = {
-                        data: buffer,
-                        mimetype: blob.type,
-                        name: `${urlSlug(row?.title)}-flork.${ext}`,
-                        size: blob.size,
-                     };
+               const florkImage =
+                  row.field_flork_image &&
+                  (await fetch(`https://gamepress.gg/${row.field_flork_image}`)
+                     .then((response) => response.blob())
+                     .then(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const buffer = Buffer.from(arrayBuffer);
 
-                     return await payload.create({
-                        collection: "images",
-                        data: {
-                           id: `${urlSlug(row?.title)}-flork`,
-                           createdBy: "643fc4b599231b1364d3ae87",
-                        },
-                        file: imageFile,
-                     });
-                  })
-                  .catch((error) => {
-                     payload.logger.error(`Image failed to upload`);
-                     payload.logger.error(error);
-                  });
+                        const ext = path
+                           .extname(row.field_flork_image)
+                           .slice(1);
 
-               const goImage = await fetch(
-                  `https://gamepress.gg/${row.field_pokemon_go_image}`,
-               )
-                  .then((response) => response.blob())
-                  .then(async (blob) => {
-                     const arrayBuffer = await blob.arrayBuffer();
-                     const buffer = Buffer.from(arrayBuffer);
+                        const imageFile = {
+                           data: buffer,
+                           mimetype: blob.type,
+                           name: `${manaSlug(row?.title)}-flork.${ext}`,
+                           size: blob.size,
+                        };
 
-                     const ext = path
-                        .extname(row.field_pokemon_go_image)
-                        .slice(1);
+                        return await payload.create({
+                           collection: "images",
+                           data: {
+                              id: `${manaSlug(row?.title)}-flork`,
+                              createdBy: "643fc4b599231b1364d3ae87",
+                           },
+                           file: imageFile,
+                        });
+                     })
+                     .catch((error) => {
+                        payload.logger.error(`Flork Image failed to upload`);
+                        console.log(row.title);
+                        payload.logger.error(error);
+                     }));
 
-                     const imageFile = {
-                        data: buffer,
-                        mimetype: blob.type,
-                        name: `${urlSlug(row?.title)}-go.${ext}`,
-                        size: blob.size,
-                     };
+               const goImage =
+                  row.field_pokemon_go_image &&
+                  (await fetch(
+                     `https://gamepress.gg/${row.field_pokemon_go_image}`,
+                  )
+                     .then((response) => response.blob())
+                     .then(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const buffer = Buffer.from(arrayBuffer);
 
-                     return await payload.create({
-                        collection: "images",
-                        data: {
-                           id: `${urlSlug(row?.title)}-go`,
-                           createdBy: "643fc4b599231b1364d3ae87",
-                        },
-                        file: imageFile,
-                     });
-                  })
-                  .catch((error) => {
-                     payload.logger.error(`Image failed to upload`);
-                     payload.logger.error(error);
-                  });
+                        const ext = path
+                           .extname(row.field_pokemon_go_image)
+                           .slice(1);
 
-               const goShinyImage = await fetch(
-                  `https://gamepress.gg/${row.field_pokemon_go_shiny_image}`,
-               )
-                  .then((response) => response.blob())
-                  .then(async (blob) => {
-                     const arrayBuffer = await blob.arrayBuffer();
-                     const buffer = Buffer.from(arrayBuffer);
+                        const imageFile = {
+                           data: buffer,
+                           mimetype: blob.type,
+                           name: `${manaSlug(row?.title)}-go.${ext}`,
+                           size: blob.size,
+                        };
 
-                     const ext = path
-                        .extname(row.field_pokemon_go_shiny_image)
-                        .slice(1);
+                        return await payload.create({
+                           collection: "images",
+                           data: {
+                              id: `${manaSlug(row?.title)}-go`,
+                              createdBy: "643fc4b599231b1364d3ae87",
+                           },
+                           file: imageFile,
+                        });
+                     })
+                     .catch((error) => {
+                        payload.logger.error(`GO Image failed to upload`);
+                        console.log(row.title);
+                        payload.logger.error(error);
+                     }));
 
-                     const imageFile = {
-                        data: buffer,
-                        mimetype: blob.type,
-                        name: `${urlSlug(row?.title)}-go-shiny.${ext}`,
-                        size: blob.size,
-                     };
+               const goShinyImage =
+                  row.field_pokemon_go_shiny_image &&
+                  (await fetch(
+                     `https://gamepress.gg/${row.field_pokemon_go_shiny_image}`,
+                  )
+                     .then((response) => response.blob())
+                     .then(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const buffer = Buffer.from(arrayBuffer);
 
-                     return await payload.create({
-                        collection: "images",
-                        data: {
-                           id: `${urlSlug(row?.title)}-go-shiny`,
-                           createdBy: "643fc4b599231b1364d3ae87",
-                        },
-                        file: imageFile,
-                     });
-                  })
-                  .catch((error) => {
-                     payload.logger.error(`Image failed to upload`);
-                     payload.logger.error(error);
-                  });
+                        const ext = path
+                           .extname(row.field_pokemon_go_shiny_image)
+                           .slice(1);
 
-               const shuffleImage = await fetch(
-                  `https://gamepress.gg/${row.field_shuffle_sprites}`,
-               )
-                  .then((response) => response.blob())
-                  .then(async (blob) => {
-                     const arrayBuffer = await blob.arrayBuffer();
-                     const buffer = Buffer.from(arrayBuffer);
+                        const imageFile = {
+                           data: buffer,
+                           mimetype: blob.type,
+                           name: `${manaSlug(row?.title)}-go-shiny.${ext}`,
+                           size: blob.size,
+                        };
 
-                     const ext = path
-                        .extname(row.field_shuffle_sprites)
-                        .slice(1);
+                        return await payload.create({
+                           collection: "images",
+                           data: {
+                              id: `${manaSlug(row?.title)}-go-shiny`,
+                              createdBy: "643fc4b599231b1364d3ae87",
+                           },
+                           file: imageFile,
+                        });
+                     })
+                     .catch((error) => {
+                        payload.logger.error(`Shiny Image failed to upload`);
+                        console.log(row.title);
+                        payload.logger.error(error);
+                     }));
 
-                     const imageFile = {
-                        data: buffer,
-                        mimetype: blob.type,
-                        name: `${urlSlug(row?.title)}-shuffle.${ext}`,
-                        size: blob.size,
-                     };
+               const shuffleImage =
+                  row.field_shuffle_sprites &&
+                  (await fetch(
+                     `https://gamepress.gg/${row.field_shuffle_sprites}`,
+                  )
+                     .then((response) => response.blob())
+                     .then(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const buffer = Buffer.from(arrayBuffer);
 
-                     return await payload.create({
-                        collection: "images",
-                        data: {
-                           id: `${urlSlug(row?.title)}-shuffle`,
-                           createdBy: "643fc4b599231b1364d3ae87",
-                        },
-                        file: imageFile,
-                     });
-                  })
-                  .catch((error) => {
-                     payload.logger.error(`Image failed to upload`);
-                     payload.logger.error(error);
-                  });
+                        const ext = path
+                           .extname(row.field_shuffle_sprites)
+                           .slice(1);
+
+                        const imageFile = {
+                           data: buffer,
+                           mimetype: blob.type,
+                           name: `${manaSlug(row?.title)}-shuffle${ext}`,
+                           size: blob.size,
+                        };
+
+                        return await payload.create({
+                           collection: "images",
+                           data: {
+                              id: `${manaSlug(row?.title)}-shuffle`,
+                              createdBy: "643fc4b599231b1364d3ae87",
+                           },
+                           file: imageFile,
+                        });
+                     })
+                     .catch((error) => {
+                        payload.logger.error(`Shuffle Image failed to upload`);
+                        console.log(row.title);
+                        payload.logger.error(error);
+                     }));
 
                const purifiedFastMoves =
                   row.field_purified_fast_moves &&
@@ -230,45 +286,45 @@ async function mapper() {
                const fMoves = [
                   ...(fastMoves &&
                      fastMoves.map((row: any) => {
-                        return { move: urlSlug(row) };
+                        return { move: manaSlug(row) };
                      })),
                   ...(eliteFastMoves &&
                      eliteFastMoves.map((row: any) => {
-                        return { category: "elite", move: urlSlug(row) };
+                        return { category: "elite", move: manaSlug(row) };
                      })),
                   ...(exclusiveFastMoves &&
                      exclusiveFastMoves.map((row: any) => {
-                        return { category: "exclusive", move: urlSlug(row) };
+                        return { category: "exclusive", move: manaSlug(row) };
                      })),
                   ...(legacyFastMoves &&
                      legacyFastMoves.map((row: any) => {
-                        return { category: "legacy", move: urlSlug(row) };
+                        return { category: "legacy", move: manaSlug(row) };
                      })),
                   ...(purifiedFastMoves &&
                      purifiedFastMoves.map((row: any) => {
-                        return { category: "purified", move: urlSlug(row) };
+                        return { category: "purified", move: manaSlug(row) };
                      })),
                ];
                const cMoves = [
                   ...(chargeMoves &&
                      chargeMoves.map((row: any) => {
-                        return { move: urlSlug(row) };
+                        return { move: manaSlug(row) };
                      })),
                   ...(eliteChargeMoves &&
                      eliteChargeMoves.map((row: any) => {
-                        return { category: "elite", move: urlSlug(row) };
+                        return { category: "elite", move: manaSlug(row) };
                      })),
                   ...(exclusiveChargeMoves &&
                      exclusiveChargeMoves.map((row: any) => {
-                        return { category: "exclusive", move: urlSlug(row) };
+                        return { category: "exclusive", move: manaSlug(row) };
                      })),
                   ...(legacyChargeMoves &&
                      legacyChargeMoves.map((row: any) => {
-                        return { category: "legacy", move: urlSlug(row) };
+                        return { category: "legacy", move: manaSlug(row) };
                      })),
                   ...(purifiedChargeMoves &&
                      purifiedChargeMoves.map((row: any) => {
-                        return { category: "purified", move: urlSlug(row) };
+                        return { category: "purified", move: manaSlug(row) };
                      })),
                ];
 
@@ -312,7 +368,7 @@ async function mapper() {
                const megaPokemon =
                   row.field_mega_evolutions_list &&
                   row.field_mega_evolutions_list.split(",").map((row: any) => {
-                     return urlSlug(row);
+                     return manaSlug(row);
                   });
 
                const megaEnergyRequirements = () => {
@@ -379,34 +435,34 @@ async function mapper() {
 
                const attackerRatings = () => {
                   if (row.gptier_attackerstierlist) {
-                     if (row.gptier_attackerstierlist >= 10) return "s";
+                     if (row.gptier_attackerstierlist >= 10.0) return "s";
                      if (
-                        row.gptier_attackerstierlist >= 9 &&
-                        row.gptier_attackerstierlist < 10
+                        row.gptier_attackerstierlist >= 9.0 &&
+                        row.gptier_attackerstierlist < 10.0
                      )
-                        return "a+";
+                        return "a_plus";
                      if (
-                        row.gptier_attackerstierlist >= 8 &&
-                        row.gptier_attackerstierlist < 9
+                        row.gptier_attackerstierlist >= 8.0 &&
+                        row.gptier_attackerstierlist < 9.0
                      )
                         return "a";
                      if (
-                        row.gptier_attackerstierlist >= 7 &&
-                        row.gptier_attackerstierlist < 8
+                        row.gptier_attackerstierlist >= 7.0 &&
+                        row.gptier_attackerstierlist < 8.0
                      )
-                        return "b+";
+                        return "b_plus";
                      if (
-                        row.gptier_attackerstierlist >= 6 &&
-                        row.gptier_attackerstierlist < 7
+                        row.gptier_attackerstierlist >= 6.0 &&
+                        row.gptier_attackerstierlist < 7.0
                      )
                         return "b";
                      if (
-                        row.gptier_attackerstierlist >= 5 &&
-                        row.gptier_attackerstierlist < 6
+                        row.gptier_attackerstierlist >= 5.0 &&
+                        row.gptier_attackerstierlist < 6.0
                      )
                         return "c";
                   }
-                  return;
+                  return undefined;
                };
 
                const raidBossTier = () => {
@@ -506,8 +562,12 @@ async function mapper() {
                   return;
                };
 
-               function allReplace(str, obj) {
+               function allReplace(
+                  str: string,
+                  obj: { [key: string]: string },
+               ) {
                   for (const x in obj) {
+                     // @ts-ignore
                      str = str.replace(new RegExp(x, "g"), obj[x]);
                   }
                   return str;
@@ -515,6 +575,7 @@ async function mapper() {
 
                const shinyAcquireMethod = () => {
                   if (row.field_how_shiny_is_acquired) {
+                     console.log(row.field_how_shiny_is_acquired, "debug this");
                      const makeArray =
                         row.field_how_shiny_is_acquired.split(",");
 
@@ -522,9 +583,8 @@ async function mapper() {
                         return allReplace(row, {
                            Eggs: "eggs",
                            Evolution: "evolution",
-                           "Mega Evolution": "mega_evolution",
-                           "Mystery Box (Main Series Transfer)":
-                              "mystery_box_main_series_transfer",
+                           "Mega evolution": "mega_evolution",
+                           "Mystery Box": "mystery_box",
                            Raids: "raids",
                            "Research Encounter": "research_encounter",
                            "Rocket Grunts": "rocket_grunts",
@@ -532,9 +592,10 @@ async function mapper() {
                            Wild: "wild",
                         });
                      });
+                     console.log(result);
                      return result;
                   }
-                  return;
+                  return undefined;
                };
 
                const generation = () => {
@@ -592,15 +653,15 @@ async function mapper() {
                const type =
                   row.field_pokemon_type &&
                   row.field_pokemon_type.split(",").map((row: any) => {
-                     return urlSlug(row);
+                     return manaSlug(row);
                   });
 
                await payload.create({
                   collection: "pokemon",
                   data: {
-                     id: urlSlug(row?.title),
+                     id: manaSlug(row?.title),
                      name: row?.title,
-                     slug: urlSlug(row?.title),
+                     slug: manaSlug(row?.title),
                      icon: mainImage.id,
                      number: row.field_pokemon_number,
                      baseAttack: row.field_base_attack,
@@ -612,7 +673,7 @@ async function mapper() {
                      isShadow,
                      // shadowPokemon:
                      //    row.field_shadow_pokemon &&
-                     //    urlSlug(row.field_shadow_pokemon),
+                     //    manaSlug(row.field_shadow_pokemon),
                      isMega:
                         row.field_mega_pokemon_ &&
                         row.field_mega_pokemon_ == "True"
@@ -620,10 +681,14 @@ async function mapper() {
                            : false,
                      // megaPokemon,
                      images: {
-                        florkImage: florkImage.id,
-                        goImage: goImage.id,
-                        goShinyImage: goShinyImage.id,
-                        shuffleImage: shuffleImage.id,
+                        florkImage: florkImage ? florkImage.id : undefined,
+                        goImage: goImage ? goImage.id : undefined,
+                        goShinyImage: goShinyImage
+                           ? goShinyImage.id
+                           : undefined,
+                        shuffleImage: shuffleImage
+                           ? shuffleImage.id
+                           : undefined,
                      },
                      type,
                      maleRate: row.field_male_percentage,
@@ -653,6 +718,8 @@ async function mapper() {
                console.log(`Document added successfully`);
             } catch (e) {
                payload.logger.error(`Document failed to update`);
+               console.log(row.gptier_greatleaguetierlist);
+               console.log(row.title);
                payload.logger.error(e);
             }
          }),

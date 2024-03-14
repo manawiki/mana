@@ -467,6 +467,10 @@ export const Pokemon: CollectionConfig = {
                      },
                      options: [
                         {
+                           label: "0.5",
+                           value: "_0_5",
+                        },
+                        {
                            label: "1",
                            value: "_1_0",
                         },
@@ -513,6 +517,10 @@ export const Pokemon: CollectionConfig = {
                      },
                      options: [
                         {
+                           label: "0.5",
+                           value: "_0_5",
+                        },
+                        {
                            label: "1",
                            value: "_1_0",
                         },
@@ -558,6 +566,10 @@ export const Pokemon: CollectionConfig = {
                         isClearable: true,
                      },
                      options: [
+                        {
+                           label: "0.5",
+                           value: "_0_5",
+                        },
                         {
                            label: "1",
                            value: "_1_0",
@@ -795,8 +807,8 @@ export const Pokemon: CollectionConfig = {
                value: "mega_evolution",
             },
             {
-               label: "Mystery Box (Main Series Transfer)",
-               value: "mystery_box_main_series_transfer",
+               label: "Mystery Box",
+               value: "mystery_box",
             },
             {
                label: "Raids",

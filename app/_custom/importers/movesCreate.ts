@@ -1,9 +1,10 @@
 import Payload from "payload";
-import urlSlug from "url-slug";
+
+import { manaSlug } from "../../utils/url-slug";
 
 require("dotenv").config();
 
-const { PAYLOADCMS_SECRET, CUSTOM_MONGO_URL } = process.env;
+const { PAYLOADCMS_SECRET } = process.env;
 
 let payload = null as any;
 
@@ -11,7 +12,9 @@ let payload = null as any;
 const start = async () =>
    await Payload.init({
       secret: PAYLOADCMS_SECRET as any,
-      mongoURL: CUSTOM_MONGO_URL as any,
+      //@ts-ignore
+      mongoURL:
+         `${process.env.MONGODB_URI}/${process.env.CUSTOM_DB_NAME}` as any,
       local: true,
       onInit: (_payload) => {
          payload = _payload;
@@ -32,17 +35,9 @@ async function mapper() {
                await payload.create({
                   collection: "moves",
                   data: {
-                     id: urlSlug(row?.title, {
-                        dictionary: {
-                           "+": "plus",
-                        },
-                     }),
+                     id: manaSlug(row?.title),
                      name: row?.title,
-                     slug: urlSlug(row?.title, {
-                        dictionary: {
-                           "+": "plus",
-                        },
-                     }),
+                     slug: manaSlug(row?.title),
                      icon: row?.move_type.toLowerCase(),
                      type: row?.move_type.toLowerCase(),
                      category:
@@ -82,7 +77,7 @@ async function mapper() {
                console.log(`Document added successfully`);
             } catch (e) {
                payload.logger.error(
-                  `Document with title ${urlSlug(row?.title)}  failed to add`,
+                  `Document with title ${manaSlug(row?.title)}  failed to add`,
                );
                payload.logger.error(e);
             }
