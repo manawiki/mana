@@ -1,12 +1,17 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { EnumType, jsonToGraphQLQuery } from "json-to-graphql-query";
 
-import { Avatar } from "~/components/Avatar";
 import { Entry } from "~/routes/_site+/c_+/$collectionId_.$entryId/components/Entry";
 import { entryMeta } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/entryMeta";
 import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fetchEntry.server";
+
+import { TierFive } from "./components/TierFive";
+import { TierFour } from "./components/TierFour";
+import { TierOne } from "./components/TierOne";
+import { TierThree } from "./components/TierThree";
+import { TierTwo } from "./components/TierTwo";
 
 export { entryMeta as meta };
 
@@ -46,108 +51,6 @@ export default function TierList() {
    return <Entry customComponents={SECTIONS} customData={tier_list}></Entry>;
 }
 
-function GridCell({
-   icon,
-   name,
-   href,
-}: {
-   icon: string;
-   name: string;
-   href: string;
-}) {
-   return (
-      <Link
-         to={href}
-         className="flex items-center justify-center flex-col gap-2.5 border border-color-sub shadow-sm shadow-1 bg-2-sub rounded-lg p-3 dark:hover:border-zinc-600/80"
-      >
-         <Avatar
-            src={icon}
-            initials={icon ? undefined : name.charAt(0)}
-            className="size-14"
-            options="aspect_ratio=1:1&height=120&width=120"
-         />
-         <div className="text-xs tablet:text-sm text-center font-bold">
-            {name}
-         </div>
-      </Link>
-   );
-}
-
-function TierOne({ data }: { data: any }) {
-   return (
-      <div className="grid grid-cols-3 gap-3 ">
-         {data.tier1.docs.map((row: any) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-            />
-         ))}
-      </div>
-   );
-}
-
-function TierTwo({ data }: { data: any }) {
-   return (
-      <div className="grid grid-cols-4 gap-3">
-         {data.tier2.docs.map((row: any) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-            />
-         ))}
-      </div>
-   );
-}
-
-function TierThree({ data }: { data: any }) {
-   return (
-      <div className="grid grid-cols-4 gap-3">
-         {data.tier3.docs.map((row: any) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-            />
-         ))}
-      </div>
-   );
-}
-
-function TierFour({ data }: { data: any }) {
-   return (
-      <div className="grid grid-cols-4 gap-3">
-         {data.tier4.docs.map((row: any) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-            />
-         ))}
-      </div>
-   );
-}
-
-function TierFive({ data }: { data: any }) {
-   return (
-      <div className="grid grid-cols-4 gap-3">
-         {data.tier5.docs.map((row: any) => (
-            <GridCell
-               key={row.id}
-               href={`/c/pokemon/${row.slug}`}
-               icon={row?.icon?.url}
-               name={row.name}
-            />
-         ))}
-      </div>
-   );
-}
-
 const query = {
    query: {
       tier1: {
@@ -166,6 +69,12 @@ const query = {
             number: true,
             icon: {
                url: true,
+            },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
             },
          },
       },
@@ -197,6 +106,12 @@ const query = {
             icon: {
                url: true,
             },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
+            },
          },
       },
       tier3: {
@@ -226,6 +141,12 @@ const query = {
             number: true,
             icon: {
                url: true,
+            },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
             },
          },
       },
@@ -257,6 +178,12 @@ const query = {
             icon: {
                url: true,
             },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
+            },
          },
       },
       tier5: {
@@ -286,6 +213,12 @@ const query = {
             number: true,
             icon: {
                url: true,
+            },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
             },
          },
       },

@@ -7,6 +7,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { gql } from "graphql-request";
 
+import { Badge } from "~/components/Badge";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/Tooltip";
@@ -303,15 +304,13 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                         Attackers Tier List
                      </div>
                   </div>
-                  <div className="text-xs bg-white border shadow-sm shadow-1 border-color-sub justify-center dark:bg-dark400 w-12 h-8 rounded-md flex items-center gap-1">
-                     <span className="font-bold">
-                        <RatingsLabel
-                           fieldName="attackerRating"
-                           value={pokemon.ratings?.attackerRating}
-                        />
-                     </span>
-                     <span className="text-1">Tier</span>
-                  </div>
+                  <Badge color="teal">
+                     <RatingsLabel
+                        fieldName="attackerRating"
+                        value={pokemon.ratings?.attackerRating}
+                     />{" "}
+                     Tier
+                  </Badge>
                </div>
             )}
             {pokemon.ratings?.greatLeagueRating && (
@@ -328,16 +327,13 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                         Great League PVP
                      </div>
                   </div>
-                  <div className="text-xs bg-white border shadow-sm shadow-1 border-color-sub justify-center dark:bg-dark400 w-12 h-8 rounded-md flex items-center gap-1">
-                     <span className="font-bold">
-                        <RatingsLabel
-                           fieldName="greatLeagueRating"
-                           value={pokemon.ratings?.greatLeagueRating}
-                        />
-                     </span>
-                     <span className="dark:text-zinc-500 text-zinc-400">/</span>
-                     <span className="text-1">5</span>
-                  </div>
+                  <Badge color="blue">
+                     <RatingsLabel
+                        fieldName="greatLeagueRating"
+                        value={pokemon.ratings?.greatLeagueRating}
+                     />{" "}
+                     / 5
+                  </Badge>
                </div>
             )}
             {pokemon.ratings?.ultraLeagueRating && (
@@ -354,16 +350,13 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                         Ultra League PVP
                      </div>
                   </div>
-                  <div className="text-xs bg-white border shadow-sm shadow-1 border-color-sub justify-center dark:bg-dark400 w-12 h-8 rounded-md flex items-center gap-1">
-                     <span className="font-bold">
-                        <RatingsLabel
-                           fieldName="ultraLeagueRating"
-                           value={pokemon.ratings?.ultraLeagueRating}
-                        />
-                     </span>
-                     <span className="dark:text-zinc-500 text-zinc-400">/</span>
-                     <span className="text-1">5</span>
-                  </div>
+                  <Badge color="yellow">
+                     <RatingsLabel
+                        fieldName="ultraLeagueRating"
+                        value={pokemon.ratings?.ultraLeagueRating}
+                     />{" "}
+                     / 5
+                  </Badge>
                </div>
             )}
             {pokemon.ratings?.masterLeagueRating && (
@@ -380,16 +373,13 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                         Master League PVP
                      </div>
                   </div>
-                  <div className="text-xs bg-white border shadow-sm shadow-1 border-color-sub justify-center dark:bg-dark400 w-12 h-8 rounded-md flex items-center gap-1">
-                     <span className="font-bold">
-                        <RatingsLabel
-                           fieldName="masterLeagueRating"
-                           value={pokemon.ratings?.masterLeagueRating}
-                        />
-                     </span>
-                     <span className="dark:text-zinc-500 text-zinc-400">/</span>
-                     <span className="text-1">5</span>
-                  </div>
+                  <Badge color="purple">
+                     <RatingsLabel
+                        fieldName="masterLeagueRating"
+                        value={pokemon.ratings?.masterLeagueRating}
+                     />{" "}
+                     / 5
+                  </Badge>
                </div>
             )}
          </div>
