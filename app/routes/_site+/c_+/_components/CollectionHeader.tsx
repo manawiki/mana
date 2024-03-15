@@ -145,7 +145,7 @@ export function CollectionHeader({
                </div>
             </AdminOrStaffOrOwner>
             <div className="flex items-center max-tablet:px-3 justify-between gap-4 pt-4 mx-auto max-w-[728px] laptop:w-[728px] relative">
-               <h1 className="font-bold font-header text-3xl pb-3">
+               <h1 className="font-bold font-header text-2xl tablet:text-3xl pb-3 max-tablet:pr-14">
                   {entryName ?? collectionName}
                </h1>
                <div className="absolute right-3 laptop:right-0 top-7">
