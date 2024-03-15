@@ -47,6 +47,7 @@ import type {
    Post,
    Site,
 } from "payload/generated-types";
+import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Icon } from "~/components/Icon";
 import { Image } from "~/components/Image";
@@ -214,7 +215,11 @@ export async function loader({
       }
    }
    //For entries
-   if (site?.type == "custom") {
+   const collection = site?.collections?.find(
+      (collection) => collection.slug === filterOption,
+   );
+
+   if (collection?.customDatabase) {
       const label = gqlFormat(filterOption, "list");
 
       const document = gql`
@@ -237,7 +242,7 @@ export async function loader({
       `;
 
       const endpoint = gqlEndpoint({
-         siteSlug: site.slug,
+         siteSlug: site?.slug,
       });
 
       const result: any = await gqlRequest(endpoint, document, {
@@ -248,50 +253,49 @@ export async function loader({
          return {
             ...doc,
             siteId: siteSlug,
-            isCustomSite: site?.type == "custom",
+            isCustomSite: collection.customDatabase,
          };
       });
       return json(filtered);
    }
-   if (site?.type == "core") {
-      const { docs } = await payload.find({
-         collection: "entries",
-         where: {
-            site: {
-               equals: site?.id,
-            },
-            "collectionEntity.slug": {
-               equals: filterOption,
-            },
-            ...(groupSelectQuery
-               ? {
-                    name: {
-                       contains: groupSelectQuery,
-                    },
-                 }
-               : {}),
+
+   const { docs } = await payload.find({
+      collection: "entries",
+      where: {
+         site: {
+            equals: site?.id,
          },
-         depth: 1,
-         overrideAccess: false,
-         user,
-      });
-      const filtered = docs.map((doc) => {
-         return {
-            ...select(
-               {
-                  id: true,
-                  name: true,
-                  slug: true,
-               },
-               doc,
-            ),
-            siteId: siteSlug,
-            isCustomSite: site?.type == "custom",
-            icon: doc.icon && select({ id: false, url: true }, doc.icon),
-         };
-      });
-      return json(filtered);
-   }
+         "collectionEntity.slug": {
+            equals: filterOption,
+         },
+         ...(groupSelectQuery
+            ? {
+                 name: {
+                    contains: groupSelectQuery,
+                 },
+              }
+            : {}),
+      },
+      depth: 1,
+      overrideAccess: false,
+      user,
+   });
+   const filtered = docs.map((doc) => {
+      return {
+         ...select(
+            {
+               id: true,
+               name: true,
+               slug: true,
+            },
+            doc,
+         ),
+         siteId: siteSlug,
+         isCustomSite: site?.type == "custom",
+         icon: doc.icon && select({ id: false, url: true }, doc.icon),
+      };
+   });
+   return json(filtered);
 }
 
 export function BlockGroup({
@@ -1292,7 +1296,7 @@ export function BlockGroupItem({
                      </div>
                   </FloatingDelayGroup>
                </div>
-               <div className="block truncate">
+               <div className="block">
                   {/* Label Editor */}
                   {editMode && (
                      <>
@@ -1367,25 +1371,15 @@ export function BlockGroupItem({
                         </div>
                      </div>
                   )}
-                  <div
-                     className="shadow-1 border-color-sub mx-auto flex h-[60px] w-[60px]
-                  items-center overflow-hidden rounded-full border shadow-sm"
-                  >
-                     {element?.iconUrl ? (
-                        <Image
-                           url={element?.iconUrl}
-                           options="aspect_ratio=1:1&height=120&width=120"
-                           alt={element?.name ?? "Icon"}
-                        />
-                     ) : (
-                        <Icon
-                           name="component"
-                           className="text-1 mx-auto"
-                           size={18}
-                        />
-                     )}
-                  </div>
-                  <div className="text-1 truncate text-center pt-0.5 text-sm font-bold">
+                  <Avatar
+                     src={element?.iconUrl}
+                     initials={
+                        element?.iconUrl ? undefined : element.name.charAt(0)
+                     }
+                     className="size-14 mx-auto"
+                     options="aspect_ratio=1:1&height=120&width=120"
+                  />
+                  <div className="text-center pt-2 text-xs font-bold">
                      {element?.name}
                   </div>
                </div>
