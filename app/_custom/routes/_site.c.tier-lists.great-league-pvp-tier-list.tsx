@@ -66,7 +66,9 @@ function GridCell({
             className="size-14"
             options="aspect_ratio=1:1&height=120&width=120"
          />
-         <div className="text-sm font-bold">{name}</div>
+         <div className="text-xs tablet:text-sm text-center font-bold">
+            {name}
+         </div>
       </Link>
    );
 }
@@ -88,7 +90,7 @@ function TierOne({ data }: { data: any }) {
 
 function TierTwo({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
          {data.tier2.docs.map((row: any) => (
             <GridCell
                key={row.id}
@@ -103,7 +105,7 @@ function TierTwo({ data }: { data: any }) {
 
 function TierThree({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
          {data.tier3.docs.map((row: any) => (
             <GridCell
                key={row.id}
@@ -118,7 +120,7 @@ function TierThree({ data }: { data: any }) {
 
 function TierFour({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
          {data.tier4.docs.map((row: any) => (
             <GridCell
                key={row.id}
@@ -133,7 +135,7 @@ function TierFour({ data }: { data: any }) {
 
 function TierFive({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-4 gap-3">
          {data.tier5.docs.map((row: any) => (
             <GridCell
                key={row.id}
