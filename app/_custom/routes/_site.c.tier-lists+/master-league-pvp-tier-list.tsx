@@ -44,7 +44,7 @@ const SECTIONS = {
    "tier-5": TierFive,
 };
 
-export default function GreatLeagueTierList() {
+export default function MasterLeagueTierList() {
    const { entry } = useLoaderData<typeof loader>();
 
    const tier_list = entry.data;
@@ -59,7 +59,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__greatLeagueRating: { equals: new EnumType("_5_0") },
+               ratings__masterLeagueRating: { equals: new EnumType("_5_0") },
             },
          },
          docs: {
@@ -86,12 +86,12 @@ const query = {
             where: {
                OR: [
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_4_5"),
                      },
                   },
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_4_0"),
                      },
                   },
@@ -122,12 +122,12 @@ const query = {
             where: {
                OR: [
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_3_5"),
                      },
                   },
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_3_0"),
                      },
                   },
@@ -158,12 +158,12 @@ const query = {
             where: {
                OR: [
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_2_5"),
                      },
                   },
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_2_0"),
                      },
                   },
@@ -194,12 +194,12 @@ const query = {
             where: {
                OR: [
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_1_5"),
                      },
                   },
                   {
-                     ratings__greatLeagueRating: {
+                     ratings__masterLeagueRating: {
                         equals: new EnumType("_1_0"),
                      },
                   },
