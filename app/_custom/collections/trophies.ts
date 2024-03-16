@@ -31,7 +31,7 @@ export const Trophies: CollectionConfig = {
     {
       name: "group",
       type: "relationship",
-      relationTo: "thropyGroups",
+      relationTo: "trophy-groups",
     },
     {
       name: "next",
