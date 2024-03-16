@@ -42,7 +42,7 @@ export const Weapons: CollectionConfig = {
     {
       name: "type",
       type: "relationship",
-      relationTo: "weaponTypes",
+      relationTo: "weapon-types",
     },
     {
       name: "splash",
@@ -70,6 +70,11 @@ export const Weapons: CollectionConfig = {
             { label: "No", value: "no" },
           ],
         },
+        {
+          name: "curve",
+          type: "relationship",
+          relationTo: "weapon-curves",
+        }
       ],
     },
     {

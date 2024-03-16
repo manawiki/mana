@@ -3,8 +3,8 @@ import type { CollectionConfig } from "payload/types";
 import { isStaff } from "../../db/collections/users/access";
 
 export const WeaponCurves: CollectionConfig = {
-   slug: "weaponCurves",
-   labels: { singular: "weaponCurve", plural: "weaponCurves" },
+   slug: "weapon-curves",
+   labels: { singular: "weapon-curve", plural: "weapon-curves" },
    admin: {
       group: "Custom",
       useAsTitle: "name",

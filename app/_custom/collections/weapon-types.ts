@@ -2,9 +2,9 @@ import type { CollectionConfig } from "payload/types";
 
 import { isStaff } from "../../db/collections/users/access";
 
-export const ThropyGroups: CollectionConfig = {
-   slug: "thropyGroups",
-   labels: { singular: "thropyGroup", plural: "thropyGroups" },
+export const WeaponTypes: CollectionConfig = {
+   slug: "weapon-types",
+   labels: { singular: "weapon-type", plural: "weapon-types" },
    admin: {
       group: "Custom",
       useAsTitle: "name",
@@ -23,16 +23,6 @@ export const ThropyGroups: CollectionConfig = {
       {
          name: "name",
          type: "text",
-      },
-      {
-         name: "icon",
-         type: "upload",
-         relationTo: "images",
-      },
-      {
-         name: "category",
-         type: "relationship",
-         relationTo: "thropyCategories",
       },
       {
          name: "checksum",

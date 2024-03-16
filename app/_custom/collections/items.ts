@@ -37,12 +37,12 @@ export const Items: CollectionConfig = {
     {
       name: "bag_slot",
       type: "relationship",
-      relationTo: "itemBagSlots",
+      relationTo: "item-bag-slots",
     },
     {
       name: "category",
       type: "relationship",
-      relationTo: "itemCategories",
+      relationTo: "item-categories",
     },
     {
       name: "desc",
