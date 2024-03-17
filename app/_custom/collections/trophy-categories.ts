@@ -21,6 +21,10 @@ export const TrophyCategories: CollectionConfig = {
       type: "text",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "name",
       type: "text",
     },
@@ -28,10 +32,6 @@ export const TrophyCategories: CollectionConfig = {
       name: "icon",
       type: "upload",
       relationTo: "images",
-    },
-    {
-      name: "slug",
-      type: "text",
     },
     {
       name: "checksum",

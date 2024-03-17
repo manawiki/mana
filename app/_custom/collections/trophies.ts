@@ -21,6 +21,10 @@ export const Trophies: CollectionConfig = {
       type: "text",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "name",
       type: "text",
     },
@@ -37,10 +41,6 @@ export const Trophies: CollectionConfig = {
       name: "next",
       type: "relationship",
       relationTo: "trophies",
-    },
-    {
-      name: "slug",
-      type: "text",
     },
     {
       name: "checksum",

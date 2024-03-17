@@ -22,6 +22,10 @@ export const Weapons: CollectionConfig = {
       type: "text",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "name",
       type: "text",
     },
@@ -113,10 +117,6 @@ export const Weapons: CollectionConfig = {
           type: "number",
         },
       ],
-    },
-    {
-      name: "slug",
-      type: "text",
     },
     {
       name: "checksum",

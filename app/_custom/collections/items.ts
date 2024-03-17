@@ -21,6 +21,10 @@ export const Items: CollectionConfig = {
       type: "text",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "name",
       type: "text",
     },
@@ -46,10 +50,6 @@ export const Items: CollectionConfig = {
     },
     {
       name: "desc",
-      type: "text",
-    },
-    {
-      name: "slug",
       type: "text",
     },
     {

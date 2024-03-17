@@ -21,6 +21,10 @@ export const TrophyGroups: CollectionConfig = {
       type: "text",
     },
     {
+      name: "slug",
+      type: "text",
+    },
+    {
       name: "name",
       type: "text",
     },
@@ -33,10 +37,6 @@ export const TrophyGroups: CollectionConfig = {
       name: "category",
       type: "relationship",
       relationTo: "trophy-categories",
-    },
-    {
-      name: "slug",
-      type: "text",
     },
     {
       name: "checksum",
