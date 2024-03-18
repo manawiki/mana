@@ -22,6 +22,7 @@ export type Section = {
    slug: string;
    name?: string;
    showTitle?: boolean;
+   viewType?: "tabs" | "rows";
    showAd?: boolean;
    subSections?: [{ id: string; slug: string; name: string; type: string }];
 };
@@ -142,7 +143,7 @@ export function SubSectionList({
                      <SortableSubSectionItem
                         key={row.id}
                         subSection={row}
-                        sectionId={section.id}
+                        section={section}
                         fetcher={fetcher}
                         collectionId={collection?.id}
                      />
@@ -154,7 +155,7 @@ export function SubSectionList({
                   <SortableSubSectionItem
                      fetcher={fetcher}
                      subSection={activeSubSection}
-                     sectionId={section.id}
+                     section={section}
                      collectionId={collection?.id}
                   />
                )}

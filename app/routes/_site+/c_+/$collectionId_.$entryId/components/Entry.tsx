@@ -47,7 +47,7 @@ export function Entry({
          />
          <div
             className={clsx(
-               "max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44 className",
+               "max-tablet:px-3 py-3 laptop:py-5 laptop:pb-44 max-w-[728px] mx-auto",
                className,
             )}
          >

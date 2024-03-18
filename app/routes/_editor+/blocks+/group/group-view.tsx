@@ -31,27 +31,29 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      key={element?.id}
                      to={element?.path ?? ""}
                      prefetch="intent"
-                     className="flex items-center w-full gap-5 group"
+                     className="flex items-center w-full gap-5 group p-3"
                   >
                      {element.iconUrl && (
-                        <div className="w-28 flex-none overflow-hidden rounded">
+                        <div className="w-1/2 tablet:w-28 flex-none overflow-hidden rounded">
                            <Image
                               alt={element.name}
                               className="w-full rounded object-cover"
-                              height={60}
-                              options="height=120"
+                              height={300}
+                              options="height=300"
                               url={element?.iconUrl}
                            />
                         </div>
                      )}
-                     <div className="relative flex-grow ">
+                     <div className="relative flex-grow space-y-1">
                         {element.name && (
-                           <div className="font-header font-bold group-hover:underline">
+                           <div className="font-header font-bold group-hover:underline line-clamp-2">
                               {element.name}
                            </div>
                         )}
                         {element.subtitle && (
-                           <div className="text-sm">{element.subtitle}</div>
+                           <div className="text-sm text-1 line-clamp-2">
+                              {element.subtitle}
+                           </div>
                         )}
                      </div>
                   </Link>
@@ -61,16 +63,32 @@ export function BlockGroupItemView({ element }: { element: GroupItemElement }) {
                      key={element?.id}
                      to={element?.path ?? ""}
                      prefetch="intent"
-                     className="flex items-center flex-grow gap-2 p-2.5 group"
+                     className="flex items-center flex-grow gap-2 p-3 group"
                   >
-                     <Avatar
-                        src={element?.iconUrl}
-                        initials={
-                           element?.iconUrl ? undefined : element.name.charAt(0)
-                        }
-                        className="size-8"
-                        options="aspect_ratio=1:1&height=80&width=80"
-                     />
+                     {element?.iconUrl ? (
+                        <Avatar
+                           src={element?.iconUrl}
+                           initials={
+                              element?.iconUrl
+                                 ? undefined
+                                 : element.name.charAt(0)
+                           }
+                           className="size-9"
+                           options="aspect_ratio=1:1&height=80&width=80"
+                        />
+                     ) : element.isPost ? (
+                        <Icon
+                           name="pen-square"
+                           className="text-1 mx-auto"
+                           size={14}
+                        />
+                     ) : (
+                        <Icon
+                           name="database"
+                           className="text-1 mx-auto"
+                           size={15}
+                        />
+                     )}
                      <span className="flex-grow truncate text-sm font-bold group-hover:underline">
                         {element?.name}
                      </span>
