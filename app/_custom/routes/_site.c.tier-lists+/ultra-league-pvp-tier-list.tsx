@@ -48,7 +48,13 @@ export default function UltraLeagueTierList() {
    const { entry } = useLoaderData<typeof loader>();
 
    const tier_list = entry.data;
-   return <Entry customComponents={SECTIONS} customData={tier_list}></Entry>;
+   return (
+      <Entry
+         className="max-w-[728px] w-full mx-auto"
+         customComponents={SECTIONS}
+         customData={tier_list}
+      />
+   );
 }
 
 const query = {

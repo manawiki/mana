@@ -10,6 +10,7 @@ import { fetchEntry } from "~/routes/_site+/c_+/$collectionId_.$entryId/utils/fe
 import { TierFive } from "./components/TierFive";
 import { TierFour } from "./components/TierFour";
 import { TierOne } from "./components/TierOne";
+import { TierSix } from "./components/TierSix";
 import { TierThree } from "./components/TierThree";
 import { TierTwo } from "./components/TierTwo";
 
@@ -42,9 +43,10 @@ const SECTIONS = {
    "tier-3": TierThree,
    "tier-4": TierFour,
    "tier-5": TierFive,
+   "tier-6": TierSix,
 };
 
-export default function GreatLeagueTierList() {
+export default function UltraLeagueTierList() {
    const { entry } = useLoaderData<typeof loader>();
 
    const tier_list = entry.data;
@@ -65,7 +67,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               ratings__greatLeagueRating: { equals: new EnumType("_5_0") },
+               ratings__attackerRating: { equals: new EnumType("s") },
             },
          },
          docs: {
@@ -90,18 +92,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_4_5"),
-                     },
-                  },
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_4_0"),
-                     },
-                  },
-               ],
+               ratings__attackerRating: { equals: new EnumType("a_plus") },
             },
          },
          docs: {
@@ -126,18 +117,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_3_5"),
-                     },
-                  },
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_3_0"),
-                     },
-                  },
-               ],
+               ratings__attackerRating: { equals: new EnumType("a") },
             },
          },
          docs: {
@@ -162,18 +142,7 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_2_5"),
-                     },
-                  },
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_2_0"),
-                     },
-                  },
-               ],
+               ratings__attackerRating: { equals: new EnumType("b_plus") },
             },
          },
          docs: {
@@ -198,18 +167,32 @@ const query = {
             limit: 200,
             sort: "name",
             where: {
-               OR: [
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_1_5"),
-                     },
-                  },
-                  {
-                     ratings__greatLeagueRating: {
-                        equals: new EnumType("_1_0"),
-                     },
-                  },
-               ],
+               ratings__attackerRating: { equals: new EnumType("b") },
+            },
+         },
+         docs: {
+            id: true,
+            slug: true,
+            name: true,
+            number: true,
+            icon: {
+               url: true,
+            },
+            type: {
+               name: true,
+               icon: {
+                  url: true,
+               },
+            },
+         },
+      },
+      tier6: {
+         __aliasFor: "allPokemon",
+         __args: {
+            limit: 200,
+            sort: "name",
+            where: {
+               ratings__attackerRating: { equals: new EnumType("c") },
             },
          },
          docs: {
