@@ -23,6 +23,7 @@ export function TableOfContents({
    const sectionsWithContent = sections?.map((section) => {
       const subSection = section?.subSections
          ?.filter((subSection) => {
+            if (subSection.showTitle == false) return false;
             if (subSection.type == "editor") {
                const embeddedContent = entry?.embeddedContent;
                const hasContent = embeddedContent?.find(
