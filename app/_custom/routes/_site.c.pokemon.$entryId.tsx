@@ -365,7 +365,7 @@ function Ratings({ data: pokemon }: { data: PokemonType }) {
                      <Image
                         height={24}
                         width={24}
-                        url="https://static.mana.wiki/pokemongo/master_league.png"
+                        url="https://static.mana.wiki/pokemongo/master_league.webp"
                         options="height=40&width=40"
                         alt="Master League Rating"
                      />
@@ -417,7 +417,10 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                         </div>
                      )}
                      <Tooltip placement="top">
-                        <TooltipTrigger className="rounded-full w-6 h-6 border shadow-sm shadow-1 border-color-sub flex items-center justify-center bg-white dark:bg-zinc-800">
+                        <TooltipTrigger
+                           className="rounded-full size-6 border shadow-sm shadow-1 border-color-sub flex 
+                           items-center justify-center bg-white dark:bg-zinc-800"
+                        >
                            <Image
                               height={28}
                               width={28}
@@ -467,7 +470,10 @@ function Moves({ data: pokemon }: { data: PokemonType }) {
                         </div>
                      )}
                      <Tooltip placement="top">
-                        <TooltipTrigger className="rounded-full w-6 h-6 border shadow-sm shadow-1 border-color-sub flex items-center justify-center bg-white dark:bg-zinc-800">
+                        <TooltipTrigger
+                           className="rounded-full w-6 h-6 border shadow-sm shadow-1 border-color-sub 
+                        flex items-center justify-center bg-white dark:bg-zinc-800"
+                        >
                            <Image
                               height={28}
                               width={28}
