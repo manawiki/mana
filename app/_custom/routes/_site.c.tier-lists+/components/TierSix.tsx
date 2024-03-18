@@ -3,7 +3,7 @@ import type { TierListData } from "./TierListData";
 
 export function TierSix({ data }: { data: any }) {
    return (
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 tablet:grid-cols-4 gap-3">
          {data.tier6.docs.map((row: TierListData) => (
             <GridCell
                key={row.id}
