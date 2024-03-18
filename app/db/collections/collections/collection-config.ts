@@ -115,7 +115,7 @@ export const Collections: CollectionConfig = {
                name: "showTitle",
                type: "checkbox",
                label: "Display Title",
-               defaultValue: false,
+               defaultValue: true,
             },
             {
                name: "showAd",
@@ -157,6 +157,12 @@ export const Collections: CollectionConfig = {
                   {
                      name: "name",
                      type: "text",
+                  },
+                  {
+                     name: "showTitle",
+                     type: "checkbox",
+                     label: "Display Title",
+                     defaultValue: false,
                   },
                   {
                      name: "type",

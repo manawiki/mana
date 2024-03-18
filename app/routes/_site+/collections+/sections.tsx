@@ -240,6 +240,7 @@ export const action: ActionFunction = async ({
                ...(results.subSectionSlug && { slug: results.subSectionSlug }),
                ...(results.subSectionName && { name: results.subSectionName }),
                ...(results.type && { type: results.type }),
+               showTitle: results.showTitle,
             };
 
             const updatedSubSections = existingCollection.sections?.map(

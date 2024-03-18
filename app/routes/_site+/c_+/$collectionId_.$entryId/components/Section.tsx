@@ -67,7 +67,7 @@ export function Section({
 
    return (
       <div className="relative">
-         <div className="max-tablet:-mx-3 desktop:flex items-center justify-center pb-4">
+         <div className="max-tablet:-mx-3 desktop:flex items-center justify-center mb-4">
             <div className="max-w-[728px] w-full mx-auto">
                <TableOfContents entry={entry} sections={entry.sections} />
             </div>

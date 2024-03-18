@@ -28,6 +28,7 @@ export const SubSectionSchema = z.object({
    subSectionId: z.string().optional(),
    sectionId: z.string(),
    collectionId: z.string(),
+   showTitle: z.coerce.boolean(),
    type: z.enum(["editor", "customTemplate", "qna", "comments"]),
 });
 
