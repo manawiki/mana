@@ -37,9 +37,6 @@ export function SectionParent({
       const isSingle =
          section?.subSections && section?.subSections?.length == 1;
 
-      const isEmbedEmpty =
-         !entry?.embeddedContent || entry?.embeddedContent.length == 0;
-
       const isActiveSection = activeSection === section?.slug;
 
       const activeSectionName = sections?.find(
@@ -65,7 +62,7 @@ export function SectionParent({
          <>
             {isActiveSection && (
                <div
-                  className="fixed top-[117px] left-0  max-tablet:px-3 laptop:top-[61px] bg-3-sub laptop:shadow-sm shadow-1 px-2.5 py-2 laptop:pb-2.5
+                  className="fixed top-[117px] left-0  max-tablet:px-3 laptop:top-[61px] bg-3-sub laptop:shadow-sm shadow-1 px-2.5 py-2 laptop:pb-3 laptop:pt-3.5
                   flex items-center w-full z-50 laptop:z-30 max-laptop:py-3 mx-auto  border-y laptop:border-t-0 dark:border-zinc-600/50"
                >
                   <div className="flex items-center w-full justify-between laptop:ml-36 desktop:ml-[300px] laptop:mr-80">
@@ -163,8 +160,7 @@ export function SectionParent({
                </div>
             )}
 
-            {/* If no embed data is returned and user is anon or doesn't have access, render as single section */}
-            {isSingle || (isEmbedEmpty && !hasAccess) ? (
+            {isSingle ? (
                <div
                   data-section
                   id={section?.slug ?? ""}
