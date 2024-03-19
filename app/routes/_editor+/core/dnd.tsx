@@ -376,7 +376,7 @@ function HoverElement({
             className={clsx(
                isParentTwoColumn ? "pr-16" : "pr-2",
                isTwoColumn ? "z-20" : "z-10",
-               "laptop:-translate-x-full laptop:translate-y-0 left-0 group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0",
+               "laptop:-translate-x-full laptop:translate-y-0 left-0 opacity-0 group-hover/editor:opacity-100 absolute select-none duration-100 ease-in top-0",
             )}
          >
             <BlockInlineActions
